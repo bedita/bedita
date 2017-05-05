@@ -26,7 +26,7 @@ class UserMailer extends Mailer
     /**
      * Welcome message
      *
-     * @param array $options Email options: to
+     * @param array $options Email options: 'to' (recipient)
      * @return void
      * @codeCoverageIgnore
      */
@@ -34,7 +34,7 @@ class UserMailer extends Mailer
     {
         $this
             ->setTemplate('BEdita/Core.welcome')
-            ->setLayout('BEdita/Core.email')
+            ->setLayout('BEdita/Core.default')
             ->setTo($options['to'])
             ->setSubject('Welcome!');
     }

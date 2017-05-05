@@ -37,9 +37,10 @@ class Mail implements JobService
     protected $Email;
 
     /**
-     * {@inheritDoc}
+     * Send a single email directly or using a mailer class.
      *
-     * $payload array possible keys are:
+     * $payload array data specify mail action and input data.
+     * Possible keys are:
      *  * 'profile' - Email configuration profile to use (default is 'default'), in profile sender and from fields are
      *  * 'mailer' - Custom mailer class to use, if no namespace is spesified a class with same name is searched
      *      in loaded plugins in `\MyPlugin\Mailer` namespace than in `\BEdita\Core\Mailer`
@@ -49,6 +50,11 @@ class Mail implements JobService
      *  * 'subject' - Email subject, mandatory if no 'mailer' is specified
      *  * 'message' - Message body, mandatory if no 'mailer' is specified
      *
+     * In $options array an alternative 'profile' name may be set.
+     *
+     * @param array $payload Input data for this email job.
+     * @param array $options Options for running this job.
+     * @return bool True on success, false on failure
      */
     public function run($payload, $options = [])
     {
@@ -80,18 +86,19 @@ class Mail implements JobService
 
     /**
      * Send mail using mailer.
-     * Mailer is searched in plugins and core using `MailerAwareTrait::getMailer`
+     * If a plugin syntax is used for $name mailer is loaded directly.
+     * Otherwise a matching mailer is searched in plugins and core.
      *
-     * @param string $mailerName Mailer name
+     * @param string $name Mailer name
      * @param string $action Mailer action
      * @param array $options Mailer options
      * @return bool True on success, false on failure
      */
-    protected function mailerSend($mailerName, $action, $options)
+    protected function mailerSend($name, $action, $options)
     {
         // if plugin syntax is used load mailer directly
-        if (strpos($mailerName, '.')) {
-            $this->getMailer($mailerName, $this->Email)->send($action, [$options]);
+        if (strpos($name, '.')) {
+            $this->getMailer($name, $this->Email)->send($action, [$options]);
 
             return true;
         }
@@ -101,7 +108,7 @@ class Mail implements JobService
         $mailer = null;
         foreach ($plugins as $plugin) {
             try {
-                $mailer = $this->getMailer("$plugin.$mailerName", $this->Email);
+                $mailer = $this->getMailer("$plugin.$name", $this->Email);
             } catch (MissingMailerException $x) {
             }
             if ($mailer) {
@@ -109,7 +116,7 @@ class Mail implements JobService
             }
         }
         if (empty($mailer)) {
-            throw new \LogicException(__d('bedita', 'Mailer not found "{0}"', [$mailerName]));
+            throw new \LogicException(__d('bedita', 'Mailer not found "{0}"', [$name]));
         }
 
         $mailer->send($action, [$options]);
