@@ -90,6 +90,14 @@ class ObjectsTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.UniqueName');
+
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+            ],
+        ]);
     }
 
     /**
