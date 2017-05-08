@@ -11,6 +11,8 @@ schemes:
 paths:
   /trash:
     get:
+      security:
+        - Bearer: []
       description: Returns objects in trash
       summary: Retrieve a list of objects
       tags:
@@ -42,6 +44,8 @@ paths:
 
   '/trash/{id}':
     get:
+      security:
+        - Bearer: []
       tags:
         - trash
       summary: Get trash item by id
@@ -75,6 +79,8 @@ paths:
           description: Object not found
 
     patch:
+      security:
+        - Bearer: []
       tags:
         - trash
       summary: Restore item from trash
@@ -109,6 +115,8 @@ paths:
           description: Object not found
 
     delete:
+      security:
+        - Bearer: []
       tags:
         - trash
       summary: Delete trash object by id

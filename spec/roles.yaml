@@ -11,6 +11,8 @@ schemes:
 paths:
   /roles:
     get:
+      security:
+        - Bearer: []
       description: Returns roles
       summary: Retrieve a list of roles
       tags:
@@ -48,6 +50,8 @@ paths:
                 $ref: '#/definitions/MetaPagination'
 
     post:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Create role
@@ -86,6 +90,8 @@ paths:
 
   '/roles/{id}':
     get:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Get role by role id
@@ -124,6 +130,8 @@ paths:
             $ref: '#/definitions/404Response'
 
     patch:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Modify role
@@ -168,6 +176,8 @@ paths:
           description: Conflict - IDs don't match
 
     delete:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Remove role by role id
@@ -191,6 +201,8 @@ paths:
 
   '/roles/{id}/users':
     get:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Get users by role id
@@ -232,6 +244,8 @@ paths:
 
   '/roles/{id}/relationships/users':
     post:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Add users by role id
@@ -255,6 +269,8 @@ paths:
         '200':
           description: Successful operation
     delete:
+      security:
+        - Bearer: []
       tags:
         - roles
       summary: Remove user role by role id
