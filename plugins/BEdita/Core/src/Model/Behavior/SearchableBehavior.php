@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
+use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
@@ -123,12 +124,12 @@ class SearchableBehavior extends Behavior
         }
 
         $minLength = $this->getConfig('minLength');
-        $words = array_map( // Escape `%`, `_` and `\` characters in words.
+        $words = array_unique(array_map( // Escape `%`, `_` and `\` characters in words.
             function ($word) {
                 return str_replace(
                     ['%', '_', '\\'],
                     ['\\%', '\\_', '\\\\'],
-                    $word
+                    mb_strtolower($word)
                 );
             },
             array_filter( // Filter out words that are too short.
@@ -137,7 +138,7 @@ class SearchableBehavior extends Behavior
                     return mb_strlen($word) >= $minLength;
                 }
             )
-        );
+        ));
         if (count($words) === 0) {
             // Query contained only short words.
             throw new BadFilterException('blablabla');
@@ -154,7 +155,10 @@ class SearchableBehavior extends Behavior
                 return $exp->or_(function (QueryExpression $exp) use ($fields, $words) {
                     foreach ($fields as $field) {
                         foreach ($words as $word) {
-                            $exp = $exp->like($field, sprintf('%%%s%%', $word));
+                            $exp = $exp->like(
+                                new FunctionExpression('LOWER', [$field => 'identifier']),
+                                sprintf('%%%s%%', $word)
+                            );
                         }
                     }
 
