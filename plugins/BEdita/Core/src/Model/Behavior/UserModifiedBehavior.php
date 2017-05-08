@@ -32,39 +32,150 @@ class UserModifiedBehavior extends Behavior
     /**
      * Default config
      *
+     * These are merged with user-provided config when the behavior is used.
+     *
+     * events - an event-name keyed array of which fields to update, and when, for a given event
+     * possible values for when a field will be updated are "always", "new" or "existing", to set
+     * the field value always, only when a new record or only when an existing record.
+     *
      * @var array
      */
     protected $_defaultConfig = [
-        'new' => 'created_by',
-        'always' => 'modified_by'
+        'implementedFinders' => [],
+        'implementedMethods' => [
+            'userId' => 'userId',
+            'touchUser' => 'touchUser',
+        ],
+        'events' => [
+            'Model.beforeSave' => [
+                'created_by' => 'new',
+                'modified_by' => 'always',
+            ],
+        ],
     ];
 
     /**
-     * Setup `created_by` on new BEdita object entity and `modified_by` always
+     * Current user ID.
      *
-     * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @return void
+     * @var int|null
      */
-    public function setupUserFields(EntityInterface $entity)
+    protected $userId = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize(array $config)
     {
-        $new = $entity->isNew() !== false;
-        if ($new) {
-            $field = $this->_config['new'];
-            $entity->{$field} = LoggedUser::id();
+        if (isset($config['events'])) {
+            $this->setConfig('events', $config['events'], false);
         }
-        $field = $this->_config['always'];
-        $entity->{$field} = LoggedUser::id();
     }
 
     /**
-     * Setup `created_by` and `modified_by` fields
+     * There is only one event handler, it can be configured to be called for any event
      *
-     * @param \Cake\Event\Event $event The event dispatched
-     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @param \Cake\Event\Event $event Event instance.
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance.
+     * @throws \UnexpectedValueException if a field's when value is misdefined
+     * @return bool Returns true irrespective of the behavior logic, the save will not be prevented.
+     * @throws \UnexpectedValueException When the value for an event is not 'always', 'new' or 'existing'
+     */
+    public function handleEvent(Event $event, EntityInterface $entity)
+    {
+        $eventName = $event->getName();
+        $events = $this->_config['events'];
+
+        $new = $entity->isNew() !== false;
+
+        foreach ($events[$eventName] as $field => $when) {
+            if (!in_array($when, ['always', 'new', 'existing'])) {
+                throw new \UnexpectedValueException(
+                    sprintf('When should be one of "always", "new" or "existing". The passed value "%s" is invalid', $when)
+                );
+            }
+            if ($when === 'always' ||
+                ($when === 'new' && $new) ||
+                ($when === 'existing' && !$new)
+            ) {
+                $this->updateField($entity, $field);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function implementedEvents()
+    {
+        return array_fill_keys(array_keys($this->_config['events']), 'handleEvent');
+    }
+
+    /**
+     * Get or set the user ID to be used.
+     *
+     * Set the user ID to the given ID, or if not passed the current logged user ID.
+     *
+     * @param int|null $userId Timestamp
+     * @return int
+     */
+    public function userId($userId = null)
+    {
+        if ($userId) {
+            $this->userId = $userId;
+        } elseif ($this->userId === null) {
+            $this->userId = LoggedUser::id();
+        }
+
+        return $this->userId;
+    }
+
+    /**
+     * Touch an entity
+     *
+     * Bumps timestamp fields for an entity. For any fields configured to be updated
+     * "always" or "existing", update the user ID value. This method will overwrite
+     * any pre-existing value.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance.
+     * @param string $eventName Event name.
+     * @return bool true if a field is updated, false if no action performed
+     */
+    public function touchUser(EntityInterface $entity, $eventName = 'Model.beforeSave')
+    {
+        $events = $this->_config['events'];
+        if (empty($events[$eventName])) {
+            return false;
+        }
+
+        $return = false;
+
+        foreach ($events[$eventName] as $field => $when) {
+            if (in_array($when, ['always', 'existing'])) {
+                $return = true;
+
+                $entity->dirty($field, false);
+                $this->updateField($entity, $field);
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Update a field, if it hasn't been updated already
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance.
+     * @param string $field Field name
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    protected function updateField($entity, $field)
     {
-        $this->setupUserFields($entity);
+        if ($entity->dirty($field)) {
+            return;
+        }
+
+        $entity->set($field, $this->userId());
     }
 }

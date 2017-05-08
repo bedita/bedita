@@ -14,8 +14,10 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
 
@@ -24,6 +26,16 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  * @property \Cake\ORM\Association\BelongsToMany $Roles
+ *
+ * @method \BEdita\Core\Model\Entity\User get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\User newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
  * @since 4.0.0
  */
@@ -46,8 +58,6 @@ class UsersTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->addBehavior('BEdita/Core.DataCleanup');
-
-        $this->addBehavior('BEdita/Core.UserModified');
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
@@ -114,6 +124,22 @@ class UsersTable extends Table
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function implementedEvents()
+    {
+        $implementedEvents = parent::implementedEvents();
+        $implementedEvents += [
+            'Auth.externalAuth' => 'externalAuthLogin',
+            'Auth.afterIdentify' => 'login',
+        ];
+
+        return $implementedEvents;
+    }
+
+    /**
      * Update last login.
      *
      * @param \Cake\Event\Event $event Dispatched event.
@@ -122,11 +148,57 @@ class UsersTable extends Table
     public function login(Event $event)
     {
         $data = $event->getData();
-
         if (empty($data[0]['id'])) {
             return;
         }
 
-        $this->updateAll(['last_login' => time()], ['id' => $data[0]['id']]);
+        $id = $data[0]['id'];
+        $this->updateAll(
+            [
+                'last_login' => $this->timestamp(),
+            ],
+            compact('id')
+        );
+    }
+
+    /**
+     * Create external auth record for this user.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $authProvider Auth provider entity.
+     * @param string $username Provider username.
+     * @return \Cake\Datasource\EntityInterface|bool
+     */
+    public function externalAuthLogin(Event $event, EntityInterface $authProvider, $username)
+    {
+        $params = $event->getData('params');
+        $externalAuth = $this->ExternalAuth->newEntity([
+            'auth_provider_id' => $authProvider->id,
+            'provider_username' => $username,
+            'params' => $params,
+        ]);
+
+        return $this->ExternalAuth->save($externalAuth);
+    }
+
+    /**
+     * Find users by their external auth providers.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findExternalAuth(Query $query, array $options = [])
+    {
+        return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
+            $query = $query->find('authProvider', $options);
+            if (!empty($options['username'])) {
+                $query = $query->where([
+                    $this->ExternalAuth->aliasField('provider_username') => $options['username'],
+                ]);
+            }
+
+            return $query;
+        });
     }
 }
