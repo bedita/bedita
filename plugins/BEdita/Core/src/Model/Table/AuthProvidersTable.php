@@ -13,7 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Core\App;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\ResultSetInterface;
+use Cake\Log\Log;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -100,5 +105,40 @@ class AuthProvidersTable extends Table
         $schema->columnType('params', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Finder to format results in a way that is suitable for `AuthComponent`.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @return \Cake\ORM\Query
+     */
+    public function findAuthenticate(Query $query)
+    {
+        return $query->formatResults(function (ResultSetInterface $results) {
+            return $results
+                ->filter(function (EntityInterface $entity) {
+                    $name = $entity->get('name');
+                    $exists = (App::className($name, 'Auth', 'Authenticate') !== false);
+                    if (!$exists) {
+                        Log::warning(sprintf('Authentication class "%s" not found', $name));
+                    }
+
+                    return $exists;
+                })
+                ->indexBy('name')
+                ->map(function (EntityInterface $entity) {
+                    $options = [
+                        'authProvider' => $entity,
+                        'finder' => [
+                            'externalAuth' => [
+                                'auth_provider' => $entity,
+                            ],
+                        ],
+                    ];
+
+                    return $options + (array)$entity->get('params');
+                });
+        });
     }
 }

@@ -15,9 +15,11 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ExternalAuthTable} Test Case
@@ -46,6 +48,8 @@ class ExternalAuthTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.external_auth',
     ];
@@ -182,6 +186,7 @@ class ExternalAuthTableTest extends TestCase
     public function testBeforeSaveCreateUser()
     {
         LoggedUser::setUser(['id' => 1]);
+        Configure::write('Roles.BEdita/API.Uuid', ['first role']);
         $count = $this->ExternalAuth->Users->find()->count();
         $entity = $this->ExternalAuth->newEntity([
             'auth_provider_id' => 2,
@@ -195,10 +200,11 @@ class ExternalAuthTableTest extends TestCase
         static::assertSame($count + 1, $countAfter);
         static::assertNotNull($entity->get('user_id'));
 
-        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'));
+        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'), ['contain' => 'Roles']);
 
         static::assertSame(1, $newUser->get('created_by'));
         static::assertSame(1, $newUser->get('modified_by'));
+        static::assertSame([1 => 'first role'], Hash::combine($newUser->get('roles'), '{n}.id', '{n}.name'));
     }
 
     /**

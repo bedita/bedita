@@ -123,9 +123,10 @@ class ExternalAuthTable extends Table
     {
         if (!$entity->has('user_id')) {
             $authProvider = $this->AuthProviders->get($entity->get($this->AuthProviders->getForeignKey()));
-            $username = sprintf('%s-%s', $authProvider->get('name'), $entity->get('provider_username'));
+            $username = sprintf('%s-%s', $authProvider->get('slug'), $entity->get('provider_username'));
 
             $user = $this->Users->newEntity(compact('username'));
+            $user->set('roles', $authProvider->getRoles());
             $selfCreated = (LoggedUser::id() === null);
             if ($selfCreated) {
                 $user = $user

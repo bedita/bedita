@@ -31,7 +31,7 @@ class AuthProvidersFixture extends TestFixture
             'params' => '{}',
         ],
         [
-            'name' => 'uuid',
+            'name' => 'BEdita/API.Uuid',
             'url' => null,
             'params' => null,
         ],
