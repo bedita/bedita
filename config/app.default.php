@@ -211,7 +211,7 @@ return [
         ],
         'test' => [
             'className' => 'Debug',
-        ]
+        ],
     ],
 
     /**
@@ -233,7 +233,7 @@ return [
         'test' => [
             'transport' => 'test',
             'from' => 'you@localhost',
-        ]
+        ],
     ],
 
     /**
@@ -412,5 +412,5 @@ return [
     'Pagination' => [
         'limit' => 20,
         'maxLimit' => 100,
-    ]
+    ],
 ];
