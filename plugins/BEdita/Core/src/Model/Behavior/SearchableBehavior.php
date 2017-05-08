@@ -34,6 +34,7 @@ class SearchableBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'minLength' => 3,
+        'maxWords' => 10,
         'columnTypes' => [
             'string',
             'text',
@@ -120,10 +121,14 @@ class SearchableBehavior extends Behavior
     {
         if (!isset($options[0]) || !is_string($options[0])) {
             // Bad filter options.
-            throw new BadFilterException('blablabla');
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'query filter requires a non-empty query string',
+            ]);
         }
 
         $minLength = $this->getConfig('minLength');
+        $maxWords = $this->getConfig('maxWords');
         $words = array_unique(array_map( // Escape `%`, `_` and `\` characters in words.
             function ($word) {
                 return str_replace(
@@ -141,7 +146,17 @@ class SearchableBehavior extends Behavior
         ));
         if (count($words) === 0) {
             // Query contained only short words.
-            throw new BadFilterException('blablabla');
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'query filter requires a non-empty query string',
+            ]);
+        }
+        if ($maxWords > 0 && count($words) > $maxWords) {
+            // Conditions with too many words would make our database hang for a long time.
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'query string too long',
+            ]);
         }
 
         $fields = array_map( // Alias fields to avoid ambiguities.

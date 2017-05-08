@@ -165,12 +165,25 @@ class SearchableBehaviorTest extends TestCase
                 'ala gle',
             ],
             'bad type' => [
-                new BadFilterException('blablabla'),
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => 'query filter requires a non-empty query string',
+                ]),
                 ['not', 'a', 'string'],
             ],
             'short words' => [
-                new BadFilterException('blablabla'),
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => 'query filter requires a non-empty query string',
+                ]),
                 'I am me',
+            ],
+            'too many words' => [
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => 'query string too long',
+                ]),
+                'this query string contains too many words thus will be rejected to avoid denial of service',
             ],
         ];
     }
