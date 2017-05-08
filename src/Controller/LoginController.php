@@ -39,34 +39,36 @@ class LoginController extends AppController
         parent::initialize();
 
         if ($this->request->getParam('action') === 'login') {
-            $this->Auth->setConfig(
-                'authenticate',
-                [
-                    AuthComponent::ALL => [
-                        'scope' => [
-                            'blocked' => false,
-                        ],
-                        'contain' => ['Roles'],
+            $authenticationComponents = [
+                AuthComponent::ALL => [
+                    'scope' => [
+                        'blocked' => false,
                     ],
-                    'Form' => [
-                        'fields' => [
-                            'username' => 'username',
-                            'password' => 'password_hash',
-                        ],
-                        'passwordHasher' => [
-                            'className' => 'Fallback',
-                            'hashers' => [
-                                'Default',
-                                'Weak' => ['hashType' => 'md5'],
-                            ],
-                        ],
+                    'contain' => ['Roles'],
+                ],
+                'Form' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
                     ],
-                    'BEdita/API.Jwt' => [
-                        'queryDatasource' => true,
+                    'passwordHasher' => [
+                        'className' => 'Fallback',
+                        'hashers' => [
+                            'Default',
+                            'Weak' => ['hashType' => 'md5'],
+                        ],
                     ],
                 ],
-                false
-            );
+                'BEdita/API.Jwt' => [
+                    'queryDatasource' => true,
+                ],
+            ];
+
+            $authenticationComponents += TableRegistry::get('AuthProviders')
+                ->find('authenticate')
+                ->toArray();
+
+            $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
     }
 
