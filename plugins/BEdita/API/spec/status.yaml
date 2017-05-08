@@ -11,6 +11,8 @@ schemes:
 paths:
   /status:
     get:
+      security:
+        - Bearer: []
       description: API endpoints status
       summary: Retrieve API status
       tags:

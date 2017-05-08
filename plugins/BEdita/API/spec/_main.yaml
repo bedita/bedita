@@ -8,6 +8,11 @@ host: be4-test.bedita.net
 basePath: /
 schemes:
   - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
 
 definitions:
