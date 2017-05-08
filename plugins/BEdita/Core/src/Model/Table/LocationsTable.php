@@ -15,9 +15,9 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
-use BEdita\Core\Utility\Database;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Query as DatabaseQuery;
 use Cake\ORM\Query;
 use Cake\Validation\Validator;
 
@@ -34,11 +34,6 @@ use Cake\Validation\Validator;
  */
 class LocationsTable extends Table
 {
-    /**
-     * DB version supported
-     * @var array
-     */
-    protected $geoDbSupport = ['vendor' => 'mysql', 'version' => '5.7'];
 
     /**
      * {@inheritDoc}
@@ -162,10 +157,24 @@ class LocationsTable extends Table
      */
     public function checkGeoDbSupport()
     {
-        if (!Database::supportedVersion($this->geoDbSupport)) {
+        try {
+            $query = new DatabaseQuery($this->getConnection());
+            $query = $query->select([
+                'dist' => new FunctionExpression(
+                    'ST_Distance_sphere',
+                    [
+                        new FunctionExpression('ST_GeomFromText', ['POINT(0 0)']),
+                        new FunctionExpression('ST_GeomFromText', ['POINT(1 1)']),
+                    ],
+                    [],
+                    'float'
+                ),
+            ]);
+            $query->execute();
+        } catch (\PDOException $e) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'operation supported only on MySQL 5.7',
+                'detail' => 'operation not supported on current database',
             ]);
         }
     }

@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -95,16 +96,22 @@ class LocationsTableTest extends TestCase
      *
      * @dataProvider findGeoProvider
      * @covers ::findGeo()
+     * @covers ::checkGeoDbSupport()
      */
     public function testFindGeo($conditions, $numExpected)
     {
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
-            static::expectException('BEdita\Core\Exception\BadFilterException');
+        $supported = Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7']);
+        if (!$supported) {
+            $this->expectException(BadFilterException::class);
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
 
-        static::assertEquals($numExpected, count($result));
+        if ($supported) {
+            static::assertEquals($numExpected, count($result));
+        } else {
+            static::fail('This backend is not supposed to have geometric types support');
+        }
     }
 
     /**
@@ -156,22 +163,5 @@ class LocationsTableTest extends TestCase
     public function testBadGeo($conditions)
     {
         $this->Locations->find('geo', $conditions)->toArray();
-    }
-
-    /**
-     * Test geo db support fail.
-     *
-     * @return void
-     * @expectedException \BEdita\Core\Exception\BadFilterException
-     *
-     * @covers ::checkGeoDbSupport()
-     */
-    public function testBadGeoDb()
-    {
-        $prop = new \ReflectionProperty(get_class($this->Locations), 'geoDbSupport');
-        $prop->setAccessible(true);
-        $prop->setValue($this->Locations, ['vendor' => 'unknowndb']);
-
-        $this->Locations->checkGeoDbSupport();
     }
 }
