@@ -61,6 +61,13 @@ Router::plugin(
             ['_name' => 'login:whoami']
         );
 
+        // Signup.
+        $routes->connect(
+            '/signup',
+            ['controller' => 'Signup', 'action' => 'signup'],
+            ['_name' => 'signup']
+        );
+
         // Resources.
         $resourcesControllers = implode('|', $resourcesControllers);
         $routes->connect(

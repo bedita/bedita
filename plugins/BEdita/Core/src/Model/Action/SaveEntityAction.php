@@ -47,8 +47,10 @@ class SaveEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $entity = $this->Table->patchEntity($data['entity'], $data['data']);
-        $success = $this->Table->save($entity);
+        $entityOptions = !empty($data['entityOptions']) ? (array)$data['entityOptions'] : [];
+        $saveOptions = !empty($data['saveOptions']) ? (array)$data['saveOptions'] : [];
+        $entity = $this->Table->patchEntity($data['entity'], $data['data'], $entityOptions);
+        $success = $this->Table->save($entity, $saveOptions);
 
         if ($success === false) {
             $errors = $entity->getErrors();

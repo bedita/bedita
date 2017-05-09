@@ -112,6 +112,31 @@ class UsersTable extends Table
     }
 
     /**
+     * Signup validation
+     *
+     * @param \Cake\Validation\Validator $validator The validator
+     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
+     */
+    public function validationSignup(Validator $validator)
+    {
+        $validator = $this->validationDefault($validator);
+
+        $validator
+            ->email('email')
+            ->requirePresence('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+
+            ->requirePresence('password_hash')
+            ->notEmpty('password_hash')
+
+            ->requirePresence('status')
+            ->equals('status', 'draft');
+
+        return $validator;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore

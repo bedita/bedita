@@ -13,7 +13,10 @@
 
 namespace BEdita\Core\Mailer;
 
+use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Mailer\Mailer;
+use Cake\ORM\TableRegistry;
 
 /**
  * Mailer class to send notifications to users
@@ -37,5 +40,50 @@ class UserMailer extends Mailer
             ->setLayout('BEdita/Core.default')
             ->setTo($options['to'])
             ->setSubject('Welcome!');
+    }
+
+    /**
+     * Signup message.
+     *
+     * It requires `$options['params']` with:
+     * - `userId` the user id to send signup email
+     * - `activationUrl` the activation url to follow
+     *
+     * @param array $options Email options
+     * @return void
+     */
+    public function signup(array $options)
+    {
+        if (empty($options['params']['userId'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
+        }
+
+        if (empty($options['params']['activationUrl'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
+        }
+
+        $users = TableRegistry::get('Users');
+        $action = new GetObjectAction(['table' => $users]);
+        $user = $action(['primaryKey' => $options['params']['userId']]);
+
+        if (empty($user->email)) {
+            throw new \LogicException(__d('bedita', 'User email missing'));
+        }
+
+        $currentApplication = CurrentApplication::getApplication();
+        $appName = ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
+        $subject = __d('bedita', '{0} registration', [$appName]);
+
+        $this->set([
+            'user' => $user,
+            'activationUrl' => $options['params']['activationUrl'],
+            'appName' => $appName
+        ]);
+
+        $this->setTemplate('BEdita/Core.signup')
+            ->setLayout('BEdita/Core.default')
+            ->setEmailFormat('both')
+            ->setTo($user->email)
+            ->setSubject($subject);
     }
 }
