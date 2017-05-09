@@ -33,7 +33,7 @@ class GeometryBehavior extends Behavior
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'distanceFunction' => 'ST_Distance_sphere',
+        'distanceFunction' => 'ST_Distance_Sphere',
         'field' => 'coords',
         'implementedFinders' => [
             'geo' => 'findGeo',
@@ -56,8 +56,8 @@ class GeometryBehavior extends Behavior
      */
     protected function getDistanceExpression($point1, $point2)
     {
-        $point1 = is_string($point1) ? [$point1 => 'identifier'] : [sprintf('POINT(%s %s)', ...$point1)];
-        $point2 = is_string($point2) ? [$point2 => 'identifier'] : [sprintf('POINT(%s %s)', ...$point2)];
+        $point1 = is_string($point1) ? [$point1 => 'identifier'] : [sprintf('POINT (%s %s)', ...array_reverse($point1))];
+        $point2 = is_string($point2) ? [$point2 => 'identifier'] : [sprintf('POINT (%s %s)', ...array_reverse($point2))];
 
         return new FunctionExpression(
             $this->getConfig('distanceFunction'),
