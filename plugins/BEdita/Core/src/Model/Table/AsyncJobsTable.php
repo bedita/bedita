@@ -83,7 +83,6 @@ class AsyncJobsTable extends Table
 
         $validator
             ->naturalNumber('priority')
-            ->requirePresence('priority', 'create')
             ->allowEmpty('priority');
 
         $validator
