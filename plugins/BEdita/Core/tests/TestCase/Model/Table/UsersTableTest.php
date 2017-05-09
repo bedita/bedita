@@ -250,4 +250,75 @@ class UsersTableTest extends TestCase
 
         static::assertSame($expected, $actual);
     }
+
+    /**
+     * Data provider for `testValidationSignup` test case.
+     *
+     * @return array
+     */
+    public function validationSignupProvider()
+    {
+        return [
+            'valid' => [
+                true,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => 'password',
+                    'email' => 'my@email.com',
+                    'status' => 'draft',
+                ],
+            ],
+            'wrong status' => [
+                false,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => 'password',
+                    'email' => 'my@email.com',
+                    'status' => 'on',
+                ],
+            ],
+            'missing status' => [
+                false,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => 'password',
+                    'email' => 'my@email.com',
+                ],
+            ],
+            'missing password' => [
+                false,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => null,
+                    'email' => 'my@email.com',
+                    'status' => 'draft',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test validation signup.
+     *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
+     *
+     * @return void
+     * @dataProvider validationSignupProvider
+     * @covers ::validateUrl()
+     */
+    public function testValidationSignup($expected, array $data)
+    {
+        $user = $this->Users->newEntity();
+        $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
+        $user->type = 'users';
+
+        $error = (bool)$user->errors();
+        $this->assertEquals($expected, !$error);
+
+        if ($expected) {
+            $success = $this->Users->save($user);
+            $this->assertTrue((bool)$success);
+        }
+    }
 }
