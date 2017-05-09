@@ -305,7 +305,6 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationSignupProvider
-     * @covers ::validateUrl()
      */
     public function testValidationSignup($expected, array $data)
     {
