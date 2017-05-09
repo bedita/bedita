@@ -158,12 +158,12 @@ class GeometryBehaviorTest extends TestCase
             ],
             'out of range lat' => [
                 [
-                    'center' => [200, 0],
+                    'center' => [0, 200],
                 ],
             ],
             'out of range long' => [
                 [
-                    'center' => [0, 100],
+                    'center' => [100, 0],
                 ],
             ],
         ];

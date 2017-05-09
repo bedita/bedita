@@ -89,7 +89,7 @@ class GeometryBehavior extends Behavior
             $point = preg_split('/[\s,]/', (string)$point, 2);
         }
         $point = filter_var_array(array_values($point), FILTER_VALIDATE_FLOAT);
-        if (count($point) !== 2 || in_array(false, $point, true) || abs($point[0]) > 180 || abs($point[1]) > 90) {
+        if (count($point) !== 2 || in_array(false, $point, true) || abs($point[0]) > 90 || abs($point[1]) > 180) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => 'bad geo data format: ' . implode(' ', $point),
