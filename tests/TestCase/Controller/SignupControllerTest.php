@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -178,6 +179,11 @@ class SignupControllerTest extends IntegrationTestCase
      */
     public function testSignup($statusCode, $expected, $method, $data)
     {
+        Email::dropTransport('default');
+        Email::setConfigTransport('default', [
+            'className' => 'Debug'
+        ]);
+
         $this->configRequestHeaders($method);
         $methodName = strtolower($method);
         $this->$methodName('/signup', json_encode(compact('data')));
