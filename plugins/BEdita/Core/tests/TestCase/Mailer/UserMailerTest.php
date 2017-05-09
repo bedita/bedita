@@ -44,6 +44,7 @@ class UserMailerTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.external_auth',
+        'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
     ];
