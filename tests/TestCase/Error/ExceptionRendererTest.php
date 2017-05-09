@@ -65,7 +65,7 @@ class ExceptionRendererTest extends TestCase
     }
 
     /**
-     * Data provider for `testIsHtmlToSend` test case.
+     * Data provider for `testErrorDetails` test case.
      *
      * @return array
      */
@@ -84,7 +84,21 @@ class ExceptionRendererTest extends TestCase
             'detailArray' => [
                 ['title' => 'new title', 'detail' => [['field' => ['cause' => 'err detail']]]],
                 'new title',
-                " 'field' :  [cause] err detail"
+                '[0.field.cause]: err detail. '
+            ],
+            'detailArray2' => [
+                [
+                    'title' => 'new title',
+                    'detail' => [
+                        'field' => ['cause' => 'err detail'],
+                        'nestedFields' => [
+                            'field2' => ['cause2' => 'err detail2'],
+                            'field3' => ['cause3' => 'err detail3'],
+                        ]
+                    ]
+                ],
+                'new title',
+                '[field.cause]: err detail. [nestedFields.field2.cause2]: err detail2. [nestedFields.field3.cause3]: err detail3. '
             ]
         ];
     }
