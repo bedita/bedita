@@ -20,7 +20,6 @@ use Cake\ORM\TableRegistry;
 
 /**
  * Mailer class to send notifications to users
- * [Temporary dummy implementation]
  *
  * @since 4.0.0
  */
@@ -30,12 +29,12 @@ class UserMailer extends Mailer
      * Welcome message
      *
      * @param array $options Email options: 'to' (recipient)
-     * @return void
+     * @return $this
      * @codeCoverageIgnore
      */
     public function welcome($options)
     {
-        $this
+        return $this
             ->setTemplate('BEdita/Core.welcome')
             ->setLayout('BEdita/Core.default')
             ->setTo($options['to'])
@@ -50,7 +49,7 @@ class UserMailer extends Mailer
      * - `activationUrl` the activation url to follow
      *
      * @param array $options Email options
-     * @return void
+     * @return $this
      * @throws \LogicException When missing some required parameter
      */
     public function signup(array $options)
@@ -81,7 +80,7 @@ class UserMailer extends Mailer
             'appName' => $appName
         ]);
 
-        $this->setTemplate('BEdita/Core.signup')
+        return $this->setTemplate('BEdita/Core.signup')
             ->setLayout('BEdita/Core.default')
             ->setEmailFormat('both')
             ->setTo($user->email)
