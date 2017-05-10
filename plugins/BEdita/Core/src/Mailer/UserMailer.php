@@ -51,6 +51,7 @@ class UserMailer extends Mailer
      *
      * @param array $options Email options
      * @return void
+     * @throws \LogicException When missing some required parameter
      */
     public function signup(array $options)
     {
