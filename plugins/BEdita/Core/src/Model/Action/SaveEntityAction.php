@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Action;
 use Cake\Log\LogTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\Utility\Hash;
 
 /**
  * Command to save an entity.
@@ -47,8 +48,8 @@ class SaveEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $entityOptions = !empty($data['entityOptions']) ? (array)$data['entityOptions'] : [];
-        $saveOptions = !empty($data['saveOptions']) ? (array)$data['saveOptions'] : [];
+        $entityOptions = (array)Hash::get($data, 'entityOptions');
+        $saveOptions = (array)Hash::get($data, 'saveOptions');
         $entity = $this->Table->patchEntity($data['entity'], $data['data'], $entityOptions);
         $success = $this->Table->save($entity, $saveOptions);
 
