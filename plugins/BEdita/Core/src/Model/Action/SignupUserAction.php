@@ -117,18 +117,24 @@ class SignupUserAction extends BaseAction
      * @param array $context The validation context
      * @return bool
      */
-    public function isValidUrl($value, $context)
+    public function isValidUrl($value, array $context = [])
     {
+        // check for a valid scheme (https://, myapp://,...)
         $regex = '/(?<scheme>^[a-z][a-z0-9+\-.]*:\/\/).*/';
         if (!preg_match($regex, $value, $matches)) {
             return false;
         }
 
+        // if scheme is not an URL protocol then it's a custom url (myapp://) => ok
         if (!preg_match('/^(https?|ftps?|sftp|file|news|gopher:\/\/)/', $matches['scheme'])) {
             return true;
         }
 
-        $provider = $context['providers']['default'];
+        if (!empty($context['providers']['default'])) {
+            $provider = $context['providers']['default'];
+        } else {
+            $provider = (new Validator())->getProvider('default');
+        }
 
         return $provider->url($value, true, $context);
     }

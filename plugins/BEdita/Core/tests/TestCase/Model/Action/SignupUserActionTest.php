@@ -172,4 +172,19 @@ class SignupUserActionTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Test `isValidUrl()` not with validation (without context)
+     *
+     * @return void
+     */
+    public function testIsValidUrlWithoutContext()
+    {
+        $action = new SignupUserAction();
+        $result = $action->isValidUrl('https://example.com');
+        $this->assertTrue($result);
+
+        $result = $action->isValidUrl('https://examplecom');
+        $this->assertFalse($result);
+    }
 }
