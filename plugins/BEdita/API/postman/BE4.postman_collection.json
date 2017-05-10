@@ -1443,7 +1443,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johannadoe\",\n            \"password\": \"j0h4nn4d0e\",\n            \"email\": \"johannadoe@nowhere.xx\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johannadoe\",\n            \"password\": \"j0h4nn4d0e\",\n            \"email\": \"johannadoe@nowhere.xx\"\n        },\n        \"meta\": {\n            \"activation_url\": \"http://myactivationsys.xx?dum=my\",\n            \"redirect_url\": \"app://xx?dum=my\"\n        }\n    }\n}"
 						},
 						"description": "Create new User"
 					},
