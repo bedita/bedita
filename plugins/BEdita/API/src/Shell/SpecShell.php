@@ -109,7 +109,11 @@ class SpecShell extends Shell
                 );
             }
         }
-        $be4Yaml = Yaml::dump($be4Spec);
+        $be4Yaml = Yaml::dump($be4Spec, 2, 4, Yaml::DUMP_OBJECT_AS_MAP); // with Symfony 3.3: Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE (https://github.com/symfony/symfony/issues/15781#issuecomment-300200486)
+        // future patch: use Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE (as in following line) and remove str_replace of Bearer {}
+        // $be4Yaml = Yaml::dump($yaml, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+        $be4Yaml = str_replace("Bearer: {  }", "Bearer: [ ]", $be4Yaml);
+
         file_put_contents($yamlFile, $be4Yaml);
 
         $this->info('Yaml file updated ' . $yamlFile);
