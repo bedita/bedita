@@ -1401,6 +1401,48 @@
 						"description": "Remove a user's role"
 					},
 					"response": []
+				},
+				{
+					"name": "Signup user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"try {",
+									"    tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/signup",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johannadoe\",\n            \"password\": \"j0h4nn4d0e\",\n            \"email\": \"johannadoe@nowhere.xx\"\n        },\n        \"meta\": {\n            \"activation_url\": \"http://myactivationsys.xx?dum=my\",\n            \"redirect_url\": \"app://xx?dum=my\"\n        }\n    }\n}"
+						},
+						"description": "Create new User"
+					},
+					"response": []
 				}
 			]
 		},

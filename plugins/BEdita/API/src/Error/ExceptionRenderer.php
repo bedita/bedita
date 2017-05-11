@@ -18,6 +18,7 @@ use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Plugin;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Network\Request;
+use Cake\Utility\Hash;
 
 /**
  * Exception renderer.
@@ -114,19 +115,12 @@ class ExceptionRenderer extends CakeExceptionRenderer
         if (is_string($d)) {
             return $d;
         }
+
         $res = '';
         if (is_array($d)) {
-            foreach ($d as $errDetail) {
-                if (is_array($errDetail)) {
-                    foreach ($errDetail as $item => $desc) {
-                        $res .= " '$item' : ";
-                        if (is_array($desc)) {
-                            foreach ($desc as $cause => $w) {
-                                $res .= " [$cause] $w";
-                            }
-                        }
-                    }
-                }
+            $d = Hash::flatten($d);
+            foreach ($d as $item => $errDetail) {
+                $res .= "[$item]: $errDetail. ";
             }
         }
 
