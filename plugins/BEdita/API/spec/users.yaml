@@ -9,6 +9,29 @@ basePath: /
 schemes:
   - https
 paths:
+  /signup:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - users
+      summary: Signup user
+      description: User signup
+      parameters:
+        - in: body
+          name: body
+          description: User data
+          required: true
+          schema:
+            $ref: '#/definitions/SignupUserParam'
+      responses:
+        '202':
+          description: Successful operation
+        '400':
+          description: Invalid data supplied
+        '405':
+          description: Method Not Allowed
+
   /users:
     get:
       security:
@@ -291,6 +314,32 @@ paths:
           description: Successful operation
 
 definitions:
+  SignupUserParam:
+    properties:
+      data:
+        required: [ "type", "attributes" ]
+        properties:
+          type:
+            type: string
+            enum: ['users']
+          attributes:
+            $ref: '#/definitions/SignupUser'
+          meta:
+            $ref: '#/definitions/SignupMeta'
+  SignupMeta:
+    properties:
+      activation_url:
+        type: string
+      redirect_url:
+        type: string
+  SignupUser:
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      email:
+        type: string
   RelationshipUser:
     properties:
       users:
