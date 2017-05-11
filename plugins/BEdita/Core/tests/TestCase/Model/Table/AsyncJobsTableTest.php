@@ -225,8 +225,10 @@ class AsyncJobsTableTest extends TestCase
                 'key' => 'value',
             ],
         ];
+        ksort($expected);
 
         $actual = $this->AsyncJobs->find('pending')->find('list')->toArray();
+        ksort($actual);
 
         static::assertSame($expected, $actual);
     }
