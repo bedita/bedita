@@ -50,6 +50,9 @@ class GeometryBehavior extends Behavior
     /**
      * Get database expression to find distance between two points on a spheroid.
      *
+     * Points are expressed as pairs of floats, where the first number is the latitude,
+     * and the latter is the longitude.
+     *
      * @param string|float[] $point1 First point. Can be either a field name or a pair of floats.
      * @param string|float[] $point2 Second point. Can be either a field name or a pair of floats.
      * @return \Cake\Database\Expression\FunctionExpression
@@ -73,8 +76,16 @@ class GeometryBehavior extends Behavior
     /**
      * Parse coordinates.
      *
+     * Value **MUST** be either:
+     *  - a string containing two decimal numbers separated by a comma (`,`) or a space (` `), or
+     *  - an array containing two decimal numbers
+     *
+     * The two decimal numbers are interpreted as latitude and longitude, in this order.
+     * Latitude **MUST** be in the range [-90, 90], longitude in range [-180, 180]. Please note that,
+     * while many systems restrict longitude range to (-180, 180], here -180 is an accepted value.
+     *
      * @param mixed $point Coordinates.
-     * @return float[]
+     * @return float[] Latitude, longitude.
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into coords.
      */
     public static function parseCoordinates($point)
@@ -102,8 +113,7 @@ class GeometryBehavior extends Behavior
     /**
      * Check if current DB supports geo operations.
      *
-     * @return void
-     * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if GIS SQL functions are not available.
+     * @return bool
      */
     public function checkGeoSupport()
     {
@@ -122,24 +132,28 @@ class GeometryBehavior extends Behavior
             }
         }
 
-        if ($this->hasGeoSupport !== true) {
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'operation not supported on current database',
-            ]);
-        }
+        return $this->hasGeoSupport;
     }
 
     /**
      * Find objects by geo coordinates.
      *
-     * Create a query to filter objects using geo data: location objects are
-     * ordered by distance, from the nearest to the farthest using a center geo point.
+     * Modify a query to filter objects using geo data: location objects are ordered by distance,
+     * from the nearest to the farthest from a center, optionally filtering those farther than a radius.
+     * Results will contain a `distance` computed field, expressing distance from that Location to the
+     * supplied center (or `from`, if present).
+     *
+     * **All distances are expressed in _meters_.**
      *
      * Accepted options are:
-     *   - 'center' with point coordinates, latitude and longitude
-     *   - 'from' with point coordinates, latitude and longitude
-     *   - 'radius' with positive decimal number
+     *   - 'center' (_required_) with point coordinates, latitude and longitude
+     *   - 'from' (_optional_, defaults to `center`) with point coordinates, latitude and longitude
+     *   - 'radius' (_optional_, if omitted results are not filtered) with positive decimal number
+     *
+     * The three options are to be interpreted as follows:
+     *
+     * > Find all bus stops close to the Coliseum (`center`) within a range of 2km (`radius`),
+     * > refering how far these location are from Vatican City (`from`).
      *
      * ### Examples
      *
@@ -149,7 +163,7 @@ class GeometryBehavior extends Behavior
      * $table->find('geo', ['center' => [44.4944183, 11.3464055]]);
      *
      * // Find location objects within a radius of 10 kilometers from the given range.
-     * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'radius' => 10]);
+     * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'radius' => 10000]);
      *
      * // Find location objects that are close to a center, but compute distances from another center.
      * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'from' => [11.3464055, 44.4944183]]);
@@ -158,7 +172,8 @@ class GeometryBehavior extends Behavior
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable geo localization conditions.
      * @return \Cake\ORM\Query
-     * @throws \BEdita\Core\Exception\BadFilterException
+     * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into
+     *      valid coordinates, or if GIS SQL functions are not available.
      */
     public function findGeo(Query $query, array $options)
     {
@@ -167,7 +182,12 @@ class GeometryBehavior extends Behavior
         $radius = filter_var(Hash::get($options, 'radius'), FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]);
         $field = $this->getTable()->aliasField($this->getConfig('field'));
 
-        $this->checkGeoSupport();
+        if (!$this->checkGeoSupport()) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'operation not supported on current database',
+            ]);
+        }
 
         return $query
             ->select(['distance' => $this->getDistanceExpression($field, $distanceCenter)])
