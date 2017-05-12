@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Shell;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Utility\Text;
 
 /**
  * {@see \BEdita\Core\Shell\JobsShell} Test Case
@@ -90,7 +91,7 @@ class JobsShellTest extends ShellTestCase
      */
     public function testRunInvalid()
     {
-        $uuid = 'gustavo';
+        $uuid = Text::uuid(); // This UUID hopefully does not exist. :)
         ServiceRegistry::set('example', $this->getMockService());
 
         $result = $this->invoke(['jobs', 'run', $uuid]);
