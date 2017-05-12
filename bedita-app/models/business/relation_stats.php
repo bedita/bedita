@@ -219,9 +219,11 @@ class RelationStats extends BEAppModel
      */
     private function objectTypesRelatedNames() {
         $result = array();
-        $objectTypeIds = Configure::read('objectTypes.related.id');
-        foreach ($objectTypeIds as $objectTypeId) {
-            $result[] = Configure::read('objectTypes.'.$objectTypeId.'.name');
+        $objectTypes = Configure::read('objectTypes');
+        foreach ($objectTypes as $key => $data) {
+            if (is_int($key)) {
+                $result[] = $data['name'];
+            }
         }
         sort($result);
         return $result;
