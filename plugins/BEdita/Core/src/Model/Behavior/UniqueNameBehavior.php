@@ -34,7 +34,22 @@ use Cake\Utility\Text;
 class UniqueNameBehavior extends Behavior
 {
     /**
+     * Max regenerate iterations to avoid duplicates.
+     *
+     * @var int
+     */
+    const UNAME_MAX_REGENERATE = 10;
+
+    /**
      * Default configuration.
+     *
+     * Possible keys are:
+     *  - 'sourceField' field value to use for unique name creation
+     *  - 'prefix' constant prefix to use
+     *  - 'replacement' character replacement for space
+     *  - 'separator' seaparator of `hash` suffix
+     *  - 'hashlength' `hash` suffix length
+     *  - 'generator' callable function for unique name generation, if set all other keys are ignored
      *
      * @var array
      */
@@ -43,12 +58,14 @@ class UniqueNameBehavior extends Behavior
         'prefix' => '',
         'replacement' => '-',
         'separator' => '_',
-        'hashlength' => 6
+        'hashlength' => 6,
+        'generator' => null,
     ];
 
     /**
      * Setup unique name of a BEdita object $entity if a new entity is created
-     * Unique name is built using a friendly url `slug` version of a `sourceField` (default 'title')
+     * If no custom generator is used unique name is built using a friendly
+     * url `slug` version of a `sourceField` (default 'title')
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
@@ -59,8 +76,10 @@ class UniqueNameBehavior extends Behavior
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         }
-        while ($this->uniqueNameExists($uname, $entity->get('id'))) {
-            $uname = $this->generateUniqueName($entity, [], true);
+        $count = 0;
+        while ($this->uniqueNameExists($uname, $entity->get('id')
+            && ($count++ < self::UNAME_MAX_REGENERATE))) {
+            $uname = $this->generateUniqueName($entity, true);
         }
 
         $entity->set('uname', $uname);
@@ -69,22 +88,27 @@ class UniqueNameBehavior extends Behavior
     /**
      * Generate unique name string from $config parameters.
      * If $regenerate parameter is true, random hash is added to uname string.
+     * A 'callable' item is called if set in config('generator') instead of generateUniqueName(...)
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @param array $cfg parameters to create unique name
      * @param bool $regenerate if true it adds hash string to uname
+     * @param array $cfg Optional config parameters to override defaults
      * @return string uname
      */
-    public function generateUniqueName(EntityInterface $entity, array $cfg = [], $regenerate = false)
+    public function generateUniqueName(EntityInterface $entity, $regenerate = false, array $cfg = [])
     {
-        $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->getConfig('sourceField');
-        $fieldValue = $entity->get($field);
+        $config = array_merge($this->getConfig(), $cfg);
+        $generator = $config['generator'];
+        if (is_callable($generator)) {
+            return $generator($entity, $regenerate);
+        }
+        $fieldValue = $entity->get($config['sourceField']);
         if (empty($fieldValue)) {
             $fieldValue = (string)$entity->get('type');
             $regenerate = true;
         }
 
-        return $this->uniqueNameFromValue($fieldValue, $cfg, $regenerate);
+        return $this->uniqueNameFromValue($fieldValue, $regenerate);
     }
 
     /**
@@ -92,11 +116,11 @@ class UniqueNameBehavior extends Behavior
      * If $regenerate parameter is true, random hash is added to uname string.
      *
      * @param string $value String to use in unique name creation
-     * @param array $cfg parameters to create unique name
      * @param bool $regenerate if true it adds hash string to uname
+     * @param array $cfg parameters to create unique name
      * @return string uname
      */
-    public function uniqueNameFromValue($value, array $cfg = [], $regenerate = false)
+    public function uniqueNameFromValue($value, $regenerate = false, array $cfg = [])
     {
         $config = array_merge($this->getConfig(), $cfg);
         $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
