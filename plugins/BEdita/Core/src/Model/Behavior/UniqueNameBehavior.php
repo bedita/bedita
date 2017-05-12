@@ -77,8 +77,8 @@ class UniqueNameBehavior extends Behavior
             $uname = $this->generateUniqueName($entity);
         }
         $count = 0;
-        while ($this->uniqueNameExists($uname, $entity->get('id')
-            && ($count++ < self::UNAME_MAX_REGENERATE))) {
+        while ($this->uniqueNameExists($uname, $entity->get('id'))
+            && ($count++ < self::UNAME_MAX_REGENERATE)) {
             $uname = $this->generateUniqueName($entity, true);
         }
 
