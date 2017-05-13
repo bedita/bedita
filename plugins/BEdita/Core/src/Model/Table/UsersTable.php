@@ -20,6 +20,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\Validation\Validator;
 
 /**
  * Users Model
