@@ -12,7 +12,7 @@
  */
 
 namespace BEdita\Core\Model\Table;
-		  
+
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use Cake\Database\Expression\QueryExpression;
