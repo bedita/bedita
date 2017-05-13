@@ -23,7 +23,7 @@ Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
 ## Prerequisites
 
  * PHP 7 (recommended) or PHP 5.6
- * MySQL 5.7 (recommended) or MySQL 5.6, Postgres 9.5/9.6
+ * MySQL 5.7 (recommended) or MySQL 5.6, Postgres 9.5/9.6 or SQLite 3
  * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 
@@ -31,24 +31,17 @@ Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
 
 For a detailed setup overview see [Setup Documentation](http://bedita.readthedocs.io/en/4-cactus/setup.html)
 
-Quick setup in four steps.
+Quick setup in three steps.
 
-1. Clone repository
-
- ```bash
- $ git clone -b 4-cactus https://github.com/bedita/bedita.git
- ```
-
-2. Run composer install
+1. Create project via composer
 
  ```bash
- $ cd bedita
- $ composer install
+ $ composer create-project -s dev bedita/bedita
  ```
 
-3. Create an empty MySQL database
+2. Create an empty database either MySQL or PostgresSQL. Do nothing for SQLite.
 
-4. Run shell script to initialize the database and create first admin user
+3. Change to the newly created folder and run this script to initialize the database and create first admin user:
 
  ```bash
  $ bin/cake bedita setup
@@ -58,13 +51,11 @@ See [Web Server setup](http://bedita.readthedocs.io/en/4-cactus/setup.html#web-s
 to configure a virtualhost in your webserver.
 To see first [`/home` endpoint](http://bedita.readthedocs.io/en/4-cactus/endpoints/home.html) response you may point the browser to `http://your-vhost/home`
 
-Otherwise, only for development or test setups, you can take advantage of PHP builtin server
-with this simple command:
+Otherwise, only for development or test setups, you can take advantage of PHP builtin server with this simple command:
 
  ```bash
  $ bin/cake server
  ```
-
  and see `/home` endpoint response pointing to `http://localhost:8765/home`
 
 ## Documentation

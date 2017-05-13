@@ -9,8 +9,33 @@ basePath: /
 schemes:
   - https
 paths:
+  /signup:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - users
+      summary: Signup user
+      description: User signup
+      parameters:
+        - in: body
+          name: body
+          description: User data
+          required: true
+          schema:
+            $ref: '#/definitions/SignupUserParam'
+      responses:
+        '202':
+          description: Successful operation
+        '400':
+          description: Invalid data supplied
+        '405':
+          description: Method Not Allowed
+
   /users:
     get:
+      security:
+        - Bearer: []
       description: Returns users data
       summary: Retrieve a list of users
       tags:
@@ -48,6 +73,8 @@ paths:
                 $ref: '#/definitions/MetaPagination'
 
     post:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Create user
@@ -86,6 +113,8 @@ paths:
 
   '/users/{id}':
     get:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Get user by user id
@@ -122,6 +151,8 @@ paths:
           description: User not found
 
     patch:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Modify user
@@ -166,6 +197,8 @@ paths:
           description: Conflict - IDs don't match
 
     delete:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Remove user by user id
@@ -187,6 +220,8 @@ paths:
 
   '/users/{id}/roles':
     get:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Get roles by user id
@@ -228,6 +263,8 @@ paths:
 
   '/users/{id}/relationships/roles':
     post:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Add user role by user id
@@ -251,6 +288,8 @@ paths:
         '200':
           description: Successful operation
     delete:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Remove user role by user id
@@ -275,6 +314,32 @@ paths:
           description: Successful operation
 
 definitions:
+  SignupUserParam:
+    properties:
+      data:
+        required: [ "type", "attributes" ]
+        properties:
+          type:
+            type: string
+            enum: ['users']
+          attributes:
+            $ref: '#/definitions/SignupUser'
+          meta:
+            $ref: '#/definitions/SignupMeta'
+  SignupMeta:
+    properties:
+      activation_url:
+        type: string
+      redirect_url:
+        type: string
+  SignupUser:
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      email:
+        type: string
   RelationshipUser:
     properties:
       users:

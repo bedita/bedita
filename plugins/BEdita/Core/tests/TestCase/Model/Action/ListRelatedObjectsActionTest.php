@@ -119,7 +119,7 @@ class ListRelatedObjectsActionTest extends TestCase
                     [
                         'id' => 8,
                         'type' => 'locations',
-                        'coords' => 'POINT(44.4944183 11.3464055)',
+                        'coords' => 'POINT(11.3464055 44.4944183)',
                         'address' => 'Piazza di Porta Ravegnana',
                         'locality' => 'Bologna',
                         'postal_code' => '40126',

@@ -36,6 +36,18 @@ use Cake\ORM\Table;
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
  *
+ * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
+ *
  * @since 4.0.0
  */
 class ObjectsTable extends Table
@@ -56,7 +68,7 @@ class ObjectsTable extends Table
         parent::initialize($config);
 
         $this->setTable('objects');
-        $this->setEntityClass('BEdita\Core\Model\Entity\ObjectEntity');
+        $this->setEntityClass(ObjectEntity::class);
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
 
@@ -91,6 +103,14 @@ class ObjectsTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.UniqueName');
+
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+            ],
+        ]);
     }
 
     /**

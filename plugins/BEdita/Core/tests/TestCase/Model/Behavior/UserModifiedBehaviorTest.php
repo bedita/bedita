@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -20,7 +21,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
  *
- * @covers \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @coversDefaultClass \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class UserModifiedBehaviorTest extends TestCase
 {
@@ -40,27 +41,195 @@ class UserModifiedBehaviorTest extends TestCase
     ];
 
     /**
-     * testUserFields method
+     * Table object instance.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected $Objects;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+        $this->Objects = TableRegistry::get('Objects');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
+
+    /**
+     * Test behavior initialization process.
      *
      * @return void
+     *
+     * @covers ::initialize()
      */
-    public function testUserFields()
+    public function testInitialize()
     {
-        $Users = TableRegistry::get('Users');
+        $events = [
+            'MyCustomEvent' => [
+                'field_one' => 'always',
+                'field_two' => 'new',
+                'field_three' => 'existing',
+            ],
+        ];
 
-        $user = $Users->newEntity();
-        $data['username'] = 'testusername';
-        $user->created_by = LoggedUser::id() + 1;
-        $Users->patchEntity($user, $data);
-        $Users->setupUserFields($user);
+        $behavior = $this->Objects->behaviors()->get('UserModified');
+        $behavior->initialize(compact('events'));
 
-        $this->assertEquals($user['created_by'], LoggedUser::id());
+        $config = $behavior->getConfig();
 
-        $user = $Users->get(1);
-        $user->modified_by = LoggedUser::id() + 1;
-        $Users->patchEntity($user, $data);
-        $Users->setupUserFields($user);
+        static::assertArraySubset(compact('events'), $config);
+    }
 
-        $this->assertEquals($user['modified_by'], LoggedUser::id());
+    /**
+     * Test setting a custom user ID.
+     *
+     * @return void
+     *
+     * @covers ::userId()
+     */
+    public function testUserId()
+    {
+        $behavior = $this->Objects->behaviors()->get('UserModified');
+
+        static::assertAttributeSame(null, 'userId', $behavior);
+        static::assertSame(LoggedUser::id(), $this->Objects->userId());
+        static::assertAttributeSame(LoggedUser::id(), 'userId', $behavior);
+
+        static::assertSame(99, $this->Objects->userId(99));
+        static::assertSame(99, $this->Objects->userId());
+        static::assertAttributeSame(99, 'userId', $behavior);
+    }
+
+    /**
+     * Test implemented events.
+     *
+     * @return void
+     *
+     * @covers ::implementedEvents()
+     */
+    public function testImplementedEvents()
+    {
+        $expected = [
+            'Model.beforeSave' => 'handleEvent',
+        ];
+
+        $behavior = $this->Objects->behaviors()->get('UserModified');
+
+        static::assertEquals($expected, $behavior->implementedEvents());
+    }
+
+    /**
+     * Test handling of events.
+     *
+     * @return \BEdita\Core\Model\Entity\ObjectEntity
+     *
+     * @covers ::handleEvent()
+     * @covers ::updateField()
+     */
+    public function testHandleEvent()
+    {
+        $object = $this->Objects->newEntity();
+        $object->type = 'documents';
+        $object = $this->Objects->save($object);
+
+        static::assertSame(1, $object->created_by);
+        static::assertSame(1, $object->modified_by);
+
+        return $object;
+    }
+
+    /**
+     * Test handling of events.
+     *
+     * @return void
+     *
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid
+     * @covers ::handleEvent()
+     * @covers ::updateField()
+     */
+    public function testHandleEventFailure()
+    {
+        $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
+            'Model.beforeSave' => [
+                'modified_by' => 'sometimes',
+            ],
+        ], false);
+
+        $object = $this->Objects->newEntity();
+        $object->type = 'documents';
+        $this->Objects->save($object);
+    }
+
+    /**
+     * Test "touch" of an entity.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $object
+     * @return void
+     *
+     * @depends testHandleEvent
+     * @covers ::touchUser()
+     * @covers ::updateField()
+     */
+    public function testTouchUser(ObjectEntity $object)
+    {
+        $this->Objects->userId(99);
+        $this->Objects->touchUser($object);
+
+        static::assertSame(LoggedUser::id(), $object->created_by);
+        static::assertSame(99, $object->modified_by);
+    }
+
+    /**
+     * Test "touch" of an entity with an unknown event.
+     *
+     * @return void
+     *
+     * @depends testHandleEvent
+     * @covers ::touchUser()
+     * @covers ::updateField()
+     */
+    public function testTouchUserUnknownEvent()
+    {
+        $object = $this->Objects->get(1);
+
+        $this->Objects->userId(99);
+        $this->Objects->touchUser($object, 'UnknownEvent');
+
+        static::assertSame(1, $object->created_by);
+        static::assertSame(1, $object->modified_by);
+    }
+
+    /**
+     * Test "touch" of an entity when one of the fields is dirty already.
+     *
+     * @return void
+     *
+     * @depends testHandleEvent
+     * @covers ::touchUser()
+     * @covers ::updateField()
+     */
+    public function testTouchUserDirtyField()
+    {
+        $object = $this->Objects->newEntity();
+        $object->type = 'documents';
+        $object->created_by = 5;
+        $this->Objects->saveOrFail($object);
+
+        static::assertSame(5, $object->created_by);
+        static::assertSame(1, $object->modified_by);
     }
 }

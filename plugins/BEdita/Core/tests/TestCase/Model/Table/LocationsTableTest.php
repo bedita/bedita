@@ -1,19 +1,20 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\LocationsTable;
-use BEdita\Core\Utility\Database;
-use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-
-class TestLocations extends LocationsTable
-{
-    public function setGeoDbSupport($options)
-    {
-        $this->geoDbSupport = $options;
-    }
-}
 
 /**
  * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
@@ -31,13 +32,6 @@ class LocationsTableTest extends TestCase
     public $Locations;
 
     /**
-     * Fake db params for geo test
-     *
-     * @var array
-     */
-    public $fakeDbParams = null;
-
-    /**
      * Fixtures
      *
      * @var array
@@ -47,7 +41,7 @@ class LocationsTableTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.locations'
+        'plugin.BEdita/Core.locations',
     ];
 
     /**
@@ -58,6 +52,7 @@ class LocationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Locations = TableRegistry::get('Locations');
     }
 
@@ -70,109 +65,16 @@ class LocationsTableTest extends TestCase
     {
         unset($this->Locations);
 
-        if (!empty($this->fakeDbParams)) {
-            ConnectionManager::alias('test', 'default');
-            ConnectionManager::drop('__fake__');
-            $this->fakeDbParams = null;
-        }
-
         parent::tearDown();
     }
 
     /**
-     * Data provider for `testFindGeo` test case.
-     *
-     * @return array
-     */
-    public function findGeoProvider()
-    {
-        return [
-            'nearPoint' => [
-                [
-                    'center' => '44.4944876,11.3464721',
-                ],
-                1,
-            ],
-            'nearArray' => [
-                [
-                    'center' => [44.4944183, 11.3464055],
-                ],
-                1,
-            ],
-        ];
-    }
-
-    /**
-     * Test findGeo finder method.
-     *
-     * @param array $conditions Date conditions.
-     * @param array|false $numExpected Number of expected results.
-     * @return void
-     *
-     * @dataProvider findGeoProvider
-     * @covers ::findGeo()
-     */
-    public function testFindGeo($conditions, $numExpected)
-    {
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
-            static::expectException('BEdita\Core\Exception\BadFilterException');
-        }
-
-        $result = $this->Locations->find('geo', $conditions)->toArray();
-
-        static::assertEquals($numExpected, count($result));
-    }
-
-    /**
-     * Data provider for `testBadGeo` test case.
-     *
-     * @return array
-     */
-    public function badGeoProvider()
-    {
-        return [
-            'gustavo' => [
-                [
-                    'gustavo' => '44.4944876,11.3464721',
-                ],
-            ],
-            'notgeo' => [
-                [
-                    'center' => ['somewhere', 11.3464055],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Test finder error.
+     * Test initialization method.
      *
      * @return void
-     *
-     * @dataProvider badGeoProvider
-     * @covers ::findGeo()
      */
-    public function testBadGeo($conditions)
+    public function testInitialize()
     {
-        static::expectException('BEdita\Core\Exception\BadFilterException');
-
-        $result = $this->Locations->find('geo', $conditions)->toArray();
-    }
-
-    /**
-     * Test geo db support fail.
-     *
-     * @return void
-     *
-     * @covers ::checkGeoDbSupport()
-     */
-    public function testBadGeoDb()
-    {
-        $testLocations = new TestLocations();
-        $testLocations->setGeoDbSupport(['vendor' => 'unknowndb']);
-
-        static::expectException('BEdita\Core\Exception\BadFilterException');
-
-        $result = $testLocations->checkGeoDbSupport();
+        static::markTestIncomplete('Not yet implemented');
     }
 }

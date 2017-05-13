@@ -159,12 +159,6 @@ class BeditaShell extends Shell
     protected function initSchema()
     {
         $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            $this->err('Unable to use connection');
-
-            return false;
-        }
-
         $tables = $connection->getSchemaCollection()->listTables();
         if (empty($tables)) {
             $this->out('Database is empty');
@@ -288,7 +282,9 @@ class BeditaShell extends Shell
         }
 
         $this->info('A working database connection is needed in order to continue');
-        $this->info('Parameter needed are: host, port, database, username, password');
+        $this->info('Parameter needed are: driver, host, port, database, username, password');
+        $this->info('For MySQL and Postgres you need to provide all parameters, for SQLite database path is sufficient');
+
         $res = $this->in('Proceed with setup?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->info('Database setup stopped');
@@ -299,6 +295,7 @@ class BeditaShell extends Shell
         $this->dbConnectionUserInput();
         $dbParams = array_merge($dbParams, $this->userInputData);
         $dbParams['className'] = 'Cake\Database\Connection';
+        $dbParams['driver'] = 'Cake\Database\Driver\\' . $this->userInputData['driver'];
         ConnectionManager::setConfig(self::TEMP_SETUP_CFG, $dbParams);
         ConnectionManager::alias(self::TEMP_SETUP_CFG, 'default');
 
@@ -326,6 +323,11 @@ class BeditaShell extends Shell
             $content = str_replace($placeHolder, $this->userInputData[$name], $content);
         }
 
+        // update driver
+        $oldDriver = "'Cake\Database\Driver\Mysql'";
+        $newDriver = "'Cake\Database\Driver\\" . $this->userInputData['driver'] . "'";
+        $content = str_replace($oldDriver, $newDriver, $content);
+
         // TODO: better php check for $content?
         $eval = eval(str_replace('<?php', '', $content));
         if (empty($eval) || !is_array($eval)) {
@@ -349,9 +351,16 @@ class BeditaShell extends Shell
      */
     protected function dbConnectionUserInput()
     {
-        $this->userInputData = [];
+        $this->userInputData = ['host' => 'localhost', 'port' => '', 'database' => '', 'username' => '', 'password' => ''];
+        $this->userInputData['driver'] = $this->in('Driver?', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+        if ($this->userInputData['driver'] === 'Sqlite') {
+            $this->userInputData['database'] = $this->in('Sqlite database file path?', null, TMP . 'be4.sqlite');
+
+            return;
+        }
         $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
-        $this->userInputData['port'] = $this->in('Port?', null, '3306');
+        $defaultPort = ($this->userInputData['driver'] === 'Mysql') ? '3306' : '5432';
+        $this->userInputData['port'] = $this->in('Port?', null, $defaultPort);
         $this->userInputData['database'] = $this->in('Database?');
         $this->userInputData['username'] = $this->in('Username?');
         $this->userInputData['password'] = $this->in('Password?');

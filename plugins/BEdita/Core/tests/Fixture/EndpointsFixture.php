@@ -44,5 +44,13 @@ class EndpointsFixture extends TestFixture
             'enabled' => 1,
             'object_type_id' => null
         ],
+        [
+            'name' => 'disabled',
+            'description' => '/disabled endpoint',
+            'created' => '2017-05-03 07:12:26',
+            'modified' => '2017-05-03 07:12:26',
+            'enabled' => 0,
+            'object_type_id' => null
+        ],
     ];
 }

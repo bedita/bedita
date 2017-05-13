@@ -14,8 +14,10 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\AuthProvider;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Entity\AuthProvider} Test Case
@@ -38,6 +40,7 @@ class AuthProviderTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.auth_providers',
     ];
 
@@ -80,7 +83,69 @@ class AuthProviderTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(1, $authProvider->id);
-        $this->assertEquals('patched_name', $authProvider->name);
+        static::assertEquals(1, $authProvider->id);
+        static::assertEquals('patched_name', $authProvider->name);
+    }
+
+    /**
+     * Test getter for `slug` property.
+     *
+     * @return void
+     *
+     * @covers ::_getSlug()
+     */
+    public function testGetSlug()
+    {
+        $authProvider = $this->AuthProviders->get(2);
+
+        static::assertSame('uuid', $authProvider->slug);
+    }
+
+    /**
+     * Data provider for `testGetRoles` test case.
+     *
+     * @return array
+     */
+    public function getRolesProvider()
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+            ],
+            'found' => [
+                [
+                    1 => 'first role',
+                ],
+                [
+                    'first role',
+                    'this role does not exist',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test getter of roles to be associated to users authenticated via auth provider.
+     *
+     * @param array $expected Expected result.
+     * @param array $configuration Initial configuration.
+     * @return void
+     *
+     * @covers ::getRoles()
+     * @dataProvider getRolesProvider()
+     */
+    public function testGetRoles(array $expected, array $configuration)
+    {
+        Configure::write('Roles.BEdita/API.Uuid', $configuration);
+        $authProvider = $this->AuthProviders->get(2);
+
+        $roles = Hash::combine(
+            $authProvider->getRoles(),
+            '{n}.id',
+            '{n}.name'
+        );
+
+        static::assertEquals($expected, $roles);
     }
 }

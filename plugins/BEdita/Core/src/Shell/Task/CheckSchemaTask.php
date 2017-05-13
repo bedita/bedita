@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -186,6 +186,19 @@ class CheckSchemaTask extends Shell
                     compact('table', 'allColumns')
                 );
                 $allColumns[$column] = $table;
+
+                //  previous 4-cactus version
+//                $errorMsg = $this->checkSymbol($column);
+//                if ($column === $table) {
+//                    $errorMsg[] = 'same name as table';
+//                }
+//                if (!in_array($column, ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params', 'label', 'priority']) && substr($column, -3) !== '_id') {
+//                    if (array_key_exists($column, $allColumns)) {
+//                        $errorMsg[] = sprintf('already defined in "%s"', $allColumns[$column]);
+//                    }
+//                    $allColumns[$column] = $table;
+//                }
+//                $errors['column'][$column]['naming'] = $errorMsg;
             }
 
             foreach ($schema->indexes() as $index) {

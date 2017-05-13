@@ -61,6 +61,22 @@ class ProfilesTable extends Table
             'sourceField' => 'title',
             'prefix' => 'profile-'
         ]);
+
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'name' => 10,
+                'surname' => 10,
+                'email' => 7,
+                'company_name' => 10,
+                'street_address' => 1,
+                'city' => 2,
+                'country' => 2,
+                'state_name' => 2,
+            ],
+        ]);
     }
 
     /**
