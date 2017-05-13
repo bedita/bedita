@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -41,6 +42,11 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = UsersValidator::class;
 
     /**
      * {@inheritDoc}
@@ -77,38 +83,6 @@ class UsersTable extends Table
         $this->addBehavior('BEdita/Core.Relations');
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
-
-            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('username', 'create')
-            ->notEmpty('username')
-
-            ->allowEmpty('password_hash')
-
-            ->boolean('blocked')
-            ->allowEmpty('blocked')
-
-            ->dateTime('last_login')
-            ->allowEmpty('last_login')
-
-            ->dateTime('last_login_err')
-            ->allowEmpty('last_login_err')
-
-            ->naturalNumber('num_login_err')
-            ->allowEmpty('num_login_err');
-
-        return $validator;
     }
 
     /**

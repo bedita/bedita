@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\LocationsValidator;
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\Validation\Validator;
 
 /**
  * Locations Model
@@ -29,6 +29,10 @@ use Cake\Validation\Validator;
  */
 class LocationsTable extends Table
 {
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = LocationsValidator::class;
 
     /**
      * {@inheritDoc}
@@ -62,37 +66,5 @@ class LocationsTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.Geometry');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->allowEmpty('coords');
-
-        $validator
-            ->allowEmpty('address');
-
-        $validator
-            ->allowEmpty('locality');
-
-        $validator
-            ->allowEmpty('postal_code');
-
-        $validator
-            ->allowEmpty('country_name');
-
-        $validator
-            ->allowEmpty('region');
-
-        return $validator;
     }
 }
