@@ -29,6 +29,7 @@ class HomeControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::objectTypesEndpoints()
      * @covers ::checkAuthorization()
+     * @covers ::unloggedAuthorized()
      */
     public function testIndex()
     {
@@ -39,6 +40,21 @@ class HomeControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'resources' => [
+                    '/auth' => [
+                        'href' => 'http://api.example.com/auth',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Auth',
+                            ]
+                        ],
+                    ],
                     '/documents' => [
                         'href' => 'http://api.example.com/documents',
                         'hints' => [
@@ -178,7 +194,7 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/status',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET'
                             ],
                             'formats' => [
                                 'application/json',
@@ -186,6 +202,21 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Status',
+                            ]
+                        ],
+                    ],
+                    '/signup' => [
+                        'href' => 'http://api.example.com/signup',
+                        'hints' => [
+                            'allow' => [
+                                'POST'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Signup',
                             ]
                         ],
                     ],
@@ -227,6 +258,9 @@ class HomeControllerTest extends IntegrationTestCase
 
         $resetExpect = Hash::remove($expected, 'meta.resources.{*}.hints.allow');
         $resetExpect = Hash::insert($resetExpect, 'meta.resources.{*}.hints.allow', ['GET']);
+        $resetExpect = Hash::insert($resetExpect, 'meta.resources./auth.hints.allow', ['POST']);
+        $resetExpect = Hash::insert($resetExpect, 'meta.resources./signup.hints.allow', ['POST']);
+
         $this->assertEquals($resetExpect, $result);
     }
 }

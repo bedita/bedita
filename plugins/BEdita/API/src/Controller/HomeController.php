@@ -16,6 +16,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Zend\Diactoros\Uri;
 
@@ -28,6 +29,46 @@ class HomeController extends AppController
 {
 
     /**
+     * Default endpoints with supported methods
+     * 'ALL' means 'GET', 'POST', 'PATCH' and 'DELETE' are supported
+     *
+     * @var array
+     */
+    protected $defaultEndpoints = [
+        '/auth' => ['GET', 'POST'],
+        '/object_types' => 'ALL',
+        '/objects' => 'ALL',
+        '/roles' => 'ALL',
+        '/signup' => ['POST'],
+        '/status' => ['GET'],
+        '/trash' => 'ALL',
+    ];
+
+    /**
+     * Default allowed methods for unlogged users
+     * '/*' means: all other endpoints
+     *
+     * @var array
+     */
+    protected $defaultAllowUnlogged = [
+        '/auth' => ['POST'],
+        '/signup' => ['POST'],
+        '/status' => ['GET'],
+        '/*' => ['GET'],
+    ];
+
+    /**
+     * Default blocked methods for unlogged users
+     * '/*' means: all other endpoints
+     *
+     * @var array
+     */
+    protected $defaultBlockUnlogged = [
+        '/auth' => ['GET'],
+        '/*' => ['POST', 'PATCH', 'DELETE'],
+    ];
+
+    /**
      * List API available endpoints
      *
      * @return void
@@ -38,11 +79,13 @@ class HomeController extends AppController
 
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/roles', '/object_types', '/status', '/trash'];
-        $endPoints = array_unique(array_merge($this->objectTypesEndpoints(), $endPoints));
-        foreach ($endPoints as $e) {
+        $endPoints = array_merge($this->objectTypesEndpoints(), $this->defaultEndpoints);
+        foreach ($endPoints as $e => $methods) {
+            if ($methods === 'ALL') {
+                $methods = ['GET', 'POST', 'PATCH', 'DELETE'];
+            }
             $allow = [];
-            foreach (['GET', 'POST', 'PATCH', 'DELETE'] as $method) {
+            foreach ($methods as $method) {
                 if ($this->checkAuthorization($e, $method)) {
                     $allow[] = $method;
                 }
@@ -76,7 +119,7 @@ class HomeController extends AppController
         $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'name'])->toArray();
         $endPoints = [];
         foreach ($allTypes as $t) {
-            $endPoints[] = '/' . $t;
+            $endPoints['/' . $t] = 'ALL';
         }
 
         return $endPoints;
@@ -91,14 +134,34 @@ class HomeController extends AppController
      */
     protected function checkAuthorization($endpoint, $method)
     {
-        if ($method !== 'GET' && empty(LoggedUser::getUser())) {
+        if (empty(LoggedUser::getUser()) && !$this->unloggedAuthorized($endpoint, $method)) {
             return false;
         }
+
         $environment = ['REQUEST_METHOD' => $method];
         $uri = new Uri($endpoint);
         $request = new ServerRequest(compact('environment', 'uri'));
         $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
 
         return $authorize->authorize(LoggedUser::getUser(), $request);
+    }
+
+    /**
+     * Default unlogged use authorization on endpoint, without checking permissions
+     *
+     * @param string $endpoint Endpoint URI
+     * @param string $method HTTP method
+     * @return bool True on granted authorization, false otherwise
+     */
+    protected function unloggedAuthorized($endpoint, $method)
+    {
+        $defaultAllow = Hash::get($this->defaultAllowUnlogged, $endpoint, $this->defaultAllowUnlogged['/*']);
+        if (in_array($method, $defaultAllow)) {
+            return true;
+        }
+
+        $defaultBlock = Hash::get($this->defaultBlockUnlogged, $endpoint, $this->defaultBlockUnlogged['/*']);
+
+        return !in_array($method, $defaultBlock);
     }
 }
