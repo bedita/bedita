@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,9 +12,12 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
+use Zend\Diactoros\Uri;
 
 /**
  * Controller for `/home` endpoint.
@@ -38,18 +41,22 @@ class HomeController extends AppController
         $endPoints = ['/objects', '/roles', '/object_types', '/status', '/trash'];
         $endPoints = array_unique(array_merge($this->objectTypesEndpoints(), $endPoints));
         foreach ($endPoints as $e) {
-            $randomColor = substr(md5($e . 'color'), 0, 6);
+            $allow = [];
+            foreach (['GET', 'POST', 'PATCH', 'DELETE'] as $method) {
+                if ($this->checkAuthorization($e, $method)) {
+                    $allow[] = $method;
+                }
+            }
             $resources[$e] = [
                 'href' => $baseUrl . $e,
                 'hints' => [
-                    'allow' => ['GET', 'POST', 'PATCH', 'DELETE'],
+                    'allow' => $allow,
                     'formats' => [
                         'application/json',
                         'application/vnd.api+json',
                     ],
                     'display' => [
                         'label' => Inflector::camelize(substr($e, 1)),
-                        'color' => '#' . $randomColor
                     ]
                 ],
             ];
@@ -73,5 +80,25 @@ class HomeController extends AppController
         }
 
         return $endPoints;
+    }
+
+    /**
+     * Check Authorization on endpoint
+     *
+     * @param string $endpoint Endpoint URI
+     * @param string $method HTTP method
+     * @return bool True on granted authorization, false otherwise
+     */
+    protected function checkAuthorization($endpoint, $method)
+    {
+        if ($method !== 'GET' && empty(LoggedUser::getUser())) {
+            return false;
+        }
+        $environment = ['REQUEST_METHOD' => $method];
+        $uri = new Uri($endpoint);
+        $request = new ServerRequest(compact('environment', 'uri'));
+        $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        return $authorize->authorize(LoggedUser::getUser(), $request);
     }
 }
