@@ -37,10 +37,6 @@ class TableLocator extends CakeLocator
      */
     protected function _getClassName($alias, array $options = [])
     {
-        if (empty($options['className'])) {
-            $options['className'] = Inflector::camelize($alias);
-        }
-
         $className = App::className($options['className'], 'Model/Table', 'Table');
         if ($className !== false) {
             return $className;
@@ -58,9 +54,7 @@ class TableLocator extends CakeLocator
             $objectType = $objectTypes->get($alias);
             $options['className'] = $objectType->table;
         } catch (\Exception $e) {
-            if (!($e instanceof RecordNotFoundException)) {
-                $this->log($e, 'warning');
-            }
+            $this->log($e->getMessage(), 'warning');
         }
 
         return App::className($options['className'], 'Model/Table', 'Table');

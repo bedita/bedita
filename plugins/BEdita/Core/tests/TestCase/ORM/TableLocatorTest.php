@@ -17,7 +17,7 @@ use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\ORM\Locator\TableLocator
+ * @coversDefaultClass \BEdita\Core\ORM\Locator\TableLocator
  */
 class TableLocatorTest extends TestCase
 {
@@ -90,6 +90,7 @@ class TableLocatorTest extends TestCase
      * @return void
      *
      * @dataProvider getClassNameProvider()
+     * @covers ::_getClassName()
      */
     public function testGetClassName($expected, $alias, array $options = [])
     {

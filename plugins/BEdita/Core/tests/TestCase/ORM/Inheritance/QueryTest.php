@@ -219,6 +219,7 @@ class QueryTest extends TestCase
      * @dataProvider aliasFieldProvider
      * @covers ::fixAliasField()
      * @covers ::extractField()
+     * @covers ::aliasChecker()
      */
     public function testFixAliasField($expected, $field)
     {
