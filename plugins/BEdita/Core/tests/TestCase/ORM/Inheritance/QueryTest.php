@@ -355,6 +355,17 @@ class QueryTest extends TestCase
     }
 
     /**
+     * testExecute
+     *
+     * @covers ::_execute()
+     */
+    public function testExecute()
+    {
+        $felines = $this->fakeFelines->find()->toArray();
+        $this->assertEquals(1, count($felines));
+    }
+
+    /**
      * testAll
      *
      * This test create a useless and maybe not valid SQL query but it is intended
