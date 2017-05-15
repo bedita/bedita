@@ -13,7 +13,6 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Error\ExceptionRenderer;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -148,7 +147,7 @@ class AppController extends Controller
     /**
      * Action to display HTML layout.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\NotFoundException
      */
     protected function html()
