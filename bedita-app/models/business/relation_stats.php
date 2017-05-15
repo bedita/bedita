@@ -132,6 +132,20 @@ class RelationStats extends BEAppModel
     }
 
     /**
+     * Return ObjectRelation records by relation $relationName
+     *
+     * @param string $relationName relation name
+     * @return array ObjectRelation relations
+     */
+    public function getObjectRelationsByName($relationName) {
+        return ClassRegistry::init('ObjectRelation')->find('all', array(
+            'conditions' => array(
+                'switch' => $relationName
+            )
+        ));
+    }
+
+    /**
      * Return ObjectRelation count by $relationName relation.
      * If $objectTypesFilter is specified, return count by object_type_id in $objectTypesFilter.
      *

@@ -64,13 +64,17 @@ class RelationRepair extends BEAppModel
         if (!empty($relationData['inverse']) && ($relationData['inverse'] != $relationName) ) {
             $relationInverse = $relationData['inverse'];
         }
-        // 1. get distinct object_relation id, object_id by switch = '$relationName' with object type left ok
-        $leftObjectTypes = $relationStats->objectTypesIdsForObjectNames($relationData, 'left');
-        $rightObjectTypes = $relationStats->objectTypesIdsForObjectNames($relationData, 'right');
-        $objRels = $relationStats->getObjectRelationsByNameAndObjectTypes($relationName, $leftObjectTypes, $rightObjectTypes);
-        if (empty($objRels) && $relationInverse!=null) {
-            $objRels = $relationStats->getObjectRelationsByNameAndObjectTypes($relationInverse, $rightObjectTypes, $leftObjectTypes);;
+        // get distinct object_relation id, object_id by switch = '$relationName'
+        $objRels = $relationStats->getObjectRelationsByName($relationName);
+        $fixed = $this->fixObjectRelations($relationName, $relationInverse, $objRels);
+        if ($relationInverse!=null) {
+            $objRels = $relationStats->getObjectRelationsByName($relationInverse);
+            $fixed+= $this->fixObjectRelations($relationInverse, $relationName, $objRels);
         }
+        return $fixed;
+    }
+
+    private function fixObjectRelations($relationName, $relationInverse, $objRels) {
         $fixed = 0;
         $objRel = ClassRegistry::init('ObjectRelation');
         foreach ($objRels as $relRecord) {
