@@ -53,19 +53,7 @@ class HomeController extends AppController
     protected $defaultAllowUnlogged = [
         '/auth' => ['POST'],
         '/signup' => ['POST'],
-        '/status' => ['GET'],
         '/*' => ['GET'],
-    ];
-
-    /**
-     * Default blocked methods for unlogged users
-     * '/*' means: all other endpoints
-     *
-     * @var array
-     */
-    protected $defaultBlockUnlogged = [
-        '/auth' => ['GET'],
-        '/*' => ['POST', 'PATCH', 'DELETE'],
     ];
 
     /**
@@ -147,7 +135,7 @@ class HomeController extends AppController
     }
 
     /**
-     * Default unlogged use authorization on endpoint, without checking permissions
+     * Default unlogged authorization on endpoint method, without permissions check
      *
      * @param string $endpoint Endpoint URI
      * @param string $method HTTP method
@@ -156,12 +144,7 @@ class HomeController extends AppController
     protected function unloggedAuthorized($endpoint, $method)
     {
         $defaultAllow = Hash::get($this->defaultAllowUnlogged, $endpoint, $this->defaultAllowUnlogged['/*']);
-        if (in_array($method, $defaultAllow)) {
-            return true;
-        }
 
-        $defaultBlock = Hash::get($this->defaultBlockUnlogged, $endpoint, $this->defaultBlockUnlogged['/*']);
-
-        return !in_array($method, $defaultBlock);
+        return in_array($method, $defaultAllow);
     }
 }
