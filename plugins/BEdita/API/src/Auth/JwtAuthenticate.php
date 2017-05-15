@@ -14,7 +14,6 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
-use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\UnauthorizedException;
@@ -111,7 +110,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * Get user record based on info available in JWT.
      *
      * @param \Cake\Http\ServerRequest $request The request object.
-     * @param \Cake\Network\Response $response Response object.
+     * @param \Cake\Http\Response $response Response object.
      * @return array|false User record array or false on failure.
      */
     public function authenticate(ServerRequest $request, Response $response)
@@ -205,10 +204,6 @@ class JwtAuthenticate extends BaseAuthenticate
 
             return (array)$payload;
         } catch (\Exception $e) {
-            if (Configure::read('debug')) {
-                throw $e;
-            }
-
             $this->error = $e;
         }
 
