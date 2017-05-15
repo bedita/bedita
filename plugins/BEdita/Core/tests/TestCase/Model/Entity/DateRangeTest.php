@@ -443,6 +443,12 @@ class DateRangeTest extends TestCase
 
         $result = DateRange::normalize($dateRanges);
 
+        foreach ($dateRanges as $dateRange) {
+            foreach ($result as $item) {
+                static::assertNotSame($dateRange, $item);
+            }
+        }
+
         $expected = json_decode(json_encode($expected), true);
         $result = json_decode(json_encode($result), true);
 
