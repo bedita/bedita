@@ -309,6 +309,29 @@ class JsonApiComponentTest extends TestCase
     }
 
     /**
+     * Test `parseInput()` method with custom JSON
+     *
+     * @return void
+     *
+     * @covers ::parseInput()
+     */
+    public function testCustomParseInput()
+    {
+        $config = [
+            'contentType' => 'json',
+            'customJsonInput' => true,
+        ];
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
+
+        $input = '{"data":{"key1":"value1","key2":"value2"}}';
+        $result = $component->parseInput($input);
+
+        $expected = ['data' => ['key1' => 'value1', 'key2' => 'value2']];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Data provider for `testAllowedResourceTypes` test case.
      *
      * @return array

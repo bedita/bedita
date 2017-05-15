@@ -52,6 +52,7 @@ class JsonApiComponent extends Component
         'checkMediaType' => true,
         'resourceTypes' => null,
         'clientGeneratedIds' => false,
+        'customJsonInput' => false,
     ];
 
     /**
@@ -83,6 +84,10 @@ class JsonApiComponent extends Component
             $json = json_decode($json, true);
             if (json_last_error() || !is_array($json) || !isset($json['data'])) {
                 throw new \InvalidArgumentException('Invalid JSON');
+            }
+            // avoid JSON-API parsing on application/json with 'customJsonInput' true
+            if ($this->config('contentType') === 'json' && $this->config('customJsonInput')) {
+                return $json;
             }
 
             return JsonApi::parseData((array)$json['data']);
