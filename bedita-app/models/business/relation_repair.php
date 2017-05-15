@@ -91,6 +91,7 @@ class RelationRepair extends BEAppModel
                         )
                     ));
                     if (!empty($relationRightWrong)) { // wrong inverse? then delete before insert...
+                        $this->log('Deleting wrong inverse for ' . $relationName . ' object_id: ' . $rc['object_id'] . ' id: ' . $rc['id'] , 'debug');
                         if (!$objRel->deleteRelation($rc['object_id'], $rc['id'], $relationName, false)) {
                             throw new BEditaException('error deleting relation for id ' . $rc['id']);
                         }
@@ -101,6 +102,7 @@ class RelationRepair extends BEAppModel
                             $priority = $relationRightWrong['ObjectRelation']['priority'];
                         }
                     }
+                    $this->log('Creating relation record for ' . $relationInverse . ' object_id: ' . $rc['object_id'] . ' id: ' . $rc['id'] , 'debug');
                     if (!$objRel->createRelation($rc['object_id'], $rc['id'], $relationInverse, $priority, false, $params)) {
                         throw new BEditaException('error creating relation for id ' . $rc['id']);
                     }
