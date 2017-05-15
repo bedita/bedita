@@ -37,14 +37,6 @@ use Cake\ORM\Table;
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
  *
- * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
