@@ -64,14 +64,21 @@ class RelationRepair extends BEAppModel
         if (!empty($relationData['inverse']) && ($relationData['inverse'] != $relationName) ) {
             $relationInverse = $relationData['inverse'];
         }
-        // get distinct object_relation id, object_id by switch = '$relationName'
-        $objRels = $relationStats->getObjectRelationsByName($relationName);
-        $fixed = $this->fixObjectRelations($relationName, $relationInverse, $objRels);
-        if ($relationInverse!=null) {
-            $objRels = $relationStats->getObjectRelationsByName($relationInverse);
-            $fixed+= $this->fixObjectRelations($relationInverse, $relationName, $objRels);
+        if (empty($relationData) || empty($relationInverse)) {
+            return 0;
         }
-        return $fixed;
+        $countAllTypesL = $relationStats->getObjectRelationsCount($relationName);
+        $countAllTypesR = $relationStats->getObjectRelationsCount($relationInverse);
+        if ($countAllTypesL === $countAllTypesR) {
+            return 0;
+        }
+        if ($countAllTypesL > $countAllTypesR) { // => fix right relations
+            $objRels = $relationStats->getObjectRelationsByName($relationName);
+            return $this->fixObjectRelations($relationName, $relationInverse, $objRels);
+        }
+        // => fix left relations
+        $objRels = $relationStats->getObjectRelationsByName($relationInverse);
+        return $this->fixObjectRelations($relationInverse, $relationName, $objRels);
     }
 
     private function fixObjectRelations($relationName, $relationInverse, $objRels) {
@@ -82,30 +89,32 @@ class RelationRepair extends BEAppModel
             if ($relationInverse == null || $objRel->relationExists($rc['object_id'], $rc['id'], $relationInverse)) {
                 continue; // relation seems ok
             } else {
-                $priority = (!empty($rc['priority'])) ? $rc['priority'] : 1;
-                $params = (!empty($rc['params'])) ? $rc['params'] : array();
-                $relationRightWrong = $objRel->find('first', array(
-                    'conditions' => array(
-                        'id' => $rc['object_id'],
-                        'object_id' => $rc['id'],
-                        'switch' => $relationName
-                    )
-                ));
-                if (!empty($relationRightWrong)) { // wrong inverse? then delete before insert...
-                    if (!$objRel->deleteRelation($rc['object_id'], $rc['id'], $relationName, false)) {
-                        throw new BEditaException('error deleting relation for id ' . $rc['id']);
+                if ($rc['object_id'] != $rc['id']) {
+                    $priority = (!empty($rc['priority'])) ? $rc['priority'] : 1;
+                    $params = (!empty($rc['params'])) ? $rc['params'] : array();
+                    $relationRightWrong = $objRel->find('first', array(
+                        'conditions' => array(
+                            'id' => $rc['object_id'],
+                            'object_id' => $rc['id'],
+                            'switch' => $relationName
+                        )
+                    ));
+                    if (!empty($relationRightWrong)) { // wrong inverse? then delete before insert...
+                        if (!$objRel->deleteRelation($rc['object_id'], $rc['id'], $relationName, false)) {
+                            throw new BEditaException('error deleting relation for id ' . $rc['id']);
+                        }
+                        if (!empty($relationRightWrong['ObjectRelation']['params'])) {
+                            $params = $relationRightWrong['ObjectRelation']['params'];
+                        }
+                        if (!empty($relationRightWrong['ObjectRelation']['priority'])) {
+                            $priority = $relationRightWrong['ObjectRelation']['priority'];
+                        }
                     }
-                    if (!empty($relationRightWrong['ObjectRelation']['params'])) {
-                        $params = $relationRightWrong['ObjectRelation']['params'];
+                    if (!$objRel->createRelation($rc['object_id'], $rc['id'], $relationInverse, $priority, false, $params)) {
+                        throw new BEditaException('error creating relation for id ' . $rc['id']);
                     }
-                    if (!empty($relationRightWrong['ObjectRelation']['priority'])) {
-                        $priority = $relationRightWrong['ObjectRelation']['priority'];
-                    }
+                    $fixed++;
                 }
-                if (!$objRel->createRelation($rc['object_id'], $rc['id'], $relationInverse, $priority, false, $params)) {
-                    throw new BEditaException('error creating relation for id ' . $rc['id']);
-                }
-                $fixed++;
             }
         }
         return $fixed;

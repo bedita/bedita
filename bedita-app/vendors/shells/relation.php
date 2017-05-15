@@ -58,10 +58,16 @@ class RelationShell extends BeditaBaseShell {
             $result = $relationCheck->checkRelation($relationName, $messages);
             $this->outMessages($messages);
             if ($result === false) {
-                $ans = $this->in('Do you want to try to fix relation data? [y/n]');
-                if ($ans === 'y') {
-                    $repaired = $relationRepair->repair($relationName);
-                    $this->out($repaired . ' ObjectRelation records repaired');
+                if (!empty($relationData['inverse'])) {
+                    $countAllTypesL = $relationStats->getObjectRelationsCount($relationName);
+                    $countAllTypesR = $relationStats->getObjectRelationsCount($relationData['inverse']);
+                    if ($countAllTypesL != $countAllTypesR) {
+                        $ans = $this->in('Do you want to try to fix relation data? [y/n]');
+                        if ($ans === 'y') {
+                            $repaired = $relationRepair->repair($relationName);
+                            $this->out($repaired . ' ObjectRelation records repaired');
+                        }
+                    }
                 }
             }
             $this->out("-----------------------------------------------------------------");
