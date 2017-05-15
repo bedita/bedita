@@ -72,7 +72,7 @@ class RelationRepair extends BEAppModel
         return $this->fixObjectRelations($relationInverse, $relationName, $objRels);
     }
 
-    private function fixObjectRelations($relationName, $relationInverse, $objRels) {
+    private function fixObjectRelations($relationName, $relationInverse, $objRels, $checkInverse = false) {
         $fixed = 0;
         $objRel = ClassRegistry::init('ObjectRelation');
         foreach ($objRels as $relRecord) {
@@ -83,23 +83,25 @@ class RelationRepair extends BEAppModel
                 if ($rc['object_id'] != $rc['id']) {
                     $priority = (!empty($rc['priority'])) ? $rc['priority'] : 1;
                     $params = (!empty($rc['params'])) ? $rc['params'] : array();
-                    $relationRightWrong = $objRel->find('first', array(
-                        'conditions' => array(
-                            'id' => $rc['object_id'],
-                            'object_id' => $rc['id'],
-                            'switch' => $relationName
-                        )
-                    ));
-                    if (!empty($relationRightWrong)) { // wrong inverse? then delete before insert...
-                        $this->log('Deleting wrong inverse for ' . $relationName . ' object_id: ' . $rc['object_id'] . ' id: ' . $rc['id'] , 'debug');
-                        if (!$objRel->deleteRelation($rc['object_id'], $rc['id'], $relationName, false)) {
-                            throw new BEditaException('error deleting relation for id ' . $rc['id']);
-                        }
-                        if (!empty($relationRightWrong['ObjectRelation']['params'])) {
-                            $params = $relationRightWrong['ObjectRelation']['params'];
-                        }
-                        if (!empty($relationRightWrong['ObjectRelation']['priority'])) {
-                            $priority = $relationRightWrong['ObjectRelation']['priority'];
+                    if ($checkInverse) {
+                        $relationRightWrong = $objRel->find('first', array(
+                            'conditions' => array(
+                                'id' => $rc['object_id'],
+                                'object_id' => $rc['id'],
+                                'switch' => $relationName
+                            )
+                        ));
+                        if (!empty($relationRightWrong)) { // wrong inverse? then delete before insert...
+                            $this->log('Deleting wrong inverse for ' . $relationName . ' object_id: ' . $rc['object_id'] . ' id: ' . $rc['id'] , 'debug');
+                            if (!$objRel->deleteRelation($rc['object_id'], $rc['id'], $relationName, false)) {
+                                throw new BEditaException('error deleting relation for id ' . $rc['id']);
+                            }
+                            if (!empty($relationRightWrong['ObjectRelation']['params'])) {
+                                $params = $relationRightWrong['ObjectRelation']['params'];
+                            }
+                            if (!empty($relationRightWrong['ObjectRelation']['priority'])) {
+                                $priority = $relationRightWrong['ObjectRelation']['priority'];
+                            }
                         }
                     }
                     $this->log('Creating relation record for ' . $relationInverse . ' object_id: ' . $rc['object_id'] . ' id: ' . $rc['id'] , 'debug');
