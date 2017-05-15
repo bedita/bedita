@@ -88,7 +88,15 @@ class RelationShell extends BeditaBaseShell {
             exit;
         }
         $this->out($relationStats->getDescription($relationName));
-        $repaired = ClassRegistry::init('RelationRepair')->repair($relationName);
+        $transaction = new TransactionComponent('default');
+        $repaired = 0;
+        try {
+            $transaction->begin();
+            $repaired = ClassRegistry::init('RelationRepair')->repair($relationName);
+            $transaction->commit();
+        } catch(Exception $e) {
+            $transaction->rollback();
+        }
         $this->out($repaired . ' ObjectRelation records repaired');
     }
 

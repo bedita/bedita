@@ -35,16 +35,7 @@ class RelationRepair extends BEAppModel
      * @return int number of ObjectRelation records repaired (-1 on error)
      */
     public function repair($relationName) {
-        $repaired = 0;
-        $transaction = new TransactionComponent('default');
-        try {
-            $transaction->begin();
-            $repaired = $this->repairRelation($relationName);
-            $transaction->commit();
-        } catch (Exception $e) {
-            $transaction->rollback();
-        }
-        return $repaired;
+        return $this->repairRelation($relationName);
     }
 
     /**
