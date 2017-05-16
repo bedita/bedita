@@ -40,6 +40,7 @@ class SpecShell extends Shell
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public function initialize()
     {

@@ -219,6 +219,7 @@ class QueryTest extends TestCase
      * @dataProvider aliasFieldProvider
      * @covers ::fixAliasField()
      * @covers ::extractField()
+     * @covers ::aliasChecker()
      */
     public function testFixAliasField($expected, $field)
     {
@@ -351,6 +352,17 @@ class QueryTest extends TestCase
             $query->fixExpression($identifierExpression);
             $this->assertEquals($expected, $identifierExpression->getIdentifier());
         }
+    }
+
+    /**
+     * testExecute
+     *
+     * @covers ::_execute()
+     */
+    public function testExecute()
+    {
+        $felines = $this->fakeFelines->find()->toArray();
+        $this->assertEquals(1, count($felines));
     }
 
     /**
