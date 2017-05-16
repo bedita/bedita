@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\HomeController
@@ -25,6 +27,9 @@ class HomeControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::objectTypesEndpoints()
+     * @covers ::checkAuthorization()
+     * @covers ::unloggedAuthorized()
      */
     public function testIndex()
     {
@@ -35,6 +40,21 @@ class HomeControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'resources' => [
+                    '/auth' => [
+                        'href' => 'http://api.example.com/auth',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Auth',
+                            ]
+                        ],
+                    ],
                     '/documents' => [
                         'href' => 'http://api.example.com/documents',
                         'hints' => [
@@ -47,7 +67,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Documents',
-                                'color' => '#852a36'
                             ]
                         ],
                     ],
@@ -63,7 +82,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Profiles',
-                                'color' => '#622635'
                             ]
                         ],
                     ],
@@ -79,7 +97,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Objects',
-                                'color' => '#6103c1'
                             ]
                         ],
                     ],
@@ -95,7 +112,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Users',
-                                'color' => '#032813'
                             ]
                         ],
                     ],
@@ -111,7 +127,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'News',
-                                'color' => '#63e1d8'
                             ]
                         ],
                     ],
@@ -127,7 +142,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Locations',
-                                'color' => '#cc324f'
                             ]
                         ],
                     ],
@@ -143,7 +157,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Events',
-                                'color' => '#44d1ab'
                             ]
                         ],
                     ],
@@ -159,7 +172,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Roles',
-                                'color' => '#7b2bac'
                             ]
                         ],
                     ],
@@ -175,7 +187,6 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'ObjectTypes',
-                                'color' => '#6b2d02'
                             ]
                         ],
                     ],
@@ -183,7 +194,7 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/status',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET'
                             ],
                             'formats' => [
                                 'application/json',
@@ -191,7 +202,21 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Status',
-                                'color' => '#88206a'
+                            ]
+                        ],
+                    ],
+                    '/signup' => [
+                        'href' => 'http://api.example.com/signup',
+                        'hints' => [
+                            'allow' => [
+                                'POST'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Signup',
                             ]
                         ],
                     ],
@@ -207,13 +232,14 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Trash',
-                                'color' => '#f45336'
                             ]
                         ],
                     ],
                 ],
             ],
         ];
+
+        LoggedUser::setUser(['id' => 1]);
 
         $this->configRequestHeaders();
         $this->get('/home');
@@ -222,5 +248,19 @@ class HomeControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
+
+        LoggedUser::resetUser();
+        $this->configRequestHeaders();
+        $this->get('/home');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $resetExpect = Hash::remove($expected, 'meta.resources.{*}.hints.allow');
+        $resetExpect = Hash::insert($resetExpect, 'meta.resources.{*}.hints.allow', ['GET']);
+        $resetExpect = Hash::insert($resetExpect, 'meta.resources./auth.hints.allow', ['POST']);
+        $resetExpect = Hash::insert($resetExpect, 'meta.resources./signup.hints.allow', ['POST']);
+
+        $this->assertEquals($resetExpect, $result);
     }
 }
