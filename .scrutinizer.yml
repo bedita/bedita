@@ -6,14 +6,8 @@ checks:
 
 filter:
   paths:
-    - 'config/*'
     - 'src/*'
-    - 'webroot/*'
-    - 'plugins/BEdita/API/config/*'
     - 'plugins/BEdita/API/src/*'
-    - 'plugins/BEdita/Auth/config/*'
-    - 'plugins/BEdita/Auth/src/*'
-    - 'plugins/BEdita/Core/config/*'
     - 'plugins/BEdita/Core/src/*'
   dependency_paths:
     - 'vendors/*'
