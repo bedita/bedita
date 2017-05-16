@@ -93,23 +93,15 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login not successful'));
         }
 
-        $fields = Configure::read('Security.jwt.user.fields') ?: ['id', 'roles', 'username'];
-        if (empty($fields['id'])) { // 'id' is required
-            $fields[] = 'id';
-        }
-        $roles = [];
-        if (in_array('roles', $fields)) {
-            foreach ($user['roles'] as $role) {
-                $roles[] = [
-                    'id' => $role['id'],
-                    'name' => $role['name'],
-                ];
-            }
+        $fields = ['id', 'username'];
+        foreach ($user['roles'] as $role) {
+            $roles[] = [
+                'id' => $role['id'],
+                'name' => $role['name'],
+            ];
         }
         $user = array_intersect_key($user, array_flip($fields));
-        if (!empty($roles)) {
-            $user['roles'] = $roles;
-        }
+        $user['roles'] = $roles;
 
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
