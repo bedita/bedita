@@ -12,6 +12,8 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
@@ -71,26 +73,24 @@ class TrashController extends AppController
      * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during restore.
+     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during restore.
      */
     public function restore($id)
     {
         $this->request->allowMethod('patch');
 
         if ($this->request->getData('id') != $id) {
-            throw new ConflictException('IDs don\' match');
+            throw new ConflictException('IDs don\'t match');
         }
 
         $trash = $this->Objects->get($id, [
             'conditions' => ['deleted' => 1]
         ]);
-        if (empty($trash)) {
-            throw new BadRequestException('Object ' . $id . ' not found in trash');
-        }
 
         $trash->deleted = false;
-        if (!$this->Objects->save($trash)) {
-            throw new BadRequestException('Could not restore object');
+        $action = new SaveEntityAction(['table' => $this->Objects]);
+        if (!$action(['entity' => $trash, 'data' => []])) {
+            throw new InternalErrorException('Unable to restore object');
         }
 
         return $this->response
@@ -98,31 +98,23 @@ class TrashController extends AppController
     }
 
     /**
-     * Delete object, remove from trashcan
+     * Delete object permanently, remove from trashcan
      *
      * @param int $id Object ID.
      * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during delete.
      */
     public function delete($id)
     {
         $this->request->allowMethod('delete');
 
-        $trash = $this->Objects->get($id);
-        if (empty($trash)) {
-            throw new BadRequestException('Object ' . $id . ' not found');
-        }
-
         $trash = $this->Objects->get($id, [
             'conditions' => ['deleted' => 1]
         ]);
-        if (empty($trash)) {
-            throw new BadRequestException('Object ' . $id . ' not found in trash');
-        }
 
-        if (!$this->Objects->delete($trash)) {
-            throw new InternalErrorException('Could not delete object');
+        $action = new DeleteObjectAction(['table' => $this->Objects]);
+        if (!$action(['entity' => $trash, 'hard' => true])) {
+            throw new InternalErrorException('Unable to remove object');
         }
 
         return $this->response
