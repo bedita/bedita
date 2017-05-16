@@ -93,6 +93,12 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login not successful'));
         }
 
+        $fields = Configure::read('Security.jwt.user.fields') ?: ['id', 'username'];
+        if (empty($fields['id'])) { // 'id' is required
+            $fields[] = 'id';
+        }
+        $user = array_intersect_key($user, array_flip($fields));
+
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
         $currentUrl = Router::reverse($this->request, true);
