@@ -37,6 +37,10 @@ class TableLocator extends CakeLocator
      */
     protected function _getClassName($alias, array $options = [])
     {
+        if (empty($options['className'])) {
+            $options['className'] = Inflector::camelize($alias);
+        }
+
         $className = App::className($options['className'], 'Model/Table', 'Table');
         if ($className !== false) {
             return $className;
