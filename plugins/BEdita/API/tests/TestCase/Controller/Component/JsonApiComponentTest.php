@@ -282,6 +282,10 @@ class JsonApiComponentTest extends TestCase
                 false,
                 '{"data":{"type":null,"attributes":{"key":"value"}}}',
             ],
+            'empty' => [
+                [],
+                '',
+            ],
         ];
     }
 
