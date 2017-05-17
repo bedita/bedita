@@ -30,11 +30,22 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testSuccessfulLogin()
     {
+        // test using 'Content-Type' => 'application/x-www-form-urlencoded'
         $this->configRequestHeaders('POST', [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+
+        // test using 'Content-Type' => 'application/json'
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/json',
+        ]);
+
+        $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'password1']));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -76,7 +87,7 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test login method with invalid credentials.
+     * Test login method with invalid credentials or wrong content type
      *
      * @return void
      *
@@ -84,11 +95,18 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testFailedLogin()
     {
-        $this->configRequestHeaders('POST');
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
 
         $this->assertResponseCode(401);
+
+        // using default 'application/vnd.api+json'
+        $this->configRequestHeaders('POST');
+
+        $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
+
+        $this->assertResponseCode(400);
     }
 
     /**
