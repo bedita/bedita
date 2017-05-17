@@ -322,13 +322,12 @@ class ExceptionRendererTest extends TestCase
         $this->assertArrayHasKey('error', $responseBody);
         $this->assertArrayHasKey('status', $responseBody['error']);
         $this->assertArrayHasKey('title', $responseBody['error']);
-        $this->assertArrayHasKey('meta', $responseBody['error']);
         $this->assertEquals(404, $responseBody['error']['status']);
         $this->assertEquals('test html', $responseBody['error']['title']);
-
         if (!$debug) {
-            $this->assertEmpty($responseBody['error']['meta']);
+            $this->assertArrayNotHasKey('meta', $responseBody['error']);
         } else {
+            $this->assertArrayHasKey('meta', $responseBody['error']);
             $this->assertNotEmpty($responseBody['error']['meta']);
             $this->assertArrayHasKey('trace', $responseBody['error']['meta']);
             $this->assertNotEmpty($responseBody['error']['meta']['trace']);
