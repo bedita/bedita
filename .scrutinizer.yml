@@ -1,9 +1,5 @@
 checks:
-  php:
-    custom_coding_standard:
-      git_repository: 'https://github.com/cakephp/cakephp-codesniffer'
-      ruleset_path: 'CakePHP/ruleset.xml'
-
+  php: true
 filter:
   paths:
     - 'src/*'
