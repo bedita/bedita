@@ -18,6 +18,7 @@ use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Routing\Router;
@@ -75,23 +76,23 @@ class JsonApiComponent extends Component
      * Input data parser for JSON API format.
      *
      * @param string $json JSON string.
-     * @return array
+     * @return array JSON API input data array
+     * @throws \Cake\Network\Exception\BadRequestException When the request is malformed
      */
     public function parseInput($json)
     {
         try {
             $json = json_decode($json, true);
             if (json_last_error() || !is_array($json) || !isset($json['data'])) {
-                throw new \InvalidArgumentException('Invalid JSON');
+                throw new BadRequestException(__d('bedita', 'Invalid JSON input'));
             }
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
-            if (Configure::read('debug') && !(empty($json))) {
-                throw $e;
-            }
-
-            return [];
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Bad JSON input'),
+                'detail' => $e->getMessage(),
+            ]);
         }
     }
 
