@@ -115,7 +115,7 @@ class UuidAuthenticate extends BaseAuthenticate
      * Obtain the token from request headers.
      *
      * @param \Cake\Http\ServerRequest $request Request object.
-     * @return bool|string
+     * @return false|string
      */
     public function getToken(ServerRequest $request)
     {
