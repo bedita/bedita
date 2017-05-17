@@ -38,6 +38,10 @@ class LoginController extends AppController
     {
         parent::initialize();
 
+        if ($this->request->contentType() === 'application/json') {
+            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        }
+
         if ($this->request->getParam('action') === 'login') {
             $authenticationComponents = [
                 AuthComponent::ALL => [
