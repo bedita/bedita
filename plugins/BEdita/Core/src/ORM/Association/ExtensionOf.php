@@ -51,6 +51,7 @@ class ExtensionOf extends BelongsTo
      * Add `Model.afterDelete` listener to work in a cascading delete scenario.
      * The `cascadeDelete()` used by CakePHP in fact would fail for constraint violation error
      * deleting first target table when the foreign key is in source table
+     * @param string $alias
      */
     public function __construct($alias, array $options = [])
     {

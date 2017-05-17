@@ -14,7 +14,6 @@
 namespace BEdita\Core\ORM\Locator;
 
 use Cake\Core\App;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\TableLocator as CakeLocator;
 use Cake\Utility\Inflector;
