@@ -81,6 +81,9 @@ class JsonApiComponent extends Component
      */
     public function parseInput($json)
     {
+        if (empty($json)) {
+            return [];
+        }
         try {
             $json = json_decode($json, true);
             if (json_last_error() || !is_array($json) || !isset($json['data'])) {
@@ -102,14 +105,16 @@ class JsonApiComponent extends Component
      * @param int $status HTTP error code.
      * @param string $title Brief description of error.
      * @param string $detail Long description of error
+     * @param string $code Specific error code
      * @param array|null $meta Additional metadata about error.
      * @return void
      */
-    public function error($status, $title, $detail, array $meta = null)
+    public function error($status, $title, $detail = null, $code = null, array $meta = null)
     {
         $controller = $this->getController();
 
         $status = (string)$status;
+        $code = (string)$code;
 
         $error = compact('status', 'title', 'detail', 'meta');
         $error = array_filter($error);
