@@ -141,7 +141,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
         }
 
         $errorAttributes = $error->getAttributes();
-        if (empty($errorAttributes['code'])) {
+        if (empty($errorAttributes['code']) || !is_scalar($errorAttributes['code'])) {
             return '';
         }
 
