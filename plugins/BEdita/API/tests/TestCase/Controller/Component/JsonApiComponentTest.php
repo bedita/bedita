@@ -275,7 +275,7 @@ class JsonApiComponentTest extends TestCase
                 '{"data":{"type":"customType","attributes":{"key":"value"}}}'
             ],
             'invalidJson' => [
-                [],
+                false,
                 '{"some", "invalid":"json"',
             ],
             'invalidJsonApi' => [
@@ -298,7 +298,7 @@ class JsonApiComponentTest extends TestCase
     public function testParseInput($expected, $input)
     {
         if ($expected === false) {
-            $this->expectException('\InvalidArgumentException');
+            $this->expectException('\Cake\Network\Exception\BadRequestException');
         }
 
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
