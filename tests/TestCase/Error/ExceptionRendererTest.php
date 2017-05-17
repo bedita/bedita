@@ -99,7 +99,17 @@ class ExceptionRendererTest extends TestCase
                 ],
                 'new title',
                 '[field.cause]: err detail. [nestedFields.field2.cause2]: err detail2. [nestedFields.field3.cause3]: err detail3. '
-            ]
+            ],
+            'code' => [
+                ['title' => 'err title', 'code' => 'err-code'],
+                'err title',
+                null,
+                'err-code',
+            ],
+            'badCode' => [
+                ['title' => 'err title', 'code' => ['err-code']],
+                'err title',
+            ],
         ];
     }
 
@@ -109,14 +119,16 @@ class ExceptionRendererTest extends TestCase
      * @param string $errorMessage Expected error message.
      * @param string $title Expected error title.
      * @param string $detail Additional details.
+     * @param string $code Error code.
      * @return void
      *
      * @dataProvider errDetailsProvider
      * @covers ::render()
      * @covers ::_message()
      * @covers ::errorDetail()
+     * @covers ::appErrorCode()
      */
-    public function testErrorDetails($errorMessage, $title, $detail = '')
+    public function testErrorDetails($errorMessage, $title, $detail = '', $code = '')
     {
         $renderer = new ExceptionRenderer(new NotFoundException($errorMessage));
         $renderer->controller->request->env('HTTP_ACCEPT', 'application/json');
@@ -126,6 +138,13 @@ class ExceptionRendererTest extends TestCase
         $this->assertEquals($title, $responseBody['error']['title']);
         if ($detail) {
             $this->assertEquals($detail, $responseBody['error']['detail']);
+        } else {
+            $this->assertArrayNotHasKey('detail', $responseBody['error']);
+        }
+        if ($code) {
+            $this->assertEquals($code, $responseBody['error']['code']);
+        } else {
+            $this->assertArrayNotHasKey('code', $responseBody['error']);
         }
     }
 
