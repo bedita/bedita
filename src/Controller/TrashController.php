@@ -14,7 +14,6 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 
