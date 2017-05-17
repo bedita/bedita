@@ -94,6 +94,7 @@ class LoginController extends AppController
         }
 
         $fields = ['id', 'username'];
+        $roles = [];
         foreach ($user['roles'] as $role) {
             $roles[] = [
                 'id' => $role['id'],
