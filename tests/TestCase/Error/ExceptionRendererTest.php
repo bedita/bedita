@@ -84,7 +84,7 @@ class ExceptionRendererTest extends TestCase
             'detailArray' => [
                 ['title' => 'new title', 'detail' => [['field' => ['cause' => 'err detail']]]],
                 'new title',
-                '[0.field.cause]: err detail. '
+                '[0.field.cause]: err detail '
             ],
             'detailArray2' => [
                 [
@@ -98,7 +98,7 @@ class ExceptionRendererTest extends TestCase
                     ]
                 ],
                 'new title',
-                '[field.cause]: err detail. [nestedFields.field2.cause2]: err detail2. [nestedFields.field3.cause3]: err detail3. '
+                '[field.cause]: err detail [nestedFields.field2.cause2]: err detail2 [nestedFields.field3.cause3]: err detail3 '
             ],
             'code' => [
                 ['title' => 'err title', 'code' => 'err-code'],
