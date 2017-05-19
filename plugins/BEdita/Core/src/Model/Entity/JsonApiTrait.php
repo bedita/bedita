@@ -102,7 +102,7 @@ trait JsonApiTrait
      * @param string $property Property name.
      * @return mixed
      */
-    abstract public function get($property);
+    abstract public function &get($property);
 
     /**
      * Getter for `id`.
