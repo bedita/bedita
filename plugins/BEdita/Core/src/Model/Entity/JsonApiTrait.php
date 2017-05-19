@@ -34,11 +34,25 @@ trait JsonApiTrait
 {
 
     /**
+     * Getter for entity's visible properties.
+     *
+     * @return string[]
+     */
+    abstract public function visibleProperties();
+
+    /**
      * Getter for entity's hidden properties.
      *
      * @return string[]
      */
     abstract public function getHidden();
+
+    /**
+     * Getter for entity's virtual properties.
+     *
+     * @return string[]
+     */
+    abstract public function getVirtual();
 
     /**
      * Getter for source model registry alias.
@@ -64,6 +78,31 @@ trait JsonApiTrait
      * @return bool
      */
     abstract public function isAccessible($property);
+
+    /**
+     * Extract properties from an entity.
+     *
+     * @param array $properties List of properties to extract
+     * @param bool $onlyDirty Return only dirty properties.
+     * @return array
+     */
+    abstract public function extract(array $properties, $onlyDirty = false);
+
+    /**
+     * Check if a property exists.
+     *
+     * @param string $property Property name.
+     * @return bool
+     */
+    abstract public function has($property);
+
+    /**
+     * Getter for a property.
+     *
+     * @param string $property Property name.
+     * @return mixed
+     */
+    abstract public function get($property);
 
     /**
      * Getter for `id`.
