@@ -797,9 +797,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 [
@@ -840,9 +842,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 2,
-                        'priority' => 2,
-                        'inv_priority' => 1,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
             ],
@@ -902,9 +906,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 [
@@ -928,9 +934,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 2,
-                        'inv_priority' => 1,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
             ],
@@ -1000,10 +1008,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1019,10 +1029,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
@@ -1065,10 +1077,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1084,10 +1098,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
@@ -1095,10 +1111,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
@@ -1129,9 +1147,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
             ],
         ];
@@ -1238,10 +1258,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1257,10 +1279,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
@@ -1321,18 +1345,22 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
             ],
             [
                 'id' => '3',
                 'type' => 'documents',
                 'meta' => [
-                    'priority' => 2,
-                    'inv_priority' => 1,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
                 ],
             ],
         ];
@@ -1605,9 +1633,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
@@ -1642,9 +1672,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 2,
-                        'priority' => 2,
-                        'inv_priority' => 1,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',

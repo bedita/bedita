@@ -114,6 +114,7 @@ trait JsonApiTrait
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
         $visible = $this->visibleProperties();
+        $virtual = $this->getVirtual();
 
         $properties = array_filter(
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
@@ -121,10 +122,23 @@ trait JsonApiTrait
                 return !$this->isAccessible($property);
             }
         );
+        $extraProperties = array_filter(
+            $properties,
+            function ($property) use ($table, $virtual) {
+                return !in_array($property, $virtual) && !$table->hasField($property);
+            }
+        );
 
-        $meta = $this->extract($properties);
-        if ($this->has('_joinData')) {
-            $meta += json_decode(json_encode($this->get('_joinData')), true);
+        $meta = $this->extract(array_diff($properties, $extraProperties));
+        if (!empty($extraProperties)) {
+            $meta['extra'] = $this->extract($extraProperties);
+        }
+        $joinData = $this->get('_joinData');
+        if ($joinData instanceof \JsonSerializable) {
+            $joinData = $joinData->jsonSerialize();
+            if (!empty($joinData)) {
+                $meta['relation'] = $joinData;
+            }
         }
 
         return $meta;

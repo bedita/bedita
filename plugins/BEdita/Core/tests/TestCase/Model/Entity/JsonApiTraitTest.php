@@ -323,6 +323,105 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
+     * Test getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     */
+    public function testGetMetaExtra()
+    {
+        $expected = [
+            'created',
+            'modified',
+            'unchangeable',
+            'extra',
+        ];
+        $expectedExtra = ['my_computed_field' => pi()];
+
+        $role = $this->Roles->get(1)
+            ->set('my_computed_field', pi())
+            ->jsonApiSerialize();
+
+        $meta = array_keys(Hash::get($role, 'meta', []));
+        $extra = Hash::get($role, 'meta.extra');
+
+        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertSame($expectedExtra, $extra);
+    }
+
+    /**
+     * Test getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     */
+    public function testGetMetaEmptyJoinData()
+    {
+        $expected = [
+            'blocked',
+            'created',
+            'created_by',
+            'last_login',
+            'last_login_err',
+            'locked',
+            'modified',
+            'modified_by',
+            'num_login_err',
+            'published',
+        ];
+
+        $user = $this->Roles->get(1, ['contain' => ['Users']])
+            ->users[0]
+            ->jsonApiSerialize();
+
+        $meta = array_keys(Hash::get($user, 'meta', []));
+
+        static::assertEquals($expected, $meta, '', 0, 10, true);
+    }
+
+    /**
+     * Test getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     */
+    public function testGetMetaJoinData()
+    {
+        $expected = [
+            'blocked',
+            'created',
+            'created_by',
+            'last_login',
+            'last_login_err',
+            'locked',
+            'modified',
+            'modified_by',
+            'num_login_err',
+            'published',
+            'relation',
+        ];
+        $expectedRelation = [
+            'id',
+            'role_id',
+            'user_id',
+        ];
+
+        $user = $this->Roles->get(1, ['contain' => ['Users']])
+            ->users[0];
+        $user->_joinData->setHidden([]);
+        $user = $user->jsonApiSerialize();
+
+        $meta = array_keys(Hash::get($user, 'meta', []));
+        $relation = array_keys(Hash::get($user, 'meta.relation', []));
+
+        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertEquals($expectedRelation, $relation, '', 0, 10, true);
+    }
+
+    /**
      * Data provider for `testJsonApiSerialize` test case.
      *
      * @return array
