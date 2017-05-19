@@ -93,6 +93,17 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login not successful'));
         }
 
+        $fields = ['id', 'username'];
+        $roles = [];
+        foreach ($user['roles'] as $role) {
+            $roles[] = [
+                'id' => $role['id'],
+                'name' => $role['name'],
+            ];
+        }
+        $user = array_intersect_key($user, array_flip($fields));
+        $user['roles'] = $roles;
+
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
         $currentUrl = Router::reverse($this->request, true);

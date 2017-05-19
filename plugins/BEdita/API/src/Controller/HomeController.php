@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,9 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Zend\Diactoros\Uri;
 
 /**
  * Controller for `/home` endpoint.
@@ -23,6 +27,34 @@ use Cake\Utility\Inflector;
  */
 class HomeController extends AppController
 {
+
+    /**
+     * Default endpoints with supported methods
+     * 'ALL' means 'GET', 'POST', 'PATCH' and 'DELETE' are supported
+     *
+     * @var array
+     */
+    protected $defaultEndpoints = [
+        '/auth' => ['GET', 'POST'],
+        '/object_types' => 'ALL',
+        '/objects' => 'ALL',
+        '/roles' => 'ALL',
+        '/signup' => ['POST'],
+        '/status' => ['GET'],
+        '/trash' => 'ALL',
+    ];
+
+    /**
+     * Default allowed methods for unlogged users
+     * '/*' means: all other endpoints
+     *
+     * @var array
+     */
+    protected $defaultAllowUnlogged = [
+        '/auth' => ['POST'],
+        '/signup' => ['POST'],
+        '/*' => ['GET'],
+    ];
 
     /**
      * List API available endpoints
@@ -35,21 +67,27 @@ class HomeController extends AppController
 
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/roles', '/object_types', '/status', '/trash'];
-        $endPoints = array_unique(array_merge($this->objectTypesEndpoints(), $endPoints));
-        foreach ($endPoints as $e) {
-            $randomColor = substr(md5($e . 'color'), 0, 6);
+        $endPoints = array_merge($this->objectTypesEndpoints(), $this->defaultEndpoints);
+        foreach ($endPoints as $e => $methods) {
+            if ($methods === 'ALL') {
+                $methods = ['GET', 'POST', 'PATCH', 'DELETE'];
+            }
+            $allow = [];
+            foreach ($methods as $method) {
+                if ($this->checkAuthorization($e, $method)) {
+                    $allow[] = $method;
+                }
+            }
             $resources[$e] = [
                 'href' => $baseUrl . $e,
                 'hints' => [
-                    'allow' => ['GET', 'POST', 'PATCH', 'DELETE'],
+                    'allow' => $allow,
                     'formats' => [
                         'application/json',
                         'application/vnd.api+json',
                     ],
                     'display' => [
                         'label' => Inflector::camelize(substr($e, 1)),
-                        'color' => '#' . $randomColor
                     ]
                 ],
             ];
@@ -69,9 +107,44 @@ class HomeController extends AppController
         $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'name'])->toArray();
         $endPoints = [];
         foreach ($allTypes as $t) {
-            $endPoints[] = '/' . $t;
+            $endPoints['/' . $t] = 'ALL';
         }
 
         return $endPoints;
+    }
+
+    /**
+     * Check Authorization on endpoint
+     *
+     * @param string $endpoint Endpoint URI
+     * @param string $method HTTP method
+     * @return bool True on granted authorization, false otherwise
+     */
+    protected function checkAuthorization($endpoint, $method)
+    {
+        if (empty(LoggedUser::getUser()) && !$this->unloggedAuthorized($endpoint, $method)) {
+            return false;
+        }
+
+        $environment = ['REQUEST_METHOD' => $method];
+        $uri = new Uri($endpoint);
+        $request = new ServerRequest(compact('environment', 'uri'));
+        $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        return $authorize->authorize(LoggedUser::getUser(), $request);
+    }
+
+    /**
+     * Default unlogged authorization on endpoint method, without permissions check
+     *
+     * @param string $endpoint Endpoint URI
+     * @param string $method HTTP method
+     * @return bool True on granted authorization, false otherwise
+     */
+    protected function unloggedAuthorized($endpoint, $method)
+    {
+        $defaultAllow = Hash::get($this->defaultAllowUnlogged, $endpoint, $this->defaultAllowUnlogged['/*']);
+
+        return in_array($method, $defaultAllow);
     }
 }

@@ -118,11 +118,11 @@ class DateRange extends Entity
 
         // Merge items.
         $result = [];
-        $last = array_shift($dateRanges);
+        $last = clone array_shift($dateRanges);
         while (($current = array_shift($dateRanges)) !== null) {
             if ($last->isBefore($current) && $last->end_date < $current->start_date) {
                 $result[] = $last;
-                $last = $current;
+                $last = clone $current;
 
                 continue;
             }
@@ -174,6 +174,21 @@ class DateRange extends Entity
      *
      * **Warning**: this method does **not** take `params` into account.
      *
+     * ### Example
+     *
+     * ```php
+     * $array1 = [new DateRange(['start_date' => new Time('2017-01-01 00:00:00'), 'end_date' => new Time('2017-01-31 12:59:59')])];
+     * $array2 = [new DateRange(['start_date' => new Time('2017-01-10 00:00:00'), 'end_date' => new Time('2017-01-19 12:59:59')])];
+     *
+     * $diff = DateRange::diff($array1, $array2);
+     *
+     * // $diff will now be equivalent to:
+     * $diff = [
+     *     new DateRange(['start_date' => new Time('2017-01-10 00:00:00'), 'end_date' => new Time('2017-01-10 00:00:00')]),
+     *     new DateRange(['start_date' => new Time('2017-01-19 12:59:59'), 'end_date' => new Time('2017-01-19 12:59:59')]),
+     * ];
+     * ```
+     *
      * @param \BEdita\Core\Model\Entity\DateRange[] $array1 First set of Date Ranges.
      * @param \BEdita\Core\Model\Entity\DateRange[] $array2 Second set of Date Ranges.
      * @return \BEdita\Core\Model\Entity\DateRange[]
@@ -193,7 +208,7 @@ class DateRange extends Entity
             $dateRange = clone $dateRange1;
 
             while (($dateRange2 = current($array2)) !== false) {
-                if ($dateRange->end_date === null && $dateRange2->end_date === null && $dateRange->start_date == $dateRange2->start_date) {
+                if ($dateRange->end_date === null && $dateRange2->end_date === null && $dateRange->start_date->eq($dateRange2->start_date)) {
                     // Unit sets match. Discard range.
                     $dateRange = null;
                     next($array2);
