@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "BE4",
-		"_postman_id": "0225261e-9e34-c6da-57fc-0587bc23f6a2",
+		"_postman_id": "88d8a406-338b-b294-9710-fb44d3139446",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -13,6 +13,166 @@
 			"item": [
 				{
 					"name": "Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schemaAuth = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"jwt\": {\"type\": \"string\"},",
+									"                \"renew\": {\"type\": \"string\"}",
+									"            },",
+									"            \"required\": [\"jwt\", \"renew\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"meta\"],",
+									"};",
+									"var schemaBase = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"resources\": {",
+									"                    \"type\": \"object\"",
+									"                }",
+									"            },",
+									"            \"required\": [\"resources\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"links\",\"meta\"]",
+									"};",
+									"var schemaFull = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"data\": {",
+									"            \"type\": \"array\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"]",
+									"        },",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"pagination\": {",
+									"                    \"type\": \"object\",",
+									"                    \"properties\": {",
+									"                        \"count\": {\"type\": \"number\"},",
+									"                        \"page\": {\"type\": \"number\"},",
+									"                        \"page_count\": {\"type\": \"number\"},",
+									"                        \"page_items\": {\"type\": \"number\"},",
+									"                        \"page_size\": {\"type\": \"number\"}",
+									"                    },",
+									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+									"                }",
+									"            },",
+									"            \"required\": [\"pagination\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"data\",\"links\",\"meta\"]",
+									"};",
+									"var schemaPatch = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"data\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"data\"],",
+									"};",
+									"postman.setEnvironmentVariable(\"schemaAuth\",schemaAuth);",
+									"postman.setEnvironmentVariable(\"schemaBase\",schemaBase);",
+									"postman.setEnvironmentVariable(\"schemaFull\",schemaFull);",
+									"postman.setEnvironmentVariable(\"schemaPatch\",schemaPatch);",
+									"var schema = postman.getEnvironmentVariable(\"schemaAuth\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    }",
+									"    postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/auth",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+						},
+						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth (form-data)",
 					"event": [
 						{
 							"listen": "test",
@@ -180,7 +340,7 @@
 								}
 							]
 						},
-						"description": "Perform authentication"
+						"description": "Authentication using form-data"
 					},
 					"response": []
 				}
@@ -231,7 +391,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "Home endpoint"
 					},
 					"response": []
@@ -1535,7 +1698,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL object"
 					},
 					"response": []
@@ -1688,7 +1854,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL role"
 					},
 					"response": []
@@ -1729,7 +1898,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL object"
 					},
 					"response": []
@@ -1820,7 +1992,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL object_type"
 					},
 					"response": []
@@ -1905,7 +2080,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": ""
 					},
 					"response": []
