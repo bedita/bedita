@@ -28,18 +28,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @covers ::login()
      */
-    public function testSuccessfulLogin()
+    public function testLoginOkJson()
     {
-        // test using 'Content-Type' => 'application/x-www-form-urlencoded'
-        $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ]);
-
-        $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
-
         // test using 'Content-Type' => 'application/json'
         $this->configRequestHeaders('POST', [
             'Content-Type' => 'application/json',
@@ -53,6 +43,28 @@ class LoginControllerTest extends IntegrationTestCase
         $lastLogin = TableRegistry::get('Users')->get(1)->get('last_login');
         $this->assertNotNull($lastLogin);
         $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
+
+        return $result['meta'];
+    }
+
+    /**
+     * Test login method.
+     *
+     * @return string A valid JWT.
+     *
+     * @covers ::login()
+     */
+    public function testLoginOkForm()
+    {
+        // test using 'Content-Type' => 'application/x-www-form-urlencoded'
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ]);
+
+        $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
 
         return $result['meta'];
     }
@@ -87,7 +99,7 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test login method with invalid credentials or wrong content type
+     * Test login method with invalid credentials
      *
      * @return void
      *
@@ -100,8 +112,18 @@ class LoginControllerTest extends IntegrationTestCase
         $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
 
         $this->assertResponseCode(401);
+    }
 
-        // using default 'application/vnd.api+json'
+    /**
+     * Test login method with wrong content type
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testWrongContentTypeLogin()
+    {
+        // using default 'application/vnd.api+json' - wrong content type here
         $this->configRequestHeaders('POST');
 
         $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
