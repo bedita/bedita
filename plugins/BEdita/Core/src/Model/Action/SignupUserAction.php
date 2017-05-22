@@ -19,7 +19,6 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\SocketException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -58,7 +57,7 @@ class SignupUserAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @throws \Cake\Netowrk\Exception\BadRequestException When validation of `$data['urlOptions']` fails
+     * @throws \Cake\Network\Exception\BadRequestException When validation of `$data['urlOptions']` fails
      */
     public function execute(array $data = [])
     {
@@ -71,7 +70,7 @@ class SignupUserAction extends BaseAction
             ]);
         }
 
-        return $this->Users->connection()->transactional(function () use ($data) {
+        return $this->Users->getConnection()->transactional(function () use ($data) {
             $user = $this->createUser($data['data']);
             $job = $this->createSignupJob($user);
             $this->sendMail($user, $job, $data['urlOptions']);
@@ -198,19 +197,13 @@ class SignupUserAction extends BaseAction
      */
     protected function sendMail(User $user, AsyncJob $job, array $urlOptions = [])
     {
-        try {
-            $options = [
-                'params' => [
-                    'userId' => $user->id,
-                    'activationUrl' => $this->getActivationUrl($job, $urlOptions),
-                ]
-            ];
-            $this->getMailer('BEdita/Core.User')->send('signup', [$options]);
-        } catch (SocketException $e) {
-            // @todo insert async job to retry sending email
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $options = [
+            'params' => [
+                'userId' => $user->id,
+                'activationUrl' => $this->getActivationUrl($job, $urlOptions),
+            ]
+        ];
+        $this->getMailer('BEdita/Core.User')->send('signup', [$options]);
     }
 
     /**

@@ -32,6 +32,20 @@ class AsyncJobsFixture extends TestFixture
             'completed' => null,
         ],
         [
+            // Pending with higher priority.
+            'uuid' => 'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76',
+            'service' => 'example2',
+            'priority' => 10,
+            'payload' => '{"key":"value"}',
+            'scheduled_from' => null,
+            'expires' => null,
+            'max_attempts' => 1,
+            'locked_until' => null,
+            'created' => '2017-04-28 19:29:31',
+            'modified' => '2017-04-28 19:29:31',
+            'completed' => null,
+        ],
+        [
             // Planned.
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'service' => 'example',

@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Job\JobService;
+use BEdita\Core\Job\ServiceRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -133,5 +135,37 @@ class AsyncJobTest extends TestCase
         $status = $entity->status;
 
         static::assertSame($expected, $status);
+    }
+
+    /**
+     * Test running a non-locked asynchronous job.
+     *
+     * @return void
+     *
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Only locked jobs can be run
+     * @covers ::run()
+     */
+    public function testRunNotLocked()
+    {
+        $this->AsyncJobs->get('1e2d1c66-c0bb-47d7-be5a-5bc92202333e')->run();
+    }
+
+    /**
+     * Test running an asynchronous job.
+     *
+     * @return void
+     *
+     * @covers ::run()
+     */
+    public function testRun()
+    {
+        $service = $this->getMockBuilder(JobService::class)->getMock();
+        $service->method('run')->will(static::returnValue(true));
+        ServiceRegistry::set('example', $service);
+
+        $result = $this->AsyncJobs->lock('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c')->run();
+
+        static::assertTrue($result);
     }
 }
