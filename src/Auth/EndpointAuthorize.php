@@ -36,16 +36,16 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * {@inheritDoc}
      *
-     * Whitelisted endpoints will be authorized without check permissions
-     * unless a specific permission is set on those endpoints.
      * If 'blockAnonymousUsers' is true no access will be granted
      * to unauthenticated users otherwise authorization check is performed
+     * If 'defaultAuthorized' is set current request is authorized
+     * unless a specific permission is set.
      */
     protected $_defaultConfig = [
         'blockAnonymousApps' => false,
         'blockAnonymousUsers' => true,
         'apiKeyHeaderName' => 'X-Api-Key',
-        'endpointWhitelist' => ['signup'],
+        'defaultAuthorized' => false,
     ];
 
     /**
@@ -81,26 +81,23 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $this->request = $request;
 
-        $endpoint = $this->getEndpoint();
-        $whiteListed = in_array($endpoint->name, $this->getConfig('endpointWhitelist'));
-
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
-        if (!$whiteListed && $this->isAnonymous($user) && $this->getConfig('blockAnonymousUsers')) {
-            $this->authorized = false;
-            $this->unauthenticateAnonymous($user);
-
-            return $this->authorized;
+        if (!$this->getConfig('defaultAuthorized') &&
+            $this->isAnonymous($user) &&
+            $this->getConfig('blockAnonymousUsers')) {
+            $this->unauthenticate();
         }
 
         // For anonymous users performing write operations, use strict mode.
         $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
 
         $application = $this->getApplication();
+        $endpoint = $this->getEndpoint();
         $permissions = $this->getPermissions($user, $application, $endpoint, $strict)->toArray();
         $allPermissions = $this->getPermissions(false, $application, $endpoint);
 
-        // If endpoint is in whitelist and no permission is set on it then it is authorized for anyone
-        if ($whiteListed && ($endpoint->isNew() || $allPermissions->count() === 0)) {
+        // If request si authorized and no permission is set on it then it is authorized for anyone
+        if ($this->getConfig('defaultAuthorized') && ($endpoint->isNew() || $allPermissions->count() === 0)) {
             return $this->authorized = true;
         }
 
@@ -111,31 +108,29 @@ class EndpointAuthorize extends BaseAuthorize
             $this->authorized = !$strict;
         }
 
-        $this->unauthenticateAnonymous($user);
+        if ($this->isAnonymous($user) && $this->authorized !== true) {
+            // Anonymous user should not get a 403. Thus, we invoke authentication provider's
+            // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
+            // so we treat that as a non-authorized request.
+            $this->unauthenticate();
+        }
 
         // Authorization is granted for both `true` and `'mine'` values.
         return !empty($this->authorized);
     }
 
     /**
-     * Perform user unauthentication to avoid 403 Forbidden response
-     * if user unlogged and not authorized
+     * Perform user unauthentication to return 401 Unauthorized
+     * instead of 403 Forbidden
      *
-     * @param array|\ArrayAccess $user User data.
      * @return void
      */
-    protected function unauthenticateAnonymous($user)
+    protected function unauthenticate()
     {
-        if ($this->isAnonymous($user) && $this->authorized !== true) {
-            // Anonymous user should not get a 403. Thus, we invoke authentication provider's
-            // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
-            // so we treat that as a non-authorized request.
-            $controller = $this->_registry->getController();
-
-            $controller
-                ->Auth->getAuthenticate('BEdita/API.Jwt')
-                ->unauthenticated($controller->request, $controller->response);
-        }
+        $controller = $this->_registry->getController();
+        $controller
+            ->Auth->getAuthenticate('BEdita/API.Jwt')
+            ->unauthenticated($controller->request, $controller->response);
     }
 
     /**

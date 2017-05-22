@@ -247,6 +247,8 @@ class EndpointAuthorizeTest extends TestCase
                 [
                     '_anonymous' => true
                 ],
+                'GET',
+                true
             ],
             'GET /disabled (role_id = 1)' => [
                 new NotFoundException('Resource not found.'),
@@ -265,6 +267,8 @@ class EndpointAuthorizeTest extends TestCase
                 [
                     '_anonymous' => true
                 ],
+                'POST',
+                true
             ],
         ];
     }
@@ -284,7 +288,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
-    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET')
+    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
@@ -304,6 +308,8 @@ class EndpointAuthorizeTest extends TestCase
             'authorize' => ['BEdita/API.Endpoint'],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+        $authorize->config('defaultAuthorized', $whiteListed);
+        $authorize->config('blockAnonymousUsers', false);
 
         if (!($authorize instanceof EndpointAuthorize)) {
             static::fail('Unexpected authorization object');
@@ -412,7 +418,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
-     * @covers ::unauthenticateAnonymous()
+     * @covers ::unauthenticate()
      * @expectedException \Cake\Network\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
@@ -453,7 +459,7 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::unauthenticateAnonymous()
+     * @covers ::unauthenticate()
      * @expectedException \Cake\Network\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
