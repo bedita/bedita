@@ -54,6 +54,18 @@ class UserMailerTest extends TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
+        Email::setConfigTransport('test', [
+            'className' => 'BEdita/Core.AsyncJobs',
+        ]);
+        Email::setConfig('test', [
+            'transport' => 'test',
+            'from' => [
+                'gustavo.supporto@example.org' => 'Gustavo',
+            ],
+        ]);
+
         $this->Email = new Email('test');
     }
 
@@ -62,7 +74,12 @@ class UserMailerTest extends TestCase
      */
     public function tearDown()
     {
+        parent::tearDown();
+
         $this->Email = null;
+
+        Email::drop('test');
+        Email::dropTransport('test');
     }
 
     /**
