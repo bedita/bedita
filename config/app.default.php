@@ -209,9 +209,6 @@ return [
             'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
-        'test' => [
-            'className' => 'Debug',
-        ],
     ],
 
     /**
@@ -229,10 +226,6 @@ return [
             'from' => 'you@localhost',
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
-        ],
-        'test' => [
-            'transport' => 'test',
-            'from' => 'you@localhost',
         ],
     ],
 

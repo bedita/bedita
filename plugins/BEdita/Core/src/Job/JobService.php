@@ -27,5 +27,5 @@ interface JobService
      * @param array $options Options for running this job.
      * @return bool True on success, false on failure
      */
-    public function run($payload, $options = []);
+    public function run(array $payload, array $options = []);
 }

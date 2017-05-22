@@ -266,4 +266,32 @@ class AsyncJobsTable extends Table
             return $exp->isNotNull($this->aliasField('completed'));
         });
     }
+
+    /**
+     * Find pending asynchronous jobs sorted by descending priority, and optionally filtered by service and priority.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPriority(Query $query, array $options)
+    {
+        $options = array_filter(array_intersect_key($options, array_flip(['priority', 'service'])));
+        if (!empty($options)) {
+            $query = $query->where(function (QueryExpression $exp) use ($options) {
+                if (!empty($options['priority'])) {
+                    $exp->gte($this->aliasField('priority'), $options['priority']);
+                }
+                if (!empty($options['service'])) {
+                    $exp->eq($this->aliasField('service'), $options['service']);
+                }
+
+                return $exp;
+            });
+        }
+
+        return $query
+            ->find('pending')
+            ->orderDesc($this->aliasField('priority'));
+    }
 }

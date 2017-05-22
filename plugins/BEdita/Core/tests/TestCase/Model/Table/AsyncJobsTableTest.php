@@ -221,9 +221,14 @@ class AsyncJobsTableTest extends TestCase
             'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
                 'key' => 'value',
             ],
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
         ];
+        ksort($expected);
 
         $actual = $this->AsyncJobs->find('pending')->find('list')->toArray();
+        ksort($actual);
 
         static::assertSame($expected, $actual);
     }
@@ -269,6 +274,69 @@ class AsyncJobsTableTest extends TestCase
         ];
 
         $actual = $this->AsyncJobs->find('completed')->find('list')->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Test finder for pending jobs sorted by priority.
+     *
+     * @return void
+     *
+     * @covers ::findPriority()
+     */
+    public function testFindPriority()
+    {
+        $expected = [
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
+            'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $actual = $this->AsyncJobs->find('priority')->find('list')->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Test finder for pending jobs sorted by priority and filtering by service type.
+     *
+     * @return void
+     *
+     * @covers ::findPriority()
+     */
+    public function testFindPriorityFilterService()
+    {
+        $expected = [
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $actual = $this->AsyncJobs->find('priority', ['service' => 'example2'])->find('list')->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Test finder for pending jobs sorted by priority and filtering by priority.
+     *
+     * @return void
+     *
+     * @covers ::findPriority()
+     */
+    public function testFindPriorityFilterPriority()
+    {
+        $expected = [
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $actual = $this->AsyncJobs->find('priority', ['priority' => 5])->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
