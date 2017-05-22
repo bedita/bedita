@@ -492,5 +492,4 @@ class EndpointAuthorizeTest extends TestCase
             $request
         );
     }
-
 }
