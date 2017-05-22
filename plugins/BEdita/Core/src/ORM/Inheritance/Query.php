@@ -306,4 +306,14 @@ class Query extends CakeQuery
 
         return $field;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function cleanCopy()
+    {
+        $this->triggerBeforeFind();
+
+        return parent::cleanCopy();
+    }
 }

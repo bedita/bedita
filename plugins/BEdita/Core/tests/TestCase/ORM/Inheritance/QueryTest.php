@@ -464,4 +464,35 @@ class QueryTest extends TestCase
         $sql = preg_replace('/(\s){2,}/', ' ', $sql);
         $this->assertEquals($expected, $sql);
     }
+
+    /**
+     * Test method to get clean copy of query object.
+     *
+     * @return void
+     *
+     * @covers ::cleanCopy()
+     */
+    public function testCleanCopy()
+    {
+        $expectedBefore = [
+            'FakeArticles' => [],
+        ];
+        $expectedAfter = [
+            'FakeMammals' => [
+                'FakeAnimals' => [
+                    'FakeArticles' => [],
+                ],
+            ],
+        ];
+
+        $query = $this->fakeFelines->find()
+            ->contain('FakeArticles');
+
+        static::assertSame($expectedBefore, $query->getEagerLoader()->contain());
+
+        $clone = $query->cleanCopy();
+
+        static::assertSame($expectedAfter, $query->getEagerLoader()->contain());
+        static::assertSame($expectedAfter, $clone->getEagerLoader()->contain());
+    }
 }
