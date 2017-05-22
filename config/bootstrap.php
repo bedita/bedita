@@ -55,6 +55,7 @@ use BEdita\Core\Plugin;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
@@ -77,6 +78,13 @@ try {
     Configure::load('app', 'default', false);
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
+}
+
+try {
+    Configure::config('json', new JsonConfig());
+    Configure::load('app', 'json');
+} catch (\Exception $e) {
+    // Do not halt if `app.json` is missing.
 }
 
 /*

@@ -4,6 +4,7 @@
 /composer.lock
 /composer.local.json
 /config/app.php
+/config/app.json
 /coverage/*
 /docs/*
 /index.html
