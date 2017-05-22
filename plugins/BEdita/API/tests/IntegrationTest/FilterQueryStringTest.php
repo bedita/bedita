@@ -125,9 +125,9 @@ class FilterQueryStringTest extends IntegrationTestCase
             $this->assertResponseCode(400);
         } else {
             $this->assertResponseCode(200);
-            static::assertEquals(count($expected), count($result['data']));
-            $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
-            static::assertEquals($expected, $resultDistance);
+            static::assertSame(count($expected), count($result['data']));
+            $resultDistance = Hash::extract($result['data'], '{n}.meta.extra.distance');
+            static::assertSame($expected, $resultDistance);
         }
     }
 
