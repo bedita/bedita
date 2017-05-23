@@ -240,4 +240,26 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
     }
+
+    /**
+     * Test finder of users by query string.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFindQueryUsers()
+    {
+        $expected = [5];
+        $this->configRequestHeaders();
+
+        $this->get('/users?filter[query]=second');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
 }
