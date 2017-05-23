@@ -37,7 +37,7 @@ class SignupController extends AppController
     /**
      * Signup action.
      *
-     * @return \Cake\Http\Response
+     * @return void
      */
     public function signup()
     {
@@ -53,11 +53,14 @@ class SignupController extends AppController
         $urlOptions += ['activation_url' => Router::url(['_name' => 'api:signup'], true)];
 
         $action = new SignupUserAction();
-        $action([
+        $user = $action->execute([
             'data' => $data,
             'urlOptions' => $urlOptions
         ]);
 
-        return $this->response->withStatus(202);
+        $this->response = $this->response->withStatus(202);
+
+        $this->set('data', $user);
+        $this->set('_serialize', ['data']);
     }
 }
