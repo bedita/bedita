@@ -57,6 +57,7 @@ class SignupUserAction extends BaseAction
     /**
      * {@inheritDoc}
      *
+     * @return \BEdita\Core\Model\Entity\User
      * @throws \Cake\Network\Exception\BadRequestException When validation of `$data['urlOptions']` fails
      */
     public function execute(array $data = [])
@@ -70,13 +71,15 @@ class SignupUserAction extends BaseAction
             ]);
         }
 
-        return $this->Users->getConnection()->transactional(function () use ($data) {
+        $userId = $this->Users->getConnection()->transactional(function () use ($data) {
             $user = $this->createUser($data['data']);
             $job = $this->createSignupJob($user);
             $this->sendMail($user, $job, $data['urlOptions']);
 
-            return compact('user', 'job');
+            return $user->id;
         });
+
+        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $userId]);
     }
 
     /**
@@ -143,7 +146,7 @@ class SignupUserAction extends BaseAction
      * The user is validated using 'signup' validation.
      *
      * @param array $data The data to save
-     * @return mixed
+     * @return \BEdita\Core\Model\Entity\User
      */
     protected function createUser(array $data)
     {
@@ -167,7 +170,7 @@ class SignupUserAction extends BaseAction
      * Create the signup async job
      *
      * @param User $user The user created
-     * @return mixed
+     * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createSignupJob(User $user)
     {
