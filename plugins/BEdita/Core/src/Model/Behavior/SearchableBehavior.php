@@ -159,8 +159,25 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
+        $table = $this->getTable();
+        $tables = array_reverse(
+            array_merge(
+                [$table],
+                ($table instanceof InheritanceTable) ? $table->inheritedTables() : []
+            )
+        );
+        $aliasField = function ($field) use ($tables) {
+            /* @var \Cake\ORM\Table $table */
+            foreach ($tables as $table) {
+                if ($table->hasField($field, false)) {
+                    return $table->aliasField($field);
+                }
+            }
+
+            return $field;
+        };
         $fields = array_map( // Alias fields to avoid ambiguities.
-            [$this->getTable(), 'aliasField'],
+            $aliasField,
             array_keys($this->getFields())
         );
 
