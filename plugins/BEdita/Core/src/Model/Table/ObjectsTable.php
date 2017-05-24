@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
@@ -146,7 +147,7 @@ class ObjectsTable extends Table
      * @param array $options Array of acceptable object types.
      * @return \Cake\ORM\Query
      */
-    public function findType(Query $query, array $options)
+    protected function findType(Query $query, array $options)
     {
         foreach ($options as &$type) {
             $type = $this->ObjectTypes->get($type)->id;
@@ -169,12 +170,25 @@ class ObjectsTable extends Table
      * @param array $options Array of acceptable date range conditions.
      * @return \Cake\ORM\Query
      */
-    public function findDateRanges(Query $query, array $options)
+    protected function findDateRanges(Query $query, array $options)
     {
         return $query
             ->distinct([$this->aliasField($this->getPrimaryKey())])
             ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
                 return $query->find('dateRanges', $options);
             });
+    }
+
+    /**
+     * Finder for my objects (i.e.: user created by logged-in user)
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findMine(Query $query)
+    {
+        return $query->where(function (QueryExpression $exp) {
+            return $exp->eq($this->aliasField($this->CreatedByUser->getForeignKey()), LoggedUser::id());
+        });
     }
 }

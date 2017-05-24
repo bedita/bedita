@@ -15,6 +15,8 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -198,6 +200,19 @@ class UsersTable extends Table
             }
 
             return $query;
+        });
+    }
+
+    /**
+     * Finder for my users. This only returns the currently logged in user.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findMine(Query $query)
+    {
+        return $query->where(function (QueryExpression $exp) {
+            return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
     }
 }
