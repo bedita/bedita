@@ -95,7 +95,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    public function findByEndpoint(Query $query, array $options)
+    protected function findByEndpoint(Query $query, array $options)
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
@@ -132,7 +132,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    public function findByApplication(Query $query, array $options)
+    protected function findByApplication(Query $query, array $options)
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
@@ -169,7 +169,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    public function findByRole(Query $query, array $options)
+    protected function findByRole(Query $query, array $options)
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));

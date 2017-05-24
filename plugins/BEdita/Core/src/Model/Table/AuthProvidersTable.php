@@ -113,7 +113,7 @@ class AuthProvidersTable extends Table
      * @param \Cake\ORM\Query $query Query object.
      * @return \Cake\ORM\Query
      */
-    public function findAuthenticate(Query $query)
+    protected function findAuthenticate(Query $query)
     {
         return $query->formatResults(function (ResultSetInterface $results) {
             return $results
