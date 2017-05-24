@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
-use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
@@ -49,7 +48,7 @@ class SignupUserActionTest extends TestCase
     /**
      * Provider for `testExecute()`
      *
-     * @return void
+     * @return array
      */
     public function executeProvider()
     {
@@ -143,8 +142,7 @@ class SignupUserActionTest extends TestCase
         $result = $action($data);
 
         static::assertTrue((bool)$result);
-        static::assertInstanceOf(User::class, $result['user']);
-        static::assertInstanceOf(AsyncJob::class, $result['job']);
+        static::assertInstanceOf(User::class, $result);
     }
 
     /**
@@ -162,7 +160,7 @@ class SignupUserActionTest extends TestCase
 
         $mock->method('getMailer')->will($this->throwException(new InternalErrorException));
 
-        $mock([
+        $mock->execute([
             'data' => [
                 'username' => 'testsignup',
                 'password_hash' => 'testsignup',

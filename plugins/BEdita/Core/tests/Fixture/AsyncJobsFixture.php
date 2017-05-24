@@ -116,10 +116,10 @@ class AsyncJobsFixture extends TestFixture
             'completed' => null,
         ],
         [
-            // signup user_id invalid
+            // pending signup user_id invalid
             'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
             'service' => 'signup',
-            'priority' => 1,
+            'priority' => 20,
             'payload' => '{"user_id":"9999999999999"}',
             'scheduled_from' => null,
             'expires' => null,

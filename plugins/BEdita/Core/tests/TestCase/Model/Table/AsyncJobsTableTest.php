@@ -218,6 +218,9 @@ class AsyncJobsTableTest extends TestCase
     public function testFindPending()
     {
         $expected = [
+            '427ece75-71fb-4aca-bfab-1214cd98495a' => [
+                'user_id' => '9999999999999',
+            ],
             'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
                 'key' => 'value',
             ],
@@ -311,7 +314,10 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
+        ksort($expected);
+
         $actual = $this->AsyncJobs->find('uncompleted')->find('list')->toArray();
+        ksort($actual);
 
         static::assertSame($expected, $actual);
     }
@@ -326,6 +332,9 @@ class AsyncJobsTableTest extends TestCase
     public function testFindPriority()
     {
         $expected = [
+            '427ece75-71fb-4aca-bfab-1214cd98495a' => [
+                'user_id' => '9999999999999',
+            ],
             'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
                 'key' => 'value',
             ],
@@ -369,6 +378,9 @@ class AsyncJobsTableTest extends TestCase
     public function testFindPriorityFilterPriority()
     {
         $expected = [
+            '427ece75-71fb-4aca-bfab-1214cd98495a' => [
+                'user_id' => '9999999999999',
+            ],
             'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
                 'key' => 'value',
             ],
