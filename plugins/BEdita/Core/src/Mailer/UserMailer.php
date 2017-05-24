@@ -86,4 +86,50 @@ class UserMailer extends Mailer
             ->setTo($user->email)
             ->setSubject($subject);
     }
+
+    /**
+     * Credentials change message.
+     *
+     * It requires `$options['params']` with:
+     * - `userId` the user id to send signup email
+     * - `changeUrl` the change url to follow
+     *
+     * @param array $options Email options
+     * @return $this
+     * @throws \LogicException When missing some required parameter
+     */
+    public function changeRequest(array $options)
+    {
+        if (empty($options['params']['userId'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
+        }
+
+        if (empty($options['params']['changeUrl'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
+        }
+
+        $users = TableRegistry::get('Users');
+        $action = new GetObjectAction(['table' => $users]);
+        $user = $action(['primaryKey' => $options['params']['userId']]);
+
+        if (empty($user->email)) {
+            throw new \LogicException(__d('bedita', 'User email missing'));
+        }
+
+        $currentApplication = CurrentApplication::getApplication();
+        $appName = ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
+        $subject = __d('bedita', '{0} registration', [$appName]);
+
+        $this->set([
+            'user' => $user,
+            'changeUrl' => $options['params']['changeUrl'],
+            'appName' => $appName
+        ]);
+
+        return $this->setTemplate('BEdita/Core.change_request')
+            ->setLayout('BEdita/Core.default')
+            ->setEmailFormat('both')
+            ->setTo($user->email)
+            ->setSubject($subject);
+    }
 }
