@@ -69,7 +69,19 @@ class SignupControllerTest extends IntegrationTestCase
             ],
             'ok' => [
                 202,
-                null,
+                [
+                    'data' => [
+                        'type' => 'users',
+                        'attributes' => [
+                            'username' => 'gustavo',
+                            'email' => 'gus.sup@channelweb.it',
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/signup',
+                        'home' => 'http://api.example.com/home',
+                    ],
+                ],
                 'POST',
                 [
                     'type' => 'users',
@@ -85,7 +97,19 @@ class SignupControllerTest extends IntegrationTestCase
             ],
             'ok with activation_url and redirect_url' => [
                 202,
-                null,
+                [
+                    'data' => [
+                        'type' => 'users',
+                        'attributes' => [
+                            'username' => 'gustavo',
+                            'email' => 'gus.sup@channelweb.it',
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/signup',
+                        'home' => 'http://api.example.com/home',
+                    ],
+                ],
                 'POST',
                 [
                     'type' => 'users',
@@ -116,7 +140,7 @@ class SignupControllerTest extends IntegrationTestCase
                 [
                     'type' => 'users',
                     'attributes' => [
-                        'username' => '',
+                        'username' => 'gustavo',
                         'password' => 'supporto',
                         'email' => 'gus.sup@channelweb.it',
                     ],
@@ -201,8 +225,8 @@ class SignupControllerTest extends IntegrationTestCase
     /**
      * Test /signup endpoint
      *
-     * @param int $statusCode The HTTP status code expected
-     * @param array $expected The expected body
+     * @param int $statusCode Expected status code.
+     * @param int $expected The expected content
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void
@@ -222,7 +246,11 @@ class SignupControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         if ($statusCode === 202) {
-            static::assertNull($result);
+            static::assertArrayNotHasKey('error', $result);
+            static::assertArrayHasKey('links', $result);
+            static::assertArrayHasKey('data', $result);
+            static::assertEquals($expected['links'], $result['links']);
+            static::assertArraySubset($expected['data'], $result['data']);
         } else {
             static::assertArrayNotHasKey('data', $result);
             static::assertArrayHasKey('links', $result);
@@ -329,8 +357,8 @@ class SignupControllerTest extends IntegrationTestCase
     /**
      * Test some errors in /signup/activation endpoint
      *
-     * @param int $statusCode The HTTP status code expected
-     * @param array $expected The expected body
+     * @param int $statusCode Expected status code.
+     * @param int $expected The expected content
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void

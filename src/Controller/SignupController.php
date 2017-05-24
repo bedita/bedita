@@ -45,7 +45,7 @@ class SignupController extends AppController
     /**
      * Signup action.
      *
-     * @return \Cake\Http\Response
+     * @return void
      */
     public function signup()
     {
@@ -60,18 +60,21 @@ class SignupController extends AppController
         $urlOptions = $this->request->getData('_meta') ?: [];
 
         $action = new SignupUserAction();
-        $action([
+        $user = $action->execute([
             'data' => $data,
             'urlOptions' => $urlOptions
         ]);
 
-        return $this->response->withStatus(202);
+        $this->response = $this->response->withStatus(202);
+
+        $this->set('data', $user);
+        $this->set('_serialize', ['data']);
     }
 
     /**
      * Signup activation action.
      *
-     * @return \Cake\Http\Response
+     * @return void
      */
     public function activation()
     {
@@ -80,6 +83,6 @@ class SignupController extends AppController
         $action = new SignupUserActivationAction();
         $action(['uuid' => $this->request->getData('uuid')]);
 
-        return $this->response->withStatus(204);
+        $this->response = $this->response->withStatus(204);
     }
 }
