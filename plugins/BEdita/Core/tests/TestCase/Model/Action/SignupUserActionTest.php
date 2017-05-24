@@ -19,7 +19,6 @@ use BEdita\Core\Model\Entity\User;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -39,10 +38,12 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
     ];
 
     /**
@@ -147,7 +148,7 @@ class SignupUserActionTest extends TestCase
     }
 
     /**
-     * Test execute when exception different from SocketException was raised
+     * Test execute when exception was raised sending email
      *
      * @return void
      */
