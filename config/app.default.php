@@ -64,7 +64,8 @@ return [
      *   You should treat it as extremely sensitive data.
      * - jwt - Duration and algorithm for JSON Web Tokens.
      *   By default, `duration` is `'+2 hours'`, and `algorithm` is `'HS256'`.
-     * - disallowAnonymousApplications - Are anonymous applications (i.e. requests without an api key) forbidden?
+     * - blockAnonymousApps - Are anonymous applications (i.e. requests without an api key) forbidden?
+     * - blockAnonymousUsers - Are unauthenticated users requests blocked by default?
      */
     'Security' => [
         'salt' => env('SECURITY_SALT', '__SALT__'),
@@ -72,7 +73,8 @@ return [
         //     'duration' => '+2 hours',
         //     'algorithm' => 'HS256',
         // ],
-        // 'disallowAnonymousApplications' => true,
+        // 'blockAnonymousApps' => true,
+        'blockAnonymousUsers' => false,
     ],
 
     /**
