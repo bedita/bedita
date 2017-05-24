@@ -74,7 +74,7 @@ class SignupController extends AppController
     /**
      * Signup activation action.
      *
-     * @return void
+     * @return \Cake\Http\Response
      */
     public function activation()
     {
@@ -83,6 +83,6 @@ class SignupController extends AppController
         $action = new SignupUserActivationAction();
         $action(['uuid' => $this->request->getData('uuid')]);
 
-        $this->response = $this->response->withStatus(204);
+        return $this->response->withStatus(204);
     }
 }
