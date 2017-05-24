@@ -36,6 +36,10 @@ class SignupController extends AppController
         if ($this->request->getParam('action') === 'signup' && $this->JsonApi) {
             $this->JsonApi->setConfig('resourceTypes', ['users']);
         }
+
+        if ($this->request->getParam('action') === 'activation' && $this->request->contentType() === 'application/json') {
+            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        }
     }
 
     /**
@@ -62,5 +66,20 @@ class SignupController extends AppController
         ]);
 
         return $this->response->withStatus(202);
+    }
+
+    /**
+     * Signup activation action.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function activation()
+    {
+        $this->request->allowMethod('post');
+
+        $action = new SignupUserActivationAction();
+        $action(['uuid' => $this->request->getData('uuid')]);
+
+        return $this->response->withStatus(204);
     }
 }

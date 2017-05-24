@@ -279,6 +279,44 @@ class AsyncJobsTableTest extends TestCase
     }
 
     /**
+     * Test finder for uncompleted jobs.
+     *
+     * @return void
+     *
+     * @covers ::findUncompleted()
+     */
+    public function testFindUncompleted()
+    {
+        $expected = [
+            'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
+                'key' => 'value',
+            ],
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
+            '66594f3c-995f-49d2-9192-382baf1a12b3' => [
+                'key' => 'value',
+            ],
+            '6407afa6-96a3-4aeb-90c1-1541756efdef' => [
+                'key' => 'value',
+            ],
+            '40e22034-213f-4028-9930-81c0ed79c5a6' => [
+                'key' => 'value',
+            ],
+            '0c833458-dff1-4fbb-bbf6-a30818b60616' => [
+                'key' => 'value',
+            ],
+            '427ece75-71fb-4aca-bfab-1214cd98495a' => [
+                'user_id' => '9999999999999',
+            ],
+        ];
+
+        $actual = $this->AsyncJobs->find('uncompleted')->find('list')->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
      * Test finder for pending jobs sorted by priority.
      *
      * @return void

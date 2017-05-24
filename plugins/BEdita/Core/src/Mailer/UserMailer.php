@@ -26,19 +26,37 @@ use Cake\ORM\TableRegistry;
 class UserMailer extends Mailer
 {
     /**
-     * Welcome message
+     * Welcome message.
      *
-     * @param array $options Email options: 'to' (recipient)
+     * It requires `$options['params']` with:
+     * - `user` the user Entity to send welcome email
+     *
+     * @param array $options Email options
      * @return $this
-     * @codeCoverageIgnore
+     * @throws \LogicException When missing some required parameter
      */
     public function welcome($options)
     {
+        if (empty($options['params']['user'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+        }
+
+        $user = $options['params']['user'];
+        $this->checkUser($user);
+        $projectName = $this->getProjectName();
+        $subject = __d('bedita', 'Welcome to {0}', [$projectName]);
+
+        $this->set([
+            'user' => $user,
+            'projectName' => $projectName,
+        ]);
+
         return $this
             ->setTemplate('BEdita/Core.welcome')
             ->setLayout('BEdita/Core.default')
-            ->setTo($options['to'])
-            ->setSubject('Welcome!');
+            ->setEmailFormat('both')
+            ->setTo($user->email)
+            ->setSubject($subject);
     }
 
     /**
