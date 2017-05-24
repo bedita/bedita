@@ -314,7 +314,7 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'uuid' => '1111111'
+                    'uuid' => '9343b966-9102-49fd-a9d7-8502f1dc7110'
                 ]
             ],
             'not found user' => [

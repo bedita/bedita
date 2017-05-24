@@ -120,7 +120,7 @@ class AsyncJobsFixture extends TestFixture
             'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
             'service' => 'signup',
             'priority' => 20,
-            'payload' => '{"user_id":"9999999999999"}',
+            'payload' => '{"user_id":"99999"}',
             'scheduled_from' => null,
             'expires' => null,
             'max_attempts' => 1,
