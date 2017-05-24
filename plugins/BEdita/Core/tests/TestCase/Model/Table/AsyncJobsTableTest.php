@@ -219,7 +219,7 @@ class AsyncJobsTableTest extends TestCase
     {
         $expected = [
             '427ece75-71fb-4aca-bfab-1214cd98495a' => [
-                'user_id' => '9999999999999',
+                'user_id' => '99999',
             ],
             'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
                 'key' => 'value',
@@ -310,7 +310,7 @@ class AsyncJobsTableTest extends TestCase
                 'key' => 'value',
             ],
             '427ece75-71fb-4aca-bfab-1214cd98495a' => [
-                'user_id' => '9999999999999',
+                'user_id' => '99999',
             ],
         ];
 
@@ -333,7 +333,7 @@ class AsyncJobsTableTest extends TestCase
     {
         $expected = [
             '427ece75-71fb-4aca-bfab-1214cd98495a' => [
-                'user_id' => '9999999999999',
+                'user_id' => '99999',
             ],
             'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
                 'key' => 'value',
@@ -379,7 +379,7 @@ class AsyncJobsTableTest extends TestCase
     {
         $expected = [
             '427ece75-71fb-4aca-bfab-1214cd98495a' => [
-                'user_id' => '9999999999999',
+                'user_id' => '99999',
             ],
             'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
                 'key' => 'value',
