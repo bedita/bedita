@@ -124,7 +124,7 @@ class ObjectsController extends ResourcesController
                 );
         } else {
             // List existing entities.
-            $filter = $this->request->getQuery('filter');
+            $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
             $include = $this->request->getQuery('include');
             $contain = $include ? $this->prepareInclude($include) : [];
 
@@ -192,7 +192,7 @@ class ObjectsController extends ResourcesController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
-        $filter = $this->request->getQuery('filter');
+        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
         $action = new ListRelatedObjectsAction(compact('association'));
         $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
@@ -230,7 +230,7 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
-                $filter = $this->request->getQuery('filter');
+                $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
                 $action = new ListRelatedObjectsAction(compact('association'));
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
