@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\SignupUserAction;
+use BEdita\Core\Model\Action\SignupUserActivationAction;
 use Cake\Routing\Router;
 
 /**
@@ -31,7 +32,10 @@ class SignupController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->JsonApi->setConfig('resourceTypes', ['users']);
+
+        if ($this->request->getParam('action') === 'signup' && $this->JsonApi) {
+            $this->JsonApi->setConfig('resourceTypes', ['users']);
+        }
     }
 
     /**
@@ -50,7 +54,6 @@ class SignupController extends AppController
         }
 
         $urlOptions = $this->request->getData('_meta') ?: [];
-        $urlOptions += ['activation_url' => Router::url(['_name' => 'api:signup'], true)];
 
         $action = new SignupUserAction();
         $action([
