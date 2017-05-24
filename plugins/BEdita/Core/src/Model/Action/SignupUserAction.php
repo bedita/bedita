@@ -82,7 +82,7 @@ class SignupUserAction extends BaseAction
             throw $e;
         }
 
-        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);    
+        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);
     }
 
     /**
