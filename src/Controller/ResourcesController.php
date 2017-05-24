@@ -177,7 +177,7 @@ abstract class ResourcesController extends AppController
                 );
         } else {
             // List existing entities.
-            $filter = $this->request->getQuery('filter');
+            $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
             $include = $this->request->getQuery('include');
             $contain = $include ? $this->prepareInclude($include) : [];
 
@@ -256,7 +256,7 @@ abstract class ResourcesController extends AppController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
-        $filter = $this->request->getQuery('filter');
+        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
         $action = new ListAssociatedAction(compact('association'));
         $query = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
@@ -301,7 +301,7 @@ abstract class ResourcesController extends AppController
 
             case 'GET':
             default:
-                $filter = $this->request->getQuery('filter');
+                $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
                 $action = new ListAssociatedAction(compact('association'));
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);

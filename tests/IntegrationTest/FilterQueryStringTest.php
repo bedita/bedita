@@ -262,4 +262,26 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
     }
+
+    /**
+     * Test finder of objects by query string using shorthand `?q=` query parameter.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFindQueryAlias()
+    {
+        $expected = [2, 3, 9];
+        $this->configRequestHeaders();
+
+        $this->get('/objects?q=here');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
 }
