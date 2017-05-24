@@ -176,7 +176,7 @@ class SearchableBehavior extends Behavior
         // Concat all fields into a single, lower-cased string.
         $fields = [];
         foreach (array_keys($this->getFields()) as $field) {
-            $fields[] = new FunctionExpression('IFNULL', [
+            $fields[] = $query->func()->coalesce([
                 $aliasField($field) => 'identifier',
                 '',
             ]);
