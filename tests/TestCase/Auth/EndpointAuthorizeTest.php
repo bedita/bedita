@@ -78,7 +78,7 @@ class EndpointAuthorizeTest extends TestCase
                 new ForbiddenException('Missing API key'),
                 [],
                 [
-                    'disallowAnonymousApplications' => true,
+                    'blockAnonymousApps' => true,
                 ],
             ],
             'anonymous application' => [
@@ -247,6 +247,8 @@ class EndpointAuthorizeTest extends TestCase
                 [
                     '_anonymous' => true
                 ],
+                'GET',
+                true
             ],
             'GET /disabled (role_id = 1)' => [
                 new NotFoundException('Resource not found.'),
@@ -265,6 +267,8 @@ class EndpointAuthorizeTest extends TestCase
                 [
                     '_anonymous' => true
                 ],
+                'POST',
+                true
             ],
         ];
     }
@@ -284,7 +288,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
-    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET')
+    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
@@ -304,6 +308,8 @@ class EndpointAuthorizeTest extends TestCase
             'authorize' => ['BEdita/API.Endpoint'],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+        $authorize->config('defaultAuthorized', $whiteListed);
+        $authorize->config('blockAnonymousUsers', false);
 
         if (!($authorize instanceof EndpointAuthorize)) {
             static::fail('Unexpected authorization object');
@@ -340,7 +346,7 @@ class EndpointAuthorizeTest extends TestCase
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => ['BEdita/API.Endpoint'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => false]],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
 
@@ -384,7 +390,7 @@ class EndpointAuthorizeTest extends TestCase
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => ['BEdita/API.Endpoint'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => false]],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
 
@@ -412,6 +418,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
+     * @covers ::unauthenticate()
      * @expectedException \Cake\Network\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
@@ -430,6 +437,47 @@ class EndpointAuthorizeTest extends TestCase
         $controller->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
             'authorize' => ['BEdita/API.Endpoint'],
+        ]);
+        $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        if (!($authorize instanceof EndpointAuthorize)) {
+            static::fail('Unexpected authorization object');
+        }
+
+        $authorize->authorize(
+            [
+                '_anonymous' => true,
+            ],
+            $request
+        );
+    }
+
+    /**
+     * Test default block of anonymous actions.
+     *
+     * @return void
+     *
+     * @covers ::authorize()
+     * @covers ::isAnonymous()
+     * @covers ::unauthenticate()
+     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedExceptionMessage Unauthorized
+     */
+    public function testBlockUnloggedByDefault()
+    {
+        // Ensure no permissions apply to anonymous user on `/home` endpoint.
+        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+
+        $environment = [
+            'REQUEST_METHOD' => 'GET',
+        ];
+        $uri = new Uri('/home');
+        $request = new ServerRequest(compact('environment', 'uri'));
+
+        $controller = new Controller();
+        $controller->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => true]],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
 
