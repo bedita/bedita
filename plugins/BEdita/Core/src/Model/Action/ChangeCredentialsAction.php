@@ -97,7 +97,7 @@ class ChangeCredentialsAction extends BaseAction
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['payload.user_id']));
         }
 
-        $user = $this->Users->get($asyncJob->payload['user_id']);
+        $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
 
         $user->password_hash = $data['password'];
         $this->Users->saveOrFail($user);
