@@ -133,7 +133,7 @@ class ChangeCredentialsActionTest extends TestCase
     {
         $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         $data = [
-            'token' => '112312312312312312',
+            'token' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
         ];
 
