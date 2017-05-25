@@ -42,6 +42,41 @@ class UserMailer extends Mailer
     }
 
     /**
+     * Get user from Email `$options`
+     *
+     * @param array $options Email options
+     * @return \Cake\Daasource\EntityInterface User requested
+     * @throws \LogicException When missing some required parameter
+     */
+    protected function getUser(array $options)
+    {
+        if (empty($options['params']['userId'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
+        }
+
+        $action = new GetObjectAction(['table' => TableRegistry::get('Users')]);
+        $user = $action(['primaryKey' => $options['params']['userId']]);
+
+        if (empty($user->email)) {
+            throw new \LogicException(__d('bedita', 'User email missing'));
+        }
+
+        return $user;
+    }
+
+    /**
+     * Get application name to use in email
+     *
+     * @return string Application name
+     */
+    protected function getAppName()
+    {
+        $currentApplication = CurrentApplication::getApplication();
+
+        return ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
+    }
+
+    /**
      * Signup message.
      *
      * It requires `$options['params']` with:
@@ -54,24 +89,13 @@ class UserMailer extends Mailer
      */
     public function signup(array $options)
     {
-        if (empty($options['params']['userId'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
-        }
+        $user = $this->getUser($options);
 
         if (empty($options['params']['activationUrl'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
         }
 
-        $users = TableRegistry::get('Users');
-        $action = new GetObjectAction(['table' => $users]);
-        $user = $action(['primaryKey' => $options['params']['userId']]);
-
-        if (empty($user->email)) {
-            throw new \LogicException(__d('bedita', 'User email missing'));
-        }
-
-        $currentApplication = CurrentApplication::getApplication();
-        $appName = ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
+        $appName = $this->getAppName();
         $subject = __d('bedita', '{0} registration', [$appName]);
 
         $this->set([
@@ -100,25 +124,14 @@ class UserMailer extends Mailer
      */
     public function changeRequest(array $options)
     {
-        if (empty($options['params']['userId'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
-        }
+        $user = $this->getUser($options);
 
         if (empty($options['params']['changeUrl'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));
         }
 
-        $users = TableRegistry::get('Users');
-        $action = new GetObjectAction(['table' => $users]);
-        $user = $action(['primaryKey' => $options['params']['userId']]);
-
-        if (empty($user->email)) {
-            throw new \LogicException(__d('bedita', 'User email missing'));
-        }
-
-        $currentApplication = CurrentApplication::getApplication();
-        $appName = ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
-        $subject = __d('bedita', '{0} registration', [$appName]);
+        $appName = $this->getAppName();
+        $subject = __d('bedita', '{0} change request', [$appName]);
 
         $this->set([
             'user' => $user,

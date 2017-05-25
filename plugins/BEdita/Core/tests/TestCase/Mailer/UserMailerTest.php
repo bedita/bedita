@@ -38,6 +38,7 @@ class UserMailerTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -56,9 +57,12 @@ class UserMailerTest extends TestCase
     {
         parent::setUp();
 
+        Email::dropTransport('test');
         Email::setConfigTransport('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
+
+        Email::drop('test');
         Email::setConfig('test', [
             'transport' => 'test',
             'from' => [
@@ -127,6 +131,8 @@ class UserMailerTest extends TestCase
      *
      * @dataProvider signupProvider
      * @covers ::signup()
+     * @covers ::getUser()
+     * @covers ::getAppName()
      */
     public function testSignup($expected, $options)
     {
@@ -145,6 +151,7 @@ class UserMailerTest extends TestCase
      * @return void
      *
      * @covers ::signup()
+     * @covers ::getUser()
      */
     public function testSignupMissingUserEmail()
     {
@@ -164,5 +171,64 @@ class UserMailerTest extends TestCase
         ];
 
         $this->getMailer('BEdita/Core.User', $this->Email)->send('signup', [$options]);
+    }
+
+    /**
+     * Provider for `testChangeRequest()`
+     *
+     * @return array
+     */
+    public function changeRequestProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'params' => [
+                        'userId' => 1,
+                        'changeUrl' => 'http://example.com',
+                    ]
+                ],
+            ],
+            'missing userId' => [
+                new \LogicException('Parameter "params.userId" missing'),
+                [
+                    'params' => [
+                        'changeUrl' => 'http://example.com',
+                    ]
+                ],
+            ],
+            'missing changeUrl' => [
+                new \LogicException('Parameter "params.changeUrl" missing'),
+                [
+                    'params' => [
+                        'userId' => 1,
+                    ]
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test signup
+     *
+     * @param mixed $expected
+     * @param array $options
+     * @return void
+     *
+     * @dataProvider changeRequestProvider
+     * @covers ::changeRequest()
+     * @covers ::getUser()
+     * @covers ::getAppName()
+     */
+    public function testChangeRequest($expected, $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('changeRequest', [$options]);
+
+        static::assertEquals($expected, (bool)$result);
     }
 }
