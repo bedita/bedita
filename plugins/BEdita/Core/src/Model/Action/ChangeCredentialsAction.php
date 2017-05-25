@@ -100,7 +100,7 @@ class ChangeCredentialsAction extends BaseAction
         $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
 
         $user->password_hash = $data['password'];
-        $this->Users->saveOrFail($user);
+        $user = $this->Users->saveOrFail($user);
 
         $asyncJob->completed = new Time();
         $this->AsyncJobs->save($asyncJob);
