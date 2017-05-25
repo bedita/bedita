@@ -57,6 +57,8 @@ matrix:
 
   allow_failures:
     - php: hhvm
+    - php: 7.1
+      env: RUN_PHPSTAN=1 RUN_TESTS=0
 
 before_script:
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
