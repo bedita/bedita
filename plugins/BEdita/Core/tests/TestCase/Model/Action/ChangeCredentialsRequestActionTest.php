@@ -18,7 +18,9 @@ use Cake\Mailer\Email;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
+ * {@see \BEdita\Core\Model\Action\ChangeCredentialsRequestAction} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
  */
 class ChangeCredentialsRequestActionTest extends TestCase
 {

@@ -21,7 +21,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\ChangeCredentialsAction
+ *  {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsAction
  */
 class ChangeCredentialsActionTest extends TestCase
 {
@@ -34,7 +36,9 @@ class ChangeCredentialsActionTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.relations',
@@ -93,7 +97,7 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new ChangeCredentialsAction();
         $res = $action($data);
 
-        $user = TableRegistry::get('Users')->get(1);
+        $user = TableRegistry::get('Users')->get(1, ['contain' => ['Roles']]);
         $this->assertEquals($res->toArray(), $user->toArray());
     }
 
