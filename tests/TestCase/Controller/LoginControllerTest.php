@@ -81,7 +81,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @param array $meta Login metadata.
      * @return void
      *
-     * @depends testSuccessfulLogin
+     * @depends testLoginOkJson
      * @covers ::login()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
@@ -143,7 +143,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @param array $meta Login metadata.
      * @return void
      *
-     * @depends testSuccessfulLogin
+     * @depends testLoginOkJson
      * @covers ::whoami()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
