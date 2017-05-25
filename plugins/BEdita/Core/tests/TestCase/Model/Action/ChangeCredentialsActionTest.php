@@ -98,7 +98,8 @@ class ChangeCredentialsActionTest extends TestCase
         $res = $action($data);
 
         $user = TableRegistry::get('Users')->get(1, ['contain' => ['Roles']]);
-        $this->assertEquals($res->toArray(), $user->toArray());
+        $this->assertEquals($res->id, $user->id);
+        $this->assertEquals($res->username, $user->username);
     }
 
     /**
