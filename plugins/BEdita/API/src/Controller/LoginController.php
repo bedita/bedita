@@ -38,35 +38,41 @@ class LoginController extends AppController
     {
         parent::initialize();
 
+        if ($this->request->contentType() === 'application/json') {
+            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        }
+
         if ($this->request->getParam('action') === 'login') {
-            $this->Auth->setConfig(
-                'authenticate',
-                [
-                    AuthComponent::ALL => [
-                        'scope' => [
-                            'blocked' => false,
-                        ],
-                        'contain' => ['Roles'],
+            $authenticationComponents = [
+                AuthComponent::ALL => [
+                    'scope' => [
+                        'blocked' => false,
                     ],
-                    'Form' => [
-                        'fields' => [
-                            'username' => 'username',
-                            'password' => 'password_hash',
-                        ],
-                        'passwordHasher' => [
-                            'className' => 'Fallback',
-                            'hashers' => [
-                                'Default',
-                                'Weak' => ['hashType' => 'md5'],
-                            ],
-                        ],
+                    'contain' => ['Roles'],
+                ],
+                'Form' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
                     ],
-                    'BEdita/API.Jwt' => [
-                        'queryDatasource' => true,
+                    'passwordHasher' => [
+                        'className' => 'Fallback',
+                        'hashers' => [
+                            'Default',
+                            'Weak' => ['hashType' => 'md5'],
+                        ],
                     ],
                 ],
-                false
-            );
+                'BEdita/API.Jwt' => [
+                    'queryDatasource' => true,
+                ],
+            ];
+
+            $authenticationComponents += TableRegistry::get('AuthProviders')
+                ->find('authenticate')
+                ->toArray();
+
+            $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
     }
 
@@ -90,6 +96,17 @@ class LoginController extends AppController
         if (!$user) {
             throw new UnauthorizedException(__('Login not successful'));
         }
+
+        $fields = ['id', 'username'];
+        $roles = [];
+        foreach ($user['roles'] as $role) {
+            $roles[] = [
+                'id' => $role['id'],
+                'name' => $role['name'],
+            ];
+        }
+        $user = array_intersect_key($user, array_flip($fields));
+        $user['roles'] = $roles;
 
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';

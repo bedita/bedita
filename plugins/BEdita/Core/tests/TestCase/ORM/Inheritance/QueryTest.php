@@ -219,6 +219,7 @@ class QueryTest extends TestCase
      * @dataProvider aliasFieldProvider
      * @covers ::fixAliasField()
      * @covers ::extractField()
+     * @covers ::aliasChecker()
      */
     public function testFixAliasField($expected, $field)
     {
@@ -354,6 +355,17 @@ class QueryTest extends TestCase
     }
 
     /**
+     * testExecute
+     *
+     * @covers ::_execute()
+     */
+    public function testExecute()
+    {
+        $felines = $this->fakeFelines->find()->toArray();
+        $this->assertEquals(1, count($felines));
+    }
+
+    /**
      * testAll
      *
      * This test create a useless and maybe not valid SQL query but it is intended
@@ -451,5 +463,36 @@ class QueryTest extends TestCase
         $sql = $query->sql();
         $sql = preg_replace('/(\s){2,}/', ' ', $sql);
         $this->assertEquals($expected, $sql);
+    }
+
+    /**
+     * Test method to get clean copy of query object.
+     *
+     * @return void
+     *
+     * @covers ::cleanCopy()
+     */
+    public function testCleanCopy()
+    {
+        $expectedBefore = [
+            'FakeArticles' => [],
+        ];
+        $expectedAfter = [
+            'FakeMammals' => [
+                'FakeAnimals' => [
+                    'FakeArticles' => [],
+                ],
+            ],
+        ];
+
+        $query = $this->fakeFelines->find()
+            ->contain('FakeArticles');
+
+        static::assertSame($expectedBefore, $query->getEagerLoader()->contain());
+
+        $clone = $query->cleanCopy();
+
+        static::assertSame($expectedAfter, $query->getEagerLoader()->contain());
+        static::assertSame($expectedAfter, $clone->getEagerLoader()->contain());
     }
 }

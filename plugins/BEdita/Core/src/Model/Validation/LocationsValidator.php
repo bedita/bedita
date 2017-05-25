@@ -11,24 +11,36 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Service;
-
-use BEdita\Core\Job\JobService;
+namespace BEdita\Core\Model\Validation;
 
 /**
- * Send single mail
- * [Temporary dummy implementation]
+ * Validator for locations.
  *
  * @since 4.0.0
  */
-class Mail implements JobService
+class LocationsValidator extends ObjectsValidator
 {
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
-    public function run($payload, $options = [])
+    public function __construct()
     {
-        return true;
+        parent::__construct();
+
+        $this
+            ->allowEmpty('coords')
+
+            ->allowEmpty('address')
+
+            ->allowEmpty('locality')
+
+            ->allowEmpty('postal_code')
+
+            ->allowEmpty('country_name')
+
+            ->allowEmpty('region');
     }
 }

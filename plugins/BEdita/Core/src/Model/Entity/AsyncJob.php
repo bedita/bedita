@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Job\ServiceRegistry;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
@@ -73,11 +74,18 @@ class AsyncJob extends Entity
     /**
      * Run this asynchronous job.
      *
+     * @param array $options Additional options.
      * @return bool
-     * @todo Implement this method!
+     * @throws \BadMethodCallException Throws an exception if job hasn't been locked.
      */
-    public function run()
+    public function run(array $options = [])
     {
-        return false;
+        if ($this->status !== 'locked') {
+            throw new \BadMethodCallException('Only locked jobs can be run');
+        }
+
+        $service = ServiceRegistry::get($this->service);
+
+        return $service->run($this->payload, $options);
     }
 }

@@ -11,6 +11,8 @@ schemes:
 paths:
   /home:
     get:
+      security:
+        - Bearer: []
       description: API endpoints info
       summary: Retrieve a list of endpoints available
       tags:

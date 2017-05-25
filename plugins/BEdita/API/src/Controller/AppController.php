@@ -13,7 +13,6 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Error\ExceptionRenderer;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -72,7 +71,8 @@ class AppController extends Controller
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
             'authorize' => [
                 'BEdita/API.Endpoint' => [
-                    'disallowAnonymousApplications' => Configure::read('Security.disallowAnonymousApplications'),
+                    'blockAnonymousApps' => Configure::read('Security.blockAnonymousApps'),
+                    'blockAnonymousUsers' => Configure::read('Security.blockAnonymousUsers'),
                 ],
             ],
             'loginAction' => ['_name' => 'api:login'],
@@ -148,7 +148,7 @@ class AppController extends Controller
     /**
      * Action to display HTML layout.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\NotFoundException
      */
     protected function html()
