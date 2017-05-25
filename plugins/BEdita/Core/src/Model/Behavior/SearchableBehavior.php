@@ -179,18 +179,21 @@ class SearchableBehavior extends Behavior
         // Build query conditions.
         return $query
             ->where(function (QueryExpression $exp) use ($fields, $words) {
-                return $exp->or_(function (QueryExpression $exp) use ($fields, $words) {
-                    foreach ($fields as $field) {
+                $groups = [];
+                foreach ($fields as $field) {
+                    $groups[] = $exp->and_(function (QueryExpression $exp) use ($field, $words) {
                         foreach ($words as $word) {
                             $exp = $exp->like(
                                 new FunctionExpression('LOWER', [$field => 'identifier']),
                                 sprintf('%%%s%%', $word)
                             );
                         }
-                    }
 
-                    return $exp;
-                });
+                        return $exp;
+                    });
+                }
+
+                return $exp->or_($groups);
             });
     }
 }

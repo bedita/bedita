@@ -38,7 +38,7 @@ use Cake\Routing\Router;
  * @property string $title
  * @property string $description
  * @property string $body
- * @property string $extra
+ * @property array $extra
  * @property string $lang
  * @property int $created_by
  * @property int $modified_by

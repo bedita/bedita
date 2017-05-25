@@ -158,11 +158,8 @@ class SearchableBehaviorTest extends TestCase
                 'ala',
             ],
             'two words' => [
-                [
-                    2 => 'koala',
-                    3 => 'eagle',
-                ],
-                'ala gle',
+                [],
+                'koala eagle',
             ],
             'bad type' => [
                 new BadFilterException([
