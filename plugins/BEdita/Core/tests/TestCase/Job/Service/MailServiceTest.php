@@ -30,6 +30,7 @@ class MailServiceTest extends TestCase
      */
     public function setUp()
     {
+        Email::dropTransport('test');
         Email::setConfigTransport('test', [
             'className' => 'Debug',
         ]);
