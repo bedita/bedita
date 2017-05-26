@@ -460,6 +460,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
+                        'verified' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',

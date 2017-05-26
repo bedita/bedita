@@ -525,6 +525,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'verified' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
