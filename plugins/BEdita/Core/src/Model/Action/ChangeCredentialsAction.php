@@ -59,8 +59,8 @@ class ChangeCredentialsAction extends BaseAction
     public function validate(array $data)
     {
         $validator = (new Validator())
-            ->notEmpty('token')
-            ->requirePresence('token')
+            ->notEmpty('uuid')
+            ->requirePresence('uuid')
 
             ->notEmpty('password')
             ->requirePresence('password');
@@ -86,12 +86,7 @@ class ChangeCredentialsAction extends BaseAction
             ]);
         }
 
-        $asyncJob = $this->AsyncJobs->find()
-                ->where([
-                    'uuid' => $data['token'],
-                    'completed IS NULL',
-                ])
-                ->firstOrFail();
+        $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);
 
         if (empty($asyncJob->payload['user_id'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['payload.user_id']));

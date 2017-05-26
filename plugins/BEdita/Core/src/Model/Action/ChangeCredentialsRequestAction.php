@@ -27,7 +27,7 @@ use Cake\Validation\Validator;
  * Input data MUST contain:
  *  - 'contact' user email, other contact methods in the future
  *  - 'change_url' base URL to use in email sent to user, actual change URL link will be
- *      {change_url}?id={token}
+ *      {change_url}?uuid={uuid}
  *
  * @since 4.0.0
  */
@@ -113,17 +113,17 @@ class ChangeCredentialsRequestAction extends BaseAction
      * Send change request email to user
      *
      * @param User $user The user
-     * @param string $token Change token
+     * @param string $uuid Change uuid
      * @param string $changeUrl Base change URL
      * @return void
      * @throws \Exception When sending email throws an exception different from \Cake\Network\Exception\SocketException
      */
-    protected function sendMail(User $user, $token, $changeUrl)
+    protected function sendMail(User $user, $uuid, $changeUrl)
     {
         $options = [
             'params' => [
                 'user' => $user,
-                'changeUrl' => $this->getChangeUrl($token, $changeUrl),
+                'changeUrl' => $this->getChangeUrl($uuid, $changeUrl),
             ]
         ];
         $this->getMailer('BEdita/Core.User')->send('changeRequest', [$options]);
@@ -132,14 +132,14 @@ class ChangeCredentialsRequestAction extends BaseAction
     /**
      * Return the credentials change url
      *
-     * @param string $token Change token
+     * @param string $uuid Change uuid
      * @param string $changeUrl Base change URL
      * @return string
      */
-    protected function getChangeUrl($token, $changeUrl)
+    protected function getChangeUrl($uuid, $changeUrl)
     {
         $changeUrl .= (strpos($changeUrl, '?') === false) ? '?' : '&';
 
-        return sprintf('%sid=%s', $changeUrl, $token);
+        return sprintf('%suuid=%s', $changeUrl, $uuid);
     }
 }

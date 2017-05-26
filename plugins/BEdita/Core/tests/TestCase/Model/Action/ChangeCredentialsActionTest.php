@@ -90,7 +90,7 @@ class ChangeCredentialsActionTest extends TestCase
     {
         $job = $this->createTestJob();
         $data = [
-            'token' => $job->uuid,
+            'uuid' => $job->uuid,
             'password' => 'gustavoforpresident',
         ];
 
@@ -115,7 +115,7 @@ class ChangeCredentialsActionTest extends TestCase
         $this->expectException('\Cake\Network\Exception\BadRequestException');
 
         $data = [
-            'token' => 'whatatoken!',
+            'uuid' => 'whatatoken!',
         ];
 
         $action = new ChangeCredentialsAction();
@@ -134,7 +134,7 @@ class ChangeCredentialsActionTest extends TestCase
     {
         $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         $data = [
-            'token' => '66594f3c-8888-49d2-9999-382baf1a12b3',
+            'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
         ];
 
@@ -154,7 +154,7 @@ class ChangeCredentialsActionTest extends TestCase
     {
         $this->expectException('\LogicException');
         $data = [
-            'token' => '66594f3c-995f-49d2-9192-382baf1a12b3',
+            'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',
         ];
 
