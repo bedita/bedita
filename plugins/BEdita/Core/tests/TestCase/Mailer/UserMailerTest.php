@@ -303,7 +303,7 @@ class UserMailerTest extends TestCase
      *
      * @dataProvider changeRequestProvider
      * @covers ::changeRequest()
-     * @covers ::getUser()
+     * @covers ::checkUser()
      */
     public function testChangeRequest($expected, $options)
     {
