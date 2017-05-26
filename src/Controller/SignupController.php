@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\SignupUserAction;
-use Cake\Routing\Router;
+use BEdita\Core\Model\Action\SignupUserActivationAction;
 
 /**
  * Controller for `/signup` endpoint.
@@ -32,7 +32,14 @@ class SignupController extends AppController
     {
         parent::initialize();
         $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-        $this->JsonApi->setConfig('resourceTypes', ['users']);
+
+        if ($this->request->getParam('action') === 'signup' && $this->JsonApi) {
+            $this->JsonApi->setConfig('resourceTypes', ['users']);
+        }
+
+        if ($this->request->getParam('action') === 'activation' && $this->request->contentType() === 'application/json') {
+            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        }
     }
 
     /**
@@ -51,7 +58,6 @@ class SignupController extends AppController
         }
 
         $urlOptions = $this->request->getData('_meta') ?: [];
-        $urlOptions += ['activation_url' => Router::url(['_name' => 'api:signup'], true)];
 
         $action = new SignupUserAction();
         $user = $action->execute([
@@ -63,5 +69,20 @@ class SignupController extends AppController
 
         $this->set('data', $user);
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * Signup activation action.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function activation()
+    {
+        $this->request->allowMethod('post');
+
+        $action = new SignupUserActivationAction();
+        $action(['uuid' => $this->request->getData('uuid')]);
+
+        return $this->response->withStatus(204);
     }
 }
