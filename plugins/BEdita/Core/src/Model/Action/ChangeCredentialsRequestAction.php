@@ -122,7 +122,7 @@ class ChangeCredentialsRequestAction extends BaseAction
     {
         $options = [
             'params' => [
-                'userId' => $user->id,
+                'user' => $user,
                 'changeUrl' => $this->getChangeUrl($token, $changeUrl),
             ]
         ];

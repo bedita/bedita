@@ -1,6 +1,6 @@
 <p><?= __d('bedita', 'Dear {0},', [$user->username]) ?></p>
 <p>
-    <?= __d('bedita', 'you asked to modify your password in {0}.', [$appName]) ?>
+    <?= __d('bedita', 'you asked to modify your password in {0}.', [$projectName]) ?>
     <br>
 <?= __d('bedita', 'To do so please follow this link:') ?>
 </p>

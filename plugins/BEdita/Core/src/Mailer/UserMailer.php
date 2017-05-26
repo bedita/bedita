@@ -13,11 +13,9 @@
 
 namespace BEdita\Core\Mailer;
 
-use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Mailer\Mailer;
-use Cake\ORM\TableRegistry;
 
 /**
  * Mailer class to send notifications to users
@@ -58,29 +56,6 @@ class UserMailer extends Mailer
             ->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
-    }
-
-    /**
-     * Get user from Email `$options`
-     *
-     * @param array $options Email options
-     * @return \Cake\Daasource\EntityInterface User requested
-     * @throws \LogicException When missing some required parameter
-     */
-    protected function getUser(array $options)
-    {
-        if (empty($options['params']['userId'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.userId']));
-        }
-
-        $action = new GetObjectAction(['table' => TableRegistry::get('Users')]);
-        $user = $action(['primaryKey' => $options['params']['userId']]);
-
-        if (empty($user->email)) {
-            throw new \LogicException(__d('bedita', 'User email missing'));
-        }
-
-        return $user;
     }
 
     /**
@@ -127,7 +102,7 @@ class UserMailer extends Mailer
      * Credentials change message.
      *
      * It requires `$options['params']` with:
-     * - `userId` the user id to send signup email
+     * - `user` the user id to send signup email
      * - `changeUrl` the change url to follow
      *
      * @param array $options Email options
@@ -136,19 +111,24 @@ class UserMailer extends Mailer
      */
     public function changeRequest(array $options)
     {
-        $user = $this->getUser($options);
-
         if (empty($options['params']['changeUrl'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));
         }
 
-        $appName = $this->getProjectName();
-        $subject = __d('bedita', '{0} change request', [$appName]);
+        if (empty($options['params']['user'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+        }
+
+        $user = $options['params']['user'];
+        $this->checkUser($user);
+
+        $projectName = $this->getProjectName();
+        $subject = __d('bedita', '{0} change request', [$projectName]);
 
         $this->set([
             'user' => $user,
             'changeUrl' => $options['params']['changeUrl'],
-            'appName' => $appName
+            'projectName' => $projectName
         ]);
 
         return $this->setTemplate('BEdita/Core.change_request')

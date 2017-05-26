@@ -276,7 +276,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing userId' => [
-                new \LogicException('Parameter "params.userId" missing'),
+                new \LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
                         'changeUrl' => 'http://example.com',
@@ -311,6 +311,11 @@ class UserMailerTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
+
+        if (!empty($options['params']['userId'])) {
+            $options['params']['user'] = $this->Users->get($options['params']['userId']);
+        }
+
         $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('changeRequest', [$options]);
 
         static::assertEquals($expected, (bool)$result);
