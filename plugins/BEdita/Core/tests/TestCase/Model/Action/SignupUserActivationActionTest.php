@@ -80,9 +80,9 @@ class SignupUserActivationActionTest extends TestCase
     }
 
     /**
-     * Provider for `testExecute()`
+     * Provider for `testExecuteFailure()`
      *
-     * @return void
+     * @return array
      */
     public function executeFailureProvider()
     {
@@ -113,24 +113,21 @@ class SignupUserActivationActionTest extends TestCase
     }
 
     /**
-     * Test command execution.
+     * Test command execution failure.
      *
+     * @param \Exception $expected The exception expected
+     * @param array $data The data given to action
      * @return void
      *
      * @dataProvider executeFailureProvider
      */
     public function testExecuteFailure($expected, $data)
     {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
 
         $action = new SignupUserActivationAction();
         $result = $action($data);
-
-        static::assertTrue((bool)$result);
-        static::assertInstanceOf(User::class, $result);
     }
 
     /**
@@ -178,7 +175,7 @@ class SignupUserActivationActionTest extends TestCase
         static::assertEquals('on', $user->status);
 
         $count = $this->AsyncJobs
-            ->find('uncompleted')
+            ->find('incomplete')
             ->where(['uuid' => $asyncJob->uuid])
             ->count();
 

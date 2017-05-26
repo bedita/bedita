@@ -55,8 +55,8 @@ class SignupUserActivationAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @throws BadRequestException When missing id or async_jobs row is invalid
-     * @throws \ConflictException When the user is already active
+     * @throws \Cake\Network\Exception\BadRequestException When missing id or async_jobs row is invalid
+     * @throws \Cake\Network\Exception\ConflictExceptionn When the user is already active
      */
     public function execute(array $data = [])
     {
@@ -64,10 +64,7 @@ class SignupUserActivationAction extends BaseAction
             throw new BadRequestException(__d('bedita', 'Parameter "{0}" missing', ['uuid']));
         }
 
-        $asyncJob = $this->AsyncJobs
-            ->find('uncompleted')
-            ->where([$this->AsyncJobs->aliasField('uuid') => $data['uuid']])
-            ->firstOrFail();
+        $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);
 
         if (empty($asyncJob->payload['user_id'])) {
             throw new BadRequestException(__d('bedita', 'Invalid async job, missing user_id'));
@@ -95,7 +92,7 @@ class SignupUserActivationAction extends BaseAction
     /**
      * Send welcome email to user to inform him of successfully activation
      *
-     * @param User $user The user
+     * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
     protected function sendMail(User $user)

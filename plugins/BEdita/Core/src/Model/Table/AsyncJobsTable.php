@@ -268,14 +268,14 @@ class AsyncJobsTable extends Table
     }
 
     /**
-     * Finder for uncompleted async jobs.
+     * Finder for incomplete async jobs.
      *
      * This finder returns a query object that filters asynchronous jobs that haven't been completed yet.
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    protected function findUncompleted(Query $query)
+    protected function findIncomplete(Query $query)
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->isNull($this->aliasField('completed'));

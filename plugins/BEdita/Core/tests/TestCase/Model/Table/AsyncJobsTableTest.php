@@ -282,13 +282,13 @@ class AsyncJobsTableTest extends TestCase
     }
 
     /**
-     * Test finder for uncompleted jobs.
+     * Test finder for incomplete jobs.
      *
      * @return void
      *
-     * @covers ::findUncompleted()
+     * @covers ::findIncomplete()
      */
-    public function testFindUncompleted()
+    public function testFindIncomplete()
     {
         $expected = [
             'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => [
@@ -316,7 +316,7 @@ class AsyncJobsTableTest extends TestCase
 
         ksort($expected);
 
-        $actual = $this->AsyncJobs->find('uncompleted')->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('incomplete')->find('list')->toArray();
         ksort($actual);
 
         static::assertSame($expected, $actual);
