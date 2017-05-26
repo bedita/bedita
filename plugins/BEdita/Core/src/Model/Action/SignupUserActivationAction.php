@@ -56,7 +56,7 @@ class SignupUserActivationAction extends BaseAction
      * {@inheritDoc}
      *
      * @throws \Cake\Network\Exception\BadRequestException When missing id or async_jobs row is invalid
-     * @throws \Cake\Network\Exception\ConflictExceptionn When the user is already active
+     * @throws \Cake\Network\Exception\ConflictException When the user is already active
      */
     public function execute(array $data = [])
     {
