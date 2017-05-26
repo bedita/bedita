@@ -16,7 +16,6 @@ namespace BEdita\Core\Mailer;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Mailer\Mailer;
-use Cake\ORM\TableRegistry;
 
 /**
  * Mailer class to send notifications to users

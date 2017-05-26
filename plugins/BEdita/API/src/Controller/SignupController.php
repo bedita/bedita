@@ -14,7 +14,6 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
-use Cake\Routing\Router;
 
 /**
  * Controller for `/signup` endpoint.
