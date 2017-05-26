@@ -249,7 +249,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $job = $this->createTestJob();
         $data = [
-            'token' => $job->uuid,
+            'uuid' => $job->uuid,
             'password' => 'wewantgustavoforpresident',
         ];
         $this->configRequestHeaders('PATCH', ['Content-Type' => 'application/json']);
@@ -279,7 +279,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $job = $this->createTestJob();
         $data = [
-            'token' => $job->uuid,
+            'uuid' => $job->uuid,
             'password' => 'wewantgustavoforpresident',
             'login' => true,
         ];
