@@ -26,6 +26,7 @@ use Cake\Auth\DefaultPasswordHasher;
  * @property \Cake\I18n\Time $last_login_err
  * @property int $num_login_err
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
+ * @property bool $verified
  *
  * @since 4.0.0
  */
@@ -54,6 +55,7 @@ class User extends Profile
         'last_login' => false,
         'last_login_err' => false,
         'num_login_err' => false,
+        'verified' => false,
     ];
 
     /**

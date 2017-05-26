@@ -79,6 +79,7 @@ class SignupUserActivationAction extends BaseAction
         $user->created_by = $user->id;
         $user->modified_by = $user->id;
         $user->status = 'on';
+        $user->verified = true;
         $this->Users->saveOrFail($user);
 
         $asyncJob->completed = new Time();
