@@ -1,6 +1,6 @@
 <p><?= __d('bedita', 'Dear {0},', [$user->username]) ?></p>
 <p>
-    <?= __d('bedita', 'thank you for registering to {0}.', [$appName]) ?>
+    <?= __d('bedita', 'thank you for registering to {0}.', [$projectName]) ?>
     <br>
     <?= __d('bedita', 'To confirm your registration, please follow this link:') ?>
 </p>

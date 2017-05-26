@@ -39,7 +39,7 @@ class SignupUserAction extends BaseAction
     protected $Users = null;
 
     /**
-     * The AsynJobs table
+     * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
@@ -71,15 +71,18 @@ class SignupUserAction extends BaseAction
             ]);
         }
 
-        $userId = $this->Users->getConnection()->transactional(function () use ($data) {
-            $user = $this->createUser($data['data']);
+        // operations are not in transaction because AsyncJobs could use a different connection
+        $user = $this->createUser($data['data']);
+        try {
             $job = $this->createSignupJob($user);
             $this->sendMail($user, $job, $data['urlOptions']);
+        } catch (\Exception $e) {
+            // if async job or send mail fail remove user created and re-throw the exception
+            $this->Users->delete($user);
+            throw $e;
+        }
 
-            return $user->id;
-        });
-
-        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $userId]);
+        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);
     }
 
     /**
@@ -202,7 +205,7 @@ class SignupUserAction extends BaseAction
     {
         $options = [
             'params' => [
-                'userId' => $user->id,
+                'user' => $user,
                 'activationUrl' => $this->getActivationUrl($job, $urlOptions),
             ]
         ];
@@ -222,6 +225,6 @@ class SignupUserAction extends BaseAction
         $redirectUrl = empty($urlOptions['redirect_url']) ? '' : '&redirect_url=' . rawurlencode($urlOptions['redirect_url']);
         $baseUrl .= (strpos($baseUrl, '?') === false) ? '?' : '&';
 
-        return sprintf('%sid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
+        return sprintf('%suuid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
     }
 }

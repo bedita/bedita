@@ -13,49 +13,72 @@
 
 namespace BEdita\Core\Mailer\Preview;
 
-use Cake\ORM\TableRegistry;
 use DebugKit\Mailer\MailPreview;
 
 /**
- * Preview user emails.
+ * Mail preview for UserMailer
  *
  * @since 4.0.0
- *
  * @codeCoverageIgnore
  */
 class UserMailerPreview extends MailPreview
 {
-
     /**
-     * Preview welcome email.
+     * Preview of Welcome message.
      *
-     * @return \Cake\Mailer\Email
+     * @return \BEdita\Core\Mailer\UserMailer
      */
     public function welcome()
     {
-        $to = 'dev@chialab.io';
+        $user = $this->getUser();
 
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
-        $mailer = $this->getMailer('BEdita/Core.User');
+        $options = [
+            'params' => [
+                'user' => $user
+            ]
+        ];
 
-        return $mailer->welcome(compact('to'));
+        return $this->getMailer('BEdita/Core.User')
+            ->welcome($options);
     }
 
     /**
-     * Preview confirmation email.
+     * Preview of Signup message.
      *
-     * @return \Cake\Mailer\Email
+     * @return \BEdita\Core\Mailer\UserMailer
      */
     public function signup()
     {
-        $params = [
-            'userId' => TableRegistry::get('Users')->find()->where(['email IS NOT' => null])->firstOrFail()->id,
-            'activationUrl' => 'http://example.org/activate?code=abcdef1234567890',
+        $user = $this->getUser();
+
+        $options = [
+            'params' => [
+                'user' => $user,
+                'activationUrl' => 'https://example.com'
+            ]
         ];
 
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
-        $mailer = $this->getMailer('BEdita/Core.User');
+        return $this->getMailer('BEdita/Core.User')
+            ->signup($options);
+    }
 
-        return $mailer->signup(compact('params'));
+    /**
+     * Get last user adding email if empty
+     *
+     * @return \BEdita\Core\Model\Entity\User
+     */
+    protected function getUser()
+    {
+        $this->loadModel('Users');
+        $user = $this->Users
+            ->find()
+            ->order(['id' => 'DESC'])
+            ->first();
+
+        if (!$user->email) {
+            $user->email = 'gustavo@bedita.com';
+        }
+
+        return $user;
     }
 }
