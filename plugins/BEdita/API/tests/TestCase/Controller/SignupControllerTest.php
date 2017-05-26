@@ -372,7 +372,7 @@ class SignupControllerTest extends IntegrationTestCase
             'Content-Type' => 'application/json'
         ]);
         $methodName = strtolower($method);
-        $this->$method('/signup/activation', json_encode($data));
+        $this->$methodName('/signup/activation', json_encode($data));
 
         $result = json_decode((string)$this->_response->getBody(), true);
 
