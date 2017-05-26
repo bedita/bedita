@@ -72,6 +72,11 @@ Router::plugin(
             ['controller' => 'Signup', 'action' => 'signup'],
             ['_name' => 'signup']
         );
+        $routes->connect(
+            '/signup/activation',
+            ['controller' => 'Signup', 'action' => 'activation'],
+            ['_name' => 'signup:activation']
+        );
 
         // Resources.
         $resourcesControllers = implode('|', $resourcesControllers);

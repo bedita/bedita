@@ -159,26 +159,41 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
+        $table = $this->getTable();
+        $tables = array_reverse(($table instanceof InheritanceTable) ? $table->inheritedTables() : []);
+        $aliasField = function ($field) use ($tables) {
+            /* @var \Cake\ORM\Table $table */
+            foreach ($tables as $table) {
+                if ($table->hasField($field, false)) {
+                    return $table->aliasField($field);
+                }
+            }
+
+            return $this->getTable()->aliasField($field);
+        };
         $fields = array_map( // Alias fields to avoid ambiguities.
-            [$this->getTable(), 'aliasField'],
+            $aliasField,
             array_keys($this->getFields())
         );
 
         // Build query conditions.
         return $query
             ->where(function (QueryExpression $exp) use ($fields, $words) {
-                return $exp->or_(function (QueryExpression $exp) use ($fields, $words) {
-                    foreach ($fields as $field) {
+                $groups = [];
+                foreach ($fields as $field) {
+                    $groups[] = $exp->and_(function (QueryExpression $exp) use ($field, $words) {
                         foreach ($words as $word) {
                             $exp = $exp->like(
                                 new FunctionExpression('LOWER', [$field => 'identifier']),
                                 sprintf('%%%s%%', $word)
                             );
                         }
-                    }
 
-                    return $exp;
-                });
+                        return $exp;
+                    });
+                }
+
+                return $exp->or_($groups);
             });
     }
 }
