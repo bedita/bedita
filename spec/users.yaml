@@ -32,6 +32,33 @@ paths:
         '405':
           description: Method Not Allowed
 
+  /signup/activation:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - users
+      summary: Signup user activation
+      description: User signup activation
+      parameters:
+        - in: body
+          name: body
+          description: User activation data
+          required: true
+          schema:
+            $ref: '#/definitions/SignupUserActivationParam'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: Missing uuid
+        '404':
+          description: Not found
+        '405':
+          description: Method Not Allowed
+        '409':
+          description: Conflict - UUIDs don't match
+
   /users:
     get:
       security:
@@ -326,6 +353,11 @@ definitions:
             $ref: '#/definitions/SignupUser'
           meta:
             $ref: '#/definitions/SignupMeta'
+  SignupUserActivationParam:
+    required: [ "uuid" ]
+    properties:
+      uuid:
+        type: string
   SignupMeta:
     properties:
       activation_url:
