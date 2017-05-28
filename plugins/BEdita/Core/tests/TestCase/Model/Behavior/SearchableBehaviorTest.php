@@ -45,8 +45,10 @@ class SearchableBehaviorTest extends TestCase
         parent::setUp();
 
         TableRegistry::get('FakeMammals', ['className' => Table::class])
+            ->setDisplayField('name')
             ->extensionOf('FakeAnimals');
         TableRegistry::get('FakeFelines', ['className' => Table::class])
+            ->setDisplayField('name')
             ->extensionOf('FakeMammals');
     }
 
@@ -160,6 +162,13 @@ class SearchableBehaviorTest extends TestCase
             'two words' => [
                 [],
                 'koala eagle',
+            ],
+            'two words, different fields' => [
+                [
+                    1 => 'cat',
+                ],
+                'eutheria cat',
+                'FakeMammals',
             ],
             'bad type' => [
                 new BadFilterException([
