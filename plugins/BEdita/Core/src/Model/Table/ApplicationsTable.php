@@ -118,7 +118,7 @@ class ApplicationsTable extends Table
      * @param array $options Options array. It requires an `apiKey` key.
      * @return \Cake\ORM\Query
      */
-    public function findApiKey(Query $query, array $options)
+    protected function findApiKey(Query $query, array $options)
     {
         if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
             throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');

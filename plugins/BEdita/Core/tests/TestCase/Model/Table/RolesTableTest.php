@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -40,7 +41,11 @@ class RolesTableTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -49,7 +54,9 @@ class RolesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Roles = TableRegistry::get('Roles');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -58,6 +65,7 @@ class RolesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Roles);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -119,12 +127,32 @@ class RolesTableTest extends TestCase
         $role = $this->Roles->newEntity();
         $this->Roles->patchEntity($role, $data);
 
-        $error = (bool)$role->errors();
-        $this->assertEquals($expected, !$error);
+        $error = (bool)$role->getErrors();
+        static::assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->Roles->save($role);
-            $this->assertTrue((bool)$success);
+            static::assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test finder for my objects.
+     *
+     * @return void
+     *
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $expected = [
+            1 => 1,
+        ];
+
+        $result = $this->Roles->find('mine')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
     }
 }

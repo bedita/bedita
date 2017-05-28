@@ -210,10 +210,9 @@ class ObjectTypesTable extends Table
      *
      * @param \Cake\Event\Event $event Triggered event.
      * @param \Cake\Datasource\EntityInterface $entity Subject entity.
-     * @param \ArrayObject $options Additional options.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterSave(Event $event, EntityInterface $entity)
     {
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         if ($entity->dirty('name')) {
@@ -229,10 +228,9 @@ class ObjectTypesTable extends Table
      *
      * @param \Cake\Event\Event $event Triggered event.
      * @param \Cake\Datasource\EntityInterface $entity Subject entity.
-     * @param \ArrayObject $options Additional options.
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(Event $event, EntityInterface $entity)
     {
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
