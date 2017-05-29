@@ -30,6 +30,7 @@ class AddUserVerifiedField extends AbstractMigration
                 'comment' => 'Has the user been verified?',
                 'null' => false,
                 'default' => false,
+                'length' => null,
             ])
             ->addIndex(
                 [
@@ -41,8 +42,12 @@ class AddUserVerifiedField extends AbstractMigration
             )
             ->update();
 
-        // Set `verified = 1` to all users that are "on".
-        $this->query("UPDATE `users` SET `verified` = 1 WHERE `users`.`id` IN (SELECT `objects`.`id` FROM `objects` WHERE `objects`.`status` = 'on');");
+        // Set `verified = TRUE` to all users that are "on".
+        if ($this->getAdapter()->getAdapterType() === 'pgsql') {
+            $this->query("UPDATE users SET verified = TRUE WHERE users.id IN (SELECT objects.id FROM objects WHERE objects.status = 'on');");
+        } else {
+            $this->query("UPDATE `users` SET `verified` = 1 WHERE `users`.`id` IN (SELECT `objects`.`id` FROM `objects` WHERE `objects`.`status` = 'on');");
+        }
     }
 
     /**
