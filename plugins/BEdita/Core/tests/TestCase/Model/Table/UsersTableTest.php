@@ -303,4 +303,24 @@ class UsersTableTest extends TestCase
             $this->assertTrue((bool)$success);
         }
     }
+
+    /**
+     * Test finder for my objects.
+     *
+     * @return void
+     *
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $expected = [
+            1 => 1,
+        ];
+
+        $result = $this->Users->find('mine')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
+    }
 }

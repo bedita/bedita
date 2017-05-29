@@ -122,7 +122,7 @@ class DateRangesTable extends Table
      * @return \Cake\ORM\Query
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    public function findDateRanges(Query $query, array $options)
+    protected function findDateRanges(Query $query, array $options)
     {
         $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
         $options = array_combine(
