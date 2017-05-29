@@ -18,17 +18,16 @@ use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
 
 /**
+ * {@see \BEdita\Core\Model\Validation\CustomUrlValidationProvider} Test Case
+ *
  * @coversDefaultClass \BEdita\Core\Model\Validation\CustomUrlValidationProvider
  */
 class CustomUrlValidationProviderTest extends TestCase
 {
 
     /**
-     * Test validation.
+     * Test `isValidUrl`.
      *
-     * @param array $expected Expected validation errors.
-     * @param array $data Data being validated.
-     * @param bool $newRecord Is this a new record?
      * @return void
      *
      * @covers ::isValidUrl()
