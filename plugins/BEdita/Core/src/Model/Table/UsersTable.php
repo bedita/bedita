@@ -102,10 +102,7 @@ class UsersTable extends Table
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->requirePresence('password_hash')
-            ->notEmpty('password_hash')
-
-            ->requirePresence('status')
-            ->equals('status', 'draft');
+            ->notEmpty('password_hash');
 
         return $validator;
     }

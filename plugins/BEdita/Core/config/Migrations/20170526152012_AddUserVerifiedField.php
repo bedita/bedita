@@ -26,10 +26,10 @@ class AddUserVerifiedField extends AbstractMigration
     public function up()
     {
         $this->table('users')
-            ->addColumn('verified', 'boolean', [
-                'comment' => 'Has the user been verified?',
-                'null' => false,
-                'default' => false,
+            ->addColumn('verified', 'timestamp', [
+                'comment' => 'Timestamp at which the user became verified',
+                'null' => true,
+                'default' => null,
                 'length' => null,
             ])
             ->addIndex(
@@ -42,12 +42,8 @@ class AddUserVerifiedField extends AbstractMigration
             )
             ->update();
 
-        // Set `verified = TRUE` to all users that are "on".
-        if ($this->getAdapter()->getAdapterType() === 'pgsql') {
-            $this->query("UPDATE users SET verified = TRUE WHERE users.id IN (SELECT objects.id FROM objects WHERE objects.status = 'on');");
-        } else {
-            $this->query("UPDATE `users` SET `verified` = 1 WHERE `users`.`id` IN (SELECT `objects`.`id` FROM `objects` WHERE `objects`.`status` = 'on');");
-        }
+        // Set `verified = NOW()` to all users that are "on".
+        $this->query("UPDATE users SET verified = CURRENT_TIMESTAMP WHERE users.id IN (SELECT objects.id FROM objects WHERE objects.status = 'on');");
     }
 
     /**

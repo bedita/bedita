@@ -37,7 +37,7 @@ class UsersFixture extends TestFixture
                 'last_login' => null,
                 'last_login_err' => null,
                 'num_login_err' => 1,
-                'verified' => 1,
+                'verified' => '2017-05-29 11:36:00',
             ],
             [
                 'id' => 5,
@@ -47,7 +47,7 @@ class UsersFixture extends TestFixture
                 'last_login' => '2016-03-15 09:57:38',
                 'last_login_err' => '2016-03-15 09:57:38',
                 'num_login_err' => 0,
-                'verified' => 0,
+                'verified' => null,
             ],
         ];
 

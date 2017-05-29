@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -141,6 +142,7 @@ class SignupUserActivationActionTest extends TestCase
         list($user, $asyncJob) = $this->signup();
 
         $user->status = 'on';
+        $user->verified = new Time();
         $Users = TableRegistry::get('Users');
         $Users->save($user);
 
@@ -169,7 +171,7 @@ class SignupUserActivationActionTest extends TestCase
         static::assertEquals($user->id, $user->created_by);
         static::assertEquals($user->id, $user->modified_by);
         static::assertEquals('on', $user->status);
-        static::assertTrue($user->verified);
+        static::assertNotNull($user->verified);
 
         $count = $this->AsyncJobs
             ->find('incomplete')

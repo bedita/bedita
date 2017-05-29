@@ -22,11 +22,11 @@ use Cake\Auth\DefaultPasswordHasher;
  * @property string $username
  * @property string $password_hash
  * @property bool $blocked
- * @property \Cake\I18n\Time $last_login
- * @property \Cake\I18n\Time $last_login_err
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $last_login
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $last_login_err
  * @property int $num_login_err
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
- * @property bool $verified
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
  *
  * @since 4.0.0
  */
