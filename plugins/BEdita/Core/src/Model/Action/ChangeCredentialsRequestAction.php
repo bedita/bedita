@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
@@ -68,14 +69,19 @@ class ChangeCredentialsRequestAction extends BaseAction
      */
     public function validate(array $data)
     {
-        $validator = (new Validator())
-            ->email('contact')
+        $validator = new Validator();
+        $validator->setProvider('customUrl', new CustomUrlValidationProvider());
+
+        $validator->email('contact')
             ->notEmpty('contact')
             ->requirePresence('contact')
 
-            ->url('change_url')
             ->notEmpty('change_url')
-            ->requirePresence('change_url');
+            ->requirePresence('change_url')
+            ->add('activation_url', 'customUrl', [
+                'rule' => 'isValidUrl',
+                'provider' => 'customUrl',
+            ]);
 
         $errors = $validator->errors($data);
         if (empty($errors)) {
