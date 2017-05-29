@@ -56,6 +56,11 @@ Router::plugin(
             ['_name' => 'login']
         );
         $routes->connect(
+            '/auth/change',
+            ['controller' => 'Login', 'action' => 'change'],
+            ['_name' => 'login:change']
+        );
+        $routes->connect(
             '/auth',
             ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
             ['_name' => 'login:whoami']
