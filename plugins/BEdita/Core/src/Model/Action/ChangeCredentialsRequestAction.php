@@ -49,14 +49,13 @@ class ChangeCredentialsRequestAction extends BaseAction
             ]);
         }
 
-        $usersTable = TableRegistry::get('Users');
-        $usersTable->getConnection()->transactional(function () use ($data, $usersTable) {
-            $user = $usersTable->find()
+        // operations are not in transaction: every failure stops following operations
+        // and there's nothing to rollback
+        $user = TableRegistry::get('Users')->find()
                     ->where(['email' => $data['contact']])
                     ->firstOrFail();
-            $job = $this->createJob($user);
-            $this->sendMail($user, $job->uuid, $data['change_url']);
-        });
+        $job = $this->createJob($user);
+        $this->sendMail($user, $job->uuid, $data['change_url']);
 
         return true;
     }
