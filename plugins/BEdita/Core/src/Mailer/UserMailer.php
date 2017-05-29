@@ -99,6 +99,46 @@ class UserMailer extends Mailer
     }
 
     /**
+     * Credentials change message.
+     *
+     * It requires `$options['params']` with:
+     * - `user` the user id to send signup email
+     * - `changeUrl` the change url to follow
+     *
+     * @param array $options Email options
+     * @return $this
+     * @throws \LogicException When missing some required parameter
+     */
+    public function changeRequest(array $options)
+    {
+        if (empty($options['params']['changeUrl'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));
+        }
+
+        if (empty($options['params']['user'])) {
+            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+        }
+
+        $user = $options['params']['user'];
+        $this->checkUser($user);
+
+        $projectName = $this->getProjectName();
+        $subject = __d('bedita', '{0} change request', [$projectName]);
+
+        $this->set([
+            'user' => $user,
+            'changeUrl' => $options['params']['changeUrl'],
+            'projectName' => $projectName
+        ]);
+
+        return $this->setTemplate('BEdita/Core.change_request')
+            ->setLayout('BEdita/Core.default')
+            ->setEmailFormat('both')
+            ->setTo($user->email)
+            ->setSubject($subject);
+    }
+
+    /**
      * Check the user is valid.
      *
      * @param \BEdita\Core\Model\Entity\User $user The user entity
@@ -125,8 +165,7 @@ class UserMailer extends Mailer
     protected function getProjectName()
     {
         $currentApplication = CurrentApplication::getApplication();
-        $appName = ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
 
-        return $appName;
+        return ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
     }
 }
