@@ -106,7 +106,7 @@ class UserMailer extends Mailer
      * - `changeUrl` the change url to follow
      *
      * @param array $options Email options
-     * @return $this
+     * @return \Cake\Mailer\Email
      * @throws \LogicException When missing some required parameter
      */
     public function changeRequest(array $options)
