@@ -17,7 +17,7 @@ use Cake\Utility\Text;
 use DebugKit\Mailer\MailPreview;
 
 /**
- * Mail preview for UserMailer
+ * Mail preview for user mailer.
  *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  *
