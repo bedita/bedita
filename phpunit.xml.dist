@@ -4,7 +4,7 @@
     processIsolation="false"
     stopOnFailure="false"
     syntaxCheck="false"
-    bootstrap="./tests/bootstrap.php"
+    bootstrap="./beta/bootstrap.php"
     forceCoversAnnotation="true"
     >
     <php>
@@ -16,15 +16,15 @@
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
         <testsuite name="BEdita 4 App Test Suite">
-            <directory>./tests/TestCase</directory>
+            <directory>./beta/TestCase</directory>
         </testsuite>
         <!-- Add plugin test suites here. -->
         <testsuite name="BEdita 4 API Test Suite">
-            <directory>./plugins/BEdita/API/tests/TestCase</directory>
-            <directory>./plugins/BEdita/API/tests/IntegrationTest</directory>
+            <directory>./plugins/BEdita/API/beta/TestCase</directory>
+            <directory>./plugins/BEdita/API/beta/IntegrationTest</directory>
         </testsuite>
         <testsuite name="BEdita 4 Core Test Suite">
-            <directory>./plugins/BEdita/Core/tests/TestCase</directory>
+            <directory>./plugins/BEdita/Core/beta/TestCase</directory>
         </testsuite>
     </testsuites>
 
