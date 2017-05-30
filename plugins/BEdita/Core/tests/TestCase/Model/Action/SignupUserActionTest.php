@@ -150,6 +150,38 @@ class SignupUserActionTest extends TestCase
     }
 
     /**
+     * Test signup action when activation is not required.
+     *
+     * @return void
+     */
+    public function testExecuteActivationNotRequired()
+    {
+        $data = [
+            'data' => [
+                'username' => 'testsignup',
+                'password_hash' => 'testsignup',
+                'email' => 'test.signup@example.com',
+            ],
+            'urlOptions' => [
+                'activation_url' => 'http://sample.com?confirm=true',
+                'redirect_url' => 'http://sample.com/ok',
+            ],
+        ];
+
+        Email::dropTransport('default');
+        Email::setConfigTransport('default', [
+            'className' => 'Debug',
+        ]);
+        Configure::write('Signup.requireActivation', false);
+
+        $action = new SignupUserAction();
+        $result = $action($data);
+
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('on', $result->status);
+    }
+
+    /**
      * Test execute when exception was raised sending email
      *
      * @return void
