@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BEdita\\API\\Test\\": "tests",
+            "BEdita\\API\\Test\\": "beta",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },

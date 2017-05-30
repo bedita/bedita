@@ -49,7 +49,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BEdita\\App\\Test\\": "tests",
+            "BEdita\\App\\Test\\": "beta",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },
@@ -62,8 +62,8 @@
             "@test",
             "@cs-check"
         ],
-        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
-        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
+        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./beta",
+        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./beta",
         "test": "phpunit --colors=always"
     },
     "extra": {
