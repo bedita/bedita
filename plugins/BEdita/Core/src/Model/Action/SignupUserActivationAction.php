@@ -71,17 +71,20 @@ class SignupUserActivationAction extends BaseAction
         }
 
         $user = $this->Users->get($asyncJob->payload['user_id']);
-        if ($user->status == 'on') {
+        if ($user->status === 'on' && $user->verified !== null) {
             throw new ConflictException(__d('bedita', 'User already active'));
         }
+
+        $now = new Time();
 
         // the user is the creator of himself
         $user->created_by = $user->id;
         $user->modified_by = $user->id;
         $user->status = 'on';
+        $user->verified = $now;
         $this->Users->saveOrFail($user);
 
-        $asyncJob->completed = new Time();
+        $asyncJob->completed = $now;
         $this->AsyncJobs->save($asyncJob);
 
         $this->sendMail($user);
@@ -98,9 +101,7 @@ class SignupUserActivationAction extends BaseAction
     protected function sendMail(User $user)
     {
         $options = [
-            'params' => [
-                'user' => $user,
-            ]
+            'params' => compact('user'),
         ];
         $this->getMailer('BEdita/Core.User')->send('welcome', [$options]);
     }

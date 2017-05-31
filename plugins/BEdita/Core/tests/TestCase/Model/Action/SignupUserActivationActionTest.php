@@ -15,9 +15,8 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
-use BEdita\Core\Model\Entity\AsyncJob;
-use BEdita\Core\Model\Entity\User;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -127,7 +126,7 @@ class SignupUserActivationActionTest extends TestCase
         $this->expectExceptionMessage($expected->getMessage());
 
         $action = new SignupUserActivationAction();
-        $result = $action($data);
+        $action($data);
     }
 
     /**
@@ -140,10 +139,10 @@ class SignupUserActivationActionTest extends TestCase
         $this->expectException(ConflictException::class);
         $this->expectExceptionMessage('User already active');
 
-        $signup = $this->signup();
-        extract($signup);
+        list($user, $asyncJob) = $this->signup();
 
         $user->status = 'on';
+        $user->verified = new Time();
         $Users = TableRegistry::get('Users');
         $Users->save($user);
 
@@ -158,8 +157,7 @@ class SignupUserActivationActionTest extends TestCase
      */
     public function testExecuteOk()
     {
-        $signup = $this->signup();
-        extract($signup);
+        list($user, $asyncJob) = $this->signup();
 
         static::assertEquals(1, $user->created_by);
         static::assertEquals(1, $user->modified_by);
@@ -173,6 +171,7 @@ class SignupUserActivationActionTest extends TestCase
         static::assertEquals($user->id, $user->created_by);
         static::assertEquals($user->id, $user->modified_by);
         static::assertEquals('on', $user->status);
+        static::assertNotNull($user->verified);
 
         $count = $this->AsyncJobs
             ->find('incomplete')
@@ -203,12 +202,13 @@ class SignupUserActivationActionTest extends TestCase
         $signupAction = new SignupUserAction();
         $signupAction($data);
 
+        /* @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()
             ->order(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $user = $this->Users->get($asyncJob->payload['user_id']);
 
-        return compact('user', 'asyncJob');
+        return [$user, $asyncJob];
     }
 }

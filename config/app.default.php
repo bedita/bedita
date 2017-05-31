@@ -408,4 +408,14 @@ return [
         'limit' => 20,
         'maxLimit' => 100,
     ],
+
+    /**
+     * Signup settings.
+     *
+     * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
+     *      before being "activated"?
+     */
+    'Signup' => [
+//        'requireActivation' => true,
+    ],
 ];

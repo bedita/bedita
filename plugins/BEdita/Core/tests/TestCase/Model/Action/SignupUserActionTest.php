@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\User;
+use Cake\Core\Configure;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
@@ -123,11 +124,13 @@ class SignupUserActionTest extends TestCase
     /**
      * Test command execution.
      *
+     * @param array|\Exception $expected Expected result.
+     * @param array $data Action data.
      * @return void
      *
      * @dataProvider executeProvider
      */
-    public function testExecute($expected, $data)
+    public function testExecute($expected, array $data)
     {
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
@@ -143,6 +146,39 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
+        static::assertSame('draft', $result->status);
+    }
+
+    /**
+     * Test signup action when activation is not required.
+     *
+     * @return void
+     */
+    public function testExecuteActivationNotRequired()
+    {
+        $data = [
+            'data' => [
+                'username' => 'testsignup',
+                'password_hash' => 'testsignup',
+                'email' => 'test.signup@example.com',
+            ],
+            'urlOptions' => [
+                'activation_url' => 'http://sample.com?confirm=true',
+                'redirect_url' => 'http://sample.com/ok',
+            ],
+        ];
+
+        Email::dropTransport('default');
+        Email::setConfigTransport('default', [
+            'className' => 'Debug',
+        ]);
+        Configure::write('Signup.requireActivation', false);
+
+        $action = new SignupUserAction();
+        $result = $action($data);
+
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('on', $result->status);
     }
 
     /**

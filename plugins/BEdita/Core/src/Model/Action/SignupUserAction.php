@@ -17,6 +17,7 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
@@ -129,15 +130,20 @@ class SignupUserAction extends BaseAction
             LoggedUser::setUser(['id' => 1]);
         }
 
-        $data = ['status' => 'draft'] + $data;
+        $status = 'draft';
+        if (Configure::read('Signup.requireActivation') === false) {
+            $status = 'on';
+        }
+        unset($data['status']);
+
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         return $action([
-            'entity' => $this->Users->newEntity(),
+            'entity' => $this->Users->newEntity()->set('status', $status),
             'data' => $data,
             'entityOptions' => [
                 'validate' => 'signup',
-            ]
+            ],
         ]);
     }
 
@@ -160,7 +166,7 @@ class SignupUserAction extends BaseAction
                 ],
                 'scheduled_from' => new Time('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
@@ -175,11 +181,9 @@ class SignupUserAction extends BaseAction
      */
     protected function sendMail(User $user, AsyncJob $job, array $urlOptions = [])
     {
+        $activationUrl = $this->getActivationUrl($job, $urlOptions);
         $options = [
-            'params' => [
-                'user' => $user,
-                'activationUrl' => $this->getActivationUrl($job, $urlOptions),
-            ]
+            'params' => compact('activationUrl', 'user'),
         ];
         $this->getMailer('BEdita/Core.User')->send('signup', [$options]);
     }

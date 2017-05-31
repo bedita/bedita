@@ -18,8 +18,9 @@ use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Response;
+use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -176,6 +177,7 @@ class JwtAuthenticateTest extends TestCase
                     'last_login' => null,
                     'last_login_err' => null,
                     'num_login_err' => 1,
+                    'verified' => new Time('2017-05-29 11:36:00'),
                 ],
                 [
                     'userModel' => 'BEdita/API.Users',
