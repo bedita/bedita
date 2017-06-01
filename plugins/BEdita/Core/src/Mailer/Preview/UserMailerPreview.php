@@ -54,7 +54,7 @@ class UserMailerPreview extends MailPreview
         $options = [
             'params' => [
                 'user' => $this->getUser(),
-                'changeUrl' => 'https://example.org/activate?code=' . Text::uuid(),
+                'activationUrl' => 'https://example.org/activate?code=' . Text::uuid(),
             ],
         ];
 
