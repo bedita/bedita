@@ -36,6 +36,9 @@ class DateTimeType extends CakeDateTimeType
      */
     public function marshal($value)
     {
+        if (is_string($value) || is_numeric($value)) {
+            $value = parent::marshal($value);
+        }
         if ($value instanceof \DateTimeInterface) {
             return $value;
         }

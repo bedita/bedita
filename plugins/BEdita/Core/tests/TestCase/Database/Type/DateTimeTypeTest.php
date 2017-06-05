@@ -120,7 +120,7 @@ class DateTimeTypeTest extends TestCase
     {
         return [
             [
-                '20170301121212',
+                '@20170301121212',
             ],
             [
                 '2017 1 1',
