@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Middleware;
 
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\View\ViewVarsTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,7 +38,7 @@ class HtmlMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        if (!($request instanceof Request) || !$request->is('html')) {
+        if (!($request instanceof ServerRequest) || !$request->is('html')) {
             // Not an HTML request, or unable to detect easily.
             return $next($request, $response);
         }
@@ -46,7 +46,7 @@ class HtmlMiddleware
         // Set correct "Accept" header, and proceed as usual.
         $request = $request->withHeader('Accept', 'application/vnd.api+json');
 
-        /* @var \Cake\Network\Response $response */
+        /* @var \Cake\Http\Response $response */
         $response = $next($request, $response);
 
         if (!in_array($response->getHeaderLine('Content-Type'), ['application/json', 'application/vnd.api+json'])) {

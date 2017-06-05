@@ -14,8 +14,8 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\HtmlMiddleware;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -35,9 +35,9 @@ class HtmlMiddlewareTest extends TestCase
 
         $middleware = new HtmlMiddleware();
 
-        $request = (new Request())->withHeader('Accept', 'application/json');
+        $request = (new ServerRequest())->withHeader('Accept', 'application/json');
         $response = new Response();
-        $next = function (Request $request, Response $response) use ($body) {
+        $next = function (ServerRequest $request, Response $response) use ($body) {
             return $response->withStringBody($body);
         };
 
@@ -57,9 +57,9 @@ class HtmlMiddlewareTest extends TestCase
 
         $middleware = new HtmlMiddleware();
 
-        $request = (new Request())->withHeader('Accept', 'text/html');
+        $request = (new ServerRequest())->withHeader('Accept', 'text/html');
         $response = new Response();
-        $next = function (Request $request, Response $response) use ($body) {
+        $next = function (ServerRequest $request, Response $response) use ($body) {
             static::assertSame('application/vnd.api+json', $request->getHeaderLine('Accept'));
 
             return $response
@@ -84,9 +84,9 @@ class HtmlMiddlewareTest extends TestCase
 
         $middleware = new HtmlMiddleware();
 
-        $request = (new Request())->withHeader('Accept', 'text/html');
+        $request = (new ServerRequest())->withHeader('Accept', 'text/html');
         $response = new Response();
-        $next = function (Request $request, Response $response) use ($body) {
+        $next = function (ServerRequest $request, Response $response) use ($body) {
             static::assertSame('application/vnd.api+json', $request->getHeaderLine('Accept'));
 
             return $response

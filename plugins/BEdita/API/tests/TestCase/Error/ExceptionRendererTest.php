@@ -16,9 +16,9 @@ namespace BEdita\API\Test\TestCase\Error;
 use BEdita\API\Error\ExceptionRenderer;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Http\Response;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
-use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 
 /**
