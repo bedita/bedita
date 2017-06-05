@@ -15,13 +15,17 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Entity\AsyncJob;
+use BEdita\Core\Model\Entity\User;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- *  {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsAction
  */
@@ -50,6 +54,8 @@ class ChangeCredentialsActionTest extends TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
             'className' => 'Debug'
@@ -59,7 +65,7 @@ class ChangeCredentialsActionTest extends TestCase
     /**
      * Create job for test
      *
-     * @return void
+     * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createTestJob()
     {
@@ -94,12 +100,23 @@ class ChangeCredentialsActionTest extends TestCase
             'password' => 'gustavoforpresident',
         ];
 
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.credentialsChange', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(3, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+            static::assertInstanceOf(AsyncJob::class, $arguments[2]);
+        });
+
         $action = new ChangeCredentialsAction();
         $res = $action($data);
 
         $user = TableRegistry::get('Users')->get(1, ['contain' => ['Roles']]);
-        $this->assertEquals($res->id, $user->id);
-        $this->assertEquals($res->username, $user->username);
+        static::assertEquals($res->id, $user->id);
+        static::assertEquals($res->username, $user->username);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
     /**
@@ -109,17 +126,20 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
+     * @expectedException \Cake\Network\Exception\BadRequestException
      */
     public function testValidationFail()
     {
-        $this->expectException('\Cake\Network\Exception\BadRequestException');
-
         $data = [
             'uuid' => 'whatatoken!',
         ];
 
+        EventManager::instance()->on('Auth.credentialsChange', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new ChangeCredentialsAction();
-        $res = $action($data);
+        $action($data);
     }
 
     /**
@@ -129,17 +149,21 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
+     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testExecuteFail()
     {
-        $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         $data = [
             'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
         ];
 
+        EventManager::instance()->on('Auth.credentialsChange', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new ChangeCredentialsAction();
-        $res = $action($data);
+        $action($data);
     }
 
     /**
@@ -149,16 +173,20 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
+     * @expectedException \LogicException
      */
     public function testPayloadFail()
     {
-        $this->expectException('\LogicException');
         $data = [
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',
         ];
 
+        EventManager::instance()->on('Auth.credentialsChange', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new ChangeCredentialsAction();
-        $res = $action($data);
+        $action($data);
     }
 }

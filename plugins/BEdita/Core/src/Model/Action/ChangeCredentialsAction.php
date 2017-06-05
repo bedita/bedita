@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Event\EventDispatcherTrait;
 use Cake\I18n\Time;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
@@ -26,19 +27,21 @@ use Cake\Validation\Validator;
 class ChangeCredentialsAction extends BaseAction
 {
 
+    use EventDispatcherTrait;
+
     /**
      * The UsersTable table
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users = null;
+    protected $Users;
 
     /**
-     * The AsynJobs table
+     * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs = null;
+    protected $AsyncJobs;
 
     /**
      * {@inheritDoc}
@@ -94,12 +97,13 @@ class ChangeCredentialsAction extends BaseAction
 
         $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
         $user->password_hash = $data['password'];
+        $this->Users->saveOrFail($user);
 
-        return $this->Users->getConnection()->transactional(function () use ($user, $asyncJob) {
-            $asyncJob->completed = new Time();
-            $this->AsyncJobs->saveOrFail($asyncJob);
+        $asyncJob->completed = new Time();
+        $this->AsyncJobs->saveOrFail($asyncJob);
 
-            return $this->Users->saveOrFail($user);
-        });
+        $this->dispatchEvent('Auth.credentialsChange', [$user, $asyncJob]);
+
+        return $user;
     }
 }
