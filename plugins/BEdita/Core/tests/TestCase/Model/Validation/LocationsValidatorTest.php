@@ -93,6 +93,14 @@ class LocationsValidatorTest extends TestCase
                     'uname' => 'title-one',
                 ],
             ],
+            'invalid coordinates' => [
+                [
+                    'coords.valid',
+                ],
+                [
+                    'coords' => '1212121',
+                ],
+            ],
         ];
     }
 
@@ -114,5 +122,106 @@ class LocationsValidatorTest extends TestCase
         $errors = Hash::flatten($errors);
 
         static::assertEquals($expected, array_keys($errors));
+    }
+
+    /**
+     * Data provider for `testCheckWkt` test case.
+     *
+     * @return array
+     */
+    public function checkWktProvider()
+    {
+        return [
+            'not a string' => [
+                'invalid Well-Known Text',
+                new \stdClass(),
+            ],
+            'random string' => [
+                'invalid Well-Known Text',
+                'I am not a valid WKT',
+            ],
+            'invalid longitude' => [
+                'invalid longitude',
+                'POINT(-180 50)',
+            ],
+            'invalid latitude' => [
+                'invalid latitude',
+                'POINT(180 ..)',
+            ],
+            'valid' => [
+                true,
+                'POINT(180 -90)',
+            ],
+        ];
+    }
+
+    /**
+     * Test WKT validator.
+     *
+     * @param string|true $expected Expected result.
+     * @param mixed $value Value being validated.
+     * @return void
+     *
+     * @dataProvider checkWktProvider()
+     * @covers \BEdita\Core\Model\Validation\LocationsValidator::checkWkt()
+     */
+    public function testCheckWkt($expected, $value)
+    {
+        $result = LocationsValidator::checkWkt($value);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for `testCheckCoordinates` test case.
+     *
+     * @return array
+     */
+    public function checkCoordinatesProvider()
+    {
+        return [
+            'not an array' => [
+                'coordinates must be a pair of values',
+                new \stdClass(),
+            ],
+            'wrong length' => [
+                'coordinates must be a pair of values',
+                [1, 2, 3, 4, 5],
+            ],
+            'not a zero-based numerically-indexed array' => [
+                'coordinates must be a pair of values',
+                // This format would be harder to validate, since many variations are possible. K.I.S.S.!
+                ['lat' => 1, 'lng' => 2],
+            ],
+            'invalid longitude' => [
+                'invalid longitude',
+                ['50.44', '180.0000000001'],
+            ],
+            'invalid latitude' => [
+                'invalid latitude',
+                ['-179.999999999', '91'],
+            ],
+            'valid' => [
+                true,
+                [0, -90],
+            ],
+        ];
+    }
+
+    /**
+     * Test coordinates validator.
+     *
+     * @param string|true $expected Expected result.
+     * @param mixed $value Value being validated.
+     * @return void
+     *
+     * @dataProvider checkCoordinatesProvider()
+     * @covers \BEdita\Core\Model\Validation\LocationsValidator::checkCoordinates()
+     */
+    public function testCheckCoordinates($expected, $value)
+    {
+        $result = LocationsValidator::checkCoordinates($value);
+
+        static::assertSame($expected, $result);
     }
 }
