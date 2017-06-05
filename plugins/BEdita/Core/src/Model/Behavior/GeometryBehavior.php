@@ -102,11 +102,11 @@ class GeometryBehavior extends Behavior
         }
         $point = filter_var_array(array_values($point), FILTER_VALIDATE_FLOAT);
 
-        $valid = LocationsValidator::checkCoordinates($point);
-        if ($valid !== true) {
+        $validationResult = LocationsValidator::checkCoordinates($point);
+        if ($validationResult !== true) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'bad geo data format: ' . $valid,
+                'detail' => 'bad geo data format: ' . $validationResult,
             ]);
         }
 

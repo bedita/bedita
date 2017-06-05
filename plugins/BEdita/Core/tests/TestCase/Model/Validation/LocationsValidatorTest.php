@@ -142,7 +142,7 @@ class LocationsValidatorTest extends TestCase
             ],
             'invalid longitude' => [
                 'invalid longitude',
-                'POINT(-180 50)',
+                'POINT(-180 50.44)',
             ],
             'invalid latitude' => [
                 'invalid latitude',
