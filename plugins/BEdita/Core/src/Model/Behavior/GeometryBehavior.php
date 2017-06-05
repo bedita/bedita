@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
@@ -100,10 +101,12 @@ class GeometryBehavior extends Behavior
             $point = preg_split('/[\s,]/', (string)$point, 2);
         }
         $point = filter_var_array(array_values($point), FILTER_VALIDATE_FLOAT);
-        if (count($point) !== 2 || in_array(false, $point, true) || abs($point[0]) > 90 || abs($point[1]) > 180) {
+
+        $validationResult = LocationsValidator::checkCoordinates($point);
+        if ($validationResult !== true) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'bad geo data format: ' . implode(' ', $point),
+                'detail' => 'bad geo data format: ' . $validationResult,
             ]);
         }
 
