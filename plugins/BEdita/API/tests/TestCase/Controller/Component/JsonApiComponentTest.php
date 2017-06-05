@@ -14,9 +14,9 @@
 namespace BEdita\API\Test\TestCase\Controller\Component;
 
 use BEdita\API\Controller\Component\JsonApiComponent;
+use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -89,9 +89,9 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        $this->assertEquals($expectedMimeType, $component->getController()->response->getMimeType('jsonapi'));
-        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
-        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
+        static::assertEquals($expectedMimeType, $component->getController()->response->getMimeType('jsonapi'));
+        static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
+        static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
 
     /**
@@ -121,7 +121,7 @@ class JsonApiComponentTest extends TestCase
         $controller = new Controller($request);
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
-        $this->assertEquals($expected, $component->getLinks());
+        static::assertEquals($expected, $component->getLinks());
     }
 
     /**
@@ -229,8 +229,50 @@ class JsonApiComponentTest extends TestCase
         $controller->paginate(TableRegistry::get('Roles'));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
-        $this->assertEquals($expectedLinks, $component->getLinks());
-        $this->assertEquals($expectedMeta, $component->getMeta());
+        static::assertEquals($expectedLinks, $component->getLinks());
+        static::assertEquals($expectedMeta, $component->getMeta());
+    }
+
+    /**
+     * Test component `beforeRender()` method.
+     *
+     * @param array $expectedLinks Expected links array.
+     * @param array $expectedMeta Expected meta array.
+     * @param array $query Request query params.
+     * @return void
+     *
+     * @dataProvider paginationProvider
+     * @covers ::beforeRender()
+     */
+    public function testBeforeRender(array $expectedLinks, array $expectedMeta, array $query)
+    {
+        $base = [
+            'gustavo' => 'https://support.example.org',
+        ];
+
+        $request = new Request([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Roles',
+                'action' => 'index',
+                '_method' => 'GET',
+            ],
+            'base' => '/',
+            'url' => 'roles',
+            'query' => $query,
+        ]);
+        $controller = new Controller($request);
+        $controller->paginate(TableRegistry::get('Roles'));
+        $controller->set([
+            '_links' => $base,
+            '_meta' => $base,
+        ]);
+        $controller->loadComponent('BEdita/API.JsonApi');
+
+        $controller->dispatchEvent('Controller.beforeRender');
+
+        static::assertEquals($expectedLinks + $base, $controller->viewVars['_links']);
+        static::assertEquals($expectedMeta + $base, $controller->viewVars['_meta']);
     }
 
     /**
@@ -257,7 +299,7 @@ class JsonApiComponentTest extends TestCase
 
         $component->error(500, 'Example error', 'Example description', 'my-code', ['key' => 'Example metadata']);
 
-        $this->assertEquals($expected, $controller->viewVars['_error']);
+        static::assertEquals($expected, $controller->viewVars['_error']);
     }
 
     /**
@@ -310,7 +352,7 @@ class JsonApiComponentTest extends TestCase
 
         $result = $component->parseInput($input);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -395,11 +437,71 @@ class JsonApiComponentTest extends TestCase
         ]);
 
         $controller = new Controller($request);
-        $component = new JsonApiComponent(new ComponentRegistry($controller), ['resourceTypes' => $types]);
+        $controller->loadComponent('BEdita/API.JsonApi', ['resourceTypes' => $types]);
 
-        $component->startup(new Event('Controller.startup', $controller));
+        $controller->dispatchEvent('Controller.startup');
 
-        $this->assertTrue(true);
+        static::assertTrue(true);
+    }
+
+    /**
+     * Data provider for `testCheckMediaType` test case.
+     *
+     * @return array
+     */
+    public function checkMediaTypeProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                'application/vnd.api+json',
+                true,
+            ],
+            'no check' => [
+                true,
+                'application/json',
+                false,
+            ],
+            'error (dramatic music)' => [
+                new UnsupportedMediaTypeException('Bad request content type "gustavo/supporto"'),
+                'gustavo/supporto',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test media type checks in `startup()` method.
+     *
+     * @param true|\Exception $expected Expected success.
+     * @param string $accept Value of "Accept" header.
+     * @param bool $checkMediaType Is media type check enabled?
+     * @return void
+     *
+     * @dataProvider checkMediaTypeProvider
+     * @covers ::startup()
+     */
+    public function testCheckMediaType($expected, $accept, $checkMediaType)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $request = new Request([
+            'environment' => [
+                'HTTP_ACCEPT' => $accept,
+                'REQUEST_METHOD' => 'GET',
+            ],
+        ]);
+
+        $controller = new Controller($request);
+        $controller->loadComponent('BEdita/API.JsonApi', compact('checkMediaType'));
+
+        $controller->dispatchEvent('Controller.startup');
+
+        static::assertTrue($expected);
     }
 
     /**
@@ -472,10 +574,10 @@ class JsonApiComponentTest extends TestCase
         ]);
 
         $controller = new Controller($request);
-        $component = new JsonApiComponent(new ComponentRegistry($controller));
+        $controller->loadComponent('BEdita/API.JsonApi');
 
-        $component->startup(new Event('Controller.startup', $controller));
+        $controller->dispatchEvent('Controller.startup');
 
-        $this->assertTrue(true);
+        static::assertTrue(true);
     }
 }

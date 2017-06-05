@@ -28,11 +28,16 @@ class ExceptionRenderer extends CakeExceptionRenderer
 {
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(\Exception $exception)
     {
         parent::__construct($exception);
-        Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml']]);
+
+        Request::addDetector('html', [
+            'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
+        ]);
     }
 
     /**
