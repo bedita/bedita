@@ -69,6 +69,12 @@ class ServiceRegistryTest extends TestCase
         $result2 = ServiceRegistry::get('mail');
 
         static::assertSame($result, $result2);
+
+        // test dot notation
+        $result2 = ServiceRegistry::get('BEdita/Core.mail');
+
+        static::assertNotEmpty($result);
+        static::assertInstanceOf(JobService::class, $result);
     }
 
     /**
