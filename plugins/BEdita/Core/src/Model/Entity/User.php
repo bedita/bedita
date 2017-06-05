@@ -20,6 +20,7 @@ use Cake\Auth\DefaultPasswordHasher;
  *
  * @property int $id
  * @property string $username
+ * @property string $password
  * @property string $password_hash
  * @property bool $blocked
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $last_login
@@ -68,6 +69,19 @@ class User extends Profile
         'external_auth',
         'deleted',
     ];
+
+    /**
+     * Password setter. This is an alias for `password_hash`.
+     *
+     * @param string $password Password to be hashed.
+     * @return null
+     */
+    protected function _setPassword($password)
+    {
+        $this->password_hash = $password;
+
+        return null;
+    }
 
     /**
      * Password setter.
