@@ -120,7 +120,7 @@ class DateTimeTypeTest extends TestCase
     {
         return [
             [
-                '@20170301121212',
+                '20170301121212',
             ],
             [
                 '2017 1 1',
@@ -151,6 +151,6 @@ class DateTimeTypeTest extends TestCase
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
 
-        static::assertNull($result);
+        static::assertSame($input, $result);
     }
 }

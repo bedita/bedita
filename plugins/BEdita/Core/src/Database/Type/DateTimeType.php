@@ -36,9 +36,6 @@ class DateTimeType extends CakeDateTimeType
      */
     public function marshal($value)
     {
-        if (is_string($value) || is_numeric($value)) {
-            $value = parent::marshal($value);
-        }
         if ($value instanceof \DateTimeInterface) {
             return $value;
         }
@@ -49,10 +46,8 @@ class DateTimeType extends CakeDateTimeType
             if ($value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');
             }
-
-            return $value;
         }
 
-        return null;
+        return $value;
     }
 }
