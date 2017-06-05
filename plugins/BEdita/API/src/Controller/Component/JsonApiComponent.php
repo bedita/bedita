@@ -16,7 +16,6 @@ use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -283,9 +282,11 @@ class JsonApiComponent extends Component
 
         $this->RequestHandler->renderAs($controller, 'jsonapi');
 
-        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) != self::CONTENT_TYPE) {
+        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
-            throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $controller->request->accepts()) . '"');
+            throw new UnsupportedMediaTypeException(
+                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
+            );
         }
 
         if ($controller->request->is(['post', 'patch'])) {

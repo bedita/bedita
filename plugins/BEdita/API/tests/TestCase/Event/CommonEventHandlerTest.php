@@ -10,16 +10,17 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\Event;
+namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
+use BEdita\API\Middleware\CorsMiddleware;
+use BEdita\API\Middleware\HtmlMiddleware;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
-use Cake\Network\Exception\UnauthorizedException;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -27,12 +28,19 @@ use Cake\TestSuite\TestCase;
  */
 class CommonEventHandlerTest extends TestCase
 {
+
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals'
     ];
 
     /**
      * Test implemented events
+     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -44,7 +52,7 @@ class CommonEventHandlerTest extends TestCase
     }
 
     /**
-     * test build middleware stack
+     * Test build middleware stack when HTML is acceptable.
      *
      * @return void
      * @covers ::buildMiddlewareStack()
@@ -61,13 +69,39 @@ class CommonEventHandlerTest extends TestCase
 
         $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
         EventManager::instance()->dispatch($event);
-        static::assertCount(2, $middleware);
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
-        static::assertInstanceOf('\BEdita\API\Middleware\CorsMiddleware', $middleware->get(1));
+        static::assertCount(3, $middleware);
+        static::assertInstanceOf(HtmlMiddleware::class, $middleware->get(0));
+        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(1));
+        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(2));
     }
 
     /**
-     * test after identify
+     * Test build middleware stack when HTML is not acceptable.
+     *
+     * @return void
+     * @covers ::buildMiddlewareStack()
+     */
+    public function testBuildMiddlewareStackNoHtml()
+    {
+        Configure::write('debug', false);
+        Configure::write('Accept.html', false);
+        EventManager::instance()->on(new CommonEventHandler());
+
+        $middleware = new MiddlewareQueue();
+        static::assertCount(0, $middleware);
+
+        $middleware->add(new ErrorHandlerMiddleware());
+        static::assertCount(1, $middleware);
+
+        $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
+        EventManager::instance()->dispatch($event);
+        static::assertCount(2, $middleware);
+        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
+        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(1));
+    }
+
+    /**
+     * Test after identify
      *
      * @return void
      * @covers ::afterIdentify()

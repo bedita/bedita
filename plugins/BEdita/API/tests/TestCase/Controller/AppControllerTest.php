@@ -99,9 +99,8 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeProvider
+     * @covers ::beforeRender()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
-     * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
-     * @covers \BEdita\API\Error\ExceptionRenderer::render()
      */
     public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
     {
@@ -173,9 +172,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeErrorProvider
-     * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
-     * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
-     * @covers \BEdita\API\Error\ExceptionRenderer::render()
+     * @coversNothing
      */
     public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, array $config = null)
     {
@@ -218,68 +215,6 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Data provider for `testHtmlResponseTemplates` test case.
-     *
-     * @return array
-     */
-    public function htmlResponseTemplatesProvider()
-    {
-        return [
-            'success' => [
-                200,
-                '/roles'
-            ],
-            'missingRoute' => [
-                404,
-                '/find_me_if_you_can'
-            ],
-            'missingRecord' => [
-                404,
-                '/roles/9999999'
-            ],
-            'methodNotAllowed' => [
-                405,
-                '/roles'
-            ],
-        ];
-    }
-
-    /**
-     * Test templates on HTML response.
-     *
-     * @param int $expectedCode Expected response code.
-     * @param string $endpoint The endpoint to call
-     * @return void
-     *
-     * @dataProvider htmlResponseTemplatesProvider
-     * @covers ::html()
-     * @covers \BEdita\API\Error\ExceptionRenderer::render()
-     */
-    public function testHtmlResponseTemplates($expectedCode, $endpoint)
-    {
-        Configure::write('debug', 1);
-
-        // use $_SERVER array to assure using the right HTTP_ACCEPT header also if request
-        // is recreated from globals as in \Cake\Error\ExceptionRenderer::_getController()
-        $_SERVER['HTTP_ACCEPT'] = 'text/html';
-
-        if ($expectedCode == 405) {
-            $this->post($endpoint);
-        } else {
-            $this->get($endpoint);
-        }
-
-        $this->assertResponseCode($expectedCode);
-        $this->assertLayout('html.ctp');
-        $this->assertResponseContains('<!DOCTYPE html>');
-        if ($expectedCode < 400) {
-            $this->assertTemplate('html.ctp');
-        } else {
-            $this->assertTemplate('error.ctp');
-        }
-    }
-
-    /**
      * Test DB connection failure
      *
      * @return void
@@ -295,10 +230,11 @@ class AppControllerTest extends IntegrationTestCase
         ConnectionManager::setConfig('__fail_db_connection', $dbConf);
         ConnectionManager::alias('__fail_db_connection', 'default');
 
-        // use $_SERVER array to assure using the right HTTP_ACCEPT header also
-        // if request is recreated from globals as in \Cake\Error\ExceptionRenderer::_getController()
-        $_SERVER['HTTP_ACCEPT'] = 'application/vnd.api+json';
-
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
         $this->get('/roles');
 
         $this->assertResponseCode(500);
