@@ -68,7 +68,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function errDetailsProvider()
+    public function errorDetailsProvider()
     {
         return [
             'simple' => [
@@ -109,41 +109,51 @@ class ExceptionRendererTest extends TestCase
                 ['title' => 'err title', 'code' => ['err-code']],
                 'err title',
             ],
+            'not a Cake exception' => [
+                new \LogicException('hello'),
+                'hello',
+            ],
         ];
     }
 
     /**
      * Test error detail on response
      *
-     * @param string $errorMessage Expected error message.
+     * @param array|string|\Exception $exception Expected error.
      * @param string $title Expected error title.
      * @param string $detail Additional details.
      * @param string $code Error code.
      * @return void
      *
-     * @dataProvider errDetailsProvider
+     * @dataProvider errorDetailsProvider
      * @covers ::render()
      * @covers ::_message()
+     * @covers ::_template()
      * @covers ::errorDetail()
      * @covers ::appErrorCode()
      */
-    public function testErrorDetails($errorMessage, $title, $detail = '', $code = '')
+    public function testErrorDetails($exception, $title, $detail = '', $code = '')
     {
-        $renderer = new ExceptionRenderer(new NotFoundException($errorMessage));
+        if (!($exception instanceof \Exception)) {
+            $exception = new NotFoundException($exception);
+        }
+
+        $renderer = new ExceptionRenderer($exception);
         $renderer->controller->request->env('HTTP_ACCEPT', 'application/json');
         $response = $renderer->render();
 
         $responseBody = json_decode((string)$response->getBody(), true);
-        $this->assertEquals($title, $responseBody['error']['title']);
+        static::assertEquals('error', $renderer->template);
+        static::assertEquals($title, $responseBody['error']['title']);
         if ($detail) {
-            $this->assertEquals($detail, $responseBody['error']['detail']);
+            static::assertEquals($detail, $responseBody['error']['detail']);
         } else {
-            $this->assertArrayNotHasKey('detail', $responseBody['error']);
+            static::assertArrayNotHasKey('detail', $responseBody['error']);
         }
         if ($code) {
-            $this->assertEquals($code, $responseBody['error']['code']);
+            static::assertEquals($code, $responseBody['error']['code']);
         } else {
-            $this->assertArrayNotHasKey('code', $responseBody['error']);
+            static::assertArrayNotHasKey('code', $responseBody['error']);
         }
     }
 
@@ -248,7 +258,7 @@ class ExceptionRendererTest extends TestCase
     }
 
     /**
-     *  Perform some asserts to check JSON response
+     * Perform some asserts to check JSON response
      *
      * @param \BEdita\API\Error\ExceptionRenderer $renderer
      * @param \Cake\Network\Response $response
