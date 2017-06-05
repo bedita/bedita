@@ -13,6 +13,5 @@
     <?= $this->fetch('script') ?>
 </head>
 <body>
-    <h1><?= sprintf('%s %s', $method, urldecode($url)) ?></h1>
     <?= $this->fetch('content') ?>
 </body>
