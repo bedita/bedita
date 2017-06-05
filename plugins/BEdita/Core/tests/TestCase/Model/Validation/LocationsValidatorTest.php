@@ -18,7 +18,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * @coversNothing
+ * @coversDefaultClass \BEdita\Core\Model\Validation\LocationsValidator
  */
 class LocationsValidatorTest extends TestCase
 {
@@ -113,6 +113,7 @@ class LocationsValidatorTest extends TestCase
      * @return void
      *
      * @dataProvider validationProvider()
+     * @coversNothing
      */
     public function testValidation(array $expected, array $data, $newRecord = true)
     {
@@ -163,7 +164,7 @@ class LocationsValidatorTest extends TestCase
      * @return void
      *
      * @dataProvider checkWktProvider()
-     * @covers \BEdita\Core\Model\Validation\LocationsValidator::checkWkt()
+     * @covers ::checkWkt()
      */
     public function testCheckWkt($expected, $value)
     {
@@ -216,7 +217,7 @@ class LocationsValidatorTest extends TestCase
      * @return void
      *
      * @dataProvider checkCoordinatesProvider()
-     * @covers \BEdita\Core\Model\Validation\LocationsValidator::checkCoordinates()
+     * @covers ::checkCoordinates()
      */
     public function testCheckCoordinates($expected, $value)
     {
