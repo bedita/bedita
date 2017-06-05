@@ -16,7 +16,7 @@ namespace BEdita\API\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 
 /**
@@ -35,7 +35,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     {
         parent::__construct($exception);
 
-        Request::addDetector('html', [
+        ServerRequest::addDetector('html', [
             'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
         ]);
     }

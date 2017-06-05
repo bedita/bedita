@@ -16,8 +16,8 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\Controller\AppController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use Cake\Http\ServerRequest;
 use Cake\Network\Exception\NotAcceptableException;
-use Cake\Network\Request;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
@@ -163,7 +163,7 @@ class AppControllerTest extends IntegrationTestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $request = new Request([
+        $request = new ServerRequest([
             'environment' => [
                 'HTTP_ACCEPT' => $accept,
                 'REQUEST_METHOD' => 'GET',

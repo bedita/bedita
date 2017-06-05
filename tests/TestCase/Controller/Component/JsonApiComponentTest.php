@@ -17,7 +17,7 @@ use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
@@ -108,7 +108,7 @@ class JsonApiComponentTest extends TestCase
             'home' => 'http://example.org/home',
         ];
 
-        $request = new Request([
+        $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',
                 'controller' => 'Roles',
@@ -214,7 +214,7 @@ class JsonApiComponentTest extends TestCase
      */
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {
-        $request = new Request([
+        $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',
                 'controller' => 'Roles',
@@ -250,7 +250,7 @@ class JsonApiComponentTest extends TestCase
             'gustavo' => 'https://support.example.org',
         ];
 
-        $request = new Request([
+        $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',
                 'controller' => 'Roles',
@@ -427,7 +427,7 @@ class JsonApiComponentTest extends TestCase
             $this->expectException('\Cake\Network\Exception\ConflictException');
         }
 
-        $request = new Request([
+        $request = new ServerRequest([
             'environment' => [
                 'HTTP_ACCEPT' => 'application/vnd.api+json',
                 'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
@@ -489,7 +489,7 @@ class JsonApiComponentTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $request = new Request([
+        $request = new ServerRequest([
             'environment' => [
                 'HTTP_ACCEPT' => $accept,
                 'REQUEST_METHOD' => 'GET',
@@ -564,7 +564,7 @@ class JsonApiComponentTest extends TestCase
             $this->expectException('\Cake\Network\Exception\ForbiddenException');
         }
 
-        $request = new Request([
+        $request = new ServerRequest([
             'environment' => [
                 'HTTP_ACCEPT' => 'application/vnd.api+json',
                 'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
