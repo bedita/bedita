@@ -49,11 +49,15 @@ class ServiceRegistry
             return static::$instances[$name];
         }
 
-        $className = Inflector::camelize($name);
-        $fullClassName = App::className($className, 'Job/Service', 'Service');
-        if ($fullClassName === false && strpos($className, '.') === false) {
-            $fullClassName = App::className('BEdita/Core.' . $className, 'Job/Service', 'Service');
+        $plugin = 'BEdita/Core.';
+        if (strpos($name, '.') !== false) {
+            list($plugin, $name) = explode('.', $name);
+            $plugin = Inflector::camelize($plugin) . '.';
         }
+
+        $className = $plugin . Inflector::camelize($name);
+        $fullClassName = App::className($className, 'Job/Service', 'Service');
+
         if ($fullClassName === false) {
             throw new \LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
         }
