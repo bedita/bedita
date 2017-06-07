@@ -73,6 +73,10 @@ class ProfilesValidator extends ObjectsValidator
             ->allowEmpty('phone')
 
             ->url('website')
-            ->allowEmpty('website');
+            ->allowEmpty('website')
+
+            ->allowEmpty('national_id_number')
+
+            ->allowEmpty('vat_number');
     }
 }
