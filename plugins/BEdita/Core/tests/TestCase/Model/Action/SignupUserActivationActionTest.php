@@ -15,7 +15,11 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
+use BEdita\Core\Model\Entity\AsyncJob;
+use BEdita\Core\Model\Entity\User;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
@@ -125,6 +129,10 @@ class SignupUserActivationActionTest extends TestCase
         $this->expectException(get_class($expected));
         $this->expectExceptionMessage($expected->getMessage());
 
+        EventManager::instance()->on('Auth.signupActivation', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new SignupUserActivationAction();
         $action($data);
     }
@@ -146,6 +154,10 @@ class SignupUserActivationActionTest extends TestCase
         $Users = TableRegistry::get('Users');
         $Users->save($user);
 
+        EventManager::instance()->on('Auth.signupActivation', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $signupActivationAction = new SignupUserActivationAction();
         $signupActivationAction(['uuid' => $asyncJob->uuid]);
     }
@@ -163,6 +175,16 @@ class SignupUserActivationActionTest extends TestCase
         static::assertEquals(1, $user->modified_by);
         static::assertEquals('draft', $user->status);
 
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.signupActivation', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(3, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+            static::assertInstanceOf(AsyncJob::class, $arguments[2]);
+        });
+
         $signupActivationAction = new SignupUserActivationAction();
         $signupActivationAction(['uuid' => $asyncJob->uuid]);
 
@@ -172,6 +194,7 @@ class SignupUserActivationActionTest extends TestCase
         static::assertEquals($user->id, $user->modified_by);
         static::assertEquals('on', $user->status);
         static::assertNotNull($user->verified);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
 
         $count = $this->AsyncJobs
             ->find('incomplete')
