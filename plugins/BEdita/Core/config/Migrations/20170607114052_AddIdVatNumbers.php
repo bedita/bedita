@@ -10,13 +10,13 @@ class AddIdVatNumbers extends AbstractMigration
     {
         $this->table('profiles')
             ->addColumn('national_id_number', 'string', [
-                'comment' => '',
+                'comment' => 'national identification number (like SSN in USA or NI number in UK)',
                 'null' => true,
                 'default' => null,
                 'limit' => 32,
             ])
             ->addColumn('vat_number', 'string', [
-                'comment' => '',
+                'comment' => 'value added tax identification number (VAT)',
                 'null' => true,
                 'default' => null,
                 'limit' => 32,
