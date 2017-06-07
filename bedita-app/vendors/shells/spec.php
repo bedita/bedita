@@ -43,12 +43,15 @@ class SpecShell extends BeditaBaseShell {
         }
         $dir = new Folder($source);
         $files = $dir->find('.*\.yaml', true);
-        $spec = ['paths' => [], 'definitions' => []];
+        $spec = ['paths' => [], 'definitions' => [], 'tags' => []];
         foreach ($files as $file) {
             $yamlData = Yaml::parse(file_get_contents($dir->pwd() . DS . $file));
             $spec = array_merge($yamlData, $spec);
             if (!empty($yamlData['paths'])) {
                 $spec['paths'] += $yamlData['paths'];
+            }
+            if (!empty($yamlData['tags'])) {
+                $spec['tags'] = array_merge($spec['tags'],$yamlData['tags']);
             }
             $spec['definitions'] = array_merge(
                 empty($yamlData['definitions']) ? [] : $yamlData['definitions'],
