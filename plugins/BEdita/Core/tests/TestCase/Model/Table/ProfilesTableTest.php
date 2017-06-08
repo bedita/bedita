@@ -170,6 +170,8 @@ class ProfilesTableTest extends TestCase
             'state_name',
             'phone',
             'website',
+            'national_id_number',
+            'vat_number',
             'status',
             'uname',
             'locked',
