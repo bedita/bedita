@@ -44,6 +44,7 @@ class EndpointAuthorize extends BaseAuthorize
     protected $_defaultConfig = [
         'blockAnonymousApps' => false,
         'blockAnonymousUsers' => true,
+        'apiKeyQueryString' => 'api_key',
         'apiKeyHeaderName' => 'X-Api-Key',
         'defaultAuthorized' => false,
     ];
@@ -146,6 +147,8 @@ class EndpointAuthorize extends BaseAuthorize
 
     /**
      * Get application for request.
+     * This is done primarily with an API_KEY header like 'X-Api-Key',
+     * alternatively `api_key` query string is used (not recommended)
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
@@ -154,13 +157,16 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $application = CurrentApplication::getApplication();
         if ($application === null) {
-            $header = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
-            if (empty($header) && empty($this->_config['blockAnonymousApps'])) {
+            $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
+            if (empty($apiKey)) {
+                $apiKey = $this->request->getQuery($this->_config['apiKeyQueryString']);
+            }
+            if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
                 return null;
             }
 
             try {
-                CurrentApplication::setFromApiKey($header);
+                CurrentApplication::setFromApiKey($apiKey);
             } catch (\BadMethodCallException $e) {
                 throw new ForbiddenException(__d('bedita', 'Missing API key'));
             } catch (RecordNotFoundException $e) {
