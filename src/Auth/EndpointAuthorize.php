@@ -170,7 +170,7 @@ class EndpointAuthorize extends BaseAuthorize
         if ($this->application === null) {
             $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
             if (empty($apiKey)) {
-                $apiKey = $this->request->getQuery($this->_config['apiKeyQueryString']);
+                $apiKey = strval($this->request->getQuery($this->_config['apiKeyQueryString']));
             }
             if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
                 return null;
