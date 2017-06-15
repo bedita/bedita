@@ -135,12 +135,13 @@ class EndpointAuthorize extends BaseAuthorize
      * Perform user unauthentication to return 401 Unauthorized
      * instead of 403 Forbidden
      *
-     * @return void
+     * @return mixed
      */
     protected function unauthenticate()
     {
         $controller = $this->_registry->getController();
-        $controller
+
+        return $controller
             ->Auth->getAuthenticate('BEdita/API.Jwt')
             ->unauthenticated($controller->request, $controller->response);
     }
