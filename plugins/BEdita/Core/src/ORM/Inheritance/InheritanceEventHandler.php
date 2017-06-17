@@ -48,9 +48,10 @@ class InheritanceEventHandler implements EventListenerInterface
      *
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
+     * @param \ArrayObject $options Save options.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
         /* @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
@@ -68,7 +69,12 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Save parent entity.
-        $parentEntity = $inheritedTable->save($parentEntity, ['atomic' => false]);
+        $options = ['atomic' => false] + $options->getArrayCopy();
+        $options['associated'] = array_diff_key(
+            $options['associated'],
+            array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys()))
+        );
+        $parentEntity = $inheritedTable->save($parentEntity, $options);
         if ($parentEntity === false) {
             return false;
         }
@@ -84,11 +90,12 @@ class InheritanceEventHandler implements EventListenerInterface
      *
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
+     * @param \ArrayObject $options Delete options.
      * @return void
      * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if delete operation on the
      *      parent table fails.
      */
-    public function afterDelete(Event $event, EntityInterface $entity)
+    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
         /* @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
@@ -104,7 +111,7 @@ class InheritanceEventHandler implements EventListenerInterface
 
         // Delete parent entity.
         // Here we MUST use `saveOrFail`, since simply stopping the event wouldn't abort the delete operation. :(
-        $inheritedTable->deleteOrFail($parentEntity, ['atomic' => false]);
+        $inheritedTable->deleteOrFail($parentEntity, ['atomic' => false] + $options->getArrayCopy());
     }
 
     /**
