@@ -16,7 +16,7 @@ namespace BEdita\Core\ORM\Inheritance;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\ORM\Table;
+use Cake\ORM\Table as CakeTable;
 
 /**
  * Event handler for Class Table Inheritance.
@@ -116,7 +116,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\ORM\Table $inheritedTable Inherited table.
      * @return \Cake\Datasource\EntityInterface Entity in inherited table.
      */
-    protected function toParent(EntityInterface $entity, EntityInterface $parent, Table $table, Table $inheritedTable)
+    protected function toParent(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
     {
         $properties = array_diff(
             array_merge(array_keys($entity->toArray()), $entity->getHidden()), // All properties.
@@ -145,7 +145,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\ORM\Table $inheritedTable Inherited table.
      * @return \Cake\Datasource\EntityInterface Entity in current table.
      */
-    protected function toDescendant(EntityInterface $entity, EntityInterface $parent, Table $table, Table $inheritedTable)
+    protected function toDescendant(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
     {
         $properties = array_merge(array_keys($parent->toArray()), $parent->getHidden()); // All properties.
         $entity->set(array_filter($parent->extract($properties)), ['guard' => false]); // Copy properties.
