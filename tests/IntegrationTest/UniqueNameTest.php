@@ -30,7 +30,7 @@ class UniqueNameTest extends IntegrationTestCase
     /**
      * Data provider for testDoubleInsert
      *
-     * @return void
+     * @return array
      */
     public function doubleInsertProvider()
     {
