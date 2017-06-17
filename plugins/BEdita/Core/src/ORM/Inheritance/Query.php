@@ -13,11 +13,7 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
-use Cake\Database\ExpressionInterface;
-use Cake\Database\Expression\FieldInterface;
-use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 
@@ -26,294 +22,139 @@ use Cake\ORM\Table as CakeTable;
  * Also add useful methods to patch the query clauses in CTI context.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\ORM\Inheritance\Table _repository
  */
 class Query extends CakeQuery
 {
-    /**
-     * It keeps trace of inheritance to avoid repeated operations
-     *
-     * @var array
-     */
-    protected $inheritanceMap = [];
 
     /**
-     * The alias checker used to extract fields name aliased with `self::_repository` alias.
-     * It needs to boost performance using `substr()` in case of repeated replaces.
-     *
-     * Contains the two keys:
-     * - `string` the string to check i.e. `TableAlias.`
-     * - `length` the length of the string to check
-     *
-     * @var array
-     * @see self::aliasChecker()
-     * @see self::extractField()
+     * {@inheritDoc}
      */
-    protected $aliasChecker = [];
-
-    /**
-     * Setup `self::$aliasChecker`
-     *
-     * @param \Cake\Datasource\RepositoryInterface $table The table on which build the checker
-     * @return array
-     */
-    protected function aliasChecker(RepositoryInterface $table)
+    public function addDefaultTypes(CakeTable $table)
     {
-        $checker = $table->alias() . '.';
+        parent::addDefaultTypes($table);
 
-        return $this->aliasChecker = ['string' => $checker, 'length' => strlen($checker)];
+        if ($table instanceof Table) {
+            // Add types of fields from inherited tables, so that they are cast to the correct type.
+            $alias = $table->getAlias();
+            foreach ($table->inheritedTables() as $table) {
+                $map = $table->getSchema()->typeMap();
+                $fields = [];
+                foreach ($map as $f => $type) {
+                    $fields[$f] = $fields[$alias . '.' . $f] = $fields[$alias . '__' . $f] = $type;
+                }
+                $this->getTypeMap()->addDefaults($fields);
+            }
+        }
+
+        return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function _execute()
+    protected function _addDefaultFields()
     {
-        $this->triggerBeforeFind();
-        if ($this->_results) {
-            $decorator = $this->_decoratorClass();
+        $select = $this->clause('select');
+        $this->_hasFields = true;
 
-            return new $decorator($this->_results);
+        if (!count($select) || $this->_autoFields === true) {
+            // If no fields have explicitly been selected, and autoFields is enabled, select all fields from inheritance chain.
+            $this->_hasFields = false;
+            $columns = $this->_repository->getSchema()->columns();
+            foreach ($this->_repository->inheritedTables() as $inheritedTable) {
+                $columns = array_merge($columns, $inheritedTable->getSchema()->columns());
+            }
+
+            $this->select($columns);
+            $select = $this->clause('select');
         }
 
-        $statement = $this->getEagerLoader()->loadExternal($this, $this->execute());
-
-        return new ResultSet($this, $statement);
+        $aliased = $this->aliasFields($select, $this->_repository->getAlias());
+        $this->select($aliased, true);
     }
 
     /**
-     * Helper method to get the complete table inheritance of `$this->_repository`.
-     * Once obtained it returns its value without recalculate it.
-     *
-     * @see \BEdita\Core\ORM\Inheritance\Table::inheritedTables
-     * @return array
+     * {@inheritDoc}
      */
-    protected function inheritedTables()
+    protected function _transformQuery()
     {
-        if (array_key_exists('tables', $this->inheritanceMap)) {
-            return $this->inheritanceMap['tables'];
+        if ($this->_dirty && $this->_type === 'select' && empty($this->_parts['from']) && $this->_repository->inheritedTable() !== null) {
+            // If no "from" was explicitly set, use CTI sub-query.
+            $this->from([$this->_repository->getAlias() => $this->getInheritanceSubQuery()], true);
         }
 
-        $this->inheritanceMap['tables'] = $this->_repository->inheritedTables();
-
-        return $this->inheritanceMap['tables'];
+        parent::_transformQuery();
     }
 
     /**
-     * Execute all the fixes to work right in CTI context
-     * and return the query patched
+     * Get sub-query that returns inheritance chain as a single expression.
      *
-     * @return $this
+     * @return \Cake\ORM\Query
      */
-    public function fixAll()
+    protected function getInheritanceSubQuery()
     {
-        $this->fixContain();
+        $subQuery = new parent($this->getConnection(), $this->_repository);
 
-        return $this
-            ->traverseExpressions([$this, 'fixExpression'])
-            ->traverse(
-                [$this, 'fixClause'],
-                ['select', 'group', 'distinct']
+        // Current table.
+        $subQuery
+            ->select(
+                // Select fields from current table.
+                $this->subQueryAliasFields(
+                    $this->_repository->getSchema()->columns(),
+                    $this->_repository
+                )
+            )
+            ->from(
+                // Set "from" of the sub-query.
+                [$this->_repository->getAlias() => $this->_repository->getTable()]
             );
+
+        // Inherited tables.
+        foreach ($this->_repository->inheritedTables() as $table) {
+            $subQuery
+                ->select(
+                    // Add fields from inherited table to "select" clause.
+                    $this->subQueryAliasFields(
+                        array_diff($table->getSchema()->columns(), (array)$table->getPrimaryKey()), // Be careful to avoid duplicate columns.
+                        $table
+                    )
+                )
+                ->innerJoin(
+                    // Add joins with inherited tables.
+                    [$table->getAlias() => $table->getTable()],
+                    function (QueryExpression $exp) use ($table) {
+                        return $exp->equalFields(
+                            $table->aliasField((string)$table->getPrimaryKey()),
+                            $this->_repository->aliasField((string)$this->_repository->getPrimaryKey())
+                        );
+                    }
+                );
+        }
+
+        return $subQuery;
     }
 
     /**
-     * Arrange contain mapping tables to the right association
+     * Alias fields for use in `from` sub-query.
      *
-     * * add inherited tables
-     * * arrange tables in `self::contain()` to the right inherited table
-     * * override contain data with that calculated
+     * Fields **MUST NOT** have CakePHP's default aliases, but should rather have their "cleaned" name version.
      *
-     * @return $this
+     * For instance, a field named `foo` in the table `bars` would be aliased by Cake as `Bars__foo`, but we
+     * want it to be _exactly_ `foo` so that the main query can use the correct name.
+     *
+     * @param string[] $fields Fields to be aliased.
+     * @param \Cake\ORM\Table $table Table instance.
+     * @return array
      */
-    public function fixContain()
+    protected function subQueryAliasFields(array $fields, CakeTable $table)
     {
-        $inheritedTables = array_map(function (CakeTable $table) {
-            return $table->getAlias();
-        }, $this->inheritedTables());
-
-        $contain = $this->contain();
-        $contain += array_fill_keys($inheritedTables, []);
         $result = [];
-
-        foreach ($contain as $tableName => $tableContain) {
-            $containString = $this->buildContainString($tableName);
-            if ($containString === false) {
-                $containString = $tableName;
-            }
-            $result[$containString] = $tableContain;
+        foreach ($fields as $field) {
+            $result[$field] = $table->aliasField($field);
         }
 
-        $this->contain($result, true);
-
-        return $this;
-    }
-
-    /**
-     * Given a table name return the right contain string
-     *
-     * If `$tableName` is a direct association to current table return it
-     * else search if `$tableName` is associated to a inherited table
-     *
-     * Return false if `$tableName` is not found as association to any table
-     *
-     * @param string $tableName The starting table name
-     * @return string|false
-     */
-    public function buildContainString($tableName)
-    {
-        if ($this->_repository->association($tableName)) {
-            return $tableName;
-        }
-
-        foreach ($this->inheritedTables() as $inherited) {
-            $containString = empty($containString) ? $inherited->alias() : $containString . '.' . $inherited->alias();
-            if (!$inherited->association($tableName)) {
-                continue;
-            }
-
-            return $containString . '.' . $tableName;
-        }
-
-        return false;
-    }
-    /**
-     * Fix sql clause mapping inherited fields.
-     *
-     * Pay attention that this method just fixes clauses in the format of string or array of string.
-     * Moreover at the end `\Cake\ORM\Query::$clause()` is called with overwrite `true` as second param
-     * so assure that the clause method of `\Cake\ORM\Query` has the right signature.
-     *
-     * If you have to fix query expression you should use `self::fixExpression()` instead.
-     *
-     * @param array|\Cake\Database\ExpressionInterface|bool|string $clauseData The clause data
-     * @param string $clause The sql clause
-     * @return $this
-     */
-    public function fixClause($clauseData, $clause)
-    {
-        $clauseData = $clauseData ?: $this->clause($clause);
-        if (empty($clauseData) || is_bool($clauseData) || $clauseData instanceof ExpressionInterface) {
-            return $this;
-        }
-
-        if (!is_array($clauseData)) {
-            $clauseData = [$clauseData];
-        }
-
-        foreach ($clauseData as $key => $data) {
-            if (!is_string($data)) {
-                continue;
-            }
-
-            $clauseData[$key] = $this->fixAliasField($data);
-        }
-
-        $this->{$clause}($clauseData, true);
-
-        return $this;
-    }
-
-    /**
-     * Fix query expressions mapping inherited fields
-     *
-     * @param \Cake\Database\ExpressionInterface $expression The expression to manipulate
-     * @return $this
-     */
-    public function fixExpression(ExpressionInterface $expression)
-    {
-        if ($expression instanceof IdentifierExpression) {
-            $identifier = $expression->getIdentifier();
-            $expression->setIdentifier($this->fixAliasField($identifier));
-
-            return $this;
-        }
-
-        if ($expression instanceof FieldInterface) {
-            $field = $expression->getField();
-            if (is_string($field)) {
-                $expression->setField($this->fixAliasField($field));
-            }
-
-            return $this;
-        }
-
-        if ($expression instanceof QueryExpression) {
-            $expression->iterateParts(function ($value, &$key) {
-                if (!is_numeric($key)) {
-                    $key = $this->fixAliasField($key);
-                }
-
-                if (is_string($value)) {
-                    return $this->fixAliasField($value);
-                }
-
-                return $value;
-            });
-        }
-
-        return $this;
-    }
-
-    /**
-     * Given a `$field` return itself aliased as `TableAlias.column_name`
-     * eventually using the right inherited table
-     *
-     * If `$field` doesn't correspond to any inherited table columns
-     * then return it without any change.
-     *
-     * @param string $field The field string
-     * @return string
-     */
-    public function fixAliasField($field)
-    {
-        $field = $this->extractField($field);
-
-        if (strpos($field, '.') !== false) {
-            return $field;
-        }
-
-        if ($this->_repository->hasField($field, false)) {
-            return $this->_repository->alias() . '.' . $field;
-        }
-
-        foreach ($this->inheritedTables() as $inherited) {
-            if (!$inherited->hasField($field, false)) {
-                continue;
-            }
-
-            return $inherited->alias() . '.' . $field;
-        }
-
-        return $field;
-    }
-
-    /**
-     * Given a `$field` returns it without the `self::$table` alias
-     *
-     * @param string $field The field string
-     * @return string
-     */
-    protected function extractField($field)
-    {
-        if (empty($this->aliasChecker)) {
-            $this->aliasChecker($this->_repository);
-        }
-
-        $aliasedWith = substr($field, 0, $this->aliasChecker['length']);
-        if ($aliasedWith == $this->aliasChecker['string']) {
-            $field = substr($field, $this->aliasChecker['length']);
-        }
-
-        return $field;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function cleanCopy()
-    {
-        $this->triggerBeforeFind();
-
-        return parent::cleanCopy();
+        return $result;
     }
 }
