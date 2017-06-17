@@ -43,6 +43,19 @@ class Table extends CakeTable
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        // Attach event handler for inheritance.
+        $this->eventManager()->on(new InheritanceEventHandler());
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function query()
     {
@@ -70,9 +83,6 @@ class Table extends CakeTable
             // Inherit associations from inherited table.
             $this->_associations = new AssociationCollection($this, $this->inheritedTable->_associations);
             // TODO: Same for behaviors?
-
-            // Attach event handler for inheritance.
-            $this->eventManager()->on(new InheritanceEventHandler());
         }
 
         return $this;
