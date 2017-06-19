@@ -107,7 +107,7 @@ class Query extends CakeQuery
             )
             ->from(
                 // Set "from" of the sub-query.
-                [$this->_repository->getAlias() => $this->_repository->getTable()]
+                [$this->_repository->getTable() => $this->_repository->getTable()]
             );
 
         // Inherited tables.
@@ -122,11 +122,11 @@ class Query extends CakeQuery
                 )
                 ->innerJoin(
                     // Add joins with inherited tables.
-                    [$table->getAlias() => $table->getTable()],
+                    [$table->getTable() => $table->getTable()],
                     function (QueryExpression $exp) use ($table) {
                         return $exp->equalFields(
-                            $table->aliasField((string)$table->getPrimaryKey()),
-                            $this->_repository->aliasField((string)$this->_repository->getPrimaryKey())
+                            sprintf('%s.%s', $table->getTable(), (string)$table->getPrimaryKey()),
+                            sprintf('%s.%s', $this->_repository->getTable(), (string)$this->_repository->getPrimaryKey())
                         );
                     }
                 );
@@ -151,7 +151,7 @@ class Query extends CakeQuery
     {
         $result = [];
         foreach ($fields as $field) {
-            $result[$field] = $table->aliasField($field);
+            $result[$field] = sprintf('%s.%s', $table->getTable(), $field);
         }
 
         return $result;

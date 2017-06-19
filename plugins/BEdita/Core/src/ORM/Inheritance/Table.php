@@ -199,7 +199,9 @@ class Table extends CakeTable
 
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable !== null) {
-            return $inheritedTable->callFinder($type, $query, $options);
+            return $inheritedTable
+                ->setAlias($this->getAlias())
+                ->callFinder($type, $query, $options);
         }
 
         throw new BadMethodCallException(

@@ -111,6 +111,7 @@ class QueryTest extends TestCase
 
     /**
      * Data provider for `testAddDefaultFields` test case.
+     *
      * @return array
      */
     public function addDefaultFieldsProvider()
@@ -161,15 +162,15 @@ class QueryTest extends TestCase
     public function testTransformQuery()
     {
         $expectedFields = [
-            'id' => 'FakeFelines.id',
-            'name' => 'FakeAnimals.name',
-            'legs' => 'FakeAnimals.legs',
-            'subclass' => 'FakeMammals.subclass',
-            'family' => 'FakeFelines.family',
+            'id' => 'fake_felines.id',
+            'name' => 'fake_animals.name',
+            'legs' => 'fake_animals.legs',
+            'subclass' => 'fake_mammals.subclass',
+            'family' => 'fake_felines.family',
         ];
         $expectedJoins = [
-            'FakeMammals' => 'fake_mammals',
-            'FakeAnimals' => 'fake_animals',
+            'fake_mammals' => 'fake_mammals',
+            'fake_animals' => 'fake_animals',
         ];
 
         $query = $this->fakeFelines->find();
@@ -195,7 +196,7 @@ class QueryTest extends TestCase
             /* @var \Cake\Database\Expression\QueryExpression $exp */
             $exp = $joins[$alias]['conditions'];
             static::assertSame(
-                $alias . '.id = (FakeFelines.id)',
+                $alias . '.id = (fake_felines.id)',
                 $exp->sql(new ValueBinder())
             );
         }

@@ -589,10 +589,13 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        $this->fakeMammals->addBehavior('Tree');
+        $this->fakeAnimals->addBehavior('Tree');
 
         static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
         static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+
+        static::assertTextNotContains('FakeAnimals', debug($this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql()));
+        static::assertTextNotContains('FakeAnimals', debug($this->fakeFelines->find('children', ['for' => 1, 'direct' => true])->sql()));
     }
 
     /**
