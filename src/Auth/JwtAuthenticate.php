@@ -128,6 +128,10 @@ class JwtAuthenticate extends BaseAuthenticate
     {
         $payload = $this->getPayload($request);
 
+        if (!empty($this->error)) {
+            throw new UnauthorizedException($this->error->getMessage());
+        }
+
         if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
             return $payload;
         }
