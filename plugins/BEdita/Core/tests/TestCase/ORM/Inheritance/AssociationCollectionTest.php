@@ -43,7 +43,7 @@ class AssociationCollectionTest extends TestCase
     /**
      * Table FakeAnimals
      *
-     * @var \BEdita\Core\ORM\Inheritance\Table
+     * @var \Cake\ORM\Table
      */
     public $fakeAnimals;
 
@@ -65,6 +65,7 @@ class AssociationCollectionTest extends TestCase
         $this->fakeAnimals->hasMany('FakeArticles', ['dependent' => true]);
 
         $this->fakeMammals = TableRegistry::get('FakeMammals', ['className' => Table::class]);
+        $this->fakeMammals->extensionOf('FakeAnimals');
         $this->fakeMammals->hasMany('FakeFelines', [
             'className' => Table::class,
             'foreignKey' => 'id',
@@ -81,7 +82,7 @@ class AssociationCollectionTest extends TestCase
     public function testConstruct()
     {
         $association = $this->fakeMammals->association('FakeFelines');
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
 
         static::assertAttributeSame($this->fakeMammals, 'table', $collection);
         static::assertAttributeSame($this->fakeAnimals->associations(), 'innerCollection', $collection);
@@ -126,7 +127,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testGetHas($expected, $alias)
     {
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
 
         $association = $collection->get($alias);
         $exists = $collection->has($alias);
@@ -154,7 +155,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testGetByProperty($expected, $alias)
     {
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
 
         $association = $collection->getByProperty(Inflector::underscore($alias));
         if ($expected === null) {
@@ -177,7 +178,7 @@ class AssociationCollectionTest extends TestCase
     {
         $expected = ['fakefelines', 'fakearticles'];
 
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $keys = $collection->keys();
 
         static::assertSame($expected, $keys);
@@ -194,7 +195,7 @@ class AssociationCollectionTest extends TestCase
     {
         $expected = ['FakeFelines', 'FakeArticles'];
 
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $aliases = array_map(
             function (Association $association) {
                 return $association->getAlias();
@@ -215,7 +216,7 @@ class AssociationCollectionTest extends TestCase
     public function testRemove()
     {
         $association = $this->fakeMammals->association('FakeFelines');
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeFelines');
 
         static::assertAttributeNotContains($association, '_items', $collection);
@@ -231,7 +232,7 @@ class AssociationCollectionTest extends TestCase
     public function testRemoveInner()
     {
         $association = $this->fakeAnimals->association('FakeArticles');
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeArticles');
 
         static::assertAttributeNotContains($association, '_items', $this->fakeAnimals->associations());
@@ -247,7 +248,7 @@ class AssociationCollectionTest extends TestCase
     public function testRemoveNoCascade()
     {
         $association = $this->fakeAnimals->association('FakeArticles');
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeArticles', false);
 
         static::assertAttributeContains($association, '_items', $this->fakeAnimals->associations());
@@ -262,7 +263,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemoveAll()
     {
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $collection->removeAll();
 
         static::assertAttributeSame([], '_items', $collection);
@@ -283,7 +284,7 @@ class AssociationCollectionTest extends TestCase
         });
 
         $mammal = $this->fakeMammals->get(1);
-        $collection = new AssociationCollection($this->fakeMammals, $this->fakeAnimals->associations());
+        $collection = new AssociationCollection($this->fakeMammals);
         $collection->cascadeDelete($mammal, []);
 
         static::assertSame(0, $this->fakeAnimals->association('FakeArticles')->find()->where(['fake_animal_id' => 1])->count());

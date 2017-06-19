@@ -21,13 +21,9 @@ use Cake\ORM\TableRegistry;
 /**
  * Base Table class used by tables that needs class table inheritance (CTI)
  *
- * It exposes an `extensionOf()` method to add a `\BEdita\Core\ORM\Association\ExtensionOf` association
- * with a target table from which inherit fields.
+ * It exposes an `extensionOf()` method to inherit properties and associations from another table.
  *
- * Once added that association the current table will find and save fields
- * of all inherited tables as own fields in a transparent way.
- *
- * Every Table can inherit just one table and eventually inherits other tables by nested inheritance
+ * Each table can inherit from only one table. Inheritance can be deep.
  *
  * @since 4.0.0
  */
@@ -81,7 +77,7 @@ class Table extends CakeTable
             $this->inheritedTables();
 
             // Inherit associations from inherited table.
-            $this->_associations = new AssociationCollection($this, $this->inheritedTable->_associations);
+            $this->_associations = new AssociationCollection($this);
             // TODO: Same for behaviors?
         }
 

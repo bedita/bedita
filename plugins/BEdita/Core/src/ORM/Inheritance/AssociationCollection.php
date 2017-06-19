@@ -48,15 +48,17 @@ class AssociationCollection extends CakeAssociationCollection
      * Class constructor.
      *
      * @param \BEdita\Core\ORM\Inheritance\Table $table Original table instance.
-     * @param \Cake\ORM\AssociationCollection $inner Inner association collection.
      */
-    public function __construct(Table $table, CakeAssociationCollection $inner)
+    public function __construct(Table $table)
     {
         $this->table = $table;
-        $this->innerCollection = $inner;
 
         // Copy existing associations to the new collection. This is the new collection. Associations are copied here.
         $this->_items = $table->associations()->_items;
+
+        if ($table->inheritedTable() !== null) {
+            $this->innerCollection = $table->inheritedTable()->associations();
+        }
     }
 
     /**

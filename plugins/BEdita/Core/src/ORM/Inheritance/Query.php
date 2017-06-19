@@ -18,8 +18,7 @@ use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 
 /**
- * Extends `\Cake\ORM\Query` to use custom `ResultSet` to better handle query results in CTI.
- * Also add useful methods to patch the query clauses in CTI context.
+ * Extends `\Cake\ORM\Query` to set `FROM` clause and add default types and fields.
  *
  * @since 4.0.0
  *
