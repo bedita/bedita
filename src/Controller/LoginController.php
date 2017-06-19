@@ -141,7 +141,7 @@ class LoginController extends AppController
     protected function jwtTokens(array $user)
     {
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
+        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($this->request, true);
         $claims = [
             'iss' => Router::fullBaseUrl(),
