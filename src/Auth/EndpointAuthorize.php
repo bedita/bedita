@@ -140,8 +140,7 @@ class EndpointAuthorize extends BaseAuthorize
     protected function unauthenticate()
     {
         $controller = $this->_registry->getController();
-
-        return $controller
+        $controller
             ->Auth->getAuthenticate('BEdita/API.Jwt')
             ->unauthenticated($controller->request, $controller->response);
     }
@@ -170,8 +169,8 @@ class EndpointAuthorize extends BaseAuthorize
         $this->application = CurrentApplication::getApplication();
         if ($this->application === null) {
             $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
-            if (empty($apiKey)) {
-                $apiKey = strval($this->request->getQuery($this->_config['apiKeyQueryString']));
+            if (empty($apiKey) && $this->_config['apiKeyQueryString'] !== null) {
+                $apiKey = (string)$this->request->getQuery($this->_config['apiKeyQueryString']);
             }
             if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
                 return null;
