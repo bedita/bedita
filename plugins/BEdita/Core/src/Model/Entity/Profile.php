@@ -41,15 +41,4 @@ namespace BEdita\Core\Model\Entity;
  */
 class Profile extends ObjectEntity
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_hidden = [
-        'created_by_user',
-        'modified_by_user',
-        'object_type_id',
-        'object_type',
-        'deleted',
-    ];
 }
