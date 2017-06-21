@@ -141,7 +141,7 @@ class LoginController extends AppController
     protected function jwtTokens(array $user)
     {
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
+        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($this->request, true);
         $claims = [
             'iss' => Router::fullBaseUrl(),
@@ -189,7 +189,7 @@ class LoginController extends AppController
      * If a valid token is passed actual change is perfomed, otherwise change is requested and token is
      * sent directly to user, tipically via email
      *
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null
      */
     public function change()
     {
@@ -215,5 +215,7 @@ class LoginController extends AppController
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
         $this->set('_meta', $meta);
+
+        return null;
     }
 }

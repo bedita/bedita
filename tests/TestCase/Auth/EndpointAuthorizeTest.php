@@ -297,6 +297,7 @@ class EndpointAuthorizeTest extends TestCase
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @param array $user User data.
      * @param string $requestMethod Request method.
+     * @param bool $whiteListed Is the endpoint whitelisted?
      * @return void
      *
      * @dataProvider authorizeProvider()
@@ -325,8 +326,8 @@ class EndpointAuthorizeTest extends TestCase
             'authorize' => ['BEdita/API.Endpoint'],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
-        $authorize->config('defaultAuthorized', $whiteListed);
-        $authorize->config('blockAnonymousUsers', false);
+        $authorize->setConfig('defaultAuthorized', $whiteListed);
+        $authorize->setConfig('blockAnonymousUsers', false);
 
         if (!($authorize instanceof EndpointAuthorize)) {
             static::fail('Unexpected authorization object');
