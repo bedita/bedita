@@ -48,9 +48,10 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      * Prepare related entities.
      *
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entities.
+     * @param \Cake\Datasource\EntityInterface $sourceEntity Source entity.
      * @return \Cake\Datasource\EntityInterface[]
      */
-    protected function prepareRelatedEntities($relatedEntities)
+    protected function prepareRelatedEntities($relatedEntities, EntityInterface $sourceEntity)
     {
         if ($relatedEntities === null) {
             return [];
@@ -75,12 +76,22 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
         $junctionEntityClass = $junction->getEntityClass();
         array_walk(
             $relatedEntities,
-            function (EntityInterface $entity) use ($extraFields, $junction, $junctionEntityClass) {
+            function (EntityInterface $entity) use ($sourceEntity, $extraFields, $junction, $junctionEntityClass) {
                 if (empty($entity->_joinData) || !($entity->_joinData instanceof $junctionEntityClass)) {
                     $entity->_joinData = $junction->newEntity();
                 }
 
-                $entity->_joinData->set($extraFields, ['guard' => false]);
+                $joinData = $extraFields;
+                $joinData += array_combine(
+                    (array)$this->Association->getTargetForeignKey(),
+                    $entity->extract((array)$this->Association->getPrimaryKey())
+                );
+                $joinData += array_combine(
+                    (array)$this->Association->getForeignKey(),
+                    $sourceEntity->extract((array)$this->Association->getSource()->getPrimaryKey())
+                );
+
+                $entity->_joinData->set($joinData, ['guard' => false]);
             }
         );
 

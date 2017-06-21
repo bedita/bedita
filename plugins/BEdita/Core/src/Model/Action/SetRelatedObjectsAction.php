@@ -95,7 +95,7 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
             return $action->execute(compact('entity', 'relatedEntities'));
         }
 
-        $relatedEntities = $this->prepareRelatedEntities($relatedEntities);
+        $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
 
         $diff = $this->diff($entity, $relatedEntities);
 
