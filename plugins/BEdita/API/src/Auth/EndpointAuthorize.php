@@ -244,7 +244,7 @@ class EndpointAuthorize extends BaseAuthorize
             ->find('byApplication', compact('applicationId', 'strict'))
             ->find('byEndpoint', compact('endpointIds', 'strict'));
 
-        if ($user !== false) {
+        if ($user !== false && !$this->isAnonymous($user)) {
             $roleIds = Hash::extract($user, 'roles.{n}.id');
             $query = $query
                 ->find('byRole', compact('roleIds'));
