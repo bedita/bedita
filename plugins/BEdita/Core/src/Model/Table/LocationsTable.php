@@ -47,9 +47,7 @@ class LocationsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->extensionOf('Objects', [
-            'className' => 'BEdita/Core.Objects'
-        ]);
+        $this->extensionOf('Objects');
 
         $this->addBehavior('BEdita/Core.Relations');
 

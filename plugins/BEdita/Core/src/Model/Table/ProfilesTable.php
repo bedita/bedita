@@ -53,9 +53,7 @@ class ProfilesTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
-        $this->extensionOf('Objects', [
-            'className' => 'BEdita/Core.Objects'
-        ]);
+        $this->extensionOf('Objects');
 
         $this->addBehavior('BEdita/Core.UniqueName', [
             'sourceField' => 'title',

@@ -159,25 +159,13 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
-        // Prepare fields aliasing function to avoid ambiguities.
-        $table = $this->getTable();
-        $tables = array_reverse(($table instanceof InheritanceTable) ? $table->inheritedTables() : []);
-        $aliasField = function ($field) use ($tables) {
-            /* @var \Cake\ORM\Table $table */
-            foreach ($tables as $table) {
-                if ($table->hasField($field, false)) {
-                    return $table->aliasField($field);
-                }
-            }
-
-            return $this->getTable()->aliasField($field);
-        };
-
         // Concat all fields into a single, lower-cased string.
         $fields = [];
+        /* @var \Cake\ORM\Table $table */
+        $table = $query->repository();
         foreach (array_keys($this->getFields()) as $field) {
             $fields[] = $query->func()->coalesce([
-                $aliasField($field) => 'identifier',
+                $table->aliasField($field) => 'identifier',
                 '',
             ]);
             $fields[] = ' '; // Add a spacer.
