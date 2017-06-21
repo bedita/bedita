@@ -152,19 +152,19 @@ class NotifyBehavior extends ModelBehavior {
 		$this->createMailJob($users, $msgType, $params);
 	}
 
-	public function prepareObjectChangeMail($model, array &$users) {
+    public function prepareObjectChangeMail($model, array &$users) {
 
-		$this->loadMessages();
-		$modData =& $model->data[$model->alias];
-		$modData["url_id"] =  $modData["id"];
-		$params = array("author" => $modData["author"],
-			"title" => $modData["title"],
-			"url" => $this->getContentUrl($modData),
-			"text" => $modData["description"],
-			"beditaUrl" => Configure::read("beditaUrl"),
-		);
-		$this->createMailJob($users, "contentChange", $params);
-	}
+        $this->loadMessages();
+        $modData =& $model->data[$model->alias];
+        $modData['url_id'] =  $modData['id'];
+        $params = array('author' => !empty($modData['author']) ? $modData['author'] : '',
+            'title' => !empty($modData['title']) ? $modData['title'] : '',
+            'url' => $this->getContentUrl($modData),
+            'text' => !empty($modData['description']) ? $modData['description'] : '',
+            'beditaUrl' => Configure::read('beditaUrl'),
+        );
+        $this->createMailJob($users, 'contentChange', $params);
+    }
 
 	/**
 	 * create custom mail jobs using notify messages
