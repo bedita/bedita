@@ -44,6 +44,7 @@ class EndpointAuthorize extends BaseAuthorize
     protected $_defaultConfig = [
         'blockAnonymousApps' => false,
         'blockAnonymousUsers' => true,
+        'apiKeyQueryString' => 'api_key',
         'apiKeyHeaderName' => 'X-Api-Key',
         'defaultAuthorized' => false,
     ];
@@ -54,6 +55,13 @@ class EndpointAuthorize extends BaseAuthorize
      * @var \BEdita\Core\Model\Entity\Endpoint|null
      */
     protected $endpoint = null;
+
+    /**
+     * Current application entity.
+     *
+     * @var \BEdita\Core\Model\Entity\Application|null
+     */
+    protected $application = null;
 
     /**
      * Request object instance.
@@ -91,18 +99,22 @@ class EndpointAuthorize extends BaseAuthorize
         // For anonymous users performing write operations, use strict mode.
         $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
 
-        $application = $this->getApplication();
-        $endpoint = $this->getEndpoint();
-        $permissions = $this->getPermissions($user, $application, $endpoint, $strict)->toArray();
-        $allPermissions = $this->getPermissions(false, $application, $endpoint);
+        $this->getApplication();
+
+        if (empty($this->endpoint)) {
+            $this->getEndpoint();
+        }
+
+        $permissions = $this->getPermissions($user, $strict)->toArray();
+        $allPermissions = $this->getPermissions(false);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
-        if ($this->getConfig('defaultAuthorized') && ($endpoint->isNew() || $allPermissions->count() === 0)) {
+        if ($this->getConfig('defaultAuthorized') && ($this->endpoint->isNew() || $allPermissions->count() === 0)) {
             return $this->authorized = true;
         }
 
         $this->authorized = $this->checkPermissions($permissions);
-        if (empty($permissions) && ($endpoint->isNew() || $allPermissions->count() === 0)) {
+        if (empty($permissions) && ($this->endpoint->isNew() || $allPermissions->count() === 0)) {
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
             // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
             $this->authorized = !$strict;
@@ -123,7 +135,7 @@ class EndpointAuthorize extends BaseAuthorize
      * Perform user unauthentication to return 401 Unauthorized
      * instead of 403 Forbidden
      *
-     * @return void
+     * @return mixed
      */
     protected function unauthenticate()
     {
@@ -146,31 +158,36 @@ class EndpointAuthorize extends BaseAuthorize
 
     /**
      * Get application for request.
+     * This is done primarily with an API_KEY header like 'X-Api-Key',
+     * alternatively `api_key` query string is used (not recommended)
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
      */
     protected function getApplication()
     {
-        $application = CurrentApplication::getApplication();
-        if ($application === null) {
-            $header = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
-            if (empty($header) && empty($this->_config['blockAnonymousApps'])) {
+        $this->application = CurrentApplication::getApplication();
+        if ($this->application === null) {
+            $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
+            if (empty($apiKey) && $this->_config['apiKeyQueryString'] !== null) {
+                $apiKey = (string)$this->request->getQuery($this->_config['apiKeyQueryString']);
+            }
+            if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
                 return null;
             }
 
             try {
-                CurrentApplication::setFromApiKey($header);
+                CurrentApplication::setFromApiKey($apiKey);
             } catch (\BadMethodCallException $e) {
                 throw new ForbiddenException(__d('bedita', 'Missing API key'));
             } catch (RecordNotFoundException $e) {
                 throw new ForbiddenException(__d('bedita', 'Invalid API key'));
             }
 
-            $application = CurrentApplication::getApplication();
+            $this->application = CurrentApplication::getApplication();
         }
 
-        return $application;
+        return $this->application;
     }
 
     /**
@@ -181,10 +198,6 @@ class EndpointAuthorize extends BaseAuthorize
      */
     protected function getEndpoint()
     {
-        if (!empty($this->endpoint)) {
-            return $this->endpoint;
-        }
-
         $endpointName = $this->request->url;
         if (($slashPos = strpos($endpointName, '/')) !== false) {
             $endpointName = substr($endpointName, 0, $slashPos);
@@ -218,16 +231,14 @@ class EndpointAuthorize extends BaseAuthorize
      * Get list of applicable permissions.
      *
      * @param array|\ArrayAccess|false $user Authenticated (or anonymous) user.
-     * @param \BEdita\Core\Model\Entity\Application|null $application Current application.
-     * @param \BEdita\Core\Model\Entity\Endpoint|null $endpoint Current endpoint.
      * @param bool $strict Use strict mode. Do not consider permissions set on all applications/endpoints.
      * @return \Cake\ORM\Query
      * @todo Future optimization: Permissions that are `0` on the two bits that are interesting for the current request can be excluded...
      */
-    protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null, $strict = false)
+    protected function getPermissions($user, $strict = false)
     {
-        $applicationId = $application ? $application->id : null;
-        $endpointIds = $endpoint && !$endpoint->isNew() ? [$endpoint->id] : [];
+        $applicationId = $this->application ? $this->application->id : null;
+        $endpointIds = $this->endpoint && !$this->endpoint->isNew() ? [$this->endpoint->id] : [];
 
         $query = TableRegistry::get('EndpointPermissions')
             ->find('byApplication', compact('applicationId', 'strict'))
