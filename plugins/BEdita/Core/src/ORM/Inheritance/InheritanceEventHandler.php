@@ -129,7 +129,10 @@ class InheritanceEventHandler implements EventListenerInterface
             array_merge(array_keys($entity->toArray()), $entity->getHidden()), // All properties.
             $table->getSchema()->columns() // Remove columns of current table.
         );
-        $parent->set($entity->extract($properties, true), ['guard' => false]); // Copy properties.
+        $parent->set($entity->extract($properties), ['guard' => false]); // Copy properties.
+        foreach ($properties as $property) {
+            $parent->setDirty($property, $entity->isDirty($property));
+        }
         if (!$entity->isNew()) {
             $parent->set(
                 array_combine(
