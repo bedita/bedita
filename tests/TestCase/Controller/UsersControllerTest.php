@@ -416,7 +416,8 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('users', TableRegistry::get('Users')->get(1)->get('type'));
     }
 
     /**
