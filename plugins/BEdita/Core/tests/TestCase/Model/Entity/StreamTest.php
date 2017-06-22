@@ -48,9 +48,9 @@ class StreamTest extends TestCase
     ];
 
     /**
-     * List of files to keep in test filesystem.
+     * List of files to keep in test filesystem, and their contents.
      *
-     * @var array
+     * @var \Cake\Collection\Collection
      */
     private $keep = [];
 
@@ -61,14 +61,20 @@ class StreamTest extends TestCase
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::consume('Filesystem'));
-
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
         $this->Streams = TableRegistry::get('Streams');
-        $this->keep = collection(FilesystemRegistry::getMountManager()->listContents('default://'))
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
+
+        $mountManager = FilesystemRegistry::getMountManager();
+        $this->keep = collection($mountManager->listContents('default://'))
+            ->map(function (array $object) use ($mountManager) {
+                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
+                $contents = fopen('php://memory', 'wb+');
+                fwrite($contents, $mountManager->read($path));
+                fseek($contents, 0);
+
+                return compact('contents', 'path');
             })
-            ->toList();
+            ->compile();
     }
 
     /**
@@ -78,12 +84,20 @@ class StreamTest extends TestCase
     {
         // Cleanup test filesystem.
         $mountManager = FilesystemRegistry::getMountManager();
+        $keep = $this->keep
+            ->each(function (array $object) use ($mountManager) {
+                $mountManager->putStream($object['path'], $object['contents']);
+            })
+            ->map(function (array $object) {
+                return $object['path'];
+            })
+            ->toList();
         collection($mountManager->listContents('default://'))
             ->map(function (array $object) {
                 return sprintf('%s://%s', $object['filesystem'], $object['path']);
             })
-            ->reject(function ($uri) {
-                return in_array($uri, $this->keep);
+            ->reject(function ($uri) use ($keep) {
+                return in_array($uri, $keep);
             })
             ->each([$mountManager, 'delete']);
 

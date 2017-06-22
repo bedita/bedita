@@ -17,22 +17,12 @@ use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Text;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Behavior\UploadableBehavior
  */
 class UploadableBehaviorTest extends TestCase
 {
-
-    /**
-     * Synapse.JS
-     *
-     * @see https://github.com/Chialab/synapse
-     *
-     * @var string
-     */
-    const SYNAPSE_JS = 'export const synapse = Promise.resolve();';
 
     /**
      * Test subject
@@ -55,9 +45,9 @@ class UploadableBehaviorTest extends TestCase
     ];
 
     /**
-     * List of files to keep in test filesystem.
+     * List of files to keep in test filesystem, and their contents.
      *
-     * @var array
+     * @var \Cake\Collection\Collection
      */
     private $keep = [];
 
@@ -68,14 +58,20 @@ class UploadableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::consume('Filesystem'));
-
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
         $this->Streams = TableRegistry::get('Streams');
-        $this->keep = collection(FilesystemRegistry::getMountManager()->listContents('default://'))
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
+
+        $mountManager = FilesystemRegistry::getMountManager();
+        $this->keep = collection($mountManager->listContents('default://'))
+            ->map(function (array $object) use ($mountManager) {
+                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
+                $contents = fopen('php://memory', 'wb+');
+                fwrite($contents, $mountManager->read($path));
+                fseek($contents, 0);
+
+                return compact('contents', 'path');
             })
-            ->toList();
+            ->compile();
     }
 
     /**
@@ -85,12 +81,20 @@ class UploadableBehaviorTest extends TestCase
     {
         // Cleanup test filesystem.
         $mountManager = FilesystemRegistry::getMountManager();
+        $keep = $this->keep
+            ->each(function (array $object) use ($mountManager) {
+                $mountManager->putStream($object['path'], $object['contents']);
+            })
+            ->map(function (array $object) {
+                return $object['path'];
+            })
+            ->toList();
         collection($mountManager->listContents('default://'))
             ->map(function (array $object) {
                 return sprintf('%s://%s', $object['filesystem'], $object['path']);
             })
-            ->reject(function ($uri) {
-                return in_array($uri, $this->keep);
+            ->reject(function ($uri) use ($keep) {
+                return in_array($uri, $keep);
             })
             ->each([$mountManager, 'delete']);
 
@@ -107,48 +111,44 @@ class UploadableBehaviorTest extends TestCase
      */
     public function afterSaveProvider()
     {
-        $uuid = Text::uuid();
-        $emberJs = 'export const synapse = Promise.reject("Synapse is deprecated, please use Ember.JS instead");';
+        $originalContents = "Sample uploaded file.\n";
+        $newContents = 'Modified contents.';
 
         return [
             'nothing to do' => [
                 [
-                    "default://{$uuid}-synapse.js" => static::SYNAPSE_JS,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => $originalContents,
                 ],
                 [
                     'version' => 99, // Update some useless field so that the save is actually triggered.
                 ],
-                $uuid,
             ],
             'updated contents' => [
                 [
-                    "default://{$uuid}-synapse.js" => $emberJs,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => $newContents,
                 ],
                 [
-                    'contents' => $emberJs,
+                    'contents' => $newContents,
                 ],
-                $uuid,
             ],
             'renamed file' => [
                 [
-                    "default://{$uuid}-synapse.js" => false,
-                    "default://{$uuid}-dna.js" => static::SYNAPSE_JS,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => false,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $originalContents,
                 ],
                 [
-                    'file_name' => 'dna.js',
+                    'file_name' => 'new-file.txt',
                 ],
-                $uuid,
             ],
             'updated contents and renamed file' => [
                 [
-                    "default://{$uuid}-synapse.js" => false,
-                    "default://{$uuid}-dna.js" => $emberJs,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => false,
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $newContents,
                 ],
                 [
-                    'file_name' => 'dna.js',
-                    'contents' => $emberJs,
+                    'file_name' => 'new-file.txt',
+                    'contents' => $newContents,
                 ],
-                $uuid,
             ],
         ];
     }
@@ -158,7 +158,6 @@ class UploadableBehaviorTest extends TestCase
      *
      * @param array $expected Expected files on filesystem and their contents.
      * @param array $data Data to patch entity with.
-     * @param string $uuid UUID.
      * @return void
      *
      * @dataProvider afterSaveProvider()
@@ -166,22 +165,12 @@ class UploadableBehaviorTest extends TestCase
      * @covers ::processUpload()
      * @covers ::write()
      */
-    public function testAfterSave(array $expected, array $data, $uuid)
+    public function testAfterSave(array $expected, array $data)
     {
         $manager = FilesystemRegistry::getMountManager();
 
-        // Prepare environment.
-        $stream = $this->Streams->newEntity([
-            'contents' => static::SYNAPSE_JS,
-            'file_name' => 'synapse.js',
-        ]);
-        $stream->uuid = $uuid;
-        $this->Streams->saveOrFail($stream);
+        $stream = $this->Streams->get('9e58fa47-db64-4479-a0ab-88a706180d59');
 
-        static::assertTrue($manager->has($stream->uri));
-        static::assertSame(static::SYNAPSE_JS, $manager->read($stream->uri));
-
-        // Re-save entity.
         $this->Streams->patchEntity($stream, $data, ['accessibleFields' => ['*' => true]]);
         if ($stream->isDirty('file_name')) {
             $stream->uri = $stream->filesystemPath(); // Force update of URI.
@@ -210,18 +199,9 @@ class UploadableBehaviorTest extends TestCase
     {
         $manager = FilesystemRegistry::getMountManager();
 
-        // Prepare environment.
-        $stream = $this->Streams->newEntity([
-            'contents' => static::SYNAPSE_JS,
-            'file_name' => 'synapse.js',
-        ]);
-        $this->Streams->saveOrFail($stream);
+        $stream = $this->Streams->get('9e58fa47-db64-4479-a0ab-88a706180d59');
         $path = $stream->uri;
 
-        static::assertTrue($manager->has($stream->uri));
-        static::assertSame(static::SYNAPSE_JS, $manager->read($stream->uri));
-
-        // Delete entity.
         $this->Streams->deleteOrFail($stream);
 
         static::assertFalse($manager->has($path));
