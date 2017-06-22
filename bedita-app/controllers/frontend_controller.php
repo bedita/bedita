@@ -2400,8 +2400,7 @@ abstract class FrontendController extends AppController {
         if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status))) {
             $firstParent = reset($pathArr);
             if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $publicationId) {
-                throw new BeditaNotFoundException('Wrong publication: ' . $firstParent['area_id'] .
-                    ' expected: ' . $publicationId);
+                throw new BeditaNotFoundException('Object id ' . $object_id . ' - Wrong publication: ' . $firstParent['area_id'] . ' expected: ' . $publicationId);
             }
 
             return $pathArr;
