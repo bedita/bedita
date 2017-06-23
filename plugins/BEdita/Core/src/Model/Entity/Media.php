@@ -17,17 +17,15 @@ namespace BEdita\Core\Model\Entity;
  * Media Entity
  *
  * @property int $id
- * @property string $uri
  * @property string $name
- * @property string $mime_type
- * @property int $file_size
- * @property string $hash_file
- * @property string $original_name
  * @property int $width
  * @property int $height
+ * @property int $duration
  * @property string $provider
- * @property string $media_uid
- * @property string $thumbnail
+ * @property string $provider_uid
+ * @property string $provider_url
+ * @property string $provider_thumbnail
+ * @property \BEdita\Core\Model\Entity\Stream[] $streams
  */
 class Media extends ObjectEntity
 {
