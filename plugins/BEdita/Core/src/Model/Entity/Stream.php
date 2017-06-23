@@ -51,6 +51,7 @@ class Stream extends Entity
     protected $_accessible = [
         '*' => false,
         'file_name' => true,
+        'mime_type' => true,
         'contents' => true,
     ];
 
@@ -147,7 +148,6 @@ class Stream extends Entity
         $this->file_size = 0;
         $this->hash_md5 = md5('Not yet implemented');
         $this->hash_sha1 = sha1('Not yet implemented');
-        $this->mime_type = 'application/octet-stream';
 
         if ($contents instanceof StreamInterface) {
             // Already a PSR-7 stream.

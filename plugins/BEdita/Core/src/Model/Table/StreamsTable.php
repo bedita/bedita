@@ -89,7 +89,8 @@ class StreamsTable extends Table
             ->notEmpty('file_name');
 
         $validator
-            ->allowEmpty('mime_type', 'create');
+            ->requirePresence('mime_type', 'create')
+            ->notEmpty('mime_type');
 
         $validator
             ->naturalNumber('file_size')

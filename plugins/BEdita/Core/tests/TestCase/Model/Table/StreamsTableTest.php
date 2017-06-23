@@ -135,11 +135,20 @@ class StreamsTableTest extends TestCase
     public function validationProvider()
     {
         return [
+            'empty' => [
+                [
+                    'contents._required',
+                    'file_name._required',
+                    'mime_type._required',
+                ],
+                [],
+            ],
             'valid' => [
                 true,
                 [
                     'uuid' => Text::uuid(),
                     'file_name' => 'myFileName.txt',
+                    'mime_type' => 'text/plain',
                     'contents' => 'plain text contents',
                 ],
             ],
@@ -150,6 +159,7 @@ class StreamsTableTest extends TestCase
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'file_name' => 'myFileName.txt',
+                    'mime_type' => 'text/plain',
                     'contents' => 'plain text contents',
                 ],
             ],
@@ -201,6 +211,7 @@ class StreamsTableTest extends TestCase
         $expected = [];
         $data = [
             'file_name' => 'some/path/il mio nuovo file è un dump.sql.gz',
+            'mime_type' => 'text/plain',
             'contents' => 'Not really GZipped',
         ];
 
@@ -230,6 +241,7 @@ class StreamsTableTest extends TestCase
         ];
         $data = [
             'file_name' => 'some/path/il mio nuovo file è un dump.sql.gz',
+            'mime_type' => 'text/plain',
             'contents' => 'Not really GZipped',
         ];
 
