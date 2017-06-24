@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
-use BEdita\Core\Filesystem\Adapter\S3Adapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
@@ -54,21 +53,10 @@ class FilesystemRegistryTest extends TestCase
                 'path' => '/my/base/path',
                 'className' => LocalAdapter::class,
             ],
-            'bucket' => [
-                'scheme' => 's3',
-                'host' => 'my-aws-s3-bucket',
-                'path' => '/prefix',
-                'username' => 'MY_IAM_KEY_ID',
-                'password' => 'MY_IAM_KEY_SECRET',
-                'className' => S3Adapter::class,
-            ],
         ];
         $config = [
             'default' => [
                 'url' => 'local:///my/base/path?baseUrl=http://example.org',
-            ],
-            'bucket' => [
-                'url' => 's3://MY_IAM_KEY_ID:MY_IAM_KEY_SECRET@my-aws-s3-bucket/prefix',
             ],
         ];
 

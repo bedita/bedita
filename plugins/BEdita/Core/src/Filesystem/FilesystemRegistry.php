@@ -14,7 +14,6 @@
 namespace BEdita\Core\Filesystem;
 
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
-use BEdita\Core\Filesystem\Adapter\S3Adapter;
 use BEdita\Core\SingletonTrait;
 use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
@@ -48,7 +47,6 @@ class FilesystemRegistry extends ObjectRegistry
      */
     protected static $_dsnClassMap = [
         'local' => LocalAdapter::class,
-        's3' => S3Adapter::class,
     ];
 
     /**
