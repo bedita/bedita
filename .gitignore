@@ -21,7 +21,8 @@
 # BEdita plugins folders #
 ##########################
 /plugins/*
-!/plugins/BEdita
+!/plugins/BEdita/API
+!/plugins/BEdita/Core
 
 # IDE and editor specific files #
 #################################
