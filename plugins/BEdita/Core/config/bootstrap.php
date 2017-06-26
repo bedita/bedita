@@ -39,7 +39,7 @@ Type::set('timestamp', new DateTimeType());
 /**
  * Set loader for translation domain "bedita".
  */
-I18n::translators()->registerLoader('dockbooking', function($name, $locale) {
+I18n::translators()->registerLoader('bedita', function($name, $locale) {
     return new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']);
 });
 
