@@ -26,6 +26,8 @@ class StatusControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::initialize()
+     * @covers ::afterFilter()
      */
     public function testIndex()
     {
