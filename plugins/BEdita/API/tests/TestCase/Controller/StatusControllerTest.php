@@ -26,6 +26,8 @@ class StatusControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::initialize()
+     * @covers ::afterFilter()
      */
     public function testIndex()
     {
@@ -46,6 +48,15 @@ class StatusControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+
+        // test with */* content type
+        $this->configRequestHeaders('GET', ['Accept' => '*/*']);
+        $this->get('/status');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/json');
         $this->assertEquals($expected, $result);
     }
 }

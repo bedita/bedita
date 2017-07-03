@@ -13,6 +13,8 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Utility\System;
+use Cake\Event\Event;
+use Cake\Network\Request;
 
 /**
  * Controller for `/status` endpoint.
@@ -21,6 +23,36 @@ use BEdita\Core\Utility\System;
  */
 class StatusController extends AppController
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize()
+    {
+        if (!$this->request->is('jsonapi')) {
+            Request::addDetector('json', function (Request $request) {
+                return true;
+            });
+        }
+
+        parent::initialize();
+
+        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        if ($this->JsonApi) {
+            $this->JsonApi->setConfig('checkMediaType', false);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function afterFilter(Event $event)
+    {
+        // Restore default detector
+        Request::addDetector('json', ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json']);
+
+        return parent::afterFilter($event);
+    }
 
     /**
      * Show system status info
