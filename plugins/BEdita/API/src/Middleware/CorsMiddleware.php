@@ -13,8 +13,6 @@
 namespace BEdita\API\Middleware;
 
 use Cake\Network\CorsBuilder;
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\ForbiddenException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Handle cross-origin HTTP requests setting the proper headers.
  *
  * The response of preflight request (OPTIONS) is delivered directly after the headers are applied.
- * For simple requests the CORS headers are applied to the response then it is passed to next middleware.
+ * For simple requests the CORS headers are applied before send response.
  *
  * @since 4.0.0
  */
