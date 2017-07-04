@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Middleware;
 
-use BEdita\API\Network\CorsBuilder;
+use Cake\Network\CorsBuilder;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Psr\Http\Message\ResponseInterface;
@@ -88,20 +88,13 @@ class CorsMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        if (!$this->isConfigured()) {
-            return $this->delegateToServer($request, $response, $next);
+        if ($request->getMethod() == 'OPTIONS') {
+            return $this->buildCors($request, $response);
         }
 
-        try {
-            if ($request->getMethod() == 'OPTIONS') {
-                return $this->preflight($request, $response);
-            }
-            $response = $this->buildCors($request, $response);
-        } catch (\Exception $e) {
-            return $response->withStatus($e->getCode());
-        }
+        $response = $next($request, $response);
 
-        return $next($request, $response);
+        return $this->buildCors($request, $response);
     }
 
     /**
@@ -115,112 +108,27 @@ class CorsMiddleware
     }
 
     /**
-     * Delegate to Server the CORS settings.
-     *
-     * On preflight requests the middleware stack will be interrupted and the response will be send.
-     * On other requests call next middleware.
-     * The server should take care to set the right headers.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next The next middleware to call.
-     * @return \Psr\Http\Message\ResponseInterface A response.
-     */
-    protected function delegateToServer(ServerRequestInterface $request, ResponseInterface $response, callable $next)
-    {
-        return ($request->getMethod() == 'OPTIONS') ? $response : $next($request, $response);
-    }
-
-    /**
-     * Prepare the response for a preflight request.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Psr\Http\Message\ResponseInterface A response.
-     * @throws \Cake\Network\Exception\BadRequestException When the request is malformed
-     */
-    protected function preflight(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        if (!$request->hasHeader('Origin')) {
-            throw new BadRequestException('Preflight request missing of "Origin" header');
-        }
-
-        $this->checkAccessControlRequestMethod($request);
-
-        if ($this->corsConfig['allowHeaders'] != '*') {
-            $this->checkAccessControlRequestHeaders($request);
-        }
-
-        return $this->buildCors($request, $response, true);
-    }
-
-    /**
-     * Check `Access-Control-Request-Method` against allowMethods
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @return void
-     * @throws \Cake\Network\Exception\BadRequestException When missing `Access-Control-Request-Method`
-     * @throws \Cake\Network\Exception\ForbiddenException When `Access-Control-Request-Method` is not allowed
-     */
-    protected function checkAccessControlRequestMethod(ServerRequestInterface $request)
-    {
-        $accessControlRequestMethod = $request->getHeaderLine('Access-Control-Request-Method');
-        if (empty($accessControlRequestMethod)) {
-            throw new BadRequestException('Preflight request missing of "Access-Control-Request-Method" header');
-        }
-
-        $allowedMethods = (array)$this->corsConfig['allowMethods'];
-        if (!in_array($accessControlRequestMethod, $allowedMethods)) {
-            throw new ForbiddenException('Preflight request refused. Access-Control-Request-Method not allowed');
-        }
-    }
-
-    /**
-     * Check `Access-Control-Request-Headers` against `allowHeaders`
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException When `Access-Control-Request-Headers` doesn't match the `allowHeaders` rules
-     */
-    protected function checkAccessControlRequestHeaders(ServerRequestInterface $request)
-    {
-        $accessControlRequestHeaders = explode(', ', strtolower($request->getHeaderLine('Access-Control-Request-Headers')));
-        $allowedHeaders = array_map(
-            function ($header) {
-                return strtolower($header);
-            },
-            (array)$this->corsConfig['allowHeaders']
-        );
-
-        $notAllowedHeaders = array_diff($accessControlRequestHeaders, $allowedHeaders);
-        if (!empty($notAllowedHeaders)) {
-            throw new ForbiddenException(
-                'Preflight request refused. Access-Control-Request-Headers not allowed for ' . implode(', ', $notAllowedHeaders)
-            );
-        }
-    }
-
-    /**
      * Build response headers following CORS configuration
      * and return the new response
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param bool $preflight If the request is a preflight
      * @return \Psr\Http\Message\ResponseInterface A response.
      * @throws \Cake\Network\Exception\ForbiddenException When origin
      */
-    protected function buildCors(ServerRequestInterface $request, ResponseInterface $response, $preflight = false)
+    protected function buildCors(ServerRequestInterface $request, ResponseInterface $response)
     {
+        if (!$this->isConfigured()) {
+            return $response;
+        }
+
         $origin = $request->getHeaderLine('Origin');
         $isSsl = ($request->getUri()->getScheme() == 'https');
 
         $corsBuilder = new CorsBuilder($response, $origin, $isSsl);
 
         $options = array_filter($this->corsConfig);
-        if (!$preflight) {
-            $options = array_diff_key($options, array_flip(['allowMethods', 'allowHeaders', 'maxAge']));
-        } elseif ($options['allowHeaders'] == '*') {
+        if (!empty($options['allowHeaders']) && $options['allowHeaders'] == '*') {
             $options['allowHeaders'] = $request->getHeader('Access-Control-Request-Headers');
         }
 
@@ -229,8 +137,9 @@ class CorsMiddleware
         }
 
         $response = $corsBuilder->build();
-        if (!empty($origin) && !$response->hasHeader('Access-Control-Allow-Origin')) {
-            throw new ForbiddenException('Origin not allowed');
+
+        if ($response->getHeaderLine('Access-Control-Allow-Origin') != '*') {
+            $response = $response->withAddedHeader('Vary', 'Origin');
         }
 
         return $response;
