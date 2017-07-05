@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -43,6 +44,13 @@ use Firebase\JWT\JWT;
  */
 class JwtAuthenticate extends BaseAuthenticate
 {
+
+    /**
+     * 401 Expired token
+     *
+     * @var string
+     */
+    const BE_TOKEN_EXPIRED = 'be_token_expired';
 
     /**
      * Default config for this object.
@@ -207,6 +215,12 @@ class JwtAuthenticate extends BaseAuthenticate
             }
 
             return (array)$payload;
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            throw new ExpiredTokenException([
+                'title' => __d('bedita', 'Expired token'),
+                'detail' => __d('bedita', 'Provided token has expired'),
+                'code' => self::BE_TOKEN_EXPIRED,
+            ]);
         } catch (\Exception $e) {
             $this->error = $e;
         }
