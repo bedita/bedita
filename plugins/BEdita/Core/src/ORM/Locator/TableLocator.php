@@ -52,12 +52,15 @@ class TableLocator extends CakeLocator
             return $className;
         }
 
-        try {
-            $objectTypes = $this->get('ObjectTypes');
-            $objectType = $objectTypes->get($alias);
-            $options['className'] = $objectType->table;
-        } catch (\Exception $e) {
-            $this->log($e->getMessage(), 'warning');
+        // aliases starting with `_` are reserved
+        if (substr($alias, 0, 1) !== '_') {
+            try {
+                $objectTypes = $this->get('ObjectTypes');
+                $objectType = $objectTypes->get($alias);
+                $options['className'] = $objectType->table;
+            } catch (\Exception $e) {
+                $this->log(sprintf('%s using alias "%s"', $e->getMessage(), $alias), 'warning');
+            }
         }
 
         return App::className($options['className'], 'Model/Table', 'Table');
