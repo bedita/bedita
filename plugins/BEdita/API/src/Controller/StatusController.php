@@ -42,14 +42,20 @@ class StatusController extends AppController
     /**
      * Show system status info
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
-        $this->request->allowMethod('get');
+        $this->request->allowMethod(['get', 'head']);
+
+        if ($this->request->is('head')) {
+            return $this->response;
+        }
 
         $status = System::status();
         $this->set('_meta', compact('status'));
         $this->set('_serialize', []);
+
+        return null;
     }
 }
