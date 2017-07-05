@@ -1585,7 +1585,7 @@ abstract class ModulesController extends AppController {
             return;
         }
         $this->paginate = array(
-            'fields' => array('Category.id','Category.label','Category.name','Category.status'),
+            'fields' => array('Category.id','Category.label','Category.name','Category.status','Category.area_id'),
             'conditions' => array('object_type_id' => $type),
             'limit' => 10,
             'order' => 'label'
