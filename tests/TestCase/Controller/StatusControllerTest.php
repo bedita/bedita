@@ -20,6 +20,7 @@ use BEdita\Core\Utility\System;
  */
 class StatusControllerTest extends IntegrationTestCase
 {
+
     /**
      * Test index method.
      *
@@ -27,18 +28,16 @@ class StatusControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
-     * @covers ::afterFilter()
      */
     public function testIndex()
     {
-        $status = System::status();
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/status',
                 'home' => 'http://api.example.com/home',
             ],
             'meta' => [
-                'status' => $status
+                'status' => System::status(),
             ],
         ];
 
@@ -48,15 +47,53 @@ class StatusControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
+    }
 
-        // test with */* content type
+    /**
+     * Test index method with `Accept: * / *` header.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testGenericContentType()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/status',
+                'home' => 'http://api.example.com/home',
+            ],
+            'meta' => [
+                'status' => System::status(),
+            ],
+        ];
+
         $this->configRequestHeaders('GET', ['Accept' => '*/*']);
         $this->get('/status');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `HEAD` request.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testHeadRequest()
+    {
+        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
+        $this->_sendRequest('/status', 'HEAD');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/json');
+        $this->assertResponseEmpty();
     }
 }
