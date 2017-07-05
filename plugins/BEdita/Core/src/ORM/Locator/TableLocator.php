@@ -28,13 +28,6 @@ class TableLocator extends CakeLocator
     use LogTrait;
 
     /**
-     * Aliases to exclude from loading as object type name
-     *
-     * @var array
-     */
-    protected $excludeAlias = ['_InverseAssociation'];
-
-    /**
      * Gets the table class name.
      *
      * @param string $alias The alias name you want to get.
@@ -59,13 +52,14 @@ class TableLocator extends CakeLocator
             return $className;
         }
 
-        if (!in_array($alias, $this->excludeAlias)) {
+        // aliases starting with `_` are reserved
+        if (substr($alias, 0, 1) !== '_') {
             try {
                 $objectTypes = $this->get('ObjectTypes');
                 $objectType = $objectTypes->get($alias);
                 $options['className'] = $objectType->table;
             } catch (\Exception $e) {
-                $this->log(sprintf('"%s" using alias %s', $e->getMessage(), $alias), 'warning');
+                $this->log(sprintf('%s using alias "%s"', $e->getMessage(), $alias), 'warning');
             }
         }
 
