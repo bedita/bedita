@@ -2,24 +2,18 @@
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Database\Type\DateTimeType;
+use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Database\Type;
+use Cake\I18n\I18n;
 use Cake\ORM\TableRegistry;
 
 /**
  * Plug table locator.
  */
 TableRegistry::locator(new TableLocator());
-
-/**
- * Default user with id = 1 for unit tests
- */
-if (defined('UNIT_TEST_RUN')) {
-    LoggedUser::setUser(['id' => 1]);
-}
 
 /**
  * Load 'core' configuration parameters
@@ -41,5 +35,12 @@ if (!Configure::configured('ini')) {
  */
 Type::set('datetime', new DateTimeType());
 Type::set('timestamp', new DateTimeType());
+
+/**
+ * Set loader for translation domain "bedita".
+ */
+I18n::translators()->registerLoader('bedita', function ($name, $locale) {
+    return new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']);
+});
 
 Configure::load('BEdita/Core.bedita', 'ini');

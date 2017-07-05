@@ -26,7 +26,6 @@ use Cake\Datasource\ConnectionManager;
  *
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
- * @property \BEdita\Core\Shell\Task\SaveSchemaTask $SaveSchema
  */
 class DbAdminShell extends Shell
 {
@@ -37,11 +36,12 @@ class DbAdminShell extends Shell
     public $tasks = [
         'Init' => ['className' => 'BEdita/Core.InitSchema'],
         'CheckSchema' => ['className' => 'BEdita/Core.CheckSchema'],
-        'SaveSchema' => ['className' => 'BEdita/Core.SaveSchema'],
     ];
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function startup()
     {
@@ -89,10 +89,6 @@ class DbAdminShell extends Shell
             ->addSubcommand('check_schema', [
                 'help' => 'Check SQL naming conventions and schema differences between current database and dump file.',
                 'parser' => $this->CheckSchema->getOptionParser(),
-            ])
-            ->addSubcommand('save_schema', [
-                'help' => '(deprecated) Dump current database schema.',
-                'parser' => $this->SaveSchema->getOptionParser(),
             ]);
 
         return $parser;

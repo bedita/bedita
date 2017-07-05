@@ -13,7 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Core\App;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\ResultSetInterface;
+use Cake\Log\Log;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -22,6 +27,14 @@ use Cake\Validation\Validator;
  * AuthProviders Model
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
+ *
+ * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
  *
  * @since 4.0.0
  */
@@ -43,7 +56,7 @@ class AuthProvidersTable extends Table
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'auth_provider_id',
-            'className' => 'BEdita/Core.ExternalAuth',
+            'dependent' => true,
         ]);
     }
 
@@ -63,8 +76,7 @@ class AuthProvidersTable extends Table
             ->notEmpty('name')
 
             ->url('url')
-            ->requirePresence('url', 'create')
-            ->notEmpty('url')
+            ->allowEmpty('url', 'create')
 
             ->allowEmpty('params');
 
@@ -93,5 +105,40 @@ class AuthProvidersTable extends Table
         $schema->columnType('params', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Finder to format results in a way that is suitable for `AuthComponent`.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @return \Cake\ORM\Query
+     */
+    protected function findAuthenticate(Query $query)
+    {
+        return $query->formatResults(function (ResultSetInterface $results) {
+            return $results
+                ->filter(function (EntityInterface $entity) {
+                    $name = $entity->get('name');
+                    $exists = (App::className($name, 'Auth', 'Authenticate') !== false);
+                    if (!$exists) {
+                        Log::warning(sprintf('Authentication class "%s" not found', $name));
+                    }
+
+                    return $exists;
+                })
+                ->indexBy('name')
+                ->map(function (EntityInterface $entity) {
+                    $options = [
+                        'authProvider' => $entity,
+                        'finder' => [
+                            'externalAuth' => [
+                                'auth_provider' => $entity,
+                            ],
+                        ],
+                    ];
+
+                    return $options + (array)$entity->get('params');
+                });
+        });
     }
 }

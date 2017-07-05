@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -40,6 +41,7 @@ class ObjectsTableTest extends TestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -48,6 +50,7 @@ class ObjectsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Objects);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -242,5 +245,26 @@ class ObjectsTableTest extends TestCase
         static::assertCount(1, $object->date_ranges);
         static::assertSame(1, $this->Objects->DateRanges->find()->where(['object_id' => $object->id])->count());
         static::assertSame(0, $this->Objects->DateRanges->find()->where(['object_id IS' => null])->count());
+    }
+
+    /**
+     * Test finder for my objects.
+     *
+     * @return void
+     *
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $expected = $this->Objects->find()
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->where(['created_by' => 1])
+            ->toArray();
+
+        $result = $this->Objects->find('mine')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
     }
 }

@@ -28,7 +28,6 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
-use Cake\Utility\Inflector;
 
 /**
  * Controller for `/objects` endpoint.
@@ -55,11 +54,11 @@ class ObjectsController extends ResourcesController
      */
     public function initialize()
     {
-        if ($this->request->getParam('action') === 'relationships') {
+        if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::get('ObjectTypes')
-                ->find('byRelation', compact('name'))
                 ->find('list')
+                ->find('byRelation', compact('name'))
                 ->toArray();
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
@@ -79,25 +78,16 @@ class ObjectsController extends ResourcesController
                 throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
             }
 
+            $behaviorRegistry = $this->Table->behaviors();
+            if ($behaviorRegistry->hasMethod('getRelations')) {
+                $relations = array_keys($behaviorRegistry->call('getRelations'));
+                $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
+            }
+
             if (isset($this->JsonApi)) {
                 $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
             }
         }
-
-        $this->set('_type', 'objects');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function findAssociation($relationship)
-    {
-        $behaviorRegistry = $this->Table->behaviors();
-        if ($behaviorRegistry->hasMethod('getRelations') && array_key_exists($relationship, $behaviorRegistry->call('getRelations'))) {
-            return $this->Table->association(Inflector::camelize(Inflector::underscore($relationship)));
-        }
-
-        return parent::findAssociation($relationship);
     }
 
     /**
@@ -134,10 +124,12 @@ class ObjectsController extends ResourcesController
                 );
         } else {
             // List existing entities.
-            $filter = $this->request->getQuery('filter');
+            $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+            $include = $this->request->getQuery('include');
+            $contain = $include ? $this->prepareInclude($include) : [];
 
             $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-            $query = $action(compact('filter'));
+            $query = $action(compact('filter', 'contain'));
 
             $data = $this->paginate($query);
         }
@@ -153,8 +145,11 @@ class ObjectsController extends ResourcesController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
+        $include = $this->request->getQuery('include');
+        $contain = $include ? $this->prepareInclude($include) : [];
+
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $entity = $action(['primaryKey' => $id]);
+        $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -165,7 +160,6 @@ class ObjectsController extends ResourcesController
             }
 
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 
@@ -198,9 +192,10 @@ class ObjectsController extends ResourcesController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
+        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
         $action = new ListRelatedObjectsAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId]);
+        $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         $objects = $this->paginate($query);
 
@@ -235,8 +230,10 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
+                $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+
                 $action = new ListRelatedObjectsAction(compact('association'));
-                $data = $action(['primaryKey' => $id, 'list' => true]);
+                $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);
@@ -266,7 +263,6 @@ class ObjectsController extends ResourcesController
 
         if ($count === 0) {
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 

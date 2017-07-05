@@ -13,9 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\AssociationCollection as CakeAssociationCollection;
 use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -27,6 +29,7 @@ use Cake\TestSuite\TestCase;
  */
 class TableTest extends TestCase
 {
+
     /**
      * Fixtures
      *
@@ -65,7 +68,7 @@ class TableTest extends TestCase
      *
      * @var array
      */
-    protected $tableOptions = ['className' => 'BEdita\Core\ORM\Inheritance\Table'];
+    protected $tableOptions = ['className' => Table::class];
 
     /**
      * setUp method
@@ -78,7 +81,7 @@ class TableTest extends TestCase
 
         $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
         $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $this->tableOptions);
+        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
     }
 
     /**
@@ -94,157 +97,59 @@ class TableTest extends TestCase
     }
 
     /**
-     * test query
+     * Test query
      *
      * @return void
+     *
      * @covers ::query()
      */
     public function testQuery()
     {
-        $this->assertInstanceOf('\BEdita\Core\ORM\Inheritance\Query', $this->fakeFelines->query());
+        static::assertInstanceOf(Query::class, $this->fakeFelines->query());
     }
 
     /**
-     * test setup ExtensionOf association
+     * Test inheritance setup.
      *
      * @return void
+     *
      * @covers ::extensionOf()
      */
     public function testExtensionOf()
     {
-        $this->assertTrue(method_exists($this->fakeFelines, 'extensionOf'));
-        $extensionOf = $this->fakeFelines->associations()->type('ExtensionOf');
-        $this->assertCount(0, $extensionOf);
-        $this->fakeFelines->extensionOf('FakeMammals', $this->tableOptions);
-        $extensionOf = $this->fakeFelines->associations()->type('ExtensionOf');
-        $this->assertCount(1, $extensionOf);
+        $this->fakeFelines->extensionOf('FakeAnimals');
 
-        $extensionOf = current($extensionOf);
-        $this->assertEquals(TableRegistry::get('FakeMammals'), $extensionOf->target());
-
-        // trying to add another extensionOf association on the same table
-        $this->expectException('\RuntimeException');
-        $this->expectExceptionMessageRegExp('/.*has already an ExtensionOf association with.*/');
-        $this->fakeFelines->extensionOf('FakeAnimals', $this->tableOptions);
+        static::assertAttributeSame($this->fakeAnimals, 'inheritedTable', $this->fakeFelines);
+        static::assertInstanceOf(AssociationCollection::class, $this->fakeFelines->associations());
     }
 
     /**
-     * test implementedEvents to see when inheritance listeners are bound
+     * Test inheritance setup.
      *
      * @return void
-     * @covers ::implementedEvents()
-     */
-    public function testImplementedEvents()
-    {
-        $implementedEvents = $this->fakeFelines->implementedEvents();
-        $expected = [
-            'Model.beforeFind' => 'inheritanceBeforeFind',
-            'Model.beforeSave' => 'inheritanceBeforeSave',
-        ];
-        $this->assertEquals($expected, $implementedEvents);
-
-        $mockTable = $this->getMockBuilder($this->tableOptions['className'])
-            ->setMethods([
-                'beforeFind',
-                'beforeSave',
-            ])
-            ->getMock();
-
-        $implementedEvents = $mockTable->implementedEvents();
-        $expected = [
-            'Model.beforeFind' => [
-                ['callable' => 'beforeFind'],
-                ['callable' => 'inheritanceBeforeFind']
-            ],
-            'Model.beforeSave' => [
-                ['callable' => 'beforeSave'],
-                ['callable' => 'inheritanceBeforeSave']
-            ],
-        ];
-        $this->assertEquals($expected, $implementedEvents);
-    }
-
-    /**
-     * Data provider for testTriggerEvents
      *
-     * @return array
+     * @covers ::extensionOf()
+     * @covers ::inheritedTable()
      */
-    public function triggerEventsProvider()
+    public function testExtensionOfNotReady()
     {
-        return [
-            'beforeFind' => [
-                [
-                    'beforeFind' => 'called as first',
-                    'inheritanceBeforeFind' => 'called as second'
-                ],
-                'Model.beforeFind'
-            ],
-            'beforeSave' => [
-                [
-                    'beforeSave' => 'called as first',
-                    'inheritanceBeforeSave' => 'called as second'
-                ],
-                'Model.beforeSave'
-            ]
-        ];
-    }
+        $this->fakeFelines->extensionOf('MyFakeAnimals');
+        static::assertAttributeSame('MyFakeAnimals', 'inheritedTable', $this->fakeFelines);
+        static::assertInstanceOf(CakeAssociationCollection::class, $this->fakeFelines->associations());
 
-    /**
-     * test that listeners are really triggered
-     *
-     * @param array $expected The expected results
-     * @param string $eventName The even name to trigger
-     * @return void
-     * @dataProvider triggerEventsProvider
-     * @covers ::implementedEvents()
-     */
-    public function testTriggerEvents($expected, $eventName)
-    {
-        $method = str_replace('Model.', '', $eventName);
-        $iMethod = 'inheritance' . ucfirst($method);
+        $table = TableRegistry::get('MyFakeAnimals')->setTable('fake_animals');
+        $inheritedTable = $this->fakeFelines->inheritedTable();
 
-        $mockTable = $this->getMockBuilder($this->tableOptions['className'])
-            ->setMethods([
-                'beforeFind',
-                'beforeSave',
-                'inheritanceBeforeFind',
-                'inheritanceBeforeSave',
-            ])
-            ->getMock();
-
-        $mockTable->expects($this->once())->method($method)
-            ->will($this->returnValue([$method => 'called as first']));
-
-        $callback = function ($event) use ($iMethod) {
-            return array_merge($event->result, [$iMethod => 'called as second']);
-        };
-        $mockTable->expects($this->once())->method($iMethod)
-            ->will($this->returnCallback($callback));
-
-        if ($eventName == 'Model.beforeFind') {
-            $mockQuery = $this->getMockBuilder('\BEdita\Core\ORM\Inheritance\Query')
-                ->setConstructorArgs([null, null])
-                ->getMock();
-
-            $event = $mockTable->dispatchEvent('Model.beforeFind', [
-                $mockQuery,
-                new \ArrayObject(),
-                true
-            ]);
-        } else {
-            $event = $mockTable->dispatchEvent('Model.beforeSave', [
-                $mockTable->newEntity(),
-                new \ArrayObject()
-            ]);
-        }
-
-        $this->assertEquals($expected, $event->result);
+        static::assertSame($table, $inheritedTable);
+        static::assertAttributeSame($table, 'inheritedTable', $this->fakeFelines);
+        static::assertInstanceOf(AssociationCollection::class, $this->fakeFelines->associations());
     }
 
     /**
      * Test inherited tables
      *
      * @return void
+     *
      * @covers ::inheritedTable()
      * @covers ::inheritedTables()
      */
@@ -261,11 +166,32 @@ class TableTest extends TestCase
         $felinesInheritance = $this->fakeFelines->inheritedTable();
         static::assertEquals('FakeMammals', $felinesInheritance->getAlias());
 
-        $felinesDeepInheritance = array_map(function (Table $inherited) {
+        $felinesDeepInheritance = array_map(function (CakeTable $inherited) {
             return $inherited->getAlias();
-        }, $this->fakeFelines->inheritedTables(true));
+        }, $this->fakeFelines->inheritedTables());
 
         static::assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+    }
+
+    /**
+     * Test method to find common inheritance tables.
+     *
+     * @return void
+     *
+     * @covers ::commonInheritance()
+     */
+    public function testCommonInheritance()
+    {
+        $this->setupAssociations();
+
+        $expected = [$this->fakeMammals, $this->fakeAnimals];
+        $common = $this->fakeFelines->commonInheritance($this->fakeMammals);
+        $symmetricCommon = $this->fakeMammals->commonInheritance($this->fakeFelines);
+
+        static::assertSame($expected, $common);
+        static::assertSame($expected, $symmetricCommon);
+
+        static::assertSame([], $this->fakeMammals->commonInheritance(TableRegistry::get('FakeArticles')));
     }
 
     /**
@@ -276,27 +202,27 @@ class TableTest extends TestCase
      */
     public function testIsTableInherited()
     {
-        $this->assertFalse($this->fakeFelines->isTableInherited('FakeMammals'));
-        $this->assertFalse($this->fakeFelines->isTableInherited('FakeMammals', true));
+        static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals'));
+        static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals', true));
 
         $this->setupAssociations();
-        $this->assertTrue($this->fakeFelines->isTableInherited('FakeAnimals', true));
-        $this->assertFalse($this->fakeFelines->isTableInherited('FakeAnimals'));
-        $this->assertTrue($this->fakeFelines->isTableInherited('FakeMammals', true));
-        $this->assertTrue($this->fakeFelines->isTableInherited('FakeMammals'));
+        static::assertTrue($this->fakeFelines->isTableInherited('FakeAnimals', true));
+        static::assertFalse($this->fakeFelines->isTableInherited('FakeAnimals'));
+        static::assertTrue($this->fakeFelines->isTableInherited('FakeMammals', true));
+        static::assertTrue($this->fakeFelines->isTableInherited('FakeMammals'));
     }
 
     /**
      * testBasicFindWithoutInheritance
      *
      * @return void
-     * @covers ::inheritanceBeforeFind()
+     * @coversNothing
      */
     public function testBasicFindWithoutInheritance()
     {
         // find felines
         $felines = $this->fakeFelines->find();
-        $this->assertEquals(1, $felines->count());
+        static::assertEquals(1, $felines->count());
 
         $feline = $felines->first();
         $expected = [
@@ -306,14 +232,14 @@ class TableTest extends TestCase
         $result = $feline->extract($felines->first()->visibleProperties());
         ksort($expected);
         ksort($result);
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
      * testBasicFindWithInheritance
      *
      * @return void
-     * @covers ::inheritanceBeforeFind()
+     * @coversNothing
      */
     public function testBasicFindWithInheritance()
     {
@@ -321,7 +247,7 @@ class TableTest extends TestCase
 
         // find felines
         $felines = $this->fakeFelines->find();
-        $this->assertEquals(1, $felines->count());
+        static::assertEquals(1, $felines->count());
 
         $feline = $felines->first();
         $expected = [
@@ -334,22 +260,22 @@ class TableTest extends TestCase
         $result = $feline->extract($felines->first()->visibleProperties());
         ksort($expected);
         ksort($result);
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
 
-        $this->assertFalse($feline->dirty());
+        static::assertFalse($feline->dirty());
 
         // hydrate false
         $felines = $this->fakeFelines->find()->enableHydration(false);
-        $this->assertEquals(1, $felines->count());
+        static::assertEquals(1, $felines->count());
 
         $result = $felines->first();
         ksort($expected);
         ksort($result);
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
 
         // find mammals
         $mammals = $this->fakeMammals->find()->enableHydration(false);
-        $this->assertEquals(2, $mammals->count());
+        static::assertEquals(2, $mammals->count());
 
         $expected = [
             [
@@ -376,14 +302,14 @@ class TableTest extends TestCase
 
             return $a;
         }, $mammals->toArray());
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
      * Test find using contain
      *
      * @return void
-     * @covers ::inheritanceBeforeFind()
+     * @coversNothing
      */
     public function testContainFind()
     {
@@ -392,13 +318,13 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines
             ->find()
             ->contain('FakeArticles');
-        $this->assertEquals(1, $felines->count());
+        static::assertEquals(1, $felines->count());
 
         $feline = $felines->first();
 
-        $this->assertTrue($feline->has('fake_articles'));
-        $this->assertEquals(2, count($feline->fake_articles));
-        $this->assertFalse($feline->dirty());
+        static::assertTrue($feline->has('fake_articles'));
+        static::assertEquals(2, count($feline->get('fake_articles')));
+        static::assertFalse($feline->dirty());
 
         $expected = [
             'id' => 1,
@@ -426,179 +352,7 @@ class TableTest extends TestCase
         $result = $feline->toArray();
         ksort($result);
 
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * Data provider for `testSave` test case.
-     *
-     * @return array
-     */
-    public function saveProvider()
-    {
-        return [
-            'onlyAncestorField' => [
-                [
-                    'id' => 4,
-                    'name' => 'lion'
-                ],
-                [
-                    'name' => 'lion'
-                ]
-            ],
-            'noAncestorsField' => [
-                [
-                    'id' => 4,
-                    'family' => 'big cats'
-                ],
-                [
-                    'family' => 'big cats'
-                ]
-            ],
-            'noParentField' => [
-                [
-                    'id' => 4,
-                    'name' => 'tiger',
-                    'family' => 'big cats'
-                ],
-                [
-                    'name' => 'tiger',
-                    'family' => 'big cats'
-                ]
-            ],
-            'simple' => [
-                [
-                    'id' => 4,
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats'
-                ],
-                [
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats'
-                ]
-            ],
-            'advanced' => [
-                [
-                    'id' => 4,
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats',
-                    'fake_articles' => [
-                        [
-                            'id' => 1,
-                            'title' => 'The cat',
-                            'body' => 'article body',
-                            'fake_animal_id' => 4
-                        ],
-                        [
-                            'id' => 2,
-                            'title' => 'Puss in boots',
-                            'body' => 'text',
-                            'fake_animal_id' => 4
-                        ]
-                    ]
-                ],
-                [
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats',
-                    'fake_articles' => [
-                        '_ids' => [1, 2]
-                    ]
-                ]
-            ],
-            'advancedNewArticles' => [
-                [
-                    'id' => 4,
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats',
-                    'fake_articles' => [
-                        [
-                            'id' => 3,
-                            'title' => 'The white tiger',
-                            'body' => 'Body of article',
-                            'fake_animal_id' => 4
-                        ],
-                        [
-                            'id' => 4,
-                            'title' => 'Sandokan',
-                            'body' => 'The Malaysian tiger',
-                            'fake_animal_id' => 4
-                        ]
-                    ]
-                ],
-                [
-                    'name' => 'tiger',
-                    'legs' => 4,
-                    'subclass' => 'Eutheria',
-                    'family' => 'big cats',
-                    'fake_articles' => [
-                        [
-                            'title' => 'The white tiger',
-                            'body' => 'Body of article'
-                        ],
-                        [
-                            'title' => 'Sandokan',
-                            'body' => 'The Malaysian tiger'
-                        ]
-                    ]
-                ]
-            ],
-            'simplePatch' => [
-                [
-                    'id' => 1,
-                    'name' => 'The super cat',
-                    'family' => 'purring cats',
-                    'legs' => 4,
-                    'subclass' => 'None',
-                ],
-                [
-                    'id' => 1,
-                    'name' => 'The super cat',
-                    'subclass' => 'None',
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * testSave method
-     *
-     * @param array $expected Expected result.
-     * @param array $data Data.
-     * @return void
-     *
-     * @dataProvider saveProvider
-     * @covers ::inheritanceBeforeSave()
-     * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
-     * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
-     */
-    public function testSave($expected, $data)
-    {
-        $this->setupAssociations();
-
-        $feline = $this->fakeFelines->newEntity();
-        if (!empty($data['id'])) {
-            $feline = $this->fakeFelines->get($data['id']);
-        }
-        $feline = $this->fakeFelines->patchEntity($feline, $data);
-        $result = $this->fakeFelines->save($feline);
-
-        $this->assertNotFalse($result);
-        $resultArray = $result->toArray();
-        $this->assertEquals($expected, $resultArray);
-
-        $this->assertCount(1, $this->fakeFelines->findById($result->id));
-        $this->assertCount(1, $this->fakeMammals->findById($result->id));
-        $this->assertCount(1, $this->fakeAnimals->findById($result->id));
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -632,19 +386,16 @@ class TableTest extends TestCase
      * @return void
      *
      * @dataProvider selectProvider
-     * @covers ::inheritanceBeforeFind()
-     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_calculateColumnMap()
-     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_groupResult()
-     * @covers \BEdita\Core\ORM\Association\ExtensionOf::transformRow()
+     * @coversNothing
      */
     public function testSelect($expected, $select)
     {
         $this->setupAssociations();
 
         $allColumns = $this->fakeFelines->getSchema()->columns();
-        foreach ($this->fakeFelines->inheritedTables(true) as $t) {
+        foreach ($this->fakeFelines->inheritedTables() as $t) {
             if (!($t instanceof CakeTable)) {
-                $this->fail('Unexpected table object');
+                static::fail('Unexpected table object');
             }
 
             $allColumns = array_merge($allColumns, $t->getSchema()->columns());
@@ -657,15 +408,15 @@ class TableTest extends TestCase
 
         foreach ($felines as $f) {
             if (!($f instanceof EntityInterface)) {
-                $this->fail('Unexpected entity');
+                static::fail('Unexpected entity');
             }
 
             foreach ($expected as $field) {
-                $this->assertTrue($f->has($field));
+                static::assertTrue($f->has($field));
             }
 
             foreach ($unexpectedFields as $field) {
-                $this->assertFalse($f->has($field));
+                static::assertFalse($f->has($field));
             }
         }
     }
@@ -674,6 +425,7 @@ class TableTest extends TestCase
      * testClauses
      *
      * @return void
+     * @coversNothing
      */
     public function testClauses()
     {
@@ -699,9 +451,9 @@ class TableTest extends TestCase
 
         foreach ($result as $item) {
             if ($item['subclass'] == 'Eutheria') {
-                $this->assertEquals(1, $item['count']);
+                static::assertEquals(1, $item['count']);
             } elseif ($item['subclass'] == 'Another Sublcass') {
-                $this->assertEquals(3, $item['count']);
+                static::assertEquals(3, $item['count']);
             }
         }
     }
@@ -778,6 +530,7 @@ class TableTest extends TestCase
      * @return void
      *
      * @dataProvider findListProvider
+     * @coversNothing
      */
     public function testFindList($expected, $listParams, $order)
     {
@@ -800,7 +553,7 @@ class TableTest extends TestCase
         $query->order($order);
 
         $result = $query->toArray();
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -836,10 +589,13 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        $this->fakeMammals->addBehavior('Tree');
+        $this->fakeAnimals->addBehavior('Tree');
 
         static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
         static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+
+        static::assertTextNotContains('FakeAnimals', debug($this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql()));
+        static::assertTextNotContains('FakeAnimals', debug($this->fakeFelines->find('children', ['for' => 1, 'direct' => true])->sql()));
     }
 
     /**
@@ -853,7 +609,7 @@ class TableTest extends TestCase
      */
     public function testCallMissingFinder()
     {
-        $this->fakeAnimals->find('gustavo');
+        $this->fakeMammals->find('gustavo');
     }
 
     /**
@@ -867,8 +623,29 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        static::assertTrue($this->fakeMammals->hasField('legs', true));
+        static::assertTrue($this->fakeMammals->hasField('legs'));
         static::assertFalse($this->fakeMammals->hasField('legs', false));
         static::assertTrue($this->fakeAnimals->hasField('legs'));
+    }
+
+    /**
+     * Test cloning of a table.
+     *
+     * @return void
+     *
+     * @covers ::__clone()
+     */
+    public function testClone()
+    {
+        $clone = clone $this->fakeMammals;
+
+        static::assertEquals($clone->associations(), $this->fakeMammals->associations());
+        static::assertNotSame($clone->associations(), $this->fakeMammals->associations());
+
+        static::assertEquals($clone->behaviors(), $this->fakeMammals->behaviors());
+        static::assertNotSame($clone->behaviors(), $this->fakeMammals->behaviors());
+
+        static::assertEquals($clone->eventManager(), $this->fakeMammals->eventManager());
+        static::assertNotSame($clone->eventManager(), $this->fakeMammals->eventManager());
     }
 }

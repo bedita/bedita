@@ -16,10 +16,9 @@ namespace BEdita\API\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Plugin;
-use Cake\Error\Debugger;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Network\Request;
-use Zend\Diactoros\Stream;
+use Cake\Utility\Hash;
 
 /**
  * Exception renderer.
@@ -44,21 +43,19 @@ class ExceptionRenderer extends CakeExceptionRenderer
     {
         $isDebug = Configure::read('debug');
 
-        $code = $this->_code($this->error);
-        $message = $this->_message($this->error, $code);
+        $status = $this->_code($this->error);
+        $title = $this->_message($this->error, $status);
         $detail = $this->errorDetail($this->error);
+        $code = $this->appErrorCode($this->error);
         $trace = null;
         if ($isDebug) {
-            $trace = Debugger::formatTrace($this->_unwrap($this->error)->getTrace(), [
-                'format' => 'array',
-                'args' => false,
-            ]);
+            $trace = explode("\n", $this->_unwrap($this->error)->getTraceAsString());
         }
 
         if ($this->isHtmlToSend()) {
             $this->setupView();
             $this->controller->set('method', $this->controller->request->getMethod());
-            $this->controller->set('responseBody', $this->jsonError($code, $message, $trace));
+            $this->controller->set('responseBody', $this->jsonError($status, $title, $detail, $code, $trace));
 
             return parent::render();
         }
@@ -70,7 +67,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
             'checkMediaType' => $this->controller->request->is('jsonapi'),
         ]);
 
-        $this->controller->JsonApi->error($code, $message, $detail, array_filter(compact('trace')));
+        $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
         $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
 
         return parent::render();
@@ -79,9 +76,9 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * {@inheritDoc}
      */
-    protected function _message(\Exception $error, $code)
+    protected function _message(\Exception $error, $status)
     {
-        $message = parent::_message($error, $code);
+        $message = parent::_message($error, $status);
         if (empty($message) && $error instanceof CakeException) {
             $errorAttributes = $error->getAttributes();
             if (!empty($errorAttributes['title'])) {
@@ -119,23 +116,36 @@ class ExceptionRenderer extends CakeExceptionRenderer
         if (is_string($d)) {
             return $d;
         }
+
         $res = '';
         if (is_array($d)) {
-            foreach ($d as $errDetail) {
-                if (is_array($errDetail)) {
-                    foreach ($errDetail as $item => $desc) {
-                        $res .= " '$item' : ";
-                        if (is_array($desc)) {
-                            foreach ($desc as $cause => $w) {
-                                $res .= " [$cause] $w";
-                            }
-                        }
-                    }
-                }
+            $d = Hash::flatten($d);
+            foreach ($d as $item => $errDetail) {
+                $res .= "[$item]: $errDetail ";
             }
         }
 
         return $res;
+    }
+
+    /**
+     * Application specific error code.
+     *
+     * @param \Exception $error Exception.
+     * @return string Error code
+     */
+    protected function appErrorCode(\Exception $error)
+    {
+        if (!$error instanceof CakeException) {
+            return '';
+        }
+
+        $errorAttributes = $error->getAttributes();
+        if (empty($errorAttributes['code']) || !is_scalar($errorAttributes['code'])) {
+            return '';
+        }
+
+        return (string)$errorAttributes['code'];
     }
 
     /**
@@ -170,10 +180,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $view = $this->controller->createView();
 
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($view->render());
-
-        return $this->controller->response->withBody($stream);
+        return $this->controller->response->withStringBody($view->render());
     }
 
     /**
@@ -200,7 +207,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * {@inheritDoc}
      */
-    protected function _template(\Exception $exception, $method, $code)
+    protected function _template(\Exception $exception, $method, $status)
     {
         return $this->template = 'error';
     }
@@ -208,19 +215,18 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * Build json error string for HTML error display
      *
-     * @param string $code Error code
-     * @param string $message Error message
-     * @param string $trace Error stacktrace
+     * @param string $status HTTP error code
+     * @param string $title Error message
+     * @param string $detail Longer description of error
+     * @param string $code Application error code
+     * @param array|null $trace Error stacktrace
      * @return string JSON error
      */
-    public function jsonError($code, $message, $trace)
+    public function jsonError($status, $title, $detail, $code, $trace)
     {
+        $meta = array_filter(compact('trace'));
         $res = [
-            'error' => [
-                'status' => $code,
-                'title' => $message,
-                'meta' => array_filter(compact('trace'))
-            ]
+            'error' => array_filter(compact('status', 'title', 'detail', 'code', 'meta'))
         ];
 
         return json_encode($res);

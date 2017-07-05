@@ -26,4 +26,14 @@ namespace BEdita\Core\Model\Entity;
  */
 class Location extends ObjectEntity
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $properties = [], array $options = [])
+    {
+        parent::__construct($properties, $options);
+
+        $this->setAccess('distance', false);
+    }
 }

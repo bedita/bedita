@@ -35,11 +35,17 @@ class PaginatorComponent extends CakePaginatorComponent
     ];
 
     /**
+     * Max limit per pagination items
+     */
+    const MAX_LIMIT = 500;
+
+    /**
      * {@inheritDoc}
      */
     public function mergeOptions($alias, $settings)
     {
         $options = parent::mergeOptions($alias, $settings);
+        $options['maxLimit'] = min($options['maxLimit'], static::MAX_LIMIT);
 
         if (!empty($options['page_size'])) {
             $options['limit'] = $options['page_size'];

@@ -2,13 +2,13 @@
 	"variables": [],
 	"info": {
 		"name": "BE4",
-		"_postman_id": "191b6ace-dac7-7553-4a68-081460133599",
+		"_postman_id": "88d8a406-338b-b294-9710-fb44d3139446",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Auth",
+			"name": "1. Auth",
 			"description": "Authorization",
 			"item": [
 				{
@@ -19,11 +19,288 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
+									"var schemaAuth = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"jwt\": {\"type\": \"string\"},",
+									"                \"renew\": {\"type\": \"string\"}",
+									"            },",
+									"            \"required\": [\"jwt\", \"renew\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"meta\"],",
+									"};",
+									"var schemaBase = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"resources\": {",
+									"                    \"type\": \"object\"",
+									"                }",
+									"            },",
+									"            \"required\": [\"resources\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"links\",\"meta\"]",
+									"};",
+									"var schemaFull = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"data\": {",
+									"            \"type\": \"array\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"]",
+									"        },",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"pagination\": {",
+									"                    \"type\": \"object\",",
+									"                    \"properties\": {",
+									"                        \"count\": {\"type\": \"number\"},",
+									"                        \"page\": {\"type\": \"number\"},",
+									"                        \"page_count\": {\"type\": \"number\"},",
+									"                        \"page_items\": {\"type\": \"number\"},",
+									"                        \"page_size\": {\"type\": \"number\"}",
+									"                    },",
+									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+									"                }",
+									"            },",
+									"            \"required\": [\"pagination\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"data\",\"links\",\"meta\"]",
+									"};",
+									"var schemaPatch = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"data\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"data\"],",
+									"};",
+									"postman.setEnvironmentVariable(\"schemaAuth\",schemaAuth);",
+									"postman.setEnvironmentVariable(\"schemaBase\",schemaBase);",
+									"postman.setEnvironmentVariable(\"schemaFull\",schemaFull);",
+									"postman.setEnvironmentVariable(\"schemaPatch\",schemaPatch);",
+									"var schema = postman.getEnvironmentVariable(\"schemaAuth\");",
 									"var responseJSON;",
 									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
+									"    responseJSON = JSON.parse(responseBody);",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    }",
+									"    postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/auth",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+						},
+						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth (form-data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schemaAuth = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"jwt\": {\"type\": \"string\"},",
+									"                \"renew\": {\"type\": \"string\"}",
+									"            },",
+									"            \"required\": [\"jwt\", \"renew\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"meta\"],",
+									"};",
+									"var schemaBase = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"resources\": {",
+									"                    \"type\": \"object\"",
+									"                }",
+									"            },",
+									"            \"required\": [\"resources\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"links\",\"meta\"]",
+									"};",
+									"var schemaFull = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"data\": {",
+									"            \"type\": \"array\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"]",
+									"        },",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"meta\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"pagination\": {",
+									"                    \"type\": \"object\",",
+									"                    \"properties\": {",
+									"                        \"count\": {\"type\": \"number\"},",
+									"                        \"page\": {\"type\": \"number\"},",
+									"                        \"page_count\": {\"type\": \"number\"},",
+									"                        \"page_items\": {\"type\": \"number\"},",
+									"                        \"page_size\": {\"type\": \"number\"}",
+									"                    },",
+									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+									"                }",
+									"            },",
+									"            \"required\": [\"pagination\"]",
+									"        }",
+									"    },",
+									"    \"required\": [\"data\",\"links\",\"meta\"]",
+									"};",
+									"var schemaPatch = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"]",
+									"        },",
+									"        \"data\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"links\", \"data\"],",
+									"};",
+									"postman.setEnvironmentVariable(\"schemaAuth\",schemaAuth);",
+									"postman.setEnvironmentVariable(\"schemaBase\",schemaBase);",
+									"postman.setEnvironmentVariable(\"schemaFull\",schemaFull);",
+									"postman.setEnvironmentVariable(\"schemaPatch\",schemaPatch);",
+									"var schema = postman.getEnvironmentVariable(\"schemaAuth\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    }",
+									"    postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -63,14 +340,14 @@
 								}
 							]
 						},
-						"description": "Perform authentication"
+						"description": "Authentication using form-data"
 					},
 					"response": []
 				}
 			]
 		},
 		{
-			"name": "Home",
+			"name": "2. Home & Status",
 			"description": "",
 			"item": [
 				{
@@ -81,109 +358,16 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"resources\": {",
-									"                    \"type\": \"object\"",
-									"                }",
-									"            },",
-									"            \"required\": [\"resources\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"links\",\"meta\"]",
-									"};",
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/home/",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Home endpoint"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "ObjectTypes",
-			"description": "",
-			"item": [
-				{
-					"name": "GET single object_type",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    if (responseCode.code === 200) {",
-									"        tests[\"Status equals 200\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
 									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"    } else if (responseCode.code === 404) {",
-									"        tests[\"Status code is 404\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
 									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
@@ -193,7 +377,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
+						"url": "{{be4Url}}/home",
 						"method": "GET",
 						"header": [
 							{
@@ -202,16 +386,69 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Home endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "GET status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/status/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
 							}
 						],
-						"body": {},
-						"description": "GET object_type by object_type_id"
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Status endpoint"
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "3. ObjectTypes",
+			"description": "",
+			"item": [
 				{
 					"name": "GET object_types",
 					"event": [
@@ -220,52 +457,17 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody);",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -283,12 +485,15 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "GET object_types"
 					},
 					"response": []
@@ -301,11 +506,21 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    if (responseCode.code === 201) {",
+									"        postman.setEnvironmentVariable(\"objectTypeId\", responseJSON.data.id);",
+									"        postman.setEnvironmentVariable(\"objectTypeName\", responseJSON.data.attributes.name);",
+									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -326,169 +541,41 @@
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\" : \"dummyObjectType\",\n            \"pluralized\" : \"dummyObjectType\",\n            \"description\" : \"this is a dummy object type\",\n            \"plugin\" : \"plugin sample dummy\",\n            \"model\" : \"model sample dummy\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\" : \"cats\",\n            \"singular\" : \"cat\",\n            \"description\" : \"this is a cat\",\n            \"plugin\" : \"BEdita/Core\",\n            \"model\" : \"Objects\"\n        }\n    }\n}"
 						},
 						"description": "POST ADD object_types"
 					},
 					"response": []
 				},
 				{
-					"name": "Modify object_type",
+					"name": "GET single object_type",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object_type\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object_type\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"data\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/object_types/{{object_type_id}}",
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"dummy description\"\n        }\n    }\n}"
-						},
-						"description": "PATCH object_type"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete object_type",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Body matches string\"] = responseBody === \"\";",
-									"    postman.clearEnvironmentVariable(\"objectTypeId\");",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "DEL object_type"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Objects",
-			"description": "objects endpoint: Object management",
-			"item": [
-				{
-					"name": "GET single object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    if (responseCode.code === 200) {",
 									"        tests[\"Status equals 200\"] = true;",
 									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
 									"    } else if (responseCode.code === 404) {",
 									"        tests[\"Status code is 404\"] = true;",
 									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
@@ -501,7 +588,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/objects/{{objectId}}",
+						"url": "{{be4Url}}/object_types/{{objectTypeName}}",
 						"method": "GET",
 						"header": [
 							{
@@ -510,16 +597,79 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
-						"description": "get single object by id"
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "GET object_type by object_type_id"
 					},
 					"response": []
 				},
+				{
+					"name": "Modify object_type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"another dummy description\"\n        }\n    }\n}"
+						},
+						"description": "PATCH object_type"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Objects",
+			"description": "objects endpoint: Object management",
+			"item": [
 				{
 					"name": "GET objects",
 					"event": [
@@ -528,52 +678,17 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -591,12 +706,15 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "Get objects list"
 					},
 					"response": []
@@ -609,11 +727,18 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"objectId\", responseJSON.data.id);",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -622,7 +747,852 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/objects",
+						"url": "{{be4Url}}/{{objectTypeName}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"a cat\"\n        }\n    }\n}"
+						},
+						"description": "Create new Object"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/objects/{{objectId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "get single object by id"
+					},
+					"response": []
+				},
+				{
+					"name": "Modify object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}"
+						},
+						"description": "PATCH object"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Users & Roles",
+			"description": "Roles management",
+			"item": [
+				{
+					"name": "GET users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get users list"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"userId\", responseJSON.data.id);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}"
+						},
+						"description": "Create new User"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/{{userId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "get single user by id"
+					},
+					"response": []
+				},
+				{
+					"name": "Patch user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/{{userId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}"
+						},
+						"description": "PATCH user"
+					},
+					"response": []
+				},
+				{
+					"name": "GET roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get roles list"
+					},
+					"response": []
+				},
+				{
+					"name": "Create role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    if (responseCode.code === 201) {",
+									"        postman.setEnvironmentVariable(\"roleId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"animal\"\n        }\n    }\n}"
+						},
+						"description": "Create new Role"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/{{roleId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "get single role by id"
+					},
+					"response": []
+				},
+				{
+					"name": "Modify role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/{{roleId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n        \t\"name\": \"animal\",\n            \"description\": \"a very important description of this role\"\n        }\n    }\n}"
+						},
+						"description": "PATCH role"
+					},
+					"response": []
+				},
+				{
+					"name": "Add role to user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/{{userId}}/relationships/roles",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+						},
+						"description": "Add a role to user"
+					},
+					"response": []
+				},
+				{
+					"name": "GET user roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/{{userId}}/roles",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get user roles"
+					},
+					"response": []
+				},
+				{
+					"name": "Add role to user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/{{roleId}}/relationships/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}"
+						},
+						"description": "Add a role to a user"
+					},
+					"response": []
+				},
+				{
+					"name": "GET role users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/{{roleId}}/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get role users"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove associated role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/users/{{userId}}/relationships/roles",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+						},
+						"description": "Remove a user's role"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/signup",
 						"method": "POST",
 						"header": [
 							{
@@ -638,77 +1608,105 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"objects\",\n        \"attributes\": {\n            \"name\": \"dummy object\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johannadoe\",\n            \"password\": \"j0h4nn4d0e\",\n            \"email\": \"johannadoe@nowhere.xx\"\n        },\n        \"meta\": {\n            \"activation_url\": \"http://myactivationsys.xx?dum=my\",\n            \"redirect_url\": \"app://xx?dum=my\"\n        }\n    }\n}"
 						},
-						"description": "Create new Object"
+						"description": "Create new User"
 					},
 					"response": []
 				},
 				{
-					"name": "Modify object",
+					"name": "Signup user activation",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"data\"],",
-									"};",
-									"var responseJSON;",
 									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"    tests[\"Content-Type is correct\"] = (postman.getResponseHeader(\"Content-Type\").indexOf('application/json') >= 0);",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
-									"}",
-									""
+									"}"
 								]
 							}
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/objects/{{objectId}}",
-						"method": "PATCH",
+						"url": "{{be4Url}}/signup/activation",
+						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Accept",
+								"value": "application/json",
 								"description": ""
 							},
 							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
+								"key": "Content-Type",
+								"value": "application/json",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"objects\",\n        \"attributes\": {\n            \"description\": \"dummy description\"\n        }\n    }\n}"
+							"raw": "{\n    \"uuid\": \"some-uuid\"\n}"
 						},
-						"description": "PATCH object"
+						"description": "Signup user activation"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Trash",
+			"description": "Trash management",
+			"item": [
+				{
+					"name": "GET objects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/trash/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get objects from trash"
 					},
 					"response": []
 				},
@@ -743,524 +1741,19 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL object"
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Roles",
-			"description": "Roles management",
-			"item": [
-				{
-					"name": "GET single role",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    if (responseCode.code === 200) {",
-									"        tests[\"Status equals 200\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"    } else if (responseCode.code === 404) {",
-									"        tests[\"Status code is 404\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    }",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/{{roleId}}",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "get single role by id"
-					},
-					"response": []
 				},
-				{
-					"name": "GET roles",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody);",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Get roles list"
-					},
-					"response": []
-				},
-				{
-					"name": "GET role users",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/{{roleId}}/users",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Get role users"
-					},
-					"response": []
-				},
-				{
-					"name": "Create role",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"dummy role\"\n        }\n    }\n}"
-						},
-						"description": "Create new Role"
-					},
-					"response": []
-				},
-				{
-					"name": "Modify role",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object_type\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object_type\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"data\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/1",
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"Dummy Role\"\n        }\n    }\n}"
-						},
-						"description": "PATCH role"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete role",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Body matches string\"] = responseBody === \"\";",
-									"    postman.clearEnvironmentVariable(\"roleId\");",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/{{roleId}}",
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "DEL role"
-					},
-					"response": []
-				},
-				{
-					"name": "Add role to user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/roles/{{roleId}}/relationships/users",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}"
-						},
-						"description": "Add a role to a user"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Status",
-			"description": "Status",
-			"item": [
-				{
-					"name": "GET status",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"status\": {",
-									"                    \"type\": \"object\"",
-									"                }",
-									"            },",
-									"            \"required\": [\"status\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/status/",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Status endpoint"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Trash",
-			"description": "Trash management",
-			"item": [
 				{
 					"name": "GET single object",
 					"event": [
@@ -1269,36 +1762,18 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    if (responseCode.code === 200) {",
 									"        tests[\"Status equals 200\"] = true;",
 									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
 									"    } else if (responseCode.code === 404) {",
 									"        tests[\"Status code is 404\"] = true;",
 									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
@@ -1320,94 +1795,16 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "get single object from trash by id"
-					},
-					"response": []
-				},
-				{
-					"name": "GET objects",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/trash/",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Get objects from trash"
 					},
 					"response": []
 				},
@@ -1445,6 +1842,11 @@
 								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1454,9 +1856,106 @@
 						"description": "PATCH restore object"
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Remove All",
+			"description": "Remove all objects and resources created",
+			"item": [
+				{
+					"name": "Delete role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"roleId\")) {",
+									"        postman.clearEnvironmentVariable(\"roleId\");",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/roles/{{roleId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "DEL role"
+					},
+					"response": []
 				},
 				{
 					"name": "Delete object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/objects/{{objectId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete object permanently",
 					"event": [
 						{
 							"listen": "test",
@@ -1486,63 +1985,38 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": "DEL object"
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Users",
-			"description": "users endpoint: User management",
-			"item": [
+				},
 				{
-					"name": "GET single user",
+					"name": "Delete object_type",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
-									"    if (responseCode.code === 200) {",
-									"        tests[\"Status equals 200\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"    } else if (responseCode.code === 404) {",
-									"        tests[\"Status code is 404\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"objectTypeId\")) {",
+									"        postman.clearEnvironmentVariable(\"objectTypeId\");",
+									"    }",
+									"    if (postman.getEnvironmentVariable(\"objectTypeName\")) {",
+									"        postman.clearEnvironmentVariable(\"objectTypeName\");",
 									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
@@ -1552,8 +2026,8 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/users/{{userId}}",
-						"method": "GET",
+						"url": "{{be4Url}}/object_types/{{objectTypeName}}",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Accept",
@@ -1561,285 +2035,16 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "get single user by id"
-					},
-					"response": []
-				},
-				{
-					"name": "GET users",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/users/",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Get users list"
-					},
-					"response": []
-				},
-				{
-					"name": "GET user roles",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/users/{{userId}}/roles",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "Get user roles"
-					},
-					"response": []
-				},
-				{
-					"name": "Create user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/users",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}"
+							"raw": ""
 						},
-						"description": "Create new User"
-					},
-					"response": []
-				},
-				{
-					"name": "Patch user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object_type\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object_type\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object_type\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"data\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/users/{{userId}}",
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}"
-						},
-						"description": "PATCH user"
+						"description": "DEL object_type"
 					},
 					"response": []
 				},
@@ -1851,7 +2056,9 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
+									"var responseJSON;",
 									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
 									"    tests[\"Body matches string\"] = responseBody === \"\";",
@@ -1872,61 +2079,21 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "DEL user"
-					},
-					"response": []
-				},
-				{
-					"name": "Add role to user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/users/{{userId}}/relationships/roles",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": ""
 						},
-						"description": "Add a role to user"
+						"description": "DEL user"
 					},
 					"response": []
 				},
 				{
-					"name": "Remove a role",
+					"name": "Delete user permanently",
 					"event": [
 						{
 							"listen": "test",
@@ -1936,8 +2103,9 @@
 									"var responseJSON;",
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -1946,7 +2114,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/users/{{userId}}/relationships/roles",
+						"url": "{{be4Url}}/trash/{{userId}}",
 						"method": "DELETE",
 						"header": [
 							{
@@ -1955,16 +2123,16 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": ""
 						},
-						"description": "Remove a user's role"
+						"description": ""
 					},
 					"response": []
 				}

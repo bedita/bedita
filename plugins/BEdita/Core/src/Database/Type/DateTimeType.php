@@ -14,8 +14,6 @@
 namespace BEdita\Core\Database\Type;
 
 use Cake\Database\Type\DateTimeType as CakeDateTimeType;
-use Cake\I18n\Time;
-use DateTimeInterface;
 
 /**
  * Custom DateTimeType class with simplified marshal
@@ -38,12 +36,13 @@ class DateTimeType extends CakeDateTimeType
      */
     public function marshal($value)
     {
-        if ($value instanceof DateTimeInterface) {
+        if ($value instanceof \DateTimeInterface) {
             return $value;
         }
 
-        if (preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
-            $value = Time::parse($value);
+        if (is_string($value) && preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
+            /* @var \Cake\I18n\Time|\Cake\I18n\FrozenTime $value */
+            $value = call_user_func([$this->getDateTimeClassName(), 'parse'], $value);
             if ($value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');
             }

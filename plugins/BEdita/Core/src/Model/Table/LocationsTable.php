@@ -13,10 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\LocationsValidator;
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\Database\Expression\FunctionExpression;
-use Cake\ORM\Query;
-use Cake\Validation\Validator;
 
 /**
  * Locations Model
@@ -31,6 +29,10 @@ use Cake\Validation\Validator;
  */
 class LocationsTable extends Table
 {
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = LocationsValidator::class;
 
     /**
      * {@inheritDoc}
@@ -45,89 +47,22 @@ class LocationsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->extensionOf('Objects', [
-            'className' => 'BEdita/Core.Objects'
-        ]);
+        $this->extensionOf('Objects');
 
         $this->addBehavior('BEdita/Core.Relations');
-    }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->allowEmpty('coords');
-
-        $validator
-            ->allowEmpty('address');
-
-        $validator
-            ->allowEmpty('locality');
-
-        $validator
-            ->allowEmpty('postal_code');
-
-        $validator
-            ->allowEmpty('country_name');
-
-        $validator
-            ->allowEmpty('region');
-
-        return $validator;
-    }
-
-    /**
-     * Find objects by geo coordinates.
-     * Create a query to filter objects using geo data: location objects are
-     * ordered by distance, from the nearest to the farthest using a center geo point.
-     *
-     * Accepted options are:
-     *   - 'center' with point coordinates, latitude and longitude
-     *
-     * Examples
-     * ```
-     * // find location objects near a given center, string with comma separated values or array
-     * $table->find('geo', ['center' => '44.4944183,11.3464055']);
-     * $table->find('geo', ['center' => [44.4944183 ,11.3464055]]);
-     * ```
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array of acceptable geo localization conditions.
-     * @return \Cake\ORM\Query
-     */
-    public function findGeo(Query $query, array $options)
-    {
-        $center = !empty($options['center']) ? $options['center'] : [];
-        if (empty($center)) {
-            return $query;
-        }
-        if (is_array($center)) {
-            $center = implode(' ', $center);
-        }
-        $center = sprintf('POINT(%s)', str_replace(',', ' ', $center));
-        $distance = 'meta__distance';
-
-        $distanceExpression = new FunctionExpression(
-            'ST_Distance_sphere',
-            [
-                new FunctionExpression('ST_GeomFromText', [$this->aliasField('coords') => 'identifier']),
-                new FunctionExpression('ST_GeomFromText', [$center]),
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'address' => 1,
+                'locality' => 2,
+                'country_name' => 2,
+                'region' => 2,
             ],
-            [],
-            'float'
-        );
+        ]);
 
-        return $query
-            ->select([$distance => $distanceExpression])
-            ->enableAutoFields(true)
-            ->order([$distance => 'ASC']);
+        $this->addBehavior('BEdita/Core.Geometry');
     }
 }

@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\DateRange;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -443,6 +444,12 @@ class DateRangeTest extends TestCase
 
         $result = DateRange::normalize($dateRanges);
 
+        foreach ($dateRanges as $dateRange) {
+            foreach ($result as $item) {
+                static::assertNotSame($dateRange, $item);
+            }
+        }
+
         $expected = json_decode(json_encode($expected), true);
         $result = json_decode(json_encode($result), true);
 
@@ -673,7 +680,7 @@ class DateRangeTest extends TestCase
                 false,
             ],
             'invalid start date' => [
-                new \LogicException('Invalid "start_date": expected "Cake\I18n\Time", got "NULL"'),
+                new \LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
                 [
                     [
                         'start_date' => null,
@@ -682,13 +689,14 @@ class DateRangeTest extends TestCase
                 ],
             ],
             'invalid end date' => [
-                new \LogicException('Invalid "end_date": expected "Cake\I18n\Time", got "string"'),
+                new \LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
                 [
-                    [
-                        'start_date' => '2017-01-01',
+                    new DateRange([
+                        'start_date' => new FrozenTime(),
                         'end_date' => 'better than yesterday, worse than tomorrow',
-                    ],
+                    ]),
                 ],
+                false,
             ],
             'ok' => [
                 true,

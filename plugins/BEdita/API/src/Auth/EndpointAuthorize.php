@@ -21,6 +21,7 @@ use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -34,10 +35,18 @@ class EndpointAuthorize extends BaseAuthorize
 
     /**
      * {@inheritDoc}
+     *
+     * If 'blockAnonymousUsers' is true no access will be granted
+     * to unauthenticated users otherwise authorization check is performed
+     * If 'defaultAuthorized' is set current request is authorized
+     * unless a specific permission is set.
      */
     protected $_defaultConfig = [
-        'disallowAnonymousApplications' => false,
+        'blockAnonymousApps' => false,
+        'blockAnonymousUsers' => true,
+        'apiKeyQueryString' => 'api_key',
         'apiKeyHeaderName' => 'X-Api-Key',
+        'defaultAuthorized' => false,
     ];
 
     /**
@@ -46,6 +55,13 @@ class EndpointAuthorize extends BaseAuthorize
      * @var \BEdita\Core\Model\Entity\Endpoint|null
      */
     protected $endpoint = null;
+
+    /**
+     * Current application entity.
+     *
+     * @var \BEdita\Core\Model\Entity\Application|null
+     */
+    protected $application = null;
 
     /**
      * Request object instance.
@@ -73,27 +89,42 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $this->request = $request;
 
-        $application = $this->getApplication();
-        $endpoint = $this->getEndpoint();
-        $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
-        $allPermissions = $this->getPermissions(false, $application, $endpoint);
-        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
-            $this->authorized = true;
+        // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
+        if (!$this->getConfig('defaultAuthorized') &&
+            $this->isAnonymous($user) &&
+            $this->getConfig('blockAnonymousUsers')) {
+            $this->unauthenticate();
+        }
 
-            return $this->authorized;
+        // For anonymous users performing write operations, use strict mode.
+        $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
+
+        $this->getApplication();
+
+        if (empty($this->endpoint)) {
+            $this->getEndpoint();
+        }
+
+        $permissions = $this->getPermissions($user, $strict)->toArray();
+        $allPermissions = $this->getPermissions(false);
+
+        // If request si authorized and no permission is set on it then it is authorized for anyone
+        if ($this->getConfig('defaultAuthorized') && ($this->endpoint->isNew() || $allPermissions->count() === 0)) {
+            return $this->authorized = true;
         }
 
         $this->authorized = $this->checkPermissions($permissions);
+        if (empty($permissions) && ($this->endpoint->isNew() || $allPermissions->count() === 0)) {
+            // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
+            // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
+            $this->authorized = !$strict;
+        }
 
-        if (!empty($user['_anonymous']) && $this->authorized !== true) {
+        if ($this->isAnonymous($user) && $this->authorized !== true) {
             // Anonymous user should not get a 403. Thus, we invoke authentication provider's
             // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
             // so we treat that as a non-authorized request.
-            $controller = $this->_registry->getController();
-
-            $controller
-                ->Auth->getAuthenticate('BEdita/API.Jwt')
-                ->unauthenticated($controller->request, $controller->response);
+            $this->unauthenticate();
         }
 
         // Authorization is granted for both `true` and `'mine'` values.
@@ -101,60 +132,97 @@ class EndpointAuthorize extends BaseAuthorize
     }
 
     /**
+     * Perform user unauthentication to return 401 Unauthorized
+     * instead of 403 Forbidden
+     *
+     * @return mixed
+     */
+    protected function unauthenticate()
+    {
+        $controller = $this->_registry->getController();
+        $controller
+            ->Auth->getAuthenticate('BEdita/API.Jwt')
+            ->unauthenticated($controller->request, $controller->response);
+    }
+
+    /**
+     * Check if user is anonymous.
+     *
+     * @param array|\ArrayAccess $user User data.
+     * @return bool
+     */
+    public function isAnonymous($user)
+    {
+        return !empty($user['_anonymous']);
+    }
+
+    /**
      * Get application for request.
+     * This is done primarily with an API_KEY header like 'X-Api-Key',
+     * alternatively `api_key` query string is used (not recommended)
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
      */
     protected function getApplication()
     {
-        $application = CurrentApplication::getApplication();
-        if ($application === null) {
-            $header = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
-            if (empty($header) && empty($this->_config['disallowAnonymousApplications'])) {
+        $this->application = CurrentApplication::getApplication();
+        if ($this->application === null) {
+            $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
+            if (empty($apiKey) && $this->_config['apiKeyQueryString'] !== null) {
+                $apiKey = (string)$this->request->getQuery($this->_config['apiKeyQueryString']);
+            }
+            if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
                 return null;
             }
 
             try {
-                CurrentApplication::setFromApiKey($header);
+                CurrentApplication::setFromApiKey($apiKey);
             } catch (\BadMethodCallException $e) {
                 throw new ForbiddenException(__d('bedita', 'Missing API key'));
             } catch (RecordNotFoundException $e) {
                 throw new ForbiddenException(__d('bedita', 'Invalid API key'));
             }
 
-            $application = CurrentApplication::getApplication();
+            $this->application = CurrentApplication::getApplication();
         }
 
-        return $application;
+        return $this->application;
     }
 
     /**
      * Get endpoint for request.
      *
-     * @return \BEdita\Core\Model\Entity\Endpoint|null
+     * @return \BEdita\Core\Model\Entity\Endpoint
+     * @throws \Cake\Network\Exception\NotFoundException If endpoint is disabled
      */
     protected function getEndpoint()
     {
-        if (!empty($this->endpoint)) {
-            return $this->endpoint;
-        }
-
         $endpointName = $this->request->url;
         if (($slashPos = strpos($endpointName, '/')) !== false) {
             $endpointName = substr($endpointName, 0, $slashPos);
         }
 
-        if (empty($endpointName)) {
-            return null;
-        }
-
-        $this->endpoint = TableRegistry::get('Endpoints')->find()
+        $Endpoints = TableRegistry::get('Endpoints');
+        $this->endpoint = $Endpoints->find()
             ->where([
                 'Endpoints.name' => $endpointName,
-                'Endpoints.enabled' => true,
             ])
             ->first();
+
+        if (!$this->endpoint) {
+            $this->endpoint = $Endpoints->newEntity(
+                [
+                    'name' => $endpointName,
+                    'enabled' => true,
+                ],
+                ['validate' => false]
+            );
+        }
+
+        if (!$this->endpoint->enabled) {
+            throw new NotFoundException(__d('bedita', 'Resource not found.'));
+        }
 
         return $this->endpoint;
     }
@@ -163,21 +231,20 @@ class EndpointAuthorize extends BaseAuthorize
      * Get list of applicable permissions.
      *
      * @param array|\ArrayAccess|false $user Authenticated (or anonymous) user.
-     * @param \BEdita\Core\Model\Entity\Application|null $application Current application.
-     * @param \BEdita\Core\Model\Entity\Endpoint|null $endpoint Current endpoint.
+     * @param bool $strict Use strict mode. Do not consider permissions set on all applications/endpoints.
      * @return \Cake\ORM\Query
      * @todo Future optimization: Permissions that are `0` on the two bits that are interesting for the current request can be excluded...
      */
-    protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null)
+    protected function getPermissions($user, $strict = false)
     {
-        $applicationId = $application ? $application->id : null;
-        $endpointIds = $endpoint ? [$endpoint->id] : [];
+        $applicationId = $this->application ? $this->application->id : null;
+        $endpointIds = $this->endpoint && !$this->endpoint->isNew() ? [$this->endpoint->id] : [];
 
         $query = TableRegistry::get('EndpointPermissions')
-            ->find('byApplication', compact('applicationId'))
-            ->find('byEndpoint', compact('endpointIds'));
+            ->find('byApplication', compact('applicationId', 'strict'))
+            ->find('byEndpoint', compact('endpointIds', 'strict'));
 
-        if ($user !== false) {
+        if ($user !== false && !$this->isAnonymous($user)) {
             $roleIds = Hash::extract($user, 'roles.{n}.id');
             $query = $query
                 ->find('byRole', compact('roleIds'));

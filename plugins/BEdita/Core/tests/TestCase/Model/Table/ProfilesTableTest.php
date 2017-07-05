@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +42,9 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
     ];
 
     /**
@@ -52,6 +56,7 @@ class ProfilesTableTest extends TestCase
     {
         parent::setUp();
         $this->Profiles = TableRegistry::get('Profiles');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -62,6 +67,7 @@ class ProfilesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Profiles);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -79,8 +85,6 @@ class ProfilesTableTest extends TestCase
         $this->assertEquals('profiles', $this->Profiles->getTable());
         $this->assertEquals('id', $this->Profiles->getPrimaryKey());
         $this->assertEquals('name', $this->Profiles->getDisplayField());
-
-        $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
     }
 
     /**
@@ -119,16 +123,14 @@ class ProfilesTableTest extends TestCase
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
-     * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
-     * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
      */
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
         $profile->type = 'profiles';
 
-        $error = (bool)$profile->errors();
-        $this->assertEquals($expected, !$error, print_r($profile->errors(), true));
+        $error = (bool)$profile->getErrors();
+        $this->assertEquals($expected, !$error, print_r($profile->getErrors(), true));
 
         if ($expected) {
             $success = $this->Profiles->save($profile);
@@ -164,6 +166,8 @@ class ProfilesTableTest extends TestCase
             'state_name',
             'phone',
             'website',
+            'national_id_number',
+            'vat_number',
             'status',
             'uname',
             'locked',
@@ -204,7 +208,7 @@ class ProfilesTableTest extends TestCase
         $id = $profile->id;
         $this->assertEquals(true, $this->Profiles->delete($profile));
 
-        $inheritanceTables = $this->Profiles->inheritedTables(true);
+        $inheritanceTables = $this->Profiles->inheritedTables();
         // remove behavior to avoid auto contain() with inherited tables
         $this->Profiles->removeBehavior('ClassTableInheritance');
         $inheritanceTables[] = $this->Profiles;
@@ -212,7 +216,7 @@ class ProfilesTableTest extends TestCase
         foreach ($inheritanceTables as $table) {
             try {
                 $table->get($id);
-                $this->fail(ucfirst($table) . ' record not deleted');
+                $this->fail($table->getAlias() . ' record not deleted');
             } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
                 continue;
             }

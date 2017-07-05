@@ -198,6 +198,10 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 1,
             ],
@@ -212,6 +216,10 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 '1',
             ],
@@ -226,6 +234,10 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'document',
             ],
@@ -240,6 +252,10 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'documents',
             ],
@@ -254,6 +270,10 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'Documents',
             ],
@@ -388,5 +408,21 @@ class ObjectTypesTableTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test default finder.
+     *
+     * @return void
+     *
+     * @covers ::findAll()
+     */
+    public function testFindAll()
+    {
+        $query = $this->ObjectTypes->find();
+        $contain = $query->contain();
+
+        static::assertArrayHasKey('LeftRelations', $contain);
+        static::assertArrayHasKey('RightRelations', $contain);
     }
 }

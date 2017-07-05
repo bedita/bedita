@@ -12,40 +12,23 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\PropertiesController
  */
 class PropertiesControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.properties',
     ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        CurrentApplication::setFromApiKey(API_KEY);
-    }
 
     /**
      * Test index method.
@@ -83,13 +66,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'title',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/1',
@@ -102,13 +87,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'description',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => 'Brief description',
-                        'list_view' => false
+                        'list_view' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/2',
@@ -121,13 +108,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'username',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => 'Username, unique string',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/3',
@@ -140,13 +129,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'email',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => 'User email',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/4',
@@ -159,13 +150,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'birthdate',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'date',
                         'object_type_name' => 'profiles',
                         'label' => 'Date of birth',
-                        'list_view' => false
+                        'list_view' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/5',
@@ -178,13 +171,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'surname',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'profiles',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/6',
@@ -193,12 +188,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -240,12 +230,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Properties')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -276,23 +261,20 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'name' => 'title',
                     'multiple' => false,
                     'options_list' => null,
-                    'created' => '2016-12-31T23:09:23+00:00',
-                    'modified' => '2016-12-31T23:09:23+00:00',
                     'description' => null,
                     'property_type_name' => 'string',
                     'object_type_name' => 'documents',
                     'label' => null,
-                    'list_view' => true
+                    'list_view' => true,
+                ],
+                'meta' => [
+                    'created' => '2016-12-31T23:09:23+00:00',
+                    'modified' => '2016-12-31T23:09:23+00:00',
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -322,12 +304,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties/999999');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -364,13 +341,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
@@ -398,13 +369,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('Properties')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -431,13 +396,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/properties/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -463,13 +422,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/properties/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -488,13 +441,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/properties/1');
 
         $this->assertResponseCode(204);

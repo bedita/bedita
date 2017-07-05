@@ -13,6 +13,8 @@
 
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\ChangeCredentialsAction;
+use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
 use Cake\Network\Exception\UnauthorizedException;
@@ -38,35 +40,45 @@ class LoginController extends AppController
     {
         parent::initialize();
 
+        if ($this->request->contentType() === 'application/json') {
+            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        }
+
         if ($this->request->getParam('action') === 'login') {
-            $this->Auth->setConfig(
-                'authenticate',
-                [
-                    AuthComponent::ALL => [
-                        'scope' => [
-                            'blocked' => false,
-                        ],
-                        'contain' => ['Roles'],
+            $authenticationComponents = [
+                AuthComponent::ALL => [
+                    'scope' => [
+                        'blocked' => false,
                     ],
-                    'Form' => [
-                        'fields' => [
-                            'username' => 'username',
-                            'password' => 'password_hash',
-                        ],
-                        'passwordHasher' => [
-                            'className' => 'Fallback',
-                            'hashers' => [
-                                'Default',
-                                'Weak' => ['hashType' => 'md5'],
-                            ],
-                        ],
+                    'contain' => ['Roles'],
+                ],
+                'Form' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
                     ],
-                    'BEdita/API.Jwt' => [
-                        'queryDatasource' => true,
+                    'passwordHasher' => [
+                        'className' => 'Fallback',
+                        'hashers' => [
+                            'Default',
+                            'Weak' => ['hashType' => 'md5'],
+                        ],
                     ],
                 ],
-                false
-            );
+                'BEdita/API.Jwt' => [
+                    'queryDatasource' => true,
+                ],
+            ];
+
+            $authenticationComponents += TableRegistry::get('AuthProviders')
+                ->find('authenticate')
+                ->toArray();
+
+            $this->Auth->setConfig('authenticate', $authenticationComponents, false);
+        }
+
+        if ($this->request->getParam('action') === 'change') {
+            $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
         }
     }
 
@@ -91,8 +103,45 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login not successful'));
         }
 
+        $user = $this->reducedUserData($user);
+        $jwtMeta = $this->jwtTokens($user);
+
+        $this->set('_serialize', []);
+        $this->set('_meta', $jwtMeta);
+    }
+
+    /**
+     * Return a reduced version of user data with only
+     * `id`, `username` and for each role `id` and `name
+     *
+     * @param array $userInput Complete user data
+     * @return array Reduced user data
+     */
+    protected function reducedUserData(array $userInput)
+    {
+        $roles = [];
+        foreach ($userInput['roles'] as $role) {
+            $roles[] = [
+                'id' => $role['id'],
+                'name' => $role['name'],
+            ];
+        }
+        $user = array_intersect_key($userInput, array_flip(['id', 'username']));
+        $user['roles'] = $roles;
+
+        return $user;
+    }
+
+    /**
+     * Calculate JWT token for auth and renew operations
+     *
+     * @param array $user Minimal user data to encode in JWT
+     * @return array JWT tokens requested
+     */
+    protected function jwtTokens(array $user)
+    {
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
+        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($this->request, true);
         $claims = [
             'iss' => Router::fullBaseUrl(),
@@ -111,8 +160,7 @@ class LoginController extends AppController
             $algorithm
         );
 
-        $this->set('_serialize', []);
-        $this->set('_meta', compact('jwt', 'renew'));
+        return compact('jwt', 'renew');
     }
 
     /**
@@ -134,5 +182,40 @@ class LoginController extends AppController
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
+    }
+
+    /**
+     * Change access credentials (password)
+     * If a valid token is passed actual change is perfomed, otherwise change is requested and token is
+     * sent directly to user, tipically via email
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function change()
+    {
+        $this->request->allowMethod(['patch', 'post']);
+
+        if ($this->request->is('post')) {
+            $action = new ChangeCredentialsRequestAction();
+            $action($this->request->getData());
+
+            return $this->response
+                ->withStatus(204);
+        }
+
+        $action = new ChangeCredentialsAction();
+        $user = $action($this->request->getData());
+
+        $meta = [];
+        if ($this->request->getData('login')) {
+            $userJwt = $this->reducedUserData($user->toArray());
+            $meta = $this->jwtTokens($userJwt);
+        }
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+        $this->set('_meta', $meta);
+
+        return null;
     }
 }

@@ -13,7 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\Event\Event;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -44,6 +45,8 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.auth_providers',
+        'plugin.BEdita/Core.external_auth',
     ];
 
     /**
@@ -54,6 +57,7 @@ class UsersTableTest extends TestCase
         parent::setUp();
 
         $this->Users = TableRegistry::get('Users');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -62,6 +66,7 @@ class UsersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Users);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -125,7 +130,7 @@ class UsersTableTest extends TestCase
         $this->Users->patchEntity($user, $data);
         $user->type = 'users';
 
-        $error = (bool)$user->errors();
+        $error = (bool)$user->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {
@@ -143,11 +148,35 @@ class UsersTableTest extends TestCase
      */
     public function testLogin()
     {
-        $this->Users->login(new Event('Auth.afterIdentify', null, [['id' => 1]]));
+        $data = $this->Users->get(1)->toArray();
+        $expected = new Time();
+        $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
 
-        $lastLogin = $this->Users->get(1)->get('last_login');
-        $this->assertNotNull($lastLogin);
-        $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
+        $lastLogin = $this->Users->get(1)->last_login;
+        static::assertNotNull($lastLogin);
+        static::assertLessThanOrEqual(2, $expected->diffInSeconds($lastLogin));
+    }
+
+    /**
+     * Test handling of external auth login event.
+     *
+     * @return void
+     *
+     * @covers ::externalAuthLogin()
+     */
+    public function testExternalAuthLogin()
+    {
+        $authProvider = TableRegistry::get('AuthProviders')->get(2);
+        $username = 'gustavo';
+        $params = ['job' => 'head of technical support'];
+
+        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username', 'params'));
+
+        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        $externalAuth = $event->result;
+        static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
+        static::assertFalse($externalAuth->isNew());
+        static::assertNotNull($externalAuth->id);
     }
 
     /**
@@ -165,5 +194,133 @@ class UsersTableTest extends TestCase
         $this->assertTrue((bool)$success);
         $deleted = $this->Users->get(1)->deleted;
         $this->assertEquals(true, $deleted);
+    }
+
+    /**
+     * Data provider for `testFindExternalAuth` test case.
+     *
+     * @return array
+     */
+    public function findExternalAuthProvider()
+    {
+        return [
+            'generic' => [
+                [
+                    1 => 'first user',
+                ],
+                [
+                    'auth_provider' => 'example',
+                ],
+            ],
+            'specific' => [
+                [
+                    1 => 'first user',
+                ],
+                [
+                    'auth_provider' => 'example',
+                    'username' => 'first_user',
+                ],
+            ],
+            'not fount' => [
+                [],
+                [
+                    'auth_provider' => 'example',
+                    'username' => 'not_found',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by external auth.
+     *
+     * @param array $expected Expected results.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @covers ::findExternalAuth()
+     * @dataProvider findExternalAuthProvider()
+     */
+    public function testFindExternalAuth($expected, $options)
+    {
+        $actual = $this->Users
+            ->find('externalAuth', $options)
+            ->find('list')
+            ->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for `testValidationSignup` test case.
+     *
+     * @return array
+     */
+    public function validationSignupProvider()
+    {
+        return [
+            'valid' => [
+                true,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => 'password',
+                    'email' => 'my@email.com',
+                    'status' => 'draft',
+                ],
+            ],
+            'missing password' => [
+                false,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => null,
+                    'email' => 'my@email.com',
+                    'status' => 'draft',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test validation signup.
+     *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
+     *
+     * @return void
+     * @dataProvider validationSignupProvider
+     */
+    public function testValidationSignup($expected, array $data)
+    {
+        $user = $this->Users->newEntity();
+        $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
+        $user->type = 'users';
+
+        $error = (bool)$user->getErrors();
+        $this->assertEquals($expected, !$error);
+
+        if ($expected) {
+            $success = $this->Users->save($user);
+            $this->assertTrue((bool)$success);
+        }
+    }
+
+    /**
+     * Test finder for my objects.
+     *
+     * @return void
+     *
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $expected = [
+            1 => 1,
+        ];
+
+        $result = $this->Users->find('mine')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
     }
 }

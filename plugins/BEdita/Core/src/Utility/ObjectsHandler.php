@@ -41,8 +41,10 @@ class ObjectsHandler
         $isCli = PHP_SAPI === 'cli';
         $debug = Configure::read('debug');
         if (!($isCli && $debug)) {
+            $detail = 'Operation avilable only in CLI environment in "debug" mode';
+            Log::write('error', $detail);
             throw new StopException(['title' => 'Not available',
-                'detail' => 'Operation avilable only in CLI environment with in debug mode']);
+                'detail' => $detail]);
         }
     }
 

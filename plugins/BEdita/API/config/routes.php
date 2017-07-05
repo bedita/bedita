@@ -56,9 +56,26 @@ Router::plugin(
             ['_name' => 'login']
         );
         $routes->connect(
+            '/auth/change',
+            ['controller' => 'Login', 'action' => 'change'],
+            ['_name' => 'login:change']
+        );
+        $routes->connect(
             '/auth',
             ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
             ['_name' => 'login:whoami']
+        );
+
+        // Signup.
+        $routes->connect(
+            '/signup',
+            ['controller' => 'Signup', 'action' => 'signup'],
+            ['_name' => 'signup']
+        );
+        $routes->connect(
+            '/signup/activation',
+            ['controller' => 'Signup', 'action' => 'activation'],
+            ['_name' => 'signup:activation']
         );
 
         // Resources.

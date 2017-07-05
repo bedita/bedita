@@ -14,30 +14,42 @@
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
-use BEdita\Core\ORM\Association\ExtensionOf;
-use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
-use Cake\ORM\Association;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
+use Cake\ORM\TableRegistry;
 
 /**
  * Base Table class used by tables that needs class table inheritance (CTI)
  *
- * It exposes an `extensionOf()` method to add a `\BEdita\Core\ORM\Association\ExtensionOf` association
- * with a target table from which inherit fields.
+ * It exposes an `extensionOf()` method to inherit properties and associations from another table.
  *
- * Once added that association the current table will find and save fields
- * of all inherited tables as own fields in a transparent way.
- *
- * Every Table can inherit just one table and eventually inherits other tables by nested inheritance
+ * Each table can inherit from only one table. Inheritance can be deep.
  *
  * @since 4.0.0
- *
- * @method \BEdita\Core\ORM\Inheritance\Query find($type = 'all', $options = [])
  */
 class Table extends CakeTable
 {
+
+    /**
+     * Table that is being inherited by this one.
+     *
+     * @var \Cake\ORM\Table|string|null
+     */
+    protected $inheritedTable = null;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        // Attach event handler for inheritance.
+        $this->eventManager()->on(new InheritanceEventHandler());
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -47,124 +59,29 @@ class Table extends CakeTable
     }
 
     /**
-     * {@inheritDoc}
+     * Configure this table to inherit from another table.
+     *
+     * @param string|\Cake\ORM\Table $associated The extended table. It can be either a registry alias or an instance.
+     * @return $this
      */
-    public function implementedEvents()
+    public function extensionOf($associated)
     {
-        $events = parent::implementedEvents();
-        $eventMap = [
-            'Model.beforeFind' => 'inheritanceBeforeFind',
-            'Model.beforeSave' => 'inheritanceBeforeSave',
-        ];
+        // If it is an alias, and it already exists in the registry, immediately load the instance.
+        if (is_string($associated) && TableRegistry::exists($associated)) {
+            $associated = TableRegistry::get($associated);
+        }
+        $this->inheritedTable = $associated;
 
-        foreach ($eventMap as $name => $listener) {
-            if (array_key_exists($name, $events)) {
-                $events[$name] = [
-                    ['callable' => $events[$name]],
-                    ['callable' => $listener]
-                ];
-            } else {
-                $events[$name] = $listener;
-            }
+        if ($this->inheritedTable instanceof CakeTable) {
+            // Ensure that inherited tables have their association collections fixed first.
+            $this->inheritedTables();
+
+            // Inherit associations from inherited table.
+            $this->_associations = new AssociationCollection($this);
+            // TODO: Same for behaviors?
         }
 
-        return $events;
-    }
-
-    /**
-     * Arrange \Cake\ORM\Query before execute the query.
-     * In details:
-     *
-     * * build contain of inherited tables
-     * * prepare format result method
-     *
-     * @param \Cake\Event\Event $event The event dispatched
-     * @param \BEdita\Core\ORM\Inheritance\Query $query The query object
-     * @param \ArrayObject $options Options
-     * @param bool $primary Indicates whether or not this is the root query or an associated query
-     * @return void
-     */
-    public function inheritanceBeforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
-    {
-        if (!$primary || $this->inheritedTable() === null) {
-            return;
-        }
-
-        $query->fixAll();
-    }
-
-    /**
-     * Dirty the Entity property corresponding to the inherited table to trigger `ExtensionOf::saveAssociated()`
-     *
-     * @see \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
-     * @param \Cake\Event\Event $event The event dispatched
-     * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @param \ArrayObject $options The save options
-     * @return void
-     */
-    public function inheritanceBeforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
-    {
-        $inheritedTable = $this->inheritedTable();
-        if ($inheritedTable === null) {
-            return;
-        }
-
-        $property = $this->association($inheritedTable->getAlias())->getProperty();
-
-        $entity->dirty($property, true);
-    }
-
-    /**
-     * Creates a new ExtensionOf association between `$source` table and a target
-     * table. An "extension of" association is a 1-1 relationship.
-     *
-     * A Table can have only one ExtensionOf relation.
-     * Trying to add more ExtensionOf association to the same table will throw an exception
-     *
-     * Target table can be inferred by its name, which is provided in the
-     * second argument, or you can either pass the class name to be instantiated or
-     * an instance of it directly.
-     *
-     * The options array accept the following keys:
-     *
-     * - className: The class name of the target table object
-     * - targetTable: An instance of a table object to be used as the target table
-     * - conditions: array with a list of conditions to filter the join with
-     * - strategy: The loading strategy to use. 'join' and 'select' are supported.
-     * - finder: The finder method to use when loading records from this association.
-     *   Defaults to 'all'. When the strategy is 'join', only the fields, containments,
-     *   and where conditions will be used from the finder.
-     *
-     * This method will return the association object that was built.
-     *
-     * Other options as `joinType` and `dependent` if present are removed
-     * to use defaults defined in ExtensionOf association
-     *
-     * @param string $associated the alias for the target table. This is used to
-     * uniquely identify the association
-     * @param array $options list of options to configure the association definition
-     * @return \BEdita\Core\ORM\Association\ExtensionOf
-     * @throws \RuntimeException When an ExtensionOf association is already present
-     */
-    public function extensionOf($associated, array $options = [])
-    {
-        $inheritedTable = $this->inheritedTable();
-        if ($inheritedTable !== null) {
-            throw new \RuntimeException(sprintf(
-                '"%s" has already an ExtensionOf association with %s',
-                $this->getAlias(),
-                $inheritedTable->getAlias()
-            ));
-        }
-
-        $options = array_merge($options, [
-            'sourceTable' => $this,
-            'foreignKey' => $this->getPrimaryKey(),
-        ]);
-        $options = array_diff_key($options, array_flip(['joinType', 'dependent']));
-        $association = new ExtensionOf($associated, $options);
-
-        return $this->_associations->add($association->getName(), $association);
+        return $this;
     }
 
     /**
@@ -176,12 +93,18 @@ class Table extends CakeTable
      */
     public function isTableInherited($tableName, $nested = false)
     {
-        $inheritedTables = $this->inheritedTables($nested);
-        $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
-            return $table->getAlias() === $tableName;
-        });
+        if ($nested) {
+            $inheritedTables = $this->inheritedTables();
+            $found = array_filter($inheritedTables, function (CakeTable $table) use ($tableName) {
+                return $table->getAlias() === $tableName;
+            });
 
-        return count($found) > 0;
+            return count($found) > 0;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+
+        return $inheritedTable !== null && $inheritedTable->getAlias() === $tableName;
     }
 
     /**
@@ -191,36 +114,61 @@ class Table extends CakeTable
      */
     public function inheritedTable()
     {
-        $association = $this->associations()->type('ExtensionOf');
-        $association = current($association);
-        if (!($association instanceof Association)) {
-            return null;
+        if (is_string($this->inheritedTable)) {
+            $this->extensionOf(TableRegistry::get($this->inheritedTable));
         }
 
-        return $association->getTarget();
+        return $this->inheritedTable;
     }
 
     /**
      * Return the inherited tables from current Table.
      *
-     * By default return the direct inherited table (no nested).
-     * To get the the all nested inherited tables pass `$nested = true`.
-     *
-     * @param bool $nested If it must return all the inherited tables or just direct inherited table
      * @return \Cake\ORM\Table[]
      */
-    public function inheritedTables($nested = false)
+    public function inheritedTables()
     {
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable === null) {
             return [];
         }
 
-        if (!$nested || !($inheritedTable instanceof self)) {
+        if (!($inheritedTable instanceof self)) {
             return [$inheritedTable];
         }
 
-        return array_merge([$inheritedTable], $inheritedTable->inheritedTables(true));
+        return array_merge([$inheritedTable], $inheritedTable->inheritedTables());
+    }
+
+    /**
+     * Find all common tables in inheritance chain.
+     *
+     * @param \Cake\ORM\Table $table Table to compare current table to.
+     * @return \Cake\ORM\Table[]
+     */
+    public function commonInheritance(CakeTable $table)
+    {
+        if (!($table instanceof self)) {
+            return in_array($table, $this->inheritedTables(), true) ? [$table] : [];
+        }
+
+        $inherited = array_merge(
+            array_reverse($this->inheritedTables()),
+            [$this]
+        );
+        $table = array_merge(
+            array_reverse($table->inheritedTables()),
+            [$table]
+        );
+
+        $common = [];
+        $i = 0;
+        while (isset($inherited[$i]) && isset($table[$i]) && $inherited[$i] === $table[$i]) {
+            array_unshift($common, $inherited[$i]);
+            $i++;
+        }
+
+        return $common;
     }
 
     /**
@@ -251,7 +199,9 @@ class Table extends CakeTable
 
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable !== null) {
-            return $inheritedTable->callFinder($type, $query, $options);
+            return $inheritedTable
+                ->setAlias($this->getAlias())
+                ->callFinder($type, $query, $options);
         }
 
         throw new BadMethodCallException(
@@ -264,7 +214,7 @@ class Table extends CakeTable
      *
      * @param bool $inheritedFields Should fields from inherited tables be considered?
      */
-    public function hasField($field, $inheritedFields = false)
+    public function hasField($field, $inheritedFields = true)
     {
         $result = parent::hasField($field);
         $inheritedTable = $this->inheritedTable();
@@ -273,6 +223,18 @@ class Table extends CakeTable
             return $result;
         }
 
-        return $inheritedTable->hasField($field, true);
+        return $inheritedTable->hasField($field);
+    }
+
+    /**
+     * Perform operations when cloning table.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->_associations = clone $this->_associations;
+        $this->_behaviors = clone $this->_behaviors;
+        $this->_eventManager = clone $this->_eventManager;
     }
 }

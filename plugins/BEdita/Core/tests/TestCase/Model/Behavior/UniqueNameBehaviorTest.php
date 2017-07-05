@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use ArrayObject;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -49,6 +49,18 @@ class UniqueNameBehaviorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
     }
 
     /**
@@ -127,7 +139,16 @@ class UniqueNameBehaviorTest extends TestCase
                 [
                     'sourceField' => 'name',
                 ],
-            ]
+            ],
+            'generator' => [
+                'RandomName',
+                'John Doe',
+                [
+                    'generator' => function ($entity) {
+                        return str_shuffle($entity->get('username'));
+                    }
+                ]
+            ],
         ];
     }
 
@@ -148,8 +169,8 @@ class UniqueNameBehaviorTest extends TestCase
         $user = $Users->newEntity();
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
-        $uname1 = $behavior->generateUniqueName($user, $config);
-        $uname2 = $behavior->generateUniqueName($user, $config, true);
+        $uname1 = $behavior->generateUniqueName($user, false, $config);
+        $uname2 = $behavior->generateUniqueName($user, true, $config);
 
         $this->assertNotEquals($uname1, $uname2);
     }
@@ -255,7 +276,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueNameFromValue($value, $expected, $cfg, $regenerate)
     {
         $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
-        $result = $behavior->uniqueNameFromValue($value, $cfg, $regenerate);
+        $result = $behavior->uniqueNameFromValue($value, $regenerate, $cfg);
 
         if ($regenerate) {
             $cfg = array_merge($behavior->config(), $cfg);

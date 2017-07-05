@@ -12,31 +12,15 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
  */
 class TrashControllerTest extends IntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.objects',
-    ];
-
     /**
      * Objects table instance.
      *
@@ -52,8 +36,6 @@ class TrashControllerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
-
-        CurrentApplication::setFromApiKey(API_KEY);
     }
 
     /**
@@ -91,21 +73,23 @@ class TrashControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-one-deleted',
-                        'locked' => false,
-                        'created' => '2016-10-13T07:09:23+00:00',
-                        'modified' => '2016-10-13T07:09:23+00:00',
-                        'published' => '2016-10-13T07:09:23+00:00',
                         'title' => 'title one deleted',
                         'description' => 'description removed',
                         'body' => 'body no more',
                         'extra' => [
-                            'abstract' => 'what?'
+                            'abstract' => 'what?',
                         ],
                         'lang' => 'eng',
+                        'publish_start' => '2016-10-13T07:09:23+00:00',
+                        'publish_end' => '2016-10-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-10-13T07:09:23+00:00',
+                        'modified' => '2016-10-13T07:09:23+00:00',
+                        'published' => '2016-10-13T07:09:23+00:00',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'publish_start' => '2016-10-13T07:09:23+00:00',
-                        'publish_end' => '2016-10-13T07:09:23+00:00'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/trash/6',
@@ -117,35 +101,32 @@ class TrashControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-two-deleted',
-                        'locked' => false,
-                        'created' => '2016-10-13T07:09:23+00:00',
-                        'modified' => '2016-10-13T07:09:23+00:00',
-                        'published' => '2016-10-13T07:09:23+00:00',
                         'title' => 'title two deleted',
                         'description' => 'description removed',
                         'body' => 'body no more',
                         'extra' => [
-                            'abstract' => 'what?'
+                            'abstract' => 'what?',
                         ],
                         'lang' => 'eng',
+                        'publish_start' => '2016-10-13T07:09:23+00:00',
+                        'publish_end' => '2016-10-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-10-13T07:09:23+00:00',
+                        'modified' => '2016-10-13T07:09:23+00:00',
+                        'published' => '2016-10-13T07:09:23+00:00',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'publish_start' => '2016-10-13T07:09:23+00:00',
-                        'publish_end' => '2016-10-13T07:09:23+00:00'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/trash/7',
                     ],
-                ]
+                ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/trash');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -187,12 +168,7 @@ class TrashControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Objects')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/trash');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -222,31 +198,28 @@ class TrashControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one-deleted',
-                    'locked' => false,
-                    'created' => '2016-10-13T07:09:23+00:00',
-                    'modified' => '2016-10-13T07:09:23+00:00',
-                    'published' => '2016-10-13T07:09:23+00:00',
                     'title' => 'title one deleted',
                     'description' => 'description removed',
                     'body' => 'body no more',
                     'extra' => [
-                        'abstract' => 'what?'
+                        'abstract' => 'what?',
                     ],
                     'lang' => 'eng',
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'modified' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-10-13T07:09:23+00:00',
-                    'publish_end' => '2016-10-13T07:09:23+00:00'
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/trash/6');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -270,40 +243,24 @@ class TrashControllerTest extends IntegrationTestCase
             'type' => 'objects'
         ];
 
+        $authHeader = $this->getUserAuthHeader();
+
         // failure test
         $data['id'] = '66666';
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/trash/66666', json_encode(compact('data')));
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
         // conflict test
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/trash/666', json_encode(compact('data')));
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
 
         // success test
         $data['id'] = '6';
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/trash/6', json_encode(compact('data')));
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
@@ -321,14 +278,10 @@ class TrashControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
+        $authHeader = $this->getUserAuthHeader();
+
         // success test
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/trash/7');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
@@ -341,13 +294,7 @@ class TrashControllerTest extends IntegrationTestCase
         $this->assertTrue($notFound);
 
         // failure test
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/trash/77777');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -374,12 +321,7 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/trash/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 

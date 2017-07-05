@@ -13,10 +13,13 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 
 /**
  * Object Entity.
@@ -24,6 +27,7 @@ use Cake\ORM\TableRegistry;
  * @property int $id
  * @property int $object_type_id
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property bool $deleted
  * @property string $type
  * @property string $status
  * @property string $uname
@@ -34,7 +38,7 @@ use Cake\ORM\TableRegistry;
  * @property string $title
  * @property string $description
  * @property string $body
- * @property string $extra
+ * @property array $extra
  * @property string $lang
  * @property int $created_by
  * @property int $modified_by
@@ -44,10 +48,13 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class ObjectEntity extends Entity
+class ObjectEntity extends Entity implements JsonApiSerializable
 {
 
-    use JsonApiTrait;
+    use JsonApiTrait {
+        listAssociations as protected jsonApiListAssociations;
+        getMeta as protected jsonApiGetMeta;
+    }
 
     /**
      * {@inheritDoc}
@@ -86,6 +93,115 @@ class ObjectEntity extends Entity
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function getTable()
+    {
+        return TableRegistry::get($this->type ?: $this->getSource());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getMeta()
+    {
+        return array_diff_key($this->jsonApiGetMeta(), array_flip(['type']));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getLinks()
+    {
+        $options = [
+            '_name' => 'api:objects:resource',
+            'object_type' => $this->type,
+            'id' => $this->id,
+        ];
+        if ($this->deleted) {
+            $options = [
+                '_name' => 'api:trash:resource',
+                'id' => $this->id,
+            ];
+        }
+
+        return [
+            'self' => Router::url($options, true),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected static function listAssociations(Table $Table, array $hidden = [])
+    {
+        $associations = static::jsonApiListAssociations($Table, $hidden);
+        $associations = array_diff($associations, ['date_ranges']);
+
+        return $associations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getRelationships()
+    {
+        $relationships = $included = [];
+        if ($this->deleted) {
+            return [$relationships, $included];
+        }
+
+        $entity = $this;
+        $table = $this->getTable();
+        if ($table->getRegistryAlias() !== $this->getSource()) {
+            $entity = $table->newEntity();
+        }
+
+        $associations = static::listAssociations($table, $entity->getHidden());
+        foreach ($associations as $relationship) {
+            $self = Router::url(
+                [
+                    '_name' => 'api:objects:relationships',
+                    'object_type' => $this->type,
+                    'relationship' => $relationship,
+                    'id' => $this->getId(),
+                ],
+                true
+            );
+            $related = Router::url(
+                [
+                    '_name' => 'api:objects:related',
+                    'object_type' => $this->type,
+                    'relationship' => $relationship,
+                    'related_id' => $this->getId(),
+                ],
+                true
+            );
+
+            if ($this->has($relationship)) {
+                $entities = $this->get($relationship);
+                $data = $this->getIncluded($entities);
+                $included = array_merge($included, $entities);
+            }
+
+            $relationships[$relationship] = compact('data') + [
+                'links' => compact('related', 'self'),
+            ];
+            unset($data);
+        }
+
+        return [$relationships, $included];
+    }
+
+    /**
      * Getter for `type` virtual property.
      *
      * @return string
@@ -117,29 +233,11 @@ class ObjectEntity extends Entity
         try {
             $this->object_type = TableRegistry::get('ObjectTypes')->get($type);
             $this->object_type_id = $this->object_type->id;
+            $this->setDirty('object_type_id', true);
         } catch (RecordNotFoundException $e) {
             return null;
         }
 
         return $type;
-    }
-
-    /**
-     * Getter for `relationships` virtual property.
-     *
-     * @return string[]
-     */
-    protected function _getRelationships()
-    {
-        $Table = TableRegistry::get($this->type ?: $this->getSource());
-
-        $entity = $this;
-        if ($Table->getRegistryAlias() !== $this->getSource()) {
-            $entity = $Table->newEntity();
-        }
-
-        $relationships = static::listAssociations($Table, $entity->getHidden());
-
-        return array_diff($relationships, ['date_ranges']);
     }
 }

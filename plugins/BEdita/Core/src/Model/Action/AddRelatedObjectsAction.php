@@ -86,7 +86,7 @@ class AddRelatedObjectsAction extends UpdateRelatedObjectsAction
             return $action->execute(compact('entity', 'relatedEntities'));
         }
 
-        $relatedEntities = $this->prepareRelatedEntities($relatedEntities);
+        $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
 
         return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
             $relatedEntities = $this->diff($entity, $relatedEntities);

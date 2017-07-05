@@ -14,8 +14,8 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Response;
 
 /**
  * Pseudo-authentication for anonymous users.

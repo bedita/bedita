@@ -23,7 +23,7 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\User $user
  * @property int $auth_provider_id
  * @property \BEdita\Core\Model\Entity\AuthProvider $auth_provider
- * @property string $username
+ * @property string $provider_username
  * @property string $params
  *
  * @since 4.0.0

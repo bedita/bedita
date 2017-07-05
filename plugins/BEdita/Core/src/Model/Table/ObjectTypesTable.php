@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -22,6 +23,7 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
@@ -32,6 +34,15 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
+ *
+ * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @since 4.0.0
  */
 class ObjectTypesTable extends Table
 {
@@ -65,22 +76,24 @@ class ObjectTypesTable extends Table
             'className' => 'Properties',
         ]);
 
+        $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('LeftRelations', [
             'className' => 'Relations',
-            'through' => 'RelationTypes',
+            'through' => $through->getRegistryAlias(),
             'foreignKey' => 'object_type_id',
             'targetForeignKey' => 'relation_id',
             'conditions' => [
-                'RelationTypes.side' => 'left',
+                $through->aliasField('side') => 'left',
             ],
         ]);
+        $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightRelations', [
             'className' => 'Relations',
-            'through' => 'RelationTypes',
+            'through' => $through->getRegistryAlias(),
             'foreignKey' => 'object_type_id',
             'targetForeignKey' => 'relation_id',
             'conditions' => [
-                'RelationTypes.side' => 'right',
+                $through->aliasField('side') => 'right',
             ],
         ]);
     }
@@ -156,6 +169,8 @@ class ObjectTypesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Entity\ObjectType
      */
     public function get($primaryKey, $options = [])
     {
@@ -195,10 +210,9 @@ class ObjectTypesTable extends Table
      *
      * @param \Cake\Event\Event $event Triggered event.
      * @param \Cake\Datasource\EntityInterface $entity Subject entity.
-     * @param \ArrayObject $options Additional options.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterSave(Event $event, EntityInterface $entity)
     {
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         if ($entity->dirty('name')) {
@@ -214,14 +228,21 @@ class ObjectTypesTable extends Table
      *
      * @param \Cake\Event\Event $event Triggered event.
      * @param \Cake\Datasource\EntityInterface $entity Subject entity.
-     * @param \ArrayObject $options Additional options.
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(Event $event, EntityInterface $entity)
     {
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
         Cache::delete('map_singular', self::CACHE_CONFIG);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findAll(Query $query, array $options)
+    {
+        return $query->contain(['LeftRelations', 'RightRelations']);
     }
 
     /**
@@ -260,7 +281,7 @@ class ObjectTypesTable extends Table
         if (empty($options['name'])) {
             throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        $name = $options['name'];
+        $name = Inflector::underscore($options['name']);
 
         $leftField = 'inverse_name';
         $rightField = 'name';
@@ -269,21 +290,24 @@ class ObjectTypesTable extends Table
             $rightField = 'inverse_name';
         }
 
-        $query = $query->select($this->aliasField('name'));
-        $queryCopy = clone $query;
-
         return $query
-            ->matching('LeftRelations', function (Query $query) use ($name, $leftField) {
-                return $query->where([
-                    $this->LeftRelations->aliasField($leftField) => $name,
-                ]);
+            ->distinct()
+            ->leftJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
+                return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
+                    return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
+                });
             })
-            ->unionAll(
-                $queryCopy->matching('RightRelations', function (Query $query) use ($name, $rightField) {
-                    return $query->where([
-                        $this->RightRelations->aliasField($rightField) => $name,
-                    ]);
-                })
-            );
+            ->leftJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
+                return $query->where(function (QueryExpression $exp) use ($name, $rightField) {
+                    return $exp->eq($this->RightRelations->aliasField($rightField), $name);
+                });
+            })
+            ->where(function (QueryExpression $exp) use ($leftField, $rightField) {
+                return $exp->or_(function (QueryExpression $exp) use ($leftField, $rightField) {
+                    return $exp
+                        ->isNotNull($this->LeftRelations->aliasField($leftField))
+                        ->isNotNull($this->RightRelations->aliasField($rightField));
+                });
+            });
     }
 }

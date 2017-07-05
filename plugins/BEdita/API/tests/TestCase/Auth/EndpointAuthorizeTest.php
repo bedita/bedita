@@ -14,21 +14,23 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
+use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\TestCase;
 use Psr\Http\Message\UriInterface;
 use Zend\Diactoros\Uri;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\EndpointAuthorize
  */
-class EndpointAuthorizeTest extends IntegrationTestCase
+class EndpointAuthorizeTest extends TestCase
 {
     /**
      * Fixtures
@@ -62,6 +64,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
                 [
                     'HTTP_X_CUSTOM_HEADER' => API_KEY,
                 ],
+                [],
                 [
                     'apiKeyHeaderName' => 'X-Custom-Header',
                 ],
@@ -75,13 +78,28 @@ class EndpointAuthorizeTest extends IntegrationTestCase
             'missing API key' => [
                 new ForbiddenException('Missing API key'),
                 [],
+                [],
                 [
-                    'disallowAnonymousApplications' => true,
+                    'blockAnonymousApps' => true,
                 ],
             ],
             'anonymous application' => [
                 null,
                 [],
+            ],
+            'query string api key' => [
+                1,
+                [],
+                [
+                    'api_key' => API_KEY,
+                ],
+            ],
+            'query string failure' => [
+                new ForbiddenException('Invalid API key'),
+                [],
+                [
+                    'api_key' => 'this API key is invalid!',
+                ]
             ],
         ];
     }
@@ -91,13 +109,14 @@ class EndpointAuthorizeTest extends IntegrationTestCase
      *
      * @param int|\Exception $expected Expected application ID.
      * @param array $environment Request headers.
+     * @param array $query Request query strings.
      * @param array $config Configuration.
      * @return void
      *
      * @dataProvider getApplicationProvider()
      * @covers ::getApplication()
      */
-    public function testGetApplication($expected, array $environment, array $config = [])
+    public function testGetApplication($expected, array $environment, array $query = [], array $config = [])
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
@@ -106,7 +125,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
 
         CurrentApplication::getInstance()->set(null);
         $authorize = new EndpointAuthorize(new ComponentRegistry(), $config);
-        $request = new ServerRequest(compact('environment'));
+        $request = new ServerRequest(compact('environment', 'query'));
 
         $authorize->authorize([], $request);
 
@@ -134,20 +153,40 @@ class EndpointAuthorizeTest extends IntegrationTestCase
                 new Uri('/home/sweet/home'),
             ],
             '/' => [
-                null,
+                new Endpoint(
+                    [
+                        'name' => '',
+                        'enabled' => true
+                    ],
+                    [
+                        'source' => 'Endpoints'
+                    ]
+                ),
                 new Uri('/'),
             ],
             '/this/endpoint/definitely/doesnt/exist' => [
-                null,
+                new Endpoint(
+                    [
+                        'name' => 'this',
+                        'enabled' => true
+                    ],
+                    [
+                        'source' => 'Endpoints'
+                    ]
+                ),
                 new Uri('/this/endpoint/definitely/doesnt/exist'),
             ],
+            '/disabled/endpoint' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled/endpoint'),
+            ]
         ];
     }
 
     /**
      * Test getting endpoint from request.
      *
-     * @param int|\Exception $expected Expected endpoint ID.
+     * @param mixed $expected Expected endpoint ID, entity, or exception.
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @return void
      *
@@ -156,17 +195,22 @@ class EndpointAuthorizeTest extends IntegrationTestCase
      */
     public function testGetEndpoint($expected, UriInterface $uri)
     {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
         CurrentApplication::setFromApiKey(API_KEY);
         $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
         $request = new ServerRequest(compact('uri'));
 
         $authorize->authorize([], $request);
 
-        if ($expected === null) {
-            static::assertAttributeSame($expected, 'endpoint', $authorize);
-        } else {
-            static::assertAttributeEquals(TableRegistry::get('Endpoints')->get($expected), 'endpoint', $authorize);
+        if (is_int($expected)) {
+            $expected = TableRegistry::get('Endpoints')->get($expected);
         }
+
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
     }
 
     /**
@@ -214,6 +258,35 @@ class EndpointAuthorizeTest extends IntegrationTestCase
                     '_anonymous' => true,
                 ],
             ],
+            'GET /disabled (anonymous)' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled'),
+                [
+                    '_anonymous' => true
+                ],
+                'GET',
+                true
+            ],
+            'GET /disabled (role_id = 1)' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled'),
+                [
+                    'roles' => [
+                        [
+                            'id' => 1,
+                        ],
+                    ],
+                ],
+            ],
+            'POST /signup whitelist (anonymous)' => [
+                true,
+                new Uri('/signup'),
+                [
+                    '_anonymous' => true
+                ],
+                'POST',
+                true
+            ],
         ];
     }
 
@@ -224,14 +297,16 @@ class EndpointAuthorizeTest extends IntegrationTestCase
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @param array $user User data.
      * @param string $requestMethod Request method.
+     * @param bool $whiteListed Is the endpoint whitelisted?
      * @return void
      *
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
-    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET')
+    public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
@@ -251,6 +326,8 @@ class EndpointAuthorizeTest extends IntegrationTestCase
             'authorize' => ['BEdita/API.Endpoint'],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+        $authorize->setConfig('defaultAuthorized', $whiteListed);
+        $authorize->setConfig('blockAnonymousUsers', false);
 
         if (!($authorize instanceof EndpointAuthorize)) {
             static::fail('Unexpected authorization object');
@@ -268,6 +345,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
@@ -278,7 +356,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
         ];
         $uri = new Uri('/home');
         $request = new ServerRequest(compact('environment', 'uri'));
@@ -286,7 +364,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => ['BEdita/API.Endpoint'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => false]],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
 
@@ -311,6 +389,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
@@ -320,7 +399,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
             'HTTP_X_API_KEY' => API_KEY,
         ];
         $uri = new Uri('/this/endpoint/definitely/doesnt/exist');
@@ -329,7 +408,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => ['BEdita/API.Endpoint'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => false]],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
 
@@ -346,5 +425,89 @@ class EndpointAuthorizeTest extends IntegrationTestCase
 
         static::assertTrue($result);
         static::assertAttributeSame(true, 'authorized', $authorize);
+    }
+
+    /**
+     * Test default block of anonymous writes on an endpoint unless explicitly allowed.
+     *
+     * @return void
+     *
+     * @covers ::authorize()
+     * @covers ::isAnonymous()
+     * @covers ::getPermissions()
+     * @covers ::checkPermissions()
+     * @covers ::unauthenticate()
+     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedExceptionMessage Unauthorized
+     */
+    public function testBlockAnonymousWritesByDefault()
+    {
+        // Ensure no permissions apply to anonymous user on `/home` endpoint.
+        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+
+        $environment = [
+            'REQUEST_METHOD' => 'POST',
+        ];
+        $uri = new Uri('/home');
+        $request = new ServerRequest(compact('environment', 'uri'));
+
+        $controller = new Controller();
+        $controller->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint'],
+        ]);
+        $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        if (!($authorize instanceof EndpointAuthorize)) {
+            static::fail('Unexpected authorization object');
+        }
+
+        $authorize->authorize(
+            [
+                '_anonymous' => true,
+            ],
+            $request
+        );
+    }
+
+    /**
+     * Test default block of anonymous actions.
+     *
+     * @return void
+     *
+     * @covers ::authorize()
+     * @covers ::isAnonymous()
+     * @covers ::unauthenticate()
+     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedExceptionMessage Unauthorized
+     */
+    public function testBlockUnloggedByDefault()
+    {
+        // Ensure no permissions apply to anonymous user on `/home` endpoint.
+        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+
+        $environment = [
+            'REQUEST_METHOD' => 'GET',
+        ];
+        $uri = new Uri('/home');
+        $request = new ServerRequest(compact('environment', 'uri'));
+
+        $controller = new Controller();
+        $controller->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint' => ['blockAnonymousUsers' => true]],
+        ]);
+        $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        if (!($authorize instanceof EndpointAuthorize)) {
+            static::fail('Unexpected authorization object');
+        }
+
+        $authorize->authorize(
+            [
+                '_anonymous' => true,
+            ],
+            $request
+        );
     }
 }

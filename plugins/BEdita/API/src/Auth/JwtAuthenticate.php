@@ -14,10 +14,9 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
-use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\UnauthorizedException;
-use Cake\Network\Response;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -111,7 +110,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * Get user record based on info available in JWT.
      *
      * @param \Cake\Http\ServerRequest $request The request object.
-     * @param \Cake\Network\Response $response Response object.
+     * @param \Cake\Http\Response $response Response object.
      * @return array|false User record array or false on failure.
      */
     public function authenticate(ServerRequest $request, Response $response)
@@ -128,6 +127,10 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
+
+        if (!empty($this->error)) {
+            throw new UnauthorizedException($this->error->getMessage());
+        }
 
         if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
             return $payload;
@@ -205,10 +208,6 @@ class JwtAuthenticate extends BaseAuthenticate
 
             return (array)$payload;
         } catch (\Exception $e) {
-            if (Configure::read('debug')) {
-                throw $e;
-            }
-
             $this->error = $e;
         }
 
@@ -219,7 +218,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * Handles an unauthenticated access attempt.
      *
      * @param \Cake\Http\ServerRequest $request A request object.
-     * @param \Cake\Network\Response $response A response object.
+     * @param \Cake\Http\Response $response A response object.
      * @return void
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception.
      */

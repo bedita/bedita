@@ -34,6 +34,8 @@ namespace BEdita\Core\Model\Entity;
  * @property string $state_name
  * @property string $phone
  * @property string $website
+ * @property string $national_id_number
+ * @property string $vat_number
  *
  * @since 4.0.0
  */

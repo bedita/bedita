@@ -12,12 +12,9 @@
  */
 namespace BEdita\API\Utility;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Collection\CollectionInterface;
-use Cake\Log\Log;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\Routing\Exception\MissingRouteException;
-use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
 /**
@@ -30,209 +27,50 @@ class JsonApi
     /**
      * Format single or multiple data items in JSON API format.
      *
-     * @param mixed $items Items to be formatted.
-     * @param string|null $type Type of items. If missing, an attempt is made to obtain this info from each item's data.
+     * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[] $items Items to be formatted.
+     * @param array $included Array to be populated with included resources.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData($items, $type = null)
+    public static function formatData($items, array &$included = [])
     {
         if ($items instanceof Query || $items instanceof CollectionInterface) {
             $items = $items->toList();
         }
 
+        if (empty($items)) {
+            return [];
+        }
+
+        $single = false;
+        $options = 0;
         if (!is_array($items) || !Hash::numeric(array_keys($items))) {
-            return static::formatItem($items, $type, false);
+            $single = true;
+            $items = [$items];
+            $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
         $data = [];
         foreach ($items as $item) {
-            $data[] = static::formatItem($item, $type, true);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Extract type and API endpoint for item.
-     *
-     * @param \Cake\ORM\Entity|array $item Item.
-     * @param string|null $type Original item type.
-     * @return array Array with item's type and API endpoint.
-     */
-    protected static function extractType($item, $type)
-    {
-        $endpoint = $type;
-
-        if (isset($item['type'])) {
-            $type = $item['type'];
-        }
-
-        if ($endpoint === null) {
-            $endpoint = $type;
-        }
-
-        return [$type, $endpoint];
-    }
-
-    /**
-     * Build URL to be used in `links` object.
-     *
-     * @param string $name Route name.
-     * @param string $endpoint Endpoint.
-     * @param string $type Resource type.
-     * @param array $options Additional options.
-     * @return string|null
-     */
-    protected static function buildUrl($name, $endpoint, $type, array $options = [])
-    {
-        $url = null;
-
-        $options['_name'] = sprintf('api:resources:%s', $name);
-        $options['controller'] = $type;
-
-        try {
-            $url = Router::url($options, true);
-        } catch (MissingRouteException $e) {
-            $options['_name'] = sprintf('api:%s:%s', $endpoint, $name);
-            unset($options['controller']);
-
-            try {
-                $url = Router::url($options, true);
-            } catch (MissingRouteException $e) {
-                $options['object_type'] = $type;
-
-                try {
-                    $url = Router::url($options, true);
-                } catch (MissingRouteException $e) {
-                    // Do not halt if route is missing.
-                    Log::debug('Unable to build URL', compact('name', 'endpoint', 'type', 'options'));
-                }
-            }
-        }
-
-        return $url;
-    }
-
-    /**
-     * Extract item's ID and attributes.
-     *
-     * @param array $item Item's data.
-     * @return array Array with item's ID, attributes, and metadata.
-     */
-    protected static function extractAttributes(array $item)
-    {
-        if (empty($item['id'])) {
-            throw new \InvalidArgumentException('Key `id` is mandatory');
-        }
-        $id = (string)$item['id'];
-        $meta = Hash::get($item, 'meta', []);
-        unset($item['id'], $item['type'], $item['meta']);
-
-        array_walk(
-            $item,
-            function (&$attribute) {
-                if ($attribute instanceof \JsonSerializable) {
-                    $attribute = json_decode(json_encode($attribute), true);
-                }
-            }
-        );
-
-        if (!empty($item['_joinData'])) {
-            $meta += $item['_joinData'];
-        }
-        unset($item['_joinData']);
-
-        return [$id, $item, $meta];
-    }
-
-    /**
-     * Extract relationships for an entity.
-     *
-     * @param Entity $entity Entity item.
-     * @param string $endpoint Default API endpoint for entity type.
-     * @param string|null $type Type of item.
-     * @return array
-     */
-    protected static function extractRelationships(Entity $entity, $endpoint, $type = null)
-    {
-        $associations = (array)$entity->get('relationships') ?: [];
-
-        $relationships = [];
-        foreach ($associations as $name) {
-            unset($related, $self);
-
-            // Relationships.
-            $self = static::buildUrl('relationships', $endpoint, $type, [
-                'id' => $entity->id,
-                'relationship' => $name,
-            ]);
-
-            // Related objects.
-            $related = static::buildUrl('related', $endpoint, $type, [
-                'related_id' => $entity->id,
-                'relationship' => $name,
-            ]);
-
-            if (empty($self) && empty($related)) {
-                continue;
+            if (!$item instanceof JsonApiSerializable) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Objects must implement "%s", got "%s" instead',
+                    JsonApiSerializable::class,
+                    is_object($item) ? get_class($item) : gettype($item)
+                ));
             }
 
-            $relationships[$name] = [
-                'links' => array_filter(compact('related', 'self')),
-            ];
-        }
-
-        return $relationships;
-    }
-
-    /**
-     * Format single data item in JSON API format.
-     *
-     * @param \Cake\ORM\Entity|array $item Single entity item to be formatted.
-     * @param string|null $type Type of item. If missing, an attempt is made to obtain this info from item's data.
-     * @param bool $showLink Display item url in 'links.self', default is true
-     * @return array
-     * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
-     *      if required key `id` is unset or empty.
-     */
-    protected static function formatItem($item, $type = null, $showLink = true)
-    {
-        if (!is_array($item) && !($item instanceof Entity)) {
-            throw new \InvalidArgumentException('Unsupported item type');
-        }
-
-        list($type, $endpoint) = static::extractType($item, $type);
-
-        if ($item instanceof Entity) {
-            $relationships = static::extractRelationships($item, $endpoint, $type);
-            if (empty($relationships)) {
-                unset($relationships);
+            $item = $item->jsonApiSerialize($options);
+            if (isset($item['included'])) {
+                $included = array_merge($included, $item['included']);
+                unset($item['included']);
             }
 
-            $item = $item->toArray();
+            $data[] = $item;
         }
 
-        if (empty($item)) {
-            return [];
-        }
-
-        list($id, $attributes, $meta) = static::extractAttributes($item);
-        if (empty($attributes)) {
-            unset($attributes);
-        }
-        if (empty($meta)) {
-            unset($meta);
-        }
-
-        if ($showLink) {
-            $self = static::buildUrl('resource', $endpoint, $type, compact('id'));
-
-            $links = compact('self');
-        }
-
-        return compact('id', 'type', 'attributes', 'links', 'relationships', 'meta');
+        return $single ? $data[0] : $data;
     }
 
     /**

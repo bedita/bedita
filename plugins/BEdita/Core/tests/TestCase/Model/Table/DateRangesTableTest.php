@@ -149,7 +149,7 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * Test object date ranges finder.
+     * Test `dateRanges` finder.
      *
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
@@ -163,5 +163,19 @@ class DateRangesTableTest extends TestCase
         $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
+    }
+
+    /**
+     * Test date ranges finder failure.
+     *
+     * @covers ::findDateRanges()
+     */
+    public function testFindDateFail()
+    {
+        $conditions = ['what_date' => ['lt' => '2017-01-01']];
+
+        static::expectException('BEdita\Core\Exception\BadFilterException');
+
+        $this->DateRanges->find('dateRanges', $conditions)->toArray();
     }
 }

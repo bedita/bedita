@@ -63,16 +63,18 @@ return [
      *   The salt value is also used as the encryption key.
      *   You should treat it as extremely sensitive data.
      * - jwt - Duration and algorithm for JSON Web Tokens.
-     *   By default, `duration` is `'+2 hours'`, and `algorithm` is `'HS256'`.
-     * - disallowAnonymousApplications - Are anonymous applications (i.e. requests without an api key) forbidden?
+     *   By default, `duration` is `'+20 minutes'`, and `algorithm` is `'HS256'`.
+     * - blockAnonymousApps - Are anonymous applications (i.e. requests without an api key) forbidden?
+     * - blockAnonymousUsers - Are unauthenticated users requests blocked by default?
      */
     'Security' => [
         'salt' => env('SECURITY_SALT', '__SALT__'),
         // 'jwt' => [
-        //     'duration' => '+2 hours',
+        //     'duration' => '+20 minutes',
         //     'algorithm' => 'HS256',
         // ],
-        // 'disallowAnonymousApplications' => true,
+        // 'blockAnonymousApps' => true,
+        'blockAnonymousUsers' => false,
     ],
 
     /**
@@ -240,20 +242,26 @@ return [
     'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',
+
+            /**
+             * Possible values for 'driver' are: Mysql, Postgres, Sqlite
+             * Simply replace Mysql with Posgres or Sqlite in 'driver' value
+             */
             'driver' => 'Cake\Database\Driver\Mysql',
-            'persistent' => false,
             'host' => '__BE4_DB_HOST__',
+
             /**
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
-            'port' => '____BE4_DB_PORT__',
+            'port' => '__BE4_DB_PORT__',
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
+            'persistent' => false,
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
@@ -387,5 +395,27 @@ return [
     'Plugins' => [
         'DebugKit' => ['debugOnly' => true, 'bootstrap' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
-    ]
+    ],
+
+    /**
+     * Default pagination settings.
+     *
+     * - `limit` - Default number of items per page (page_size). Defaults to 20.
+     * - `maxLimit` - The maximum numer of items retrievable using a `page_size` request per call. Defaults to 100.
+     *   This value cannot exceed a superlimit (@see \BEdita\API\Controller\Component\PaginatorComponent::MAX_LIMIT))
+     */
+    'Pagination' => [
+        'limit' => 20,
+        'maxLimit' => 100,
+    ],
+
+    /**
+     * Signup settings.
+     *
+     * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
+     *      before being "activated"?
+     */
+    'Signup' => [
+//        'requireActivation' => true,
+    ],
 ];

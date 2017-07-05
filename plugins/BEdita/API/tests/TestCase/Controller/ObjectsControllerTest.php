@@ -12,45 +12,23 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
  */
 class ObjectsControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.object_relations',
     ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        CurrentApplication::setFromApiKey(API_KEY);
-    }
 
     /**
      * Test index method.
@@ -87,19 +65,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'first-user',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -119,10 +99,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-one',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => '2016-05-13T07:09:23+00:00',
                         'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
@@ -131,10 +107,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'list' => ['one', 'two', 'three'],
                         ],
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/2',
@@ -160,19 +142,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'draft',
                         'uname' => 'title-two',
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
                         'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
                         'created_by' => 1,
                         'modified_by' => 2,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -198,19 +182,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'lang' => 'eng',
+                        'body' => null,
+                        'extra' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
                         'locked' => false,
                         'created' => '2016-05-13T07:09:23+00:00',
                         'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
-                        'title' => 'Gustavo Supporto profile',
-                        'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'body' => null,
-                        'extra' => null,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
@@ -230,19 +216,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'second-user',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -262,19 +250,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'the-two-towers',
-                        'locked' => false,
-                        'created' => '2017-02-20T07:09:23+00:00',
-                        'modified' => '2017-02-20T07:09:23+00:00',
-                        'published' => '2017-02-20T07:09:23+00:00',
                         'title' => 'The Two Towers',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-02-20T07:09:23+00:00',
+                        'modified' => '2017-02-20T07:09:23+00:00',
+                        'published' => '2017-02-20T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/locations/8',
@@ -300,19 +290,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'event-one',
-                        'locked' => false,
-                        'created' => '2017-03-08T07:09:23+00:00',
-                        'modified' => '2016-03-08T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'first event',
                         'description' => 'event description goes here',
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2016-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/events/9',
@@ -321,12 +313,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -368,12 +355,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Objects')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -403,10 +385,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'locked' => true,
-                    'created' => '2016-05-13T07:09:23+00:00',
-                    'modified' => '2016-05-13T07:09:23+00:00',
-                    'published' => '2016-05-13T07:09:23+00:00',
                     'title' => 'title one',
                     'description' => 'description here',
                     'body' => 'body here',
@@ -415,10 +393,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'list' => ['one', 'two', 'three'],
                     ],
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                    'created_by' => 1,
+                    'modified_by' => 1,
                 ],
                 'relationships' => [
                     'test' => [
@@ -437,12 +421,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/2');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -472,9 +451,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one-deleted',
-                    'locked' => false,
-                    'created' => '2016-10-13T07:09:23+00:00',
-                    'published' => '2016-10-13T07:09:23+00:00',
                     'title' => 'title one deleted',
                     'description' => 'description removed',
                     'body' => 'body no more',
@@ -482,10 +458,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'what?',
                     ],
                     'lang' => 'eng',
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-10-13T07:09:23+00:00',
-                    'publish_end' => '2016-10-13T07:09:23+00:00'
                 ],
                 'relationships' => [
                     'test' => [
@@ -504,12 +485,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -518,18 +494,14 @@ class ObjectsControllerTest extends IntegrationTestCase
         $objectsTable = TableRegistry::get('Objects');
         $object = $objectsTable->get(6);
         $object->deleted = false;
+        $this->authUser();
         $success = $objectsTable->save($object);
         $this->assertEquals(true, (bool)$success);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
         $result = json_decode((string)$this->_response->getBody(), true);
-        unset($result['data']['attributes']['modified']);
+        unset($result['data']['meta']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -561,12 +533,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -598,13 +565,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -618,7 +579,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test add method.
+     * Test add wrong type method.
      *
      * @return void
      *
@@ -635,13 +596,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/news', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -667,25 +622,19 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $Documents = TableRegistry::get('Documents');
-        $this->assertEquals($newTitle, $Documents->get(2)->get('title'));
+        static::assertEquals($newTitle, $Documents->get(2)->get('title'));
+        static::assertEquals('documents', $Documents->get(2)->get('type'));
 
-        // restore field value
-        $doc = $Documents->get(2);
-        $doc = $Documents->patchEntity($doc, ['title' => 'title one']);
-        $success = $Documents->save($doc);
-        $this->assertTrue((bool)$success);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($data['id'], $result['data']['id']);
+        static::assertEquals($data['type'], $result['data']['type']);
+        static::assertEquals($data['attributes']['title'], $result['data']['attributes']['title']);
     }
 
     /**
@@ -706,13 +655,9 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -720,13 +665,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertEquals('title two', TableRegistry::get('Documents')->get(3)->get('title'));
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/news/3', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -751,26 +690,16 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('title-one', TableRegistry::get('Documents')->get(2)->get('uname'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $data['id'] = 33;
         $this->patch('/documents/33', json_encode(compact('data')));
 
@@ -788,24 +717,15 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/3');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/3');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -813,22 +733,12 @@ class ObjectsControllerTest extends IntegrationTestCase
         $docDeleted = TableRegistry::get('Documents')->get(7);
         $this->assertEquals($docDeleted->deleted, 1);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/33');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/4');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -861,19 +771,13 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Gustavo Supporto profile',
                         'description' => 'Some description about Gustavo',
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'body' => null,
                         'extra' => null,
                         'publish_start' => null,
-                        'publish_end' => null
+                        'publish_end' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
@@ -887,9 +791,17 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => null,
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 [
@@ -898,19 +810,13 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'draft',
                         'uname' => 'title-two',
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 2,
                         'publish_start' => null,
-                        'publish_end' => null
+                        'publish_end' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -930,9 +836,17 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 2,
-                        'inv_priority' => 1,
-                        'params' => null,
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
             ],
@@ -947,12 +861,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -997,9 +906,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 [
@@ -1023,9 +934,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 2,
-                        'inv_priority' => 1,
-                        'params' => null,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
             ],
@@ -1040,12 +953,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/relationships/test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1065,12 +973,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testListAssociationsNotFound()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/99/relationships/test');
 
         $this->assertResponseCode(404);
@@ -1105,10 +1008,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1124,22 +1029,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1176,10 +1077,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1195,10 +1098,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
@@ -1206,22 +1111,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1246,20 +1147,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
@@ -1296,13 +1193,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -1330,13 +1221,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
 
@@ -1373,10 +1258,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
-                        'priority' => 1,
-                        'inv_priority' => 2,
-                        'params' => [
-                            'gustavo' => 'supporto',
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => [
+                                'gustavo' => 'supporto',
+                            ],
                         ],
                     ],
                 ],
@@ -1392,22 +1279,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => [
-                        'gustavo' => 'supporto',
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
                     ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1437,13 +1320,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $data = [];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1468,29 +1345,27 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'id' => '4',
                 'type' => 'profiles',
                 'meta' => [
-                    'priority' => 1,
-                    'inv_priority' => 2,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
             ],
             [
                 'id' => '3',
                 'type' => 'documents',
                 'meta' => [
-                    'priority' => 2,
-                    'inv_priority' => 1,
-                    'params' => null,
+                    'relation' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
@@ -1521,13 +1396,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1553,12 +1422,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             'title' => 'Relationship "this_relationship_does_not_exist" does not exist',
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/relationships/this_relationship_does_not_exist');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1591,13 +1455,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1616,15 +1474,237 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testObjectTypeNotFound()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/invalid_object_type');
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Provider for testMissingAuth
+     *
+     * @return array
+     */
+    public function missingAuthProvider()
+    {
+        return [
+            'get' => [
+                200,
+                'GET',
+                'documents',
+            ],
+            'post' => [
+                401,
+                'POST',
+                'documents',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'title' => 'A new document',
+                    ],
+                ],
+            ],
+            'patch' => [
+                401,
+                'PATCH',
+                'documents/2',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'id' => '2',
+                        'title' => 'Change title',
+                    ],
+                ],
+            ],
+            'delete' => [
+                401,
+                'DELETE',
+                'documents/2',
+            ],
+        ];
+    }
+
+    /**
+     * Test requests missing auth
+     *
+     * @param int $expected Expected response code.
+     * @param string $method Request method.
+     * @param string $endpoint Endpoint.
+     * @param array $data Request data.
+     * @return void
+     *
+     * @dataProvider missingAuthProvider
+     * @coversNothing
+     */
+    public function testMissingAuth($expected, $method, $endpoint, array $data = [])
+    {
+        $this->configRequestHeaders($method);
+        $requestMethod = strtolower($method);
+        $this->$requestMethod('/' . $endpoint, json_encode(compact('data')));
+        $this->assertResponseCode($expected);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test included resources.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testInclude()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2?include=test%2Cinverse_test',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [
+                'id' => '2',
+                'type' => 'documents',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'title-one',
+                    'title' => 'title one',
+                    'description' => 'description here',
+                    'body' => 'body here',
+                    'extra' => [
+                        'abstract' => 'abstract here',
+                        'list' => ['one', 'two', 'three'],
+                    ],
+                    'lang' => 'eng',
+                    'publish_start' => '2016-05-13T07:09:23+00:00',
+                    'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
+                            'related' => 'http://api.example.com/documents/2/test',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '4',
+                                'type' => 'profiles',
+                            ],
+                            [
+                                'id' => '3',
+                                'type' => 'documents',
+                            ],
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                        ],
+                        'data' => [],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'relation' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test,inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
     }
 }
