@@ -28,7 +28,8 @@ class StatusController extends AppController
      */
     public function initialize()
     {
-        if (!$this->request->is('jsonapi') && ((!Configure::read('debug') && !Configure::read('Accept.html')) || !$this->request->is('html'))) {
+        $htmlRequest = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
+        if (!$this->request->is('jsonapi') && !$htmlRequest) {
             $this->request = $this->request->withHeader('Accept', 'application/json');
         }
 
