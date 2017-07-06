@@ -59,7 +59,7 @@ class ResourcesShell extends Shell
 
         $options = [
             'type' => [
-                'help' => 'Entity type (applications, roles, endpoints)',
+                'help' => 'Entity type (applications, roles, endpoints, endpoint_permissions)',
                 'short' => 't',
                 'required' => true,
                 'default' => null,
