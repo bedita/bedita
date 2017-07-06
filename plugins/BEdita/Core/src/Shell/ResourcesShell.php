@@ -17,27 +17,36 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use Cake\Console\Shell;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
- * Resource shell commands:
- *
- * - ls: list entities
+ * Resource shell commands: list, create, remove, enable and disable common entities
  *
  * @since 4.0.0
  */
-abstract class ResourcesShell extends Shell
+class ResourcesShell extends Shell
 {
 
     /**
-     * {@inheritDoc}
+     * Accepted resource types
+     *
+     * @var array
      */
-    public function initialize()
-    {
-        parent::initialize();
-        if (empty($this->modelClass)) {
-            $this->abort('Empty modelClass for shell');
-        }
-    }
+    protected $acceptedTypes = ['applications', 'roles', 'endpoints'];
+
+    /**
+     * Editable resource fields
+     *
+     * @var array
+     */
+    protected $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
+
+    /**
+     * Resource model table
+     *
+     * @var \Cake\ORM\Table
+     */
+    protected $modelTable = null;
 
     /**
      * {@inheritDoc}
@@ -47,12 +56,31 @@ abstract class ResourcesShell extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->addSubcommand('create', [
+
+        $options = [
+            'type' => [
+                'help' => 'Entity type (applications, roles, endpoints)',
+                'short' => 't',
+                'required' => true,
+                'default' => null,
+                'choices' => $this->acceptedTypes,
+            ],
+        ];
+
+        $arguments = [
+            'name|id' => [
+                'help' => 'Resource\'s name or id',
+                'required' => true
+            ],
+        ];
+
+        $parser->addSubcommand('add', [
             'help' => 'create a new entity',
             'parser' => [
                 'description' => [
-                    'Create a new entity.'
-                ]
+                    'Create a new resource.'
+                ],
+                'options' => $options,
             ]
         ]);
         $parser->addSubcommand('ls', [
@@ -62,9 +90,12 @@ abstract class ResourcesShell extends Shell
                     'List entities.',
                     'Option --filter (optional) provides listing filtered by comma separated key=value pairs.'
                 ],
-                'options' => [
-                    'filter' => ['help' => 'List entities filtered by comma separated key=value pairs', 'required' => false],
-                ]
+                'options' => $options + [
+                    'filter' => [
+                        'help' => 'List entities filtered by comma separated key=value pairs',
+                        'required' => false
+                    ],
+                ],
             ]
         ]);
         $parser->addSubcommand('rm', [
@@ -74,9 +105,26 @@ abstract class ResourcesShell extends Shell
                     'Remove an entity.',
                     'First argument (required) indicates entity\'s id|name.'
                 ],
-                'arguments' => [
-                    'name|id' => ['help' => 'Entity\'s name|id', 'required' => true]
-                ]
+                'arguments' => $arguments,
+                'options' => $options,
+            ]
+        ]);
+        $parser->addSubcommand('edit', [
+            'help' => 'modify an entity field',
+            'parser' => [
+                'description' => [
+                    'Modify a field on a single resource.',
+                    'Required entity\'s id|name and field'
+                ],
+                'arguments' => $arguments,
+                'options' => $options + [
+                    'field' => [
+                        'help' => 'Field name',
+                        'short' => 'f',
+                        'required' => true,
+                        'choices' => $this->editableFields,
+                    ],
+                ],
             ]
         ]);
 
@@ -84,15 +132,55 @@ abstract class ResourcesShell extends Shell
     }
 
     /**
-     * save data for entity
+     * Init model table using --type|-t option
      *
-     * @param \Cake\ORM\Entity $entity entity to save
      * @return void
      */
-    public function processCreate(Entity $entity)
+    protected function initModel()
     {
-        TableRegistry::get($this->modelClass)->save($entity);
-        $this->out('Record ' . $entity->id . ' saved');
+        $modelName = Inflector::camelize($this->param('type'));
+        $this->modelTable = TableRegistry::get($modelName);
+    }
+
+    /**
+     * Create a new resource
+     *
+     * @return void
+     */
+    public function add()
+    {
+        $this->initModel();
+        $entity = $this->modelTable->newEntity();
+        $name = $this->in('Resource name');
+        if (empty($name)) {
+            $this->abort('Resource name cannot be empty');
+        }
+        $entity->name = $name;
+        $description = $this->in('Resource description (optional)');
+        $entity->description = $description;
+        $this->modelTable->save($entity);
+        $this->out('Resource with id ' . $entity->id . ' created');
+    }
+
+    /**
+     * Modify a resource field
+     *
+     * @param mixed $id Resource sid or name
+     * @return void
+     */
+    public function edit($id)
+    {
+        $this->initModel();
+        $entity = $this->getEntity($id);
+        $field = $this->param('field');
+        if ($field === 'api_key') {
+             $entity->api_key = $this->modelTable->generateApiKey();
+        } else {
+            $value = $this->in(sprintf('New value for "%s" [current is "%s"]', $field, $entity->get($field)));
+            $entity->set($field, $value);
+        }
+        $this->modelTable->save($entity);
+        $this->out('Resource with id ' . $entity->id . ' modified');
     }
 
     /**
@@ -102,7 +190,8 @@ abstract class ResourcesShell extends Shell
      */
     public function ls()
     {
-        $action = new ListEntitiesAction(['table' => TableRegistry::get($this->modelClass)]);
+        $this->initModel();
+        $action = new ListEntitiesAction(['table' => $this->modelTable]);
         $query = $action(['filter' => $this->param('filter')]);
         $results = $query->toArray();
         $this->out($results ?: 'empty set');
@@ -111,19 +200,27 @@ abstract class ResourcesShell extends Shell
     }
 
     /**
-     * Remove entity by id
+     * Remove entity by name or id
      *
-     * @param int $id entity id
-     * @return void
+     * @param mixed $id Resource id or name
+     * @return bool True on success, false on blocked execution
      */
     public function rm($id)
     {
-        $entity = $this->getEntity($id);
-        $action = new DeleteEntityAction(['table' => TableRegistry::get($this->modelClass)]);
-        if (!$action(compact('entity'))) {
-            $this->abort('Record ' . $id . ' could not be deleted');
+        $this->initModel();
+        $res = $this->in(sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $this->param('type'), $id), ['y', 'n'], 'n');
+        if ($res != 'y') {
+            $this->info('Remove not executed');
+
+            return false;
         }
+        $entity = $this->getEntity($id);
+        $action = new DeleteEntityAction(['table' => $this->modelTable]);
+        $action(compact('entity'));
+
         $this->out('Record ' . $id . ' deleted');
+
+        return true;
     }
 
     /**
@@ -135,12 +232,12 @@ abstract class ResourcesShell extends Shell
     protected function getEntity($id)
     {
         if (!is_numeric($id)) {
-            return TableRegistry::get($this->modelClass)
+            return $this->modelTable
                 ->find()
                 ->where(['name' => $id])
                 ->firstOrFail();
         }
 
-        return TableRegistry::get($this->modelClass)->get($id);
+        return $this->modelTable->get($id);
     }
 }
