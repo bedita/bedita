@@ -14,7 +14,6 @@ use Cake\Utility\Inflector;
  */
 class ResourcesShellTest extends ShellTestCase
 {
-
     /**
      * Fixtures
      *
@@ -33,38 +32,6 @@ class ResourcesShellTest extends ShellTestCase
      * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
      */
     public $io;
-
-    /**
-     * Test subject
-     *
-     * @var \BEdita\API\Shell\ResourcesShell
-     */
-    public $ResourcesShell;
-
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->ResourcesShell = new ResourcesShell($this->io);
-        $this->ResourcesShell->initialize();
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->ResourcesShell);
-
-        parent::tearDown();
-    }
 
     /**
      * Data provider for `testAddDefault` test case.
