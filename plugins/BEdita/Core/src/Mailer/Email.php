@@ -54,4 +54,15 @@ class Email extends CakeEmail
 
         return $contents;
     }
+
+    /**
+     * Get boundary used by a mail.
+     *
+     * @param \Cake\Mailer\Email $email Email instance.
+     * @return string|null
+     */
+    public static function getBoundary(CakeEmail $email)
+    {
+        return $email->_boundary;
+    }
 }

@@ -137,4 +137,31 @@ class EmailTest extends TestCase
         static::assertArrayHasKey('message', $result);
         static::assertSame($expected['message'], $result['message']);
     }
+
+    /**
+     * Test getter for boundary.
+     *
+     * @return void
+     *
+     * @covers ::getBoundary()
+     */
+    public function testGetBoundary()
+    {
+        $email = new Email();
+        $email->setTo('evermannella@example.org');
+        $email->message('This is the message');
+        $email->addAttachments([
+            'test.txt' => [
+                'data' => 'Some text attachment',
+                'mimetype' => 'text/plain',
+            ],
+        ]);
+        $email->setTransport('test');
+        $email->send();
+
+        $boundary = Email::getBoundary($email);
+
+        static::assertNotNull($boundary);
+        static::assertAttributeSame($boundary, '_boundary', $email);
+    }
 }
