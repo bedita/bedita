@@ -32,7 +32,7 @@ class ResourcesShell extends Shell
      *
      * @var array
      */
-    protected $acceptedTypes = ['applications', 'roles', 'endpoints'];
+    protected $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
 
     /**
      * Editable resource fields
@@ -145,12 +145,60 @@ class ResourcesShell extends Shell
     /**
      * Create a new resource
      *
-     * @return void
+     * @return \Cake\ORM\Entity $entity Entity created
      */
     public function add()
     {
         $this->initModel();
         $entity = $this->modelTable->newEntity();
+        if ($this->param('type') === 'endpoint_permissions') {
+            $this->setupEndpointPermissionEntity($entity);
+        } else {
+            $this->setupDefaultEntity($entity);
+        }
+
+        $this->modelTable->save($entity);
+        $this->out('Resource with id ' . $entity->id . ' created');
+
+        return $entity;
+    }
+
+    /**
+     * Setup entity for endpoint_permissions
+     *
+     * @param \Cake\ORM\Entity $entity Entity to add
+     * @return void
+     */
+    protected function setupEndpointPermissionEntity($entity)
+    {
+        $fieldsTables = [
+            'application_id' => 'Applications',
+            'endpoint_id' => 'Endpoints',
+            'role_id' => 'Roles',
+        ];
+        foreach ($fieldsTables as $field => $table) {
+            $id = $this->in($table . ' id or name');
+            if ($id && !is_numeric($id)) {
+                $id = TableRegistry::get($table)->find()->where(['name' => $id])->firstOrFail()->id;
+            }
+            $entity->$field = $id;
+        }
+
+        $perms = ['true', 'false', 'block', 'mine'];
+        foreach (['read', 'write'] as $field) {
+            $perm = $this->in("'$field' permission", $perms);
+            $entity->$field = $perm;
+        }
+    }
+
+    /**
+     * Setup default entity for applications, roles, endpoints
+     *
+     * @param \Cake\ORM\Entity $entity Entity to add
+     * @return void
+     */
+    protected function setupDefaultEntity($entity)
+    {
         $name = $this->in('Resource name');
         if (empty($name)) {
             $this->abort('Resource name cannot be empty');
@@ -158,8 +206,6 @@ class ResourcesShell extends Shell
         $entity->name = $name;
         $description = $this->in('Resource description (optional)');
         $entity->description = $description;
-        $this->modelTable->save($entity);
-        $this->out('Resource with id ' . $entity->id . ' created');
     }
 
     /**

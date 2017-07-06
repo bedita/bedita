@@ -24,6 +24,7 @@ class ResourcesShellTest extends ShellTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoint_permissions',
     ];
 
     /**
@@ -66,7 +67,7 @@ class ResourcesShellTest extends ShellTestCase
     }
 
     /**
-     * Data provider for `testAd` test case.
+     * Data provider for `testAddDefault` test case.
      *
      * @return array
      */
@@ -102,8 +103,9 @@ class ResourcesShellTest extends ShellTestCase
      * @dataProvider addProvider
      * @covers ::add()
      * @covers ::initModel()
+     * @covers ::setupDefaultEntity()
      */
-    public function testAdd($type, $name, $description = null, $success = true)
+    public function testAddDefault($type, $name, $description = null, $success = true)
     {
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -125,6 +127,85 @@ class ResourcesShellTest extends ShellTestCase
     }
 
     /**
+     * Data provider for `testAddPermission` test case.
+     *
+     * @return array
+     */
+    public function addPermissionProvider()
+    {
+        return [
+            'perms1' => [
+                1,
+                'home',
+                2,
+                'mine',
+                'block'
+            ],
+            'perms2' => [
+                1,
+                3,
+                'first role',
+                'true',
+                'true'
+            ],
+        ];
+    }
+
+    /**
+     * Test `add` method
+     *
+     * @param mixed $application Application name or id
+     * @param mixed $endpoint Endpoint name or id
+     * @param mixed $role Role name or id
+     * @param string $read Read permission
+     * @param string $write Write permission
+     * @return void
+     *
+     * @dataProvider addPermissionProvider
+     * @covers ::add()
+     * @covers ::initModel()
+     * @covers ::setupEndpointPermissionEntity()
+     */
+    public function testAddPermission($application, $endpoint, $role, $read, $write)
+    {
+        $type = 'endpoint_permissions';
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+
+        $map = [
+            ['Applications id or name', null, $application],
+            ['Endpoints id or name', null, $endpoint],
+            ['Roles id or name', null, $role],
+        ];
+        $io->method('ask')
+             ->will($this->returnValueMap($map));
+
+        $perms = ['true', 'false', 'block', 'mine'];
+        $mapChoice = [
+            ["'read' permission", $perms, null, $read],
+            ["'write' permission", $perms, null, $write],
+        ];
+        $io->method('askChoice')
+             ->will($this->returnValueMap($mapChoice));
+
+        $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
+
+        static::assertNotEmpty($res);
+        $testRead = $res->read;
+        if (is_bool($testRead)) {
+            $testRead = $testRead ? 'true' : 'false';
+        }
+        static::assertEquals($testRead, $read);
+
+        $testWrite = $res->write;
+        if (is_bool($testWrite)) {
+            $testWrite = $testWrite ? 'true' : 'false';
+        }
+        static::assertEquals($testWrite, $write);
+
+        TableRegistry::get('EndpointPermissions')->delete($res);
+    }
+
+    /**
      * Data provider for `testEdit` method.
      *
      * @return array
@@ -139,7 +220,7 @@ class ResourcesShellTest extends ShellTestCase
             ],
             'appEnable' => [
                 'applications',
-                'Disabled app',
+                2,
                 'enabled',
                 1,
             ],
@@ -195,7 +276,7 @@ class ResourcesShellTest extends ShellTestCase
      *
      * @covers ::ls()
      */
-    public function testLs()
+    public function testList()
     {
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -209,14 +290,13 @@ class ResourcesShellTest extends ShellTestCase
         static::assertEquals(count($res), 2);
     }
 
-    /*
+    /**
      * Test rm method
      *
-     * @dataProvider idsProvider
      * @covers ::rm()
      * @covers ::getEntity()
      */
-    public function testRm()
+    public function testRemove()
     {
         $entity = TableRegistry::get('Applications')->newEntity();
         $entity->name = 'a-new-app';
