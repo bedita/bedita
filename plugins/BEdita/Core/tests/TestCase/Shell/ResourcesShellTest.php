@@ -20,9 +20,13 @@ class ResourcesShellTest extends ShellTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.endpoint_permissions',
     ];
 
@@ -86,8 +90,10 @@ class ResourcesShellTest extends ShellTestCase
         $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
 
         if ($success) {
-            $id = $this->resourceIdByName(Inflector::camelize($type), $name);
+            $table = Inflector::camelize($type);
+            $id = $this->resourceIdByName($table, $name);
             $this->assertTrue(!empty($id));
+            TableRegistry::get($table)->delete($res);
         } else {
             $this->assertAborted();
         }
