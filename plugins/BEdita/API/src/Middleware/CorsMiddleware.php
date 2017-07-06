@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Handle cross-origin HTTP requests setting the proper headers.
  *
  * The response of preflight request (OPTIONS) is delivered directly after the headers are applied.
- * For simple requests the CORS headers are applied before send response.
+ * For simple requests the CORS headers are applied before sending response.
  *
  * @since 4.0.0
  */
@@ -126,7 +126,7 @@ class CorsMiddleware
         $corsBuilder = new CorsBuilder($response, $origin, $isSsl);
 
         $options = array_filter($this->corsConfig);
-        if (!empty($options['allowHeaders']) && $options['allowHeaders'] == '*') {
+        if (!empty($options['allowHeaders']) && $options['allowHeaders'] === '*') {
             $options['allowHeaders'] = $request->getHeader('Access-Control-Request-Headers');
         }
 
@@ -136,7 +136,7 @@ class CorsMiddleware
 
         $response = $corsBuilder->build();
 
-        if ($response->getHeaderLine('Access-Control-Allow-Origin') != '*') {
+        if ($response->getHeaderLine('Access-Control-Allow-Origin') !== '*') {
             $response = $response->withAddedHeader('Vary', 'Origin');
         }
 
