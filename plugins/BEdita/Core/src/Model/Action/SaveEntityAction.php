@@ -56,7 +56,7 @@ class SaveEntityAction extends BaseAction
         if ($success === false) {
             $errors = $entity->getErrors();
             if (!empty($errors)) {
-                $this->log('Entity save failed', 'debug', compact('entity'));
+                $this->log(sprintf('Entity save errors: %s', print_r($errors, true)), 'warning');
 
                 throw new BadRequestException([
                     'title' => __d('bedita', 'Invalid data'),
@@ -64,7 +64,7 @@ class SaveEntityAction extends BaseAction
                 ]);
             }
 
-            $this->log('Save failed');
+            $this->log(sprintf('Save failed - data: %s', print_r($data['data'], true)), 'error');
 
             throw new InternalErrorException(__d('bedita', 'Save failed'));
         }
