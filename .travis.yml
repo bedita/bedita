@@ -79,6 +79,28 @@ jobs:
       php: 7.1
       env: RUN_PHPSTAN=1 RUN_TESTS=0
 
+    - stage: deploy
+      php: 7.1
+      env: RUN_TESTS=0
+      addons: {}
+      deploy:
+        provider: heroku
+        app: bedita4
+        skip_cleanup: true
+        run:
+          - "bin/cake migrations migrate -p BEdita/Core"
+          - "bin/cake cache clear_all"
+        api_key:
+          secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
+        before_script:
+          - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
+          - composer install --prefer-dist --no-interaction --no-dev
+        on:
+#          branch:
+#            - 4-cactus
+#          repo: bedita/bedita
+          condition: "$CC = gcc"
+
   allow_failures:
     - php: 7.1
       env: RUN_PHPSTAN=1 RUN_TESTS=0
