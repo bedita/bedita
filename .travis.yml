@@ -95,6 +95,7 @@ jobs:
           - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
           - composer install --prefer-dist --no-interaction --no-dev
         on:
+          all_branches: true
 #          branch:
 #            - 4-cactus
 #          repo: bedita/bedita
