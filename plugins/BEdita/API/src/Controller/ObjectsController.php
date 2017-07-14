@@ -73,7 +73,7 @@ class ObjectsController extends ResourcesController
                 $this->modelClass = $this->objectType->alias;
                 $this->Table = TableRegistry::get($this->modelClass);
             } catch (RecordNotFoundException $e) {
-                $this->log(sprintf('Object type "%s" does not exist', $type), 'error', ['request' => $this->request]);
+                $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
 
                 throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
             }

@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -21,8 +20,8 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
- * @property \Cake\I18n\Time $start_date
- * @property \Cake\I18n\Time|null $end_date
+ * @property \DateTimeInterface $start_date
+ * @property \DateTimeInterface|null $end_date
  * @property array $params
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
@@ -127,7 +126,7 @@ class DateRange extends Entity
                 continue;
             }
 
-            $last->start_date = $last->start_date->min($current->start_date);
+            $last->start_date = min($last->start_date, $current->start_date);
             if ($last->end_date === null || ($current->end_date !== null && $last->end_date < $current->end_date)) {
                 $last->end_date = $current->end_date;
             }
@@ -208,7 +207,10 @@ class DateRange extends Entity
             $dateRange = clone $dateRange1;
 
             while (($dateRange2 = current($array2)) !== false) {
-                if ($dateRange->end_date === null && $dateRange2->end_date === null && $dateRange->start_date->eq($dateRange2->start_date)) {
+                if ($dateRange->end_date === null
+                    && $dateRange2->end_date === null
+                    && $dateRange->start_date->getTimestamp() === $dateRange2->start_date->getTimestamp()
+                ) {
                     // Unit sets match. Discard range.
                     $dateRange = null;
                     next($array2);
@@ -264,7 +266,7 @@ class DateRange extends Entity
      * @return void
      * @throws \LogicException Throws an exception if a malformed Date Range is encountered.
      */
-    public static function checkWellFormed(... $dateRanges)
+    public static function checkWellFormed(...$dateRanges)
     {
         $getType = function ($var) {
             if (!is_object($var)) {
@@ -275,21 +277,21 @@ class DateRange extends Entity
         };
 
         foreach ($dateRanges as $dateRange) {
-            if (!($dateRange instanceof static)) {
+            if (!($dateRange instanceof self)) {
                 throw new \LogicException(
                     __d('bedita', 'Invalid Date Range entity class: expected "{0}", got "{1}"', static::class, $getType($dateRange))
                 );
             }
 
-            if (!($dateRange->start_date instanceof Time)) {
+            if (!($dateRange->start_date instanceof \DateTimeInterface)) {
                 throw new \LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', Time::class, $getType($dateRange->start_date))
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', \DateTimeInterface::class, $getType($dateRange->start_date))
                 );
             }
 
-            if (!($dateRange->end_date instanceof Time) && $dateRange->end_date !== null) {
+            if (!($dateRange->end_date instanceof \DateTimeInterface) && $dateRange->end_date !== null) {
                 throw new \LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', Time::class, $getType($dateRange->end_date))
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', \DateTimeInterface::class, $getType($dateRange->end_date))
                 );
             }
         }

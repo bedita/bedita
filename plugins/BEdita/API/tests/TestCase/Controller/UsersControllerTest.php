@@ -77,6 +77,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
@@ -92,6 +94,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
+                        'verified' => '2017-05-29T11:36:00+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -133,6 +136,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'second user',
@@ -148,6 +153,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login' => '2016-03-15T09:57:38+00:00',
                         'last_login_err' => '2016-03-15T09:57:38+00:00',
                         'num_login_err' => 0,
+                        'verified' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -258,6 +264,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'state_name' => null,
                     'phone' => null,
                     'website' => null,
+                    'national_id_number' => null,
+                    'vat_number' => null,
                     'publish_start' => null,
                     'publish_end' => null,
                     'username' => 'first user',
@@ -273,6 +281,7 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login' => null,
                     'last_login_err' => null,
                     'num_login_err' => 1,
+                    'verified' => '2017-05-29T11:36:00+00:00',
                 ],
                 'relationships' => [
                     'roles' => [
@@ -407,7 +416,13 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('users', TableRegistry::get('Users')->get(1)->get('type'));
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($data['id'], $result['data']['id']);
+        static::assertEquals($data['type'], $result['data']['type']);
+        static::assertEquals($data['attributes']['username'], $result['data']['attributes']['username']);
     }
 
     /**

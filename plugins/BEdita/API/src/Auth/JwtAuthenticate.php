@@ -76,6 +76,7 @@ class JwtAuthenticate extends BaseAuthenticate
         ],
         'fields' => [
             'username' => 'id',
+            'password' => null,
         ],
         'userModel' => 'Users',
         'scope' => [],
@@ -127,6 +128,10 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
+
+        if (!empty($this->error)) {
+            throw new UnauthorizedException($this->error->getMessage());
+        }
 
         if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
             return $payload;

@@ -628,13 +628,13 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $Documents = TableRegistry::get('Documents');
-        $this->assertEquals($newTitle, $Documents->get(2)->get('title'));
+        static::assertEquals($newTitle, $Documents->get(2)->get('title'));
+        static::assertEquals('documents', $Documents->get(2)->get('type'));
 
-        // restore field value
-        $doc = $Documents->get(2);
-        $doc = $Documents->patchEntity($doc, ['title' => 'title one']);
-        $success = $Documents->save($doc);
-        $this->assertTrue((bool)$success);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($data['id'], $result['data']['id']);
+        static::assertEquals($data['type'], $result['data']['type']);
+        static::assertEquals($data['attributes']['title'], $result['data']['attributes']['title']);
     }
 
     /**

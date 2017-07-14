@@ -14,10 +14,15 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
+use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -37,11 +42,26 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
     ];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        Email::dropTransport('default');
+        Email::setConfigTransport('default', [
+            'className' => 'Debug',
+        ]);
+    }
 
     /**
      * Provider for `testExecute()`
@@ -121,44 +141,46 @@ class SignupUserActionTest extends TestCase
     /**
      * Test command execution.
      *
+     * @param array|\Exception $expected Expected result.
+     * @param array $data Action data.
      * @return void
      *
      * @dataProvider executeProvider
      */
-    public function testExecute($expected, $data)
+    public function testExecute($expected, array $data)
     {
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
-            'className' => 'Debug'
-        ]);
-
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
         }
+
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.signup', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(4, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+            static::assertInstanceOf(AsyncJob::class, $arguments[2]);
+            static::assertTrue(is_string($arguments[3]));
+        });
 
         $action = new SignupUserAction();
         $result = $action($data);
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
+        static::assertSame('draft', $result->status);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
     /**
-     * Test execute when exception different from SocketException was raised
+     * Test signup action when activation is not required.
      *
      * @return void
      */
-    public function testExceptionSendMail()
+    public function testExecuteActivationNotRequired()
     {
-        $this->expectException(InternalErrorException::class);
-
-        $mock = $this->getMockBuilder(SignupUserAction::class)
-            ->setMethods(['getMailer'])
-            ->getMock();
-
-        $mock->method('getMailer')->will($this->throwException(new InternalErrorException));
-
-        $mock->execute([
+        $data = [
             'data' => [
                 'username' => 'testsignup',
                 'password_hash' => 'testsignup',
@@ -166,22 +188,66 @@ class SignupUserActionTest extends TestCase
             ],
             'urlOptions' => [
                 'activation_url' => 'http://sample.com?confirm=true',
+                'redirect_url' => 'http://sample.com/ok',
             ],
-        ]);
+        ];
+
+        Configure::write('Signup.requireActivation', false);
+
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.signup', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(4, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+            static::assertInstanceOf(AsyncJob::class, $arguments[2]);
+            static::assertTrue(is_string($arguments[3]));
+        });
+
+        $action = new SignupUserAction();
+        $result = $action($data);
+
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('on', $result->status);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
     /**
-     * Test `isValidUrl()` not with validation (without context)
+     * Test execute when exception was raised sending email
      *
      * @return void
+     *
+     * @expectedException \Cake\Network\Exception\InternalErrorException
      */
-    public function testIsValidUrlWithoutContext()
+    public function testExceptionSendMail()
     {
-        $action = new SignupUserAction();
-        $result = $action->isValidUrl('https://example.com');
-        $this->assertTrue($result);
+        $data = [
+            'data' => [
+                'username' => 'testsignup',
+                'password_hash' => 'testsignup',
+                'email' => 'test.signup@example.com',
+            ],
+            'urlOptions' => [
+                'activation_url' => 'http://sample.com?confirm=true',
+                'redirect_url' => 'http://sample.com/ok',
+            ],
+        ];
 
-        $result = $action->isValidUrl('https://examplecom');
-        $this->assertFalse($result);
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.signup', function () use (&$eventDispatched) {
+            $eventDispatched++;
+
+            throw new InternalErrorException;
+        });
+
+        $action = new SignupUserAction();
+
+        try {
+            $action($data);
+        } finally {
+            static::assertSame(1, $eventDispatched, 'Event not dispatched');
+            static::assertFalse(TableRegistry::get('Users')->exists(['username' => 'testsignup']));
+        }
     }
 }

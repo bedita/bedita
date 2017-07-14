@@ -30,7 +30,13 @@ class LocationsValidator extends ObjectsValidator
     {
         parent::__construct();
 
+        $this->setProvider('locations', self::class);
+
         $this
+            ->add('coords', 'valid', [
+                'rule' => 'checkWkt',
+                'provider' => 'locations',
+            ])
             ->allowEmpty('coords')
 
             ->allowEmpty('address')
@@ -42,5 +48,47 @@ class LocationsValidator extends ObjectsValidator
             ->allowEmpty('country_name')
 
             ->allowEmpty('region');
+    }
+
+    /**
+     * Check that a value is a valid WKT string.
+     *
+     * @param mixed $value WKT to be validated.
+     * @return string|true
+     */
+    public static function checkWkt($value)
+    {
+        static $regex = '/^POINT\s?\((?P<lng>\-?[0-9\.]+) (?P<lat>\-?[0-9\.]+)\)$/i';
+
+        if (!is_string($value) || !preg_match($regex, $value, $matches)) {
+            return 'invalid Well-Known Text';
+        }
+
+        return static::checkCoordinates([$matches['lat'], $matches['lng']]);
+    }
+
+    /**
+     * Check that coordinates are valid.
+     *
+     * @param mixed $value Coordinates to be validated.
+     * @return string|true
+     */
+    public static function checkCoordinates($value)
+    {
+        if (!is_array($value) || count($value) !== 2 || !isset($value[0]) || !isset($value[1])) {
+            return 'coordinates must be a pair of values';
+        }
+
+        $lat = filter_var($value[0], FILTER_VALIDATE_FLOAT);
+        if ($lat === false || abs($lat) > 90) {
+            return 'invalid latitude';
+        }
+
+        $lng = filter_var($value[1], FILTER_VALIDATE_FLOAT);
+        if ($lat === false || $lng > 180 || $lng <= -180) {
+            return 'invalid longitude';
+        }
+
+        return true;
     }
 }

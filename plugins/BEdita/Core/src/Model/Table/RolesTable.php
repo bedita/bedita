@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -92,5 +95,26 @@ class RolesTable extends Table
         $rules->add($rules->isUnique(['name']));
 
         return $rules;
+    }
+
+    /**
+     * Finder for my roles (i.e.: roles of currently logged users).
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findMine(Query $query)
+    {
+        return $query
+            ->where(function (QueryExpression $exp) {
+                $junction = $this->Users->junction();
+                $subQuery = $junction->find()
+                    ->select([$junction->aliasField($this->Users->getForeignKey())])
+                    ->where(function (QueryExpression $exp) use ($junction) {
+                        return $exp->eq($junction->aliasField($this->Users->getTargetForeignKey()), LoggedUser::id());
+                    });
+
+                return $exp->in($this->aliasField((string)$this->getPrimaryKey()), $subQuery);
+            });
     }
 }

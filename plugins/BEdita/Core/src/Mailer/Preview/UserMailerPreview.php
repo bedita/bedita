@@ -13,49 +13,95 @@
 
 namespace BEdita\Core\Mailer\Preview;
 
-use Cake\ORM\TableRegistry;
+use Cake\Utility\Text;
 use DebugKit\Mailer\MailPreview;
 
 /**
- * Preview user emails.
+ * Mail preview for user mailer.
+ *
+ * @property \BEdita\Core\Model\Table\UsersTable $Users
  *
  * @since 4.0.0
- *
  * @codeCoverageIgnore
  */
 class UserMailerPreview extends MailPreview
 {
-
     /**
-     * Preview welcome email.
+     * Preview of Welcome message.
      *
      * @return \Cake\Mailer\Email
      */
     public function welcome()
     {
-        $to = 'dev@chialab.io';
-
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
-        $mailer = $this->getMailer('BEdita/Core.User');
-
-        return $mailer->welcome(compact('to'));
-    }
-
-    /**
-     * Preview confirmation email.
-     *
-     * @return \Cake\Mailer\Email
-     */
-    public function signup()
-    {
-        $params = [
-            'userId' => TableRegistry::get('Users')->find()->where(['email IS NOT' => null])->firstOrFail()->id,
-            'activationUrl' => 'http://example.org/activate?code=abcdef1234567890',
+        $user = $this->getUser();
+        $options = [
+            'params' => compact('user'),
         ];
 
         /* @var \BEdita\Core\Mailer\UserMailer $mailer */
         $mailer = $this->getMailer('BEdita/Core.User');
 
-        return $mailer->signup(compact('params'));
+        return $mailer->welcome($options);
+    }
+
+    /**
+     * Preview of Signup message.
+     *
+     * @return \Cake\Mailer\Email
+     */
+    public function signup()
+    {
+        $options = [
+            'params' => [
+                'user' => $this->getUser(),
+                'activationUrl' => 'https://example.org/activate?code=' . Text::uuid(),
+            ],
+        ];
+
+        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
+        $mailer = $this->getMailer('BEdita/Core.User');
+
+        return $mailer->signup($options);
+    }
+
+    /**
+     * Preview of Password recovery message.
+     *
+     * @return \Cake\Mailer\Email
+     */
+    public function changeRequest()
+    {
+        $options = [
+            'params' => [
+                'user' => $this->getUser(),
+                'changeUrl' => 'https://example.org/recover?code=' . Text::uuid(),
+            ],
+        ];
+
+        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
+        $mailer = $this->getMailer('BEdita/Core.User');
+
+        return $mailer->changeRequest($options);
+    }
+
+    /**
+     * Create mock user.
+     *
+     * @return \BEdita\Core\Model\Entity\User
+     */
+    protected function getUser()
+    {
+        $this->loadModel('Users');
+
+        $user = $this->Users->newEntity([
+            'name' => 'Gustavo',
+            'surname' => 'Supporto',
+            'title' => 'Gustavo Supporto',
+            'email' => 'gustavo.supporto@example.org',
+            'username' => 'gustavo_supporto',
+        ]);
+        $user->type = 'users';
+
+        return $user;
     }
 }

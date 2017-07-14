@@ -17,9 +17,10 @@ use BEdita\API\Auth\JwtAuthenticate;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Response;
+use Cake\I18n\Time;
+use Cake\Network\Exception\UnauthorizedException;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -158,6 +159,7 @@ class JwtAuthenticateTest extends TestCase
         $renewToken = JWT::encode(['sub' => 1], Security::salt());
 
         $invalidToken = JWT::encode(['aud' => 'http://example.org'], Security::salt());
+        $expiredToken = JWT::encode(['exp' => time() - 10], Security::salt());
 
         return [
             'default' => [
@@ -176,6 +178,7 @@ class JwtAuthenticateTest extends TestCase
                     'last_login' => null,
                     'last_login_err' => null,
                     'num_login_err' => 1,
+                    'verified' => new Time('2017-05-29 11:36:00'),
                 ],
                 [
                     'userModel' => 'BEdita/API.Users',
@@ -201,7 +204,7 @@ class JwtAuthenticateTest extends TestCase
                 new ServerRequest(),
             ],
             'invalidToken' => [
-                false,
+                new UnauthorizedException('Invalid audience'),
                 [],
                 new ServerRequest([
                     'params' => [
@@ -216,13 +219,20 @@ class JwtAuthenticateTest extends TestCase
                     ],
                 ]),
             ],
+            'expiredToken' => [
+                new UnauthorizedException('Expired token'),
+                [],
+                new ServerRequest([
+                    'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $expiredToken],
+                ]),
+            ],
         ];
     }
 
     /**
      * Test `getUser` method.
      *
-     * @param array|false $expected Expected result.
+     * @param array|false|\Exception $expected Expected result.
      * @param array $config Configuration.
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
@@ -235,7 +245,11 @@ class JwtAuthenticateTest extends TestCase
      */
     public function testAuthenticate($expected, array $config, ServerRequest $request)
     {
-        Configure::write('debug', false);
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
 
         $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
 
@@ -276,8 +290,6 @@ class JwtAuthenticateTest extends TestCase
      */
     public function testUnauthenticatedWithInternalErrorMessage()
     {
-        Configure::write('debug', false);
-
         $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',

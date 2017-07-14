@@ -45,12 +45,15 @@ class AsyncJobsTransportTest extends TestCase
      */
     public function setUp()
     {
+        Email::dropTransport('test');
         Email::setConfigTransport('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
+        Email::dropTransport('debug');
         Email::setConfigTransport('debug', [
             'className' => 'Debug',
         ]);
+        Email::drop('test');
         Email::setConfig('test', [
             'transport' => 'test',
             'from' => [

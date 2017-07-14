@@ -115,6 +115,20 @@ class AsyncJobsFixture extends TestFixture
             'modified' => '2017-04-28 19:29:31',
             'completed' => null,
         ],
+        [
+            // pending signup user_id invalid
+            'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
+            'service' => 'signup',
+            'priority' => 20,
+            'payload' => '{"user_id":"99999"}',
+            'scheduled_from' => null,
+            'expires' => null,
+            'max_attempts' => 1,
+            'locked_until' => null,
+            'created' => '2017-04-28 19:29:31',
+            'modified' => '2017-04-28 19:29:31',
+            'completed' => null,
+        ],
     ];
 
     /**

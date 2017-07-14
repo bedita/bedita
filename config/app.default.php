@@ -63,14 +63,14 @@ return [
      *   The salt value is also used as the encryption key.
      *   You should treat it as extremely sensitive data.
      * - jwt - Duration and algorithm for JSON Web Tokens.
-     *   By default, `duration` is `'+2 hours'`, and `algorithm` is `'HS256'`.
+     *   By default, `duration` is `'+20 minutes'`, and `algorithm` is `'HS256'`.
      * - blockAnonymousApps - Are anonymous applications (i.e. requests without an api key) forbidden?
      * - blockAnonymousUsers - Are unauthenticated users requests blocked by default?
      */
     'Security' => [
         'salt' => env('SECURITY_SALT', '__SALT__'),
         // 'jwt' => [
-        //     'duration' => '+2 hours',
+        //     'duration' => '+20 minutes',
         //     'algorithm' => 'HS256',
         // ],
         // 'blockAnonymousApps' => true,
@@ -407,5 +407,15 @@ return [
     'Pagination' => [
         'limit' => 20,
         'maxLimit' => 100,
+    ],
+
+    /**
+     * Signup settings.
+     *
+     * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
+     *      before being "activated"?
+     */
+    'Signup' => [
+//        'requireActivation' => true,
     ],
 ];

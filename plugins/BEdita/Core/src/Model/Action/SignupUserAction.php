@@ -15,7 +15,12 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
@@ -27,8 +32,10 @@ use Cake\Validation\Validator;
  *
  * @since 4.0.0
  */
-class SignupUserAction extends BaseAction
+class SignupUserAction extends BaseAction implements EventListenerInterface
 {
+
+    use EventDispatcherTrait;
     use MailerAwareTrait;
 
     /**
@@ -36,22 +43,24 @@ class SignupUserAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users = null;
+    protected $Users;
 
     /**
-     * The AsynJobs table
+     * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs = null;
+    protected $AsyncJobs;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initialize(array $config)
     {
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+
+        $this->eventManager()->on($this);
     }
 
     /**
@@ -71,15 +80,21 @@ class SignupUserAction extends BaseAction
             ]);
         }
 
-        $userId = $this->Users->getConnection()->transactional(function () use ($data) {
-            $user = $this->createUser($data['data']);
+        // operations are not in transaction because AsyncJobs could use a different connection
+        $user = $this->createUser($data['data']);
+        try {
             $job = $this->createSignupJob($user);
-            $this->sendMail($user, $job, $data['urlOptions']);
+            $activationUrl = $this->getActivationUrl($job, $data['urlOptions']);
 
-            return $user->id;
-        });
+            $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
+        } catch (\Exception $e) {
+            // if async job or send mail fail remove user created and re-throw the exception
+            $this->Users->delete($user);
 
-        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $userId]);
+            throw $e;
+        }
+
+        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);
     }
 
     /**
@@ -94,50 +109,21 @@ class SignupUserAction extends BaseAction
     protected function validate(array $data)
     {
         $validator = new Validator();
-        $validator->setProvider('signup', $this);
+        $validator->setProvider('customUrl', new CustomUrlValidationProvider());
 
         $validator
             ->requirePresence('activation_url')
             ->add('activation_url', 'customUrl', [
                 'rule' => 'isValidUrl',
-                'provider' => 'signup',
+                'provider' => 'customUrl',
             ])
 
             ->add('redirect_url', 'customUrl', [
                 'rule' => 'isValidUrl',
-                'provider' => 'signup',
+                'provider' => 'customUrl',
             ]);
 
         return $validator->errors($data);
-    }
-
-    /**
-     * Checks that a value is a valid URL or custom url as myapp://
-     *
-     * @param string $value The url to check
-     * @param array $context The validation context
-     * @return bool
-     */
-    public function isValidUrl($value, array $context = [])
-    {
-        // check for a valid scheme (https://, myapp://,...)
-        $regex = '/(?<scheme>^[a-z][a-z0-9+\-.]*:\/\/).*/';
-        if (!preg_match($regex, $value, $matches)) {
-            return false;
-        }
-
-        // if scheme is not an URL protocol then it's a custom url (myapp://) => ok
-        if (!preg_match('/^(https?|ftps?|sftp|file|news|gopher:\/\/)/', $matches['scheme'])) {
-            return true;
-        }
-
-        if (!empty($context['providers']['default'])) {
-            $provider = $context['providers']['default'];
-        } else {
-            $provider = (new Validator())->getProvider('default');
-        }
-
-        return $provider->url($value, true, $context);
     }
 
     /**
@@ -154,22 +140,27 @@ class SignupUserAction extends BaseAction
             LoggedUser::setUser(['id' => 1]);
         }
 
-        $data = ['status' => 'draft'] + $data;
+        $status = 'draft';
+        if (Configure::read('Signup.requireActivation') === false) {
+            $status = 'on';
+        }
+        unset($data['status']);
+
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         return $action([
-            'entity' => $this->Users->newEntity(),
+            'entity' => $this->Users->newEntity()->set('status', $status),
             'data' => $data,
             'entityOptions' => [
                 'validate' => 'signup',
-            ]
+            ],
         ]);
     }
 
     /**
      * Create the signup async job
      *
-     * @param User $user The user created
+     * @param \BEdita\Core\Model\Entity\User $user The user created
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createSignupJob(User $user)
@@ -185,26 +176,23 @@ class SignupUserAction extends BaseAction
                 ],
                 'scheduled_from' => new Time('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
     /**
      * Send confirmation email to user
      *
-     * @param User $user The user
-     * @param AsyncJob $job The referred async job
-     * @param array $urlOptions The options used to build activation url
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\User $user The user
+     * @param \BEdita\Core\Model\Entity\AsyncJob $job The referred async job
+     * @param string $activationUrl URL to be used for activation.
      * @return void
-     * @throws \Exception When sending email throws an exception different from \Cake\Network\Exception\SocketException
      */
-    protected function sendMail(User $user, AsyncJob $job, array $urlOptions = [])
+    public function sendMail(Event $event, User $user, AsyncJob $job, $activationUrl)
     {
         $options = [
-            'params' => [
-                'userId' => $user->id,
-                'activationUrl' => $this->getActivationUrl($job, $urlOptions),
-            ]
+            'params' => compact('activationUrl', 'user'),
         ];
         $this->getMailer('BEdita/Core.User')->send('signup', [$options]);
     }
@@ -212,7 +200,7 @@ class SignupUserAction extends BaseAction
     /**
      * Return the signup activation url
      *
-     * @param AsyncJob $job The async job entity
+     * @param \BEdita\Core\Model\Entity\AsyncJob $job The async job entity
      * @param array $urlOptions The options used to build activation url
      * @return string
      */
@@ -222,6 +210,16 @@ class SignupUserAction extends BaseAction
         $redirectUrl = empty($urlOptions['redirect_url']) ? '' : '&redirect_url=' . rawurlencode($urlOptions['redirect_url']);
         $baseUrl .= (strpos($baseUrl, '?') === false) ? '?' : '&';
 
-        return sprintf('%sid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
+        return sprintf('%suuid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function implementedEvents()
+    {
+        return [
+            'Auth.signup' => 'sendMail',
+        ];
     }
 }

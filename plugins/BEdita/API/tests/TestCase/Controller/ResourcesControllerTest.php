@@ -504,6 +504,8 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'status' => 'on',
                         'uname' => 'first-user',
                         'title' => 'Mr. First User',
@@ -525,6 +527,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'verified' => '2017-05-29T11:36:00+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',

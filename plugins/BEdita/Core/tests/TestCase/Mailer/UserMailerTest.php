@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Mailer;
 
+use BEdita\Core\Model\Entity\Application;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Mailer\Email;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
@@ -33,11 +35,19 @@ class UserMailerTest extends TestCase
     protected $Email;
 
     /**
+     * The UsersTable instance
+     *
+     * @var \BEdita\Core\Model\Table\UsersTable
+     */
+    protected $Users;
+
+    /**
      * Fixtures
      *
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -47,6 +57,7 @@ class UserMailerTest extends TestCase
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.async_jobs',
     ];
 
     /**
@@ -56,9 +67,12 @@ class UserMailerTest extends TestCase
     {
         parent::setUp();
 
+        Email::dropTransport('test');
         Email::setConfigTransport('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
+
+        Email::drop('test');
         Email::setConfig('test', [
             'transport' => 'test',
             'from' => [
@@ -67,6 +81,8 @@ class UserMailerTest extends TestCase
         ]);
 
         $this->Email = new Email('test');
+
+        $this->Users = TableRegistry::get('Users');
     }
 
     /**
@@ -76,6 +92,7 @@ class UserMailerTest extends TestCase
     {
         parent::tearDown();
 
+        $this->Users = null;
         $this->Email = null;
 
         Email::drop('test');
@@ -99,10 +116,19 @@ class UserMailerTest extends TestCase
                     ]
                 ],
             ],
-            'missing userId' => [
-                new \LogicException('Parameter "params.userId" missing'),
+            'missing user' => [
+                new \LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
+                        'activationUrl' => 'http://example.com',
+                    ]
+                ],
+            ],
+            'invalid user entity' => [
+                new \LogicException('Invalid user, it must be an User Entity'),
+                [
+                    'params' => [
+                        'user' => ['id' => 1],
                         'activationUrl' => 'http://example.com',
                     ]
                 ],
@@ -127,6 +153,8 @@ class UserMailerTest extends TestCase
      *
      * @dataProvider signupProvider
      * @covers ::signup()
+     * @covers ::checkUser()
+     * @covers ::getProjectName()
      */
     public function testSignup($expected, $options)
     {
@@ -134,6 +162,11 @@ class UserMailerTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
+
+        if (!empty($options['params']['userId'])) {
+            $options['params']['user'] = $this->Users->get($options['params']['userId']);
+        }
+
         $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('signup', [$options]);
 
         static::assertEquals($expected, (bool)$result);
@@ -145,6 +178,7 @@ class UserMailerTest extends TestCase
      * @return void
      *
      * @covers ::signup()
+     * @covers ::checkUser()
      */
     public function testSignupMissingUserEmail()
     {
@@ -158,11 +192,181 @@ class UserMailerTest extends TestCase
 
         $options = [
             'params' => [
-                'userId' => 5,
+                'user' => $user,
                 'activationUrl' => 'http://example.com',
             ],
         ];
 
         $this->getMailer('BEdita/Core.User', $this->Email)->send('signup', [$options]);
+    }
+
+    /**
+     * Provider for `testWelcome()`
+     *
+     * @return array
+     */
+    public function welcomeProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'params' => [
+                        'userId' => 5,
+                    ]
+                ],
+            ],
+            'missing user' => [
+                new \LogicException('Parameter "params.user" missing'),
+                [],
+            ],
+            'invalid user entity' => [
+                new \LogicException('Invalid user, it must be an User Entity'),
+                [
+                    'params' => [
+                        'user' => ['id' => 1],
+                    ]
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test welcome
+     *
+     * @param mixed $expected
+     * @param array $options
+     * @return void
+     *
+     * @dataProvider welcomeProvider
+     * @covers ::welcome()
+     * @covers ::checkUser()
+     */
+    public function testWelcome($expected, $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        if (!empty($options['params']['userId'])) {
+            $options['params']['user'] = $this->Users->get($options['params']['userId']);
+        }
+
+        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [$options]);
+
+        static::assertEquals($expected, (bool)$result);
+    }
+
+    /**
+     * Provider for `testChangeRequest()`
+     *
+     * @return array
+     */
+    public function changeRequestProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'params' => [
+                        'userId' => 1,
+                        'changeUrl' => 'http://example.com',
+                    ]
+                ],
+            ],
+            'missing userId' => [
+                new \LogicException('Parameter "params.user" missing'),
+                [
+                    'params' => [
+                        'changeUrl' => 'http://example.com',
+                    ]
+                ],
+            ],
+            'missing changeUrl' => [
+                new \LogicException('Parameter "params.changeUrl" missing'),
+                [
+                    'params' => [
+                        'userId' => 1,
+                    ]
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `changeRequest`
+     *
+     * @param mixed $expected
+     * @param array $options
+     * @return void
+     *
+     * @dataProvider changeRequestProvider
+     * @covers ::changeRequest()
+     * @covers ::checkUser()
+     */
+    public function testChangeRequest($expected, $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        if (!empty($options['params']['userId'])) {
+            $options['params']['user'] = $this->Users->get($options['params']['userId']);
+        }
+
+        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('changeRequest', [$options]);
+
+        static::assertEquals($expected, (bool)$result);
+    }
+
+    /**
+     * Data provider for `testGetProjectName()`
+     *
+     * @return array
+     */
+    public function getProjectNameProvider()
+    {
+        return [
+            'default' => [
+                'BEdita',
+            ],
+            'custom app name' => [
+                'Superunknown :(',
+                new Application([
+                    'name' => 'Superunknown :('
+                ])
+            ],
+        ];
+    }
+
+    /**
+     * Test `getProjectName()`
+     *
+     * @param string $expected The project name expected
+     * @param \BEdita\Core\Model\Entity\Application $application The application entity
+     * @return void
+     *
+     * @dataProvider getProjectNameProvider
+     * @covers ::getProjectName()
+     */
+    public function testGetProjectName($expected, $application = null)
+    {
+        if ($application instanceof Application) {
+            CurrentApplication::setApplication($application);
+        }
+
+        $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [
+            [
+                'params' => [
+                    'user' => $this->Users->get(5)
+                ]
+            ]
+        ]);
+
+        $viewVars = $this->Email->getViewVars();
+        static::assertArrayHasKey('projectName', $viewVars);
+        static::assertEquals($expected, $viewVars['projectName']);
     }
 }

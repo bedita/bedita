@@ -445,6 +445,8 @@ class RolesControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
@@ -460,6 +462,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
+                        'verified' => '2017-05-29T11:36:00+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',

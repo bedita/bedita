@@ -233,6 +233,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         try {
             $this->object_type = TableRegistry::get('ObjectTypes')->get($type);
             $this->object_type_id = $this->object_type->id;
+            $this->setDirty('object_type_id', true);
         } catch (RecordNotFoundException $e) {
             return null;
         }

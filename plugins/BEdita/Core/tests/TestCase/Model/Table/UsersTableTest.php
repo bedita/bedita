@@ -268,23 +268,6 @@ class UsersTableTest extends TestCase
                     'status' => 'draft',
                 ],
             ],
-            'wrong status' => [
-                false,
-                [
-                    'username' => 'some_unique_value',
-                    'password_hash' => 'password',
-                    'email' => 'my@email.com',
-                    'status' => 'on',
-                ],
-            ],
-            'missing status' => [
-                false,
-                [
-                    'username' => 'some_unique_value',
-                    'password_hash' => 'password',
-                    'email' => 'my@email.com',
-                ],
-            ],
             'missing password' => [
                 false,
                 [
@@ -312,12 +295,32 @@ class UsersTableTest extends TestCase
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';
 
-        $error = (bool)$user->errors();
+        $error = (bool)$user->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->Users->save($user);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test finder for my objects.
+     *
+     * @return void
+     *
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $expected = [
+            1 => 1,
+        ];
+
+        $result = $this->Users->find('mine')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
     }
 }
