@@ -99,7 +99,6 @@ jobs:
 #          branch:
 #            - 4-cactus
 #          repo: bedita/bedita
-          condition: "$CC = gcc"
 
   allow_failures:
     - php: 7.1
