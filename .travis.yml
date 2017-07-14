@@ -80,7 +80,6 @@ jobs:
       env: RUN_PHPSTAN=1 RUN_TESTS=0
 
   allow_failures:
-    - php: hhvm
     - php: 7.1
       env: RUN_PHPSTAN=1 RUN_TESTS=0
 
