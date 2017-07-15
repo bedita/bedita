@@ -53,7 +53,7 @@ jobs:
         vendor/bin/phpcs -n -p --extensions=php \
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
-      after_success: skip
+      after_success: ~
 
     # Complete tests suite: SQLite on PHP 5.6 with lowest dependencies, MySQL and PostgreSQL on PHP 5.6/7.0,
     #   MySQL 5.6 and PostgreSQL 9.5 on PHP 7.1, MySQL on HHVM, static code analyzer.
@@ -96,7 +96,7 @@ jobs:
         - composer require --dev phpstan/phpstan
       before_script: skip
       script: vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
-      after_success: skip
+      after_success: ~
 
     # Deployment on Heroku demo app.
     - stage: deploy
@@ -108,7 +108,7 @@ jobs:
           - 4-cactus
       before_script: skip
       script: skip
-      after_success: skip
+      after_success: ~
       deploy:
         provider: heroku
         app: bedita4
