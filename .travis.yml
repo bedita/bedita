@@ -153,3 +153,7 @@ notifications:
   email: false
   slack:
     secure: TJ1c35YLgdYmIQRB58RKuEPDBN1XZYBjFI842lxa5Rl6FW/x+cJIYNCK3mU48/ULw9RfUla3bLf/oyffaj6pATRSK/jshiVKDU2Pq6yd/YV1aXpaMQLpzr8UJZk/KrG5cDAXhHW0U8O95sVpZm/pLwkNtk5tMPiuvJ35oVJyNuM=
+
+addons:
+  code_climate:
+    repo_token: e6fd85a6c11810e3c75def861e422a0c1e178ccff45d48e53e586d330bca0698
