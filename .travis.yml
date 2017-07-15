@@ -82,6 +82,9 @@ jobs:
       php: 7.1
       env: RUN_TESTS=0
       addons: {}
+      branches:
+        only:
+          - 4-cactus
       deploy:
         provider: heroku
         app: bedita4
@@ -90,19 +93,32 @@ jobs:
           - "bin/cake migrations migrate -p BEdita/Core"
           - "bin/cake cache clear_all"
         api_key:
-          secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
-        before_script:
-          - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
-          - composer install --prefer-dist --no-interaction --no-dev
+          secure: c0PT+eED+fLi3azcpvSdlliMyVSgGFxYghdicy1KRBfalkdB0kUULYbhWSnU+SSryK4qEkkdfgNJvrFlcSOK/25s9hPB2B3iIhpxS2Zvmj49gKiUrrRfjvW6cJ8FvnYhIOuTdWIP4sjm3PkKh/5qoaU94zMhADi72BD6IpmVDpc=
+#          secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
         on:
           all_branches: true
-#          branch:
-#            - 4-cactus
 #          repo: bedita/bedita
 
   allow_failures:
     - php: 7.1
       env: RUN_PHPSTAN=1 RUN_TESTS=0
+
+before_install:
+  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
+
+install:
+  - composer install --prefer-dist --no-interaction
+  - |
+    if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
+      echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    else
+      composer require lorenzo/multiple-iterator=~1.0
+    fi
+  - if [ "$RUN_PHPSTAN" = '1' ]; then composer require --dev phpstan/phpstan; fi
+
+  - phpenv rehash
+  - set +H
 
 before_script:
   - |
@@ -115,23 +131,8 @@ before_script:
       sudo mysql_upgrade
     fi
 
-  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
-  - composer install --prefer-dist --no-interaction
-
   - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
-
-  - |
-    if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
-      echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-      echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    else
-      composer require lorenzo/multiple-iterator=~1.0
-    fi
-  - if [ "$RUN_PHPSTAN" = '1' ]; then composer require --dev phpstan/phpstan; fi
-
-  - phpenv rehash
-  - set +H
 
 script:
   - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
