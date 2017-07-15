@@ -12,7 +12,7 @@ addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-9.6-postgis-2.3
+      - postgresql-9.6-postgis-2.3 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
 
 cache:
   directories:
@@ -27,6 +27,7 @@ jobs:
   fast_finish: true
 
   include:
+    # Minimal tests set: SQLite on PHP 5.6/7.0/7.1/HHVM, MySQL and PostgreSQL on PHP 7.1, code sniffer.
     - stage: minimal
       php: 5.6
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
@@ -49,6 +50,7 @@ jobs:
       php: 7.1
       env: RUN_CS=1 RUN_TESTS=0
 
+    # Complete tests suite: MySQL and PostgreSQL on PHP 5.6/7.0, MySQL 5.6 and PostgreSQL 9.5 on PHP 7.1, MySQL on HHVM, static code analyzer.
     - stage: complete
       php: 5.6
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
@@ -81,11 +83,12 @@ jobs:
       php: 7.1
       env: RUN_PHPSTAN=1 RUN_TESTS=0
 
+    # Deployment on Heroku demo app.
     - stage: deploy
       php: 7.1
       env: RUN_TESTS=0
       addons: {}
-      branches:
+      branches: # Hopefully this will work someday.
         only:
           - 4-cactus
       deploy:
@@ -96,19 +99,21 @@ jobs:
           - "bin/cake migrations migrate -p BEdita/Core"
           - "bin/cake cache clear_all"
         api_key:
-          secure: c0PT+eED+fLi3azcpvSdlliMyVSgGFxYghdicy1KRBfalkdB0kUULYbhWSnU+SSryK4qEkkdfgNJvrFlcSOK/25s9hPB2B3iIhpxS2Zvmj49gKiUrrRfjvW6cJ8FvnYhIOuTdWIP4sjm3PkKh/5qoaU94zMhADi72BD6IpmVDpc=
-#          secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
+          secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
         on:
-          all_branches: true
-#          repo: bedita/bedita
+          repo: bedita/bedita
+          branch:
+            - 4-cactus
 
   allow_failures:
     - env: RUN_PHPSTAN=1 RUN_TESTS=0
 
 before_install:
+  # Use GitHub OAuth token with Composer to increase API limits.
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
 
 install:
+  # Install Composer dependencies.
   - composer install --prefer-dist --no-interaction
   - if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then composer require lorenzo/multiple-iterator=~1.0; fi
   - if [ "$RUN_PHPSTAN" = '1' ]; then composer require --dev phpstan/phpstan; fi
@@ -124,7 +129,7 @@ before_script:
   - set +H
 
   # Databases
-  - |
+  - | # Install MySQL 5.7.
     if [ "$DB" = 'mysql' ] && [ "$DB_VERSION" = '5.7' ]; then
       echo mysql-apt-config mysql-apt-config/select-server select mysql-5.7 | sudo debconf-set-selections
       wget http://dev.mysql.com/get/mysql-apt-config_0.7.3-1_all.deb
@@ -139,17 +144,18 @@ before_script:
 
 script:
   - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
-  - |
+  - | # Run code sniffer.
     if [ "$RUN_CS" = '1' ]; then
       vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
         ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
     fi
-  - |
+  - | # Run static code analyzer.
     if [ "$RUN_PHPSTAN" = '1' ]; then
       vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
     fi
 
 after_success:
+  # Upload test coverage reports to CodeCov.
   - if [ "$RUN_TESTS" = '1' ]; then bash <(curl -s https://codecov.io/bash); fi
 
 notifications:
