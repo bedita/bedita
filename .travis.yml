@@ -45,7 +45,9 @@ jobs:
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
       php: 7.1
-      env: RUN_CS=1 RUN_TESTS=0
+      services: []
+      addons: {}
+      env: "RUN=phpcs"
       before_script: skip
       script: |
         vendor/bin/phpcs -n -p --extensions=php \
@@ -53,7 +55,12 @@ jobs:
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
       after_success: skip
 
-    # Complete tests suite: MySQL and PostgreSQL on PHP 5.6/7.0, MySQL 5.6 and PostgreSQL 9.5 on PHP 7.1, MySQL on HHVM, static code analyzer.
+    # Complete tests suite: SQLite on PHP 5.6 with lowest dependencies, MySQL and PostgreSQL on PHP 5.6/7.0,
+    #   MySQL 5.6 and PostgreSQL 9.5 on PHP 7.1, MySQL on HHVM, static code analyzer.
+    - stage: complete
+      php: 5.6
+      env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql' PREFER_LOWEST=1"
+      install: composer update --prefer-dist --prefer-lowest --no-interaction
     - stage: complete
       php: 5.6
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
@@ -79,7 +86,9 @@ jobs:
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: complete
       php: 7.1
-      env: RUN_PHPSTAN=1 RUN_TESTS=0
+      services: []
+      addons: {}
+      env: "RUN=phpstan"
       install:
         - composer install --prefer-dist --no-interaction
         - composer require --dev phpstan/phpstan
@@ -90,7 +99,7 @@ jobs:
     # Deployment on Heroku demo app.
     - stage: deploy
       php: 7.1
-      env: RUN_TESTS=0
+      services: []
       addons: {}
       branches: # Hopefully this will work someday.
         only:
@@ -108,12 +117,12 @@ jobs:
         api_key:
           secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
         on:
-          repo: bedita/bedita
+          repo: bedita/bedita # Play nicely on forks.
           branch:
             - 4-cactus
 
   allow_failures:
-    - env: RUN_PHPSTAN=1 RUN_TESTS=0
+    - env: "RUN=phpstan"
 
 before_install:
   # Use GitHub OAuth token with Composer to increase API limits.
@@ -122,10 +131,10 @@ before_install:
 install:
   # Install Composer dependencies.
   - composer install --prefer-dist --no-interaction
-  - if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then composer require lorenzo/multiple-iterator=~1.0; fi
+  - if [ "$TRAVIS_PHP_VERSION" = 'hhvm' ]; then composer require lorenzo/multiple-iterator=~1.0; fi
 
 before_script:
-  # PHP Extensions
+  # Enable required PHP Extensions.
   - |
     if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
       echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -134,7 +143,7 @@ before_script:
   - phpenv rehash
   - set +H
 
-  # Databases
+  # Set up and configure databases.
   - | # Install MySQL 5.7.
     if [ "$DB" = 'mysql' ] && [ "$DB_VERSION" = '5.7' ]; then
       echo mysql-apt-config mysql-apt-config/select-server select mysql-5.7 | sudo debconf-set-selections
@@ -148,13 +157,9 @@ before_script:
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
-script:
-  # Run PHPUnit.
-  - vendor/bin/phpunit --coverage-clover=clover.xml
+script: vendor/bin/phpunit --coverage-clover=clover.xml # Run PHPUnit.
 
-after_success:
-  # Upload test coverage reports to CodeCov.
-  - bash <(curl -s https://codecov.io/bash)
+after_success: bash <(curl -s https://codecov.io/bash) # Upload test coverage reports to CodeCov.
 
 notifications:
   email: false
