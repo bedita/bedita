@@ -19,6 +19,7 @@ cache:
 env:
   global:
     - RUN_TESTS=1
+    - GIT_COMMITTED_AT=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then git log -1 --pretty=format:%ct; else git log -1 --skip 1 --pretty=format:%ct; fi)
 
 jobs:
   fast_finish: true
@@ -134,8 +135,18 @@ before_script:
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
+  # CodeClimate
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+
 script:
-  - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
+  - |
+    if [ "$RUN_TESTS" = '1' ]; then
+      vendor/bin/phpunit --coverage-clover=clover.xml
+      if [ ! -z "$CC_TEST_REPORTER_ID" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        ./cc-test-reporter after-build --exit-code $?
+      fi
+    fi
   - |
     if [ "$RUN_CS" = '1' ]; then
       vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
