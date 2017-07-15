@@ -10,6 +10,9 @@ services:
 
 addons:
   postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-9.6-postgis-2.3
 
 cache:
   directories:
@@ -39,7 +42,7 @@ jobs:
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
       php: 7.1
-      env: "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - stage: minimal
       php: hhvm
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
@@ -69,7 +72,7 @@ jobs:
       addons: {}
     - stage: complete
       php: 7.1
-      env: "DB=pgsql DB_VERSION=9.5 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
       addons:
         postgresql: "9.5"
     - stage: complete
