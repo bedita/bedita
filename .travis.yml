@@ -38,7 +38,7 @@ jobs:
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
       php: 7.1
-      env: "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - stage: minimal
       php: hhvm
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
@@ -100,27 +100,27 @@ jobs:
 #          repo: bedita/bedita
 
   allow_failures:
-    - php: 7.1
-      env: RUN_PHPSTAN=1 RUN_TESTS=0
+    - env: RUN_PHPSTAN=1 RUN_TESTS=0
 
 before_install:
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
 
 install:
   - composer install --prefer-dist --no-interaction
+  - if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then composer require lorenzo/multiple-iterator=~1.0; fi
+  - if [ "$RUN_PHPSTAN" = '1' ]; then composer require --dev phpstan/phpstan; fi
+
+before_script:
+  # PHP Extensions
   - |
     if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
       echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    else
-      composer require lorenzo/multiple-iterator=~1.0
     fi
-  - if [ "$RUN_PHPSTAN" = '1' ]; then composer require --dev phpstan/phpstan; fi
-
   - phpenv rehash
   - set +H
 
-before_script:
+  # Databases
   - |
     if [ "$DB" = 'mysql' ] && [ "$DB_VERSION" = '5.7' ]; then
       echo mysql-apt-config mysql-apt-config/select-server select mysql-5.7 | sudo debconf-set-selections
@@ -130,9 +130,9 @@ before_script:
       sudo apt-get install -q -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mysql-server
       sudo mysql_upgrade
     fi
-
   - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
+  - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
 script:
   - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
