@@ -284,4 +284,61 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
     }
+
+    /**
+     * Data provider for `testTypeFilter` test case.
+     *
+     * @return array
+     */
+    public function typeFilterProvider()
+    {
+        return [
+            'simple' => [
+               'filter[type]=users',
+               [
+                   1,
+                   5
+               ]
+            ],
+            'exclude' => [
+               'filter[type][ne]=documents',
+               [
+                   1,
+                   4,
+                   5,
+                   8,
+                   9
+               ]
+            ],
+            'multi' => [
+               'filter[type][]=events&filter[type][]=locations',
+               [
+                   8,
+                   9
+               ]
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[type]` query string.
+     *
+     * @return void
+     *
+     * @dataProvider typeFilterProvider
+     * @coversNothing
+     */
+    public function testTypeFilter($query, $expected)
+    {
+        $this->configRequestHeaders();
+
+        $this->get("/objects?$query");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
 }
