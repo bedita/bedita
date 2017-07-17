@@ -99,6 +99,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeProvider
+     * @covers ::beforeFilter()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
      * @covers \BEdita\API\Error\ExceptionRenderer::render()
@@ -304,58 +305,6 @@ class AppControllerTest extends IntegrationTestCase
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotContains('<!DOCTYPE html>');
-    }
-
-    /**
-     * Data provider for `testApiKey` test case.
-     *
-     * @return array
-     */
-    public function apiKeysProvider()
-    {
-        return [
-            'apiKeyMissing' => [
-                403,
-                [
-                    'eqe12131231231231412414' => [
-                        'origin' => '*',
-                    ],
-                ],
-            ],
-            'apiKeyOk' => [
-                200,
-                [
-                    'eqe12131231231231412414' => [
-                        'origin' => '*',
-                    ],
-                ],
-                'eqe12131231231231412414',
-            ],
-            'noApiKey' => [
-                200,
-                [],
-            ],
-            'originOk' => [
-                200,
-                [
-                    'eqe12131231231231412414' => [
-                        'origin' => 'example.com',
-                    ],
-                ],
-                'eqe12131231231231412414',
-                'example.com'
-            ],
-            'originKo' => [
-                403,
-                [
-                    'eqe12131231231231412414' => [
-                        'origin' => 'example.com',
-                    ],
-                ],
-                'eqe12131231231231412414',
-                'otherdomain.com'
-            ],
-        ];
     }
 
     /**
