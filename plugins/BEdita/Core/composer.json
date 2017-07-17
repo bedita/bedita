@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "cakephp/cakephp": "~3.4.1",
+        "cakephp/cakephp": "~3.4.4",
         "cakephp/migrations": "~1.0"
     },
     "require-dev": {
