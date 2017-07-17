@@ -359,35 +359,6 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test API KEY check rules.
-     *
-     * @param int $expectedCode Expected response code.
-     * @param array $apiKeyCfg API KEY configuration.
-     * @param string|null $apiKeyReq API KEY in request header.
-     * @param string|null $origin Request's "Origin" header.
-     * @return void
-     *
-     * @dataProvider apiKeysProvider
-     * @covers ::apiKeyCheck()
-     */
-    public function testApiKeys($expectedCode, $apiKeyCfg, $apiKeyReq = null, $origin = null)
-    {
-        Configure::write('ApiKeys', $apiKeyCfg);
-
-        $this->configRequest([
-            'headers' => [
-                'Accept' => 'application/vnd.api+json',
-                'Origin' => $origin,
-                'X-Api-Key' => $apiKeyReq,
-            ]
-        ]);
-
-        $this->get('/home');
-
-        $this->assertResponseCode($expectedCode);
-    }
-
-    /**
      * Test API meta info header.
      *
      * @return void
