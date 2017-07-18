@@ -11,6 +11,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR 
 
 $_SERVER['PHP_SELF'] = '/';
 
+use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
@@ -37,6 +38,7 @@ if (getenv('DEBUG_LOG_QUERIES')) {
     ]);
 }
 
+FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
     'default' => [
         'className' => 'BEdita/Core.Local',
