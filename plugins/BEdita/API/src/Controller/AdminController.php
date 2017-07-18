@@ -58,10 +58,6 @@ class AdminController extends ResourcesController
         }
 
         $this->modelClass = Inflector::camelize($this->resourceName);
-        if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
-            $name = $this->request->getParam('relationship');
-            $this->setConfig(sprintf('allowedAssociations.%s', $name), []);
-        }
 
         parent::initialize();
 

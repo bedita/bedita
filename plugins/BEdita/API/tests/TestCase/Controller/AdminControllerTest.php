@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\ORM\TableRegistry;
 
 /**
  * {@see \BEdita\API\Controller\AdminController} Test Case
@@ -92,5 +93,35 @@ class AdminControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test add.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::resourceUrl()
+     */
+    public function testAdd()
+    {
+        $data = [
+            'type' => 'applications',
+            'attributes' => [
+                'name' => 'another-app',
+                'description' => 'Another app',
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/admin/applications', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertHeader('Location', 'http://api.example.com/admin/applications/3');
+
+        $entity = TableRegistry::get('Applications')->get(3);
+        TableRegistry::get('Applications')->delete($entity);
     }
 }

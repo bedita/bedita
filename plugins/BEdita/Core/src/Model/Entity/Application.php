@@ -64,6 +64,8 @@ class Application extends Entity implements JsonApiSerializable
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     protected function getRelationships()
     {
