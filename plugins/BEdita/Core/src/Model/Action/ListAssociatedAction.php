@@ -220,7 +220,7 @@ class ListAssociatedAction extends BaseAction
             ->formatResults(function (ResultSetInterface $results) use ($inverseAssociation) {
                 return $results->map(function (EntityInterface $entity) use ($inverseAssociation) {
                     if (!($this->Association instanceof BelongsToMany)) {
-                        return $entity;
+                        return $entity->setHidden([$inverseAssociation->getProperty()], true);
                     }
 
                     $joinData = Hash::get($entity, '_matchingData.' . $this->Association->junction()->getAlias());
