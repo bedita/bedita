@@ -22,8 +22,12 @@ use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -93,6 +97,24 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
+    public function beforeFilter(Event $event)
+    {
+        if ($this->request->getParam('action') === 'relationships'
+            && $this->request->getParam('relationship') === 'streams'
+            && !$this->request->is('get')
+        ) {
+            throw new ForbiddenException(__d(
+                'bedita',
+                'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
+            ));
+        }
+
+        return parent::beforeFilter($event);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function index()
     {
         $this->request->allowMethod(['get', 'post']);
@@ -106,7 +128,7 @@ class ObjectsController extends ResourcesController
             $data = $this->request->getData();
             $data = $action(compact('entity', 'data'));
 
-            $action = new GetObjectAction(['table' => $this->Table]);
+            $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
             $data = $action(['primaryKey' => $data->id]);
 
             $this->response = $this->response
@@ -195,9 +217,11 @@ class ObjectsController extends ResourcesController
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
         $action = new ListRelatedObjectsAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $objects = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
-        $objects = $this->paginate($query);
+        if ($objects instanceof Query) {
+            $objects = $this->paginate($objects);
+        }
 
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
@@ -208,12 +232,17 @@ class ObjectsController extends ResourcesController
      */
     public function relationships()
     {
-        $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
-
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
+
+        $allowedMethods = ['get', 'post', 'patch', 'delete'];
+        if ($relationship instanceof BelongsTo || $relationship instanceof HasOne) {
+            // For to-one relationship, POST and DELETE are not implemented.
+            $allowedMethods = ['get', 'patch'];
+        }
+        $this->request->allowMethod($allowedMethods);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
