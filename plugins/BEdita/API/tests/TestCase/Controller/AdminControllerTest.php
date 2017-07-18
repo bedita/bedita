@@ -35,39 +35,39 @@ class AdminControllerTest extends IntegrationTestCase
     {
         $expected = [
             [
-                    'id' => '1',
-                    'type' => 'applications',
-                    'attributes' => [
-                        'name' => 'First app',
-                        'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
-                        'enabled' => 1,
-                    ],
-                    'meta' => [
-                        'api_key' => API_KEY,
-                        'created' => '2016-10-28T07:10:57+00:00',
-                        'modified' => '2016-10-28T07:10:57+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/admin/applications/1'
-                    ],
+                'id' => '1',
+                'type' => 'applications',
+                'attributes' => [
+                    'name' => 'First app',
+                    'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
+                    'enabled' => 1,
                 ],
-                [
-                    'id' => '2',
-                    'type' => 'applications',
-                    'attributes' => [
-                        'name' => 'Disabled app',
-                        'description' => 'This app has been disabled',
-                        'enabled' => 0,
-                    ],
-                    'meta' => [
-                        'api_key' => 'abcdef12345',
-                        'created' => '2017-02-17T15:51:29+00:00',
-                        'modified' => '2017-02-17T15:51:29+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/admin/applications/2'
-                    ],
-                ]
+                'meta' => [
+                    'api_key' => API_KEY,
+                    'created' => '2016-10-28T07:10:57+00:00',
+                    'modified' => '2016-10-28T07:10:57+00:00',
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/applications/1'
+                ],
+            ],
+            [
+                'id' => '2',
+                'type' => 'applications',
+                'attributes' => [
+                    'name' => 'Disabled app',
+                    'description' => 'This app has been disabled',
+                    'enabled' => 0,
+                ],
+                'meta' => [
+                    'api_key' => 'abcdef12345',
+                    'created' => '2017-02-17T15:51:29+00:00',
+                    'modified' => '2017-02-17T15:51:29+00:00',
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/applications/2'
+                ],
+            ]
         ];
 
         $this->configRequestHeaders();

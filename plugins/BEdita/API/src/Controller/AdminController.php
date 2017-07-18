@@ -42,8 +42,9 @@ class AdminController extends ResourcesController
     protected $_defaultConfig = [
         'allowedResources' => [
             'applications',
-            // 'endpoints',
-            // 'config'
+            'async_jobs',
+            'config',
+            'endpoints',
         ],
     ];
 

@@ -35,7 +35,7 @@ use Cake\ORM\Entity;
 class Endpoint extends Entity implements JsonApiSerializable
 {
 
-    use JsonApiTrait;
+    use JsonApiAdminTrait;
 
     /**
      * {@inheritDoc}

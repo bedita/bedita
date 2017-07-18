@@ -21,6 +21,14 @@ use Cake\Utility\Inflector;
  */
 class AdminResourcesTest extends IntegrationTestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.config'
+    ];
 
     /**
      * Data provider for `testResource`
@@ -39,6 +47,35 @@ class AdminResourcesTest extends IntegrationTestCase
                     'enabled' => 0,
                  ],
             ],
+            'jobs' => [
+                'async_jobs',
+                [
+                    'service' => 'dummy',
+                ],
+                [
+                    'priority' => 2,
+                 ],
+            ],
+            'endpoints' => [
+                'endpoints',
+                [
+                    'name' => 'dummy',
+                ],
+                [
+                    'description' => 'a new endpoint description',
+                 ],
+            ],
+            'config' => [
+                'config',
+                [
+                    'name' => 'TestConf',
+                    'context' => 'test',
+                    'content' => 'Test Configuration',
+                ],
+                [
+                    'content' => 'Another Configuration',
+                 ],
+            ],
         ];
     }
 
@@ -52,8 +89,6 @@ class AdminResourcesTest extends IntegrationTestCase
      */
     public function testResource($type, $attributes, $modified)
     {
-        $lastId = $this->lastResourceId(Inflector::camelize($type));
-
         // CREATE
         $data = [
             'type' => $type,
@@ -68,28 +103,31 @@ class AdminResourcesTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
+        $locationHeader = $this->_response->getHeaderLine('Location');
+        $this->assertNotEmpty($locationHeader);
+        $resourceId = substr($locationHeader, strrpos($locationHeader, '/') + 1);
+
         // VIEW
         $this->configRequestHeaders();
-        $lastId++;
-        $this->get("$endpoint/$lastId");
+        $this->get("$endpoint/$resourceId");
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         // EDIT
         $data = [
-            'id' => "$lastId",
+            'id' => "$resourceId",
             'type' => $type,
             'attributes' => $modified,
         ];
         $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch("$endpoint/$lastId", json_encode(compact('data')));
+        $this->patch("$endpoint/$resourceId", json_encode(compact('data')));
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         // DELETE
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->delete("$endpoint/$lastId");
+        $this->delete("$endpoint/$resourceId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
     }
