@@ -17,6 +17,8 @@
 /Vagrantfile
 /vendor/*
 !/vendor/.gitkeep
+/webroot/files/*
+!/webroot/files/.gitkeep
 
 # BEdita plugins folders #
 ##########################
