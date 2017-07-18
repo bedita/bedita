@@ -248,11 +248,12 @@ class AddStreamsTable extends AbstractMigration
         $this->table('object_types')
             ->insert([
                 [
+                    'singular' => 'media',
                     'name' => 'media',
-                    'pluralized' => 'media',
                     'description' => 'Media model with streams',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Media',
+                    'associations' => '["Streams"]',
                 ],
             ])
             ->save();
