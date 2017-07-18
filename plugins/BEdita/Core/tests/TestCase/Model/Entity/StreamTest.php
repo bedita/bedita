@@ -305,6 +305,7 @@ class StreamTest extends TestCase
      *
      * @dataProvider setContentsProvider()
      * @covers ::_setContents()
+     * @covers ::createStream()
      */
     public function testSetContents($expected, $contents)
     {
@@ -319,6 +320,14 @@ class StreamTest extends TestCase
 
         static::assertInstanceOf(StreamInterface::class, $stream->contents);
         static::assertSame($expected, (string)$stream->contents);
+        static::assertSame(strlen($expected), $stream->file_size);
+        static::assertSame(md5($expected), $stream->hash_md5);
+        static::assertSame(sha1($expected), $stream->hash_sha1);
+
+        static::assertTrue($stream->isDirty('contents'));
+        static::assertTrue($stream->isDirty('file_size'));
+        static::assertTrue($stream->isDirty('hash_md5'));
+        static::assertTrue($stream->isDirty('hash_sha1'));
     }
 
     /**

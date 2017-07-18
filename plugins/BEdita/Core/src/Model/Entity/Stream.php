@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
@@ -40,9 +41,10 @@ use Zend\Diactoros\Stream as ZendStream;
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity|null $object
  */
-class Stream extends Entity
+class Stream extends Entity implements JsonApiSerializable
 {
 
+    use JsonApiTrait;
     use LogTrait;
 
     /**
@@ -53,6 +55,21 @@ class Stream extends Entity
         'file_name' => true,
         'mime_type' => true,
         'contents' => true,
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'object_id',
+        'uri',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_virtual = [
+        'url',
     ];
 
     /**
@@ -135,6 +152,54 @@ class Stream extends Entity
     }
 
     /**
+     * Create a Zend Stream out of a PHP resource.
+     *
+     * In the meanwhile, file size, MD5 and SHA1 hashes are
+     *
+     * @param resource $source Original resource.
+     * @return \Zend\Diactoros\Stream
+     * @throws \InvalidArgumentException Throws an exception if the parameter is not a resource.
+     */
+    protected function createStream($source)
+    {
+        if (!is_resource($source)) {
+            throw new \InvalidArgumentException('Cannot create a stream out of anything but a resource');
+        }
+
+        rewind($source);
+
+        $resource = fopen('php://temp', 'wb+');
+        stream_copy_to_stream($source, $resource);
+        rewind($resource);
+
+        // File size.
+        $stat = fstat($resource);
+        $this->file_size = $stat['size'];
+        $this->setDirty('file_size', true);
+
+        // MD5.
+        $hashContext = hash_init('md5');
+        rewind($resource);
+        hash_update_stream($hashContext, $resource);
+        $this->hash_md5 = hash_final($hashContext);
+        $this->setDirty('hash_md5', true);
+
+        // SHA1.
+        $hashContext = hash_init('sha1');
+        rewind($resource);
+        hash_update_stream($hashContext, $resource);
+        $this->hash_sha1 = hash_final($hashContext);
+        $this->setDirty('hash_sha1', true);
+
+        // Stream.
+        rewind($resource);
+        $stream = new ZendStream('php://temp', 'wb+');
+        $stream->attach($resource);
+
+        return $stream;
+    }
+
+    /**
      * Setter for file contents.
      *
      * @param mixed $contents File contents. Can be either a PSR-7 stream, a PHP stream resource, or any
@@ -144,28 +209,20 @@ class Stream extends Entity
      */
     protected function _setContents($contents)
     {
-        /* @todo Implement this part. */
-        $this->file_size = 0;
-        $this->hash_md5 = md5('Not yet implemented');
-        $this->hash_sha1 = sha1('Not yet implemented');
-
         if ($contents instanceof StreamInterface) {
             // Already a PSR-7 stream.
-            return $contents;
+            return $this->createStream($contents->detach());
         }
         if (is_resource($contents)) {
             // Not a stream, but a resource that can hopefully be attached to a PSR-7 stream.
-            $stream = new ZendStream('php://temp', 'wb+');
-            $stream->attach($contents);
-
-            return $stream;
+            return $this->createStream($contents);
         }
         if (is_scalar($contents) || is_null($contents) || (is_object($contents) && method_exists($contents, '__toString'))) {
             // A value that can be cast to a string. A new PSR-7 stream is created, and value is written to it.
-            $stream = new ZendStream('php://temp', 'wb+');
-            $stream->write((string)$contents);
+            $resource = fopen('php://temp', 'wb+');
+            fwrite($resource, (string)$contents);
 
-            return $stream;
+            return $this->createStream($resource);
         }
 
         throw new \InvalidArgumentException(
