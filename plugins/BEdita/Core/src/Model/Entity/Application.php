@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\Routing\Router;
 
 /**
  * Application Entity
@@ -44,4 +45,28 @@ class Application extends Entity implements JsonApiSerializable
         'created' => false,
         'modified' => false,
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getLinks()
+    {
+        $options = [
+            '_name' => 'api:admin:resource',
+            'item' => 'applications',
+            'id' => $this->id,
+        ];
+
+        return [
+            'self' => Router::url($options, true),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getRelationships()
+    {
+         return [[], []];
+    }
 }

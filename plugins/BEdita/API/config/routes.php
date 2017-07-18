@@ -66,6 +66,18 @@ Router::plugin(
             ['_name' => 'login:whoami']
         );
 
+        // Admin.
+        $routes->connect(
+            '/admin/:item',
+            ['controller' => 'Admin', 'action' => 'index'],
+            ['_name' => 'admin:index', 'pass' => ['item']]
+        );
+        $routes->connect(
+            '/admin/:item/:id',
+            ['controller' => 'Admin', 'action' => 'resource'],
+            ['_name' => 'admin:resource', 'pass' => ['id', 'item']]
+        );
+
         // Signup.
         $routes->connect(
             '/signup',

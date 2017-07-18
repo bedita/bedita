@@ -166,14 +166,7 @@ abstract class ResourcesController extends AppController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    Router::url(
-                        [
-                            '_name' => 'api:resources:resource',
-                            'controller' => $this->name,
-                            'id' => $data->id,
-                        ],
-                        true
-                    )
+                    $this->resourceUrl($data->id)
                 );
         } else {
             // List existing entities.
@@ -189,6 +182,24 @@ abstract class ResourcesController extends AppController
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * Resource URL of a newly created entity
+     *
+     * @param int|string $id Saved entity id
+     * @return string Requested URL
+     */
+    protected function resourceUrl($id)
+    {
+        return Router::url(
+            [
+                '_name' => 'api:resources:resource',
+                'controller' => $this->name,
+                'id' => $id,
+            ],
+            true
+        );
     }
 
     /**
