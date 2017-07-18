@@ -44,7 +44,7 @@ class MediaTable extends Table
 
         $this->addBehavior('BEdita/Core.UniqueName', [
             'sourceField' => 'title',
-            'prefix' => 'profile-'
+            'prefix' => 'media-'
         ]);
 
         $this->hasMany('Streams', [
