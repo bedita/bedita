@@ -43,7 +43,7 @@ class StreamsFixture extends TestFixture
         [
             'uuid' => '9e58fa47-db64-4479-a0ab-88a706180d59',
             'version' => 1,
-            'object_id' => 1,
+            'object_id' => 10,
             'uri' => 'default://9e58fa47-db64-4479-a0ab-88a706180d59.txt',
             'file_name' => 'sample.txt',
             'mime_type' => 'text/plain',
