@@ -76,6 +76,7 @@ class JwtAuthenticate extends BaseAuthenticate
         ],
         'fields' => [
             'username' => 'id',
+            'password' => null,
         ],
         'userModel' => 'Users',
         'scope' => [],

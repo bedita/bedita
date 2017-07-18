@@ -101,6 +101,7 @@ class Installer
             'tmp',
             'tmp/cache',
             'tmp/cache/models',
+            'tmp/cache/object_types',
             'tmp/cache/persistent',
             'tmp/cache/views',
             'tmp/sessions',

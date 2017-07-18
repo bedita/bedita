@@ -34,7 +34,7 @@ class InheritanceEventHandler implements EventListenerInterface
         return [
             'Model.beforeSave' => [
                 'callable' => 'beforeSave',
-                'priority' => 1,
+                'priority' => 99,
             ],
             'Model.afterDelete' => [
                 'callable' => 'afterDelete',
