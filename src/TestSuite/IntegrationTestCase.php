@@ -223,21 +223,4 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
             ->first()
             ->id;
     }
-
-    /**
-     * Return last Resource ID
-     *
-     * @param string $resource Resource name
-     * @return int
-     * @codeCoverageIgnore
-     */
-    public function lastResourceId($resource)
-    {
-        return TableRegistry::get($resource)
-            ->find()
-            ->select('id')
-            ->order(['id' => 'DESC'])
-            ->first()
-            ->id;
-    }
 }
