@@ -352,8 +352,6 @@ class UserMailerTest extends TestCase
      */
     public function testGetProjectName($expected, $configured)
     {
-        $current = Configure::read('Project.name');
-
         Configure::write('Project.name', $configured);
 
         $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [
@@ -367,8 +365,5 @@ class UserMailerTest extends TestCase
         $viewVars = $this->Email->getViewVars();
         static::assertArrayHasKey('projectName', $viewVars);
         static::assertEquals($expected, $viewVars['projectName']);
-
-        // restore conf
-        Configure::write('Project.name', $current);
     }
 }
