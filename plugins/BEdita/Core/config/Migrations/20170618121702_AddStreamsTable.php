@@ -255,6 +255,14 @@ class AddStreamsTable extends AbstractMigration
                     'model' => 'Media',
                     'associations' => '["Streams"]',
                 ],
+                [
+                    'name' => 'images',
+                    'singular' => 'image',
+                    'description' => 'Image model',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Media',
+                    'associations' => '["Streams"]',
+                ],
             ])
             ->save();
     }
