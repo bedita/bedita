@@ -91,27 +91,4 @@ class ApplicationTest extends TestCase
         $this->assertEquals($created, $application->created);
         $this->assertEquals($modified, $application->modified);
     }
-
-    /**
-     * Test magic getter for JSON API links.
-     *
-     * @return void
-     *
-     * @covers ::getLinks()
-     */
-    public function testGetLinks()
-    {
-        $expected = [
-            'self' => '/admin/applications/99',
-        ];
-
-        $entity = $this->Applications->newEntity();
-        $entity->set('type', 'applications');
-        $entity->id = 99;
-        $entity = $entity->jsonApiSerialize();
-
-        $links = $entity['links'];
-
-        static::assertSame($expected, $links);
-    }
 }
