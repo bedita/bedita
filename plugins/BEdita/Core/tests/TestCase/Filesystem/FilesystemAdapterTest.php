@@ -34,6 +34,7 @@ class FilesystemAdapterTest extends TestCase
     {
         $config = [
             'baseUrl' => 'http://example.org',
+            'visibility' => 'private',
             'key' => 'value',
         ];
 
@@ -91,6 +92,7 @@ class FilesystemAdapterTest extends TestCase
         $config = [
             'baseUrl' => 'http://example.org',
             'key' => 'value',
+            'visibility' => 'private',
         ];
 
         $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
@@ -163,5 +165,24 @@ class FilesystemAdapterTest extends TestCase
         $result = $adapter->getPublicUrl($path);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test getter for default visibility.
+     *
+     * @return void
+     *
+     * @covers ::getVisibility()
+     */
+    public function testGetVisibility()
+    {
+        /* @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
+        $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
+        $visibility = 'private';
+
+        $adapter->initialize(compact('visibility'));
+        $result = $adapter->getVisibility();
+
+        static::assertSame($visibility, $result);
     }
 }

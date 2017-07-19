@@ -34,6 +34,7 @@ class LocalAdapter extends FilesystemAdapter
         'writeFlags' => LOCK_EX,
         'linkHandling' => Local::DISALLOW_LINKS,
         'permissions' => [],
+        'visibility' => 'public',
     ];
 
     /**

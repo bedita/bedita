@@ -144,7 +144,10 @@ class FilesystemRegistry extends ObjectRegistry
 
         $filesystems = [];
         foreach (static::configured() as $prefix) {
-            $filesystems[$prefix] = new Filesystem($instance->get($prefix)->getInnerAdapter());
+            $adapter = $instance->get($prefix);
+            $filesystems[$prefix] = new Filesystem($adapter->getInnerAdapter(), [
+                'visibility' => $adapter->getVisibility(),
+            ]);
         }
 
         return $instance->mountManager = new MountManager($filesystems);

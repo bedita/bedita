@@ -39,6 +39,7 @@ abstract class FilesystemAdapter
      */
     protected $_defaultConfig = [
         'baseUrl' => null,
+        'visibility' => 'public',
     ];
 
     /**
@@ -103,5 +104,15 @@ abstract class FilesystemAdapter
             rtrim($this->getConfig('baseUrl'), '/'),
             ltrim($path, '/')
         );
+    }
+
+    /**
+     * Get default visibility for this adapter.
+     *
+     * @return string|null
+     */
+    public function getVisibility()
+    {
+        return $this->getConfig('visibility');
     }
 }
