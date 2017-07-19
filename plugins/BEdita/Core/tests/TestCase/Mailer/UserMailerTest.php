@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Model\Entity\Application;
-use BEdita\Core\State\CurrentApplication;
+use Cake\Core\Configure;
 use Cake\Mailer\Email;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
@@ -331,12 +331,11 @@ class UserMailerTest extends TestCase
         return [
             'default' => [
                 'BEdita',
+                null,
             ],
-            'custom app name' => [
+            'custom name' => [
                 'Superunknown :(',
-                new Application([
-                    'name' => 'Superunknown :('
-                ])
+                'Superunknown :('
             ],
         ];
     }
@@ -345,17 +344,17 @@ class UserMailerTest extends TestCase
      * Test `getProjectName()`
      *
      * @param string $expected The project name expected
-     * @param \BEdita\Core\Model\Entity\Application $application The application entity
+     * @param string $configured The project name to put in configuration
      * @return void
      *
      * @dataProvider getProjectNameProvider
      * @covers ::getProjectName()
      */
-    public function testGetProjectName($expected, $application = null)
+    public function testGetProjectName($expected, $configured)
     {
-        if ($application instanceof Application) {
-            CurrentApplication::setApplication($application);
-        }
+        $current = Configure::read('Project.name');
+
+        Configure::write('Project.name', $configured);
 
         $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [
             [
@@ -368,5 +367,8 @@ class UserMailerTest extends TestCase
         $viewVars = $this->Email->getViewVars();
         static::assertArrayHasKey('projectName', $viewVars);
         static::assertEquals($expected, $viewVars['projectName']);
+
+        // restore conf
+        Configure::write('Project.name', $current);
     }
 }
