@@ -74,8 +74,8 @@ class AdminControllerTest extends IntegrationTestCase
         $this->get('/admin/applications');
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
+        static::assertResponseCode(200);
+        static::assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result['data']);
     }
 
@@ -91,8 +91,8 @@ class AdminControllerTest extends IntegrationTestCase
         $this->configRequestHeaders();
         $this->get('/admin/objects');
 
-        $this->assertResponseCode(404);
-        $this->assertContentType('application/vnd.api+json');
+        static::assertResponseCode(404);
+        static::assertContentType('application/vnd.api+json');
     }
 
     /**
@@ -117,9 +117,9 @@ class AdminControllerTest extends IntegrationTestCase
         $this->post('/admin/applications', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(201);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/admin/applications/3');
+        static::assertResponseCode(201);
+        static::assertContentType('application/vnd.api+json');
+        static::assertHeader('Location', 'http://api.example.com/admin/applications/3');
 
         $entity = TableRegistry::get('Applications')->get(3);
         TableRegistry::get('Applications')->delete($entity);
