@@ -14,6 +14,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Utility\Hash;
 
 /**
@@ -33,6 +34,7 @@ class HomeControllerTest extends IntegrationTestCase
      */
     public function testIndex()
     {
+        $project = Configure::read('Project');
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/home',
@@ -251,6 +253,7 @@ class HomeControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                'project' => $project,
             ],
         ];
 
