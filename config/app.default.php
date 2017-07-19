@@ -410,6 +410,15 @@ return [
     ],
 
     /**
+     * Project information.
+     *
+     * - `name` public name of the project, short expression recommended like `MyProject`, `Nope v1`
+     */
+    'Project' => [
+        'name' => 'BEdita 4',
+    ],
+
+    /**
      * Signup settings.
      *
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method

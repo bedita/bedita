@@ -48,10 +48,6 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        if (!$this->apiKeyCheck()) {
-            throw new ForbiddenException('No valid API KEY found');
-        }
-
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
         $this->loadComponent('BEdita/API.Paginator', (array)Configure::read('Pagination'));
@@ -103,46 +99,6 @@ class AppController extends Controller
         }
 
         return null;
-    }
-
-    /**
-     * Check API KEY from request header.
-     * API KEYS are stored in configuration with this structure:
-     *
-     *  'ApiKeys' => [
-     *    'sdgwr89081023jfdklewRASdasdwdfswdr' => [
-     *      'label' => 'web app', // (optional)
-     *      'origin' => 'example.com', // (optional) could be '*'
-     *    ],
-     *    'w4nvwpq5028DDfwnrK2933293423nfnaa4' => [
-     *       ....
-     *    ],
-     *
-     * Check rules are:
-     *   - if no Api Keys are defined -> request is always accepted
-     *   - if one or more Api Keys are defined
-     *      - current X-Api-Key header value should be one of these keys
-     *      - if corresponding Key has an 'origin' request origin should match
-     *      - otherwise an error response is sent - HTTP 403
-     *
-     * @return bool True if check is passed, false otherwise
-     */
-    protected function apiKeyCheck()
-    {
-        $apiKeys = Configure::read('ApiKeys');
-        if (!empty($apiKeys)) {
-            $requestKey = $this->request->getHeaderLine('X-Api-Key');
-            if (!$requestKey || !isset($apiKeys[$requestKey])) {
-                return false;
-            }
-            $key = $apiKeys[$requestKey];
-            if (!empty($key['origin']) && $key['origin'] !== '*' &&
-                $key['origin'] !== $this->request->getHeaderLine('Origin')) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
