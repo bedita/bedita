@@ -82,6 +82,7 @@ class AdminResourcesTest extends IntegrationTestCase
     /**
      * Test CRUD on admin resources
      *
+     * @param $type string Resource type name
      * @param $attributes array Resource attributes to insert
      * @param $modified array Resource attributes to modify
      * @dataProvider resourceProvider
