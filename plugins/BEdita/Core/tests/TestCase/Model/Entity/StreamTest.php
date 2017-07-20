@@ -342,10 +342,6 @@ class StreamTest extends TestCase
                 'https://static.example.org/files/9e58fa47-db64-4479-a0ab-88a706180d59.txt',
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
             ],
-            'not available' => [
-                null,
-                'e5afe167-7341-458d-a1e6-042e8791b0fe',
-            ],
         ];
     }
 
