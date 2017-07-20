@@ -180,6 +180,7 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $id = $response['data']['id'];
         $url = sprintf('http://api.example.com/streams/%s', $id);
+        $meta['url'] = sprintf('https://static.example.org/files/%s-synapse.js', $id);
         static::assertTrue(Validation::uuid($id));
         static::assertSame('streams', $response['data']['type']);
         static::assertEquals($attributes, $response['data']['attributes']);
