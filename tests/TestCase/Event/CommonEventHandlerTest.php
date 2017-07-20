@@ -10,16 +10,15 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\Event;
+namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
+use BEdita\API\Middleware\CorsMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
-use Cake\Network\Exception\UnauthorizedException;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -62,8 +61,8 @@ class CommonEventHandlerTest extends TestCase
         $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
         EventManager::instance()->dispatch($event);
         static::assertCount(2, $middleware);
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
-        static::assertInstanceOf('\BEdita\API\Middleware\CorsMiddleware', $middleware->get(1));
+        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(0));
+        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(1));
     }
 
     /**

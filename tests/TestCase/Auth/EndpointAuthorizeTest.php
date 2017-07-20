@@ -64,6 +64,7 @@ class EndpointAuthorizeTest extends TestCase
                 [
                     'HTTP_X_CUSTOM_HEADER' => API_KEY,
                 ],
+                [],
                 [
                     'apiKeyHeaderName' => 'X-Custom-Header',
                 ],
@@ -77,6 +78,7 @@ class EndpointAuthorizeTest extends TestCase
             'missing API key' => [
                 new ForbiddenException('Missing API key'),
                 [],
+                [],
                 [
                     'blockAnonymousApps' => true,
                 ],
@@ -84,6 +86,20 @@ class EndpointAuthorizeTest extends TestCase
             'anonymous application' => [
                 null,
                 [],
+            ],
+            'query string api key' => [
+                1,
+                [],
+                [
+                    'api_key' => API_KEY,
+                ],
+            ],
+            'query string failure' => [
+                new ForbiddenException('Invalid API key'),
+                [],
+                [
+                    'api_key' => 'this API key is invalid!',
+                ]
             ],
         ];
     }
@@ -93,13 +109,14 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @param int|\Exception $expected Expected application ID.
      * @param array $environment Request headers.
+     * @param array $query Request query strings.
      * @param array $config Configuration.
      * @return void
      *
      * @dataProvider getApplicationProvider()
      * @covers ::getApplication()
      */
-    public function testGetApplication($expected, array $environment, array $config = [])
+    public function testGetApplication($expected, array $environment, array $query = [], array $config = [])
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
@@ -108,7 +125,7 @@ class EndpointAuthorizeTest extends TestCase
 
         CurrentApplication::getInstance()->set(null);
         $authorize = new EndpointAuthorize(new ComponentRegistry(), $config);
-        $request = new ServerRequest(compact('environment'));
+        $request = new ServerRequest(compact('environment', 'query'));
 
         $authorize->authorize([], $request);
 
@@ -280,6 +297,7 @@ class EndpointAuthorizeTest extends TestCase
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @param array $user User data.
      * @param string $requestMethod Request method.
+     * @param bool $whiteListed Is the endpoint whitelisted?
      * @return void
      *
      * @dataProvider authorizeProvider()
@@ -308,8 +326,8 @@ class EndpointAuthorizeTest extends TestCase
             'authorize' => ['BEdita/API.Endpoint'],
         ]);
         $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
-        $authorize->config('defaultAuthorized', $whiteListed);
-        $authorize->config('blockAnonymousUsers', false);
+        $authorize->setConfig('defaultAuthorized', $whiteListed);
+        $authorize->setConfig('blockAnonymousUsers', false);
 
         if (!($authorize instanceof EndpointAuthorize)) {
             static::fail('Unexpected authorization object');
