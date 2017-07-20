@@ -36,39 +36,14 @@ class User extends Profile
 
     /**
      * {@inheritDoc}
-     *
-     * @todo Inherit accessible fields from parent entity.
      */
-    protected $_accessible = [
-        '*' => true,
-        'id' => false,
-        'object_type_id' => false,
-        'object_type' => false,
-        'type' => false,
-        'deleted' => false,
-        'locked' => false,
-        'created' => false,
-        'modified' => false,
-        'published' => false,
-        'created_by' => false,
-        'modified_by' => false,
-        'blocked' => false,
-        'last_login' => false,
-        'last_login_err' => false,
-        'num_login_err' => false,
-        'verified' => false,
-    ];
+    public function __construct(array $properties = [], array $options = [])
+    {
+        parent::__construct($properties, $options);
 
-    /**
-     * {@inheritDoc}
-     */
-    protected $_hidden = [
-        'object_type_id',
-        'object_type',
-        'password_hash',
-        'external_auth',
-        'deleted',
-    ];
+        $this->setHidden(['password_hash', 'external_auth'], true);
+        $this->setAccess(['blocked', 'last_login', 'last_login_err', 'num_login_err', 'verified'], false);
+    }
 
     /**
      * Password setter. This is an alias for `password_hash`.

@@ -77,6 +77,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
@@ -134,6 +136,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'second user',
@@ -260,6 +264,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'state_name' => null,
                     'phone' => null,
                     'website' => null,
+                    'national_id_number' => null,
+                    'vat_number' => null,
                     'publish_start' => null,
                     'publish_end' => null,
                     'username' => 'first user',
@@ -410,7 +416,13 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        static::assertEquals('users', TableRegistry::get('Users')->get(1)->get('type'));
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($data['id'], $result['data']['id']);
+        static::assertEquals($data['type'], $result['data']['type']);
+        static::assertEquals($data['attributes']['username'], $result['data']['attributes']['username']);
     }
 
     /**

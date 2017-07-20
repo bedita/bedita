@@ -13,9 +13,9 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\CorsMiddleware;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Zend\Diactoros\Response;
 
 /**
  * Test for RoutingMiddleware
@@ -94,7 +94,7 @@ class CorsMiddlewareTest extends TestCase
                 ],
             ],
             'notAllowedOrigin' => [
-                403,
+                200,
                 [],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -107,7 +107,7 @@ class CorsMiddlewareTest extends TestCase
                 ],
             ],
             'preflightMissingOrigin' => [
-                400,
+                200,
                 [],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -119,7 +119,7 @@ class CorsMiddlewareTest extends TestCase
                 ],
             ],
             'preflightMissingControlRequestMethod' => [
-                400,
+                200,
                 [],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -132,7 +132,7 @@ class CorsMiddlewareTest extends TestCase
                 ],
             ],
             'preflightWrongControlRequestMethod' => [
-                403,
+                200,
                 [],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -147,7 +147,7 @@ class CorsMiddlewareTest extends TestCase
                 ],
             ],
             'preflightWrongControlHeaders' => [
-                403,
+                200,
                 [],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -216,11 +216,11 @@ class CorsMiddlewareTest extends TestCase
                 200,
                 [
                     'Access-Control-Allow-Origin' => 'https://example.com',
-                    'Access-Control-Allow-Methods' => '',
-                    'Access-Control-Allow-Headers' => '',
+                    'Access-Control-Allow-Methods' => 'GET, POST',
+                    'Access-Control-Allow-Headers' => 'Authorization, Content-Type',
                     'Access-Control-Allow-Credentials' => 'true',
                     'Access-Control-Expose-Headers' => 'X-Exposed, X-Exposed-Too',
-                    'Access-Control-Max-Age' => '',
+                    'Access-Control-Max-Age' => '1000',
                     'Vary' => 'Origin'
                 ],
                 [
@@ -296,7 +296,6 @@ class CorsMiddlewareTest extends TestCase
      *
      * @dataProvider corsProvider
      * @covers \BEdita\API\Middleware\CorsMiddleware
-     * @covers \BEdita\API\Network\CorsBuilder::build()
      */
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)
     {

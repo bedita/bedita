@@ -58,7 +58,7 @@ class LocationsValidator extends ObjectsValidator
      */
     public static function checkWkt($value)
     {
-        static $regex = '/^POINT\((?P<lng>\-?[0-9\.]+) (?P<lat>\-?[0-9\.]+)\)$/i';
+        static $regex = '/^POINT\s?\((?P<lng>\-?[0-9\.]+) (?P<lat>\-?[0-9\.]+)\)$/i';
 
         if (!is_string($value) || !preg_match($regex, $value, $matches)) {
             return 'invalid Well-Known Text';

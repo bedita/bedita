@@ -176,6 +176,9 @@ class UserModifiedBehavior extends Behavior
             return;
         }
 
-        $entity->set($field, $this->userId());
+        $userId = $this->userId();
+        if ($userId !== null) {
+            $entity->set($field, $this->userId());
+        }
     }
 }

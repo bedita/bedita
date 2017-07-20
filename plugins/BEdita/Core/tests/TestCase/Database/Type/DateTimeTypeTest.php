@@ -151,6 +151,6 @@ class DateTimeTypeTest extends TestCase
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
 
-        static::assertNull($result);
+        static::assertSame($input, $result);
     }
 }

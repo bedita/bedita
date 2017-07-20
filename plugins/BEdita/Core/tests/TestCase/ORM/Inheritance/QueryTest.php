@@ -14,7 +14,9 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Query;
-use Cake\Database\Expression\IdentifierExpression;
+use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Database\ValueBinder;
+use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -25,6 +27,7 @@ use Cake\TestSuite\TestCase;
  */
 class QueryTest extends TestCase
 {
+
     /**
      * Fixtures
      *
@@ -63,7 +66,7 @@ class QueryTest extends TestCase
      *
      * @var \Cake\ORM\Table
      */
-    protected $tableOptions = ['className' => 'BEdita\Core\ORM\Inheritance\Table'];
+    protected $tableOptions = ['className' => Table::class];
 
     /**
      * setUp method
@@ -74,7 +77,7 @@ class QueryTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $this->tableOptions);
+        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
         $this->fakeAnimals->hasMany('FakeArticles');
 
         $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
@@ -85,414 +88,117 @@ class QueryTest extends TestCase
     }
 
     /**
-     * Data provider for `testBuildContainString` test case.
+     * Test adding default types of inherited columns to type map.
      *
-     * @return array
-     */
-    public function containStringProvider()
-    {
-        return [
-            // expected, start value
-            ['FakeMammals', 'FakeMammals'],
-            ['FakeMammals.FakeAnimals', 'FakeAnimals'],
-            ['FakeMammals.FakeAnimals.FakeArticles', 'FakeArticles'],
-            [false, 'WrongAssociation']
-        ];
-    }
-
-    /**
-     * Test build contain string
-     *
-     * @param string|bool $expected Expected result.
-     * @param string $tableName The Table name.
      * @return void
      *
-     * @dataProvider containStringProvider
-     * @covers ::buildContainString()
-     * @covers ::inheritedTables()
+     * @covers ::addDefaultTypes()
      */
-    public function testBuildContainString($expected, $tableName)
+    public function testAddDefaultTypes()
     {
+        $this->fakeAnimals->getSchema()->columnType('name', 'json');
         $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
-        $containString = $query->buildContainString($tableName);
-        $this->assertEquals($expected, $containString);
+
+        $defaults = $query->getTypeMap()->getDefaults();
+        static::assertArrayHasKey('name', $defaults);
+        static::assertArrayHasKey('FakeFelines.name', $defaults);
+        static::assertArrayHasKey('FakeFelines__name', $defaults);
+
+        static::assertSame('json', $defaults['name']);
+        static::assertSame('json', $defaults['FakeFelines.name']);
+        static::assertSame('json', $defaults['FakeFelines__name']);
     }
 
     /**
-     * Data provider for `testFixContain` test case.
+     * Data provider for `testAddDefaultFields` test case.
      *
      * @return array
      */
-    public function fixContainProvider()
+    public function addDefaultFieldsProvider()
     {
         return [
-            'empty' => [
-                [
-                    'FakeMammals' => [
-                        'FakeAnimals' => []
-                    ]
-                ],
-                []
-            ],
-            'nestedAssociation' => [
-                [
-                    'FakeMammals' => [
-                        'FakeAnimals' => [
-                            'FakeArticles' => []
-                        ]
-                    ]
-                ],
-                ['FakeArticles']
-            ]
-        ];
-    }
-
-    /**
-     * testFixContain
-     *
-     * @param array $expected Expected result.
-     * @param array $contain The contain data.
-     * @return void
-     *
-     * @dataProvider fixContainProvider
-     * @covers ::fixContain()
-     * @covers ::buildContainString()
-     * @covers ::inheritedTables()
-     */
-    public function testFixContain($expected, $contain)
-    {
-        $query = $this->fakeFelines->find()->contain($contain);
-        $query->fixContain();
-        $this->assertEquals($expected, $query->contain());
-    }
-
-    /**
-     * Data provider for `testFixAliasField` test case.
-     *
-     * @return array
-     */
-    public function aliasFieldProvider()
-    {
-        return [
-            'id' => [
-                'FakeFelines.id',
-                'id',
-            ],
-            'notFoundField' => [
-                'title',
-                'title',
-            ],
-            'aliasRight2' => [
-                'FakeMammals.subclass',
-                'FakeMammals.subclass',
-            ],
-            'inheritedAlias' => [
-                'FakeMammals.subclass',
-                'FakeFelines.subclass',
-            ],
-            'inheritedAlias2' => [
-                'FakeAnimals.legs',
-                'FakeFelines.legs',
-            ],
-            'inheritedJustName' => [
-                'FakeMammals.subclass',
-                'subclass',
-            ],
-            'inheritedJustName2' => [
-                'FakeAnimals.legs',
-                'legs',
-            ],
-            'notInherited' => [
-                'FakeArticles.title',
-                'FakeArticles.title',
-            ],
-        ];
-    }
-
-    /**
-     * testFixAliasField
-     *
-     * @param string $expected Expected result.
-     * @param string $field The starting field.
-     * @return void
-     *
-     * @dataProvider aliasFieldProvider
-     * @covers ::fixAliasField()
-     * @covers ::extractField()
-     * @covers ::aliasChecker()
-     */
-    public function testFixAliasField($expected, $field)
-    {
-        $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
-        $this->assertEquals($expected, $query->fixAliasField($field));
-    }
-
-    /**
-     * Data provider for `testFixClause` test case.
-     *
-     * @return array
-     */
-    public function fixClauseProvider()
-    {
-        return [
-            'selectString' => [
-                ['FakeFelines.id'],
-                'select',
-                'id',
-            ],
-            'selectArray' => [
-                [
-                    'FakeFelines.id',
-                    'FakeAnimals.legs',
-                    'FakeMammals.subclass',
-                    'FakeAnimals.name',
-                    'sc' => 'FakeMammals.subclass',
-                ],
-                'select',
-                ['id', 'legs', 'subclass', 'FakeAnimals.name', 'sc' => 'subclass'],
-            ],
-            'group' => [
-                ['FakeFelines.id', 'FakeAnimals.legs'],
-                'group',
-                ['id', 'legs'],
-            ],
-            'noDistinct' => [
-                false,
-                'distinct',
-                false
-            ],
-            'distinct' => [
+            'default' => [
+                ['FakeFelines.id', 'FakeFelines.name', 'FakeFelines.legs', 'FakeFelines.subclass', 'FakeFelines.family'],
+                [],
                 true,
-                'distinct',
-                true
             ],
-            'distinctField' => [
-                ['FakeFelines.id'],
-                'distinct',
-                'id'
+            'explicit no autoFields' => [
+                ['FakeFelines.name', 'FakeFelines.legs'],
+                ['FakeFelines.name', 'FakeFelines.legs'],
+                false,
             ],
-            'distinctArray' => [
-                ['FakeFelines.id', 'FakeAnimals.name'],
-                'distinct',
-                ['id', 'name']
-            ]
         ];
     }
 
     /**
-     * testFixClause
+     * Test adding fields of inherited tables to "select" clause by default.
      *
-     * @param array $expected Expected result.
-     * @param string $clause The sql clause
-     * @param array|string|\Cake\Database\ExpressionInterface|bool the clause data
+     * @param string[] $expected Expected fields.
+     * @param string[] $select Fields to explicitly select.
+     * @param bool $autoFields Is auto-fields enabled?
      * @return void
      *
-     * @dataProvider fixClauseProvider
-     * @covers ::fixClause()
+     * @covers ::_addDefaultFields()
+     * @dataProvider addDefaultFieldsProvider()
      */
-    public function testFixClause($expected, $clause, $data)
+    public function testAddDefaultFields(array $expected, array $select, $autoFields)
     {
-        $query = $this->fakeFelines->find();
-        $query->fixClause($data, $clause);
-
-        if (!is_bool($data)) {
-            $this->assertEquals($expected, $query->clause($clause));
-        }
-
-        // start from Query::clause()
-        $query->{$clause}($data, true);
-        $query->fixClause(null, $clause);
-        $this->assertEquals($expected, $query->clause($clause));
-    }
-
-    /**
-     * testFixExpression
-     *
-     * @covers ::fixExpression()
-     */
-    public function testFixExpression()
-    {
-        $query = $this->fakeFelines->find();
-
-        // where: test \Cake\Database\Expression\FieldInterface case
-        $where = ['id' => 1, 'name' => 'cat'];
-        $whereExpected = ['FakeFelines.id' => 1, 'FakeAnimals.name' => 'cat'];
-        $query->where($where);
-        $whereExpression = $query->clause('where');
-        $whereExpression->iterateParts(function ($value, $key) use ($query, $whereExpected) {
-            $whereKeys = array_keys($whereExpected);
-            $query->fixExpression($value);
-            $expected = $whereKeys[$key];
-            $this->assertEquals($expected, $value->getField());
-            $this->assertEquals($whereExpected[$expected], $value->getValue());
-
-            return $value;
-        });
-
-        // order: test \Cake\Database\Expression\QueryExpression case
-        $query->order(['subclass' => 'ASC']);
-        $orderExpression = $query->clause('order');
-        $query->fixExpression($orderExpression);
-        $orderExpression->iterateParts(function ($value, $key) use ($query) {
-            $this->assertEquals('FakeMammals.subclass', $key);
-
-            return $value;
-        });
-
-        // test \Cake\Database\Expression\IdentifierExpression case
-        $identifierTest = [
-            'id' => 'FakeFelines.id',
-            'FakeFelines.name' => 'FakeAnimals.name',
-            'subclass' => 'FakeMammals.subclass',
-            'FakeFelines.family' => 'FakeFelines.family',
-            'FakeArticles.title' => 'FakeArticles.title'
-        ];
-        foreach ($identifierTest as $test => $expected) {
-            $identifierExpression = new IdentifierExpression($test);
-            $query->fixExpression($identifierExpression);
-            $this->assertEquals($expected, $identifierExpression->getIdentifier());
-        }
-    }
-
-    /**
-     * testExecute
-     *
-     * @covers ::_execute()
-     */
-    public function testExecute()
-    {
-        $felines = $this->fakeFelines->find()->toArray();
-        $this->assertEquals(1, count($felines));
-    }
-
-    /**
-     * testAll
-     *
-     * This test create a useless and maybe not valid SQL query but it is intended
-     * to check that all query parts are fixed in the right way
-     *
-     * @covers ::fixAll()
-     * @covers ::fixContain()
-     * @covers ::fixClause()
-     * @covers ::fixExpression()
-     */
-    public function testAll()
-    {
-        $query = $this->fakeFelines->find();
-
-        $query->select([
-            'custom_name' => 'name',
-            'subclass',
-            'family',
-            'count' => $query->func()->count('id')
-        ])
-            ->where(['family' => 'purring cats'])
-            ->andWhere(['id' => 1])
-            ->group('legs')
-            ->order(['subclass' => 'ASC']);
-
-        $query->fixAll();
-
-        // contain
-        $this->assertEquals(
-            [
-                'FakeMammals' => [
-                    'FakeAnimals' => []
-                    ]
-            ],
-            $query->contain()
-        );
-
-        // select
-        $selectClause = $query->clause('select');
-        $selectExpected = [
-            'custom_name' => 'FakeAnimals.name',
-            'FakeMammals.subclass',
-            'FakeFelines.family',
-            'count' => $query->func()->count('FakeFelines.id'),
-        ];
-        foreach ($selectClause as $k => $s) {
-            $this->assertEquals($selectExpected[$k], $s);
-        }
-
-        // where
-        $whereClause = $query->clause('where');
-        $whereExpected = [
-            'FakeFelines.family' => 'purring cats',
-            'FakeFelines.id' => 1
-        ];
-
-        $whereClause->iterateParts(function ($value, $key) use ($whereExpected) {
-            $whereKeys = array_keys($whereExpected);
-            $expected = $whereKeys[$key];
-            $this->assertEquals($expected, $value->getField());
-            $this->assertEquals($whereExpected[$expected], $value->getValue());
-
-            return $value;
-        });
-
-        // group
-        $groupClause = $query->clause('group');
-        $this->assertEquals('FakeAnimals.legs', $groupClause[0]);
-
-        // order
-        $orderClause = $query->clause('order');
-        $orderClause->iterateParts(function ($value, $key) {
-            $this->assertEquals('FakeMammals.subclass', $key);
-
-            return $value;
-        });
-
-        // check sql just for MySQL
-        if ($query->getConnection()->driver() instanceof \Cake\Database\Driver\Mysql) {
-            $startQuote = $endQuote = '`';
-        } else {
-            $startQuote = $endQuote = '"';
-        }
-
-        $expected = 'SELECT FakeAnimals.name AS {sq}custom_name{eq}, FakeMammals.subclass AS {sq}FakeMammals__subclass{eq}, ' .
-            'FakeFelines.family AS {sq}FakeFelines__family{eq}, (COUNT(FakeFelines.id)) AS {sq}count{eq} ' .
-            'FROM fake_felines FakeFelines INNER JOIN fake_mammals FakeMammals ON FakeMammals.id = (FakeFelines.id) ' .
-            'INNER JOIN fake_animals FakeAnimals ON FakeAnimals.id = (FakeMammals.id) ' .
-            'WHERE (FakeFelines.family = :c0 AND FakeFelines.id = :c1) ' .
-            'GROUP BY FakeAnimals.legs ' .
-            'ORDER BY FakeMammals.subclass ASC';
-
-        $expected = str_replace(['{sq}', '{eq}'], [$startQuote, $endQuote], $expected);
-
-        $sql = $query->sql();
-        $sql = preg_replace('/(\s){2,}/', ' ', $sql);
-        $this->assertEquals($expected, $sql);
-    }
-
-    /**
-     * Test method to get clean copy of query object.
-     *
-     * @return void
-     *
-     * @covers ::cleanCopy()
-     */
-    public function testCleanCopy()
-    {
-        $expectedBefore = [
-            'FakeArticles' => [],
-        ];
-        $expectedAfter = [
-            'FakeMammals' => [
-                'FakeAnimals' => [
-                    'FakeArticles' => [],
-                ],
-            ],
-        ];
-
         $query = $this->fakeFelines->find()
-            ->contain('FakeArticles');
+            ->select($select)
+            ->enableAutoFields($autoFields);
+        $query->sql();
 
-        static::assertSame($expectedBefore, $query->getEagerLoader()->contain());
+        $selected = array_values($query->clause('select'));
+        static::assertEquals($expected, $selected, '', 0, 10, true);
+    }
 
-        $clone = $query->cleanCopy();
+    /**
+     * Test builder for CTI sub-query.
+     *
+     * @covers ::_transformQuery()
+     * @covers ::getInheritanceSubQuery()
+     * @covers ::subQueryAliasFields()
+     */
+    public function testTransformQuery()
+    {
+        $expectedFields = [
+            'id' => 'fake_felines.id',
+            'name' => 'fake_animals.name',
+            'legs' => 'fake_animals.legs',
+            'subclass' => 'fake_mammals.subclass',
+            'family' => 'fake_felines.family',
+        ];
+        $expectedJoins = [
+            'fake_mammals' => 'fake_mammals',
+            'fake_animals' => 'fake_animals',
+        ];
 
-        static::assertSame($expectedAfter, $query->getEagerLoader()->contain());
-        static::assertSame($expectedAfter, $clone->getEagerLoader()->contain());
+        $query = $this->fakeFelines->find();
+        $query->sql();
+
+        $from = $query->clause('from');
+        static::assertCount(1, $from);
+        static::assertArrayHasKey('FakeFelines', $from);
+        static::assertInstanceOf(CakeQuery::class, $from['FakeFelines']);
+
+        /* @var \Cake\ORM\Query $subQuery */
+        $subQuery = $from['FakeFelines'];
+        static::assertEquals($expectedFields, $subQuery->clause('select'));
+
+        $joins = $subQuery->clause('join');
+        static::assertCount(2, $joins);
+        foreach ($expectedJoins as $alias => $table) {
+            static::assertArrayHasKey($alias, $joins);
+            static::assertSame('INNER', $joins[$alias]['type']);
+            static::assertSame($table, $joins[$alias]['table']);
+            static::assertSame($alias, $joins[$alias]['alias']);
+
+            /* @var \Cake\Database\Expression\QueryExpression $exp */
+            $exp = $joins[$alias]['conditions'];
+            static::assertSame(
+                $alias . '.id = (fake_felines.id)',
+                $exp->sql(new ValueBinder())
+            );
+        }
     }
 }

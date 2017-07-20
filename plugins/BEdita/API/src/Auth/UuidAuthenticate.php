@@ -59,7 +59,8 @@ class UuidAuthenticate extends BaseAuthenticate
         'header' => 'Authorization',
         'headerPrefix' => 'UUID',
         'fields' => [
-            'username' => 'provider_username',
+            'username' => 'ExternalAuth.provider_username',
+            'password' => null,
         ],
         'userModel' => 'Users',
         'scope' => [],
