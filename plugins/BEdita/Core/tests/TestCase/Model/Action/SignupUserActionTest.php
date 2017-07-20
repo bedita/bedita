@@ -95,6 +95,25 @@ class SignupUserActionTest extends TestCase
                     ],
                 ]
             ],
+            'ok json api' => [
+                true,
+                [
+                    'data' => [
+                        'data' => [
+                            'attributes' => [
+                                'username' => 'testsignup',
+                                'password' => 'testsignup',
+                                'email' => 'test.signup@example.com',
+                            ],
+                            'meta' => [
+                                'activation_url' => 'myapp://activate',
+                                'redirect_url' => 'myapp://',
+                            ]
+                        ]
+                    ],
+                ]
+            ],
+
             'missing activation_url' => [
                 new BadRequestException(),
                 [
