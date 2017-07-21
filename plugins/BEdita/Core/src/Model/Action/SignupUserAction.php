@@ -67,12 +67,12 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * {@inheritDoc}
      *
      * @return \BEdita\Core\Model\Entity\User
-     * @throws \Cake\Network\Exception\BadRequestException When validation of `$data['urlOptions']` fails
+     * @throws \Cake\Network\Exception\BadRequestException When validation of URL options fails
      */
     public function execute(array $data = [])
     {
-        $data['urlOptions'] = (!empty($data['urlOptions']) && is_array($data['urlOptions'])) ? $data['urlOptions'] : [];
-        $errors = $this->validate($data['urlOptions']);
+        $data = $this->normalizeInput($data);
+        $errors = $this->validate($data['data']);
         if (!empty($errors)) {
             throw new BadRequestException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -84,7 +84,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $user = $this->createUser($data['data']);
         try {
             $job = $this->createSignupJob($user);
-            $activationUrl = $this->getActivationUrl($job, $data['urlOptions']);
+            $activationUrl = $this->getActivationUrl($job, $data['data']);
 
             $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
         } catch (\Exception $e) {
@@ -95,6 +95,22 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
 
         return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);
+    }
+
+    /**
+     * Normalize input data to plain JSON if in JSON API format
+     *
+     * @param array $data Input data
+     * @return array Normalized array
+     */
+    protected function normalizeInput(array $data)
+    {
+        if (!empty($data['data']['data']['attributes'])) {
+            $meta = !empty($data['data']['data']['meta']) ? $data['data']['data']['meta'] : [];
+            $data['data'] = array_merge($data['data']['data']['attributes'], $meta);
+        }
+
+        return $data;
     }
 
     /**
