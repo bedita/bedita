@@ -217,7 +217,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Create job for test
      *
-     * @return void
+     * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createTestJob()
     {
