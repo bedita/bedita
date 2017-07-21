@@ -18,13 +18,11 @@ namespace BEdita\Core\Model\Entity;
  *
  * @property int $id
  * @property string $name
- * @property int $width
- * @property int $height
- * @property int $duration
  * @property string $provider
  * @property string $provider_uid
  * @property string $provider_url
  * @property string $provider_thumbnail
+ * @property array $provider_extra
  * @property \BEdita\Core\Model\Entity\Stream[] $streams
  */
 class Media extends ObjectEntity

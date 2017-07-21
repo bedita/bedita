@@ -105,6 +105,18 @@ class StreamsTable extends Table
             ->allowEmpty('hash_sha1', 'create');
 
         $validator
+            ->naturalNumber('width')
+            ->allowEmpty('width');
+
+        $validator
+            ->naturalNumber('height')
+            ->allowEmpty('height');
+
+        $validator
+            ->naturalNumber('duration')
+            ->allowEmpty('duration');
+
+        $validator
             ->notEmpty('contents')
             ->requirePresence('contents', 'create');
 

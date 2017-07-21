@@ -33,15 +33,6 @@ class MediaValidator extends ObjectsValidator
         $this
             ->allowEmpty('name')
 
-            ->naturalNumber('width')
-            ->allowEmpty('width')
-
-            ->naturalNumber('height')
-            ->allowEmpty('height')
-
-            ->naturalNumber('duration')
-            ->allowEmpty('duration')
-
             ->ascii('provider')
             ->allowEmpty('provider')
 

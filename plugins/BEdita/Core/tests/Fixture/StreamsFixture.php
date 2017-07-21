@@ -37,6 +37,8 @@ class StreamsFixture extends TestFixture
             'file_size' => 5650,
             'hash_md5' => 'a1236770b354472e94d891bf83fefa03',
             'hash_sha1' => 'ab9bdc1379a1499eb6eee5762c039a5cd4899d7b',
+            'width' => 293,
+            'height' => 94,
             'created' => '2017-06-22 12:37:41',
             'modified' => '2017-06-22 12:37:41',
         ],

@@ -3,6 +3,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\MediaValidator;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Database\Schema\TableSchema;
 
 /**
  * Media Model
@@ -51,5 +52,17 @@ class MediaTable extends Table
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.Streams',
         ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->columnType('provider_extra', 'json');
+
+        return $schema;
     }
 }

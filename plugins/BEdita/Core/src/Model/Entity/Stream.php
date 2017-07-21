@@ -34,6 +34,9 @@ use Zend\Diactoros\Stream as ZendStream;
  * @property int $file_size
  * @property string $hash_md5
  * @property string $hash_sha1
+ * @property int $width
+ * @property int $height
+ * @property int $duration
  * @property \Psr\Http\Message\StreamInterface|null $contents
  * @property string|null $url
  * @property \Cake\I18n\Time $created
