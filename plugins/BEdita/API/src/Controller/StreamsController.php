@@ -33,7 +33,7 @@ class StreamsController extends ResourcesController
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'object' => ['media'],
+            'object' => ['media', 'images'],
         ],
     ];
 
