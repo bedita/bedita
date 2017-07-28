@@ -247,6 +247,7 @@ class JwtAuthenticateTest extends TestCase
      * @covers ::getUser()
      * @covers ::getPayload()
      * @covers ::decode()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testAuthenticate($expected, array $config, ServerRequest $request)
     {
