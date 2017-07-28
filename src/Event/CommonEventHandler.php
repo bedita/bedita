@@ -61,7 +61,7 @@ class CommonEventHandler implements EventListenerInterface
      */
     public function buildMiddlewareStack(Event $event, MiddlewareQueue $middleware)
     {
-        $middleware->insertAfter(
+        $middleware->insertBefore(
             ErrorHandlerMiddleware::class,
             new CorsMiddleware(Configure::read('CORS'))
         );
