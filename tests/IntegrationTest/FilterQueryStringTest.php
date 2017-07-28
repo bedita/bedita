@@ -206,7 +206,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      */
     public function testFindQuery()
     {
-        $expected = [2, 3, 9];
+        $expected = ['2', '3', '9', '10'];
         $this->configRequestHeaders();
 
         $this->get('/objects?filter[query]=here');
@@ -272,7 +272,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      */
     public function testFindQueryAlias()
     {
-        $expected = [2, 3, 9];
+        $expected = ['2', '3', '9', '10'];
         $this->configRequestHeaders();
 
         $this->get('/objects?q=here');
@@ -296,26 +296,27 @@ class FilterQueryStringTest extends IntegrationTestCase
             'simple' => [
                'filter[type]=users',
                [
-                   1,
-                   5
-               ]
+                   '1',
+                   '5',
+               ],
             ],
             'exclude' => [
                'filter[type][ne]=documents',
                [
-                   1,
-                   4,
-                   5,
-                   8,
-                   9
-               ]
+                   '1',
+                   '4',
+                   '5',
+                   '8',
+                   '9',
+                   '10',
+               ],
             ],
             'multi' => [
                'filter[type][]=events&filter[type][]=locations',
                [
-                   8,
-                   9
-               ]
+                   '8',
+                   '9',
+               ],
             ],
         ];
     }
@@ -323,6 +324,8 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test `filter[type]` query string.
      *
+     * @param string $query Query string.
+     * @param array $expected Expected result.
      * @return void
      *
      * @dataProvider typeFilterProvider
