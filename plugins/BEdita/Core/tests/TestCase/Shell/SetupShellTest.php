@@ -13,7 +13,7 @@ use Cake\ORM\TableRegistry;
  *
  * @covers \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends ShellTestCase
+class SetupShellTest extends ShellTestCase
 {
 
     /**
@@ -41,7 +41,21 @@ class BeditaShellTest extends ShellTestCase
      */
     public function tearDown()
     {
-        $defaultConnection = ConnectionManager::get('default');
+        $this->dropTables('default');
+
+        ConnectionManager::alias('test', 'default');
+
+        $this->dropTables('default');
+
+        ConnectionManager::drop(static::CONNECTION_NAME);
+        ConnectionManager::drop(BeditaShell::TEMP_SETUP_CFG);
+
+        parent::tearDown();
+    }
+
+    protected function dropTables($config)
+    {
+        $defaultConnection = ConnectionManager::get($config);
         if ($defaultConnection instanceof Connection && $defaultConnection->isConnected()) {
             $defaultConnection
                 ->disableConstraints(function (Connection $connection) {
@@ -55,12 +69,6 @@ class BeditaShellTest extends ShellTestCase
                     }
                 });
         }
-
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop(static::CONNECTION_NAME);
-        ConnectionManager::drop(BeditaShell::TEMP_SETUP_CFG);
-
-        parent::tearDown();
     }
 
     /**
