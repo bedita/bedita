@@ -197,10 +197,13 @@ class ObjectTypesTable extends Table
             $primaryKey = $allTypes[$primaryKey];
         }
 
-        $options += [
-            'key' => 'id_' . $primaryKey,
-            'cache' => self::CACHE_CONFIG,
-        ];
+        if (empty($options)) {
+            $options = [
+                'key' => 'id_' . $primaryKey,
+                'cache' => self::CACHE_CONFIG,
+                'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
+            ];
+        }
 
         return parent::get($primaryKey, $options);
     }

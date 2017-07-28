@@ -70,10 +70,6 @@ class RelationsBehavior extends Behavior
         if (!($objectType instanceof ObjectType)) {
             $objectType = $table->get($objectType);
         }
-        $table->loadInto(
-            $objectType,
-            ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes']
-        );
 
         $this->objectType = $objectType;
 
