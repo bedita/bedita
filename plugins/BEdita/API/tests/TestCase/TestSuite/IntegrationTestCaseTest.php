@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\TestCase;
+namespace BEdita\API\Test\TestCase\TestSuite;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
@@ -81,12 +81,15 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     /**
      * Test addAuthFixtures
      *
+     * @param array $expected Expected results.
+     * @param array $fixtures Class fixtures.
      * @return void
+     *
      * @dataProvider authFixturesProvider
      * @covers ::__construct()
      * @covers ::addAuthFixtures()
      */
-    public function testAuthFixtures($expected, $fixtures)
+    public function testAuthFixtures(array $expected, array $fixtures)
     {
         $mock = $this->getMockBuilder(IntegrationTestCase::class)
             ->disableOriginalConstructor()

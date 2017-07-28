@@ -13,8 +13,6 @@
 
 namespace BEdita\API\Auth;
 
-use BEdita\Core\Model\Entity\Application;
-use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
@@ -93,7 +91,7 @@ class EndpointAuthorize extends BaseAuthorize
         if (!$this->getConfig('defaultAuthorized') &&
             $this->isAnonymous($user) &&
             $this->getConfig('blockAnonymousUsers')) {
-            $this->unauthenticate();
+            $this->unauthenticated();
         }
 
         // For anonymous users performing write operations, use strict mode.
@@ -124,7 +122,7 @@ class EndpointAuthorize extends BaseAuthorize
             // Anonymous user should not get a 403. Thus, we invoke authentication provider's
             // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
             // so we treat that as a non-authorized request.
-            $this->unauthenticate();
+            $this->unauthenticated();
         }
 
         // Authorization is granted for both `true` and `'mine'` values.
@@ -135,9 +133,9 @@ class EndpointAuthorize extends BaseAuthorize
      * Perform user unauthentication to return 401 Unauthorized
      * instead of 403 Forbidden
      *
-     * @return mixed
+     * @return void
      */
-    protected function unauthenticate()
+    protected function unauthenticated()
     {
         $controller = $this->_registry->getController();
         $controller
