@@ -41,10 +41,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 6,
+                    'count' => 7,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 6,
+                    'page_items' => 7,
                     'page_size' => 20,
                 ],
             ],
@@ -225,6 +225,34 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '7',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'media',
+                        'name' => 'media',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Media',
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams'],
+                    ],
+                    'meta' => [
+                        'alias' => 'Media',
+                        'relations' => [],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/object_types/7',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/7/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/7/properties',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -397,7 +425,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/object_types/7');
+        $this->assertHeader('Location', 'http://api.example.com/object_types/8');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 

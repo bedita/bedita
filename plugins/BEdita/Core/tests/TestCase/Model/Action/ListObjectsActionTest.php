@@ -50,7 +50,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(7, $result->count());
+        static::assertSame(8, $result->count());
     }
 
     /**
@@ -101,6 +101,6 @@ class ListObjectsActionTest extends TestCase
         ]);
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(5, $result->count());
+        static::assertSame(6, $result->count());
     }
 }

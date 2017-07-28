@@ -1,8 +1,9 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Table;
-use Cake\Validation\Validator;
+use BEdita\Core\Model\Validation\MediaValidator;
+use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Database\Schema\TableSchema;
 
 /**
  * Media Model
@@ -14,9 +15,16 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Media patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Media[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Media findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @since 4.0.0
  */
 class MediaTable extends Table
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = MediaValidator::class;
 
     /**
      * {@inheritDoc}
@@ -28,8 +36,22 @@ class MediaTable extends Table
         parent::initialize($config);
 
         $this->setTable('media');
-        $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+        $this->setDisplayField('name');
+
+        $this->extensionOf('Objects');
+
+        $this->addBehavior('BEdita/Core.Relations');
+
+        $this->addBehavior('BEdita/Core.UniqueName', [
+            'sourceField' => 'title',
+            'prefix' => 'media-'
+        ]);
+
+        $this->hasMany('Streams', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.Streams',
+        ]);
     }
 
     /**
@@ -37,50 +59,10 @@ class MediaTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    protected function _initializeSchema(TableSchema $schema)
     {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
+        $schema->columnType('provider_extra', 'json');
 
-        $validator
-            ->requirePresence('uri', 'create')
-            ->notEmpty('uri');
-
-        $validator
-            ->allowEmpty('name');
-
-        $validator
-            ->requirePresence('mime_type', 'create')
-            ->notEmpty('mime_type');
-
-        $validator
-            ->integer('file_size')
-            ->allowEmpty('file_size');
-
-        $validator
-            ->allowEmpty('hash_file');
-
-        $validator
-            ->allowEmpty('original_name');
-
-        $validator
-            ->integer('width')
-            ->allowEmpty('width');
-
-        $validator
-            ->integer('height')
-            ->allowEmpty('height');
-
-        $validator
-            ->allowEmpty('provider');
-
-        $validator
-            ->allowEmpty('media_uid');
-
-        $validator
-            ->allowEmpty('thumbnail');
-
-        return $validator;
+        return $schema;
     }
 }

@@ -58,7 +58,7 @@ class CorsMiddlewareTest extends TestCase
                     'REQUEST_URI' => '/testpath',
                     'REQUEST_METHOD' => 'OPTIONS',
                     'HTTP_ACCEPT' => 'application/json',
-                    'HTTP_ORIGIN' => 'http://example.com'
+                    'HTTP_ORIGIN' => 'http://example.com',
                 ],
                 [],
             ],
@@ -71,10 +71,10 @@ class CorsMiddlewareTest extends TestCase
                     'REQUEST_URI' => '/testpath',
                     'REQUEST_METHOD' => 'GET',
                     'HTTP_ACCEPT' => 'application/json',
-                    'HTTP_ORIGIN' => 'http://example.com'
+                    'HTTP_ORIGIN' => 'http://example.com',
                 ],
                 [
-                    'allowOrigin' => '*'
+                    'allowOrigin' => '*',
                 ],
             ],
             'specificAllowedOrigin' => [
@@ -87,10 +87,10 @@ class CorsMiddlewareTest extends TestCase
                     'REQUEST_URI' => '/testpath',
                     'REQUEST_METHOD' => 'GET',
                     'HTTP_ACCEPT' => 'application/json',
-                    'HTTP_ORIGIN' => 'http://example.com'
+                    'HTTP_ORIGIN' => 'http://example.com',
                 ],
                 [
-                    'allowOrigin' => ['http://example.com', 'http://bedita.com']
+                    'allowOrigin' => ['http://example.com', 'http://bedita.com'],
                 ],
             ],
             'notAllowedOrigin' => [
@@ -100,10 +100,10 @@ class CorsMiddlewareTest extends TestCase
                     'REQUEST_URI' => '/testpath',
                     'REQUEST_METHOD' => 'GET',
                     'HTTP_ACCEPT' => 'application/json',
-                    'HTTP_ORIGIN' => 'http://bedita.com'
+                    'HTTP_ORIGIN' => 'http://bedita.com',
                 ],
                 [
-                    'allowOrigin' => 'http://example.com'
+                    'allowOrigin' => 'http://example.com',
                 ],
             ],
             'preflightMissingOrigin' => [
@@ -115,7 +115,7 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                 ],
                 [
-                    'allowOrigin' => '*'
+                    'allowOrigin' => '*',
                 ],
             ],
             'preflightMissingControlRequestMethod' => [
@@ -128,7 +128,7 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ORIGIN' => 'http://bedita.com',
                 ],
                 [
-                    'allowOrigin' => '*'
+                    'allowOrigin' => '*',
                 ],
             ],
             'preflightWrongControlRequestMethod' => [
@@ -139,11 +139,11 @@ class CorsMiddlewareTest extends TestCase
                     'REQUEST_METHOD' => 'OPTIONS',
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'http://bedita.com',
-                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'PUT'
+                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'PUT',
                 ],
                 [
                     'allowOrigin' => '*',
-                    'allowMethods' => ['GET', 'POST']
+                    'allowMethods' => ['GET', 'POST'],
                 ],
             ],
             'preflightWrongControlHeaders' => [
@@ -155,12 +155,12 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'http://bedita.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
                 ],
                 [
                     'allowOrigin' => '*',
                     'allowMethods' => ['GET', 'POST'],
-                    'allowHeaders' => ['Authorization']
+                    'allowHeaders' => ['Authorization'],
                 ],
             ],
             'preflightOk' => [
@@ -176,12 +176,12 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'http://bedita.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
                 ],
                 [
                     'allowOrigin' => '*',
                     'allowMethods' => ['GET', 'POST'],
-                    'allowHeaders' => ['Authorization', 'Content-Type']
+                    'allowHeaders' => ['Authorization', 'Content-Type'],
                 ],
             ],
             'preflightOk2' => [
@@ -193,7 +193,7 @@ class CorsMiddlewareTest extends TestCase
                     'Access-Control-Allow-Credentials' => 'true',
                     'Access-Control-Expose-Headers' => 'X-Exposed, X-Exposed-Too',
                     'Access-Control-Max-Age' => '1000',
-                    'Vary' => 'Origin'
+                    'Vary' => 'Origin',
                 ],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -201,7 +201,7 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'https://example.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
                 ],
                 [
                     'allowOrigin' => 'https://example.com',
@@ -209,7 +209,7 @@ class CorsMiddlewareTest extends TestCase
                     'allowHeaders' => ['Authorization', 'Content-Type'],
                     'allowCredentials' => true,
                     'exposeHeaders' => ['X-Exposed', 'X-Exposed-Too'],
-                    'maxAge' => '1000'
+                    'maxAge' => '1000',
                 ],
             ],
             'simpleSkipPreflightConf' => [
@@ -221,7 +221,7 @@ class CorsMiddlewareTest extends TestCase
                     'Access-Control-Allow-Credentials' => 'true',
                     'Access-Control-Expose-Headers' => 'X-Exposed, X-Exposed-Too',
                     'Access-Control-Max-Age' => '1000',
-                    'Vary' => 'Origin'
+                    'Vary' => 'Origin',
                 ],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -229,7 +229,7 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'https://example.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
                 ],
                 [
                     'allowOrigin' => 'https://example.com',
@@ -237,7 +237,7 @@ class CorsMiddlewareTest extends TestCase
                     'allowHeaders' => ['Authorization', 'Content-Type'],
                     'allowCredentials' => true,
                     'exposeHeaders' => ['X-Exposed', 'X-Exposed-Too'],
-                    'maxAge' => '1000'
+                    'maxAge' => '1000',
                 ],
             ],
             'preflightWildCardAllowMethods' => [
@@ -253,12 +253,12 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'http://bedita.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
                 ],
                 [
                     'allowOrigin' => '*',
                     'allowMethods' => '*',
-                    'allowHeaders' => ['Authorization', 'Content-Type']
+                    'allowHeaders' => ['Authorization', 'Content-Type'],
                 ],
             ],
             'preflightWildCardAllowHeaders' => [
@@ -274,12 +274,30 @@ class CorsMiddlewareTest extends TestCase
                     'HTTP_ACCEPT' => 'application/json',
                     'HTTP_ORIGIN' => 'http://bedita.com',
                     'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type, X-Test-Header'
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type, X-Test-Header',
                 ],
                 [
                     'allowOrigin' => '*',
                     'allowMethods' => ['GET', 'POST'],
-                    'allowHeaders' => '*'
+                    'allowHeaders' => '*',
+                ],
+            ],
+            'redirect' => [
+                200,
+                [
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => 'GET, POST',
+                ],
+                [
+                    'REQUEST_URI' => '/',
+                    'REQUEST_METHOD' => 'GET',
+                    'HTTP_ACCEPT' => 'application/json',
+                    'HTTP_ORIGIN' => 'http://bedita.com',
+                ],
+                [
+                    'allowOrigin' => '*',
+                    'allowMethods' => ['GET', 'POST'],
+                    'allowHeaders' => '*',
                 ],
             ],
         ];

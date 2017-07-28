@@ -427,4 +427,11 @@ return [
     'Signup' => [
 //        'requireActivation' => true,
     ],
+
+    'Filesystem' => [
+        'default' => [
+            'className' => 'BEdita/Core.Local',
+            'path' => WWW_ROOT . DS . 'files',
+        ],
+    ],
 ];
