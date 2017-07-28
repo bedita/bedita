@@ -14,11 +14,13 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\RelationTypesTable Test Case
+ * @coversDefaultClass \BEdita\Core\Model\Table\RelationTypesTable
  */
 class RelationTypesTableTest extends TestCase
 {
@@ -50,6 +52,9 @@ class RelationTypesTableTest extends TestCase
     {
         parent::setUp();
 
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
+
         $this->RelationTypes = TableRegistry::get('RelationTypes');
     }
 
@@ -61,6 +66,10 @@ class RelationTypesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->RelationTypes);
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
         parent::tearDown();
     }
@@ -117,5 +126,55 @@ class RelationTypesTableTest extends TestCase
 
         $success = $this->RelationTypes->save($objectType);
         static::assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Test after save callback.
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testInvalidateCacheAfterSave()
+    {
+        $this->RelationTypes->ObjectTypes->get('document');
+        $this->RelationTypes->ObjectTypes->get(5);
+
+        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+
+        $entity = $this->RelationTypes->get([1, 1, 'left']);
+        $entity->object_type = $this->RelationTypes->ObjectTypes->get(5);
+        $this->RelationTypes->save($entity);
+
+        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test after delete callback.
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testInvalidateCacheAfterDelete()
+    {
+        $this->RelationTypes->ObjectTypes->get('document');
+
+        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+
+        $entity = $this->RelationTypes->get([1, 1, 'left']);
+        $this->RelationTypes->delete($entity);
+
+        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 }

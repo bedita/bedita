@@ -14,6 +14,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -51,6 +53,9 @@ class RelationsTableTest extends TestCase
     {
         parent::setUp();
 
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
+
         $this->Relations = TableRegistry::get('Relations');
     }
 
@@ -62,6 +67,10 @@ class RelationsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Relations);
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
         parent::tearDown();
     }
@@ -173,5 +182,58 @@ class RelationsTableTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test after save callback.
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testInvalidateCacheAfterSave()
+    {
+        $this->Relations->LeftObjectTypes->get('document');
+        $this->Relations->LeftObjectTypes->get(2);
+
+        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_2', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+
+        $entity = $this->Relations->get(1);
+        $entity = $this->Relations->patchEntity($entity, ['description' => 'My brand new description']);
+        $this->Relations->save($entity);
+
+        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_2', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test after delete callback.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testInvalidateCacheAfterDelete()
+    {
+        $this->Relations->LeftObjectTypes->get('document');
+        $this->Relations->LeftObjectTypes->get(2);
+
+        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_2', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+
+        $entity = $this->Relations->get(1);
+        $this->Relations->delete($entity);
+
+        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_2', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 }

@@ -14,8 +14,11 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Event\Event;
+use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -26,7 +29,8 @@ use Cake\Validation\Validator;
  * Relations Model
  *
  * @property \Cake\ORM\Association\HasMany $ObjectRelations
- * @property \Cake\ORM\Association\HasMany $RelationTypes
+ * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
+ * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
  *
  * @method \BEdita\Core\Model\Entity\Relation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
@@ -61,6 +65,7 @@ class RelationsTable extends Table
             'conditions' => [
                 'RelationTypes.side' => 'left',
             ],
+            'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('RightObjectTypes', [
             'className' => 'ObjectTypes',
@@ -70,6 +75,7 @@ class RelationsTable extends Table
             'conditions' => [
                 'RelationTypes.side' => 'right',
             ],
+            'cascadeCallbacks' => true,
         ]);
     }
 
@@ -164,5 +170,27 @@ class RelationsTable extends Table
                     ->eq($this->aliasField('inverse_name'), $name);
             });
         });
+    }
+
+    /**
+     * Invalidate object types cache after updating a relation.
+     *
+     * @param \Cake\Event\Event $event Triggered event.
+     * @param \Cake\ORM\Entity $entity Subject entity.
+     * @return void
+     */
+    public function afterSave(Event $event, Entity $entity)
+    {
+        $ids = $this->LeftObjectTypes->junction()
+            ->find('list', [
+                'keyField' => $this->LeftObjectTypes->getTargetForeignKey(),
+                'valueField' => $this->LeftObjectTypes->getTargetForeignKey(),
+            ])
+            ->where([
+                $this->LeftObjectTypes->getForeignKey() => $entity->id,
+            ]);
+        foreach ($ids as $id) {
+            Cache::delete('id_' . $id, ObjectTypesTable::CACHE_CONFIG);
+        }
     }
 }
