@@ -151,12 +151,12 @@ class LoginController extends AppController
 
         $jwt = JWT::encode(
             $user + $claims + ['exp' => strtotime($duration)],
-            Security::salt(),
+            Security::getSalt(),
             $algorithm
         );
         $renew = JWT::encode(
             $claims + ['sub' => $user['id'], 'aud' => $currentUrl],
-            Security::salt(),
+            Security::getSalt(),
             $algorithm
         );
 

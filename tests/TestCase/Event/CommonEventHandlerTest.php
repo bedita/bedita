@@ -26,6 +26,12 @@ use Cake\TestSuite\TestCase;
  */
 class CommonEventHandlerTest extends TestCase
 {
+
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals'
     ];

@@ -188,7 +188,7 @@ class UuidAuthenticateTest extends TestCase
         $count = $Users->find()->count();
 
         $dispatchedEvent = 0;
-        $Users->eventManager()->on('Auth.externalAuth', function () use (&$dispatchedEvent) {
+        $Users->getEventManager()->on('Auth.externalAuth', function () use (&$dispatchedEvent) {
             $dispatchedEvent++;
 
             static::assertInstanceOf(AuthProvider::class, func_get_arg(1));
