@@ -21,12 +21,24 @@ use Cake\Network\Exception\UnauthorizedException;
 class ExpiredTokenException extends UnauthorizedException
 {
     /**
-     * {@inheritDoc}
+     * 401 Expired token
      *
-     * @codeCoverageIgnore
+     * @var string
      */
-    public function __construct($message)
+    const BE_TOKEN_EXPIRED = 'be_token_expired';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct($message = null)
     {
+        if (empty($message)) {
+            $message = [
+                'title' => __d('bedita', 'Expired token'),
+                'detail' => __d('bedita', 'Provided token has expired'),
+                'code' => self::BE_TOKEN_EXPIRED,
+            ];
+        }
         parent::__construct($message);
     }
 }

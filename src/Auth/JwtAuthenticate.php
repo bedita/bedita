@@ -46,13 +46,6 @@ class JwtAuthenticate extends BaseAuthenticate
 {
 
     /**
-     * 401 Expired token
-     *
-     * @var string
-     */
-    const BE_TOKEN_EXPIRED = 'be_token_expired';
-
-    /**
      * Default config for this object.
      *
      * - `header` The header where the token is stored. Defaults to `'Authorization'`.
@@ -216,11 +209,7 @@ class JwtAuthenticate extends BaseAuthenticate
 
             return (array)$payload;
         } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new ExpiredTokenException([
-                'title' => __d('bedita', 'Expired token'),
-                'detail' => __d('bedita', 'Provided token has expired'),
-                'code' => self::BE_TOKEN_EXPIRED,
-            ]);
+            throw new ExpiredTokenException();
         } catch (\Exception $e) {
             $this->error = $e;
         }
