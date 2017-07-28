@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Middleware;
 
+use Cake\Http\Response;
 use Cake\Network\CorsBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -116,7 +117,7 @@ class CorsMiddleware
      */
     protected function buildCors(ServerRequestInterface $request, ResponseInterface $response)
     {
-        if (!$this->isConfigured()) {
+        if (!$this->isConfigured() || !($response instanceof Response)) {
             return $response;
         }
 
