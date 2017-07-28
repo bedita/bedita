@@ -174,7 +174,7 @@ ConnectionManager::setConfig(Configure::consume('Datasources') ?: []);
 Email::setConfigTransport(Configure::consume('EmailTransport') ?: []);
 Email::setConfig(Configure::consume('Email') ?: []);
 Log::setConfig(Configure::consume('Log') ?: []);
-Security::salt(Configure::consume('Security.salt'));
+Security::setSalt((string)Configure::consume('Security.salt'));
 FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);
 
 /*

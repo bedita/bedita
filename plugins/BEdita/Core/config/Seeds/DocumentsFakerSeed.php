@@ -17,7 +17,6 @@ class DocumentsFakerSeed extends AbstractSeed
             'status' => $faker->randomElement(['on', 'draft']),
             'description' => $faker->optional()->paragraph,
             'body' => $faker->optional()->text,
-            'description' => $faker->paragraph,
             'publish_start' => Time::now(),
         ];
         ObjectsHandler::save('documents', $data);

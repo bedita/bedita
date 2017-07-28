@@ -17,7 +17,6 @@ class EventsFakerSeed extends AbstractSeed
             'status' => $faker->randomElement(['on', 'draft']),
             'description' => $faker->optional()->paragraph,
             'body' => $faker->optional()->text,
-            'description' => $faker->paragraph,
             'date_ranges' => [
                 [
                     'start_date' => new Time($faker->dateTimeBetween('-30 days', '+30 days')),
@@ -29,6 +28,6 @@ class EventsFakerSeed extends AbstractSeed
                 ],
             ],
         ];
-        $entity = ObjectsHandler::save('events', $data);
+        ObjectsHandler::save('events', $data);
     }
 }
