@@ -209,8 +209,6 @@ class ProfilesTableTest extends TestCase
         $this->assertEquals(true, $this->Profiles->delete($profile));
 
         $inheritanceTables = $this->Profiles->inheritedTables();
-        // remove behavior to avoid auto contain() with inherited tables
-        $this->Profiles->removeBehavior('ClassTableInheritance');
         $inheritanceTables[] = $this->Profiles;
 
         foreach ($inheritanceTables as $table) {
