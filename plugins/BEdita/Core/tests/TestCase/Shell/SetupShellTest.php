@@ -375,11 +375,11 @@ class SetupShellTest extends ShellTestCase
                 false,
                 'gustavo',
             ],
-            // 'failure' => [
-            //     null,
-            //     true,
-            //     'bedita',
-            // ],
+            'failure' => [
+                null,
+                true,
+                'bedita',
+            ],
         ];
     }
 
