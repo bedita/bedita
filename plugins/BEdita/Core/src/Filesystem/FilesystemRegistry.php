@@ -127,7 +127,7 @@ class FilesystemRegistry extends ObjectRegistry
 
         $instance = static::getInstance();
         $instance->reset();
-        unset($instance->mountManager);
+        $instance->mountManager = null;
     }
 
     /**
