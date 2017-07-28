@@ -14,8 +14,9 @@ namespace BEdita\Core\Shell;
 
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\ListEntitiesAction;
+use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Console\Shell;
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -30,14 +31,14 @@ class ResourcesShell extends Shell
     /**
      * Accepted resource types
      *
-     * @var array
+     * @var string[]
      */
     protected $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
 
     /**
      * Editable resource fields
      *
-     * @var array
+     * @var string[]
      */
     protected $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
 
@@ -166,10 +167,10 @@ class ResourcesShell extends Shell
     /**
      * Setup entity for endpoint_permissions
      *
-     * @param \Cake\ORM\Entity $entity Entity to add
+     * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupEndpointPermissionEntity($entity)
+    protected function setupEndpointPermissionEntity(EntityInterface $entity)
     {
         $fieldsTables = [
             'application_id' => 'Applications',
@@ -181,31 +182,31 @@ class ResourcesShell extends Shell
             if ($id && !is_numeric($id)) {
                 $id = TableRegistry::get($table)->find()->where(['name' => $id])->firstOrFail()->id;
             }
-            $entity->$field = $id;
+            $entity->set($field, $id);
         }
 
         $perms = ['true', 'false', 'block', 'mine'];
         foreach (['read', 'write'] as $field) {
             $perm = $this->in("'$field' permission", $perms);
-            $entity->$field = $perm;
+            $entity->set($field, $perm);
         }
     }
 
     /**
      * Setup default entity for applications, roles, endpoints
      *
-     * @param \Cake\ORM\Entity $entity Entity to add
+     * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupDefaultEntity($entity)
+    protected function setupDefaultEntity(EntityInterface $entity)
     {
         $name = $this->in('Resource name');
         if (empty($name)) {
             $this->abort('Resource name cannot be empty');
         }
-        $entity->name = $name;
+        $entity->set('name', $name);
         $description = $this->in('Resource description (optional)');
-        $entity->description = $description;
+        $entity->set('description', $description);
     }
 
     /**
@@ -219,8 +220,8 @@ class ResourcesShell extends Shell
         $this->initModel();
         $entity = $this->getEntity($id);
         $field = $this->param('field');
-        if ($field === 'api_key') {
-             $entity->api_key = $this->modelTable->generateApiKey();
+        if ($field === 'api_key' && $this->modelTable instanceof ApplicationsTable) {
+             $entity->set('api_key', $this->modelTable->generateApiKey());
         } else {
             $value = $this->in(sprintf('New value for "%s" [current is "%s"]', $field, $entity->get($field)));
             $entity->set($field, $value);
@@ -273,7 +274,7 @@ class ResourcesShell extends Shell
      * Return entity by $id name|id
      *
      * @param mixed $id entity name|id
-     * @return \Cake\ORM\Entity entity
+     * @return \Cake\Datasource\EntityInterface entity
      */
     protected function getEntity($id)
     {

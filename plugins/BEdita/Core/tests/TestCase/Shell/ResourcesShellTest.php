@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Shell;
 
-use BEdita\Core\Shell\ResourcesShell;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
@@ -68,6 +67,7 @@ class ResourcesShellTest extends ShellTestCase
     /**
      * Test `add` method
      *
+     * @param string $type Resource type
      * @param string $name Resource name
      * @param string $description Resource description
      * @param bool $success Operation success
@@ -87,14 +87,14 @@ class ResourcesShellTest extends ShellTestCase
             ['Resource description (optional)', null, $description],
         ];
         $io->method('ask')
-             ->will($this->returnValueMap($map));
+             ->will(static::returnValueMap($map));
 
         $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
 
         if ($success) {
             $table = Inflector::camelize($type);
             $id = $this->resourceIdByName($table, $name);
-            $this->assertTrue(!empty($id));
+            static::assertTrue(!empty($id));
             TableRegistry::get($table)->delete($res);
         } else {
             $this->assertAborted();
@@ -152,7 +152,7 @@ class ResourcesShellTest extends ShellTestCase
             ['Roles id or name', null, $role],
         ];
         $io->method('ask')
-             ->will($this->returnValueMap($map));
+             ->will(static::returnValueMap($map));
 
         $perms = ['true', 'false', 'block', 'mine'];
         $mapChoice = [
@@ -160,7 +160,7 @@ class ResourcesShellTest extends ShellTestCase
             ["'write' permission", $perms, null, $write],
         ];
         $io->method('askChoice')
-             ->will($this->returnValueMap($mapChoice));
+             ->will(static::returnValueMap($mapChoice));
 
         $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
 
@@ -205,7 +205,10 @@ class ResourcesShellTest extends ShellTestCase
     /**
      * Test enable method
      *
-     * @param int $id resource identifier
+     * @param string $type Resource type.
+     * @param string|int $resId Resource ID or name.
+     * @param string $field Field to be updated.
+     * @param mixed|null $value New field value.
      * @return void
      *
      * @dataProvider editProvider
@@ -230,9 +233,9 @@ class ResourcesShellTest extends ShellTestCase
             [$inMsg, null, $value]
         ];
         $io->method('ask')
-             ->will($this->returnValueMap($map));
+             ->will(static::returnValueMap($map));
 
-        $res = $this->invoke(['resources', 'edit', '-t', $type, '-f', $field, $resId], [], $io);
+        $this->invoke(['resources', 'edit', '-t', $type, '-f', $field, $resId], [], $io);
 
         $entity = TableRegistry::get($modelName)->get($id);
         static::assertNotEquals($currValue, $entity->get($field));
@@ -240,7 +243,7 @@ class ResourcesShellTest extends ShellTestCase
             static::assertEquals($value, $entity->get($field));
         }
         // restore value
-        $entity->$field = $currValue;
+        $entity->set($field, $currValue);
         TableRegistry::get($modelName)->save($entity);
     }
 
@@ -285,7 +288,7 @@ class ResourcesShellTest extends ShellTestCase
             [$inMsg, ['y', 'n'], 'n']
         ];
         $io->method('askChoice')
-             ->will($this->returnValueMap($mapChoice));
+             ->will(static::returnValueMap($mapChoice));
 
         $res = $this->invoke(['resources', 'rm', '-t', 'applications', $entity->id], [], $io);
         static::assertFalse($res);
@@ -295,7 +298,7 @@ class ResourcesShellTest extends ShellTestCase
             [$inMsg, ['y', 'n'], 'n', 'y']
         ];
         $io->method('askChoice')
-             ->will($this->returnValueMap($mapChoice));
+             ->will(static::returnValueMap($mapChoice));
 
         $res = $this->invoke(['resources', 'rm', '-t', 'applications', $entity->id], [], $io);
         static::assertTrue($res);
@@ -306,14 +309,15 @@ class ResourcesShellTest extends ShellTestCase
         } catch (RecordNotFoundException $e) {
             $notFound = true;
         }
-        $this->assertTrue($notFound);
+        static::assertTrue($notFound);
     }
 
     /**
      * Return resource id find by $name name
      *
-     * @param string $name resource name
-     * @return int $id resource identifier
+     * @param string $modelName Model name.
+     * @param string $name Resource name.
+     * @return int $id Resource identifier.
      */
     private function resourceIdByName($modelName, $name)
     {
