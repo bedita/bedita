@@ -65,7 +65,7 @@ class SqlConventionsValidator extends Validator
      *
      * @var string
      */
-    const ALLOWED_DUPLICATES = 'created,description,enabled,id,label,modified,name,params,priority';
+    const ALLOWED_DUPLICATES = 'created,description,enabled,id,label,modified,name,params,priority,uuid';
 
     /**
      * List of reserved words.

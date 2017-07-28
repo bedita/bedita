@@ -14,12 +14,15 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SaveEntityAction;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
 
 /**
- * @covers \BEdita\Core\Model\Action\SaveEntityAction
+ * {@see \BEdita\Core\Model\Action\SaveEntityAction} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Action\SaveEntityAction
  */
 class SaveEntityActionTest extends TestCase
 {
@@ -37,6 +40,9 @@ class SaveEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::execute()
      */
     public function testExecute()
     {
@@ -61,8 +67,10 @@ class SaveEntityActionTest extends TestCase
      * @return void
      *
      * @expectedException \Cake\Network\Exception\BadRequestException
+     * @covers ::initialize()
+     * @covers ::execute()
      */
-    public function testExecuteErrors()
+    public function testExecuteValitationErrors()
     {
         $table = TableRegistry::get('FakeAnimals');
         $table->validator(
@@ -78,6 +86,33 @@ class SaveEntityActionTest extends TestCase
             'legs' => 1,
         ];
 
+        $action(compact('entity', 'data'));
+    }
+
+    /**
+     * Test command execution with save error.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @covers ::initialize()
+     * @covers ::execute()
+     */
+    public function testExecuteSaveErrors()
+    {
+        $entity = TableRegistry::get('FakeAnimals')->get(1);
+
+        $table = $this->getMockBuilder(Table::class)
+            ->getMock();
+
+        $table->method('patchEntity')
+            ->will(static::returnValue($entity));
+        $table->method('save')
+            ->will(static::returnValue(false));
+
+        $action = new SaveEntityAction(compact('table'));
+
+        $data = [];
         $action(compact('entity', 'data'));
     }
 }

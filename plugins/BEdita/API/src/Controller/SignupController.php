@@ -33,11 +33,7 @@ class SignupController extends AppController
         parent::initialize();
         $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
 
-        if ($this->request->getParam('action') === 'signup' && $this->JsonApi) {
-            $this->JsonApi->setConfig('resourceTypes', ['users']);
-        }
-
-        if ($this->request->getParam('action') === 'activation' && $this->request->contentType() === 'application/json') {
+        if ($this->request->contentType() === 'application/json') {
             $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
         }
     }
@@ -52,18 +48,9 @@ class SignupController extends AppController
         $this->request->allowMethod('post');
 
         $data = $this->request->getData();
-        if (!empty($data['password'])) {
-            $data['password_hash'] = $data['password'];
-            unset($data['password']);
-        }
-
-        $urlOptions = $this->request->getData('_meta') ?: [];
 
         $action = new SignupUserAction();
-        $user = $action->execute([
-            'data' => $data,
-            'urlOptions' => $urlOptions
-        ]);
+        $user = $action->execute(compact('data'));
 
         $this->response = $this->response->withStatus(202);
 

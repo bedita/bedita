@@ -27,6 +27,8 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -160,7 +162,7 @@ abstract class ResourcesController extends AppController
             $data = $action(compact('entity', 'data'));
 
             $action = new GetEntityAction(['table' => $this->Table]);
-            $data = $action(['primaryKey' => $data->id]);
+            $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
 
             $this->response = $this->response
                 ->withStatus(201)
@@ -259,9 +261,11 @@ abstract class ResourcesController extends AppController
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
         $action = new ListAssociatedAction(compact('association'));
-        $query = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $data = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
 
-        $data = $this->paginate($query);
+        if ($data instanceof Query) {
+            $data = $this->paginate($data);
+        }
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
@@ -279,12 +283,17 @@ abstract class ResourcesController extends AppController
      */
     public function relationships()
     {
-        $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
-
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
+
+        $allowedMethods = ['get', 'post', 'patch', 'delete'];
+        if ($association instanceof BelongsTo || $association instanceof HasOne) {
+            // For to-one relationship, POST and DELETE are not implemented.
+            $allowedMethods = ['get', 'patch'];
+        }
+        $this->request->allowMethod($allowedMethods);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
