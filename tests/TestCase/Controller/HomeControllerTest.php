@@ -35,6 +35,7 @@ class HomeControllerTest extends IntegrationTestCase
     public function testIndex()
     {
         $project = Configure::read('Project');
+        $version = Configure::read('BEdita.version');
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/home',
@@ -254,6 +255,7 @@ class HomeControllerTest extends IntegrationTestCase
                     ],
                 ],
                 'project' => $project,
+                'version' => $version,
             ],
         ];
 
