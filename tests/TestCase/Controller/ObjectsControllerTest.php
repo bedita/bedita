@@ -28,6 +28,8 @@ class ObjectsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.locations',
         'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.streams',
+        'plugin.BEdita/Core.media',
     ];
 
     /**
@@ -51,10 +53,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 7,
+                    'count' => 8,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 7,
+                    'page_items' => 8,
                     'page_size' => 20,
                 ],
             ],
@@ -308,6 +310,40 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/events/9',
+                    ],
+                ],
+                [
+                    'id' => '10',
+                    'type' => 'media',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-one',
+                        'title' => 'first media',
+                        'description' => 'media description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2017-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/media/10',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/media/10/streams',
+                                'self' => 'http://api.example.com/media/10/relationships/streams',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -574,7 +610,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
-        $this->assertHeader('Location', 'http://api.example.com/documents/10');
+        $this->assertHeader('Location', 'http://api.example.com/documents/11');
         static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
@@ -1706,5 +1742,76 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test listing streams for an object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFilter()
+     */
+    public function testStreamsRelationshipsList()
+    {
+        $id = '9e58fa47-db64-4479-a0ab-88a706180d59';
+        $data = [
+            [
+                'id' => $id,
+                'type' => 'streams',
+                'meta' => [
+                    'url' => null,
+                ],
+                'links' => [
+                    'self' => sprintf('http://api.example.com/streams/%s', $id),
+                ],
+                'relationships' => [
+                    'object' => [
+                        'links' => [
+                            'related' => sprintf('http://api.example.com/streams/%s/object', $id),
+                            'self' => sprintf('http://api.example.com/streams/%s/relationships/object', $id),
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/media/10/relationships/streams');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('data', $response);
+        static::assertSame($data, $response['data']);
+    }
+
+    /**
+     * Test that relationships can only be managed from the streams side.
+     *
+     * @return void
+     *
+     * @covers ::beforeFilter()
+     */
+    public function testStreamsRelationshipsManage()
+    {
+        $data = [
+            [
+                'id' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                'type' => 'streams',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->authUser());
+        $this->patch('/media/10/relationships/streams', json_encode(compact('data')));
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->assertResponseContains(__d(
+            'bedita',
+            'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
+        ));
     }
 }
