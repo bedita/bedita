@@ -65,7 +65,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
 
-        $this->eventManager()->on($this);
+        $this->getEventManager()->on($this);
     }
 
     /**

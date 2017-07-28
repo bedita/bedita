@@ -15,7 +15,6 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\ObjectsHandler;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -95,7 +94,7 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::save()
-     * @expectedException Cake\Console\Exception\StopException
+     * @expectedException \Cake\Console\Exception\StopException
      */
     public function testSaveException()
     {
@@ -122,7 +121,7 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::remove()
-     * @expectedException Cake\Datasource\Exception\RecordNotFoundException
+     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testDeleteException()
     {
@@ -134,7 +133,7 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::checkEnvironment()
-     * @expectedException Cake\Console\Exception\StopException
+     * @expectedException \Cake\Console\Exception\StopException
      */
     public function testEnvironment()
     {

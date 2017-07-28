@@ -133,7 +133,7 @@ class ObjectsTableTest extends TestCase
         $object = $this->Objects->newEntity($data);
         $object->type = 'documents';
 
-        $error = (bool)$object->errors();
+        $error = (bool)$object->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {

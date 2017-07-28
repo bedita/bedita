@@ -14,7 +14,6 @@ namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utility\Database;
 use Cake\Console\Shell;
-use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;

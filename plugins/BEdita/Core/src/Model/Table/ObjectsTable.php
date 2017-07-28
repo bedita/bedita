@@ -132,7 +132,7 @@ class ObjectsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('extra', 'json');
+        $schema->setColumnType('extra', 'json');
 
         return $schema;
     }

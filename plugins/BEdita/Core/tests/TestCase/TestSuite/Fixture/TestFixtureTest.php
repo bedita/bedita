@@ -88,10 +88,10 @@ class TestFixtureTest extends TestCase
     public function testImplementedEvents()
     {
         $rolesFixture = new RolesFixture();
-        $this->assertCount(0, $rolesFixture->eventManager()->listeners('TestFixture.beforeBuildSchema'));
+        $this->assertCount(0, $rolesFixture->getEventManager()->listeners('TestFixture.beforeBuildSchema'));
 
         $objectsFixture = new ObjectsFixture();
-        $this->assertCount(1, $objectsFixture->eventManager()->listeners('TestFixture.beforeBuildSchema'));
+        $this->assertCount(1, $objectsFixture->getEventManager()->listeners('TestFixture.beforeBuildSchema'));
     }
 
     /**

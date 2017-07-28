@@ -645,7 +645,7 @@ class TableTest extends TestCase
         static::assertEquals($clone->behaviors(), $this->fakeMammals->behaviors());
         static::assertNotSame($clone->behaviors(), $this->fakeMammals->behaviors());
 
-        static::assertEquals($clone->eventManager(), $this->fakeMammals->eventManager());
-        static::assertNotSame($clone->eventManager(), $this->fakeMammals->eventManager());
+        static::assertEquals($clone->getEventManager(), $this->fakeMammals->getEventManager());
+        static::assertNotSame($clone->getEventManager(), $this->fakeMammals->getEventManager());
     }
 }

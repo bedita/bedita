@@ -64,7 +64,7 @@ class GetObjectActionTest extends TestCase
         $table = TableRegistry::get('Objects');
         $action = new GetObjectAction(compact('table', 'objectType'));
 
-        $result = $action(['primaryKey' => 8]);
+        $action(['primaryKey' => 8]);
     }
 
     /**

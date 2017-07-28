@@ -162,7 +162,7 @@ class ObjectTypesTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('associations', 'json');
+        $schema->setColumnType('associations', 'json');
 
         return $schema;
     }

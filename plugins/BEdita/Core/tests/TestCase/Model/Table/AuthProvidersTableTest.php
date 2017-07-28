@@ -77,7 +77,7 @@ class AuthProvidersTableTest extends TestCase
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->AuthProviders->ExternalAuth);
 
-        $this->assertEquals('json', $schema->columnType('params'));
+        $this->assertEquals('json', $schema->getColumnType('params'));
     }
 
     /**
@@ -131,7 +131,7 @@ class AuthProvidersTableTest extends TestCase
         $authProvider = $this->AuthProviders->newEntity();
         $this->AuthProviders->patchEntity($authProvider, $data);
 
-        $error = (bool)$authProvider->errors();
+        $error = (bool)$authProvider->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {

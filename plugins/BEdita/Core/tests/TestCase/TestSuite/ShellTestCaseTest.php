@@ -14,7 +14,6 @@ namespace BEdita\Core\Test\TestCase\TestSuite;
 
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Console\Shell;
-use Cake\TestSuite\TestCase;
 
 /**
  * SimpleShell class
@@ -32,7 +31,7 @@ class SimpleShell extends Shell
     /**
      * Write output
      *
-     * @return null
+     * @return void
      */
     public function writeOutput()
     {
@@ -43,7 +42,7 @@ class SimpleShell extends Shell
     /**
      * Write error
      *
-     * @return null
+     * @return void
      */
     public function writeError()
     {
@@ -54,7 +53,7 @@ class SimpleShell extends Shell
     /**
      * Fatal error
      *
-     * @return null
+     * @return void
      */
     public function writeFatalError()
     {
@@ -64,7 +63,7 @@ class SimpleShell extends Shell
     /**
      * Abort
      *
-     * @return null
+     * @return void
      */
     public function writeAbort()
     {
@@ -109,7 +108,10 @@ class ShellTestCaseTest extends ShellTestCase
     /**
      * Test invoke
      *
+     * @param int $expected Expected exit code.
+     * @param string $shellMethod Shell method to be invoked.
      * @return void
+     *
      * @dataProvider invokeProvider
      * @covers ::invoke()
      */

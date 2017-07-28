@@ -206,7 +206,7 @@ class ListAssociatedAction extends BaseAction
             $query = $query->select($this->Association->junction());
         }
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $query = $query->order($this->Association->sort());
+            $query = $query->order($this->Association->getSort());
         }
 
         $primaryKeyConditions = $this->primaryKeyConditions($inverseAssociation->getTarget(), $primaryKey);
