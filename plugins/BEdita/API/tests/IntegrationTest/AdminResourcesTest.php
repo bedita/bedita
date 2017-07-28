@@ -32,6 +32,8 @@ class AdminResourcesTest extends IntegrationTestCase
 
     /**
      * Data provider for `testResource`
+     *
+     * @return array
      */
     public function resourceProvider()
     {
@@ -85,6 +87,8 @@ class AdminResourcesTest extends IntegrationTestCase
      * @param $type string Resource type name
      * @param $attributes array Resource attributes to insert
      * @param $modified array Resource attributes to modify
+     * @return void
+     *
      * @dataProvider resourceProvider
      * @coversNothing
      */
@@ -111,7 +115,6 @@ class AdminResourcesTest extends IntegrationTestCase
         // VIEW
         $this->configRequestHeaders();
         $this->get("$endpoint/$resourceId");
-        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 

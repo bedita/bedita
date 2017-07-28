@@ -115,7 +115,6 @@ class AdminControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/admin/applications', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
 
         static::assertResponseCode(201);
         static::assertContentType('application/vnd.api+json');

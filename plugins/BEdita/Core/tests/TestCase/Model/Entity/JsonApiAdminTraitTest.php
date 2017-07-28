@@ -13,10 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\JsonApiAdminTrait} Test Case
