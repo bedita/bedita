@@ -15,8 +15,10 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Routing\Router;
+use Zend\Diactoros\Stream;
 
 /**
  * Controller for `/streams` endpoint.
@@ -41,6 +43,43 @@ class StreamsController extends ResourcesController
      * {@inheritDoc}
      */
     public $modelClass = 'Streams';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function beforeFilter(Event $event)
+    {
+        // Decode base64-encoded body.
+        if ($this->request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
+            // Check if any suitable stream filter is available.
+            $filter = null;
+            $filters = stream_get_filters();
+            if (in_array('string.base64', $filters)) {
+                $filter = 'string.base64';
+            } elseif (in_array('convert.*', $filters)) {
+                $filter = 'convert.base64-decode';
+            }
+
+            if (!empty($filter)) {
+                // Append filter to stream.
+                $body = $this->request->getBody();
+
+                $stream = $body->detach();
+                stream_filter_append($stream, $filter, STREAM_FILTER_READ);
+
+                $body = new Stream($stream, 'r');
+                $this->request = $this->request->withBody($body);
+            } else {
+                // No suitable filter available. Read whole stream and decode it.
+                $body = new Stream('php://temp', 'wb+');
+                $body->write(base64_decode($this->request->getBody()->getContents()));
+                $body->rewind();
+                $this->request = $this->request->withBody($body);
+            }
+        }
+
+        return parent::beforeFilter($event);
+    }
 
     /**
      * Upload a new stream.

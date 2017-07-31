@@ -144,6 +144,7 @@ class StreamsControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::upload()
+     * @covers ::beforeFilter()
      */
     public function testUpload()
     {
@@ -165,6 +166,58 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
         $this->post(sprintf('/streams/upload/%s', $fileName), $contents);
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('data', $response);
+        static::assertArrayHasKey('id', $response['data']);
+        static::assertArrayHasKey('type', $response['data']);
+        static::assertArrayHasKey('attributes', $response['data']);
+        static::assertArrayHasKey('meta', $response['data']);
+        static::assertArrayHasKey('links', $response);
+
+        $id = $response['data']['id'];
+        $url = sprintf('http://api.example.com/streams/%s', $id);
+        $meta['url'] = sprintf('https://static.example.org/files/%s-synapse.js', $id);
+        static::assertTrue(Validation::uuid($id));
+        static::assertSame('streams', $response['data']['type']);
+        static::assertEquals($attributes, $response['data']['attributes']);
+        static::assertArraySubset($meta, $response['data']['meta']);
+
+        $this->assertHeader('Location', $url);
+    }
+
+    /**
+     * Test upload method.
+     *
+     * @return void
+     *
+     * @covers ::upload()
+     * @covers ::beforeFilter()
+     */
+    public function testUploadBase64()
+    {
+        $fileName = 'synapse.js';
+        $contents = 'exports.synapse = Promise.resolve();';
+        $contentType = 'text/javascript';
+
+        $attributes = [
+            'file_name' => $fileName,
+            'mime_type' => $contentType,
+        ];
+        $meta = [
+            'version' => 1,
+            'file_size' => strlen($contents),
+            'hash_md5' => md5($contents),
+            'hash_sha1' => sha1($contents),
+            'url' => null,
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType, 'Content-Transfer-Encoding' => 'base64']);
+        $this->post(sprintf('/streams/upload/%s', $fileName), base64_encode($contents));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
