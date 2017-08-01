@@ -148,8 +148,7 @@ class Stream extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $stream = new ZendStream('php://temp', 'wb+');
-        $stream->attach($readStream);
+        $stream = new ZendStream($readStream, 'r');
 
         return $this->_properties['contents'] = $stream;
     }
@@ -196,8 +195,7 @@ class Stream extends Entity implements JsonApiSerializable
 
         // Stream.
         rewind($resource);
-        $stream = new ZendStream('php://temp', 'wb+');
-        $stream->attach($resource);
+        $stream = new ZendStream($resource, 'r');
 
         return $stream;
     }
