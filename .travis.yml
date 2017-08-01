@@ -6,6 +6,8 @@ php:
     - 5.5
     - 5.6
 
+dist: precise
+
 before_script:
     - mysql -e 'CREATE DATABASE bedita;'
     - mysql -e 'CREATE DATABASE bedita_test;'
