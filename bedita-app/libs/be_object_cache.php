@@ -312,9 +312,10 @@ class BeObjectCache {
      *
      * @param int $id Object ID.
      * @param string $statuses Allowed object statuses.
+     * @param int $publicationId The publication id
      * @return array|null
      */
-    public function readPathCache($id, array $statuses = array()) {
+    public function readPathCache($id, array $statuses = array(), $publicationId = null) {
         if ($this->hasFileEngine()) {
             return null;
         }
@@ -327,7 +328,9 @@ class BeObjectCache {
             $status = 'off';
         }
 
-        return Cache::read(sprintf('path-%d-%s', (int)$id, $status), 'objects');
+        $publicationId = ($publicationId === null) ? '' : (string)$publicationId;
+
+        return Cache::read(sprintf('path-%d-%s-%s', (int)$id, $status, $publicationId), 'objects');
     }
 
     /**
@@ -336,9 +339,10 @@ class BeObjectCache {
      * @param int $id Object ID.
      * @param array $path Object path.
      * @param string $statuses Allowed object statuses.
+     * @param int $publicationId The publication id
      * @return bool
      */
-    public function writePathCache($id, array $path, array $statuses = array()) {
+    public function writePathCache($id, array $path, array $statuses = array(), $publicationId = null) {
         if ($this->hasFileEngine()) {
             return false;
         }
@@ -350,7 +354,10 @@ class BeObjectCache {
         if (in_array('off', $statuses)) {
             $status = 'off';
         }
-        return $this->writeIndexedCache($id, sprintf('path-%d-%s', (int)$id, $status), $path);
+
+        $publicationId = ($publicationId === null) ? '' : (string)$publicationId;
+
+        return $this->writeIndexedCache($id, sprintf('path-%d-%s-%s', (int)$id, $status, $publicationId), $path);
     }
 
     /**

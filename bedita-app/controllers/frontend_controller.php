@@ -2397,7 +2397,7 @@ abstract class FrontendController extends AppController {
      */
     protected function getPath($object_id) {
         $publicationId = (!empty($this->publication['id'])) ? $this->publication['id'] : null; // it should not happen... but if it happens, no warnings on $this->publication['id']
-        if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status))) {
+        if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status, $publicationId))) {
             $firstParent = reset($pathArr);
             if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $publicationId) {
                 throw new BeditaNotFoundException('Object id ' . $object_id . ' - Wrong publication: ' . $firstParent['area_id'] . ' expected: ' . $publicationId);
@@ -2479,7 +2479,7 @@ abstract class FrontendController extends AppController {
         }
 
         if ($this->BeObjectCache) {
-            $this->BeObjectCache->writePathCache($object_id, $pathArr, $this->status);
+            $this->BeObjectCache->writePathCache($object_id, $pathArr, $this->status, $publicationId);
         }
 
         return $pathArr;
