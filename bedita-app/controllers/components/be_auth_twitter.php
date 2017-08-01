@@ -13,307 +13,376 @@ App::import('Vendor', 'twitteroauth', array('file' => 'twitteroauth' . DS . 'twi
 
 /**
  * Twitter User auth component
-*/
+ */
 class BeAuthTwitterComponent extends BeAuthComponent{
-    var $components = array('Transaction');
-    var $uses = array('Image', 'Card');
-    public $userAuth = 'twitter';
-    protected $params = null;
-    protected $vendorController = null;
-    protected $userIdPrefix = 'twitter-';
-    public $relatedBy = 'nickname';
-    public $disabled = false;
 
-    public function startup($controller=null) {
+    /**
+     * Components used by this component.
+     *
+     * @var array
+     */
+    public $components = array('Transaction');
+
+    /**
+     * Models used by this component.
+     *
+     * @var array
+     */
+    public $uses = array('Card', 'Image', 'User');
+
+    /**
+     * Code name of this authentication method.
+     *
+     * @var string
+     */
+    public $userAuth = 'twitter';
+
+    /**
+     * Authentication parameters.
+     *
+     * @var array
+     */
+    protected $params = null;
+
+    /**
+     * Facebook API controller.
+     *
+     * @var ???
+     */
+    protected $vendorController = null;
+
+    /**
+     * User ID prefix.
+     *
+     * @var string
+     * @deprecated
+     */
+    protected $userIdPrefix = 'twitter-';
+
+    /**
+     * Related by.
+     *
+     * @var string
+     * @deprecated
+     */
+    public $relatedBy = 'nickname';
+
+    /**
+     * Component startup.
+     *
+     * @param Controller $controller
+     * @return bool
+     */
+    public function startup($controller = null) {
         $this->controller = $controller;
         $this->Session = $controller->Session;
 
-        $this->params = Configure::read("extAuthParams");
-
-        if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
-            $this->vendorController = new TwitterOAuth(
-                    $this->params[$this->userAuth]['keys']['appId'],
-                    $this->params[$this->userAuth]['keys']['secret']
-                );
-            return true;
-        } else {
+        /** Read external auth parameters. */
+        $params = Configure::read('extAuthParams') ?: array();
+        if (!isset($params[$this->userAuth]) || !isset($params[$this->userAuth]['keys'])) {
             return false;
         }
+
+        /** Prepare params for this auth method. */
+        $this->params = $params[$this->userAuth];
+
+        /** Init vendor controller. */
+        $this->vendorController = new TwitterOAuth(
+            $this->params['keys']['appId'],
+            $this->params['keys']['secret']
+        );
+
+        /** Init models. */
+        foreach ($this->uses as $model) {
+            $this->$model = ClassRegistry::init($model);
+        }
+
+        return true;
     }
 
+    /**
+     * Check session key.
+     *
+     * @return bool
+     */
     protected function checkSessionKey() {
-        if (isset( $this->vendorController )) {
-            if(!empty($_REQUEST['oauth_verifier']) && $this->Session->check('twitterOauthTokens')) {
-                $oauthTokens = $this->Session->read('twitterOauthTokens');
-                if (isset($oauthTokens['oauth_token'])) {
-                    $this->vendorController = new TwitterOAuth(
-                            $this->params[$this->userAuth]['keys']['appId'],
-                            $this->params[$this->userAuth]['keys']['secret'],
-                            $oauthTokens['oauth_token'],
-                            $oauthTokens['oauth_token_secret']
-                        );
-
-                    $accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
-                    $this->Session->write('twitterAccessTokens', $accessTokens);
-                } else {
-                    $this->Session->delete('twitterOauthTokens');
-                    return false;
-                }
-            }
-
-            $profile = $this->loadProfile();
-            if ($profile != null) {
-                /*if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
-                    $this->createUser($profile);
-                }*/
-                return $this->login();
-            }
-            return false;
-        } else {
+        if (!isset($this->vendorController)) {
             return false;
         }
+
+        if (!empty($_REQUEST['oauth_verifier']) && $this->Session->check('twitterOauthTokens')) {
+            $oauthTokens = $this->Session->read('twitterOauthTokens');
+            if (!isset($oauthTokens['oauth_token'])) {
+                $this->Session->delete('twitterOauthTokens');
+                return false;
+            }
+
+            $this->vendorController = new TwitterOAuth(
+                $this->params['keys']['appId'],
+                $this->params['keys']['secret'],
+                $oauthTokens['oauth_token'],
+                $oauthTokens['oauth_token_secret']
+            );
+
+            $accessTokens = @$this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
+            $this->Session->write('twitterAccessTokens', $accessTokens);
+        }
+
+        $profile = $this->loadProfile();
+        if (!$profile) {
+            return false;
+        }
+
+        if (!empty($this->params['createUser'])) {
+            $this->log("Creating user [{$profile->screen_name}]...", 'info');
+            $this->createUser($profile, !empty($this->params['groups']) ? $this->params['groups'] : array());
+        }
+
+        return $this->login();
     }
 
+    /**
+     * Perform login action.
+     *
+     * @return bool
+     */
     public function login() {
+        if (!isset($this->vendorController)) {
+            return;
+        }
+
         $policy = $this->Session->read($this->sessionKey . 'Policy');
         $authGroupName = $this->Session->read($this->sessionKey . 'AuthGroupName');
         $userid = null;
 
-        if (!isset( $this->vendorController )) {
-            return;
-        }
-
-        if ($this->Session->check('twitterProfile')) {
-            $profile = $this->loadProfile();
-            if ($profile != null) {
-                $userid = $profile->screen_name;
-            }
-        }
-
-        //get the user
-        if ($userid) {
-            //BE user
-            $user = ClassRegistry::init('User');
-            $user->containLevel("default");
-            $u = $user->find('first', array(
-                    'conditions' => array(
-                        'auth_params' => $userid,
-                        'auth_type' => $this->userAuth
-                    )
-                )
-            );
-
-            if (empty($u['User'])) {
-                $this->Session->write('externalLoginRequestFailed', $userid);
-                return false;
-            }
-
-            $userid = $u['User']['userid'];
-
-            if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
-                return false;
-            }
-            return true;
-
-        } else { 
-            //get tokens
+        /** Get user profile, or redirect to OAuth login. */
+        if (!$this->Session->check('twitterProfile') || !($profile = $this->loadProfile())) {
             $this->loginUrl();
+            return null;
         }
+
+        /** Get user data. */
+        $this->User->containLevel('default');
+        $userData = $this->User->find('first', array(
+            'conditions' => array(
+                'auth_params' => $profile->screen_name,
+                'auth_type' => $this->userAuth,
+            ),
+        ));
+
+        if (empty($userData['User'])) {
+            $this->Session->write('externalLoginRequestFailed', $profile->screen_name);
+            return false;
+        }
+
+        return $this->loginPolicy($userData['User']['userid'], $userData, $policy, $authGroupName);
     }
 
+    /**
+     * Redirect to Twitter login URL.
+     */
+    protected function loginUrl() {
+        /** Get redirect URL. */
+        $redirectUrl = $this->getCurrentUrl();
+        if (!empty($this->params['redirectUrl'])) {
+            $redirectUrl = $this->params['redirectUrl'];
+        }
+
+        $requestToken = $this->vendorController->getRequestToken($redirectUrl);
+        $this->Session->write('twitterOauthTokens', $requestToken);
+        $url = $this->vendorController->getAuthorizeURL($requestToken);
+        $this->controller->redirect($url);
+    }
+
+    /**
+     * Logout.
+     */
     public function logout() {
         $this->Session->delete('twitterAccessTokens');
         $this->Session->delete('twitterOauthTokens');
         $this->Session->delete('twitterProfile');
     }
 
-    protected function getCurrentUrl() {
-        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-            $protocol = 'https://';
-        } else {
-            $protocol = 'http://';
-        }
-        $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $parts = parse_url($currentUrl);
-
-        // use port if non default
-        $port = isset($parts['port']) && (($protocol === 'http://' && $parts['port'] !== 80) || ($protocol === 'https://' && $parts['port'] !== 443)) ? ':' . $parts['port'] : '';
-
-        // rebuild
-        return $protocol . $parts['host'] . $port . $parts['path'];
-    }
-
-    protected function loginUrl() {
-        $requestToken = $this->vendorController->getRequestToken($this->getCurrentUrl());
-        $this->Session->write('twitterOauthTokens', $requestToken);
-        $url = $this->vendorController->getAuthorizeURL($requestToken);
-        $this->controller->redirect($url);
-    }
-
-    public function getUser() {
-        return $this->user;
-    }
-
+    /**
+     * Load a profile.
+     *
+     * @return array|null
+     */
     public function loadProfile() {
         if ($this->Session->check('twitterProfile')) {
             return $this->Session->read('twitterProfile');
         }
-        if ($this->Session->check('twitterAccessTokens')) {
-            $accessTokens = $this->Session->read('twitterAccessTokens');
-            if (!empty($accessTokens['oauth_token'])) {
-                $this->vendorController = new TwitterOAuth(
-                        $this->params[$this->userAuth]['keys']['appId'],
-                        $this->params[$this->userAuth]['keys']['secret'],
-                        $accessTokens['oauth_token'],
-                        $accessTokens['oauth_token_secret']
-                    );
-                $profile = $this->vendorController->get('account/verify_credentials');
-                if (property_exists($profile, 'id')) {
-                    $this->Session->write('twitterProfile', $profile);
-                    return $profile;
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } else {
+        if (!$this->Session->check('twitterAccessTokens')) {
             return null;
         }
-    }
 
-    public function createUser($profile = null, $groups = array(), $createCard = false) {
-        if ($profile == null) {
-            $profile = $this->loadProfile();
-        }
-
-        $user = ClassRegistry::init('User');
-        $user->containLevel("minimum");
-
-        $u = $user->find('first', array(
-                'conditions' => array(
-                    'auth_params' => $profile->screen_name,
-                    'auth_type' => $this->userAuth
-                )
-            )
-        );
-
-        if(!empty($u["User"])) {
-            return $u;
-        }
-
-        //create the data array
-        $res = array();
-        $res['User'] = array(
-            'userid' => $profile->id,
-            'realname' => $profile->name,
-            'auth_type' => $this->userAuth,
-            'auth_params' => $profile->id
-        );
-
-        $res['Groups'] = $groups;
-
-        //create the BE user
-        $this->userGroupModel($res, $groups);
-        
-        $user->create();
-        if(!$user->save($res)) {
-            throw new BeditaException(__("Error saving user", true), $user->validationErrors);
-        }
- 
-        $u = $user->findByUserid($res['User']['userid']);
-        if(!empty($u["User"])) {
-            if ($createCard) {
-                $this->createCard($u, $profile);
-            }
-            return $u;
-        } else {
+        $accessTokens = $this->Session->read('twitterAccessTokens');
+        if (empty($accessTokens['oauth_token'])) {
             return null;
         }
-    }
 
-    public function createCard($u, $profile = null) {
-        $res = array();
-        
-        if ($profile == null) {
-            $profile = $this->loadProfile();
-            if ($profile == null) {
-                return false;
-            }
-        }        
-
-        $res = array(
-            'title' => $profile->name,
-            'avatar' => $profile->profile_image_url
+        $this->vendorController = new TwitterOAuth(
+            $this->params['keys']['appId'],
+            $this->params['keys']['secret'],
+            $accessTokens['oauth_token'],
+            $accessTokens['oauth_token_secret']
         );
 
-        $card = ClassRegistry::init("ObjectUser")->find("first", array(
-            "conditions" => array("user_id" => $u['User']['id'], "switch" => "card" )
+        $profile = $this->vendorController->get('account/verify_credentials');
+        if (empty($profile->id)) {
+            return null;
+        }
+
+        $this->Session->write('twitterProfile', $profile);
+
+        return $profile;
+    }
+
+    /**
+     * Create a user profile.
+     *
+     * @param array $profile
+     * @param array $groups
+     * @param bool $createCard
+     * @return array|null
+     * @throws BeditaException Throws an exception if profile could not be created.
+     */
+    public function createUser($profile, $groups = array(), $createCard = false) {
+        $this->User->containLevel('default');
+
+        /** Check if user already exists. */
+        $userData = $this->User->find('first', array(
+            'conditions' => array(
+                'auth_params' => $profile->screen_name,
+                'auth_type' => $this->userAuth,
+            ),
         ));
+        if (!empty($userData['User'])) {
+            return $userData;
+        }
 
+        /** Prepare data. */
         $data = array(
-            "title" => "",
-            "name" => "",
-            "surname" => "",
-            "birthdate" => "",
-            "person_title" => "",
-            "gender" => "",
-            "status" => "on",
-            "ObjectUser" =>  array(
-                    "card" => array(
-                        0 => array(
-                            "user_id" => $u['User']['id']
-                        )
-                    )
-                )
+            'User' => array(
+                'userid' => $profile->id,
+                'realname' => $profile->name,
+                'auth_type' => $this->userAuth,
+                'auth_params' => $profile->screen_name,
+            ),
         );
 
-        $data = array_merge($data, $res);
+        /** Create the BE user. */
+        $this->userGroupModel($data, $groups);
+        $this->User->create();
+        if(!$this->User->save($data)) {
+            throw new BeditaException(__('Error saving user', true), $this->User->validationErrors);
+        }
 
-        $avatarId = null;
-        if (!empty($data['avatar'])) {
-            $avatar = $this->uploadAvatarByUrl($data);
-            $avatarId = $avatar->id;
-            if ($avatarId) {
-                $data['RelatedObject'] = array(
-                    'attach' => array()
-                );
+        $userData = $this->User->findByUserid($data['User']['userid']);
+        if (empty($userData['User'])) {
+            return null;
+        }
+        if ($createCard) {
+            $this->createCard($userData, $profile);
+        }
 
-                $data['RelatedObject']['attach'][$avatarId] = array(
-                    'id' => $avatarId
+        return $userData;
+    }
+
+    /**
+     * Create a card for the user.
+     *
+     * @param array $user
+     * @param array|null $profile
+     * @return Model
+     * @throws BeditaRuntimeException Throws an exception if card could not be created.
+     */
+    public function createCard($user, $profile = null) {
+        /** Prepare data. */
+        $profile = $profile ?: $this->loadProfile();
+        $this->data = array(
+            'title' => $profile->name,
+            'email' => '',
+            'name' => '',
+            'surname' => '',
+            'birthdate' => '',
+            'gender' => '',
+            'person_title' => '',
+            'avatar' => $profile->profile_image_url,
+            'status' => 'on',
+            'ObjectUser' =>  array(
+                'card' => array(
+                    0 => array(
+                        'user_id' => $user['User']['id']
+                    ),
+                ),
+            ),
+        );
+
+        /** Download avatar. */
+        if (!empty($this->data['avatar'])) {
+            $avatar = $this->uploadAvatarByUrl($this->data);
+            if ($avatar->id) {
+                $this->data['RelatedObject'] = array(
+                    'attach' => array(
+                        $avatar->id => array(
+                            'id' => $avatar->id,
+                        ),
+                    ),
                 );
             }
         }
 
-        $this->data = $data;
-
+        /** Save card. */
         $this->Transaction->begin();
-
-        $cardModel = ClassRegistry::init("Card");
-        if (!$cardModel->save($this->data)) {
-            throw new BeditaRuntimeException(__("Error saving user data", true), $cardModel->validationErrors);
+        if (!$this->Card->save($this->data)) {
+            throw new BeditaRuntimeException(__('Error saving user data', true), $this->Card->validationErrors);
         }
-
         $this->Transaction->commit();
- 
-        return $cardModel;
+
+        return $this->Card;
     }
 
+    /**
+     * Upload user's avatar.
+     *
+     * @param array $userData
+     * @return Model
+     * @throws BeditaRuntimeException Throws an exception if image could not be saved.
+     */
     protected function uploadAvatarByUrl($userData) {
+        /** Prepare data. */
         $this->data = array(
-            'title' => $userData['title'] . '\'s avatar',
+            'title' => "{$userData['title']}'s avatar",
             'uri' => $userData['avatar'],
             'status' => 'on'
         );
-        $this->Transaction->begin();
 
-        $mediaModel = ClassRegistry::init("Image");
-        if (!$mediaModel->save($this->data)) {
-            throw new BeditaRuntimeException(__("Error saving avatar data", true), $mediaModel->validationErrors);
+        /** Save avatar. */
+        $this->Transaction->begin();
+        if (!$this->Image->save($this->data)) {
+            throw new BeditaRuntimeException(__('Error saving avatar data', true), $this->Image->validationErrors);
         }
         $this->Transaction->commit();
-        return $mediaModel;
+
+        return $this->Image;
+    }
+
+    /**
+     * Get current URL.
+     *
+     * @return string
+     */
+    protected function getCurrentUrl() {
+        $isSecure = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1);
+        $isSecure = $isSecure || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https';
+        $protocol = $isSecure ? 'https://' : 'http://';
+
+        $parts = parse_url($protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
+        $isDefaultPort = !isset($parts['port']) || (!$isSecure && $parts['port'] == 80) || ($isSecure && $parts['port'] == 443);
+        $port = !$isDefaultPort ? ':' . $parts['port'] : '';
+
+        return $protocol . $parts['host'] . $port . $parts['path'];
     }
 }
-?>
