@@ -14,11 +14,14 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\DeleteEntityAction;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\DeleteEntityAction
+ * {@see \BEdita\Core\Model\Action\DeleteEntityAction} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Action\DeleteEntityAction
  */
 class DeleteEntityActionTest extends TestCase
 {
@@ -36,6 +39,9 @@ class DeleteEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
+
+     * @covers ::initialize()
+     * @covers ::execute()
      */
     public function testExecute()
     {
@@ -48,5 +54,26 @@ class DeleteEntityActionTest extends TestCase
 
         static::assertTrue($result);
         static::assertFalse($table->exists(['id' => 1]));
+    }
+
+    /**
+     * Test command execution with delete error.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @covers ::execute()
+     */
+    public function testDeleteErrors()
+    {
+        $entity = TableRegistry::get('FakeAnimals')->get(1);
+
+        $table = $this->getMockBuilder(Table::class)
+            ->getMock();
+        $table->method('delete')
+            ->will(static::returnValue(false));
+
+        $action = new DeleteEntityAction(compact('table'));
+        $action(compact('entity'));
     }
 }
