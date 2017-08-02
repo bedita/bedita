@@ -17,7 +17,6 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\InternalErrorException;
 
 /**
  * Controller for `/trash` endpoint.
@@ -98,7 +97,7 @@ class TrashController extends AppController
      *
      * @param int $id Object ID.
      * @return \Cake\Http\Response
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
     {
