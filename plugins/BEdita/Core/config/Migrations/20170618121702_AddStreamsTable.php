@@ -30,6 +30,25 @@ class AddStreamsTable extends AbstractMigration
             ->removeIndexByName('media_hashfile_idx')
             ->update();
 
+        if ($this->getAdapter()->getAdapterType() === 'sqlite') {
+            // Change comment for some columns before deleting to avoid SQLite adapter bug.
+            $this->table('media')
+                ->changeColumn('file_size', 'integer', [
+                    'comment' => 'bogus comment',
+                    'default' => null,
+                    'limit' => 11,
+                    'null' => true,
+                    'signed' => false,
+                ])
+                ->changeColumn('media_uid', 'string', [
+                    'comment' => 'bogus comment',
+                    'default' => null,
+                    'limit' => 255,
+                    'null' => true,
+                ])
+                ->update();
+        }
+
         $this->table('media')
             ->removeColumn('uri')
             ->removeColumn('mime_type')
