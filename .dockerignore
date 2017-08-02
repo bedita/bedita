@@ -1,0 +1,7 @@
+/.idea/
+/.git/
+/.vagrant/
+/.vscode/
+/logs/
+/tmp/
+/vendor/
