@@ -55,25 +55,4 @@ class DeleteEntityActionTest extends TestCase
         static::assertTrue($result);
         static::assertFalse($table->exists(['id' => 1]));
     }
-
-    /**
-     * Test command execution with delete error.
-     *
-     * @return void
-     *
-     * @expectedException \Cake\Network\Exception\InternalErrorException
-     * @covers ::execute()
-     */
-    public function testDeleteErrors()
-    {
-        $entity = TableRegistry::get('FakeAnimals')->get(1);
-
-        $table = $this->getMockBuilder(Table::class)
-            ->getMock();
-        $table->method('delete')
-            ->will(static::returnValue(false));
-
-        $action = new DeleteEntityAction(compact('table'));
-        $action(compact('entity'));
-    }
 }

@@ -43,11 +43,6 @@ class DeleteEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $success = $this->Table->delete($data['entity']);
-        if ($success === false) {
-            throw new InternalErrorException(__d('bedita', 'Hard delete failed'));
-        }
-
-        return $success;
+        return $this->Table->deleteOrFail($data['entity']);
     }
 }
