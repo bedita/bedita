@@ -1,4 +1,5 @@
-FROM chialab/php:7.1-apache
+ARG PHP_VERSION=7.1
+FROM chialab/php:${PHP_VERSION}-apache
 MAINTAINER dev@chialab.io
 
 # Install Wait-for-it and configure PHP
@@ -14,6 +15,7 @@ ENV DEBUG ${DEBUG:-false}
 
 # Install libraries
 WORKDIR /var/www/html
+VOLUME /var/www/webroot/files
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
     && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction --quiet
 
@@ -23,5 +25,7 @@ ENV LOG_DEBUG_URL="console:///?stream=php://stdout" \
 
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=1m \
+    CMD curl -f http://localhost/status || exit 1
 
 CMD ["apache2-foreground"]
