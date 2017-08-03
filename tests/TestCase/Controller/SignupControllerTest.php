@@ -85,15 +85,10 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'gustavo',
-                        'password' => 'supporto',
-                        'email' => 'gus.sup@channelweb.it',
-                    ],
-                    'meta' => [
-                        'activation_url' => 'http://example.com'
-                    ]
+                    'username' => 'gustavo',
+                    'password' => 'supporto',
+                    'email' => 'gus.sup@channelweb.it',
+                    'activation_url' => 'http://example.com',
                 ],
             ],
             'ok with activation_url and redirect_url' => [
@@ -113,16 +108,11 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'gustavo',
-                        'password' => 'supporto',
-                        'email' => 'gus.sup@channelweb.it',
-                    ],
-                    'meta' => [
-                        'activation_url' => 'http://example.com',
-                        'redirect_url' => 'myapp://'
-                    ]
+                    'username' => 'gustavo',
+                    'password' => 'supporto',
+                    'email' => 'gus.sup@channelweb.it',
+                    'activation_url' => 'http://example.com',
+                    'redirect_url' => 'myapp://',
                 ],
             ],
             'missing activation_url' => [
@@ -139,12 +129,9 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'gustavo',
-                        'password' => 'supporto',
-                        'email' => 'gus.sup@channelweb.it',
-                    ],
+                    'username' => 'gustavo',
+                    'password' => 'supporto',
+                    'email' => 'gus.sup@channelweb.it',
                 ],
             ],
             'missing username' => [
@@ -161,15 +148,10 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => '',
-                        'password' => 'supporto',
-                        'email' => 'gus.sup@channelweb.it',
-                    ],
-                    'meta' => [
-                        'activation_url' => 'http://example.com',
-                    ],
+                    'username' => '',
+                    'password' => 'supporto',
+                    'email' => 'gus.sup@channelweb.it',
+                    'activation_url' => 'http://example.com',
                 ],
             ],
             'missing password' => [
@@ -186,14 +168,9 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'gustavo',
-                        'email' => 'gus.sup@channelweb.it',
-                    ],
-                    'meta' => [
-                        'activation_url' => 'http://example.com',
-                    ],
+                    'username' => 'gustavo',
+                    'email' => 'gus.sup@channelweb.it',
+                    'activation_url' => 'http://example.com',
                 ],
             ],
             'missing email' => [
@@ -210,14 +187,9 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'gustavo',
-                        'password' => 'supporto',
-                    ],
-                    'meta' => [
-                        'activation_url' => 'http://example.com',
-                    ],
+                    'username' => 'gustavo',
+                    'password' => 'supporto',
+                    'activation_url' => 'http://example.com',
                 ],
             ],
         ];
@@ -237,9 +209,11 @@ class SignupControllerTest extends IntegrationTestCase
      */
     public function testSignup($statusCode, $expected, $method, $data)
     {
-        $this->configRequestHeaders($method);
+        $this->configRequestHeaders($method, [
+            'Content-Type' => 'application/json'
+        ]);
         $methodName = strtolower($method);
-        $this->$methodName('/signup', json_encode(compact('data')));
+        $this->$methodName('/signup', json_encode($data));
 
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -397,19 +371,16 @@ class SignupControllerTest extends IntegrationTestCase
     public function testActivationOk()
     {
         // signup
-        $this->configRequestHeaders('POST');
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/json'
+        ]);
         $data = [
-            'type' => 'users',
-            'attributes' => [
-                'username' => 'gustavo',
-                'password' => 'password',
-                'email' => 'gus.sup@channelweb.it',
-            ],
-            'meta' => [
-                'activation_url' => 'http://example.com',
-            ],
+            'username' => 'gustavo',
+            'password' => 'password',
+            'email' => 'gus.sup@channelweb.it',
+            'activation_url' => 'http://example.com',
         ];
-        $this->post('/signup', json_encode(compact('data')));
+        $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::get('AsyncJobs')->find()
             ->order(['AsyncJobs.created' => 'DESC'])
@@ -438,19 +409,16 @@ class SignupControllerTest extends IntegrationTestCase
     public function testActivationConflict()
     {
         // signup
-        $this->configRequestHeaders('POST');
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/json'
+        ]);
         $data = [
-            'type' => 'users',
-            'attributes' => [
-                'username' => 'gustavo',
-                'password' => 'password',
-                'email' => 'gus.sup@channelweb.it',
-            ],
-            'meta' => [
-                'activation_url' => 'http://example.com',
-            ],
+            'username' => 'gustavo',
+            'password' => 'password',
+            'email' => 'gus.sup@channelweb.it',
+            'activation_url' => 'http://example.com',
         ];
-        $this->post('/signup', json_encode(compact('data')));
+        $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::get('AsyncJobs')->find()
             ->order(['AsyncJobs.created' => 'DESC'])

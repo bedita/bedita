@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -92,8 +93,10 @@ class HomeController extends AppController
                 ],
             ];
         }
+        $project = Configure::read('Project');
+        $version = Configure::read('BEdita.version');
 
-        $this->set('_meta', compact('resources'));
+        $this->set('_meta', compact('resources', 'project', 'version'));
         $this->set('_serialize', []);
     }
 

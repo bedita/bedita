@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\JwtAuthenticate;
+use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
@@ -220,7 +221,11 @@ class JwtAuthenticateTest extends TestCase
                 ]),
             ],
             'expiredToken' => [
-                new UnauthorizedException('Expired token'),
+                new ExpiredTokenException([
+                    'title' => __d('bedita', 'Expired token'),
+                    'detail' => __d('bedita', 'Provided token has expired'),
+                    'code' => 'be_token_expired',
+                ]),
                 [],
                 new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $expiredToken],
@@ -242,18 +247,19 @@ class JwtAuthenticateTest extends TestCase
      * @covers ::getUser()
      * @covers ::getPayload()
      * @covers ::decode()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testAuthenticate($expected, array $config, ServerRequest $request)
     {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
+        try {
+            $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
+
+            $result = $auth->authenticate($request, new Response());
+        } catch (\Exception $e) {
+            $result = $e;
+            static::assertEquals($expected->getAttributes(), $e->getAttributes());
+            static::assertEquals($expected->getCode(), $e->getCode());
         }
-
-        $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
-
-        $result = $auth->authenticate($request, new Response());
 
         static::assertEquals($expected, $result);
     }
