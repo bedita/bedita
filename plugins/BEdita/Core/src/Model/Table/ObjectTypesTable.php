@@ -17,9 +17,9 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -85,6 +85,7 @@ class ObjectTypesTable extends Table
             'conditions' => [
                 $through->aliasField('side') => 'left',
             ],
+            'cascadeCallbacks' => true,
         ]);
         $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightRelations', [
@@ -95,6 +96,7 @@ class ObjectTypesTable extends Table
             'conditions' => [
                 $through->aliasField('side') => 'right',
             ],
+            'cascadeCallbacks' => true,
         ]);
     }
 
@@ -199,7 +201,7 @@ class ObjectTypesTable extends Table
 
         if (empty($options)) {
             $options = [
-                'key' => 'id_' . $primaryKey,
+                'key' => self::getCacheKey($primaryKey),
                 'cache' => self::CACHE_CONFIG,
                 'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
             ];
@@ -209,19 +211,30 @@ class ObjectTypesTable extends Table
     }
 
     /**
+     * Get cache key name for an object type.
+     *
+     * @param int $id Object type ID.
+     * @return string
+     */
+    public static function getCacheKey($id)
+    {
+        return sprintf('id_%d_rel', $id);
+    }
+
+    /**
      * Invalidate cache after saving an object type.
      *
      * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\Datasource\EntityInterface $entity Subject entity.
+     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity)
+    public function afterSave(Event $event, Entity $entity)
     {
-        Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
-        if ($entity->dirty('name')) {
+        Cache::delete(self::getCacheKey($entity->id), self::CACHE_CONFIG);
+        if ($entity->isDirty('name')) {
             Cache::delete('map', self::CACHE_CONFIG);
         }
-        if ($entity->dirty('singular')) {
+        if ($entity->isDirty('singular')) {
             Cache::delete('map_singular', self::CACHE_CONFIG);
         }
     }
@@ -230,12 +243,12 @@ class ObjectTypesTable extends Table
      * Invalidate cache after deleting an object type.
      *
      * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\Datasource\EntityInterface $entity Subject entity.
+     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity)
+    public function afterDelete(Event $event, Entity $entity)
     {
-        Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
+        Cache::delete(self::getCacheKey($entity->id), self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
         Cache::delete('map_singular', self::CACHE_CONFIG);
     }

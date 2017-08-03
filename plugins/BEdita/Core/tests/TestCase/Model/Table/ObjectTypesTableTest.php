@@ -331,14 +331,14 @@ class ObjectTypesTableTest extends TestCase
     {
         $entity = $this->ObjectTypes->get('document');
 
-        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -354,13 +354,13 @@ class ObjectTypesTableTest extends TestCase
     {
         $entity = $this->ObjectTypes->get('document');
 
-        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -435,5 +435,20 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertArrayHasKey('LeftRelations', $contain);
         static::assertArrayHasKey('RightRelations', $contain);
+    }
+
+    /**
+     * Test `getCacheKey` static method.
+     *
+     * @return void
+     *
+     * @covers ::getCacheKey()
+     */
+    public function testGetCacheKey()
+    {
+        $expected = 'id_99_rel';
+        $result = ObjectTypesTable::getCacheKey(99);
+
+        static::assertSame($expected, $result);
     }
 }

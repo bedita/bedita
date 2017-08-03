@@ -190,7 +190,7 @@ class RelationsTable extends Table
                 $this->LeftObjectTypes->getForeignKey() => $entity->id,
             ]);
         foreach ($ids as $id) {
-            Cache::delete('id_' . $id, ObjectTypesTable::CACHE_CONFIG);
+            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
         }
     }
 }

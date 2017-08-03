@@ -140,8 +140,8 @@ class RelationTypesTableTest extends TestCase
         $this->RelationTypes->ObjectTypes->get('document');
         $this->RelationTypes->ObjectTypes->get(5);
 
-        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
@@ -149,8 +149,8 @@ class RelationTypesTableTest extends TestCase
         $entity->object_type = $this->RelationTypes->ObjectTypes->get(5);
         $this->RelationTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_5', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -166,14 +166,14 @@ class RelationTypesTableTest extends TestCase
     {
         $this->RelationTypes->ObjectTypes->get('document');
 
-        static::assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->RelationTypes->get([1, 1, 'left']);
         $this->RelationTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }

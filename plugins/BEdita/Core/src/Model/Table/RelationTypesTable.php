@@ -105,7 +105,7 @@ class RelationTypesTable extends Table
 
         $ids = array_unique([$entity->get($property), $entity->getOriginal($property)]);
         foreach ($ids as $id) {
-            Cache::delete('id_' . $id, ObjectTypesTable::CACHE_CONFIG);
+            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
         }
     }
 
@@ -119,6 +119,6 @@ class RelationTypesTable extends Table
     public function afterDelete(Event $event, Entity $entity)
     {
         $property = $this->association('ObjectTypes')->getForeignKey();
-        Cache::delete('id_' . $entity->get($property), ObjectTypesTable::CACHE_CONFIG);
+        Cache::delete(ObjectTypesTable::getCacheKey($entity->get($property)), ObjectTypesTable::CACHE_CONFIG);
     }
 }
