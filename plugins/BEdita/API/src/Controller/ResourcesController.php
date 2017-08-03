@@ -162,13 +162,14 @@ abstract class ResourcesController extends AppController
             $data = $action(compact('entity', 'data'));
 
             $action = new GetEntityAction(['table' => $this->Table]);
-            $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
+            $primaryKey = $this->Table->getPrimaryKey();
+            $data = $action(['primaryKey' => $data->get($primaryKey)]);
 
             $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data->{$primaryKey})
+                    $this->resourceUrl($data->get($primaryKey))
                 );
         } else {
             // List existing entities.
