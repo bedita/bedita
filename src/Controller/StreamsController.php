@@ -15,8 +15,10 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Routing\Router;
+use Zend\Diactoros\Stream;
 
 /**
  * Controller for `/streams` endpoint.
@@ -41,6 +43,26 @@ class StreamsController extends ResourcesController
      * {@inheritDoc}
      */
     public $modelClass = 'Streams';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function beforeFilter(Event $event)
+    {
+        // Decode base64-encoded body.
+        if ($this->request->getParam('action') === 'upload' && $this->request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
+            // Append filter to stream.
+            $body = $this->request->getBody();
+
+            $stream = $body->detach();
+            stream_filter_append($stream, 'convert.base64-decode', STREAM_FILTER_READ);
+
+            $body = new Stream($stream, 'r');
+            $this->request = $this->request->withBody($body);
+        }
+
+        return parent::beforeFilter($event);
+    }
 
     /**
      * Upload a new stream.
