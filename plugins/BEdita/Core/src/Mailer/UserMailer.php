@@ -14,7 +14,7 @@
 namespace BEdita\Core\Mailer;
 
 use BEdita\Core\Model\Entity\User;
-use BEdita\Core\State\CurrentApplication;
+use Cake\Core\Configure;
 use Cake\Mailer\Mailer;
 
 /**
@@ -164,8 +164,8 @@ class UserMailer extends Mailer
      */
     protected function getProjectName()
     {
-        $currentApplication = CurrentApplication::getApplication();
+        $name = Configure::read('Project.name');
 
-        return ($currentApplication !== null) ? $currentApplication->name : 'BEdita';
+        return ($name !== null) ? $name : 'BEdita';
     }
 }

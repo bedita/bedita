@@ -176,6 +176,7 @@ class ObjectsTableTest extends TestCase
                     5 => 'Miss Second User',
                     8 => 'The Two Towers',
                     9 => 'first event',
+                    10 => 'first media',
                 ],
                 ['ne' => 'documents'],
             ],

@@ -26,6 +26,7 @@ Router::plugin(
             'object_types',
             'properties',
             'roles',
+            'streams',
             'users',
         ];
         $routes->routeClass(InflectedRoute::class);
@@ -88,6 +89,13 @@ Router::plugin(
             '/signup/activation',
             ['controller' => 'Signup', 'action' => 'activation'],
             ['_name' => 'signup:activation']
+        );
+
+        // Upload.
+        $routes->connect(
+            '/streams/upload/:fileName',
+            ['controller' => 'Streams', 'action' => 'upload'],
+            ['_name' => 'streams:upload', 'pass' => ['fileName']]
         );
 
         // Resources.

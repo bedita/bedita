@@ -39,6 +39,8 @@ Quick setup in three steps.
  $ composer create-project -s dev bedita/bedita
  ```
 
+If you are using a **.zip** or **.tar.gz** release file you just need to unpack it and then run ``composer install``.
+
 2. Create an empty database either MySQL or PostgresSQL. Do nothing for SQLite.
 
 3. Change to the newly created folder and run this script to initialize the database and create first admin user:

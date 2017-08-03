@@ -214,10 +214,8 @@ class SignupUserActivationActionTest extends TestCase
         $data = [
             'data' => [
                 'username' => 'testsignup',
-                'password_hash' => 'testsignup',
+                'password' => 'testsignup',
                 'email' => 'test.signup@example.com',
-            ],
-            'urlOptions' => [
                 'activation_url' => 'http://sample.com?confirm=true',
             ],
         ];

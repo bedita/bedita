@@ -51,6 +51,7 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
+use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Plugin;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
@@ -174,6 +175,7 @@ Email::setConfigTransport(Configure::consume('EmailTransport') ?: []);
 Email::setConfig(Configure::consume('Email') ?: []);
 Log::setConfig(Configure::consume('Log') ?: []);
 Security::salt(Configure::consume('Security.salt'));
+FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);
 
 /*
  * Setup detectors for mobile and tablet.

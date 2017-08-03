@@ -17,9 +17,7 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -197,10 +195,13 @@ class ObjectTypesTable extends Table
             $primaryKey = $allTypes[$primaryKey];
         }
 
-        $options += [
-            'key' => 'id_' . $primaryKey,
-            'cache' => self::CACHE_CONFIG,
-        ];
+        if (empty($options)) {
+            $options = [
+                'key' => sprintf('id_%d_rel', $primaryKey),
+                'cache' => self::CACHE_CONFIG,
+                'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
+            ];
+        }
 
         return parent::get($primaryKey, $options);
     }
@@ -208,33 +209,21 @@ class ObjectTypesTable extends Table
     /**
      * Invalidate cache after saving an object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\Datasource\EntityInterface $entity Subject entity.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity)
+    public function afterSave()
     {
-        Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
-        if ($entity->dirty('name')) {
-            Cache::delete('map', self::CACHE_CONFIG);
-        }
-        if ($entity->dirty('singular')) {
-            Cache::delete('map_singular', self::CACHE_CONFIG);
-        }
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
      * Invalidate cache after deleting an object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\Datasource\EntityInterface $entity Subject entity.
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity)
+    public function afterDelete()
     {
-        Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
-        Cache::delete('map', self::CACHE_CONFIG);
-        Cache::delete('map_singular', self::CACHE_CONFIG);
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
