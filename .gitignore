@@ -23,7 +23,7 @@
 # BEdita plugins folders #
 ##########################
 /plugins/*
-!/plugins/BEdita/
+!/plugins/BEdita
 /plugins/BEdita/*
 !/plugins/BEdita/API
 !/plugins/BEdita/Core

@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Network\Exception\InternalErrorException;
+
 /**
  * Command to delete an entity.
  *
@@ -41,6 +43,6 @@ class DeleteEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        return $this->Table->delete($data['entity']);
+        return $this->Table->deleteOrFail($data['entity']);
     }
 }
