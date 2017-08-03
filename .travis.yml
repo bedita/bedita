@@ -61,8 +61,8 @@ jobs:
       php: 5.6
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql' PREFER_LOWEST=1"
       install:
-        - composer install --prefer-dist --no-interaction
-        - composer update --prefer-dist --prefer-lowest --no-interaction
+        - composer install --prefer-source --no-interaction
+        - composer update --prefer-source --prefer-lowest --no-interaction
     - stage: complete
       php: 5.6
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
