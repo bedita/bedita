@@ -154,8 +154,8 @@ class RelationTypesTableTest extends TestCase
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -182,8 +182,8 @@ class RelationTypesTableTest extends TestCase
 
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 }

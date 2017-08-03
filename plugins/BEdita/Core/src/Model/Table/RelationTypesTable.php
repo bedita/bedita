@@ -15,9 +15,6 @@
 namespace BEdita\Core\Model\Table;
 
 use Cake\Cache\Cache;
-use Cake\Database\Expression\QueryExpression;
-use Cake\Event\Event;
-use Cake\ORM\Entity;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -55,12 +52,12 @@ class RelationTypesTable extends Table
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',
             'joinType' => 'INNER',
-            'className' => 'Relations'
+            'className' => 'Relations',
         ]);
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'ObjectTypes'
+            'className' => 'ObjectTypes',
         ]);
     }
 
@@ -96,59 +93,20 @@ class RelationTypesTable extends Table
     /**
      * Invalidate object types cache after updating a relation's object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave()
     {
-        $objectTypeId = $this->ObjectTypes->getForeignKey();
-        $relationId = $this->Relations->getForeignKey();
-
-        $ids = $this
-            ->find('list', [
-                'keyField' => $objectTypeId,
-                'valueField' => $objectTypeId,
-            ])
-            ->where(function (QueryExpression $exp) use ($entity, $relationId) {
-                return $exp->in($relationId, [$entity->get($relationId), $entity->getOriginal($relationId)]);
-            })
-            ->toArray();
-        $ids[] = $entity->get($objectTypeId);
-        $ids[] = $entity->getOriginal($objectTypeId);
-
-        $ids = array_unique($ids);
-        foreach ($ids as $id) {
-            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
-        }
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
      * Invalidate object types cache after deleting a relation's object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterDelete(Event $event, Entity $entity)
+    public function afterDelete()
     {
-        $objectTypeId = $this->ObjectTypes->getForeignKey();
-        $relationId = $this->Relations->getForeignKey();
-
-        $ids = $this
-            ->find('list', [
-                'keyField' => $objectTypeId,
-                'valueField' => $objectTypeId,
-            ])
-            ->where([
-                $relationId => $entity->get($relationId),
-            ])
-            ->toArray();
-        $ids[] = $entity->get($objectTypeId);
-
-        $ids = array_unique($ids);
-        foreach ($ids as $id) {
-            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
-        }
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
     }
 }

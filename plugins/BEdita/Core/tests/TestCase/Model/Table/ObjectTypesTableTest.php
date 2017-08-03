@@ -344,7 +344,7 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -372,7 +372,7 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -447,20 +447,5 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertArrayHasKey('LeftRelations', $contain);
         static::assertArrayHasKey('RightRelations', $contain);
-    }
-
-    /**
-     * Test `getCacheKey` static method.
-     *
-     * @return void
-     *
-     * @covers ::getCacheKey()
-     */
-    public function testGetCacheKey()
-    {
-        $expected = 'id_99_rel';
-        $result = ObjectTypesTable::getCacheKey(99);
-
-        static::assertSame($expected, $result);
     }
 }

@@ -18,8 +18,6 @@ use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Event\Event;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -85,7 +83,6 @@ class ObjectTypesTable extends Table
             'conditions' => [
                 $through->aliasField('side') => 'left',
             ],
-            'cascadeCallbacks' => true,
         ]);
         $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightRelations', [
@@ -96,7 +93,6 @@ class ObjectTypesTable extends Table
             'conditions' => [
                 $through->aliasField('side') => 'right',
             ],
-            'cascadeCallbacks' => true,
         ]);
     }
 
@@ -201,7 +197,7 @@ class ObjectTypesTable extends Table
 
         if (empty($options)) {
             $options = [
-                'key' => self::getCacheKey($primaryKey),
+                'key' => sprintf('id_%d_rel', $primaryKey),
                 'cache' => self::CACHE_CONFIG,
                 'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
             ];
@@ -211,66 +207,23 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * Get cache key name for an object type.
-     *
-     * @param int $id Object type ID.
-     * @return string
-     */
-    public static function getCacheKey($id)
-    {
-        return sprintf('id_%d_rel', $id);
-    }
-
-    /**
      * Invalidate cache after saving an object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave()
     {
-        Cache::delete(self::getCacheKey($entity->id), self::CACHE_CONFIG);
-        if ($entity->isDirty('name')) {
-            Cache::delete('map', self::CACHE_CONFIG);
-        }
-        if ($entity->isDirty('singular')) {
-            Cache::delete('map_singular', self::CACHE_CONFIG);
-        }
-
-        // Invalidate cache for all object types that can be related to this.
-        $ids = $this->LeftRelations->junction()
-            ->find('list', [
-                'keyField' => $this->LeftRelations->getForeignKey(),
-                'valueField' => $this->LeftRelations->getForeignKey(),
-            ])
-            ->where(function (QueryExpression $exp) use ($entity) {
-                return $exp->in(
-                    $this->LeftRelations->getTargetForeignKey(),
-                    $this->LeftRelations->junction()->find()
-                        ->select((array)$this->LeftRelations->getTargetForeignKey())
-                        ->where([
-                            $this->LeftRelations->getForeignKey() => $entity->id,
-                        ])
-                );
-            });
-        foreach ($ids as $id) {
-            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
-        }
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
      * Invalidate cache after deleting an object type.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterDelete(Event $event, Entity $entity)
+    public function afterDelete()
     {
-        Cache::delete(self::getCacheKey($entity->id), self::CACHE_CONFIG);
-        Cache::delete('map', self::CACHE_CONFIG);
-        Cache::delete('map_singular', self::CACHE_CONFIG);
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**

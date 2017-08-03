@@ -17,8 +17,6 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
-use Cake\Event\Event;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -175,22 +173,20 @@ class RelationsTable extends Table
     /**
      * Invalidate object types cache after updating a relation.
      *
-     * @param \Cake\Event\Event $event Triggered event.
-     * @param \Cake\ORM\Entity $entity Subject entity.
      * @return void
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave()
     {
-        $ids = $this->LeftObjectTypes->junction()
-            ->find('list', [
-                'keyField' => $this->LeftObjectTypes->getTargetForeignKey(),
-                'valueField' => $this->LeftObjectTypes->getTargetForeignKey(),
-            ])
-            ->where([
-                $this->LeftObjectTypes->getForeignKey() => $entity->id,
-            ]);
-        foreach ($ids as $id) {
-            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
-        }
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate object types cache after deleting a relation.
+     *
+     * @return void
+     */
+    public function afterDelete()
+    {
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
     }
 }
