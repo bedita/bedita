@@ -15,6 +15,7 @@
 namespace BEdita\Core\Model\Table;
 
 use Cake\Cache\Cache;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\RulesChecker;
@@ -101,9 +102,22 @@ class RelationTypesTable extends Table
      */
     public function afterSave(Event $event, Entity $entity)
     {
-        $property = $this->association('ObjectTypes')->getForeignKey();
+        $objectTypeId = $this->ObjectTypes->getForeignKey();
+        $relationId = $this->Relations->getForeignKey();
 
-        $ids = array_unique([$entity->get($property), $entity->getOriginal($property)]);
+        $ids = $this
+            ->find('list', [
+                'keyField' => $objectTypeId,
+                'valueField' => $objectTypeId,
+            ])
+            ->where(function (QueryExpression $exp) use ($entity, $relationId) {
+                return $exp->in($relationId, [$entity->get($relationId), $entity->getOriginal($relationId)]);
+            })
+            ->toArray();
+        $ids[] = $entity->get($objectTypeId);
+        $ids[] = $entity->getOriginal($objectTypeId);
+
+        $ids = array_unique($ids);
         foreach ($ids as $id) {
             Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
         }
@@ -118,7 +132,23 @@ class RelationTypesTable extends Table
      */
     public function afterDelete(Event $event, Entity $entity)
     {
-        $property = $this->association('ObjectTypes')->getForeignKey();
-        Cache::delete(ObjectTypesTable::getCacheKey($entity->get($property)), ObjectTypesTable::CACHE_CONFIG);
+        $objectTypeId = $this->ObjectTypes->getForeignKey();
+        $relationId = $this->Relations->getForeignKey();
+
+        $ids = $this
+            ->find('list', [
+                'keyField' => $objectTypeId,
+                'valueField' => $objectTypeId,
+            ])
+            ->where([
+                $relationId => $entity->get($relationId),
+            ])
+            ->toArray();
+        $ids[] = $entity->get($objectTypeId);
+
+        $ids = array_unique($ids);
+        foreach ($ids as $id) {
+            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
+        }
     }
 }

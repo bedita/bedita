@@ -237,6 +237,26 @@ class ObjectTypesTable extends Table
         if ($entity->isDirty('singular')) {
             Cache::delete('map_singular', self::CACHE_CONFIG);
         }
+
+        // Invalidate cache for all object types that can be related to this.
+        $ids = $this->LeftRelations->junction()
+            ->find('list', [
+                'keyField' => $this->LeftRelations->getForeignKey(),
+                'valueField' => $this->LeftRelations->getForeignKey(),
+            ])
+            ->where(function (QueryExpression $exp) use ($entity) {
+                return $exp->in(
+                    $this->LeftRelations->getTargetForeignKey(),
+                    $this->LeftRelations->junction()->find()
+                        ->select((array)$this->LeftRelations->getTargetForeignKey())
+                        ->where([
+                            $this->LeftRelations->getForeignKey() => $entity->id,
+                        ])
+                );
+            });
+        foreach ($ids as $id) {
+            Cache::delete(ObjectTypesTable::getCacheKey($id), ObjectTypesTable::CACHE_CONFIG);
+        }
     }
 
     /**

@@ -138,9 +138,11 @@ class RelationTypesTableTest extends TestCase
     public function testInvalidateCacheAfterSave()
     {
         $this->RelationTypes->ObjectTypes->get('document');
+        $this->RelationTypes->ObjectTypes->get(2);
         $this->RelationTypes->ObjectTypes->get(5);
 
         static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
@@ -150,6 +152,7 @@ class RelationTypesTableTest extends TestCase
         $this->RelationTypes->save($entity);
 
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
@@ -165,8 +168,12 @@ class RelationTypesTableTest extends TestCase
     public function testInvalidateCacheAfterDelete()
     {
         $this->RelationTypes->ObjectTypes->get('document');
+        $this->RelationTypes->ObjectTypes->get(2);
+        $this->RelationTypes->ObjectTypes->get(5);
 
         static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
@@ -174,6 +181,8 @@ class RelationTypesTableTest extends TestCase
         $this->RelationTypes->delete($entity);
 
         static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
