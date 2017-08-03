@@ -13,9 +13,10 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\InternalErrorException;
 
 /**
  * Controller for `/trash` endpoint.
@@ -38,10 +39,10 @@ class TrashController extends AppController
      */
     public function index()
     {
-        $query = $this->Objects->find('all')
-            ->where(['deleted' => 1])
-            ->contain(['ObjectTypes']);
-
+        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $action = new ListObjectsAction(['table' => $this->Objects]);
+        $deleted = true;
+        $query = $action(compact('filter', 'contain', 'deleted'));
         $trash = $this->paginate($query);
 
         $this->set(compact('trash'));
@@ -56,10 +57,8 @@ class TrashController extends AppController
      */
     public function view($id)
     {
-        $trash = $this->Objects->get($id, [
-            'contain' => ['ObjectTypes'],
-            'conditions' => ['deleted' => 1]
-        ]);
+        $action = new GetObjectAction(['table' => $this->Objects]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
         $this->set(compact('trash'));
         $this->set('_serialize', ['trash']);
@@ -82,15 +81,12 @@ class TrashController extends AppController
             throw new ConflictException('IDs don\'t match');
         }
 
-        $trash = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 1]
-        ]);
+        $action = new GetObjectAction(['table' => $this->Objects]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
         $trash->deleted = false;
         $action = new SaveEntityAction(['table' => $this->Objects]);
-        if (!$action(['entity' => $trash, 'data' => []])) {
-            throw new InternalErrorException('Unable to restore object');
-        }
+        $action(['entity' => $trash, 'data' => []]);
 
         return $this->response
             ->withStatus(204);
@@ -101,20 +97,17 @@ class TrashController extends AppController
      *
      * @param int $id Object ID.
      * @return \Cake\Http\Response
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
     {
         $this->request->allowMethod('delete');
 
-        $trash = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 1]
-        ]);
+        $action = new GetObjectAction(['table' => $this->Objects]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
         $action = new DeleteObjectAction(['table' => $this->Objects]);
-        if (!$action(['entity' => $trash, 'hard' => true])) {
-            throw new InternalErrorException('Unable to remove object');
-        }
+        $action(['entity' => $trash, 'hard' => true]);
 
         return $this->response
             ->withStatus(204);

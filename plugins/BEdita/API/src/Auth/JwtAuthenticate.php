@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -208,6 +209,8 @@ class JwtAuthenticate extends BaseAuthenticate
             }
 
             return (array)$payload;
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            throw new ExpiredTokenException();
         } catch (\Exception $e) {
             $this->error = $e;
         }

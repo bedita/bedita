@@ -76,10 +76,8 @@ class SignupUserActionTest extends TestCase
                 [
                     'data' => [
                         'username' => 'testsignup',
-                        'password_hash' => 'testsignup',
+                        'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
-                    ],
-                    'urlOptions' => [
                         'activation_url' => 'http://sample.com?confirm=true',
                         'redirect_url' => 'http://sample.com/ok',
                     ],
@@ -90,21 +88,38 @@ class SignupUserActionTest extends TestCase
                 [
                     'data' => [
                         'username' => 'testsignup',
-                        'password_hash' => 'testsignup',
+                        'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
-                    ],
-                    'urlOptions' => [
                         'activation_url' => 'myapp://activate',
                         'redirect_url' => 'myapp://',
                     ],
                 ]
             ],
+            'ok json api' => [
+                true,
+                [
+                    'data' => [
+                        'data' => [
+                            'attributes' => [
+                                'username' => 'testsignup',
+                                'password' => 'testsignup',
+                                'email' => 'test.signup@example.com',
+                            ],
+                            'meta' => [
+                                'activation_url' => 'myapp://activate',
+                                'redirect_url' => 'myapp://',
+                            ]
+                        ]
+                    ],
+                ]
+            ],
+
             'missing activation_url' => [
                 new BadRequestException(),
                 [
                     'data' => [
                         'username' => 'testsignup',
-                        'password_hash' => 'testsignup',
+                        'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
                     ],
                 ]
@@ -114,10 +129,8 @@ class SignupUserActionTest extends TestCase
                 [
                     'data' => [
                         'username' => 'testsignup',
-                        'password_hash' => 'testsignup',
+                        'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
-                    ],
-                    'urlOptions' => [
                         'activation_url' => '/activate',
                     ],
                 ]
@@ -127,10 +140,8 @@ class SignupUserActionTest extends TestCase
                 [
                     'data' => [
                         'username' => 'testsignup',
-                        'password_hash' => 'testsignup',
+                        'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
-                    ],
-                    'urlOptions' => [
                         'activation_url' => 'https://activate',
                     ],
                 ]
@@ -183,10 +194,8 @@ class SignupUserActionTest extends TestCase
         $data = [
             'data' => [
                 'username' => 'testsignup',
-                'password_hash' => 'testsignup',
+                'password' => 'testsignup',
                 'email' => 'test.signup@example.com',
-            ],
-            'urlOptions' => [
                 'activation_url' => 'http://sample.com?confirm=true',
                 'redirect_url' => 'http://sample.com/ok',
             ],
@@ -225,10 +234,8 @@ class SignupUserActionTest extends TestCase
         $data = [
             'data' => [
                 'username' => 'testsignup',
-                'password_hash' => 'testsignup',
+                'password' => 'testsignup',
                 'email' => 'test.signup@example.com',
-            ],
-            'urlOptions' => [
                 'activation_url' => 'http://sample.com?confirm=true',
                 'redirect_url' => 'http://sample.com/ok',
             ],
