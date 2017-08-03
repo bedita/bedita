@@ -20,18 +20,11 @@
             "homepage": "http://www.channelweb.it"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/fquffio/phinx"
-        }
-    ],
     "require": {
         "php": ">=5.6.0",
         "cakephp/cakephp": "~3.4.1",
         "mobiledetect/mobiledetectlib": "2.*",
-        "cakephp/migrations": "~1.0",
-        "robmorgan/phinx": "dev-fix\/sqlite-update-column-commas as 0.6.5",
+        "cakephp/migrations": "~1.7",
         "cakephp/plugin-installer": "*",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
