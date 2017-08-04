@@ -32,7 +32,7 @@ use Cake\ORM\Entity;
 class Application extends Entity implements JsonApiSerializable
 {
 
-    use JsonApiTrait;
+    use JsonApiAdminTrait;
 
     /**
      * {@inheritDoc}

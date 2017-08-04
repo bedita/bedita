@@ -13,20 +13,19 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\Application;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Entity\Application} Test Case
+ *  {@see \BEdita\Core\Model\Entity\JsonApiAdminTrait} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Application
+ * @coversDefaultClass \BEdita\Core\Model\Entity\JsonApiAdminTrait
  */
-class ApplicationTest extends TestCase
+class JsonApiAdminTraitTest extends TestCase
 {
 
     /**
-     * Test subject's table
+     * Helper table.
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
@@ -62,33 +61,22 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * Test accessible properties.
+     * Test getter for meta.
      *
      * @return void
-     * @coversNothing
+     *
+     * @covers ::getLinks()
      */
-    public function testAccessible()
+    public function testGetLinks()
     {
-        $application = $this->Applications->get(1);
-
-        $created = $application->created;
-        $modified = $application->modified;
-        $apiKey = $application->api_key;
-
-        $data = [
-            'id' => 42,
-            'api_key' => '123abc',
-            'created' => '2016-01-01 12:00:00',
-            'modified' => '2016-01-01 12:00:00',
+        $expected = [
+            'self' => '/admin/applications/1',
         ];
-        $application = $this->Applications->patchEntity($application, $data);
-        if (!($application instanceof Application)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals(1, $application->id);
-        $this->assertEquals($apiKey, $application->api_key);
-        $this->assertEquals($created, $application->created);
-        $this->assertEquals($modified, $application->modified);
+        $application = $this->Applications->get(1)->jsonApiSerialize();
+
+        $links = $application['links'];
+
+        static::assertEquals($expected, $links);
     }
 }
