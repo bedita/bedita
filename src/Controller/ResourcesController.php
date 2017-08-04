@@ -162,20 +162,14 @@ abstract class ResourcesController extends AppController
             $data = $action(compact('entity', 'data'));
 
             $action = new GetEntityAction(['table' => $this->Table]);
-            $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
+            $primaryKey = $this->Table->getPrimaryKey();
+            $data = $action(['primaryKey' => $data->get($primaryKey)]);
 
             $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    Router::url(
-                        [
-                            '_name' => 'api:resources:resource',
-                            'controller' => $this->name,
-                            'id' => $data->id,
-                        ],
-                        true
-                    )
+                    $this->resourceUrl($data->get($primaryKey))
                 );
         } else {
             // List existing entities.
@@ -191,6 +185,24 @@ abstract class ResourcesController extends AppController
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * Resource URL of a newly created entity
+     *
+     * @param int|string $id Saved entity id
+     * @return string Requested URL
+     */
+    protected function resourceUrl($id)
+    {
+        return Router::url(
+            [
+                '_name' => 'api:resources:resource',
+                'controller' => $this->name,
+                'id' => $id,
+            ],
+            true
+        );
     }
 
     /**
