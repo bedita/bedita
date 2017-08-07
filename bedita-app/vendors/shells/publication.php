@@ -177,6 +177,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
             $this->out('Bye');
             return;
         }
+        $deleteContents = (isset($this->params['deleteContents']));
         $dbCfg = "default";
         App::import('Component', 'Transaction');
         $transaction = new TransactionComponent($dbCfg);
@@ -196,6 +197,16 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
                     'conditions' => array('id' => $id),
                     'contain' => array()
                 ));
+                $descendants = array();
+                $oo = ClassRegistry::init('Tree')->getDescendants($id, null, null, array('object_type_id' => Configure::read('objectTypes.section.id')));
+                if (!empty($oo['items'])) {
+                    $descendants = Set::extract('/id', $oo['items']);
+                }
+                $contents = array();
+                if ($deleteContents) {
+                    $contents = ClassRegistry::init('Tree')->getDescendants($id, null, null, array('NOT' => array('BEObject.object_type_id' => Configure::read('objectTypes.section.id'))));
+                    $contents = Set::extract('/id', $contents['items']);
+                }
                 if (!empty($tree)) {
                     $res = ClassRegistry::init('Tree')->removeTree($id);
                     if ($res === false) {
@@ -206,6 +217,34 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
                         $this->out('Publication ' . $id . ' tree deleted');
                     }
                 }
+                if (!empty($descendants)) {
+                    foreach ($descendants as $descendantId) {
+                        $res = ClassRegistry::init('BEObject')->delete($descendantId);
+                        if ($res === false) {
+                            $this->out('Error in deleting section ' . $descendantId);
+                            $transaction->rollback();
+                            break;
+                        }
+                    }
+                }
+                $ubiqContents = 0;
+                $numDelContents = 0;
+                if ($deleteContents && !empty($contents)) {
+                    foreach ($contents as $contentId) {
+                        $contentParents = ClassRegistry::init('Tree')->getParents($contentId);
+                        if (count($contentParents) == 0) { // content is not elsewhere
+                            $res = ClassRegistry::init('BEObject')->delete($contentId);
+                            if ($res === false) {
+                                $this->out('Error in deleting content ' . $contentId);
+                                $transaction->rollback();
+                                break;
+                            }
+                            $numDelContents++;
+                        } else {
+                            $ubiqContents++;
+                        }
+                    }
+                }
                 $res = ClassRegistry::init('BEObject')->delete($id);
                 if ($res === false) {
                     $this->out('Error in deleting publication ' . $id);
@@ -213,8 +252,16 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
                     break;
                 } else {
                     $this->out('Publication ' . $id . ' deleted');
+                    if ($deleteContents) {
+                        if ($numDelContents > 0) {
+                            $this->out($numDelContents . ' contents deleted');
+                        }
+                        if ($ubiqContents > 0) {
+                            $this->out($ubiqContents . ' contents not deleted (found in other publication(s)/section(s))');
+                        }
+                    }
                 }
-                $transaction->commit();                
+                $transaction->commit();
             }
         }
     }
@@ -257,7 +304,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         $this->out('');
         $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-number-of-sections>] [-nd <leafs-number-of-documents>]');
         $this->out('./cake.sh publication createContents [-t <type>] [-n <number>] [-pid <parentId>] [-tpf <titlePostFix>] [-uri <uriInsideMediaFolder>]');
-        $this->out('./cake.sh publication remove -ids <publicationIds> (comma separated id list string)');
+        $this->out('./cake.sh publication remove -ids <publicationIds> (comma separated id list string) [-deleteContents (remove contents, if not ubiquitous)]');
         $this->out('./cake.sh publication stats [-id <publicationId>] [-noask (interactive mode off)]');
         $this->out('');
     }
