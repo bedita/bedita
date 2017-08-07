@@ -1035,7 +1035,24 @@ class AppController extends Controller {
         $this->set('moduleName', $moduleName);
     }
 
+    /**
+     * Set model bindings.
+     *
+     * @param string $modelName
+     * @param array $bindings
+     */
+    public function setModelBindings($modelName, array $bindings) {
+        $this->modelBindings[$modelName] = $bindings;
+    }
 
+    /**
+     * Restore model bindings.
+     *
+     * @param string $modelName
+     */
+    public function unsetModelBindings($modelName) {
+        unset($this->modelBindings[$modelName]);
+    }
 }
 
 /**
