@@ -1358,6 +1358,9 @@ abstract class FrontendController extends AppController {
                 $this->BEObject = $this->loadModelByType('BEObject');
             }
             $modelType = $this->objectTypeCache($obj_id);
+            if (empty($modelType)) {
+                throw new BeditaNotFoundException(__("Content not found", true) . ' id: ' . $obj_id);
+            }
             if (!empty($options['bindingLevel'])) {
                 $bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
             } else {
