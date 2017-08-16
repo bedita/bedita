@@ -5,6 +5,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use League\JsonGuard\Validator as JsonSchemaValidator;
 
 /**
  * ObjectRelations Model
@@ -79,9 +80,42 @@ class ObjectRelationsTable extends Table
             ->nonNegativeInteger('inv_priority');
 
         $validator
-            ->allowEmpty('params');
+            ->allowEmpty('params')
+            ->add('params', 'valid', [
+                'on' => function ($context) {
+                    return !empty($context['providers']['jsonSchema']);
+                },
+                'rule' => 'jsonSchema',
+                'provider' => 'table',
+            ]);
 
         return $validator;
+    }
+
+    /**
+     * Validate relationship parameters using JSON Schema.
+     *
+     * @param mixed $value Value being validated.
+     * @param array $context Validation context.
+     * @return true|string
+     */
+    public static function jsonSchema($value, $context)
+    {
+        if (empty($context['providers']['jsonSchema'])) {
+            return true;
+        }
+
+        $value = json_decode(json_encode($value));
+        $validator = new JsonSchemaValidator($value, $context['providers']['jsonSchema']);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $error = reset($errors);
+
+            return sprintf('%s (in: %s)', $error->getMessage(), $error->getSchemaPath());
+        }
+
+        return true;
     }
 
     /**
