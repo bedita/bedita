@@ -2,6 +2,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Job\ServiceRegistry;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
@@ -23,8 +24,10 @@ use Cake\ORM\Entity;
  *
  * @since 4.0.0
  */
-class AsyncJob extends Entity
+class AsyncJob extends Entity implements JsonApiSerializable
 {
+
+    use JsonApiAdminTrait;
 
     /**
      * {@inheritDoc}

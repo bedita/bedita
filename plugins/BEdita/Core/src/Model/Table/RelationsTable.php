@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
@@ -26,7 +27,8 @@ use Cake\Validation\Validator;
  * Relations Model
  *
  * @property \Cake\ORM\Association\HasMany $ObjectRelations
- * @property \Cake\ORM\Association\HasMany $RelationTypes
+ * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
+ * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
  *
  * @method \BEdita\Core\Model\Entity\Relation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
@@ -61,6 +63,7 @@ class RelationsTable extends Table
             'conditions' => [
                 'RelationTypes.side' => 'left',
             ],
+            'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('RightObjectTypes', [
             'className' => 'ObjectTypes',
@@ -70,6 +73,7 @@ class RelationsTable extends Table
             'conditions' => [
                 'RelationTypes.side' => 'right',
             ],
+            'cascadeCallbacks' => true,
         ]);
     }
 
@@ -164,5 +168,25 @@ class RelationsTable extends Table
                     ->eq($this->aliasField('inverse_name'), $name);
             });
         });
+    }
+
+    /**
+     * Invalidate object types cache after updating a relation.
+     *
+     * @return void
+     */
+    public function afterSave()
+    {
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate object types cache after deleting a relation.
+     *
+     * @return void
+     */
+    public function afterDelete()
+    {
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
     }
 }

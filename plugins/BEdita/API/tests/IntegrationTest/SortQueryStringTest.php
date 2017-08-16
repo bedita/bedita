@@ -82,7 +82,7 @@ class SortQueryStringTest extends IntegrationTestCase
 
         // sort desc
         $this->configRequestHeaders();
-        $url = sprintf('/%s?sort=-%s', $endpoint, $sort);
+        $url = sprintf('%s?sort=-%s', $endpoint, $sort);
         $this->get($url);
         $this->assertResponseCode($expected);
         if ($expected === 200) {

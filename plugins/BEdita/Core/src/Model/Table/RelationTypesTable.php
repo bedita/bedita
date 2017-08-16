@@ -14,6 +14,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -51,12 +52,12 @@ class RelationTypesTable extends Table
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Relations'
+            'className' => 'Relations',
         ]);
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes'
+            'className' => 'ObjectTypes',
         ]);
     }
 
@@ -87,5 +88,25 @@ class RelationTypesTable extends Table
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Invalidate object types cache after updating a relation's object type.
+     *
+     * @return void
+     */
+    public function afterSave()
+    {
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate object types cache after deleting a relation's object type.
+     *
+     * @return void
+     */
+    public function afterDelete()
+    {
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
     }
 }
