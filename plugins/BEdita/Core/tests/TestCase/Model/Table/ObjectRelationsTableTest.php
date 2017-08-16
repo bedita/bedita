@@ -1,11 +1,13 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectRelationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
- * BEdita\Core\Model\Table\ObjectRelationsTable Test Case
+ * @coversDefaultClass \BEdita\Core\Model\Table\ObjectRelationsTable
  */
 class ObjectRelationsTableTest extends TestCase
 {
@@ -38,8 +40,8 @@ class ObjectRelationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('ObjectRelations') ? [] : ['className' => 'BEdita\Core\Model\Table\ObjectRelationsTable'];
-        $this->ObjectRelations = TableRegistry::get('ObjectRelations', $config);
+
+        $this->ObjectRelations = TableRegistry::get('ObjectRelations');
     }
 
     /**
@@ -55,32 +57,203 @@ class ObjectRelationsTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testValidation` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function validationProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $schema = (object)[
+            'type' => 'object',
+            'properties' => (object)[
+                'name' => (object)[
+                    'type' => 'string',
+                ],
+                'age' => (object)[
+                    'type' => 'integer',
+                    'minimum' => 0,
+                ],
+            ],
+            'additionalProperties' => false,
+            'required' => ['name'],
+        ];
+
+        return [
+            'valid' => [
+                [],
+                [
+                    'priority' => 0,
+                    'inv_priority' => 17,
+                ],
+            ],
+            'negative integers' => [
+                [
+                    'priority.nonNegativeInteger',
+                    'inv_priority.nonNegativeInteger',
+                ],
+                [
+                    'priority' => -8,
+                    'inv_priority' => -1992,
+                ],
+            ],
+            'required params' => [
+                [
+                    'params._required',
+                ],
+                [],
+                $schema,
+            ],
+            'empty params' => [
+                [
+                    'params._empty',
+                ],
+                [
+                    'params' => null,
+                ],
+                $schema,
+            ],
+            'invalid params' => [
+                [
+                    'params.valid',
+                ],
+                [
+                    'params' => [
+                        'age' => 42,
+                    ],
+                ],
+                $schema,
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test validation.
      *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
+     * @param object|null $jsonSchema JSON Schema.
      * @return void
+     *
+     * @dataProvider validationProvider()
+     * @coversNothing
      */
-    public function testValidationDefault()
+    public function testValidation($expected, array $data, $jsonSchema = null)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->ObjectRelations->validator()->setProvider('jsonSchema', $jsonSchema);
+
+        $objectRelation = $this->ObjectRelations->newEntity($data);
+        $objectRelation->left_id = 1;
+        $objectRelation->relation_id = 1;
+        $objectRelation->right_id = 1;
+
+        $errors = $objectRelation->getErrors();
+        $errors = Hash::flatten($errors);
+
+        static::assertEquals($expected, array_keys($errors));
+
+        if (!$errors) {
+            $success = $this->ObjectRelations->save($objectRelation);
+            static::assertTrue((bool)$success);
+        }
     }
 
     /**
-     * Test buildRules method
+     * Data provider for `testJsonSchema` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testBuildRules()
+    public function jsonSchemaProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $schema = (object)[
+            'type' => 'object',
+            'properties' => (object)[
+                'name' => (object)[
+                    'type' => 'string',
+                ],
+                'age' => (object)[
+                    'type' => 'integer',
+                    'minimum' => 0,
+                ],
+            ],
+            'additionalProperties' => false,
+            'required' => ['name'],
+        ];
+
+        return [
+            'valid' => [
+                true,
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                ],
+                $schema,
+            ],
+            'missing' => [
+                true,
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                    'whatever' => true,
+                ],
+                null,
+            ],
+            'unknown property' => [
+                'The object must not contain additional properties',
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                    'wtf' => 'this should not be present',
+                ],
+                $schema,
+            ],
+            'invalid value' => [
+                'The number must be at least 0',
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => -42,
+                ],
+                $schema,
+            ],
+            'missing required property' => [
+                'The object must contain the properties',
+                [
+                    'age' => 42,
+                ],
+                $schema,
+            ],
+            'wrong type' => [
+                'The data must be a(n) string',
+                [
+                    'name' => true,
+                ],
+                $schema,
+            ],
+        ];
+    }
+
+    /**
+     * Test JSON Schema validator.
+     *
+     * @param true|string $expected Expected result.
+     * @param mixed $value Value being validated.
+     * @param object $jsonSchema JSON Schema.
+     * @return void
+     *
+     * @dataProvider jsonSchemaProvider()
+     * @covers ::jsonSchema()
+     */
+    public function testJsonSchema($expected, $value, $jsonSchema)
+    {
+        if (!is_object($jsonSchema)) {
+            $jsonSchema = json_decode(json_encode($jsonSchema));
+        }
+
+        $result = ObjectRelationsTable::jsonSchema($value, ['providers' => compact('jsonSchema')]);
+
+        if ($expected === true) {
+            static::assertTrue($result);
+        } else {
+            static::assertContains($expected, $result);
+        }
     }
 }

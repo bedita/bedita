@@ -28,6 +28,7 @@ class FakeArticlesTagsFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
         'fake_article_id' => ['type' => 'integer', 'null' => true],
         'fake_tag_id' => ['type' => 'integer', 'null' => true],
+        'fake_params' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],

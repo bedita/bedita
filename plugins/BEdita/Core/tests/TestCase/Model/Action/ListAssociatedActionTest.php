@@ -161,6 +161,7 @@ class ListAssociatedActionTest extends TestCase
                             'id' => 1,
                             'fake_article_id' => 1,
                             'fake_tag_id' => 1,
+                            'fake_params' => null,
                         ],
                     ],
                 ],
