@@ -80,11 +80,13 @@ class ObjectRelationsTable extends Table
             ->nonNegativeInteger('inv_priority');
 
         $validator
-            ->allowEmpty('params')
+            ->allowEmpty('params', function ($context) {
+                return static::jsonSchema(null, $context) === true;
+            })
+            ->requirePresence('params', function ($context) {
+                return static::jsonSchema(null, $context) !== true;
+            })
             ->add('params', 'valid', [
-                'on' => function ($context) {
-                    return !empty($context['providers']['jsonSchema']);
-                },
                 'rule' => 'jsonSchema',
                 'provider' => 'table',
             ]);
@@ -112,7 +114,7 @@ class ObjectRelationsTable extends Table
             $errors = $validator->errors();
             $error = reset($errors);
 
-            return sprintf('%s (in: %s)', $error->getMessage(), $error->getSchemaPath());
+            return sprintf('%s (in: %s)', $error->getMessage(), $error->getDataPath());
         }
 
         return true;
