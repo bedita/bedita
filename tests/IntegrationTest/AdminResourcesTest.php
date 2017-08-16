@@ -13,7 +13,6 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Utility\Inflector;
 
 /**
  * Test CRUD operations on /admin resources
