@@ -7,6 +7,7 @@ use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Database\Type;
+use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\I18n;
 use Cake\ORM\TableRegistry;
 
@@ -40,7 +41,17 @@ Type::set('timestamp', new DateTimeType());
  * Set loader for translation domain "bedita".
  */
 I18n::translators()->registerLoader('bedita', function ($name, $locale) {
-    return new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']);
+    $chain = new ChainMessagesLoader([
+        new MessagesFileLoader($name, $locale, 'mo', ['BEdita/Core', 'BEdita/API']),
+        new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']),
+    ]);
+
+    return function () use ($chain) {
+        $package = $chain();
+        $package->setFormatter('default');
+
+        return $package;
+    };
 });
 
 Configure::load('BEdita/Core.bedita', 'ini');
