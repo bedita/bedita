@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\BadRequestException;
 
 /**
  * Abstract class for updating relations between BEdita objects.
@@ -93,14 +92,6 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
                 );
 
                 $entity->_joinData->set($joinData, ['guard' => false]);
-
-                $errors = $entity->_joinData->getErrors();
-                if (!empty($errors)) {
-                    throw new BadRequestException([
-                        'title' => __d('bedita', 'Invalid data'),
-                        'detail' => $errors,
-                    ]);
-                }
             }
         );
 
