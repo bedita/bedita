@@ -120,7 +120,7 @@ class AsyncJobsTable extends Table
     {
         $schema->setColumnType('payload', 'json');
 
-        return parent::_initializeSchema($schema);
+        return $schema;
     }
 
     /**

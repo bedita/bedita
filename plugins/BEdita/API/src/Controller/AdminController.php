@@ -54,7 +54,7 @@ class AdminController extends ResourcesController
     public function initialize()
     {
         $this->resourceName = $this->request->getParam('item');
-        if (!in_array($this->resourceName, $this->config('allowedResources'))) {
+        if (!in_array($this->resourceName, $this->getConfig('allowedResources'))) {
             throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
 
