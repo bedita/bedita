@@ -93,6 +93,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -117,6 +118,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -148,6 +150,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -172,6 +175,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -203,6 +207,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -227,6 +232,7 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
+                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -257,6 +263,7 @@ class JsonApiTest extends TestCase
                             'links' => [
                                 'self' => '/roles/1/relationships/users',
                                 'related' => '/roles/1/users',
+                                'available' => '/users',
                             ],
                         ],
                     ],
@@ -283,6 +290,7 @@ class JsonApiTest extends TestCase
                             'links' => [
                                 'self' => '/roles/1/relationships/users',
                                 'related' => '/roles/1/users',
+                                'available' => '/users',
                             ],
                         ],
                     ],
@@ -507,12 +515,14 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/test',
                         'self' => '/documents/2/relationships/test',
+                        'available' => '/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                     ],
                 ],
                 'inverse_test' => [
                     'links' => [
                         'related' => '/documents/2/inverse_test',
                         'self' => '/documents/2/relationships/inverse_test',
+                        'available' => '/objects?filter%5Btype%5D%5B0%5D=documents',
                     ],
                 ],
             ],
