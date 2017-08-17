@@ -20,6 +20,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
@@ -55,25 +56,26 @@ class RelationsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->hasMany('ObjectRelations');
+
+        $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('LeftObjectTypes', [
             'className' => 'ObjectTypes',
-            'through' => 'RelationTypes',
+            'through' => $through->getRegistryAlias(),
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [
-                'RelationTypes.side' => 'left',
+                $through->aliasField('side') => 'left',
             ],
-            'cascadeCallbacks' => true,
         ]);
+        $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightObjectTypes', [
             'className' => 'ObjectTypes',
-            'through' => 'RelationTypes',
+            'through' => $through->getRegistryAlias(),
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [
-                'RelationTypes.side' => 'right',
+                $through->aliasField('side') => 'right',
             ],
-            'cascadeCallbacks' => true,
         ]);
     }
 

@@ -56,8 +56,7 @@ class Relation extends Entity implements JsonApiSerializable
      * {@inheritDoc}
      */
     protected $_hidden = [
-        'left_object_types',
-        'right_object_types',
+        'object_relations',
     ];
 
     /**
