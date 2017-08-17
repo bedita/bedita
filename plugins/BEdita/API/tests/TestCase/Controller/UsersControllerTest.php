@@ -104,6 +104,7 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
+                                'available' => 'http://api.example.com/roles',
                             ],
                         ],
                     ],
@@ -163,6 +164,7 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/roles',
                                 'self' => 'http://api.example.com/users/5/relationships/roles',
+                                'available' => 'http://api.example.com/roles',
                             ],
                         ],
                     ],
@@ -288,6 +290,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/users/1/roles',
                             'self' => 'http://api.example.com/users/1/relationships/roles',
+                            'available' => 'http://api.example.com/roles',
                         ],
                     ],
                 ],
@@ -552,6 +555,7 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/roles/1/relationships/users',
                                 'related' => 'http://api.example.com/roles/1/users',
+                                'available' => 'http://api.example.com/users',
                             ],
                         ],
                     ],

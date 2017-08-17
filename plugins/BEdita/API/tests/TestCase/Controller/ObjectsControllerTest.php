@@ -91,6 +91,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
+                                'available' => 'http://api.example.com/roles',
                             ],
                         ],
                     ],
@@ -128,12 +129,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/2/test',
                                 'self' => 'http://api.example.com/documents/2/relationships/test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/2/inverse_test',
                                 'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -168,12 +171,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -208,6 +213,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -242,6 +248,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/roles',
                                 'self' => 'http://api.example.com/users/5/relationships/roles',
+                                'available' => 'http://api.example.com/roles',
                             ],
                         ],
                     ],
@@ -276,12 +283,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/another_test',
                                 'self' => 'http://api.example.com/locations/8/relationships/another_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=locations',
                             ],
                         ],
                         'inverse_another_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/inverse_another_test',
                                 'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=locations',
                             ],
                         ],
                     ],
@@ -342,6 +351,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/media/10/streams',
                                 'self' => 'http://api.example.com/media/10/relationships/streams',
+                                'available' => 'http://api.example.com/streams',
                             ],
                         ],
                     ],
@@ -445,12 +455,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/test',
                             'self' => 'http://api.example.com/documents/2/relationships/test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/inverse_test',
                             'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                         ],
                     ],
                 ],
@@ -509,12 +521,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/test',
                             'self' => 'http://api.example.com/documents/6/relationships/test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/inverse_test',
                             'self' => 'http://api.example.com/documents/6/relationships/inverse_test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                         ],
                     ],
                 ],
@@ -823,6 +837,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -862,12 +877,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -938,6 +955,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -960,12 +978,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -1040,6 +1060,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -1109,6 +1130,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -1290,6 +1312,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -1626,6 +1649,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'self' => 'http://api.example.com/documents/2/relationships/test',
                             'related' => 'http://api.example.com/documents/2/test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                         ],
                         'data' => [
                             [
@@ -1642,6 +1666,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                             'related' => 'http://api.example.com/documents/2/inverse_test',
+                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                         ],
                         'data' => [],
                     ],
@@ -1683,6 +1708,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],
@@ -1722,12 +1748,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
                             ],
                         ],
                     ],

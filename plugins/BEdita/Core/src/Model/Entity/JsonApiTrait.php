@@ -265,6 +265,20 @@ trait JsonApiTrait
                 true
             );
 
+            $entityDest = $this->getTable()->associations()->getByProperty($relationship)->getTarget()->newEntity();
+            if ($entityDest instanceof JsonApiSerializable) {
+                $jsonApiSer = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+                if (!empty($jsonApiSer) && !empty($jsonApiSer['type'])) {
+                    $available = Router::url(
+                        [
+                            '_name' => 'api:resources:index',
+                            'controller' => $jsonApiSer['type'],
+                        ],
+                        true
+                    );
+                }
+            }
+
             if ($this->has($relationship)) {
                 $entities = $this->get($relationship);
                 $data = $this->getIncluded($entities);
@@ -272,7 +286,7 @@ trait JsonApiTrait
             }
 
             $relationships[$relationship] = compact('data') + [
-                'links' => compact('related', 'self'),
+                'links' => compact('related', 'self', 'available'),
             ];
             unset($data);
         }

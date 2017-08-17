@@ -185,6 +185,33 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                 ],
                 true
             );
+            $entityDest = $this->getTable()->associations()->getByProperty($relationship)->getTarget()->newEntity();
+            if ($entityDest instanceof JsonApiSerializable) {
+                $destObj = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+                if (empty($destObj['type'])) {
+                    $options = ['name' => $relationship];
+                    $result = TableRegistry::get('ObjectTypes')
+                        ->find('byRelation', $options)
+                        ->find('list')
+                        ->toArray();
+                    $available = Router::url(
+                        [
+                            '_name' => 'api:objects:index',
+                            'object_type' => 'objects',
+                            'filter' => ['type' => array_values($result)],
+                        ],
+                        true
+                    );
+                } else {
+                    $available = Router::url(
+                        [
+                            '_name' => 'api:resources:index',
+                            'controller' => $destObj['type'],
+                        ],
+                        true
+                    );
+                }
+            }
 
             if ($this->has($relationship)) {
                 $entities = $this->get($relationship);
@@ -193,7 +220,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             }
 
             $relationships[$relationship] = compact('data') + [
-                'links' => compact('related', 'self'),
+                'links' => compact('related', 'self', 'available'),
             ];
             unset($data);
         }

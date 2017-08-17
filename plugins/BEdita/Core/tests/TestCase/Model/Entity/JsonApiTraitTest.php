@@ -170,6 +170,7 @@ class JsonApiTraitTest extends TestCase
                 'links' => [
                     'related' => '/roles/1/users',
                     'self' => '/roles/1/relationships/users',
+                    'available' => '/users',
                 ],
             ],
         ];
@@ -222,6 +223,7 @@ class JsonApiTraitTest extends TestCase
                 'links' => [
                     'related' => '/roles/1/users',
                     'self' => '/roles/1/relationships/users',
+                    'available' => '/users',
                 ],
             ],
         ];
@@ -252,6 +254,7 @@ class JsonApiTraitTest extends TestCase
                 'links' => [
                     'related' => '/roles/2/users',
                     'self' => '/roles/2/relationships/users',
+                    'available' => '/users',
                 ],
             ],
         ];
@@ -478,6 +481,7 @@ class JsonApiTraitTest extends TestCase
                     'links' => [
                         'related' => '/roles/1/users',
                         'self' => '/roles/1/relationships/users',
+                        'available' => '/users',
                     ],
                 ],
             ],
