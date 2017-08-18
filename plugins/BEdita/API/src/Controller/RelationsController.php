@@ -17,10 +17,10 @@ namespace BEdita\API\Controller;
  *
  * @since 4.0.0
  *
+ * @property \BEdita\Core\Model\Table\RelationsTable $Relations
  */
 class RelationsController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */
