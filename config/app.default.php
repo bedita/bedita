@@ -373,16 +373,6 @@ return [
     ],
 
     /**
-     * Accepted Content Types configuration
-     *
-     * Using ACCEPT_HTML environment variable you may decide whether to accept or not HTML requests
-     * (requests with `Accept: text/html` header)
-     */
-    'Accept' => [
-        'html' => filter_var(env('ACCEPT_HTML', 'false'), FILTER_VALIDATE_BOOLEAN),
-    ],
-
-    /**
      * Additional plugins to load with this format: 'PluginName' => load options array
      * Where options array may contain
      *
