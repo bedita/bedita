@@ -18,7 +18,7 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Exception\HttpException;
 
 /**
  * @coversNothing
@@ -45,47 +45,20 @@ class ExceptionRendererTest extends IntegrationTestCase
     public function contentTypeProvider()
     {
         return [
-            'json' => [
+            'JSON' => [
                 200,
                 'application/json',
                 'application/json',
             ],
-            'jsonapi' => [
+            'JSON API' => [
                 200,
                 'application/vnd.api+json',
                 'application/vnd.api+json',
             ],
-            'jsonapiWrongMediaType' => [
+            'JSON API (wrong media type)' => [
                 415,
                 'application/vnd.api+json',
                 'application/vnd.api+json; m=test',
-            ],
-            'htmlNotAllowed' => [
-                406,
-                'application/vnd.api+json',
-                'text/html,application/xhtml+xml',
-                [
-                    'debug' => 0,
-                    'Accept.html' => 0,
-                ],
-            ],
-            'htmlDebugMode' => [
-                200,
-                'text/html',
-                'text/html,application/xhtml+xml',
-                [
-                    'debug' => 1,
-                    'Accept.html' => 0,
-                ],
-            ],
-            'htmlAccepted' => [
-                200,
-                'text/html',
-                'text/html,application/xhtml+xml',
-                [
-                    'debug' => 0,
-                    'Accept.html' => 1,
-                ],
             ],
         ];
     }
@@ -124,38 +97,37 @@ class ExceptionRendererTest extends IntegrationTestCase
      */
     public function contentTypeErrorProvider()
     {
+        // Using an exception that surely isn't thrown anywhere else in our code.
+        $exception = new HttpException('I\'m a teapot', 418);
+
         return [
-            'notFoundJson' => [
-                404,
+            'JSON (initialize)' => [
+                $exception->getCode(),
                 'application/json',
                 'application/json',
-                new NotFoundException(),
+                $exception,
+                'Controller.initialize',
             ],
-            'notFoundJsonapi' => [
-                404,
+            'JSON (beforeRender)' => [
+                $exception->getCode(),
+                'application/json',
+                'application/json',
+                $exception,
+                'Controller.beforeRender',
+            ],
+            'JSON API (initialize)' => [
+                $exception->getCode(),
                 'application/vnd.api+json',
                 'application/vnd.api+json',
-                new NotFoundException(),
+                $exception,
+                'Controller.initialize',
             ],
-            'notFoundHtmlDebug' => [
-                404,
-                'text/html',
-                'text/html,application/xhtml+xml',
-                new NotFoundException(),
-                [
-                    'debug' => 1,
-                    'Accept.html' => 0,
-                ],
-            ],
-            'notFoundHtmlAccepted' => [
-                404,
-                'text/html',
-                'text/html,application/xhtml+xml',
-                new NotFoundException(),
-                [
-                    'debug' => 0,
-                    'Accept.html' => 1,
-                ],
+            'JSON API (beforeRender)' => [
+                $exception->getCode(),
+                'application/vnd.api+json',
+                'application/vnd.api+json',
+                $exception,
+                'Controller.beforeRender',
             ],
         ];
     }
@@ -167,49 +139,33 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param string|null $expectedContentType Expected content type.
      * @param string $accept Request's "Accept" header.
      * @param \Exception $error Error to be injected.
-     * @param array|null $config Configuration to be written.
+     * @param string $event Event name.
      * @return void
      *
      * @dataProvider contentTypeErrorProvider
      */
-    public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, array $config = null)
+    public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, $event)
     {
-        Configure::write($config);
+        $eventManager = EventManager::instance();
 
-        $events = ['Controller.initialize', 'Controller.beforeRender'];
+        // Inject an error.
+        $listener = function (Event $event) use ($eventManager, $error, &$listener) {
+            // Immediately detach the listener to ensure it is executed only once.
+            $eventManager->off($event->getName(), $listener);
 
-        foreach ($events as $name) {
-            $this->_controller = null;
-            $this->injectError($name, $error);
-
-            $this->configRequest([
-                'headers' => [
-                    'Accept' => $accept,
-                ],
-            ]);
-            $this->get('/roles');
-            static::assertEquals($expectedCode, $this->_response->getStatusCode(), 'Error with event ' . $name);
-            $this->assertContentType($expectedContentType, 'Error with event ' . $name);
-        }
-    }
-
-    /**
-     * Helper method to inject error throwing an exception when an event is triggered
-     *
-     * @param string $eventName The event name
-     * @param \Exception $exception The exception to throw when the event is triggered
-     * @return void
-     */
-    protected function injectError($eventName, \Exception $exception)
-    {
-        $listener = function (Event $event) use ($exception, &$listener) {
-            // immediately off the listener to assure to execute just one time
-            EventManager::instance()->off($event->getName(), $listener);
-
-            throw $exception;
+            throw $error;
         };
+        $eventManager->on($event, $listener);
 
-        EventManager::instance()->on($eventName, $listener);
+        $this->configRequest([
+            'headers' => [
+                'Accept' => $accept,
+            ],
+        ]);
+        $this->get('/roles');
+
+        static::assertEquals($expectedCode, $this->_response->getStatusCode());
+        $this->assertContentType($expectedContentType);
     }
 
     /**
