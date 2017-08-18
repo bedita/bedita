@@ -31,7 +31,7 @@ class JsonApiView extends JsonView
     /**
      * {@inheritDoc}
      */
-    protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta'];
+    protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta', '_jsonApiOptions'];
 
     /**
      * {@inheritDoc}
@@ -40,14 +40,15 @@ class JsonApiView extends JsonView
     {
         if (empty($this->viewVars['_error'])) {
             $data = parent::_dataToSerialize($serialize) ?: [];
+            $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
             if ($data) {
                 $included = [];
-                $data = JsonApi::formatData(reset($data), $included);
+                $data = JsonApi::formatData(reset($data), $options, $included);
             }
             if (empty($included)) {
                 unset($included);
             } else {
-                $included = JsonApi::formatData($included);
+                $included = JsonApi::formatData($included, $options);
             }
         } else {
             $error = $this->viewVars['_error'];
