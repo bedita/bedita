@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -334,6 +335,7 @@ abstract class ResourcesController extends AppController
                 $this->set(compact('data'));
                 $this->set([
                     '_serialize' => ['data'],
+                    '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META
                 ]);
 
                 return null;
