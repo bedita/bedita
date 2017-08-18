@@ -14,9 +14,7 @@ namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
 use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\HtmlMiddleware;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -59,32 +57,6 @@ class CommonEventHandlerTest extends TestCase
      */
     public function testBuildMiddlewareStack()
     {
-        EventManager::instance()->on(new CommonEventHandler());
-
-        $middleware = new MiddlewareQueue();
-        static::assertCount(0, $middleware);
-
-        $middleware->add(new ErrorHandlerMiddleware());
-        static::assertCount(1, $middleware);
-
-        $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
-        EventManager::instance()->dispatch($event);
-        static::assertCount(3, $middleware);
-        static::assertInstanceOf(HtmlMiddleware::class, $middleware->get(0));
-        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(1));
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(2));
-    }
-
-    /**
-     * Test build middleware stack when HTML is not acceptable.
-     *
-     * @return void
-     * @covers ::buildMiddlewareStack()
-     */
-    public function testBuildMiddlewareStackNoHtml()
-    {
-        Configure::write('debug', false);
-        Configure::write('Accept.html', false);
         EventManager::instance()->on(new CommonEventHandler());
 
         $middleware = new MiddlewareQueue();
