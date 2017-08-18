@@ -393,7 +393,7 @@ return [
      * - `autoload` - boolean - (default: false) Whether or not you want an autoloader registered
      */
     'Plugins' => [
-        'DebugKit' => ['debugOnly' => true, 'bootstrap' => true],
+//      'MyDebugOnlyPlugin' => ['debugOnly' => true, 'bootstrap' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
     ],
 

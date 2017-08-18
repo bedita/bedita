@@ -58,6 +58,7 @@ use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Core\Exception\MissingPluginException;
 use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
@@ -233,8 +234,15 @@ Plugin::load(
     ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]
 );
 
-/**
- * Load common plugins like 'Migrations' and 'DebugKit' or other custom / 3rd party plugins
- * via configuration key 'Plugins'
+if (Configure::read('debug')) {
+    try {
+        Plugin::load('BEdita/DevTools', ['bootstrap' => true]);
+    } catch (MissingPluginException $e) {
+        // Do not halt if the plugin is missing
+    }
+}
+
+/*
+ * Load other custom / 3rd party plugins via configuration key 'Plugins'.
  */
 Plugin::loadFromConfig();
