@@ -96,8 +96,8 @@ class CommonEventHandlerTest extends TestCase
         $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
         EventManager::instance()->dispatch($event);
         static::assertCount(2, $middleware);
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
-        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(1));
+        static::assertInstanceOf(CorsMiddleware::class, $middleware->get(0));
+        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(1));
     }
 
     /**

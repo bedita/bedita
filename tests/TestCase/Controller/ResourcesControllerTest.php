@@ -504,6 +504,8 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'status' => 'on',
                         'uname' => 'first-user',
                         'title' => 'Mr. First User',

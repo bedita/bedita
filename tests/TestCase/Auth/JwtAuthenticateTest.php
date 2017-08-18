@@ -14,13 +14,14 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\JwtAuthenticate;
+use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
+use Cake\Network\Exception\UnauthorizedException;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -159,6 +160,7 @@ class JwtAuthenticateTest extends TestCase
         $renewToken = JWT::encode(['sub' => 1], Security::salt());
 
         $invalidToken = JWT::encode(['aud' => 'http://example.org'], Security::salt());
+        $expiredToken = JWT::encode(['exp' => time() - 10], Security::salt());
 
         return [
             'default' => [
@@ -203,7 +205,7 @@ class JwtAuthenticateTest extends TestCase
                 new ServerRequest(),
             ],
             'invalidToken' => [
-                false,
+                new UnauthorizedException('Invalid audience'),
                 [],
                 new ServerRequest([
                     'params' => [
@@ -218,13 +220,24 @@ class JwtAuthenticateTest extends TestCase
                     ],
                 ]),
             ],
+            'expiredToken' => [
+                new ExpiredTokenException([
+                    'title' => __d('bedita', 'Expired token'),
+                    'detail' => __d('bedita', 'Provided token has expired'),
+                    'code' => 'be_token_expired',
+                ]),
+                [],
+                new ServerRequest([
+                    'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $expiredToken],
+                ]),
+            ],
         ];
     }
 
     /**
      * Test `getUser` method.
      *
-     * @param array|false $expected Expected result.
+     * @param array|false|\Exception $expected Expected result.
      * @param array $config Configuration.
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
@@ -234,14 +247,19 @@ class JwtAuthenticateTest extends TestCase
      * @covers ::getUser()
      * @covers ::getPayload()
      * @covers ::decode()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testAuthenticate($expected, array $config, ServerRequest $request)
     {
-        Configure::write('debug', false);
+        try {
+            $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
 
-        $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
-
-        $result = $auth->authenticate($request, new Response());
+            $result = $auth->authenticate($request, new Response());
+        } catch (\Exception $e) {
+            $result = $e;
+            static::assertEquals($expected->getAttributes(), $e->getAttributes());
+            static::assertEquals($expected->getCode(), $e->getCode());
+        }
 
         static::assertEquals($expected, $result);
     }
@@ -278,8 +296,6 @@ class JwtAuthenticateTest extends TestCase
      */
     public function testUnauthenticatedWithInternalErrorMessage()
     {
-        Configure::write('debug', false);
-
         $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',

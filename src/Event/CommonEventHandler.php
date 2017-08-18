@@ -66,7 +66,7 @@ class CommonEventHandler implements EventListenerInterface
             $middleware->insertAt(0, new HtmlMiddleware());
         }
 
-        $middleware->insertAfter(
+        $middleware->insertBefore(
             ErrorHandlerMiddleware::class,
             new CorsMiddleware(Configure::read('CORS'))
         );

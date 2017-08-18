@@ -2,14 +2,14 @@
 	"variables": [],
 	"info": {
 		"name": "BE4",
-		"_postman_id": "88d8a406-338b-b294-9710-fb44d3139446",
+		"_postman_id": "3f372486-d164-5477-959f-920550f02460",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "1. Auth",
-			"description": "Authorization",
+			"name": "1. Auth & Signup",
+			"description": "Authorization & Signup",
 			"item": [
 				{
 					"name": "Auth",
@@ -161,6 +161,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -179,118 +184,6 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"var schemaAuth = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"jwt\": {\"type\": \"string\"},",
-									"                \"renew\": {\"type\": \"string\"}",
-									"            },",
-									"            \"required\": [\"jwt\", \"renew\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"meta\"],",
-									"};",
-									"var schemaBase = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"resources\": {",
-									"                    \"type\": \"object\"",
-									"                }",
-									"            },",
-									"            \"required\": [\"resources\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"links\",\"meta\"]",
-									"};",
-									"var schemaFull = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"array\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"]",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"meta\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"pagination\": {",
-									"                    \"type\": \"object\",",
-									"                    \"properties\": {",
-									"                        \"count\": {\"type\": \"number\"},",
-									"                        \"page\": {\"type\": \"number\"},",
-									"                        \"page_count\": {\"type\": \"number\"},",
-									"                        \"page_items\": {\"type\": \"number\"},",
-									"                        \"page_size\": {\"type\": \"number\"}",
-									"                    },",
-									"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
-									"                }",
-									"            },",
-									"            \"required\": [\"pagination\"]",
-									"        }",
-									"    },",
-									"    \"required\": [\"data\",\"links\",\"meta\"]",
-									"};",
-									"var schemaPatch = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"]",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"links\", \"data\"],",
-									"};",
-									"postman.setEnvironmentVariable(\"schemaAuth\",schemaAuth);",
-									"postman.setEnvironmentVariable(\"schemaBase\",schemaBase);",
-									"postman.setEnvironmentVariable(\"schemaFull\",schemaFull);",
-									"postman.setEnvironmentVariable(\"schemaPatch\",schemaPatch);",
 									"var schema = postman.getEnvironmentVariable(\"schemaAuth\");",
 									"var responseJSON;",
 									"try {",
@@ -321,6 +214,11 @@
 								"key": "Content-Type",
 								"value": "application/x-www-form-urlencoded",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -329,18 +227,233 @@
 								{
 									"key": "username",
 									"value": "{{username}}",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "{{password}}",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								}
 							]
 						},
 						"description": "Authentication using form-data"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/signup",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"johannadoe\",\n    \"password\": \"j0h4nn4d0e\",\n    \"email\": \"johannadoe@nowhere.xx\",\n\t\"activation_url\": \"http://myactivationsys.xx?dum=my\",\n\t\"redirect_url\": \"app://xx?dum=my\"\n}"
+						},
+						"description": "Create new User"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup user activation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var uuid = postman.getEnvironmentVariable(\"uuid\");",
+									"if (uuid) {",
+									"    try {",
+									"        tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"        tests[\"Body matches string\"] = responseBody === \"\";",
+									"    ",
+									"    } catch (e) {",
+									"        tests[\"Error in parsing response\"] = e;",
+									"    }",
+									"} else {",
+									"    tests[\"Skip test - empty apiKey|uuid\"] = true;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/signup/activation",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"{{uuid}}\"\n}"
+						},
+						"description": "Signup user activation"
+					},
+					"response": []
+				},
+				{
+					"name": "Credentials change request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var profileEmail = postman.getEnvironmentVariable(\"profileEmail\");",
+									"if (profileEmail) {",
+									"    var responseJSON;",
+									"    try {",
+									"    ",
+									"        tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"        tests[\"Body matches string\"] = responseBody === \"\";",
+									"        ",
+									"    } catch (e) {",
+									"        tests[\"Error in parsing response\"] = e;",
+									"    }",
+									"} else {",
+									"    tests[\"Skip test - empty profileEmail\"] = true;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/auth/change",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"contact\": \"{{profileEmail}}\",\n\t\"change_url\": \"http://example.com/change\"\n}"
+						},
+						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Credentials change",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var uuid = postman.getEnvironmentVariable(\"uuid\");",
+									"if (uuid) {",
+									"    var schema = postman.getEnvironmentVariable(\"schemaAuth\");",
+									"    var responseJSON;",
+									"    try {",
+									"        responseJSON = JSON.parse(responseBody);",
+									"        tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        }",
+									"        postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+									"    } catch (e) {",
+									"        tests[\"Error in parsing response\"] = e;",
+									"    }",
+									"} else {",
+									"    tests[\"Skip test - empty apiKey|uuid\"] = true;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/auth/change",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"uuid\": \"{{uuid}}\",\n    \"password\": \"a-brand-new password\",\n    \"login\": true\n}"
+						},
+						"description": "Perform actual credential change using secret hash"
 					},
 					"response": []
 				}
@@ -389,6 +502,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -432,6 +550,11 @@
 							{
 								"key": "Accept",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -487,6 +610,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -546,6 +674,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -600,6 +733,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -653,6 +791,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -709,6 +852,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -764,6 +912,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -817,6 +970,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -873,6 +1031,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -880,6 +1043,77 @@
 							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}"
 						},
 						"description": "PATCH object"
+					},
+					"response": []
+				},
+				{
+					"name": "GET objects type filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "{{be4Url}}/objects?filter[type]=documents",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects"
+							],
+							"query": [
+								{
+									"key": "filter[type]",
+									"value": "documents",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Get objects list"
 					},
 					"response": []
 				}
@@ -927,6 +1161,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -983,6 +1222,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1036,6 +1280,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1091,6 +1340,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1139,6 +1393,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1197,6 +1456,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1250,6 +1514,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1305,6 +1574,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1359,6 +1633,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1407,6 +1686,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1462,6 +1746,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1511,6 +1800,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1555,6 +1849,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1562,96 +1861,6 @@
 							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
 						},
 						"description": "Remove a user's role"
-					},
-					"response": []
-				},
-				{
-					"name": "Signup user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
-									"var responseJSON;",
-									"try {",
-									"    tests[\"Status code is 202\"] = responseCode.code === 202;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    if (schema) {",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"    } else {",
-									"        tests[\"Skip data validation\"] = true;",
-									"    }",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}",
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/signup",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johannadoe\",\n            \"password\": \"j0h4nn4d0e\",\n            \"email\": \"johannadoe@nowhere.xx\"\n        },\n        \"meta\": {\n            \"activation_url\": \"http://myactivationsys.xx?dum=my\",\n            \"redirect_url\": \"app://xx?dum=my\"\n        }\n    }\n}"
-						},
-						"description": "Create new User"
-					},
-					"response": []
-				},
-				{
-					"name": "Signup user activation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"try {",
-									"    tests[\"Status code is 404\"] = responseCode.code === 404;",
-									"    tests[\"Content-Type is correct\"] = (postman.getResponseHeader(\"Content-Type\").indexOf('application/json') >= 0);",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/signup/activation",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"uuid\": \"some-uuid\"\n}"
-						},
-						"description": "Signup user activation"
 					},
 					"response": []
 				}
@@ -1700,6 +1909,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1743,6 +1957,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1798,6 +2017,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1847,6 +2071,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1860,7 +2089,1153 @@
 			]
 		},
 		{
-			"name": "7. Remove All",
+			"name": "7. Admin",
+			"description": "",
+			"item": [
+				{
+					"name": "GET applications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/applications",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create application",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"adminResourceId\", responseJSON.data.id);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/applications",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"my-very-first-app\",\n            \"description\": \"My first app\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET single application",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/applications/{{adminResourceId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Modify application",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/applications/{{adminResourceId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"new-app-name\",\n            \"description\": \"New application description\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete application",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"roleId\")) {",
+									"        postman.clearEnvironmentVariable(\"roleId\");",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/applications/{{adminResourceId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET async jobs list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/async_jobs",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create async job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"adminResourceId\", responseJSON.data.id);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/async_jobs",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"service\": \"dummy\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Modify async job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"priority\": 2\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete async job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"jobId\")) {",
+									"        postman.clearEnvironmentVariable(\"jobId\");",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET single job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET config list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/config",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"adminResourceId\", responseJSON.data.id);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/config",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n    \t\"id\": \"TestConf\",\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"TestConf\",\n            \"content\": \"config content\",\n            \"context\": \"config-context\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET single config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/config/{{adminResourceId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Modify config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/config/{{adminResourceId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"context\": \"another-context\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"roleId\")) {",
+									"        postman.clearEnvironmentVariable(\"roleId\");",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"    postman.setEnvironmentVariable(\"adminResourceId\", responseJSON.data.id);",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"name\": \"my_endpoint\",\n            \"description\": \"My first endpoint\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET single endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaBase\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        if (schema) {",
+									"            tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        } else {",
+									"            tests[\"Skip data validation\"] = true;",
+									"        }",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET endpoints",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaFull\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Modify endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = postman.getEnvironmentVariable(\"schemaPatch\");",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (schema) {",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"    } else {",
+									"        tests[\"Skip data validation\"] = true;",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"description\": \"New endpoint description\"\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    tests[\"Body matches string\"] = responseBody === \"\";",
+									"    if (postman.getEnvironmentVariable(\"roleId\")) {",
+									"        postman.clearEnvironmentVariable(\"roleId\");",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Remove All",
 			"description": "Remove all objects and resources created",
 			"item": [
 				{
@@ -1899,6 +3274,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -1944,6 +3324,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1987,6 +3372,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
@@ -2038,6 +3428,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -2082,6 +3477,11 @@
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
 								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -2125,6 +3525,11 @@
 							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt}}",
+								"description": ""
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}",
 								"description": ""
 							}
 						],
