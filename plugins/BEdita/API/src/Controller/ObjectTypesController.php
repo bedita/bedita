@@ -32,6 +32,8 @@ class ObjectTypesController extends ResourcesController
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'properties' => ['properties'],
+            'left_relations' => ['relations'],
+            'right_relations' => ['relations'],
         ],
     ];
 }
