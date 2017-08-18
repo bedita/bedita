@@ -28,6 +28,9 @@ class ObjectsTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.date_ranges',
@@ -166,6 +169,17 @@ class ObjectsTableTest extends TestCase
                 ],
                 ['document', 'profiles'],
             ],
+            'exclude' => [
+                [
+                    1 => 'Mr. First User',
+                    4 => 'Gustavo Supporto profile',
+                    5 => 'Miss Second User',
+                    8 => 'The Two Towers',
+                    9 => 'first event',
+                    10 => 'first media',
+                ],
+                ['ne' => 'documents'],
+            ],
             'missing' => [
                 false,
                 ['document', 'profiles', 0],
@@ -232,6 +246,8 @@ class ObjectsTableTest extends TestCase
         if (!$object) {
             static::fail('Unable to save object');
         }
+        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+        static::assertCount(1, $object->date_ranges);
 
         $data['date_ranges'][0]['start_date'] = date('Y-m-d');
         $object = $this->Objects->patchEntity($object, $data);

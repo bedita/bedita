@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Mailer\Transport;
 
+use BEdita\Core\Mailer\Email as BeditaEmail;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
 use Cake\Network\Email\DebugTransport;
@@ -53,6 +54,7 @@ class AsyncJobsTransport extends AbstractTransport
 
         $payload = $email->jsonSerialize();
         $payload += [
+            '_boundary' => BeditaEmail::getBoundary($email),
             '_message' => $email->message(),
             '_htmlMessage' => $email->message(Email::MESSAGE_HTML),
             '_textMessage' => $email->message(Email::MESSAGE_TEXT),

@@ -39,7 +39,9 @@ class UserTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -85,9 +87,9 @@ class UserTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(1, $user->id);
-        $this->assertFalse($user->blocked);
-        $this->assertEquals('patched_username', $user->username);
+        static::assertEquals(1, $user->id);
+        static::assertFalse($user->blocked);
+        static::assertEquals('patched_username', $user->username);
     }
 
     /**
@@ -103,12 +105,35 @@ class UserTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertNotEmpty($user->password_hash);
-        $this->assertArrayNotHasKey('password_hash', $user->toArray());
+        static::assertNotEmpty($user->password_hash);
+        static::assertArrayNotHasKey('password_hash', $user->toArray());
     }
 
     /**
      * Test setter method for `password`.
+     *
+     * @return void
+     * @covers ::_setPassword()
+     */
+    public function testSetPassword()
+    {
+        $user = $this->Users->get(1);
+
+        $data = [
+            'password' => 'myPassword',
+        ];
+        $user = $this->Users->patchEntity($user, $data);
+        if (!($user instanceof User)) {
+            throw new \InvalidArgumentException();
+        }
+
+        static::assertNull($user->password);
+        static::assertNotEquals('myPassword', $user->password_hash);
+        static::assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
+    }
+
+    /**
+     * Test setter method for `password_hash`.
      *
      * @return void
      * @covers ::_setPasswordHash()
@@ -125,7 +150,7 @@ class UserTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertNotEquals('myPassword', $user->password_hash);
-        $this->assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
+        static::assertNotEquals('myPassword', $user->password_hash);
+        static::assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
     }
 }

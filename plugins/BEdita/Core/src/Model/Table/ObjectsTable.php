@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
+use BEdita\Core\ORM\QueryFilterTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
@@ -47,6 +48,8 @@ use Cake\ORM\Table;
 class ObjectsTable extends Table
 {
 
+    use QueryFilterTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -74,16 +77,16 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
-        $this->hasMany('DateRanges', [
-            'foreignKey' => 'object_id',
-            'className' => 'BEdita/Core.DateRanges',
-            'saveStrategy' => 'replace',
-        ]);
-
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.ObjectTypes'
+        ]);
+
+        $this->hasMany('DateRanges', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
         ]);
 
         $this->belongsTo('CreatedByUser', [
@@ -153,14 +156,9 @@ class ObjectsTable extends Table
             $type = $this->ObjectTypes->get($type)->id;
         }
         unset($type);
+        $field = $this->aliasField($this->ObjectTypes->getForeignKey());
 
-        return $query
-            ->where(function (QueryExpression $exp) use ($options) {
-                return $exp->in(
-                    $this->aliasField($this->ObjectTypes->getForeignKey()),
-                    $options
-                );
-            });
+        return $this->fieldsFilter($query, [$field => $options]);
     }
 
     /**

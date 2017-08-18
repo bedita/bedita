@@ -241,6 +241,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -444,6 +445,8 @@ class RolesControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',

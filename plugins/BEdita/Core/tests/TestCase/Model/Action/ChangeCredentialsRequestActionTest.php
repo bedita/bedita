@@ -14,13 +14,17 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Entity\AsyncJob;
+use BEdita\Core\Model\Entity\User;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Mailer\Email;
 use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsRequestAction} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
+ * @covers \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
  */
 class ChangeCredentialsRequestActionTest extends TestCase
 {
@@ -45,6 +49,8 @@ class ChangeCredentialsRequestActionTest extends TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
             'className' => 'Debug'
@@ -55,12 +61,6 @@ class ChangeCredentialsRequestActionTest extends TestCase
      * Test invocation of command.
      *
      * @return void
-     *
-     * @covers ::execute()
-     * @covers ::validate()
-     * @covers ::createJob()
-     * @covers ::sendMail()
-     * @covers ::getChangeUrl()
      */
     public function testExecute()
     {
@@ -69,10 +69,22 @@ class ChangeCredentialsRequestActionTest extends TestCase
             'change_url' => 'http://users.example.com',
         ];
 
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.credentialsChangeRequest', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(4, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+            static::assertInstanceOf(AsyncJob::class, $arguments[2]);
+            static::assertTrue(is_string($arguments[3]));
+        });
+
         $action = new ChangeCredentialsRequestAction();
         $res = $action($data);
 
-        $this->assertTrue($res);
+        static::assertTrue($res);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
     /**
@@ -80,19 +92,20 @@ class ChangeCredentialsRequestActionTest extends TestCase
      *
      * @return void
      *
-     * @covers ::execute()
-     * @covers ::validate()
+     * @expectedException \Cake\Network\Exception\BadRequestException
      */
     public function testValidationFail()
     {
-        $this->expectException('\Cake\Network\Exception\BadRequestException');
-
         $data = [
             'contact' => 'ask gustavo',
         ];
 
+        EventManager::instance()->on('Auth.credentialsChangeRequest', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new ChangeCredentialsRequestAction();
-        $res = $action($data);
+        $action($data);
     }
 
     /**
@@ -100,18 +113,20 @@ class ChangeCredentialsRequestActionTest extends TestCase
      *
      * @return void
      *
-     * @covers ::execute()
-     * @covers ::validate()
+     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testExecuteFail()
     {
-        $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         $data = [
             'contact' => 'mr.gustavo@example.com',
             'change_url' => 'http://users.example.com',
         ];
 
+        EventManager::instance()->on('Auth.credentialsChangeRequest', function () {
+            static::fail('Wrong event triggered');
+        });
+
         $action = new ChangeCredentialsRequestAction();
-        $res = $action($data);
+        $action($data);
     }
 }

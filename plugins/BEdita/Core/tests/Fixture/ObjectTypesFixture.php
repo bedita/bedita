@@ -70,5 +70,13 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Objects',
             'associations' => '["DateRanges"]',
         ],
+        [
+            'singular' => 'media',
+            'name' => 'media',
+            'description' => null,
+            'plugin' => 'BEdita/Core',
+            'model' => 'Media',
+            'associations' => '["Streams"]',
+        ],
     ];
 }

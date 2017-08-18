@@ -46,10 +46,8 @@ class DateTimeType extends CakeDateTimeType
             if ($value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');
             }
-
-            return $value;
         }
 
-        return null;
+        return $value;
     }
 }

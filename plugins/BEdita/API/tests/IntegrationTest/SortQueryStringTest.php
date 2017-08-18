@@ -13,7 +13,6 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Utility\Hash;
 
 /**
@@ -83,7 +82,7 @@ class SortQueryStringTest extends IntegrationTestCase
 
         // sort desc
         $this->configRequestHeaders();
-        $url = sprintf('/%s?sort=-%s', $endpoint, $sort);
+        $url = sprintf('%s?sort=-%s', $endpoint, $sort);
         $this->get($url);
         $this->assertResponseCode($expected);
         if ($expected === 200) {

@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -76,6 +77,7 @@ class JwtAuthenticate extends BaseAuthenticate
         ],
         'fields' => [
             'username' => 'id',
+            'password' => null,
         ],
         'userModel' => 'Users',
         'scope' => [],
@@ -127,6 +129,10 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
+
+        if (!empty($this->error)) {
+            throw new UnauthorizedException($this->error->getMessage());
+        }
 
         if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
             return $payload;
@@ -203,6 +209,8 @@ class JwtAuthenticate extends BaseAuthenticate
             }
 
             return (array)$payload;
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            throw new ExpiredTokenException();
         } catch (\Exception $e) {
             $this->error = $e;
         }

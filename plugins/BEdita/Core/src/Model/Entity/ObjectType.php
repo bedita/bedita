@@ -29,7 +29,6 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property array $associations
  * @property string[] $relations
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations

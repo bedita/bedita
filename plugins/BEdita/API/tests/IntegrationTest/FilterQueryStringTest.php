@@ -206,7 +206,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      */
     public function testFindQuery()
     {
-        $expected = [2, 3, 9];
+        $expected = ['2', '3', '9', '10'];
         $this->configRequestHeaders();
 
         $this->get('/objects?filter[query]=here');
@@ -272,10 +272,129 @@ class FilterQueryStringTest extends IntegrationTestCase
      */
     public function testFindQueryAlias()
     {
-        $expected = [2, 3, 9];
+        $expected = ['2', '3', '9', '10'];
         $this->configRequestHeaders();
 
         $this->get('/objects?q=here');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
+
+    /**
+     * Data provider for `testTypeFilter` test case.
+     *
+     * @return array
+     */
+    public function typeFilterProvider()
+    {
+        return [
+            'simple' => [
+               'filter[type]=users',
+               [
+                   '1',
+                   '5',
+               ],
+            ],
+            'exclude' => [
+               'filter[type][ne]=documents',
+               [
+                   '1',
+                   '4',
+                   '5',
+                   '8',
+                   '9',
+                   '10',
+               ],
+            ],
+            'multi' => [
+               'filter[type][]=events&filter[type][]=locations',
+               [
+                   '8',
+                   '9',
+               ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[type]` query string.
+     *
+     * @param string $query Query string.
+     * @param array $expected Expected result.
+     * @return void
+     *
+     * @dataProvider typeFilterProvider
+     * @coversNothing
+     */
+    public function testTypeFilter($query, $expected)
+    {
+        $this->configRequestHeaders();
+
+        $this->get("/objects?$query");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
+
+    /**
+     * Data provider for `testTrashFilter` test case.
+     *
+     * @return array
+     */
+    public function trashFilterProvider()
+    {
+        return [
+            'simple' => [
+               'filter[type]=documents',
+               [
+                   '6',
+                   '7',
+               ],
+            ],
+            'exclude' => [
+               'filter[type][ne]=documents',
+               [
+               ],
+            ],
+            'query1' => [
+               'filter[query]=one',
+               [
+                   '6',
+               ],
+            ],
+            'query2' => [
+               'q=two',
+               [
+                   '7',
+               ],
+            ],
+        ];
+    }
+
+    /**
+     * Test filters on /trash endpoint.
+     *
+     * @param string $query Query string.
+     * @param array $expected Expected result.
+     * @return void
+     *
+     * @dataProvider trashFilterProvider
+     * @coversNothing
+     */
+    public function testTrashFilter($query, $expected)
+    {
+        $this->configRequestHeaders();
+
+        $this->get("/trash?$query");
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);

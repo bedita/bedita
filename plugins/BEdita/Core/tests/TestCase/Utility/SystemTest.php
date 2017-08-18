@@ -72,6 +72,8 @@ class SystemTest extends TestCase
 
         $this->assertNotEquals('ok', $result['environment']);
         $this->assertNotEmpty($result['errors']);
+
+        $this->cleanupFakeDb();
     }
 
     /**
@@ -91,5 +93,18 @@ class SystemTest extends TestCase
         $fake = array_merge($info, $fake);
         Configure::write('Datasources.' . $configName, $fake);
         ConnectionManager::setConfig($configName, $fake);
+    }
+
+    /**
+     * Cleanup fake db connection.
+     *
+     * @return void
+     */
+    protected function cleanupFakeDb()
+    {
+        $info = Database::basicInfo();
+        if ($info['vendor'] === 'sqlite') {
+            unlink('_______fake-tmp_______');
+        }
     }
 }

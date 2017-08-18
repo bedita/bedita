@@ -13,8 +13,13 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
+use Cake\Database\Expression\QueryExpression;
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
@@ -32,9 +37,36 @@ use Cake\Validation\Validator;
  *
  * @since 4.0.0
  */
-class ChangeCredentialsRequestAction extends BaseAction
+class ChangeCredentialsRequestAction extends BaseAction implements EventListenerInterface
 {
+
+    use EventDispatcherTrait;
     use MailerAwareTrait;
+
+    /**
+     * The UsersTable table
+     *
+     * @var \BEdita\Core\Model\Table\UsersTable
+     */
+    protected $Users;
+
+    /**
+     * The AsyncJobs table
+     *
+     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     */
+    protected $AsyncJobs;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initialize(array $config)
+    {
+        $this->Users = TableRegistry::get('Users');
+        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+
+        $this->eventManager()->on($this);
+    }
 
     /**
      * {@inheritDoc}
@@ -51,11 +83,11 @@ class ChangeCredentialsRequestAction extends BaseAction
 
         // operations are not in transaction: every failure stops following operations
         // and there's nothing to rollback
-        $user = TableRegistry::get('Users')->find()
-                    ->where(['email' => $data['contact']])
-                    ->firstOrFail();
+        $user = $this->getUser($data['contact']);
         $job = $this->createJob($user);
-        $this->sendMail($user, $job->uuid, $data['change_url']);
+        $changeUrl = $this->getChangeUrl($job->uuid, $data['change_url']);
+
+        $this->dispatchEvent('Auth.credentialsChangeRequest', [$user, $job, $changeUrl], $this->Users);
 
         return true;
     }
@@ -91,6 +123,23 @@ class ChangeCredentialsRequestAction extends BaseAction
     }
 
     /**
+     * Get user.
+     *
+     * @param string $contact Contact method (email).
+     * @return \BEdita\Core\Model\Entity\User
+     */
+    protected function getUser($contact)
+    {
+        $user = $this->Users->find()
+            ->where(function (QueryExpression $exp) use ($contact) {
+                return $exp->eq($this->Users->aliasField('email'), $contact);
+            })
+            ->firstOrFail();
+
+        return $user;
+    }
+
+    /**
      * Create the credentials change async job
      *
      * @param User $user The user requesting change
@@ -98,11 +147,11 @@ class ChangeCredentialsRequestAction extends BaseAction
      */
     protected function createJob(User $user)
     {
-        $aysncJobsTable = TableRegistry::get('AsyncJobs');
-        $action = new SaveEntityAction(['table' => $aysncJobsTable]);
+        $asyncJobsTable = TableRegistry::get('AsyncJobs');
+        $action = new SaveEntityAction(['table' => $asyncJobsTable]);
 
         return $action([
-            'entity' => $aysncJobsTable->newEntity(),
+            'entity' => $asyncJobsTable->newEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
@@ -117,19 +166,16 @@ class ChangeCredentialsRequestAction extends BaseAction
     /**
      * Send change request email to user
      *
-     * @param User $user The user
-     * @param string $uuid Change uuid
-     * @param string $changeUrl Base change URL
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\User $user The user.
+     * @param \BEdita\Core\Model\Entity\AsyncJob $asyncJob Async job.
+     * @param string $changeUrl Change URL
      * @return void
-     * @throws \Exception When sending email throws an exception different from \Cake\Network\Exception\SocketException
      */
-    protected function sendMail(User $user, $uuid, $changeUrl)
+    public function sendMail(Event $event, User $user, AsyncJob $asyncJob, $changeUrl)
     {
         $options = [
-            'params' => [
-                'user' => $user,
-                'changeUrl' => $this->getChangeUrl($uuid, $changeUrl),
-            ]
+            'params' => compact('user', 'changeUrl'),
         ];
         $this->getMailer('BEdita/Core.User')->send('changeRequest', [$options]);
     }
@@ -146,5 +192,15 @@ class ChangeCredentialsRequestAction extends BaseAction
         $changeUrl .= (strpos($changeUrl, '?') === false) ? '?' : '&';
 
         return sprintf('%suuid=%s', $changeUrl, $uuid);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function implementedEvents()
+    {
+        return [
+            'Auth.credentialsChangeRequest' => 'sendMail',
+        ];
     }
 }

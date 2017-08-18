@@ -14,6 +14,9 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\User;
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
@@ -25,8 +28,10 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class SignupUserActivationAction extends BaseAction
+class SignupUserActivationAction extends BaseAction implements EventListenerInterface
 {
+
+    use EventDispatcherTrait;
     use MailerAwareTrait;
 
     /**
@@ -34,22 +39,24 @@ class SignupUserActivationAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users = null;
+    protected $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs = null;
+    protected $AsyncJobs;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initialize(array $config)
     {
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+
+        $this->eventManager()->on($this);
     }
 
     /**
@@ -87,7 +94,7 @@ class SignupUserActivationAction extends BaseAction
         $asyncJob->completed = $now;
         $this->AsyncJobs->save($asyncJob);
 
-        $this->sendMail($user);
+        $this->dispatchEvent('Auth.signupActivation', [$user, $asyncJob], $this->Users);
 
         return $user;
     }
@@ -95,14 +102,25 @@ class SignupUserActivationAction extends BaseAction
     /**
      * Send welcome email to user to inform him of successfully activation
      *
+     * @param \Cake\Event\Event $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    protected function sendMail(User $user)
+    public function sendMail(Event $event, User $user)
     {
         $options = [
             'params' => compact('user'),
         ];
         $this->getMailer('BEdita/Core.User')->send('welcome', [$options]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function implementedEvents()
+    {
+        return [
+            'Auth.signupActivation' => 'sendMail',
+        ];
     }
 }
