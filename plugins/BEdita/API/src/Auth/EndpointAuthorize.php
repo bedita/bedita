@@ -17,6 +17,7 @@ use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
@@ -94,6 +95,20 @@ class EndpointAuthorize extends BaseAuthorize
             $this->isAnonymous($user) &&
             $this->getConfig('blockAnonymousUsers')) {
             $this->unauthenticate();
+        }
+
+        // if 'administratorOnly' configuration is true logged user must have administrator role
+        if ($this->getConfig('administratorOnly')) {
+            $user = LoggedUser::getUser();
+            if (empty($user) || empty($user['roles'])) {
+                $this->unauthenticate();
+            } else {
+                $roleIds = Hash::extract($user, 'roles.{n}.id');
+                $administratorRoleId = 1;
+                if (empty($roleIds) || !in_array($administratorRoleId, $roleIds)) {
+                    $this->unauthenticate();
+                }
+            }
         }
 
         // For anonymous users performing write operations, use strict mode.
