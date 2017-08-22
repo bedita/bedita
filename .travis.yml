@@ -161,7 +161,7 @@ before_script:
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
-script: vendor/bin/phpunit --coverage-clover=clover.xml # Run PHPUnit.
+script: vendor/bin/phpunit # Run PHPUnit.
 
 after_success: bash <(curl -s https://codecov.io/bash) # Upload test coverage reports to CodeCov.
 
