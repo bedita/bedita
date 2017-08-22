@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 
 /**
