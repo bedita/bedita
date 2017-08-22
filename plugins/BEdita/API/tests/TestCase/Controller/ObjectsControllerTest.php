@@ -13,7 +13,6 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -1814,31 +1813,5 @@ class ObjectsControllerTest extends IntegrationTestCase
             'bedita',
             'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
         ));
-    }
-
-    /**
-     * Test save emojis in text fields.
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testEmoji()
-    {
-        $objectsTable = TableRegistry::get('Objects');
-        $object = $objectsTable->get(1);
-        $this->authUser();
-        $expected = "🙈 😂 😱";
-        $info = Database::basicInfo();
-        if ($info['vendor'] == 'mysql' && $info['encoding'] != 'utf8mb4') {
-            $expected = "";
-        }
-        $description = $object['description'];
-        $object['description'] = $expected;
-        $success = $objectsTable->save($object);
-        $object = $objectsTable->get(1);
-        $this->assertEquals($object['description'], $expected);
-        $object['description'] = $description;
-        $objectsTable->save($object);
-        $this->assertEquals($object['description'], $description);
     }
 }
