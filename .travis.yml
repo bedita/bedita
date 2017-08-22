@@ -24,7 +24,7 @@ jobs:
   fast_finish: true
 
   include:
-    # Minimal tests set: SQLite on PHP 5.6/7.0/7.1/HHVM, MySQL and PostgreSQL on PHP 7.1, code sniffer.
+    # Minimal tests set: SQLite on PHP 5.6/7.0/7.1, MySQL and PostgreSQL on PHP 7.1, code sniffer.
     - stage: minimal
       php: 5.6
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
@@ -40,9 +40,6 @@ jobs:
     - stage: minimal
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
-    - stage: minimal
-      php: hhvm
-      env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
       php: 7.1
       services: []
@@ -85,9 +82,6 @@ jobs:
       env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
       addons:
         postgresql: "9.5"
-    - stage: complete
-      php: hhvm
-      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: complete
       php: 7.1
       services: []
