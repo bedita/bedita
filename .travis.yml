@@ -24,7 +24,14 @@ jobs:
   fast_finish: true
 
   include:
-    # Minimal tests set: SQLite on PHP 5.6/7.0/7.1, MySQL and PostgreSQL on PHP 7.1, code sniffer.
+    # Reference tests set with coverage: PHP 7.1 and MySQL 5.7
+    - stage: reference
+      php: 7.1
+      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
+      script: vendor/bin/phpunit --coverage-clover=clover.xml # Run PHPUnit with code coverage.
+      after_success: bash <(curl -s https://codecov.io/bash) # Upload test coverage reports to CodeCov.
+
+    # Minimal tests set: SQLite on PHP 5.6/7.0/7.1, PostgreSQL on PHP 7.1, code sniffer.
     - stage: minimal
       php: 5.6
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
@@ -34,9 +41,6 @@ jobs:
     - stage: minimal
       php: 7.1
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - stage: minimal
-      php: 7.1
-      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
@@ -50,7 +54,6 @@ jobs:
         vendor/bin/phpcs -n -p --extensions=php \
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
-      after_success: ~
 
     # Complete tests suite: SQLite on PHP 5.6 with lowest dependencies, MySQL and PostgreSQL on PHP 5.6/7.0,
     #   MySQL 5.6 and PostgreSQL 9.5 on PHP 7.1, MySQL on HHVM, static code analyzer.
@@ -92,7 +95,6 @@ jobs:
         - composer require --dev phpstan/phpstan
       before_script: skip
       script: vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
-      after_success: ~
 
     # Deployment on Heroku demo app.
     - stage: deploy
@@ -104,7 +106,6 @@ jobs:
           - 4-cactus
       before_script: skip
       script: skip
-      after_success: ~
       deploy:
         provider: heroku
         app: bedita4
@@ -156,8 +157,6 @@ before_script:
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
 script: vendor/bin/phpunit # Run PHPUnit.
-
-after_success: bash <(curl -s https://codecov.io/bash) # Upload test coverage reports to CodeCov.
 
 notifications:
   email: false
