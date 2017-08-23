@@ -39,6 +39,13 @@ class RolesTable extends Table
 {
 
     /**
+     * Administrator role id
+     *
+     * @var int
+     */
+    const ADMIN_ROLE = 1;
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore

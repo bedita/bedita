@@ -75,6 +75,13 @@ class AdminControllerTest extends IntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertResponseCode(401);
         static::assertContentType('application/vnd.api+json');
+        // GET /admin with user without administrator role
+        $authHeader = $this->getUserAuthHeader('second user', 'password2');
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get('/admin/applications');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertResponseCode(403);
+        static::assertContentType('application/vnd.api+json');
         // GET /admin with authenticated user
         $authHeader = $this->getUserAuthHeader();
         $this->configRequestHeaders('GET', $authHeader);
