@@ -150,6 +150,24 @@ class RelationsTable extends Table
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Entity\Relation
+     */
+    public function get($primaryKey, $options = [])
+    {
+        if (!is_numeric($primaryKey)) {
+            $relation = $this->find('byName', ['name' => $primaryKey])
+                ->select('id')
+                ->firstOrFail();
+
+            $primaryKey = $relation->id;
+        }
+
+        return parent::get($primaryKey, $options);
+    }
+
+    /**
      * Find a relation by its name or inverse name.
      *
      * @param \Cake\ORM\Query $query Query object.
