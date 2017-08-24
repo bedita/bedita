@@ -204,13 +204,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testDeleteAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
+        // remove association from role 1 and user 1: must be forbidden
         $data = [
             [
                 'id' => '1',
@@ -221,12 +215,54 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'type' => 'users',
             ],
         ];
-
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+            'error' => [
+                'status' => '403',
+                'title' => 'Could not update relationship "users"',
+            ]
+        ];
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertArraySubset($expected['links'], $result['links']);
+        $this->assertEquals($expected['error']['title'], $result['error']['title']);
 
+        // add association for user 1 role 2
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'users',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/roles/2/relationships/users', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        // remove association for user 1 role 2
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'users',
+            ],
+        ];
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/2/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/roles/2/relationships/users', 'DELETE', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
