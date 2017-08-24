@@ -297,7 +297,7 @@ class ObjectsTableTest extends TestCase
         $object = $objectsTable->get(1);
         $expected = "🙈 😂 😱";
         $info = Database::basicInfo();
-        if ($info['vendor'] == 'mysql' && $info['encoding'] != 'utf8mb4') {
+        if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
             $expected = "";
         }
         $object['description'] = $expected;
