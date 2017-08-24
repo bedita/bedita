@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/properties` endpoint.
+ * Controller for `/relations` endpoint.
  *
  * @since 4.0.0
  *
