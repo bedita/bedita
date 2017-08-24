@@ -21,6 +21,8 @@ use Cake\ORM\Query;
  * Abstract class for updating associations between entities.
  *
  * @since 4.0.0
+ *
+ * @property \Cake\ORM\Association $Association
  */
 abstract class UpdateAssociatedAction extends BaseAction
 {
