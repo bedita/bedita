@@ -15,8 +15,10 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -167,21 +169,59 @@ class LoginController extends AppController
      * Read logged user data.
      *
      * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
      */
     public function whoami()
     {
         $this->request->allowMethod('get');
 
+        $user = $this->userEntity();
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    /**
+     * Update user profile data.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException On invalid input data
+     */
+    public function update()
+    {
+        $this->request->allowMethod('patch');
+
+        $notAllowed = ['username', 'password', 'password_hash', 'email'];
+        $data = $this->request->getData();
+        if (!empty(array_intersect($notAllowed, array_keys($data)))) {
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Bad input data'),
+                'detail' => sprintf('Fields not allowed: %s', implode(', ', $notAllowed)),
+            ]);
+        }
+
+        $entity = $this->userEntity();
+
+        $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
+        $entity = $action(compact('entity', 'data'));
+
+        $this->set(compact('entity'));
+        $this->set('_serialize', ['entity']);
+    }
+
+    /**
+     * Read logged user entity.
+     *
+     * @return \Cake\Datasource\EntityInterface Logged user entity
+     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
+     */
+    protected function userEntity()
+    {
         $userId = $this->Auth->user('id');
         if (!$userId) {
             $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
         }
 
-        $user = TableRegistry::get('Users')->get($userId);
-
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        return TableRegistry::get('Users')->get($userId);
     }
 
     /**
