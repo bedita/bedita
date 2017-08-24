@@ -145,22 +145,33 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @depends testLoginOkJson
      * @covers ::whoami()
+     * @covers ::userEntity()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
     public function testLoggedUser(array $meta)
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Authorization' => sprintf('Bearer %s', $meta['jwt']),
-            ],
-        ]);
+        $headers = [
+            'Host' => 'api.example.com',
+            'Accept' => 'application/vnd.api+json',
+            'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+        ];
 
-        $this->get('/auth');
+        $this->configRequest(compact('headers'));
+        $this->get('/auth/user');
         $this->assertResponseCode(200);
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals(1, $result['data']['id']);
+        $this->assertEquals('users', $result['data']['type']);
+        $this->assertNotEmpty($result['data']['attributes']);
+
+        // GET /auth *deprecated*
+        $this->configRequest(compact('headers'));
+        $this->get('/auth');
+        $this->assertResponseCode(200);
+        $result2 = json_decode((string)$this->_response->getBody(), true);
+        $this->assertEquals($result['data']['attributes'], $result2['data']['attributes']);
     }
 
     /**
@@ -169,13 +180,13 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::whoami()
-     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
+     * @covers ::userEntity()
      */
     public function testLoggedUserFail()
     {
         $this->configRequestHeaders();
 
-        $this->get('/auth');
+        $this->get('/auth/user');
         $this->assertResponseCode(401);
     }
 
@@ -295,5 +306,73 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('meta', $result);
         $this->assertArrayHasKey('jwt', $result['meta']);
         $this->assertArrayHasKey('renew', $result['meta']);
+    }
+
+    /**
+     * Test update user data
+     *
+     * @return void
+     *
+     * @depends testLoginOkJson
+     *
+     * @covers ::update()
+     * @covers ::userEntity()
+     */
+    public function testUpdate(array $meta)
+    {
+        $headers = [
+            'Host' => 'api.example.com',
+            'Accept' => 'application/vnd.api+json',
+            'Content-type' => 'application/json',
+            'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+        ];
+
+        $data = [
+            'name' => 'Gustavo',
+            'surname' => 'Trump',
+        ];
+        $this->configRequest(compact('headers'));
+        $this->patch('/auth/user', json_encode($data));
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertNotEmpty($result['data']);
+        static::assertEquals(1, $result['data']['id']);
+        static::assertEquals($data['name'], $result['data']['attributes']['name']);
+        static::assertEquals($data['surname'], $result['data']['attributes']['surname']);
+    }
+
+    /**
+     * Test update user data failure
+     *
+     * @return void
+     *
+     * @depends testLoginOkJson
+     *
+     * @covers ::update()
+     * @covers ::userEntity()
+     */
+    public function testUpdateFailure(array $meta)
+    {
+        $headers = [
+            'Host' => 'api.example.com',
+            'Accept' => 'application/vnd.api+json',
+            'Content-type' => 'application/json',
+            'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+        ];
+
+        $data = [
+           'password' => 'wewantgustavoforpresident',
+        ];
+
+        $this->configRequest(compact('headers'));
+        $this->patch('/auth/user', json_encode($data));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertNotEmpty($result['error']);
+        static::assertEquals('Bad input data', $result['error']['title']);
     }
 }
