@@ -222,7 +222,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
             'error' => [
                 'status' => '403',
-                'title' => 'Could not update relationship "users"',
+                'title' => 'Could not update relationship for users/roles for user 1 and role 1',
             ]
         ];
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
