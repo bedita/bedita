@@ -60,6 +60,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -91,6 +92,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Profiles',
                         'table' => 'BEdita/Core.Profiles',
                         'associations' => null,
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Profiles',
@@ -121,6 +123,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Users',
                         'table' => 'BEdita/Core.Users',
                         'associations' => null,
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Users',
@@ -149,6 +152,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
+                        'hidden' => ['body'],
                     ],
                     'meta' => [
                         'alias' => 'News',
@@ -177,6 +181,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Locations',
                         'table' => 'BEdita/Core.Locations',
                         'associations' => null,
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Locations',
@@ -208,6 +213,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => ['DateRanges'],
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Events',
@@ -236,6 +242,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Media',
                         'table' => 'BEdita/Core.Media',
                         'associations' => ['Streams'],
+                        'hidden' => null,
                     ],
                     'meta' => [
                         'alias' => 'Media',
@@ -333,6 +340,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                 ],
                 'meta' => [
                     'alias' => 'Documents',
