@@ -45,7 +45,9 @@ class DeleteEntityAction extends BaseAction
     public function execute(array $data = [])
     {
         // If object is not deletable returns 403 FORBIDDEN
-        if ((int)$data['entity']['id'] === 1 && ($data['entity'] instanceof \BEdita\Core\Model\Entity\Role || $data['entity'] instanceof \BEdita\Core\Model\Entity\User)) {
+        if ((\BEdita\Core\Model\Table\RolesTable::ADMIN_ROLE === $data['entity']['id'] && $data['entity'] instanceof \BEdita\Core\Model\Entity\Role)
+                ||
+            (\BEdita\Core\Model\Table\UsersTable::ADMIN_USER === $data['entity']['id'] && $data['entity'] instanceof \BEdita\Core\Model\Entity\User)) {
             throw new ForbiddenException(__d('bedita', 'Could not delete "{0}" 1', $data['entity']));
         }
 

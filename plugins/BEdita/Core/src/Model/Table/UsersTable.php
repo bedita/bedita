@@ -44,6 +44,12 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+    /**
+     * Administrator user id
+     *
+     * @var int
+     */
+    const ADMIN_USER = 1;
 
     /**
      * {@inheritDoc}

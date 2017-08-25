@@ -66,8 +66,10 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
     {
         if (is_array($relatedEntities)) {
             $ids = array_keys($relatedEntities);
-            if (in_array('1', $ids) && $entity['id'] === 1 && ($entity instanceof \BEdita\Core\Model\Entity\Role || $entity instanceof \BEdita\Core\Model\Entity\User)) {
-                throw new ForbiddenException(__d('bedita', 'Could not update relationship for users/roles for user 1 and role 1'));
+            if ((in_array(\BEdita\Core\Model\Table\RolesTable::ADMIN_ROLE, $ids) && $entity instanceof \BEdita\Core\Model\Entity\Role)
+                ||
+                (in_array(\BEdita\Core\Model\Table\UsersTable::ADMIN_USER, $ids) && $entity instanceof \BEdita\Core\Model\Entity\User)) {
+                throw new ForbiddenException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
             }
         }
 
