@@ -46,3 +46,4 @@ Configure::write('Filesystem', [
         'baseUrl' => 'https://static.example.org/files',
     ],
 ]);
+Configure::write('debug', true);
