@@ -380,14 +380,14 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-	// delete role 1 - it must be forbidden
+        // delete role 1 - it must be forbidden
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/roles/1');
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
         $this->assertTrue(TableRegistry::get('Roles')->exists(['id' => 1]));
 
-	// delete role 2
+        // delete role 2
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/roles/2');
         $this->assertResponseCode(204);

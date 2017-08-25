@@ -25,7 +25,6 @@ use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Association\BelongsTo;
@@ -33,7 +32,6 @@ use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -228,11 +226,6 @@ abstract class ResourcesController extends AppController
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
 
         if ($this->request->is('delete')) {
-            // If object is not deletable returns 403 FORBIDDEN
-            if ((in_array($this->modelClass, ['Roles', 'Users'])) && ((int)$id === 1)) { // ID 1 not removable
-                throw new ForbiddenException(__d('bedita', 'Could not delete "{0}" 1', $this->modelClass));
-            }
-
             // Delete an entity.
             $action = new DeleteEntityAction(['table' => $this->Table]);
 
@@ -324,10 +317,6 @@ abstract class ResourcesController extends AppController
                 break;
 
             case 'DELETE':
-                $ids = Hash::extract($this->request['data'], '{n}.id');
-                if (in_array($this->modelClass, ['Roles', 'Users']) && ((int)$id === 1) && in_array('1', $ids)) {
-                    throw new ForbiddenException(__d('bedita', 'Could not update relationship "{0}"', $relationship));
-                }
                 $action = new RemoveAssociatedAction(compact('association'));
                 break;
 
