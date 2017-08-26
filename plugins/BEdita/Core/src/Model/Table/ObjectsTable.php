@@ -77,6 +77,8 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
+        $this->addBehavior('BEdita/Core.CustomPropertis');
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
@@ -132,6 +134,7 @@ class ObjectsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
+        $schema->columnType('custom_props', 'json');
         $schema->columnType('extra', 'json');
 
         return $schema;
