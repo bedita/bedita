@@ -55,7 +55,8 @@ interface JsonApiSerializable
      * This method **MUST** return a resource object as per JSON API specifications.
      *
      * @param int $options Options for serializing. Can be any combination of `JSONAPIOPT_*` constants.
+     * @param array $fields Selected fields to view in `attributes` and `meta`, default empty => all fields are serialized
      * @return array
      */
-    public function jsonApiSerialize($options = 0);
+    public function jsonApiSerialize($options = 0, $fields = []);
 }
