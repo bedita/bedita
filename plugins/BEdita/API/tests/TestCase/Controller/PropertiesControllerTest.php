@@ -63,7 +63,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'title',
+                        'name' => 'another_title',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => null,
@@ -84,7 +84,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'description',
+                        'name' => 'another_description',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => null,
@@ -105,7 +105,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '3',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'username',
+                        'name' => 'another_username',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => 'Username, unique string',
@@ -126,7 +126,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '4',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'email',
+                        'name' => 'another_email',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => 'User email',
@@ -147,7 +147,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '5',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'birthdate',
+                        'name' => 'another_birthdate',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => null,
@@ -168,7 +168,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'id' => '6',
                     'type' => 'properties',
                     'attributes' => [
-                        'name' => 'surname',
+                        'name' => 'another_surname',
                         'multiple' => false,
                         'options_list' => null,
                         'description' => null,
@@ -258,7 +258,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'id' => '1',
                 'type' => 'properties',
                 'attributes' => [
-                    'name' => 'title',
+                    'name' => 'another_title',
                     'multiple' => false,
                     'options_list' => null,
                     'description' => null,
@@ -333,7 +333,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'properties',
             'attributes' => [
-                'name' => 'body',
+                'name' => 'yet_another_body',
                 'object_type_name' => 'documents',
                 'property_type_name' => 'string',
                 'multiple' => 0,
@@ -348,7 +348,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/properties/7');
-        $this->assertTrue(TableRegistry::get('Properties')->exists(['name' => 'body']));
+        $this->assertTrue(TableRegistry::get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
     /**
@@ -392,7 +392,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'id' => '1',
             'type' => 'properties',
             'attributes' => [
-                'name' => 'title',
+                'name' => 'another_title',
                 'description' => 'nice description',
             ],
         ];
@@ -428,8 +428,8 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('title', TableRegistry::get('Properties')->get(1)->get('name'));
-        $this->assertEquals('description', TableRegistry::get('Properties')->get(2)->get('name'));
+        $this->assertEquals('another_title', TableRegistry::get('Properties')->get(1)->get('name'));
+        $this->assertEquals('another_description', TableRegistry::get('Properties')->get(2)->get('name'));
     }
 
     /**

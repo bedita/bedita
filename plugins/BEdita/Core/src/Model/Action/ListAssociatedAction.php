@@ -217,7 +217,7 @@ class ListAssociatedAction extends BaseAction
             ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($primaryKeyConditions) {
                 return $query->where($primaryKeyConditions);
             })
-            ->formatResults(function (ResultSetInterface $results) use ($inverseAssociation) {
+            ->formatResults(function ($results) use ($inverseAssociation) {
                 return $results->map(function (EntityInterface $entity) use ($inverseAssociation) {
                     if (!($this->Association instanceof BelongsToMany)) {
                         return $entity->setHidden([$inverseAssociation->getProperty()], true);
