@@ -515,6 +515,8 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'lang' => 'eng',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'another_username' => null,
+                        'another_email' => null,
                     ],
                     'meta' => [
                         'blocked' => false,
