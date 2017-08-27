@@ -37,6 +37,7 @@ class CustomPropertisBehaviorTest extends TestCase
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.property_types',
     ];
 
     /**
