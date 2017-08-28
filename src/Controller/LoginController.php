@@ -190,17 +190,10 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('patch');
 
-        $notAllowed = ['username', 'password', 'password_hash', 'email'];
-        $data = $this->request->getData();
-        if (!empty(array_intersect($notAllowed, array_keys($data)))) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Bad input data'),
-                'detail' => sprintf('Fields not allowed: %s', implode(', ', $notAllowed)),
-            ]);
-        }
-
         $entity = $this->userEntity();
+        $entity->setAccess(['username', 'password', 'password_hash', 'email'], false);
 
+        $data = $this->request->getData();
         $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
         $entity = $action(compact('entity', 'data'));
 
