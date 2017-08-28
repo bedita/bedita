@@ -195,8 +195,9 @@ class LoginController extends AppController
 
         $data = $this->request->getData();
         $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
-        $entity = $action(compact('entity', 'data'));
+        $action(compact('entity', 'data'));
 
+        $entity = $this->userEntity();
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
     }
