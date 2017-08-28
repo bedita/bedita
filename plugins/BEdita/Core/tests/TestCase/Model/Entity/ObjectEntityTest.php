@@ -337,7 +337,13 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsUsersRoles()
     {
         $expected = [
-            'roles',
+            'roles' => [
+                'links' => [
+                    'related' => '/users/1/roles',
+                    'self' => '/users/1/relationships/roles',
+                    'available' => '/roles',
+                ],
+            ],
         ];
 
         $entity = TableRegistry::get('Users')->newEntity();
@@ -345,9 +351,7 @@ class ObjectEntityTest extends TestCase
         $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
 
-        $relations = array_keys($entity['relationships']);
-
-        static::assertSame($expected, $relations);
+        static::assertSame($expected, $entity['relationships']);
     }
 
     /**
