@@ -50,7 +50,7 @@ class CommonEventHandlerTest extends TestCase
     }
 
     /**
-     * Test build middleware stack when HTML is acceptable.
+     * Test build middleware stack.
      *
      * @return void
      * @covers ::buildMiddlewareStack()
