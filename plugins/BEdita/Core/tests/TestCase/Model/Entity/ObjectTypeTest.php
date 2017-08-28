@@ -100,6 +100,7 @@ class ObjectTypeTest extends TestCase
             'model' => 'Objects',
             'table' => 'BEdita/Core.Objects',
             'associations' => null,
+            'hidden' => null,
             'relations' => [
                 'test',
                 'inverse_test',
