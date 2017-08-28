@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
@@ -54,20 +55,17 @@ class CustomPropertiesBehavior extends Behavior
 
         try {
             $objectType = TableRegistry::get('ObjectTypes')->get($this->getTable()->getAlias());
-            // @todo add cache for properties
-            $props = TableRegistry::get('Properties')->find()
+        } catch (RecordNotFoundException $ex) {
+            return $this->available = [];
+        }
+
+        // @todo add cache for properties
+        $props = TableRegistry::get('Properties')->find()
                 ->where([
                     'object_type_id' => $objectType->id,
                     'enabled' => 1,
                 ])
                 ->all();
-        } catch (\Exception $ex) {
-            $props = false;
-        }
-
-        if (!$props) {
-            return $this->available = [];
-        }
 
         $this->available = $props->combine('name', function ($entity) {
             return $entity;
@@ -150,7 +148,7 @@ class CustomPropertiesBehavior extends Behavior
 
         $allProperties = $entity;
         if ($entity instanceof EntityInterface) {
-            $allProperties = clone($entity);
+            $allProperties = clone $entity;
             $allProperties->setHidden([]);
             $allProperties = $allProperties->toArray();
         }

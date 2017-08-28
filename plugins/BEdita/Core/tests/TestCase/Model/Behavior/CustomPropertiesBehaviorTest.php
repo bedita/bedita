@@ -37,7 +37,6 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.properties',
-        'plugin.BEdita/Core.property_types',
     ];
 
     /**
@@ -76,6 +75,43 @@ class CustomPropertiesBehaviorTest extends TestCase
         sort($result);
         sort($expected);
         static::assertEquals($expected, $result);
+
+        // cover use of internal `available` array
+        $result = $behavior->getAvailable();
+        $result = array_keys($result);
+        sort($result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test get available when no object type is found
+     *
+     * @return void
+     *
+     * @covers ::getAvailable()
+     */
+    public function testGetAvailableTypeNotfound()
+    {
+        // test try/catch failure on `objectType` load
+        $Relations = TableRegistry::get('Relations');
+        $Relations->addBehavior('BEdita/Core.CustomProperties', ['field' => 'description']);
+        $rel = $Relations->get(1);
+        $result = $rel->toArray();
+        static::assertNotEmpty($result);
+    }
+
+    /**
+     * Test empty custom properties
+     *
+     * @return void
+     *
+     * @covers ::getAvailable()
+     */
+    public function testEmpty()
+    {
+        $table = TableRegistry::get('Locations');
+        $result = $table->behaviors()->get('CustomProperties')->getDefaultValues();
+        static::assertEmpty($result);
     }
 
     /**
@@ -126,5 +162,16 @@ class CustomPropertiesBehaviorTest extends TestCase
         static::assertArrayHasKey('another_username', $result);
         static::assertArrayHasKey('another_email', $result);
         static::assertArrayNotHasKey('custom_props', $result);
+
+        // test empty `custom_props`
+        $table = TableRegistry::get('Events');
+        $event = $table->get(9);
+        $result = $event->toArray();
+        static::assertNotEmpty($result);
+        static::assertArrayNotHasKey('custom_props', $result);
+
+        // test `promoteProperties` case `$entity` is not an entity ora array
+        $result = TableRegistry::get('Objects')->find('list')->find('type', ['documents'])->toArray();
+        static::assertNotEmpty($result);
     }
 }
