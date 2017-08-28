@@ -29,6 +29,8 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
+ * @property string $associations
+ * @property string $hidden
  * @property string[] $relations
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
@@ -51,6 +53,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         'model' => true,
         'table' => true,
         'associations' => true,
+        'hidden' => true,
     ];
 
     /**
