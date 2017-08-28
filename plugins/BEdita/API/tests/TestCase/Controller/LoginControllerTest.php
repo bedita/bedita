@@ -344,7 +344,7 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test update user data failure
+     * Test update user data, ignore not accessible fields
      *
      * @return void
      *
@@ -353,7 +353,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::update()
      * @covers ::userEntity()
      */
-    public function testUpdateFailure(array $meta)
+    public function testUpdateIgnore(array $meta)
     {
         $headers = [
             'Host' => 'api.example.com',
@@ -362,17 +362,22 @@ class LoginControllerTest extends IntegrationTestCase
             'Authorization' => sprintf('Bearer %s', $meta['jwt']),
         ];
 
+        $passwordHash = TableRegistry::get('Users')->get(1)->get('password_hash');
         $data = [
-           'password' => 'wewantgustavoforpresident',
+            'username' => 'gustavo',
+            'password' => 'wewantgustavoforpresident',
         ];
 
         $this->configRequest(compact('headers'));
         $this->patch('/auth/user', json_encode($data));
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        static::assertNotEmpty($result['error']);
-        static::assertEquals('Bad input data', $result['error']['title']);
+        static::assertNotEmpty($result['data']);
+        static::assertEquals(1, $result['data']['id']);
+        // check password unchanged
+        static::assertEquals($passwordHash, TableRegistry::get('Users')->get(1)->get('password_hash'));
+        static::assertNotEquals($data['username'], TableRegistry::get('Users')->get(1)->get('username'));
     }
 }
