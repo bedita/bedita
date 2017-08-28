@@ -234,14 +234,6 @@ Plugin::load(
     ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]
 );
 
-if (Configure::read('debug')) {
-    try {
-        Plugin::load('BEdita/DevTools', ['bootstrap' => true]);
-    } catch (MissingPluginException $e) {
-        // Do not halt if the plugin is missing
-    }
-}
-
 /*
  * Load other custom / 3rd party plugins via configuration key 'Plugins'.
  */
