@@ -20,11 +20,11 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 
 /**
- * CustomPropertis behavior
+ * CustomProperties behavior
  *
  * @since 4.0.0
  */
-class CustomPropertisBehavior extends Behavior
+class CustomPropertiesBehavior extends Behavior
 {
     /**
      * {@inheritDoc}

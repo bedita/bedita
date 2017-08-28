@@ -53,7 +53,7 @@ class ProfilesTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
-        $this->addBehavior('BEdita/Core.CustomPropertis');
+        $this->addBehavior('BEdita/Core.CustomProperties');
 
         $this->extensionOf('Objects');
 

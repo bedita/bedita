@@ -48,7 +48,7 @@ class MediaTable extends Table
             'prefix' => 'media-'
         ]);
 
-        $this->addBehavior('BEdita/Core.CustomPropertis');
+        $this->addBehavior('BEdita/Core.CustomProperties');
 
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',

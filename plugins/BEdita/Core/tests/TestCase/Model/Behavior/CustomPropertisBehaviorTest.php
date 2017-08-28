@@ -18,11 +18,11 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Behavior\CustomPropertisBehavior} Test Case
+ * {@see \BEdita\Core\Model\Behavior\CustomPropertiesBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\CustomPropertisBehavior
+ * @coversDefaultClass \BEdita\Core\Model\Behavior\CustomPropertiesBehavior
  */
-class CustomPropertisBehaviorTest extends TestCase
+class CustomPropertiesBehaviorTest extends TestCase
 {
     /**
      * Fixtures
@@ -70,7 +70,7 @@ class CustomPropertisBehaviorTest extends TestCase
     public function testGetAvailable($expected, $tableName)
     {
         $table = TableRegistry::get($tableName);
-        $behavior = $table->behaviors()->get('CustomPropertis');
+        $behavior = $table->behaviors()->get('CustomProperties');
         $result = $behavior->getAvailable();
         $result = array_keys($result);
         sort($result);
@@ -92,7 +92,7 @@ class CustomPropertisBehaviorTest extends TestCase
             'another_email' => null,
         ];
         $user = TableRegistry::get('Users');
-        $result = $user->behaviors()->get('CustomPropertis')->getDefaultValues();
+        $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
         static::assertEquals($expected, $result);
     }
 

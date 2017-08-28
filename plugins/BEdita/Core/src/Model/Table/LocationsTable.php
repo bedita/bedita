@@ -65,6 +65,6 @@ class LocationsTable extends Table
 
         $this->addBehavior('BEdita/Core.Geometry');
 
-        $this->addBehavior('BEdita/Core.CustomPropertis');
+        $this->addBehavior('BEdita/Core.CustomProperties');
     }
 }

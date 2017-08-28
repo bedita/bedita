@@ -77,7 +77,7 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
-        $this->addBehavior('BEdita/Core.CustomPropertis');
+        $this->addBehavior('BEdita/Core.CustomProperties');
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
