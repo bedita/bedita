@@ -28,12 +28,13 @@ class JsonApi
      * Format single or multiple data items in JSON API format.
      *
      * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[] $items Items to be formatted.
+     * @param array $fields Selected fields to view in `attributes` and `meta`, if empty (default) all fields are serialized
      * @param array $included Array to be populated with included resources.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData($items, array &$included = [])
+    public static function formatData($items, $fields = [], array &$included = [])
     {
         if ($items instanceof Query || $items instanceof CollectionInterface) {
             $items = $items->toList();
@@ -61,7 +62,7 @@ class JsonApi
                 ));
             }
 
-            $item = $item->jsonApiSerialize($options);
+            $item = $item->jsonApiSerialize($options, $fields);
             if (isset($item['included'])) {
                 $included = array_merge($included, $item['included']);
                 unset($item['included']);

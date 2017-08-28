@@ -153,6 +153,7 @@ class ObjectsController extends ResourcesController
             $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
             $query = $action(compact('filter', 'contain'));
 
+            $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
         }
 
@@ -197,6 +198,7 @@ class ObjectsController extends ResourcesController
             $entity = $action(compact('entity', 'data'));
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
 
@@ -223,6 +225,7 @@ class ObjectsController extends ResourcesController
             $objects = $this->paginate($objects);
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
     }
