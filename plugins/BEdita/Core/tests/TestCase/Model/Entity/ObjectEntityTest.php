@@ -45,6 +45,8 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.object_relations',
     ];
 
@@ -317,6 +319,30 @@ class ObjectEntityTest extends TestCase
 
         $entity = TableRegistry::get('Documents')->newEntity();
         $entity->set('type', 'documents');
+        $entity = $entity->jsonApiSerialize();
+
+        $relations = array_keys($entity['relationships']);
+
+        static::assertSame($expected, $relations);
+    }
+
+    /**
+     * Test magic getter for JSON API relations for relation roles
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsUsersRoles()
+    {
+        $expected = [
+            'roles',
+        ];
+
+        $entity = TableRegistry::get('Users')->newEntity();
+        $entity->set('id', 1);
+        $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
 
         $relations = array_keys($entity['relationships']);
