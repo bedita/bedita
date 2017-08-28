@@ -197,6 +197,7 @@ class LoginController extends AppController
         $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
         $action(compact('entity', 'data'));
 
+        // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
         $entity = $this->userEntity();
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
