@@ -376,8 +376,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         static::assertNotEmpty($result['data']);
         static::assertEquals(1, $result['data']['id']);
+        static::assertNotEquals($data['username'], $result['data']['attributes']['username']);
         // check password unchanged
         static::assertEquals($passwordHash, TableRegistry::get('Users')->get(1)->get('password_hash'));
-        static::assertNotEquals($data['username'], TableRegistry::get('Users')->get(1)->get('username'));
     }
 }
