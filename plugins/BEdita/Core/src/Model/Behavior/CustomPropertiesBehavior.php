@@ -67,9 +67,7 @@ class CustomPropertiesBehavior extends Behavior
                 ])
                 ->all();
 
-        $this->available = $props->combine('name', function ($entity) {
-            return $entity;
-        })->toArray();
+        $this->available = $props->indexBy('name')->toArray();
 
         return $this->available;
     }
