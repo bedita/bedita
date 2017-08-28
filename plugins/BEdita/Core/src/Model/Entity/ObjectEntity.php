@@ -240,21 +240,48 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * Getter for `type` virtual property.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    protected function _getType()
+    public function visibleProperties()
+    {
+        $visible = parent::visibleProperties();
+        $this->loadObjectType();
+        if (!$this->object_type) {
+            return $visible;
+        }
+
+        $hidden = !empty($this->object_type->hidden) ? $this->object_type->hidden : [];
+
+        return array_diff($visible, $hidden);
+    }
+
+    /**
+     * Load `object_type`, read from object_types table if not set.
+     *
+     * @return void
+     */
+    protected function loadObjectType()
     {
         if (!$this->object_type) {
             try {
                 $typeId = $this->object_type_id ?: $this->getSource();
                 $this->object_type = TableRegistry::get('ObjectTypes')->get($typeId);
             } catch (RecordNotFoundException $e) {
-                return null;
             } catch (InvalidPrimaryKeyException $e) {
-                return null;
             }
+        }
+    }
+
+    /**
+     * Getter for `type` virtual property.
+     *
+     * @return string
+     */
+    protected function _getType()
+    {
+        $this->loadObjectType();
+        if (!$this->object_type) {
+            return null;
         }
 
         return $this->object_type->name;

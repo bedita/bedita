@@ -131,6 +131,9 @@ class ObjectTypesTable extends Table
         $validator
             ->allowEmpty('associations');
 
+        $validator
+            ->allowEmpty('hidden');
+
         return $validator;
     }
 
@@ -162,6 +165,7 @@ class ObjectTypesTable extends Table
     protected function _initializeSchema(TableSchema $schema)
     {
         $schema->columnType('associations', 'json');
+        $schema->columnType('hidden', 'json');
 
         return $schema;
     }

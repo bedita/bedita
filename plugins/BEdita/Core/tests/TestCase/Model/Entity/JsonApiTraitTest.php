@@ -120,6 +120,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @covers ::getAttributes()
+     * @covers ::filterFields()
      */
     public function testGetAttributes()
     {
@@ -129,9 +130,12 @@ class JsonApiTraitTest extends TestCase
         ];
 
         $role = $this->Roles->get(1)->jsonApiSerialize();
-
         $attributes = array_keys($role['attributes']);
+        static::assertEquals($expected, $attributes);
 
+        // test with `fields`
+        $role = $this->Roles->get(1)->jsonApiSerialize(0, ['name', 'description']);
+        $attributes = array_keys($role['attributes']);
         static::assertEquals($expected, $attributes);
     }
 
@@ -291,6 +295,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @covers ::getMeta()
+     * @covers ::filterFields()
      */
     public function testGetMeta()
     {
@@ -301,6 +306,13 @@ class JsonApiTraitTest extends TestCase
         ];
 
         $role = $this->Roles->get(1)->jsonApiSerialize();
+
+        $meta = array_keys(Hash::get($role, 'meta', []));
+
+        static::assertEquals($expected, $meta, '', 0, 10, true);
+
+        // test with `fields`
+        $role = $this->Roles->get(1)->jsonApiSerialize(0, ['created', 'modified', 'unchangeable']);
 
         $meta = array_keys(Hash::get($role, 'meta', []));
 
@@ -457,6 +469,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @covers ::jsonApiSerialize()
+     * @covers ::setFields()
      * @dataProvider jsonApiSerializeProvider()
      */
     public function testJsonApiSerialize($excludedKeys, $options)
