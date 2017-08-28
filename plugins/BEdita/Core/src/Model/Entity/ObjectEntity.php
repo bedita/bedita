@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Object Entity.
@@ -189,19 +190,29 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             if ($entityDest instanceof JsonApiSerializable) {
                 $destObj = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
                 if (empty($destObj['type'])) {
-                    $options = ['name' => $relationship];
-                    $result = TableRegistry::get('ObjectTypes')
-                        ->find('byRelation', $options)
-                        ->find('list')
-                        ->toArray();
-                    $available = Router::url(
-                        [
-                            '_name' => 'api:objects:index',
-                            'object_type' => 'objects',
-                            'filter' => ['type' => array_values($result)],
-                        ],
-                        true
-                    );
+                    $objectType = TableRegistry::get('ObjectTypes')->get($this->type);
+                    foreach ($objectType->right_relations as $relation) {
+                        if ($relation->inverse_name !== $relationship) {
+                            continue;
+                        }
+                        $result = Hash::extract($relation->left_object_types, '{n}.name');
+                    }
+                    foreach ($objectType->left_relations as $relation) {
+                        if ($relation->name !== $relationship) {
+                            continue;
+                        }
+                        $result = Hash::extract($relation->right_object_types, '{n}.name');
+                    }
+                    if (!empty($result)) {
+                        $available = Router::url(
+                            [
+                                '_name' => 'api:objects:index',
+                                'object_type' => 'objects',
+                                'filter' => ['type' => array_values($result)],
+                            ],
+                            true
+                        );
+                    }
                 } else {
                     $available = Router::url(
                         [
