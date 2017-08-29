@@ -38,6 +38,7 @@ use Cake\Routing\Router;
  * @property string $title
  * @property string $description
  * @property string $body
+ * @property array $custom_props
  * @property array $extra
  * @property string $lang
  * @property int $created_by
@@ -90,6 +91,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'object_type_id',
         'object_type',
         'deleted',
+        'custom_props',
     ];
 
     /**
