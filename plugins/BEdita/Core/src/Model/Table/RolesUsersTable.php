@@ -14,6 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\RolesTable;
+use BEdita\Core\Model\Table\UsersTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
@@ -100,7 +102,7 @@ class RolesUsersTable extends Table
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if ($entity->role_id === \BEdita\Core\Model\Table\RolesTable::ADMIN_ROLE && $entity->user_id === \BEdita\Core\Model\Table\UsersTable::ADMIN_USER) {
+        if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
         }
     }

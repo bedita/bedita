@@ -139,7 +139,7 @@ class RolesTable extends Table
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
         if (static::ADMIN_ROLE === $entity->id) {
-            throw new ImmutableResourceException(__d('bedita', 'Could not delete "{0}" {1}', $entity, $entity->id));
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));
         }
     }
 }

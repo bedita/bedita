@@ -231,7 +231,7 @@ class UsersTable extends Table
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
         if (static::ADMIN_USER === $entity->id) {
-            throw new ImmutableResourceException(__d('bedita', 'Could not delete "{0}" {1}', $entity, $entity->id));
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
     }
 
@@ -246,7 +246,7 @@ class UsersTable extends Table
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
-            throw new ImmutableResourceException(__d('bedita', 'Could not delete "{0}" {1}', $entity, $entity->id));
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
     }
 }
