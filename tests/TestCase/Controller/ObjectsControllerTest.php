@@ -1695,6 +1695,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'lang' => 'eng',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
+                    'another_title' => null,
+                    'another_description' => null,
                 ],
                 'meta' => [
                     'locked' => true,
