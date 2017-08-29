@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -154,5 +155,24 @@ class RolesTableTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test delete admin role
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete
+     */
+    public function testDeleteAdminRole()
+    {
+        $roles = $this->Roles->get(\BEdita\Core\Model\Table\RolesTable::ADMIN_ROLE);
+        $immutableResourceExceptionRaised = false;
+        try {
+            $this->Roles->delete($roles);
+        } catch (ImmutableResourceException $e) {
+            $immutableResourceExceptionRaised = true;
+        }
+        $this->assertTrue($immutableResourceExceptionRaised);
     }
 }
