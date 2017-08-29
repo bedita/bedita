@@ -129,14 +129,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/2/test',
                                 'self' => 'http://api.example.com/documents/2/relationships/test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                                ),
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/2/inverse_test',
                                 'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -171,14 +177,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                                ),
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -213,7 +225,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -283,14 +298,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/another_test',
                                 'self' => 'http://api.example.com/locations/8/relationships/another_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=locations',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['locations']]])
+                                ),
                             ],
                         ],
                         'inverse_another_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/inverse_another_test',
                                 'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=locations',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['locations']]])
+                                ),
                             ],
                         ],
                     ],
@@ -365,7 +386,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -407,7 +428,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -455,14 +476,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/test',
                             'self' => 'http://api.example.com/documents/2/relationships/test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                            ),
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/inverse_test',
                             'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents']]])
+                            ),
                         ],
                     ],
                 ],
@@ -475,7 +502,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -521,14 +548,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/test',
                             'self' => 'http://api.example.com/documents/6/relationships/test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                            ),
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/inverse_test',
                             'self' => 'http://api.example.com/documents/6/relationships/inverse_test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents']]])
+                            ),
                         ],
                     ],
                 ],
@@ -546,7 +579,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $object->deleted = false;
         $this->authUser();
         $success = $objectsTable->save($object);
-        $this->assertEquals(true, (bool)$success);
+        static::assertTrue((bool)$success);
 
         $this->configRequestHeaders();
         $this->get('/objects/6');
@@ -554,12 +587,12 @@ class ObjectsControllerTest extends IntegrationTestCase
         unset($result['data']['meta']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
 
         // undo restore -> deleted = true
         $object->deleted = true;
         $success = $objectsTable->save($object);
-        $this->assertEquals(true, (bool)$success);
+        static::assertTrue((bool)$success);
     }
 
     /**
@@ -837,7 +870,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -877,14 +913,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                                ),
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -920,7 +962,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -955,7 +997,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -978,14 +1023,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                                ),
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -1015,7 +1066,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -1060,7 +1111,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -1130,7 +1184,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -1312,7 +1369,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -1649,7 +1709,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'self' => 'http://api.example.com/documents/2/relationships/test',
                             'related' => 'http://api.example.com/documents/2/test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                            ),
                         ],
                         'data' => [
                             [
@@ -1666,7 +1729,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                             'related' => 'http://api.example.com/documents/2/inverse_test',
-                            'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                            'available' => sprintf(
+                                'http://api.example.com/objects?%s',
+                                http_build_query(['filter' => ['type' => ['documents']]])
+                            ),
                         ],
                         'data' => [],
                     ],
@@ -1708,7 +1774,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
@@ -1748,14 +1817,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/test',
                                 'self' => 'http://api.example.com/documents/3/relationships/test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                                ),
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
-                                'available' => 'http://api.example.com/objects?filter%5Btype%5D%5B0%5D=documents',
+                                'available' => sprintf(
+                                    'http://api.example.com/objects?%s',
+                                    http_build_query(['filter' => ['type' => ['documents']]])
+                                ),
                             ],
                         ],
                     ],
