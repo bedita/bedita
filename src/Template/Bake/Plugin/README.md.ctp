@@ -10,4 +10,4 @@ Then run
 composer update
 ```
 
-To activate this plugin must be configured `Plugins` key, see https://docs.bedita.net/en/latest/configuration.html#plugins
+To activate this plugin configure a `<%= $plugin %>` key in `Plugins` configuration, see https://docs.bedita.net/en/latest/configuration.html#plugins
