@@ -515,14 +515,20 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/test',
                         'self' => '/documents/2/relationships/test',
-                        'available' => '/objects?filter%5Btype%5D%5B0%5D=documents&filter%5Btype%5D%5B1%5D=profiles',
+                        'available' => sprintf(
+                            '/objects?%s',
+                            http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                        ),
                     ],
                 ],
                 'inverse_test' => [
                     'links' => [
                         'related' => '/documents/2/inverse_test',
                         'self' => '/documents/2/relationships/inverse_test',
-                        'available' => '/objects?filter%5Btype%5D%5B0%5D=documents',
+                        'available' => sprintf(
+                            '/objects?%s',
+                            http_build_query(['filter' => ['type' => ['documents']]])
+                        ),
                     ],
                 ],
             ],
