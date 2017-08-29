@@ -188,11 +188,11 @@ class UsersTableTest extends TestCase
      */
     public function testDeleted()
     {
-        $user = $this->Users->get(1);
+        $user = $this->Users->get(5);
         $user->deleted = true;
         $success = $this->Users->save($user);
         $this->assertTrue((bool)$success);
-        $deleted = $this->Users->get(1)->deleted;
+        $deleted = $this->Users->get(5)->deleted;
         $this->assertEquals(true, $deleted);
     }
 

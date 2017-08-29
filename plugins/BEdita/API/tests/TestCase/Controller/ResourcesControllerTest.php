@@ -306,24 +306,34 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
+        // 403 <-- PATCH /roles/1/relationships/users
         $data = [
             [
                 'id' => '5',
                 'type' => 'users',
             ],
         ];
-
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
-
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        // 200 <-- PATCH /roles/2/relationships/users
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/2/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        $data = [
+            [
+                'id' => '5',
+                'type' => 'users',
+            ],
+        ];
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -340,22 +350,19 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociationsEmpty()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
         $data = [];
-
+        // 403 <-- PATCH /roles/1/relationships/users
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        // 204 <-- PATCH /roles/2/relationships/users
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
     }
 
     /**

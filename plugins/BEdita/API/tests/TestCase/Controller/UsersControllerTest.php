@@ -489,6 +489,12 @@ class UsersControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/users/1');
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/users/5');
 
         $this->assertResponseCode(204);

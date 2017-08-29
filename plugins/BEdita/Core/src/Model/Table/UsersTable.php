@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\LoggedUser;
@@ -217,5 +218,35 @@ class UsersTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
+    }
+
+    /**
+     * Before delete checks: if record is not deletable, raise a ImmutableResourceException
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if (static::ADMIN_USER === $entity->id) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "{0}" {1}', $entity, $entity->id));
+        }
+    }
+
+    /**
+     * Before save checks: if record is not deletable and deletion is the update type, raise a ImmutableResourceException
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "{0}" {1}', $entity, $entity->id));
+        }
     }
 }

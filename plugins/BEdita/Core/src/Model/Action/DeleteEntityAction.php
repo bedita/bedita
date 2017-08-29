@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
 
 /**
@@ -44,13 +43,6 @@ class DeleteEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        // If object is not deletable returns 403 FORBIDDEN
-        if ((\BEdita\Core\Model\Table\RolesTable::ADMIN_ROLE === $data['entity']['id'] && $data['entity'] instanceof \BEdita\Core\Model\Entity\Role)
-                ||
-            (\BEdita\Core\Model\Table\UsersTable::ADMIN_USER === $data['entity']['id'] && $data['entity'] instanceof \BEdita\Core\Model\Entity\User)) {
-            throw new ForbiddenException(__d('bedita', 'Could not delete "{0}" 1', $data['entity']));
-        }
-
         return $this->Table->deleteOrFail($data['entity']);
     }
 }
