@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 
@@ -59,7 +58,6 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
-     * @throws \ForbiddenException Throws an exception if trying to remove relation between administrator user and administrator role.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
     protected function update(EntityInterface $entity, $relatedEntities)
