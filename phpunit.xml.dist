@@ -41,7 +41,7 @@
 
     <!-- Ignore vendor tests in code coverage reports -->
     <filter>
-        <whitelist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <!--
                 <directory suffix=".php">./src/</directory>
             -->
