@@ -491,7 +491,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {

@@ -15,6 +15,7 @@ use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Event\CommonEventHandler;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
+use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Network\Request;
 
@@ -36,8 +37,7 @@ if ($exceptionRenderer !== 'BEdita\API\Error\ExceptionRenderer' && Configure::re
 }
 
 /** Add custom request detectors. */
-Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml']]);
-Request::addDetector('jsonapi', function (Request $request) {
+ServerRequest::addDetector('jsonapi', function (Request $request) {
     return $request->accepts(JsonApiComponent::CONTENT_TYPE);
 });
 
