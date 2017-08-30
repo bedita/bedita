@@ -181,6 +181,7 @@ abstract class ResourcesController extends AppController
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $query = $action(compact('filter', 'contain'));
 
+            $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
         }
 
@@ -250,6 +251,7 @@ abstract class ResourcesController extends AppController
             $entity = $action(compact('entity', 'data'));
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
 
@@ -280,6 +282,7 @@ abstract class ResourcesController extends AppController
             $data = $this->paginate($data);
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
     }

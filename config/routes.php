@@ -62,10 +62,20 @@ Router::plugin(
             ['controller' => 'Login', 'action' => 'change'],
             ['_name' => 'login:change']
         );
+        // GET /auth *deprecated* - to remove before `stable` relase
         $routes->connect(
             '/auth',
+            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET']
+        );
+        $routes->connect(
+            '/auth/user',
             ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
             ['_name' => 'login:whoami']
+        );
+        $routes->connect(
+            '/auth/user',
+            ['controller' => 'Login', 'action' => 'update', '_method' => 'PATCH'],
+            ['_name' => 'login:update']
         );
 
         // Admin.
