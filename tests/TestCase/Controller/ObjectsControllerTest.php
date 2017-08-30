@@ -591,6 +591,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
