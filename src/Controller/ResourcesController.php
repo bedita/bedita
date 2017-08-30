@@ -285,6 +285,9 @@ abstract class ResourcesController extends AppController
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+
+        $available = $this->getAvailable($relationship);
+        $this->set('_links', compact('available'));
     }
 
     /**
@@ -340,6 +343,9 @@ abstract class ResourcesController extends AppController
                     '_serialize' => ['data'],
                 ]);
 
+                $available = $this->getAvailable($relationship);
+                $this->set('_links', compact('available'));
+
                 return null;
         }
 
@@ -361,27 +367,29 @@ abstract class ResourcesController extends AppController
     }
 
     /**
-     * Return link to available objects by relationship
+     * Return link to available objects by relationship.
      *
-     * @param string $relationship relation name
+     * @param string $relationship Relationship name.
      * @return string|null
      */
     protected function getAvailable($relationship)
     {
-        $entityDest = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
-        if ($entityDest instanceof JsonApiSerializable) {
-            $jsonApiSer = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
-            if (!empty($jsonApiSer) && !empty($jsonApiSer['type'])) {
-                return Router::url(
-                    [
-                        '_name' => 'api:resources:index',
-                        'controller' => $jsonApiSer['type'],
-                    ],
-                    true
-                );
-            }
+        $destinationEntity = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        if (!($destinationEntity instanceof JsonApiSerializable)) {
+            return null;
         }
 
-        return null;
+        $destinationEntity = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+        if (empty($destinationEntity['type'])) {
+            return null;
+        }
+
+        return Router::url(
+            [
+                '_name' => 'api:resources:index',
+                'controller' => $destinationEntity['type'],
+            ],
+            true
+        );
     }
 }
