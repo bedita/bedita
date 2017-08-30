@@ -14,12 +14,15 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Query;
 
 /**
  * Abstract class for updating associations between entities.
  *
  * @since 4.0.0
+ *
+ * @property \Cake\ORM\Association $Association
  */
 abstract class UpdateAssociatedAction extends BaseAction
 {
@@ -67,6 +70,68 @@ abstract class UpdateAssociatedAction extends BaseAction
                 return $relatedEntity->extract($bindingKey);
             })
             ->toArray();
+    }
+
+    /**
+     * Prepare related entities.
+     *
+     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entities.
+     * @param \Cake\Datasource\EntityInterface $sourceEntity Source entity.
+     * @return \Cake\Datasource\EntityInterface[]
+     */
+    protected function prepareRelatedEntities($relatedEntities, EntityInterface $sourceEntity)
+    {
+        if ($relatedEntities === null) {
+            return [];
+        }
+
+        if (!($this->Association instanceof BelongsToMany)) {
+            return $relatedEntities;
+        }
+
+        $junction = $this->Association->junction();
+
+        $conditions = $this->Association->getConditions();
+        $prefix = sprintf('%s.', $junction->getAlias());
+        $extraFields = [];
+        foreach ($conditions as $field => $value) {
+            if (substr($field, 0, strlen($prefix)) === $prefix) {
+                $field = substr($field, strlen($prefix));
+            }
+
+            $extraFields[$field] = $value;
+        }
+
+        if (!is_array($relatedEntities)) {
+            $relatedEntities = [$relatedEntities];
+        }
+
+        $junctionEntityClass = $junction->getEntityClass();
+        array_walk(
+            $relatedEntities,
+            function (EntityInterface $entity) use ($sourceEntity, $extraFields, $junction, $junctionEntityClass) {
+                if (empty($entity->_joinData) || !($entity->_joinData instanceof $junctionEntityClass)) {
+                    if (empty($extraFields)) {
+                        return;
+                    }
+                    $entity->_joinData = $junction->newEntity();
+                }
+
+                $joinData = $extraFields;
+                $joinData += array_combine(
+                    (array)$this->Association->getTargetForeignKey(),
+                    $entity->extract((array)$this->Association->getPrimaryKey())
+                );
+                $joinData += array_combine(
+                    (array)$this->Association->getForeignKey(),
+                    $sourceEntity->extract((array)$this->Association->getSource()->getPrimaryKey())
+                );
+
+                $entity->_joinData->set($joinData, ['guard' => false]);
+            }
+        );
+
+        return $relatedEntities;
     }
 
     /**
