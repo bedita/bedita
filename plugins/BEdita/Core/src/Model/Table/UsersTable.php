@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\LoggedUser;
@@ -44,6 +45,12 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+    /**
+     * Administrator user id
+     *
+     * @var int
+     */
+    const ADMIN_USER = 1;
 
     /**
      * {@inheritDoc}
@@ -66,6 +73,8 @@ class UsersTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->addBehavior('BEdita/Core.DataCleanup');
+
+        $this->addBehavior('BEdita/Core.CustomProperties');
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
@@ -211,5 +220,35 @@ class UsersTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
+    }
+
+    /**
+     * Before delete checks: if record is not deletable, raise a ImmutableResourceException
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if (static::ADMIN_USER === $entity->id) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
+        }
+    }
+
+    /**
+     * Before save checks: if record is not deletable and deletion is the update type, raise a ImmutableResourceException
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
+        }
     }
 }

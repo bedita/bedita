@@ -121,8 +121,14 @@ CREATE TABLE properties (
   INDEX properties_objtype_idx (object_type_id),
   INDEX properties_proptype_idx (property_type_id),
 
-  CONSTRAINT properties_objtype_fk FOREIGN KEY (object_type_id) REFERENCES object_types(id),
-  CONSTRAINT properties_proptype_fk FOREIGN KEY (property_type_id) REFERENCES property_types(id)
+  CONSTRAINT properties_objtype_fk FOREIGN KEY (object_type_id)
+    REFERENCES object_types(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  CONSTRAINT properties_proptype_fk FOREIGN KEY (property_type_id)
+    REFERENCES property_types(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties definitions' ;
 
@@ -141,6 +147,7 @@ CREATE TABLE objects (
   title TEXT NULL                           COMMENT 'object title, can be emtpy',
   description MEDIUMTEXT NULL               COMMENT 'brief description, abstract',
   body MEDIUMTEXT NULL                      COMMENT 'long description, main object text',
+  custom_props MEDIUMTEXT NULL              COMMENT 'object custom properties (JSON format)',
   extra MEDIUMTEXT NULL                     COMMENT 'object data extensions (JSON format)',
   -- From MySQL 5.7.8 use JSON type
   lang CHAR(3) NULL DEFAULT NULL            COMMENT 'language used, ISO 639-3 code',

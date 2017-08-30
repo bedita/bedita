@@ -178,6 +178,21 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/relations' => [
+                        'href' => 'http://api.example.com/relations',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Relations',
+                            ]
+                        ],
+                    ],
                     '/object_types' => [
                         'href' => 'http://api.example.com/object_types',
                         'hints' => [
@@ -259,9 +274,7 @@ class HomeControllerTest extends IntegrationTestCase
             ],
         ];
 
-        LoggedUser::setUser(['id' => 1]);
-
-        $this->configRequestHeaders();
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -270,6 +283,7 @@ class HomeControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $result);
 
         LoggedUser::resetUser();
+
         $this->configRequestHeaders();
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);

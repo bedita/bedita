@@ -69,6 +69,8 @@ class AddAssociatedAction extends UpdateAssociatedAction
                 $relatedEntities = [$relatedEntities];
             }
 
+            $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
+
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 $relatedEntities = $this->diff($entity, $relatedEntities);
 

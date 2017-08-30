@@ -49,6 +49,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.endpoint_permissions',
                     'plugin.BEdita/Core.relations',
                     'plugin.BEdita/Core.relation_types',
+                    'plugin.BEdita/Core.properties',
+                    'plugin.BEdita/Core.property_types',
                 ],
                 []
             ],
@@ -68,6 +70,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.endpoint_permissions',
                     'plugin.BEdita/Core.relations',
                     'plugin.BEdita/Core.relation_types',
+                    'plugin.BEdita/Core.properties',
+                    'plugin.BEdita/Core.property_types',
                     'plugin.BEdita/Core.locations',
                 ],
                 [

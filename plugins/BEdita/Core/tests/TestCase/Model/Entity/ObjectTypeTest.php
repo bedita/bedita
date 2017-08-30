@@ -91,15 +91,8 @@ class ObjectTypeTest extends TestCase
     public function testVirtual()
     {
         $expected = [
-            'id' => 1,
-            'name' => 'documents',
-            'singular' => 'document',
             'alias' => 'Documents',
-            'description' => null,
-            'plugin' => 'BEdita/Core',
-            'model' => 'Objects',
             'table' => 'BEdita/Core.Objects',
-            'associations' => null,
             'relations' => [
                 'test',
                 'inverse_test',
@@ -108,7 +101,7 @@ class ObjectTypeTest extends TestCase
 
         $objectType = $this->ObjectTypes->get(1);
 
-        static::assertEquals($expected, $objectType->toArray());
+        static::assertEquals($expected, $objectType->extract($objectType->getVirtual()));
     }
 
     /**
@@ -244,5 +237,24 @@ class ObjectTypeTest extends TestCase
 
         static::assertInstanceOf($this->ObjectTypes->getEntityClass(), $objectType);
         static::assertNull($objectType->relations);
+    }
+
+    /**
+     * Test that `relations` association was removed serializing entity
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     */
+    public function testListAssociations()
+    {
+        $objectType = $this->ObjectTypes->get(1);
+
+        $result = $objectType->jsonApiSerialize();
+
+        static::assertArrayHasKey('relationships', $result);
+        static::assertArrayHasKey('left_relations', $result['relationships']);
+        static::assertArrayHasKey('right_relations', $result['relationships']);
+        static::assertArrayNotHasKey('relations', $result['relationships']);
     }
 }

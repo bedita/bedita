@@ -33,6 +33,8 @@ class ObjectsHandlerTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',

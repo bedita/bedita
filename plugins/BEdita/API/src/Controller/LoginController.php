@@ -15,8 +15,10 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -167,21 +169,54 @@ class LoginController extends AppController
      * Read logged user data.
      *
      * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
      */
     public function whoami()
     {
         $this->request->allowMethod('get');
 
+        $user = $this->userEntity();
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    /**
+     * Update user profile data.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException On invalid input data
+     */
+    public function update()
+    {
+        $this->request->allowMethod('patch');
+
+        $entity = $this->userEntity();
+        $entity->setAccess(['username', 'password', 'password_hash', 'email'], false);
+
+        $data = $this->request->getData();
+        $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
+        $action(compact('entity', 'data'));
+
+        // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
+        $entity = $this->userEntity();
+        $this->set(compact('entity'));
+        $this->set('_serialize', ['entity']);
+    }
+
+    /**
+     * Read logged user entity.
+     *
+     * @return \Cake\Datasource\EntityInterface Logged user entity
+     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
+     */
+    protected function userEntity()
+    {
         $userId = $this->Auth->user('id');
         if (!$userId) {
             $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
         }
 
-        $user = TableRegistry::get('Users')->get($userId);
-
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        return TableRegistry::get('Users')->get($userId);
     }
 
     /**

@@ -78,6 +78,8 @@ class SetAssociatedAction extends UpdateAssociatedAction
                 $relatedEntities = [$relatedEntities];
             }
 
+            $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
+
             return $this->toMany($entity, $relatedEntities);
         }
 
