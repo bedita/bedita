@@ -20,7 +20,6 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
-use Cake\Utility\Hash;
 
 /**
  * Object Entity.

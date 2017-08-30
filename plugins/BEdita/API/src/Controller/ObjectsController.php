@@ -21,7 +21,6 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
-use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
@@ -137,14 +136,7 @@ class ObjectsController extends ResourcesController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    Router::url(
-                        [
-                            '_name' => 'api:objects:resource',
-                            'object_type' => $this->objectType->name,
-                            'id' => $data->id,
-                        ],
-                        true
-                    )
+                    $this->resourceUrl($data->id)
                 );
         } else {
             // List existing entities.
@@ -161,6 +153,21 @@ class ObjectsController extends ResourcesController
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function resourceUrl($id)
+    {
+        return Router::url(
+            [
+                '_name' => 'api:objects:resource',
+                'object_type' => $this->objectType->name,
+                'id' => $id,
+            ],
+            true
+        );
     }
 
     /**
@@ -322,43 +329,34 @@ class ObjectsController extends ResourcesController
      */
     protected function getAvailable($relationship)
     {
-        $entityDest = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
-        if ($entityDest instanceof JsonApiSerializable) {
-            $destObj = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
-            if (empty($destObj['type'])) {
-                foreach ($this->objectType->right_relations as $relation) {
-                    if ($relation->inverse_name !== $relationship) {
-                        continue;
-                    }
-                    $result = Hash::extract($relation->left_object_types, '{n}.name');
-                }
-                foreach ($this->objectType->left_relations as $relation) {
-                    if ($relation->name !== $relationship) {
-                        continue;
-                    }
-                    $result = Hash::extract($relation->right_object_types, '{n}.name');
-                }
-                if (!empty($result)) {
-                    return Router::url(
-                        [
-                            '_name' => 'api:objects:index',
-                            'object_type' => 'objects',
-                            'filter' => ['type' => array_values($result)],
-                        ],
-                        true
-                    );
-                }
-            }
-
-            return Router::url(
-                [
-                    '_name' => 'api:resources:index',
-                    'controller' => $destObj['type'],
-                ],
-                true
-            );
+        $available = parent::getAvailable($relationship);
+        if ($available !== null) {
+            return $available;
         }
 
-        return null;
+        foreach ($this->objectType->right_relations as $relation) {
+            if ($relation->inverse_name !== $relationship) {
+                continue;
+            }
+            $result = Hash::extract($relation->left_object_types, '{n}.name');
+        }
+        foreach ($this->objectType->left_relations as $relation) {
+            if ($relation->name !== $relationship) {
+                continue;
+            }
+            $result = Hash::extract($relation->right_object_types, '{n}.name');
+        }
+        if (empty($result)) {
+            return null;
+        }
+
+        return Router::url(
+            [
+                '_name' => 'api:objects:index',
+                'object_type' => 'objects',
+                'filter' => ['type' => array_values($result)],
+            ],
+            true
+        );
     }
 }
