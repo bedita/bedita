@@ -415,6 +415,7 @@ class RelationsControllerTest extends IntegrationTestCase
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
+                'available' => 'http://api.example.com/object_types',
             ],
             'meta' => [
                 'pagination' => [
