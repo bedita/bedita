@@ -50,6 +50,13 @@ interface JsonApiSerializable
     const JSONAPIOPT_EXCLUDE_RELATIONSHIPS = 8;
 
     /**
+     * Tell JSON API serializer to exclude all (`attributes`, `meta`, `links`, `relationships`) from resource
+     *
+     * @var int
+     */
+    const JSONAPIOPT_BASIC = 15;
+
+    /**
      * JSON API serializer.
      *
      * This method **MUST** return a resource object as per JSON API specifications.

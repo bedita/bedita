@@ -402,6 +402,7 @@ class RolesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -413,6 +414,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
+                'available' => 'http://api.example.com/users',
             ],
             'meta' => [
                 'pagination' => [

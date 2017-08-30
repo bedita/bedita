@@ -285,6 +285,9 @@ abstract class ResourcesController extends AppController
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+
+        $available = $this->getAvailableUrl($relationship);
+        $this->set('_links', compact('available'));
     }
 
     /**
@@ -341,6 +344,9 @@ abstract class ResourcesController extends AppController
                     '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META
                 ]);
 
+                $available = $this->getAvailableUrl($relationship);
+                $this->set('_links', compact('available'));
+
                 return null;
         }
 
@@ -359,5 +365,32 @@ abstract class ResourcesController extends AppController
         $this->set(['_serialize' => []]);
 
         return null;
+    }
+
+    /**
+     * Return link to available objects by relationship.
+     *
+     * @param string $relationship Relationship name.
+     * @return string|null
+     */
+    protected function getAvailableUrl($relationship)
+    {
+        $destinationEntity = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        if (!($destinationEntity instanceof JsonApiSerializable)) {
+            return null;
+        }
+
+        $destinationEntity = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+        if (empty($destinationEntity['type'])) {
+            return null;
+        }
+
+        return Router::url(
+            [
+                '_name' => 'api:resources:index',
+                'controller' => $destinationEntity['type'],
+            ],
+            true
+        );
     }
 }

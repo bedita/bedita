@@ -28,6 +28,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testListAssociations()
     {
@@ -39,6 +40,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/roles/1/relationships/users',
                 'prev' => null,
                 'next' => null,
+                'available' => 'http://api.example.com/users',
             ],
             'data' => [
                 [
