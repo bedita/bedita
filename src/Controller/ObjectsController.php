@@ -32,6 +32,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Controller for `/objects` endpoint.
@@ -135,14 +136,7 @@ class ObjectsController extends ResourcesController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    Router::url(
-                        [
-                            '_name' => 'api:objects:resource',
-                            'object_type' => $this->objectType->name,
-                            'id' => $data->id,
-                        ],
-                        true
-                    )
+                    $this->resourceUrl($data->id)
                 );
         } else {
             // List existing entities.
@@ -159,6 +153,21 @@ class ObjectsController extends ResourcesController
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function resourceUrl($id)
+    {
+        return Router::url(
+            [
+                '_name' => 'api:objects:resource',
+                'object_type' => $this->objectType->name,
+                'id' => $id,
+            ],
+            true
+        );
     }
 
     /**
@@ -228,6 +237,9 @@ class ObjectsController extends ResourcesController
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
+
+        $available = $this->getAvailableUrl($relationship);
+        $this->set('_links', compact('available'));
     }
 
     /**
@@ -276,6 +288,9 @@ class ObjectsController extends ResourcesController
                     '_serialize' => ['data'],
                 ]);
 
+                $available = $this->getAvailableUrl($relationship);
+                $this->set('_links', compact('available'));
+
                 return null;
         }
 
@@ -304,5 +319,44 @@ class ObjectsController extends ResourcesController
         ]);
 
         return null;
+    }
+
+    /**
+     * Return link to available objects by relationship
+     *
+     * @param string $relationship relation name
+     * @return string|null
+     */
+    protected function getAvailableUrl($relationship)
+    {
+        $available = parent::getAvailableUrl($relationship);
+        if ($available !== null) {
+            return $available;
+        }
+
+        foreach ($this->objectType->right_relations as $relation) {
+            if ($relation->inverse_name !== $relationship) {
+                continue;
+            }
+            $result = Hash::extract($relation->left_object_types, '{n}.name');
+        }
+        foreach ($this->objectType->left_relations as $relation) {
+            if ($relation->name !== $relationship) {
+                continue;
+            }
+            $result = Hash::extract($relation->right_object_types, '{n}.name');
+        }
+        if (empty($result)) {
+            return null;
+        }
+
+        return Router::url(
+            [
+                '_name' => 'api:objects:index',
+                'object_type' => 'objects',
+                'filter' => ['type' => array_values($result)],
+            ],
+            true
+        );
     }
 }

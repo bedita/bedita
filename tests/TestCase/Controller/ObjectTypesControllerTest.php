@@ -22,6 +22,16 @@ use Cake\Utility\Hash;
 class ObjectTypesControllerTest extends IntegrationTestCase
 {
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
+    ];
+
+    /**
      * Test index method.
      *
      * @return void
@@ -397,6 +407,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('Properties')->deleteAll([]);
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
         $this->configRequestHeaders();
