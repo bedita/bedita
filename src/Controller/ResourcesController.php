@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -180,6 +181,7 @@ abstract class ResourcesController extends AppController
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $query = $action(compact('filter', 'contain'));
 
+            $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
         }
 
@@ -249,6 +251,7 @@ abstract class ResourcesController extends AppController
             $entity = $action(compact('entity', 'data'));
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
 
@@ -279,6 +282,7 @@ abstract class ResourcesController extends AppController
             $data = $this->paginate($data);
         }
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
     }
@@ -334,6 +338,7 @@ abstract class ResourcesController extends AppController
                 $this->set(compact('data'));
                 $this->set([
                     '_serialize' => ['data'],
+                    '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META
                 ]);
 
                 return null;
