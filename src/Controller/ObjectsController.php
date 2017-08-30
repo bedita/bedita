@@ -238,7 +238,7 @@ class ObjectsController extends ResourcesController
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
 
-        $available = $this->getAvailable($relationship);
+        $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
     }
 
@@ -288,7 +288,7 @@ class ObjectsController extends ResourcesController
                     '_serialize' => ['data'],
                 ]);
 
-                $available = $this->getAvailable($relationship);
+                $available = $this->getAvailableUrl($relationship);
                 $this->set('_links', compact('available'));
 
                 return null;
@@ -327,9 +327,9 @@ class ObjectsController extends ResourcesController
      * @param string $relationship relation name
      * @return string|null
      */
-    protected function getAvailable($relationship)
+    protected function getAvailableUrl($relationship)
     {
-        $available = parent::getAvailable($relationship);
+        $available = parent::getAvailableUrl($relationship);
         if ($available !== null) {
             return $available;
         }
