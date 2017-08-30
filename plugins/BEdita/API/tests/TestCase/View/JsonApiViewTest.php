@@ -95,7 +95,6 @@ class JsonApiViewTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -130,7 +129,6 @@ class JsonApiViewTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],

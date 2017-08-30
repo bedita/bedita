@@ -87,7 +87,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/1/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/1/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -119,7 +118,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/2/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/2/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -149,7 +147,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/3/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/3/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -179,7 +176,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/4/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/4/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -212,7 +208,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/5/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/5/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -242,7 +237,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/6/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/6/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -272,7 +266,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/7/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/7/properties',
-                                'available' => 'http://api.example.com/properties',
                             ],
                         ],
                     ],
@@ -372,7 +365,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'links' => [
                             'self' => 'http://api.example.com/object_types/1/relationships/properties',
                             'related' => 'http://api.example.com/object_types/1/properties',
-                            'available' => 'http://api.example.com/properties',
                         ],
                     ],
                 ],

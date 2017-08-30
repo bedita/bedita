@@ -286,7 +286,7 @@ abstract class ResourcesController extends AppController
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
 
-        $available = $this->getAvailable($relationship);
+        $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
     }
 
@@ -343,7 +343,7 @@ abstract class ResourcesController extends AppController
                     '_serialize' => ['data'],
                 ]);
 
-                $available = $this->getAvailable($relationship);
+                $available = $this->getAvailableUrl($relationship);
                 $this->set('_links', compact('available'));
 
                 return null;
@@ -372,7 +372,7 @@ abstract class ResourcesController extends AppController
      * @param string $relationship Relationship name.
      * @return string|null
      */
-    protected function getAvailable($relationship)
+    protected function getAvailableUrl($relationship)
     {
         $destinationEntity = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
         if (!($destinationEntity instanceof JsonApiSerializable)) {

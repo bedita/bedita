@@ -93,7 +93,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -118,7 +117,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -150,7 +148,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -175,7 +172,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -207,7 +203,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -232,7 +227,6 @@ class JsonApiTest extends TestCase
                                 'links' => [
                                     'self' => '/roles/2/relationships/users',
                                     'related' => '/roles/2/users',
-                                    'available' => '/users',
                                 ],
                             ],
                         ],
@@ -263,7 +257,6 @@ class JsonApiTest extends TestCase
                             'links' => [
                                 'self' => '/roles/1/relationships/users',
                                 'related' => '/roles/1/users',
-                                'available' => '/users',
                             ],
                         ],
                     ],
@@ -290,7 +283,6 @@ class JsonApiTest extends TestCase
                             'links' => [
                                 'self' => '/roles/1/relationships/users',
                                 'related' => '/roles/1/users',
-                                'available' => '/users',
                             ],
                         ],
                     ],
@@ -515,20 +507,12 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/test',
                         'self' => '/documents/2/relationships/test',
-                        'available' => sprintf(
-                            '/objects?%s',
-                            http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
-                        ),
                     ],
                 ],
                 'inverse_test' => [
                     'links' => [
                         'related' => '/documents/2/inverse_test',
                         'self' => '/documents/2/relationships/inverse_test',
-                        'available' => sprintf(
-                            '/objects?%s',
-                            http_build_query(['filter' => ['type' => ['documents']]])
-                        ),
                     ],
                 ],
             ],

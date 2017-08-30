@@ -409,7 +409,6 @@ class ObjectEntityTest extends TestCase
                 'links' => [
                     'related' => '/users/1/roles',
                     'self' => '/users/1/relationships/roles',
-                    'available' => '/roles',
                 ],
             ],
         ];
