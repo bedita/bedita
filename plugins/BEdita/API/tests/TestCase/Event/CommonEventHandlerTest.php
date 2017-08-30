@@ -26,12 +26,19 @@ use Cake\TestSuite\TestCase;
  */
 class CommonEventHandlerTest extends TestCase
 {
+
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals'
     ];
 
     /**
      * Test implemented events
+     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -43,7 +50,7 @@ class CommonEventHandlerTest extends TestCase
     }
 
     /**
-     * test build middleware stack
+     * Test build middleware stack.
      *
      * @return void
      * @covers ::buildMiddlewareStack()
@@ -66,7 +73,7 @@ class CommonEventHandlerTest extends TestCase
     }
 
     /**
-     * test after identify
+     * Test after identify
      *
      * @return void
      * @covers ::afterIdentify()
