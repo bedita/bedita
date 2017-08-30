@@ -14,11 +14,12 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\RolesController
+ * @coversDefaultClass \BEdita\API\Controller\RelationsController
  */
-class RolesControllerTest extends IntegrationTestCase
+class RelationsControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
@@ -32,9 +33,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles',
-                'first' => 'http://api.example.com/roles',
-                'last' => 'http://api.example.com/roles',
+                'self' => 'http://api.example.com/relations',
+                'first' => 'http://api.example.com/relations',
+                'last' => 'http://api.example.com/relations',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -51,48 +52,58 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'roles',
+                    'type' => 'relations',
                     'attributes' => [
-                        'name' => 'first role',
-                        'description' => 'this is the very first role',
-                    ],
-                    'meta' => [
-                        'unchangeable' => true,
-                        'created' => '2016-04-15T09:57:38+00:00',
-                        'modified' => '2016-04-15T09:57:38+00:00',
+                        'name' => 'test',
+                        'label' => 'Test relation',
+                        'inverse_name' => 'inverse_test',
+                        'inverse_label' => 'Inverse test relation',
+                        'description' => 'Sample description.',
+                        'params' => null,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/roles/1',
+                        'self' => 'http://api.example.com/relations/1',
                     ],
                     'relationships' => [
-                        'users' => [
+                        'left_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/roles/1/relationships/users',
-                                'related' => 'http://api.example.com/roles/1/users',
+                                'self' => 'http://api.example.com/relations/1/relationships/left_object_types',
+                                'related' => 'http://api.example.com/relations/1/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/relations/1/relationships/right_object_types',
+                                'related' => 'http://api.example.com/relations/1/right_object_types',
                             ],
                         ],
                     ],
                 ],
                 [
                     'id' => '2',
-                    'type' => 'roles',
+                    'type' => 'relations',
                     'attributes' => [
-                        'name' => 'second role',
-                        'description' => 'this is a second role',
-                    ],
-                    'meta' => [
-                        'unchangeable' => false,
-                        'created' => '2016-04-15T11:59:12+00:00',
-                        'modified' => '2016-04-15T11:59:13+00:00',
+                        'name' => 'another_test',
+                        'label' => 'Another test relation',
+                        'inverse_name' => 'inverse_another_test',
+                        'inverse_label' => 'Another inverse test relation',
+                        'description' => 'Sample description /2.',
+                        'params' => null,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/roles/2',
+                        'self' => 'http://api.example.com/relations/2',
                     ],
                     'relationships' => [
-                        'users' => [
+                        'left_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/roles/2/relationships/users',
-                                'related' => 'http://api.example.com/roles/2/users',
+                                'self' => 'http://api.example.com/relations/2/relationships/left_object_types',
+                                'related' => 'http://api.example.com/relations/2/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/relations/2/relationships/right_object_types',
+                                'related' => 'http://api.example.com/relations/2/right_object_types',
                             ],
                         ],
                     ],
@@ -101,7 +112,7 @@ class RolesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/roles');
+        $this->get('/relations');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -121,9 +132,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles',
-                'first' => 'http://api.example.com/roles',
-                'last' => 'http://api.example.com/roles',
+                'self' => 'http://api.example.com/relations',
+                'first' => 'http://api.example.com/relations',
+                'last' => 'http://api.example.com/relations',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -140,11 +151,10 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
-        TableRegistry::get('Roles')->deleteAll([]);
+        TableRegistry::get('Relations')->deleteAll([]);
 
         $this->configRequestHeaders();
-        $this->get('/roles');
+        $this->get('/relations');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -164,26 +174,31 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/1',
+                'self' => 'http://api.example.com/relations/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
-                'type' => 'roles',
+                'type' => 'relations',
                 'attributes' => [
-                    'name' => 'first role',
-                    'description' => 'this is the very first role',
-                ],
-                'meta' => [
-                    'unchangeable' => true,
-                    'created' => '2016-04-15T09:57:38+00:00',
-                    'modified' => '2016-04-15T09:57:38+00:00',
+                    'name' => 'test',
+                    'label' => 'Test relation',
+                    'inverse_name' => 'inverse_test',
+                    'inverse_label' => 'Inverse test relation',
+                    'description' => 'Sample description.',
+                    'params' => null,
                 ],
                 'relationships' => [
-                    'users' => [
+                    'left_object_types' => [
                         'links' => [
-                            'self' => 'http://api.example.com/roles/1/relationships/users',
-                            'related' => 'http://api.example.com/roles/1/users',
+                            'self' => 'http://api.example.com/relations/1/relationships/left_object_types',
+                            'related' => 'http://api.example.com/relations/1/left_object_types',
+                        ],
+                    ],
+                    'right_object_types' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/relations/1/relationships/right_object_types',
+                            'related' => 'http://api.example.com/relations/1/right_object_types',
                         ],
                     ],
                 ],
@@ -191,7 +206,7 @@ class RolesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/roles/1');
+        $this->get('/relations/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -212,7 +227,7 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/99',
+                'self' => 'http://api.example.com/relations/99',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -221,7 +236,7 @@ class RolesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/roles/99');
+        $this->get('/relations/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
@@ -247,21 +262,34 @@ class RolesControllerTest extends IntegrationTestCase
     public function testAdd()
     {
         $data = [
-            'type' => 'roles',
+            'type' => 'relations',
             'attributes' => [
-                'name' => 'head_of_support',
+                'name' => 'shared',
+                'label' => 'Shared',
+                'inverse_name' => 'shared_by',
+                'inverse_label' => 'Shared by',
+                'description' => 'Shared relation',
+                'params' => [
+                    'test' => 'ok'
+                ]
             ],
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/roles', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->post('/relations', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        static::assertArrayHasKey('data', $result);
-        $this->assertHeader('Location', 'http://api.example.com/roles/3');
-        static::assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+
+        $relation = TableRegistry::get('Relations')
+            ->find()
+            ->order(['id' => 'DESC'])
+            ->first();
+
+        $this->assertHeader('Location', 'http://api.example.com/relations/' . $relation->id);
+
+        $expected = array_merge(['id' => $relation->id], $data['attributes']);
+        static::assertEquals($expected, $relation->toArray());
     }
 
     /**
@@ -275,20 +303,21 @@ class RolesControllerTest extends IntegrationTestCase
     public function testAddInvalid()
     {
         $data = [
-            'type' => 'roles',
+            'type' => 'relations',
             'attributes' => [
-                'description' => 'Anonymous role.',
+                'description' => 'Anonymous relation.',
             ],
         ];
 
-        $count = TableRegistry::get('Roles')->find()->count();
+        $Relations = TableRegistry::get('Relations');
+        $count = $Relations->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/roles', json_encode(compact('data')));
+        $this->post('/relations', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Roles')->find()->count());
+        $this->assertEquals($count, $Relations->find()->count());
     }
 
     /**
@@ -303,18 +332,21 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'roles',
+            'type' => 'relations',
             'attributes' => [
-                'name' => 'new_name',
+                'label' => 'new label',
             ],
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/1', json_encode(compact('data')));
+        $this->patch('/relations/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_name', TableRegistry::get('Roles')->get(1)->get('name'));
+
+        $Relations = TableRegistry::get('Relations');
+        $entity = $Relations->get(1);
+        $this->assertEquals('new label', $entity->get('label'));
     }
 
     /**
@@ -329,45 +361,21 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'roles',
+            'type' => 'relations',
             'attributes' => [
-                'name' => 'new_name',
+                'label' => 'new label',
             ],
         ];
 
+        $Relations = TableRegistry::get('Relations');
+        $expected = $Relations->get(1)->get('label');
+
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/2', json_encode(compact('data')));
+        $this->patch('/relations/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
-        $this->assertEquals('second role', TableRegistry::get('Roles')->get(2)->get('name'));
-    }
-
-    /**
-     * Test edit method with invalid data.
-     *
-     * @return void
-     *
-     * @covers ::resource()
-     * @covers ::initialize()
-     */
-    public function testEditInvalid()
-    {
-        $data = [
-            'id' => '1',
-            'type' => 'roles',
-            'attributes' => [
-                'name' => 'second role',
-            ],
-        ];
-
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/1', json_encode(compact('data')));
-
-        $this->assertResponseCode(400);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals($expected, $Relations->get(1)->get('label'));
     }
 
     /**
@@ -380,42 +388,33 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        // delete role 1 - it must be forbidden
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/roles/1');
-        $this->assertResponseCode(403);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertTrue(TableRegistry::get('Roles')->exists(['id' => 1]));
+        $this->delete('/relations/1');
 
-        // delete role 2
-        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/roles/2');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 2]));
+        $this->assertFalse(TableRegistry::get('Relations')->exists(['id' => 1]));
     }
 
     /**
-     * Test related method to list related objects.
+     * Test related method to list related object types.
      *
      * @return void
      *
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/1/users',
-                'first' => 'http://api.example.com/roles/1/users',
-                'last' => 'http://api.example.com/roles/1/users',
+                'self' => 'http://api.example.com/relations/1/left_object_types',
+                'first' => 'http://api.example.com/relations/1/left_object_types',
+                'last' => 'http://api.example.com/relations/1/left_object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
-                'available' => 'http://api.example.com/users',
             ],
             'meta' => [
                 'pagination' => [
@@ -429,61 +428,44 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'users',
+                    'type' => 'object_types',
                     'attributes' => [
-                        'status' => 'on',
-                        'uname' => 'first-user',
-                        'title' => 'Mr. First User',
+                        'singular' => 'document',
+                        'name' => 'documents',
                         'description' => null,
-                        'body' => null,
-                        'extra' => null,
-                        'lang' => 'eng',
-                        'name' => 'First',
-                        'surname' => 'User',
-                        'email' => 'first.user@example.com',
-                        'person_title' => 'Mr.',
-                        'gender' => null,
-                        'birthdate' => null,
-                        'deathdate' => null,
-                        'company' => false,
-                        'company_name' => null,
-                        'company_kind' => null,
-                        'street_address' => null,
-                        'city' => null,
-                        'zipcode' => null,
-                        'country' => null,
-                        'state_name' => null,
-                        'phone' => null,
-                        'website' => null,
-                        'national_id_number' => null,
-                        'vat_number' => null,
-                        'publish_start' => null,
-                        'publish_end' => null,
-                        'username' => 'first user',
-                        'another_username' => null, // custom property
-                        'another_email' => null, // custom property
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => null,
+                        'hidden' => null,
                     ],
                     'meta' => [
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
-                        'created_by' => 1,
-                        'modified_by' => 1,
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'verified' => '2017-05-29T11:36:00+00:00',
+                        'alias' => 'Documents',
+                        'relations' => [
+                            'test',
+                            'inverse_test',
+                        ],
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/users/1',
+                        'self' => 'http://api.example.com/object_types/1',
                     ],
                     'relationships' => [
-                        'roles' => [
+                        'properties' => [
                             'links' => [
-                                'related' => 'http://api.example.com/users/1/roles',
-                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                                'self' => 'http://api.example.com/object_types/1/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/1/properties',
+                            ],
+                        ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/1/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/1/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/1/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/1/right_relations',
                             ],
                         ],
                     ],
@@ -492,8 +474,17 @@ class RolesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/roles/1/users');
+        $this->get('/relations/1/left_object_types');
         $result = json_decode((string)$this->_response->getBody(), true);
+
+        /*
+         * @todo To remove when fquffio :) resolves the inconsistency response.
+         *       According with other endpoint responses "included" and "data" of "relationships"
+         *       should be present only when the query string "include" is present
+         */
+        $result = Hash::remove($result, 'included');
+        $result = Hash::remove($result, 'data.{n}.relationships.left_relations.data');
+        $result = Hash::remove($result, 'data.{n}.relationships.right_relations.data');
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

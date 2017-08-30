@@ -341,6 +341,7 @@ abstract class ResourcesController extends AppController
                 $this->set(compact('data'));
                 $this->set([
                     '_serialize' => ['data'],
+                    '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META
                 ]);
 
                 $available = $this->getAvailableUrl($relationship);
