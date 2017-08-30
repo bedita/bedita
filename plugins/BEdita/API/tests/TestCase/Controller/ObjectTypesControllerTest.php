@@ -14,6 +14,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
@@ -79,6 +80,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'related' => 'http://api.example.com/object_types/1/properties',
                             ],
                         ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/1/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/1/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/1/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/1/right_relations',
+                            ]
+                        ],
                     ],
                 ],
                 [
@@ -110,6 +123,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'related' => 'http://api.example.com/object_types/2/properties',
                             ],
                         ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/2/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/2/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/2/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/2/right_relations',
+                            ]
+                        ],
                     ],
                 ],
                 [
@@ -139,6 +164,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'related' => 'http://api.example.com/object_types/3/properties',
                             ],
                         ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/3/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/3/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/3/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/3/right_relations',
+                            ]
+                        ],
                     ],
                 ],
                 [
@@ -167,6 +204,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/object_types/4/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/4/properties',
                             ],
+                        ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/4/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/4/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/4/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/4/right_relations',
+                            ]
                         ],
                     ],
                 ],
@@ -200,6 +249,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'related' => 'http://api.example.com/object_types/5/properties',
                             ],
                         ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/5/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/5/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/5/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/5/right_relations',
+                            ]
+                        ],
                     ],
                 ],
                 [
@@ -228,6 +289,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/object_types/6/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/6/properties',
                             ],
+                        ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/6/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/6/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/6/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/6/right_relations',
+                            ]
                         ],
                     ],
                 ],
@@ -258,6 +331,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                                 'related' => 'http://api.example.com/object_types/7/properties',
                             ],
                         ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/7/relationships/left_relations',
+                                'related' => 'http://api.example.com/object_types/7/left_relations',
+                            ]
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/7/relationships/right_relations',
+                                'related' => 'http://api.example.com/object_types/7/right_relations',
+                            ]
+                        ],
                     ],
                 ],
             ],
@@ -266,6 +351,15 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->configRequestHeaders();
         $this->get('/object_types');
         $result = json_decode((string)$this->_response->getBody(), true);
+
+        /*
+         * @todo To remove when fquffio :) resolves the inconsistency response.
+         *       According with other endpoint responses "included" and "data" of "relationships"
+         *       should be present only when the query string "include" is present
+         */
+        $result = Hash::remove($result, 'included');
+        $result = Hash::remove($result, 'data.{n}.relationships.left_relations.data');
+        $result = Hash::remove($result, 'data.{n}.relationships.right_relations.data');
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -356,6 +450,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/object_types/1/properties',
                         ],
                     ],
+                    'left_relations' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/object_types/1/relationships/left_relations',
+                            'related' => 'http://api.example.com/object_types/1/left_relations',
+                        ],
+                    ],
+                    'right_relations' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/object_types/1/relationships/right_relations',
+                            'related' => 'http://api.example.com/object_types/1/right_relations',
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -363,6 +469,15 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->configRequestHeaders();
         $this->get('/object_types/1');
         $result = json_decode((string)$this->_response->getBody(), true);
+
+        /*
+         * @todo To remove when fquffio :) resolves the inconsistency response.
+         *       According with other endpoint responses "included" and "data" of "relationships"
+         *       should be present only when the query string "include" is present
+         */
+        $result = Hash::remove($result, 'included');
+        $result = Hash::remove($result, 'data.relationships.left_relations.data');
+        $result = Hash::remove($result, 'data.relationships.right_relations.data');
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

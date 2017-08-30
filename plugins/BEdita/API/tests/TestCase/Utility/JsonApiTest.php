@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Utility;
 
 use BEdita\API\Utility\JsonApi;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -315,6 +316,24 @@ class JsonApiTest extends TestCase
                     ];
                 },
             ],
+            'excludeMetaAndAttributes' => [
+                [
+                    'id' => '1',
+                    'type' => 'roles',
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'self' => '/roles/1/relationships/users',
+                                'related' => '/roles/1/users',
+                            ],
+                        ],
+                    ],
+                ],
+                function (Table $Table) {
+                    return $Table->get(1);
+                },
+                JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META,
+            ]
         ];
     }
 
@@ -324,18 +343,19 @@ class JsonApiTest extends TestCase
      *
      * @param array|bool $expected Expected result. If `false`, an exception is expected.
      * @param callable $items A callable that returns the items to be converted.
+     * @param int $options Format data options
      * @return void
      *
      * @dataProvider formatDataProvider
      * @covers ::formatData
      */
-    public function testFormatData($expected, callable $items)
+    public function testFormatData($expected, callable $items, $options = 0)
     {
         if ($expected === false) {
             $this->expectException('\InvalidArgumentException');
         }
 
-        $result = JsonApi::formatData($items($this->Roles));
+        $result = JsonApi::formatData($items($this->Roles), $options);
         $result = json_decode(json_encode($result), true);
 
         static::assertEquals($expected, $result);

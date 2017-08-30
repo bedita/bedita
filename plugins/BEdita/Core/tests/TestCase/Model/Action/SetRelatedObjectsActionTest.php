@@ -173,6 +173,7 @@ class SetRelatedObjectsActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationProvider()
+     * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction::prepareRelatedEntities()
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
@@ -212,6 +213,8 @@ class SetRelatedObjectsActionTest extends TestCase
      * Test invocation of command with fallback to default action.
      *
      * @return void
+     *
+     * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction::prepareRelatedEntities()
      */
     public function testInvocationFallback()
     {
