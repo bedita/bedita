@@ -21,6 +21,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
@@ -32,6 +33,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Controller for `/objects` endpoint.
@@ -228,6 +230,9 @@ class ObjectsController extends ResourcesController
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
+
+        $available = $this->getAvailable($relationship);
+        $this->set('_links', compact('available'));
     }
 
     /**
@@ -276,6 +281,9 @@ class ObjectsController extends ResourcesController
                     '_serialize' => ['data'],
                 ]);
 
+                $available = $this->getAvailable($relationship);
+                $this->set('_links', compact('available'));
+
                 return null;
         }
 
@@ -302,6 +310,54 @@ class ObjectsController extends ResourcesController
         $this->set([
             '_serialize' => isset($data) ? ['data'] : [],
         ]);
+
+        return null;
+    }
+
+    /**
+     * Return link to available objects by relationship
+     *
+     * @param string $relationship relation name
+     * @return string|null
+     */
+    protected function getAvailable($relationship)
+    {
+        $entityDest = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        if ($entityDest instanceof JsonApiSerializable) {
+            $destObj = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+            if (empty($destObj['type'])) {
+                foreach ($this->objectType->right_relations as $relation) {
+                    if ($relation->inverse_name !== $relationship) {
+                        continue;
+                    }
+                    $result = Hash::extract($relation->left_object_types, '{n}.name');
+                }
+                foreach ($this->objectType->left_relations as $relation) {
+                    if ($relation->name !== $relationship) {
+                        continue;
+                    }
+                    $result = Hash::extract($relation->right_object_types, '{n}.name');
+                }
+                if (!empty($result)) {
+                    return Router::url(
+                        [
+                            '_name' => 'api:objects:index',
+                            'object_type' => 'objects',
+                            'filter' => ['type' => array_values($result)],
+                        ],
+                        true
+                    );
+                }
+            }
+
+            return Router::url(
+                [
+                    '_name' => 'api:resources:index',
+                    'controller' => $destObj['type'],
+                ],
+                true
+            );
+        }
 
         return null;
     }

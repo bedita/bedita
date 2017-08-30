@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -355,6 +356,31 @@ abstract class ResourcesController extends AppController
         }
 
         $this->set(['_serialize' => []]);
+
+        return null;
+    }
+
+    /**
+     * Return link to available objects by relationship
+     *
+     * @param string $relationship relation name
+     * @return string|null
+     */
+    protected function getAvailable($relationship)
+    {
+        $entityDest = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        if ($entityDest instanceof JsonApiSerializable) {
+            $jsonApiSer = $entityDest->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+            if (!empty($jsonApiSer) && !empty($jsonApiSer['type'])) {
+                return Router::url(
+                    [
+                        '_name' => 'api:resources:index',
+                        'controller' => $jsonApiSer['type'],
+                    ],
+                    true
+                );
+            }
+        }
 
         return null;
     }
