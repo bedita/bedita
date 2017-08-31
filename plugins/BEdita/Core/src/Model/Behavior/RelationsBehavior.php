@@ -18,6 +18,7 @@ use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
+use League\JsonReference\Dereferencer;
 
 /**
  * Relations behavior
@@ -134,6 +135,10 @@ class RelationsBehavior extends Behavior
                 $relation->alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
             );
+            $through->validator()->setProvider(
+                'jsonSchema',
+                Dereferencer::draft4()->dereference(json_decode(json_encode($relation->params)))
+            );
 
             $this->relatedTo($relation->alias, [
                 'className' => $className,
@@ -163,6 +168,10 @@ class RelationsBehavior extends Behavior
             $through = TableRegistry::get(
                 $relation->inverse_alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
+            );
+            $through->validator()->setProvider(
+                'jsonSchema',
+                Dereferencer::draft4()->dereference(json_decode(json_encode($relation->params)))
             );
 
             $this->relatedTo($relation->inverse_alias, [

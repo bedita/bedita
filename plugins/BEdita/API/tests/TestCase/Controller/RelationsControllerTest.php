@@ -88,7 +88,19 @@ class RelationsControllerTest extends IntegrationTestCase
                         'inverse_name' => 'inverse_another_test',
                         'inverse_label' => 'Another inverse test relation',
                         'description' => 'Sample description /2.',
-                        'params' => null,
+                        'params' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'name' => [
+                                    'type' => 'string',
+                                ],
+                                'age' => [
+                                    'type' => 'integer',
+                                    'minimum' => 0,
+                                ],
+                            ],
+                            'required' => ['name'],
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/relations/2',

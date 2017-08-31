@@ -17,6 +17,7 @@ use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -51,6 +52,11 @@ class UpdateAssociatedActionTest extends TestCase
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
+        /* @var \Cake\ORM\Association\BelongsToMany $association */
+        $association = TableRegistry::get('FakeTags')->association('FakeArticles');
+        $association->junction()
+            ->validator()
+            ->email('fake_params');
 
         TableRegistry::get('FakeArticles')
             ->belongsToMany('FakeTags', [
@@ -157,6 +163,40 @@ class UpdateAssociatedActionTest extends TestCase
                     'id' => 99,
                 ],
             ],
+            'belongsToMany with parameters' => [
+                2,
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    [
+                        'id' => 2,
+                        '_meta' => [
+                            'relation' => [
+                                'fake_params' => 'gustavo.supporto@example.org',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'belongsToMany invalid parameters' => [
+                new BadRequestException([
+                    'title' => 'Bad data',
+                ]),
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    [
+                        'id' => 2,
+                        '_meta' => [
+                            'relation' => [
+                                'fake_params' => 'not an email',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -201,7 +241,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ->count();
         }
 
-        $this->assertEquals($expected, $result);
-        $this->assertEquals(count(array_unique($data, SORT_REGULAR)), $count);
+        static::assertEquals($expected, $result);
+        static::assertEquals(count(array_unique($data, SORT_REGULAR)), $count);
     }
 }
