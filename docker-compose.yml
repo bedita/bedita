@@ -1,0 +1,36 @@
+---
+version: "2.1"
+
+volumes:
+  database:
+  files:
+services:
+  manager:
+    image: "bedita/manager"
+    depends_on:
+      - api
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    environment:
+      BEDITA_API: "http://localhost:${API_PORT:-8089}"
+  api:
+    image: "bedita/bedita:4-cactus"
+    depends_on:
+      - database
+    links:
+      - database
+    ports:
+      - "${API_PORT:-8089}:80"
+    volumes:
+      - "files:/var/www/webroot/files"
+    environment:
+      DATABASE_URL: "mysql://bedita:bedita@database:3306/bedita"
+  database:
+    image: "mysql:5.7"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: bedita
+      MYSQL_USER: bedita
+      MYSQL_PASSWORD: bedita
+    volumes:
+      - "database:/var/lib/mysql"

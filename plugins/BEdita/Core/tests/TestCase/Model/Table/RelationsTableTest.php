@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -235,5 +236,58 @@ class RelationsTableTest extends TestCase
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Data provider for testGet()
+     *
+     * @return array
+     */
+    public function getProvider()
+    {
+        return [
+            'int' => [
+                1,
+                1,
+            ],
+            'numeric' => [
+                1,
+                '1',
+            ],
+            'name' => [
+                1,
+                'test',
+            ],
+            'inverse_name' => [
+                1,
+                'inverse_test',
+            ],
+            'notFoundString' => [
+                new RecordNotFoundException('Record not found in table "relations"'),
+                'not_exists',
+            ],
+        ];
+    }
+
+    /**
+     * Test get() method.
+     * If it was success just the entity id is tested
+     *
+     * @param int|\Exception $expected The expected result
+     * @param int|string $search The search value
+     * @return void
+     *
+     * @dataProvider getProvider
+     * @covers ::get()
+     */
+    public function testGet($expected, $search)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $relation = $this->Relations->get($search);
+        static::assertEquals($expected, $relation->id);
     }
 }

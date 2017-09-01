@@ -15,9 +15,6 @@ namespace BEdita\API\Controller\Component;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
-use Cake\Controller\Controller;
-use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
@@ -265,7 +262,6 @@ class JsonApiComponent extends Component
     /**
      * Perform preliminary checks and operations.
      *
-     * @param \Cake\Event\Event $event Triggered event.
      * @return void
      * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
      *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
@@ -274,18 +270,17 @@ class JsonApiComponent extends Component
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
      *      client-generated ID, but the feature is not supported.
      */
-    public function startup(Event $event)
+    public function startup()
     {
-        $controller = $event->getSubject();
-        if (!($controller instanceof Controller)) {
-            return;
-        }
+        $controller = $this->getController();
 
         $this->RequestHandler->renderAs($controller, 'jsonapi');
 
-        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) != self::CONTENT_TYPE) {
+        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
-            throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $controller->request->accepts()) . '"');
+            throw new UnsupportedMediaTypeException(
+                __d('bedita', 'Bad request content type "{0}"', $controller->request->getHeaderLine('Accept'))
+            );
         }
 
         if ($controller->request->is(['post', 'patch'])) {
@@ -300,15 +295,11 @@ class JsonApiComponent extends Component
     /**
      * Perform operations before view rendering.
      *
-     * @param \Cake\Event\Event $event Triggered event.
      * @return void
      */
-    public function beforeRender(Event $event)
+    public function beforeRender()
     {
-        $controller = $event->getSubject();
-        if (!($controller instanceof Controller)) {
-            return;
-        }
+        $controller = $this->getController();
 
         $links = [];
         if (isset($controller->viewVars['_links'])) {

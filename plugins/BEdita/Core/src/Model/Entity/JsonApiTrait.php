@@ -134,6 +134,7 @@ trait JsonApiTrait
     /**
      * Setter for `_fields`.
      *
+     * @param array $fields List of fields.
      * @return void
      */
     protected function setFields(array $fields)
@@ -142,8 +143,9 @@ trait JsonApiTrait
     }
 
     /**
-     * Filter fields list depending on requested fields in $_fields
+     * Filter fields list depending on requested fields in `$_fields`.
      *
+     * @param array $fields List of fields.
      * @return array
      */
     protected function filterFields(array $fields)
@@ -333,7 +335,6 @@ trait JsonApiTrait
             list(, $associationType) = namespaceSplit(get_class($association));
             $name = $association->property();
             if (!($association instanceof Association) ||
-                $associationType === 'ExtensionOf' ||
                 in_array($name, $hidden) ||
                 ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))
             ) {

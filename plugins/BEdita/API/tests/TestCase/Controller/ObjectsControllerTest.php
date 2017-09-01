@@ -355,7 +355,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -397,7 +397,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -463,7 +463,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -532,7 +532,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $object->deleted = false;
         $this->authUser();
         $success = $objectsTable->save($object);
-        $this->assertEquals(true, (bool)$success);
+        static::assertTrue((bool)$success);
 
         $this->configRequestHeaders();
         $this->get('/objects/6');
@@ -540,12 +540,12 @@ class ObjectsControllerTest extends IntegrationTestCase
         unset($result['data']['meta']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
 
         // undo restore -> deleted = true
         $object->deleted = true;
         $success = $objectsTable->save($object);
-        $this->assertEquals(true, (bool)$success);
+        static::assertTrue((bool)$success);
     }
 
     /**
@@ -555,7 +555,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -591,6 +590,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -788,6 +788,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -799,6 +800,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/documents/2/test',
                 'prev' => null,
                 'next' => null,
+                'available' => sprintf(
+                    'http://api.example.com/objects?%s',
+                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                ),
             ],
             'data' => [
                 [
@@ -903,7 +908,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -914,6 +919,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testListAssociations()
     {
@@ -925,6 +931,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/documents/2/relationships/test',
                 'prev' => null,
                 'next' => null,
+                'available' => sprintf(
+                    'http://api.example.com/objects?%s',
+                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                ),
             ],
             'data' => [
                 [
@@ -995,7 +1005,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**

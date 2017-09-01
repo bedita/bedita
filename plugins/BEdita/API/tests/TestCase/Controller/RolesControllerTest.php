@@ -206,7 +206,6 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -380,12 +379,19 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
+        // delete role 1 - it must be forbidden
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/roles/1');
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertTrue(TableRegistry::get('Roles')->exists(['id' => 1]));
 
+        // delete role 2
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/roles/2');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 2]));
     }
 
     /**
@@ -396,6 +402,7 @@ class RolesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -407,6 +414,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
+                'available' => 'http://api.example.com/users',
             ],
             'meta' => [
                 'pagination' => [

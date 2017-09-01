@@ -25,6 +25,7 @@ Router::plugin(
         $resourcesControllers = [
             'object_types',
             'properties',
+            'relations',
             'roles',
             'streams',
             'users',

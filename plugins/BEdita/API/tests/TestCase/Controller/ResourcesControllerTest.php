@@ -28,6 +28,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testListAssociations()
     {
@@ -39,6 +40,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/roles/1/relationships/users',
                 'prev' => null,
                 'next' => null,
+                'available' => 'http://api.example.com/users',
             ],
             'data' => [
                 [
@@ -204,13 +206,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testDeleteAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
+        // remove association from role 1 and user 1: must be forbidden
         $data = [
             [
                 'id' => '1',
@@ -221,12 +217,54 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'type' => 'users',
             ],
         ];
-
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+            'error' => [
+                'status' => '403',
+                'title' => 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE',
+            ]
+        ];
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertArraySubset($expected['links'], $result['links']);
+        $this->assertEquals($expected['error']['title'], $result['error']['title']);
 
+        // add association for user 1 role 2
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'users',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/roles/2/relationships/users', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        // remove association for user 1 role 2
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'users',
+            ],
+        ];
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/2/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/roles/2/relationships/users', 'DELETE', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -270,24 +308,34 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
+        // 403 <-- PATCH /roles/1/relationships/users
         $data = [
             [
                 'id' => '5',
                 'type' => 'users',
             ],
         ];
-
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
-
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        // 200 <-- PATCH /roles/2/relationships/users
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/2/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        $data = [
+            [
+                'id' => '5',
+                'type' => 'users',
+            ],
+        ];
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -304,22 +352,19 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociationsEmpty()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-
         $data = [];
-
+        // 403 <-- PATCH /roles/1/relationships/users
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        // 204 <-- PATCH /roles/2/relationships/users
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
     }
 
     /**

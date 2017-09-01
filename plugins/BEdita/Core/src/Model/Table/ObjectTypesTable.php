@@ -72,6 +72,7 @@ class ObjectTypesTable extends Table
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',
             'className' => 'Properties',
+            'dependent' => true,
         ]);
 
         $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);

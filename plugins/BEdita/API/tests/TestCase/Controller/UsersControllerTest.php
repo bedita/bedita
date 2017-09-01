@@ -316,7 +316,6 @@ class UsersControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -495,6 +494,12 @@ class UsersControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/users/1');
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/users/5');
 
         $this->assertResponseCode(204);
@@ -516,6 +521,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -527,6 +533,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
+                'available' => 'http://api.example.com/roles',
             ],
             'meta' => [
                 'pagination' => [
