@@ -301,7 +301,7 @@ class ObjectsTableTest extends TestCase
             $expected = "";
         }
         $object['description'] = $expected;
-        $success = $objectsTable->save($object);
+        $objectsTable->save($object);
         $object = $objectsTable->get(1);
         $this->assertEquals($object['description'], $expected);
     }

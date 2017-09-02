@@ -85,8 +85,8 @@ class ObjectsHandler
         $entity->set('type', $objectType->name);
         $saveResult = $table->save($entity);
         if (!$saveResult) {
-            Log::write('error', 'Object creation failed  - ' . $type . ' - ' . json_encode($entity->errors()));
-            throw new StopException(['title' => 'Invalid data', 'detail' => [$entity->errors()]]);
+            Log::write('error', 'Object creation failed  - ' . $type . ' - ' . json_encode($entity->getErrors()));
+            throw new StopException(['title' => 'Invalid data', 'detail' => [$entity->getErrors()]]);
         }
 
         // restore current user

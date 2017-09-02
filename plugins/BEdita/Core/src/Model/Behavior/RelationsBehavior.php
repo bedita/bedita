@@ -135,7 +135,7 @@ class RelationsBehavior extends Behavior
                 $relation->alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
             );
-            $through->validator()->setProvider(
+            $through->getValidator()->setProvider(
                 'jsonSchema',
                 Dereferencer::draft4()->dereference(json_decode(json_encode($relation->params)))
             );
@@ -169,7 +169,7 @@ class RelationsBehavior extends Behavior
                 $relation->inverse_alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
             );
-            $through->validator()->setProvider(
+            $through->getValidator()->setProvider(
                 'jsonSchema',
                 Dereferencer::draft4()->dereference(json_decode(json_encode($relation->params)))
             );

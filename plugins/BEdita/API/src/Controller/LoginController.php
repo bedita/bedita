@@ -18,7 +18,6 @@ use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;

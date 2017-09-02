@@ -317,7 +317,6 @@ class ResourcesControllerTest extends IntegrationTestCase
         ];
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
         // 200 <-- PATCH /roles/2/relationships/users
@@ -356,13 +355,11 @@ class ResourcesControllerTest extends IntegrationTestCase
         // 403 <-- PATCH /roles/1/relationships/users
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
         // 204 <-- PATCH /roles/2/relationships/users
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
     }

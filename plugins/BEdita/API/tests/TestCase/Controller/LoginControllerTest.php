@@ -311,6 +311,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test update user data
      *
+     * @param array $meta Previous response metadata.
      * @return void
      *
      * @depends testLoginOkJson
@@ -346,6 +347,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test update user data, ignore not accessible fields
      *
+     * @param array $meta Previous response metadata.
      * @return void
      *
      * @depends testLoginOkJson

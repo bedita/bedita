@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -62,12 +61,14 @@ class CustomPropertiesBehaviorTest extends TestCase
     /**
      * Test get available properties
      *
+     * @param array $expected Expected result.
+     * @param string $tableName Table name.
      * @return void
      *
      * @covers ::getAvailable()
      * @dataProvider getAvailableProvider
      */
-    public function testGetAvailable($expected, $tableName)
+    public function testGetAvailable(array $expected, $tableName)
     {
         $table = TableRegistry::get($tableName);
         $behavior = $table->behaviors()->get('CustomProperties');

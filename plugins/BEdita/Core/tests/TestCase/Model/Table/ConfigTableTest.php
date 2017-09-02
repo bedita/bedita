@@ -120,7 +120,7 @@ class ConfigTableTest extends TestCase
     {
         $config = $this->Config->newEntity($data);
 
-        $error = (bool)$config->errors();
+        $error = (bool)$config->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {

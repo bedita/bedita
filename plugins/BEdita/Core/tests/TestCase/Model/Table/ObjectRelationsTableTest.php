@@ -139,7 +139,7 @@ class ObjectRelationsTableTest extends TestCase
      */
     public function testValidation($expected, array $data, $jsonSchema = null)
     {
-        $this->ObjectRelations->validator()->setProvider('jsonSchema', $jsonSchema);
+        $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
 
         $objectRelation = $this->ObjectRelations->newEntity($data);
         $objectRelation->left_id = 1;
