@@ -225,6 +225,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'eng',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'another_username' => 'synapse', // custom property
+                        'another_email' => 'synapse@example.org', // custom property
                     ],
                     'meta' => [
                         'locked' => false,
