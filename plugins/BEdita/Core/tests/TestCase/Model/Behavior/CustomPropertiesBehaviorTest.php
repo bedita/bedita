@@ -294,6 +294,11 @@ class CustomPropertiesBehaviorTest extends TestCase
         $table->patchEntity($entity, $data);
         $table->save($entity);
 
-        static::assertSame($expected, $entity->get('custom_props'));
+        $result = $entity->get('custom_props');
+
+        ksort($expected);
+        ksort($result);
+
+        static::assertSame($expected, $result);
     }
 }
