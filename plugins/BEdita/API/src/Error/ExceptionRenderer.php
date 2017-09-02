@@ -15,9 +15,8 @@ namespace BEdita\API\Error;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
-use Cake\Core\Plugin;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 
 /**
@@ -29,11 +28,16 @@ class ExceptionRenderer extends CakeExceptionRenderer
 {
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(\Exception $exception)
     {
         parent::__construct($exception);
-        Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml']]);
+
+        ServerRequest::addDetector('html', [
+            'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
+        ]);
     }
 
     /**
@@ -50,14 +54,6 @@ class ExceptionRenderer extends CakeExceptionRenderer
         $trace = null;
         if ($isDebug) {
             $trace = explode("\n", $this->_unwrap($this->error)->getTraceAsString());
-        }
-
-        if ($this->isHtmlToSend()) {
-            $this->setupView();
-            $this->controller->set('method', $this->controller->request->getMethod());
-            $this->controller->set('responseBody', $this->jsonError($status, $title, $detail, $code, $trace));
-
-            return parent::render();
         }
 
         $this->controller->loadComponent('RequestHandler');
@@ -149,31 +145,10 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * If the response should be a HTML content type.
-     *
-     * HTML content type is sent if HTML is requested
-     * and debug is active or it is configured to accept html
-     *
-     * @return bool
-     */
-    public function isHtmlToSend()
-    {
-        if ($this->controller->request->is('html') && (Configure::read('debug') || Configure::read('Accept.html'))) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function _outputMessageSafe($template)
     {
-        if ($this->isHtmlToSend()) {
-            return parent::_outputMessageSafe('error');
-        }
-
         $this->controller
             ->viewBuilder()
             ->setClassName('BEdita\API\View\JsonApiView');
@@ -184,51 +159,10 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * Setup the view params used in rendering.
-     *
-     * If BEdita/API plugin is loaded set the view builder to use it
-     * else add the plugin template path to configured template paths
-     * to assure to find it.
-     *
-     * @return void
-     */
-    protected function setupView()
-    {
-        if (Plugin::loaded('BEdita/API')) {
-            $this->controller->viewBuilder()->setPlugin('BEdita/API');
-
-            return;
-        }
-
-        $templatePaths = array_merge([dirname(__DIR__) . DS . 'Template' . DS], Configure::read('App.paths.templates'));
-        Configure::write('App.paths.templates', $templatePaths);
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function _template(\Exception $exception, $method, $status)
     {
         return $this->template = 'error';
-    }
-
-    /**
-     * Build json error string for HTML error display
-     *
-     * @param string $status HTTP error code
-     * @param string $title Error message
-     * @param string $detail Longer description of error
-     * @param string $code Application error code
-     * @param array|null $trace Error stacktrace
-     * @return string JSON error
-     */
-    public function jsonError($status, $title, $detail, $code, $trace)
-    {
-        $meta = array_filter(compact('trace'));
-        $res = [
-            'error' => array_filter(compact('status', 'title', 'detail', 'code', 'meta'))
-        ];
-
-        return json_encode($res);
     }
 }

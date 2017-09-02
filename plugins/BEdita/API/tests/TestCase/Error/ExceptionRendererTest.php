@@ -16,7 +16,6 @@ namespace BEdita\API\Test\TestCase\Error;
 use BEdita\API\Error\ExceptionRenderer;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Event\Event;
 use Cake\Http\Response;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
@@ -69,7 +68,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function errDetailsProvider()
+    public function errorDetailsProvider()
     {
         return [
             'simple' => [
@@ -110,256 +109,51 @@ class ExceptionRendererTest extends TestCase
                 ['title' => 'err title', 'code' => ['err-code']],
                 'err title',
             ],
+            'not a Cake exception' => [
+                new \LogicException('hello'),
+                'hello',
+            ],
         ];
     }
 
     /**
      * Test error detail on response
      *
-     * @param string $errorMessage Expected error message.
+     * @param array|string|\Exception $exception Expected error.
      * @param string $title Expected error title.
      * @param string $detail Additional details.
      * @param string $code Error code.
      * @return void
      *
-     * @dataProvider errDetailsProvider
+     * @dataProvider errorDetailsProvider
      * @covers ::render()
      * @covers ::_message()
+     * @covers ::_template()
      * @covers ::errorDetail()
      * @covers ::appErrorCode()
      */
-    public function testErrorDetails($errorMessage, $title, $detail = '', $code = '')
+    public function testErrorDetails($exception, $title, $detail = '', $code = '')
     {
-        $renderer = new ExceptionRenderer(new NotFoundException($errorMessage));
+        if (!($exception instanceof \Exception)) {
+            $exception = new NotFoundException($exception);
+        }
+
+        $renderer = new ExceptionRenderer($exception);
         $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', 'application/json');
         $response = $renderer->render();
 
         $responseBody = json_decode((string)$response->getBody(), true);
-        $this->assertEquals($title, $responseBody['error']['title']);
+        static::assertEquals('error', $renderer->template);
+        static::assertEquals($title, $responseBody['error']['title']);
         if ($detail) {
-            $this->assertEquals($detail, $responseBody['error']['detail']);
+            static::assertEquals($detail, $responseBody['error']['detail']);
         } else {
-            $this->assertArrayNotHasKey('detail', $responseBody['error']);
+            static::assertArrayNotHasKey('detail', $responseBody['error']);
         }
         if ($code) {
-            $this->assertEquals($code, $responseBody['error']['code']);
+            static::assertEquals($code, $responseBody['error']['code']);
         } else {
-            $this->assertArrayNotHasKey('code', $responseBody['error']);
-        }
-    }
-
-    /**
-     * Data provider for `testIsHtmlToSend` test case.
-     *
-     * @return array
-     */
-    public function isHtmlToSendProvider()
-    {
-        return [
-            'debugOnHtmlNotAccepted' => [
-                true,
-                'text/html',
-                [
-                    'debug' => 1,
-                    'Accept' => [
-                        'html' => false
-                    ]
-                ]
-            ],
-            'debugOffHtmlAccepted' => [
-                true,
-                'text/html',
-                [
-                    'debug' => 0,
-                    'Accept' => [
-                        'html' => true
-                    ]
-                ]
-            ],
-            'debugOffHtmlNotAccepted' => [
-                false,
-                'text/html',
-                [
-                    'debug' => 0,
-                    'Accept' => [
-                        'html' => false
-                    ]
-                ]
-            ],
-            'noHtmlRequest' => [
-                false,
-                'application/json',
-                [
-                    'debug' => 1,
-                    'Accept' => [
-                        'html' => true
-                    ]
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * Test isHtmlToSend()
-     *
-     * @param bool $expected Expected result.
-     * @param string $accept Request's "Accept" header
-     * @param array $config The configuration to use.
-     * @return void
-     *
-     * @dataProvider isHtmlToSendProvider
-     * @covers ::isHtmlToSend()
-     * @covers ::__construct()
-     */
-    public function testIsHtmlToSend($expected, $accept, $config)
-    {
-        Configure::write($config);
-        $renderer = new ExceptionRenderer(new NotFoundException());
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', $accept);
-
-        $this->assertEquals($expected, $renderer->isHtmlToSend());
-    }
-
-    /**
-     * Data provider for `testRenderHtml` test case.
-     *
-     * @return array
-     */
-    public function renderHtmlProvider()
-    {
-        return [
-            'debugOn' => [
-                [
-                    'debug' => 1,
-                ],
-            ],
-            'debugOff' => [
-                [
-                    'debug' => 0,
-                    'Accept' => [
-                        'html' => true
-                    ],
-                ],
-            ],
-            'debugOnPluginOff' => [
-                [
-                    'debug' => 1,
-                ],
-                true
-            ],
-            'debugOffPluginOff' => [
-                [
-                    'debug' => 0,
-                    'Accept' => [
-                        'html' => true
-                    ],
-                ],
-                true
-            ],
-        ];
-    }
-
-    /**
-     * Test render html error.
-     *
-     * @param array $config The configuration to use.
-     * @param bool $unloadPlugin If unload BEdita/API before render.
-     * @return void
-     *
-     * @dataProvider renderHtmlProvider
-     * @covers ::render()
-     * @covers ::setupView()
-     * @covers ::jsonError()
-     */
-    public function testRenderHtml($config, $unloadPlugin = false)
-    {
-        Configure::write($config);
-
-        if ($unloadPlugin) {
-            Plugin::unload('BEdita/API');
-        }
-
-        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', 'text/html');
-        $response = $renderer->render();
-
-        $this->checkResponseHtml($renderer, $response, $config['debug']);
-    }
-
-    /**
-     * Test render html error forcing the fallback to ::_outputMessageSafe()
-     *
-     * @param array $config The configuration to use.
-     * @param bool $unloadPlugin If unload BEdita/API before render.
-     * @return void
-     *
-     * @dataProvider renderHtmlProvider
-     * @covers ::render()
-     * @covers ::setupView()
-     * @covers ::jsonError()
-     * @covers ::_outputMessageSafe()
-     */
-    public function testRenderHtmlSafe($config, $unloadPlugin = false)
-    {
-        Configure::write($config);
-
-        if ($unloadPlugin) {
-            Plugin::unload('BEdita/API');
-        }
-
-        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', 'text/html');
-
-        $renderer->controller->getEventManager()->on('Controller.beforeRender', function (Event $event) {
-            // force missing layout exception
-            $event->getSubject()->viewBuilder()->setLayoutPath('find_me_if_you_can');
-        });
-
-        $response = $renderer->render();
-
-        $this->assertEquals('', $renderer->controller->viewBuilder()->getLayoutPath());
-        $this->checkResponseHtml($renderer, $response, $config['debug']);
-    }
-
-    /**
-     *  Perform some asserts to check html response
-     *
-     * @param \BEdita\API\Error\ExceptionRenderer $renderer
-     * @param \Cake\Http\Response $response
-     * @param int $debug
-     * @return void
-     */
-    protected function checkResponseHtml(ExceptionRenderer $renderer, Response $response, $debug)
-    {
-        $this->assertStringStartsWith('text/html', $response->type());
-        $doctype = strpos(strtolower((string)$response->getBody()), '<!doctype html>');
-        $this->assertNotFalse($doctype);
-
-        $this->assertArrayHasKey('responseBody', $renderer->controller->viewVars);
-        $responseBody = json_decode($renderer->controller->viewVars['responseBody'], true);
-
-        $this->assertArrayHasKey('error', $responseBody);
-        $this->assertArrayHasKey('status', $responseBody['error']);
-        $this->assertArrayHasKey('title', $responseBody['error']);
-        $this->assertEquals(404, $responseBody['error']['status']);
-        $this->assertEquals('test html', $responseBody['error']['title']);
-        if (!$debug) {
-            $this->assertArrayNotHasKey('meta', $responseBody['error']);
-        } else {
-            $this->assertArrayHasKey('meta', $responseBody['error']);
-            $this->assertNotEmpty($responseBody['error']['meta']);
-            $this->assertArrayHasKey('trace', $responseBody['error']['meta']);
-            $this->assertNotEmpty($responseBody['error']['meta']['trace']);
-        }
-
-        $pluginApiTemplatePath = ROOT . DS . 'plugins' . DS . 'BEdita' . DS . 'API' . DS . 'src' . DS . 'Template' . DS;
-        $pathsTemplates = Configure::read('App.paths.templates');
-        if (Plugin::loaded('BEdita/API')) {
-            $this->assertEquals('BEdita/API', $renderer->controller->viewBuilder()->getPlugin());
-            $this->assertNotContains($pluginApiTemplatePath, $pathsTemplates);
-        } else {
-            $this->assertNotEquals('BEdita/API', $renderer->controller->viewBuilder()->getPlugin());
-            $this->assertContains($pluginApiTemplatePath, $pathsTemplates);
+            static::assertArrayNotHasKey('code', $responseBody['error']);
         }
     }
 
@@ -415,8 +209,7 @@ class ExceptionRendererTest extends TestCase
      * @return void
      *
      * @dataProvider renderJsonProvider
-     * @covers ::setupView()
-     * @covers ::jsonError()
+     * @coversNothing
      */
     public function testRenderJson($accept, $config, $unloadPlugin = false)
     {
@@ -442,8 +235,6 @@ class ExceptionRendererTest extends TestCase
      * @return void
      *
      * @dataProvider renderJsonProvider
-     * @covers ::setupView()
-     * @covers ::jsonError()
      * @covers ::_outputMessageSafe()
      */
     public function testRenderJsonSafe($accept, $config, $unloadPlugin = false)
@@ -467,7 +258,7 @@ class ExceptionRendererTest extends TestCase
     }
 
     /**
-     *  Perform some asserts to check JSON response
+     * Perform some asserts to check JSON response
      *
      * @param \BEdita\API\Error\ExceptionRenderer $renderer
      * @param \Cake\Http\Response $response

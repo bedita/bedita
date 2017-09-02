@@ -124,28 +124,6 @@ class TableTest extends TestCase
     }
 
     /**
-     * Test inheritance setup.
-     *
-     * @return void
-     *
-     * @covers ::extensionOf()
-     * @covers ::inheritedTable()
-     */
-    public function testExtensionOfNotReady()
-    {
-        $this->fakeFelines->extensionOf('MyFakeAnimals');
-        static::assertAttributeSame('MyFakeAnimals', 'inheritedTable', $this->fakeFelines);
-        static::assertInstanceOf(CakeAssociationCollection::class, $this->fakeFelines->associations());
-
-        $table = TableRegistry::get('MyFakeAnimals')->setTable('fake_animals');
-        $inheritedTable = $this->fakeFelines->inheritedTable();
-
-        static::assertSame($table, $inheritedTable);
-        static::assertAttributeSame($table, 'inheritedTable', $this->fakeFelines);
-        static::assertInstanceOf(AssociationCollection::class, $this->fakeFelines->associations());
-    }
-
-    /**
      * Test inherited tables
      *
      * @return void

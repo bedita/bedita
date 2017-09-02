@@ -307,7 +307,6 @@ class TrashControllerTest extends IntegrationTestCase
      *
      * @covers ::view()
      * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {

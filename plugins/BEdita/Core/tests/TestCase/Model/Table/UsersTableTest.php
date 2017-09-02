@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
@@ -188,12 +190,45 @@ class UsersTableTest extends TestCase
      */
     public function testDeleted()
     {
-        $user = $this->Users->get(1);
+        $user = $this->Users->get(5);
         $user->deleted = true;
         $success = $this->Users->save($user);
         $this->assertTrue((bool)$success);
-        $deleted = $this->Users->get(1)->deleted;
+        $deleted = $this->Users->get(5)->deleted;
         $this->assertEquals(true, $deleted);
+    }
+
+    /**
+     * Test soft delete admin user
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not delete "User" 1
+     * @covers ::beforeSave
+     */
+    public function testSoftDeleteAdminUser()
+    {
+        $user = $this->Users->get(UsersTable::ADMIN_USER);
+        $user->deleted = true;
+        $this->Users->save($user);
+    }
+
+    /**
+     * Test delete admin user
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not delete "User" 1
+     * @covers ::beforeDelete
+     */
+    public function testHardDeleteAdminUser()
+    {
+        $user = $this->Users->get(UsersTable::ADMIN_USER);
+        $this->Users->delete($user);
     }
 
     /**

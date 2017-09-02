@@ -112,7 +112,7 @@ class AdminResourcesTest extends IntegrationTestCase
         $resourceId = substr($locationHeader, strrpos($locationHeader, '/') + 1);
 
         // VIEW
-        $this->configRequestHeaders();
+        $this->configRequestHeaders('GET', $authHeader);
         $this->get("$endpoint/$resourceId");
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

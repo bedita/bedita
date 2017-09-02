@@ -65,6 +65,7 @@ class SortQueryStringTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider sortProvider
+     * @coversNothing
      */
     public function testSort($expected, $endpoint, $sort)
     {

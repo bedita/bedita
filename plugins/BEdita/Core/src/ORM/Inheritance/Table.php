@@ -66,8 +66,8 @@ class Table extends CakeTable
      */
     public function extensionOf($associated)
     {
-        // If it is an alias, and it already exists in the registry, immediately load the instance.
-        if (is_string($associated) && TableRegistry::exists($associated)) {
+        // If it is an alias, immediately load the instance.
+        if (is_string($associated)) {
             $associated = TableRegistry::get($associated);
         }
         $this->inheritedTable = $associated;

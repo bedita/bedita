@@ -39,6 +39,7 @@ class HomeController extends AppController
         '/auth' => ['GET', 'POST'],
         '/object_types' => 'ALL',
         '/objects' => 'ALL',
+        '/relations' => 'ALL',
         '/roles' => 'ALL',
         '/signup' => ['POST'],
         '/status' => ['GET'],

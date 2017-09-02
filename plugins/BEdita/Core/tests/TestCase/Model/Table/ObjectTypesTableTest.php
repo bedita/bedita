@@ -19,6 +19,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTypesTable} Test Case
@@ -200,6 +201,7 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                     'relations' => [
                         'test',
                         'inverse_test',
@@ -218,6 +220,7 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                     'relations' => [
                         'test',
                         'inverse_test',
@@ -236,6 +239,7 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                     'relations' => [
                         'test',
                         'inverse_test',
@@ -254,6 +258,7 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                     'relations' => [
                         'test',
                         'inverse_test',
@@ -272,6 +277,7 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                    'hidden' => null,
                     'relations' => [
                         'test',
                         'inverse_test',
@@ -309,7 +315,6 @@ class ObjectTypesTableTest extends TestCase
 
         $entity = $this->ObjectTypes->get($primaryKey);
 
-        static::assertEquals($expected, $entity->toArray());
         static::assertTrue($entity->has('left_relations'));
         static::assertTrue($entity->has('right_relations'));
         foreach ($entity->left_relations as $relation) {
@@ -318,6 +323,13 @@ class ObjectTypesTableTest extends TestCase
         foreach ($entity->right_relations as $relation) {
             static::assertTrue($relation->has('left_object_types'));
         }
+
+        $result = $entity->toArray();
+        // remove 'left_relations' and 'right_relations' because contain to many data
+        $result = Hash::remove($result, 'left_relations');
+        $result = Hash::remove($result, 'right_relations');
+
+        static::assertEquals($expected, $result);
     }
 
     /**

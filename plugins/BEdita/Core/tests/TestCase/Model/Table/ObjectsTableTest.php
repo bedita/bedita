@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -282,5 +283,26 @@ class ObjectsTableTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test save emojis in text fields.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testEmoji()
+    {
+        $objectsTable = TableRegistry::get('Objects');
+        $object = $objectsTable->get(1);
+        $expected = "🙈 😂 😱";
+        $info = Database::basicInfo();
+        if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
+            $expected = "";
+        }
+        $object['description'] = $expected;
+        $success = $objectsTable->save($object);
+        $object = $objectsTable->get(1);
+        $this->assertEquals($object['description'], $expected);
     }
 }

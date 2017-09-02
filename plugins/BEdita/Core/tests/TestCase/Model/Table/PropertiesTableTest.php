@@ -27,6 +27,7 @@ class PropertiesTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.properties',
     ];
 
@@ -79,7 +80,7 @@ class PropertiesTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'name' => 'body',
+                    'name' => 'long_body',
                     'description' => 'long text of a document',
                 ],
             ],

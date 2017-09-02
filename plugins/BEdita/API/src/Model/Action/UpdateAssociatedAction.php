@@ -16,6 +16,7 @@ namespace BEdita\API\Model\Action;
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\Utility\Hash;
@@ -117,6 +118,14 @@ class UpdateAssociatedAction extends BaseAction
             $meta = Hash::get($datum, '_meta.relation');
             if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
                 $targetEntities[$id]->_joinData = $association->junction()->newEntity($meta);
+
+                $errors = $targetEntities[$id]->_joinData->getErrors();
+                if (!empty($errors)) {
+                    throw new BadRequestException([
+                        'title' => __d('bedita', 'Invalid data'),
+                        'detail' => $errors,
+                    ]);
+                }
             }
         }
 

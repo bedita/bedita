@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -29,6 +30,8 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
+ * @property string $associations
+ * @property string $hidden
  * @property string[] $relations
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
@@ -36,8 +39,9 @@ use Cake\Utility\Inflector;
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {
-
-    use JsonApiTrait;
+    use JsonApiTrait {
+        listAssociations as protected jsonApiListAssociations;
+    }
 
     /**
      * {@inheritDoc}
@@ -51,6 +55,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         'model' => true,
         'table' => true,
         'associations' => true,
+        'hidden' => true,
     ];
 
     /**
@@ -67,8 +72,6 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'objects',
-        'left_relations',
-        'right_relations',
     ];
 
     /**
@@ -171,5 +174,16 @@ class ObjectType extends Entity implements JsonApiSerializable
         );
 
         return $relations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected static function listAssociations(Table $Table, array $hidden = [])
+    {
+        $associations = static::jsonApiListAssociations($Table, $hidden);
+        $associations = array_diff($associations, ['relations']);
+
+        return $associations;
     }
 }

@@ -32,6 +32,13 @@ use Cake\Utility\Hash;
  */
 trait JsonApiTrait
 {
+    /**
+     * Selected fields in JSON API `attributes` and `meta` response.
+     * If empty all fields are shown.
+     *
+     * @var array
+     */
+    protected $_fields = [];
 
     /**
      * Getter for entity's visible properties.
@@ -125,6 +132,32 @@ trait JsonApiTrait
     }
 
     /**
+     * Setter for `_fields`.
+     *
+     * @param array $fields List of fields.
+     * @return void
+     */
+    protected function setFields(array $fields)
+    {
+        $this->_fields = $fields;
+    }
+
+    /**
+     * Filter fields list depending on requested fields in `$_fields`.
+     *
+     * @param array $fields List of fields.
+     * @return array
+     */
+    protected function filterFields(array $fields)
+    {
+        if (empty($this->_fields)) {
+            return $fields;
+        }
+
+        return array_intersect($this->_fields, $fields);
+    }
+
+    /**
      * Getter for `attributes`.
      *
      * @return array
@@ -133,7 +166,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->visibleProperties();
+        $visible = $this->filterFields($this->visibleProperties());
 
         $properties = array_filter(
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
@@ -152,7 +185,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->visibleProperties();
+        $visible = $this->filterFields($this->visibleProperties());
         $virtual = $this->getVirtual();
 
         $properties = array_filter(
@@ -302,7 +335,6 @@ trait JsonApiTrait
             list(, $associationType) = namespaceSplit(get_class($association));
             $name = $association->property();
             if (!($association instanceof Association) ||
-                $associationType === 'ExtensionOf' ||
                 in_array($name, $hidden) ||
                 ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))
             ) {
@@ -319,12 +351,14 @@ trait JsonApiTrait
      * JSON API serializer.
      *
      * @param int $options Serializer options. Can be any combination of `JSONAPIOPT_*` constants defined in this class.
+     * @param array $fields Selected fields to view in `attributes` and `meta`, default empty => all fields are serialized
      * @return array
      */
-    public function jsonApiSerialize($options = 0)
+    public function jsonApiSerialize($options = 0, $fields = [])
     {
         $id = $this->getId();
         $type = $this->getType();
+        $this->setFields($fields);
 
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES) === 0) {
             $attributes = $this->getAttributes();

@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
@@ -217,7 +217,7 @@ class ListAssociatedAction extends BaseAction
             ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($primaryKeyConditions) {
                 return $query->where($primaryKeyConditions);
             })
-            ->formatResults(function (ResultSetInterface $results) use ($inverseAssociation) {
+            ->formatResults(function (CollectionInterface $results) use ($inverseAssociation) {
                 return $results->map(function (EntityInterface $entity) use ($inverseAssociation) {
                     if (!($this->Association instanceof BelongsToMany)) {
                         return $entity->setHidden([$inverseAssociation->getProperty()], true);

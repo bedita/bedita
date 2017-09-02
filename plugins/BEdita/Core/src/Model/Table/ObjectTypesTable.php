@@ -72,6 +72,7 @@ class ObjectTypesTable extends Table
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',
             'className' => 'Properties',
+            'dependent' => true,
         ]);
 
         $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
@@ -130,6 +131,9 @@ class ObjectTypesTable extends Table
         $validator
             ->allowEmpty('associations');
 
+        $validator
+            ->allowEmpty('hidden');
+
         return $validator;
     }
 
@@ -161,6 +165,7 @@ class ObjectTypesTable extends Table
     protected function _initializeSchema(TableSchema $schema)
     {
         $schema->setColumnType('associations', 'json');
+        $schema->setColumnType('hidden', 'json');
 
         return $schema;
     }

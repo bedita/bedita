@@ -29,6 +29,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',

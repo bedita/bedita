@@ -45,6 +45,8 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.object_relations',
     ];
 
@@ -147,6 +149,7 @@ class ObjectEntityTest extends TestCase
      * @return void
      *
      * @covers ::_getType()
+     * @covers ::loadObjectType()
      * @dataProvider getTypeProvider()
      */
     public function testGetType($expected, $objectTypeId, $options = [])
@@ -157,6 +160,73 @@ class ObjectEntityTest extends TestCase
         $type = $entity->type;
 
         static::assertSame($expected, $type);
+    }
+
+    /**
+     * Data provider for `testVisibleProperties` test case.
+     *
+     * @return array
+     */
+    public function visiblePropertiesProvider()
+    {
+        return [
+            'document' => [
+                [
+                    'title',
+                    'description'
+                ],
+                [
+                    'title',
+                    'description',
+                    'type',
+                ],
+                1,
+            ],
+            'non existent' => [
+                ['body'],
+                [
+                    'body',
+                    'type',
+                ],
+                -1,
+            ],
+            'news' => [
+                [
+                    'body',
+                    'description'
+                ],
+                [
+                    'description',
+                    'type',
+                ],
+                4,
+            ],
+        ];
+    }
+
+    /**
+     * Test `visibleProperties` method.
+     *
+     * @param array|null $expected Expected result.
+     * @param array $properties Properties to set.
+     * @param string $objectType Object type.
+     * @return void
+     *
+     * @covers ::visibleProperties()
+     * @covers ::loadObjectType()
+     * @dataProvider visiblePropertiesProvider()
+     */
+    public function testVisibleProperties($properties, $expectedVisible, $objectTypeId)
+    {
+        $entity = new ObjectEntity();
+        $entity->object_type_id = $objectTypeId;
+
+        foreach ($properties as $prop) {
+            $entity->set($prop, $prop);
+        }
+        $visible = $entity->visibleProperties();
+
+        static::assertSame($expectedVisible, array_values($visible));
     }
 
     /**
@@ -322,6 +392,33 @@ class ObjectEntityTest extends TestCase
         $relations = array_keys($entity['relationships']);
 
         static::assertSame($expected, $relations);
+    }
+
+    /**
+     * Test magic getter for JSON API relations for relation roles
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsUsersRoles()
+    {
+        $expected = [
+            'roles' => [
+                'links' => [
+                    'related' => '/users/1/roles',
+                    'self' => '/users/1/relationships/roles',
+                ],
+            ],
+        ];
+
+        $entity = TableRegistry::get('Users')->newEntity();
+        $entity->set('id', 1);
+        $entity->set('type', 'users');
+        $entity = $entity->jsonApiSerialize();
+
+        static::assertSame($expected, $entity['relationships']);
     }
 
     /**

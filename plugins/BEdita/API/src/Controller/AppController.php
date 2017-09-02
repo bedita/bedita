@@ -13,12 +13,10 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use BEdita\API\Error\ExceptionRenderer;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotAcceptableException;
-use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 
 /**
@@ -92,63 +90,12 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
-        if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
-            return $this->html();
-        } elseif (!$this->request->is(['json', 'jsonapi'])) {
-            throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+        if (!$this->request->is(['json', 'jsonapi'])) {
+            throw new NotAcceptableException(
+                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
+            );
         }
 
         return null;
-    }
-
-    /**
-     * Action to display HTML layout.
-     *
-     * @return \Cake\Http\Response
-     * @throws \Cake\Network\Exception\NotFoundException
-     */
-    protected function html()
-    {
-        $this->request->allowMethod('get');
-        $method = $this->request->getMethod();
-        $url = $this->request->getRequestTarget();
-
-        $viewBuilder = $this->viewBuilder();
-
-        // render JSON API response
-        try {
-            $this->request->getEnv('HTTP_ACCEPT', 'application/json');
-            $this->loadComponent('BEdita/API.JsonApi');
-
-            $viewBuilder->setClassName('BEdita/API.JsonApi');
-            $this->invokeAction();
-            $responseBody = (string)$this->render()->getBody();
-
-            $this->dispatchEvent('Controller.shutdown');
-            $dispatcher = DispatcherFactory::create();
-            $args = [
-                'request' => $this->request,
-                'response' => $this->response,
-            ];
-            $dispatcher->dispatchEvent('Dispatcher.afterDispatch', $args);
-
-            $this->components()->unload('JsonApi');
-            unset($this->JsonApi);
-            $viewBuilder->setTemplate('Common/html');
-        } catch (\Exception $exception) {
-            $renderer = new ExceptionRenderer($exception);
-            $response = $renderer->render();
-            $responseBody = (string)$response->getBody();
-            $this->response = $this->response->withStatus($response->getStatusCode());
-            $viewBuilder->setTemplate('Error/error');
-        }
-
-        $this->set(compact('method', 'responseBody', 'url'));
-
-        // render HTML
-        $viewBuilder->setClassName('View');
-        $this->response->type('html');
-
-        return $this->render();
     }
 }

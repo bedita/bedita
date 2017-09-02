@@ -17,7 +17,7 @@ class PropertiesFixture extends TestFixture
      */
     public $records = [
         [
-            'name' => 'title',
+            'name' => 'another_title',
             'property_type_id' => 1,
             'object_type_id' => 1,
             'multiple' => 0,
@@ -30,7 +30,7 @@ class PropertiesFixture extends TestFixture
             'list_view' => true
         ],
         [
-            'name' => 'description',
+            'name' => 'another_description',
             'property_type_id' => 1,
             'object_type_id' => 1,
             'multiple' => 0,
@@ -43,7 +43,7 @@ class PropertiesFixture extends TestFixture
             'list_view' => false
         ],
         [
-            'name' => 'username',
+            'name' => 'another_username',
             'property_type_id' => 1,
             'object_type_id' => 3,
             'multiple' => 0,
@@ -56,7 +56,7 @@ class PropertiesFixture extends TestFixture
             'list_view' => true
         ],
         [
-            'name' => 'email',
+            'name' => 'another_email',
             'property_type_id' => 1,
             'object_type_id' => 3,
             'multiple' => 0,
@@ -69,7 +69,7 @@ class PropertiesFixture extends TestFixture
             'list_view' => true
         ],
         [
-            'name' => 'birthdate',
+            'name' => 'another_birthdate',
             'property_type_id' => 2,
             'object_type_id' => 2,
             'multiple' => 0,
@@ -82,7 +82,7 @@ class PropertiesFixture extends TestFixture
             'list_view' => false
         ],
         [
-            'name' => 'surname',
+            'name' => 'another_surname',
             'property_type_id' => 1,
             'object_type_id' => 2,
             'multiple' => 0,
