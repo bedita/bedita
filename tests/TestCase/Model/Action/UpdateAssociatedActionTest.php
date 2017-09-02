@@ -55,7 +55,7 @@ class UpdateAssociatedActionTest extends TestCase
         /* @var \Cake\ORM\Association\BelongsToMany $association */
         $association = TableRegistry::get('FakeTags')->association('FakeArticles');
         $association->junction()
-            ->validator()
+            ->getValidator()
             ->email('fake_params');
 
         TableRegistry::get('FakeArticles')
