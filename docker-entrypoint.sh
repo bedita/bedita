@@ -10,6 +10,14 @@ if [ ! -z "${DATABASE_URL}" ]; then
     bin/cake migrations migrate -p BEdita/Core
     bin/cake migrations seed -p BEdita/Core --seed InitialSeed
 
+    if [ ! -z "${BEDITA_API_KEY}" ]; then
+        bin/cake migrations seed -p BEdita/Core --seed ApplicationFromEnvSeed
+    fi
+
+    if [[ ! -z "${BEDITA_ADMIN_USR}" && ! -z "${BEDITA_ADMIN_PWD}" ]]; then
+        bin/cake migrations seed -p BEdita/Core --seed AdminFromEnvSeed
+    fi
+
     chmod -R a+rwX tmp
     chmod -R a+rwX logs
 
