@@ -36,6 +36,7 @@ use Cake\Utility\Inflector;
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
+ * @property \BEdita\Core\Model\Entity\Property[] $properties
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {

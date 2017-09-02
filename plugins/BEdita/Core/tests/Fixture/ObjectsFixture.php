@@ -102,6 +102,7 @@ class ObjectsFixture extends TestFixture
             'lang' => 'eng',
             'created_by' => 1,
             'modified_by' => 1,
+            'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
         ],
         [
             'object_type_id' => 1,
