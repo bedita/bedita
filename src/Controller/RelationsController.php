@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,27 +13,26 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/object_types` endpoint.
+ * Controller for `/relations` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
+ * @property \BEdita\Core\Model\Table\RelationsTable $Relations
  */
-class ObjectTypesController extends ResourcesController
+class RelationsController extends ResourcesController
 {
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'ObjectTypes';
+    public $modelClass = 'Relations';
 
     /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'properties' => ['properties'],
-            'left_relations' => ['relations'],
-            'right_relations' => ['relations'],
+            'left_object_types' => ['object_types'],
+            'right_object_types' => ['object_types'],
         ],
     ];
 }

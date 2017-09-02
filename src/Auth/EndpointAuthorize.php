@@ -14,6 +14,7 @@
 namespace BEdita\API\Auth;
 
 use BEdita\Core\Model\Entity\EndpointPermission;
+use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -116,6 +117,11 @@ class EndpointAuthorize extends BaseAuthorize
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
             // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
             $this->authorized = !$strict;
+        }
+
+        // if 'administratorOnly' configuration is true logged user must have administrator role
+        if ($this->authorized && $this->getConfig('administratorOnly')) {
+            $this->authorized = in_array(RolesTable::ADMIN_ROLE, Hash::extract($user, 'roles.{n}.id'));
         }
 
         if ($this->isAnonymous($user) && $this->authorized !== true) {

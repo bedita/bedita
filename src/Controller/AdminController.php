@@ -65,6 +65,8 @@ class AdminController extends ResourcesController
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('resourceTypes', [$this->resourceName]);
         }
+
+        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('administratorOnly', true);
     }
 
     /**
