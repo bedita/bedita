@@ -802,7 +802,7 @@ class DeployShell extends BeditaBaseShell {
      * @return array
      */
     protected function getGitBranches() {
-        $cmd = "git branch";
+        $cmd = "git branch -a";
         exec($cmd, $branches);
         if (!empty($branches)) {
             foreach($branches as &$b) {
