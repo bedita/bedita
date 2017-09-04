@@ -19,6 +19,15 @@ VOLUME /var/www/webroot/files
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
     && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction --quiet
 
+# Activate headers module
+RUN a2enmod headers
+
+# Set CORS headers in .htaccess
+RUN echo "Header Set Access-Control-Allow-Origin \"*\"" >> /var/www/html/webroot/.htaccess \
+    && echo "Header Set Access-Control-Allow-Headers \"content-type, origin, x-api-key, x-requested-with, authorization\"" >> /var/www/html/webroot/.htaccess \
+    && echo "Header Set Access-Control-Allow-Methods \"PUT, GET, POST, PATCH, DELETE, OPTIONS\"" >> /var/www/html/webroot/.htaccess
+
+
 ENV LOG_DEBUG_URL="console:///?stream=php://stdout" \
     LOG_ERROR_URL="console:///?stream=php://stderr" \
     DATABASE_URL="sqlite:////var/www/html/bedita.sqlite"
