@@ -58,6 +58,10 @@ class RelationsBehaviorTest extends TestCase
         $Profiles = TableRegistry::get('Profiles');
         $Locations = TableRegistry::get('Locations');
 
+        static::assertTrue($Documents->hasBehavior('ObjectType'));
+        static::assertTrue($Profiles->hasBehavior('ObjectType'));
+        static::assertTrue($Locations->hasBehavior('ObjectType'));
+
         static::assertSame(1, $Documents->objectType()->id);
         static::assertSame(2, $Profiles->objectType()->id);
 

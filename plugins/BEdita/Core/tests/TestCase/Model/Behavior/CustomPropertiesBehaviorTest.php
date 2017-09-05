@@ -41,6 +41,24 @@ class CustomPropertiesBehaviorTest extends TestCase
     ];
 
     /**
+     * Test initialization.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     */
+    public function testInitialize()
+    {
+        $table = TableRegistry::get('FakeObjects', [
+            'className' => Table::class,
+        ]);
+        static::assertFalse($table->hasBehavior('BEdita/Core.ObjectType'));
+
+        $table->addBehavior('BEdita/Core.CustomProperties');
+        static::assertTrue($table->hasBehavior('ObjectType'));
+    }
+
+    /**
      * Data provider for testGetAvailable()
      *
      * @return array
@@ -54,20 +72,23 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'userProp' => [
                 ['another_username', 'another_email'],
-                'Users'
-            ]
+                'Users',
+            ],
         ];
     }
 
     /**
      * Test get available properties
      *
+     * @param array $expected Expected result.
+     * @param string $tableName Table name.
      * @return void
      *
      * @covers ::getAvailable()
+     * @covers ::objectType()
      * @dataProvider getAvailableProvider
      */
-    public function testGetAvailable($expected, $tableName)
+    public function testGetAvailable(array $expected, $tableName)
     {
         $table = TableRegistry::get($tableName);
         $behavior = $table->behaviors()->get('CustomProperties');
@@ -91,7 +112,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @covers ::getAvailable()
      */
-    public function testGetAvailableTypeNotfound()
+    public function testGetAvailableTypeNotFound()
     {
         // test try/catch failure on `objectType` load
         $Relations = TableRegistry::get('Relations');
@@ -134,7 +155,63 @@ class CustomPropertiesBehaviorTest extends TestCase
     }
 
     /**
+     * Data provider for `testBeforeFind` test case.
+     *
+     * @return array
+     */
+    public function beforeFindProvider()
+    {
+        return [
+            'simple' => [
+                ['another_username', 'another_email'],
+                1,
+                'Users',
+            ],
+            'no hydration' => [
+                ['another_username', 'another_email'],
+                1,
+                'Users',
+                false,
+            ],
+            'empty' => [
+                [],
+                9,
+                'Events',
+            ],
+        ];
+    }
+    /**
      * Test setting of priority before entity is saved.
+     *
+     * @param string[] $expectedProperties List of expected properties.
+     * @param int $id Entity ID.
+     * @param string $table Table.
+     * @param bool $hydrate Should hydration be enabled?
+     * @return void
+     *
+     * @dataProvider beforeFindProvider()
+     * @covers ::beforeFind()
+     * @covers ::promoteProperties()
+     * @covers ::isFieldSet()
+     */
+    public function testBeforeFind(array $expectedProperties, $id, $table, $hydrate = true)
+    {
+        $result = TableRegistry::get($table)->find()
+            ->where(compact('id'))
+            ->enableHydration($hydrate)
+            ->first();
+        if ($hydrate) {
+            $result = $result->toArray();
+        }
+
+        static::assertArrayNotHasKey('custom_props', $result);
+        foreach ($expectedProperties as $property) {
+            static::assertArrayHasKey($property, $result);
+        }
+    }
+
+    /**
+     * Test that no errors are triggered if results aren't neither entities nor arrays.
      *
      * @return void
      *
@@ -142,37 +219,98 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @covers ::promoteProperties()
      * @covers ::isFieldSet()
      */
-    public function testBeforeFind()
+    public function testBeforeFindOtherType()
     {
-        $table = TableRegistry::get('Users');
-        $user = $table->get(1);
+        $result = TableRegistry::get('Objects')
+            ->find('list')
+            ->find('type', ['documents'])
+            ->toArray();
 
-        static::assertFalse($user->isDirty());
-
-        $result = $user->toArray();
-        static::assertArrayHasKey('another_username', $result);
-        static::assertArrayHasKey('another_email', $result);
-        static::assertArrayNotHasKey('custom_props', $result);
-
-        // no hydration
-        $result = $table->find()
-            ->where(['id' => 1])
-            ->enableHydration(false)
-            ->first();
-
-        static::assertArrayHasKey('another_username', $result);
-        static::assertArrayHasKey('another_email', $result);
-        static::assertArrayNotHasKey('custom_props', $result);
-
-        // test empty `custom_props`
-        $table = TableRegistry::get('Events');
-        $event = $table->get(9);
-        $result = $event->toArray();
         static::assertNotEmpty($result);
-        static::assertArrayNotHasKey('custom_props', $result);
+    }
 
-        // test `promoteProperties` case `$entity` is not an entity ora array
-        $result = TableRegistry::get('Objects')->find('list')->find('type', ['documents'])->toArray();
-        static::assertNotEmpty($result);
+    /**
+     * Data provider for `testBeforeSave` test case.
+     *
+     * @return array
+     */
+    public function beforeSaveProvider()
+    {
+        return [
+            'simple' => [
+                [
+                    'another_username' => 'gustavo',
+                    'another_email' => null,
+                ],
+                [
+                    'another_username' => 'gustavo',
+                ],
+                1,
+                'Users',
+            ],
+            'overwrite' => [
+                [
+                    'another_username' => 'synapse',
+                    'another_email' => 'gustavo@example.org',
+                ],
+                [
+                    'another_email' => 'gustavo@example.org',
+                ],
+                5,
+                'Users',
+            ],
+            'empty' => [
+                [
+                    'another_username' => null,
+                    'another_email' => null,
+                ],
+                [
+                    'password' => 'hohoho',
+                ],
+                1,
+                'Users',
+            ],
+            'disabledProperty' => [
+                [
+                    'another_username' => 'gustavo',
+                    'another_email' => null,
+                ],
+                [
+                    'another_username' => 'gustavo',
+                    'disabled_property' => 'do not write it!',
+                ],
+                1,
+                'Users',
+            ],
+        ];
+    }
+
+    /**
+     * Test correct save of custom properties.
+     *
+     * @param array $expected Expected result.
+     * @param array $data Data.
+     * @param int $id Entity ID.
+     * @param string $table Table.
+     * @return void
+     *
+     * @dataProvider beforeSaveProvider()
+     * @covers ::beforeSave()
+     * @covers ::demoteProperties()
+     */
+    public function testBeforeSave(array $expected, array $data, $id, $table)
+    {
+        $table = TableRegistry::get($table);
+        $entity = $table->get($id);
+
+        $table->patchEntity($entity, $data);
+        $table->save($entity);
+
+        $result = $entity->get('custom_props');
+
+        ksort($expected);
+        ksort($result);
+
+        static::assertSame($expected, $result);
     }
 }

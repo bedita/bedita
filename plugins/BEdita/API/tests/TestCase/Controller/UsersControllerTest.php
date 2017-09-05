@@ -143,8 +143,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'second user',
-                        'another_username' => null, // custom property
-                        'another_email' => null, // custom property
+                        'another_username' => 'synapse', // custom property
+                        'another_email' => 'synapse@example.org', // custom property
                     ],
                     'meta' => [
                         'locked' => false,

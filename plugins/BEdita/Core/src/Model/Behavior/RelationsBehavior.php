@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
@@ -30,20 +29,11 @@ class RelationsBehavior extends Behavior
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'objectType' => null,
         'implementedMethods' => [
-            'objectType' => 'objectType',
             'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',
         ],
     ];
-
-    /**
-     * Object type instance.
-     *
-     * @var \BEdita\Core\Model\Entity\ObjectType
-     */
-    protected $objectType;
 
     /**
      * {@inheritDoc}
@@ -52,29 +42,23 @@ class RelationsBehavior extends Behavior
     {
         parent::initialize($config);
 
+        $table = $this->getTable();
+        if (!$table->hasBehavior('ObjectType')) {
+            $table->addBehavior('BEdita/Core.ObjectType');
+        }
+
         $this->setupRelations();
     }
 
     /**
-     * Getter/setter for object type.
+     * Getter for object type.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type entity, name or ID.
-     * @return \BEdita\Core\Model\Entity\ObjectType|null
+     * @param array $args Method arguments.
+     * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function objectType($objectType = null)
+    protected function objectType(...$args)
     {
-        if ($objectType === null) {
-            return $this->objectType;
-        }
-
-        $table = TableRegistry::get('ObjectTypes');
-        if (!($objectType instanceof ObjectType)) {
-            $objectType = $table->get($objectType);
-        }
-
-        $this->objectType = $objectType;
-
-        return $this->objectType;
+        return $this->getTable()->behaviors()->call('objectType', $args);
     }
 
     /**
@@ -111,7 +95,7 @@ class RelationsBehavior extends Behavior
     public function setupRelations($objectType = null)
     {
         if ($objectType === null) {
-            $objectType = $this->getConfig('objectType') ?: $this->getTable()->getAlias();
+            $objectType = $this->getTable()->getAlias();
         }
 
         try {
@@ -196,10 +180,10 @@ class RelationsBehavior extends Behavior
      */
     public function getRelations()
     {
-        $relations = collection($this->objectType->left_relations)
+        $relations = collection($this->objectType()->left_relations)
             ->indexBy('name')
             ->append(
-                collection($this->objectType->right_relations)
+                collection($this->objectType()->right_relations)
                     ->indexBy('inverse_name')
             );
 
