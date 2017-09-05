@@ -15,8 +15,8 @@ namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\AnonymousAuthenticate;
 use Cake\Controller\ComponentRegistry;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 
 /**

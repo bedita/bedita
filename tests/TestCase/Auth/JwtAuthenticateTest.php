@@ -156,11 +156,11 @@ class JwtAuthenticateTest extends TestCase
     {
         $payload = ['someData' => 'someValue'];
 
-        $token = JWT::encode($payload, Security::salt());
-        $renewToken = JWT::encode(['sub' => 1], Security::salt());
+        $token = JWT::encode($payload, Security::getSalt());
+        $renewToken = JWT::encode(['sub' => 1], Security::getSalt());
 
-        $invalidToken = JWT::encode(['aud' => 'http://example.org'], Security::salt());
-        $expiredToken = JWT::encode(['exp' => time() - 10], Security::salt());
+        $invalidToken = JWT::encode(['aud' => 'http://example.org'], Security::getSalt());
+        $expiredToken = JWT::encode(['exp' => time() - 10], Security::getSalt());
 
         return [
             'default' => [
@@ -304,7 +304,7 @@ class JwtAuthenticateTest extends TestCase
                 '_method' => 'POST',
             ],
             'environment' => [
-                'HTTP_AUTHORIZATION' => 'Bearer ' . JWT::encode(['aud' => 'http://example.org'], Security::salt()),
+                'HTTP_AUTHORIZATION' => 'Bearer ' . JWT::encode(['aud' => 'http://example.org'], Security::getSalt()),
                 'HTTP_HOST' => 'api.example.com',
             ],
         ]);
