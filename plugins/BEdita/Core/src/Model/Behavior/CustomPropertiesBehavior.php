@@ -86,10 +86,12 @@ class CustomPropertiesBehavior extends Behavior
             return [];
         }
         if (!$objectType->has('properties')) {
-            //TableRegistry::get('ObjectTypes')->loadInto($objectType, ['Properties']);
             $objectType->properties = TableRegistry::get('Properties')
                 ->find()
-                ->where(['object_type_id' => $objectType->id])
+                ->where([
+                    'object_type_id' => $objectType->id,
+                    'enabled' => 1,
+                ])
                 ->all();
         }
 
