@@ -1068,6 +1068,12 @@ class ApiValidatorComponent extends Object {
         return false;
     }
 
+    /**
+     * Set check for reachable object (default true: check it)
+     *
+     * @param boolean $check
+     * @return void
+     */
     public function setReachableCheck($check = true) {
         $this->enableObjectReachableCheck = $check;
     }
