@@ -111,7 +111,7 @@ class PropertyTypesTest extends TestCase
     {
         $PropertyTypes = $this->PropertyTypes->newEntity($data);
 
-        $error = (bool)$PropertyTypes->errors();
+        $error = (bool)$PropertyTypes->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {

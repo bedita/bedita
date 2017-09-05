@@ -96,7 +96,7 @@ class QueryTest extends TestCase
      */
     public function testAddDefaultTypes()
     {
-        $this->fakeAnimals->getSchema()->columnType('name', 'json');
+        $this->fakeAnimals->getSchema()->setColumnType('name', 'json');
         $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
 
         $defaults = $query->getTypeMap()->getDefaults();

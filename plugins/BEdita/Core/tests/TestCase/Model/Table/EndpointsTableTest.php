@@ -122,7 +122,7 @@ class EndpointsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data);
-        $error = (bool)$endpoint->errors();
+        $error = (bool)$endpoint->getErrors();
         $this->assertEquals($expected, !$error);
         if ($expected) {
             $success = $this->Endpoints->save($endpoint);
@@ -168,6 +168,6 @@ class EndpointsTableTest extends TestCase
     {
         $endpoint = $this->Endpoints->newEntity($data, ['validate' => false]);
         $success = $this->Endpoints->save($endpoint);
-        $this->assertEquals($expected, (bool)$success, print_r($endpoint->errors(), true));
+        $this->assertEquals($expected, (bool)$success, print_r($endpoint->getErrors(), true));
     }
 }

@@ -141,7 +141,7 @@ class ObjectRelationsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('params', 'json');
+        $schema->setColumnType('params', 'json');
 
         return $schema;
     }

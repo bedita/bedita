@@ -60,7 +60,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
 
-        $this->eventManager()->on($this);
+        $this->getEventManager()->on($this);
     }
 
     /**

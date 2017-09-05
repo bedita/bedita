@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 

@@ -74,7 +74,7 @@ class SearchableBehavior extends Behavior
         $fields = array_filter( // Filter fields that are of a searchable type.
             $table->getSchema()->columns(),
             function ($column) use ($columnTypes, $table) {
-                return in_array($table->getSchema()->columnType($column), $columnTypes);
+                return in_array($table->getSchema()->getColumnType($column), $columnTypes);
             }
         );
 

@@ -17,7 +17,6 @@ use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\AssociationCollection as CakeAssociationCollection;
 use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -240,7 +239,7 @@ class TableTest extends TestCase
         ksort($result);
         static::assertEquals($expected, $result);
 
-        static::assertFalse($feline->dirty());
+        static::assertFalse($feline->isDirty());
 
         // hydrate false
         $felines = $this->fakeFelines->find()->enableHydration(false);
@@ -302,7 +301,7 @@ class TableTest extends TestCase
 
         static::assertTrue($feline->has('fake_articles'));
         static::assertEquals(2, count($feline->get('fake_articles')));
-        static::assertFalse($feline->dirty());
+        static::assertFalse($feline->isDirty());
 
         $expected = [
             'id' => 1,
@@ -623,7 +622,7 @@ class TableTest extends TestCase
         static::assertEquals($clone->behaviors(), $this->fakeMammals->behaviors());
         static::assertNotSame($clone->behaviors(), $this->fakeMammals->behaviors());
 
-        static::assertEquals($clone->eventManager(), $this->fakeMammals->eventManager());
-        static::assertNotSame($clone->eventManager(), $this->fakeMammals->eventManager());
+        static::assertEquals($clone->getEventManager(), $this->fakeMammals->getEventManager());
+        static::assertNotSame($clone->getEventManager(), $this->fakeMammals->getEventManager());
     }
 }

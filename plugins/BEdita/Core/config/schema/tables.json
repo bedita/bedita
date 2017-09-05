@@ -1,5 +1,4 @@
 [
-    // table list in order of insertion/creation
     "users",
     "auth_providers",
     "external_auth",

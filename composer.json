@@ -3,7 +3,7 @@
     "type": "project",
     "description": "BEdita API-first content management server app",
     "homepage": "http://bedita.com",
-    "license": "LGPL",
+    "license": "LGPL-3.0",
     "support": {
         "source": "https://github.com/bedita/bedita",
         "issues": "https://github.com/bedita/bedita/issues"
@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "cakephp/cakephp": "~3.4.4",
+        "cakephp/cakephp": "~3.5.0",
         "mobiledetect/mobiledetectlib": "2.*",
         "cakephp/migrations": "~1.7",
         "cakephp/plugin-installer": "*",

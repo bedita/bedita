@@ -155,7 +155,7 @@ class UserModifiedBehavior extends Behavior
             if (in_array($when, ['always', 'existing'])) {
                 $return = true;
 
-                $entity->dirty($field, false);
+                $entity->setDirty($field, false);
                 $this->updateField($entity, $field);
             }
         }
@@ -172,7 +172,7 @@ class UserModifiedBehavior extends Behavior
      */
     protected function updateField($entity, $field)
     {
-        if ($entity->dirty($field)) {
+        if ($entity->isDirty($field)) {
             return;
         }
 

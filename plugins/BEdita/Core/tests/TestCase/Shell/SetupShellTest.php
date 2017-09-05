@@ -53,6 +53,12 @@ class SetupShellTest extends ShellTestCase
         parent::tearDown();
     }
 
+    /**
+     * Drop all tables for a connection.
+     *
+     * @param string $config Config name.
+     * @return void
+     */
     protected function dropTables($config)
     {
         $defaultConnection = ConnectionManager::get($config);

@@ -31,7 +31,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
  * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
  *
- * @method \BEdita\Core\Model\Entity\Relation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
@@ -144,7 +143,7 @@ class RelationsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('params', 'json');
+        $schema->setColumnType('params', 'json');
 
         return $schema;
     }

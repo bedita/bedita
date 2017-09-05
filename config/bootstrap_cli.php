@@ -15,6 +15,7 @@
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Core\Plugin;
+use Cake\ORM\TableRegistry;
 
 /**
  * Additional bootstrapping and configuration for CLI environments should
@@ -38,5 +39,5 @@ try {
 Plugin::load('Migrations');
 
 if (Configure::read('debug')) {
-    class_alias('\Cake\ORM\TableRegistry', 'T');
+    class_alias(TableRegistry::class, 'T');
 }

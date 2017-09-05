@@ -16,7 +16,6 @@ class NewsFakerSeed extends AbstractSeed
             'status' => $faker->randomElement(['on', 'draft']),
             'description' => $faker->optional()->paragraph,
             'body' => $faker->optional()->text,
-            'description' => $faker->paragraph,
         ];
         ObjectsHandler::save('news', $data);
     }

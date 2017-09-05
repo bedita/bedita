@@ -93,7 +93,7 @@ class ExternalAuthTableTest extends TestCase
         static::assertInstanceOf(BelongsTo::class, $this->ExternalAuth->AuthProviders);
         static::assertInstanceOf(BelongsTo::class, $this->ExternalAuth->Users);
 
-        static::assertEquals('json', $schema->columnType('params'));
+        static::assertEquals('json', $schema->getColumnType('params'));
     }
 
     /**

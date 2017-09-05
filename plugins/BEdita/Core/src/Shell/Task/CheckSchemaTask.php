@@ -204,14 +204,14 @@ class CheckSchemaTask extends Shell
             foreach ($schema->indexes() as $index) {
                 $errors['index'][$index]['naming'] = $this->checkSymbol(
                     $index,
-                    $schema->index($index) + compact('table')
+                    $schema->getIndex($index) + compact('table')
                 );
             }
 
             foreach ($schema->constraints() as $constraint) {
                 $errors['constraint'][$constraint]['naming'] = $this->checkSymbol(
                     $constraint,
-                    $schema->constraint($constraint) + compact('table')
+                    $schema->getConstraint($constraint) + compact('table')
                 );
             }
 

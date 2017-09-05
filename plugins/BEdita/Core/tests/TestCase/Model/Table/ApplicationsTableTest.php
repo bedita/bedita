@@ -123,7 +123,7 @@ class ApplicationsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $application = $this->Applications->newEntity($data);
-        $error = (bool)$application->errors();
+        $error = (bool)$application->getErrors();
         $this->assertEquals($expected, !$error);
         if ($expected) {
             $success = $this->Applications->save($application);

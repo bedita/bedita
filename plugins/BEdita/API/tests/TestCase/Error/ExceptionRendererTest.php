@@ -139,7 +139,7 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new ExceptionRenderer($exception);
-        $renderer->controller->request->env('HTTP_ACCEPT', 'application/json');
+        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', 'application/json');
         $response = $renderer->render();
 
         $responseBody = json_decode((string)$response->getBody(), true);
@@ -220,7 +220,7 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request->env('HTTP_ACCEPT', $accept);
+        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', $accept);
         $response = $renderer->render();
 
         $this->checkResponseJson($renderer, $response, $config['debug']);
@@ -246,9 +246,9 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request->env('HTTP_ACCEPT', $accept);
+        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', $accept);
 
-        $renderer->controller->eventManager()->on('Controller.beforeRender', function () {
+        $renderer->controller->getEventManager()->on('Controller.beforeRender', function () {
             throw new InternalErrorException();
         });
 
@@ -261,7 +261,7 @@ class ExceptionRendererTest extends TestCase
      * Perform some asserts to check JSON response
      *
      * @param \BEdita\API\Error\ExceptionRenderer $renderer
-     * @param \Cake\Network\Response $response
+     * @param \Cake\Http\Response $response
      * @param int $debug
      * @return void
      */

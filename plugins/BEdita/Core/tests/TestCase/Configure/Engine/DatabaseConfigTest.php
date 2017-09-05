@@ -209,7 +209,6 @@ class DatabaseConfigTest extends TestCase
         $this->assertEquals((bool)$expected, $result);
 
         Configure::load($context, 'test-database', false);
-        $expectedData = !is_array($expected) ? $data : $expected;
         foreach ($data as $key => $value) {
             $cfgVal = Configure::read($key);
             $this->assertEquals($value, $cfgVal);

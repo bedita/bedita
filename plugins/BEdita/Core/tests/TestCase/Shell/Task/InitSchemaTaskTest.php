@@ -128,12 +128,11 @@ class InitSchemaTaskTest extends ShellTestCase
     /**
      * Test successful initialization on empty database and `--seed` argument passed.
      *
-     * @param int $notSeededCount Count of object types in a not-seeded database.
      * @return void
      *
      * @depends testDatabaseEmpty
      */
-    public function testDatabaseSeed($notSeededCount)
+    public function testDatabaseSeed()
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {

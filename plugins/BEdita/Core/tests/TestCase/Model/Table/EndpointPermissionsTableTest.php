@@ -134,7 +134,7 @@ class EndpointPermissionsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data);
-        $error = (bool)$endpointPermission->errors();
+        $error = (bool)$endpointPermission->getErrors();
         $this->assertEquals($expected, !$error);
         if ($expected) {
             $success = $this->EndpointPermissions->save($endpointPermission);
@@ -191,7 +191,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data, ['validate' => false]);
         $success = $this->EndpointPermissions->save($endpointPermission);
-        $this->assertEquals($expected, (bool)$success, print_r($endpointPermission->errors(), true));
+        $this->assertEquals($expected, (bool)$success, print_r($endpointPermission->getErrors(), true));
     }
 
     /**

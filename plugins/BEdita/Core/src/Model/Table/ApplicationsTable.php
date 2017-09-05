@@ -89,10 +89,9 @@ class ApplicationsTable extends Table
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @param \ArrayObject $options The save options
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeSave(Event $event, EntityInterface $entity)
     {
         if (!$entity->isNew() || $entity->has('api_key')) {
             return;

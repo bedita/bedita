@@ -436,7 +436,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
-     * @covers ::unauthenticate()
+     * @covers ::unauthenticated()
      * @expectedException \Cake\Network\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
@@ -477,7 +477,7 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::unauthenticate()
+     * @covers ::unauthenticated()
      * @expectedException \Cake\Network\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */

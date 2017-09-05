@@ -111,7 +111,7 @@ class PropertiesTableTest extends TestCase
         $property->property_type_id = 1;
         $property->property = 'string';
 
-        $error = (bool)$property->errors();
+        $error = (bool)$property->getErrors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {
