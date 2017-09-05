@@ -11,13 +11,6 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-/**
- * Created by PhpStorm.
- * User: paolo
- * Date: 02/09/17
- * Time: 12:02
- */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectType;
