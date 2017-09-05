@@ -270,6 +270,18 @@ class CustomPropertiesBehaviorTest extends TestCase
                 1,
                 'Users',
             ],
+            'disabledProperty' => [
+                [
+                    'another_username' => 'gustavo',
+                    'another_email' => null,
+                ],
+                [
+                    'another_username' => 'gustavo',
+                    'disabled_property' => 'do not write it!',
+                ],
+                1,
+                'Users',
+            ],
         ];
     }
 

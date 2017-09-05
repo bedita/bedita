@@ -94,5 +94,18 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'list_view' => true
         ],
+        [
+            'name' => 'disabled_property',
+            'property_type_id' => 1,
+            'object_type_id' => 3,
+            'multiple' => 0,
+            'options_list' => null,
+            'created' => '2017-09-05 11:10:00',
+            'modified' => '2017-09-05 11:10:00',
+            'description' => 'Disabled property example',
+            'enabled' => 0,
+            'label' => null,
+            'list_view' => true
+        ],
     ];
 }
