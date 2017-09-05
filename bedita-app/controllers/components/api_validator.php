@@ -42,6 +42,13 @@ class ApiValidatorComponent extends Object {
     protected $writableObjects = array();
 
     /**
+     * Enable check of object reachability in checkObjectReachable
+     *
+     * @var boolean
+     */
+    protected $enableObjectReachableCheck = true;
+
+    /**
      * The supported query string parameters names for every endpoint.
      *
      * @see ApiBaseController::$defaultAllowedUrlParams to the right format
@@ -322,6 +329,7 @@ class ApiValidatorComponent extends Object {
 
     /**
      * Check if an object is reachable:
+     * - if `enableObjectReachableCheck` is set to false, skip check
      * - check if object is reacheable looking also permissions
      * - if it fails check again if it's reachable but without checking permissions
      *     - if it fails, then it throws 404
@@ -334,19 +342,21 @@ class ApiValidatorComponent extends Object {
      * @return void
      */
     public function checkObjectReachable($objectId) {
-        if (empty($objectId)) {
-            throw new BeditaNotFoundException();
-        }
-        // check if object $id is reachable
-        if (!$this->isObjectReachable($objectId)) {
-            // redo without checking permissions to know if it has to return 404
-            if (!$this->isObjectReachable($objectId, false)) {
-                throw new BeditaNotFoundException('Object ' . $objectId . ' not found');
+        if ($this->enableObjectReachableCheck) {
+            if (empty($objectId)) {
+                throw new BeditaNotFoundException();
             }
-            if (!$this->controller->BeAuth->identify()) {
-                throw new BeditaUnauthorizedException();
+            // check if object $id is reachable
+            if (!$this->isObjectReachable($objectId)) {
+                // redo without checking permissions to know if it has to return 404
+                if (!$this->isObjectReachable($objectId, false)) {
+                    throw new BeditaNotFoundException('Object ' . $objectId . ' not found');
+                }
+                if (!$this->controller->BeAuth->identify()) {
+                    throw new BeditaUnauthorizedException();
+                }
+                throw new BeditaForbiddenException('Object ' . $objectId . ' is forbidden');
             }
-            throw new BeditaForbiddenException('Object ' . $objectId . ' is forbidden');
         }
     }
 
@@ -1056,5 +1066,15 @@ class ApiValidatorComponent extends Object {
         }
 
         return false;
+    }
+
+    /**
+     * Set check for reachable object (default true: check it)
+     *
+     * @param boolean $check
+     * @return void
+     */
+    public function setReachableCheck($check = true) {
+        $this->enableObjectReachableCheck = $check;
     }
 }
