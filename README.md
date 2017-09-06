@@ -32,7 +32,7 @@ The easiest and quickest way to try out BEdita4 is via [Docker](https://www.dock
 
 ## Install
 
-For a detailed setup overview see [Setup Documentation](http://bedita.readthedocs.io/en/4-cactus/setup.html)
+For a detailed setup overview see [Setup Documentation](https://docs.bedita.net/en/latest/setup.html)
 
 Quick setup in three steps.
 
@@ -52,9 +52,9 @@ If you are using a **.zip** or **.tar.gz** release file you just need to unpack 
  $ bin/cake bedita setup
  ```
 
-See [Web Server setup](http://bedita.readthedocs.io/en/4-cactus/setup.html#web-server)
+See [Web Server setup](https://docs.bedita.net/en/latest/setup.html#web-server)
 to configure a virtualhost in your webserver.
-To see first [`/home` endpoint](http://bedita.readthedocs.io/en/4-cactus/endpoints/home.html) response you may point to `http://your-vhost/home`
+To see first [`/home` endpoint](https://docs.bedita.net/en/latest/endpoints/home.html) response you may point to `http://your-vhost/home`
 
 Curl example:
 
@@ -70,12 +70,14 @@ Otherwise, only for development or test setups, you can take advantage of PHP bu
  and see `/home` endpoint response pointing to `http://localhost:8765/home` like this:
 
  ```bash
- $ curl -H Accept:application/json http://localhost:8765/hom
+ $ curl -H Accept:application/json http://localhost:8765/home
  ```
 
 For an explanation on `Accept` headers usage [read here](https://docs.bedita.net/en/latest/endpoints/intro.html#headers).
 
 ## Docker
+
+See [Docker setup documentation](https://docs.bedita.net/en/latest/setup.html#setup-docker) for a more detailed overview.
 
 ### Pull official image
 
@@ -85,7 +87,7 @@ Get latest offical image build from Docker Hub
  $ docker pull bedita/bedita:latest
  ```
 
-You may also use `:4-cactus` tag instead of latest, they are currently synonyms.
+You may also use `:4-cactus` tag instead of `:latest`, they are currently synonyms.
 
 ### Build image
 
