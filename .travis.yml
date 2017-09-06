@@ -114,9 +114,11 @@ jobs:
         provider: heroku
         app: bedita4
         skip_cleanup: true
+        env: "BEDITA_API_KEY=herokuapp-super-secret-key"
         run:
           - "bin/cake migrations migrate -p BEdita/Core"
           - "bin/cake cache clear_all"
+          - "bin/cake migrations seed -p BEdita/Core --seed ApplicationFromEnvSeed"
         api_key:
           secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
         on:
