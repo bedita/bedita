@@ -225,7 +225,7 @@ class ModuleShell extends BeditaBaseShell {
 
 
 	public function schema() {
-		
+		$pluginName = !empty($this->params['name']) ? $this->params['name'] : null;
 		$pluginPath = $this->findPluginPath($pluginName);
 		if($pluginPath == null) {
 			$this->out("Plugin $pluginName not found");
@@ -244,6 +244,7 @@ class ModuleShell extends BeditaBaseShell {
 			return;
 		}
 
+        App::import('Core','ConnectionManager');
 		$db =& ConnectionManager::getDataSource("default");
 		$options = array();
 		$tables = $moduleSetup["tables"];
