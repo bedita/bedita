@@ -138,8 +138,6 @@ class AreasController extends ModulesController {
 		// Data for template
 		$this->set('area',$area);
 		$this->set('objectProperty', $property);
-		// get users and groups list
-		$this->User->displayField = 'userid';
 		$this->set('object', null);
 	}
 
