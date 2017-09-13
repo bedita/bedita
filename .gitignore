@@ -5,6 +5,7 @@
 /composer.local.json
 /config/app.php
 /config/app.json
+/config/.env
 /coverage/*
 /docs/*
 /index.html
