@@ -140,8 +140,6 @@ class AreasController extends ModulesController {
 		$this->set('objectProperty', $property);
 		// get users and groups list
 		$this->User->displayField = 'userid';
-		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
-		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 		$this->set('object', null);
 	}
 
