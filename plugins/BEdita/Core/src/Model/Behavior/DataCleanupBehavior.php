@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use ArrayObject;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 
@@ -46,11 +45,10 @@ class DataCleanupBehavior extends Behavior
      * to avoid errors
      *
      * @param \Cake\Event\Event $event The event dispatched
-     * @param ArrayObject $data The input data to save
-     * @param ArrayObject $options Operation options (unused)
+     * @param \ArrayObject $data The input data to save
      * @return void
      */
-    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         $config = $this->getConfig();
         foreach ($data as $key => $value) {

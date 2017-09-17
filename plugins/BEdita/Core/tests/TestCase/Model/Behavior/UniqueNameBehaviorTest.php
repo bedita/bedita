@@ -268,12 +268,16 @@ class UniqueNameBehaviorTest extends TestCase
     /**
      * test uniqueNameFromValue()
      *
+     * @param string $value Starting value.
+     * @param string $expected Expected result.
+     * @param array $cfg Configuration.
+     * @param bool $regenerate Should unique name be regenerated?
      * @return void
      *
      * @dataProvider uniqueFromValueProvider
      * @covers ::uniqueNameFromValue()
      */
-    public function testUniqueNameFromValue($value, $expected, $cfg, $regenerate)
+    public function testUniqueNameFromValue($value, $expected, array $cfg, $regenerate)
     {
         $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
         $result = $behavior->uniqueNameFromValue($value, $regenerate, $cfg);
@@ -327,7 +331,7 @@ class UniqueNameBehaviorTest extends TestCase
             'title' => 'uh là la'
         ]);
 
-        $Documents->eventManager()->on('Model.beforeSave', function (Event $event, EntityInterface $entity) {
+        $Documents->getEventManager()->on('Model.beforeSave', function (Event $event, EntityInterface $entity) {
             $uname = $entity->get('uname');
             static::assertNotEmpty($uname);
             static::assertEquals('uh-la-la', $uname);

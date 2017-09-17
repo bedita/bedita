@@ -134,8 +134,8 @@ class ObjectsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('custom_props', 'json');
-        $schema->columnType('extra', 'json');
+        $schema->setColumnType('custom_props', 'json');
+        $schema->setColumnType('extra', 'json');
 
         return $schema;
     }

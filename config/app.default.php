@@ -116,13 +116,14 @@ return [
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
          * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
-            'duration' => '+1 year',
+            'duration' => '+1 years',
             'url' => env('CACHE_CAKECORE_URL', null),
         ],
 
@@ -137,7 +138,7 @@ return [
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
-            'duration' => '+1 year',
+            'duration' => '+1 years',
             'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
     ],
@@ -160,7 +161,7 @@ return [
      *   logged errors/exceptions.
      * - `log` - boolean - Whether or not you want exceptions logged.
      * - `exceptionRenderer` - string - The class responsible for rendering
-     *   uncaught exceptions.  If you choose a custom class you should place
+     *   uncaught exceptions. If you choose a custom class you should place
      *   the file for that class in src/Error. This class needs to implement a
      *   render method.
      * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
@@ -195,7 +196,7 @@ return [
      *  Debug  - Do not send the email, just return the result
      *
      * You can add custom transports (or override existing transports) by adding the
-     * appropriate file to src/Mailer/Transport.  Transports should be named
+     * appropriate file to src/Mailer/Transport. Transports should be named
      * 'YourTransport.php', where 'Your' is the name of the transport.
      */
     'EmailTransport' => [
@@ -205,8 +206,8 @@ return [
             'host' => 'localhost',
             'port' => 25,
             'timeout' => 30,
-            'username' => 'user',
-            'password' => 'secret',
+            'username' => null,
+            'password' => null,
             'client' => null,
             'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
@@ -318,15 +319,25 @@ return [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'debug',
-            'levels' => ['notice', 'info', 'debug'],
             'url' => env('LOG_DEBUG_URL', null),
+            'scopes' => false,
+            'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'error',
-            'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
             'url' => env('LOG_ERROR_URL', null),
+            'scopes' => false,
+            'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+        ],
+        // To enable this dedicated query log, you need set your datasource's log flag to true
+        'queries' => [
+            'className' => 'Cake\Log\Engine\FileLog',
+            'path' => LOGS,
+            'file' => 'queries',
+            'url' => env('LOG_QUERIES_URL', null),
+            'scopes' => ['queriesLog'],
         ],
     ],
 
@@ -339,7 +350,8 @@ return [
      *
      * ## Options
      *
-     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'.
+     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'. Avoid using `.` in cookie names,
+     *   as PHP will drop sessions from cookies with `.` in the name.
      * - `cookiePath` - The url path for which session cookie is set. Maps to the
      *   `session.cookie_path` php.ini config. Defaults to base path of app.
      * - `timeout` - The time in minutes the session should be valid for.

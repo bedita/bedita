@@ -14,7 +14,7 @@ use Cake\ORM\TableRegistry;
 /**
  * Plug table locator.
  */
-TableRegistry::locator(new TableLocator());
+TableRegistry::setTableLocator(new TableLocator());
 
 /**
  * Load 'core' configuration parameters

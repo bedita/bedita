@@ -47,7 +47,7 @@ class Table extends CakeTable
         parent::initialize($config);
 
         // Attach event handler for inheritance.
-        $this->eventManager()->on(new InheritanceEventHandler());
+        $this->getEventManager()->on(new InheritanceEventHandler());
     }
 
     /**

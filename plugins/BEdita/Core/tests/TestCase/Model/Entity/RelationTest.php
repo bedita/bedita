@@ -13,10 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\Relation;
-use BEdita\Core\Model\Table\ObjectTypesTable;
-use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 

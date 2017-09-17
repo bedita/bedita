@@ -63,7 +63,7 @@ class MediaTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('provider_extra', 'json');
+        $schema->setColumnType('provider_extra', 'json');
 
         return $schema;
     }

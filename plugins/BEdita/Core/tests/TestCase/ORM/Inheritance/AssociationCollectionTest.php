@@ -279,7 +279,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testCascadeDelete()
     {
-        $this->fakeAnimals->association('FakeArticles')->eventManager()->on('Model.beforeDelete', function () {
+        $this->fakeAnimals->association('FakeArticles')->getEventManager()->on('Model.beforeDelete', function () {
             static::fail('Callbacks triggered');
         });
 

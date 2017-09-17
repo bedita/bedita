@@ -13,8 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Network\Exception\InternalErrorException;
-
 /**
  * Command to delete an entity.
  *

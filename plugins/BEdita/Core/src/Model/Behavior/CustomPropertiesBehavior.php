@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -27,6 +28,7 @@ use Cake\ORM\TableRegistry;
  */
 class CustomPropertiesBehavior extends Behavior
 {
+
     /**
      * {@inheritDoc}
      */
@@ -43,9 +45,33 @@ class CustomPropertiesBehavior extends Behavior
     protected $available = null;
 
     /**
+     * {@inheritDoc}
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        $table = $this->getTable();
+        if (!$table->hasBehavior('ObjectType')) {
+            $table->addBehavior('BEdita/Core.ObjectType');
+        }
+    }
+
+    /**
+     * Getter for object type.
+     *
+     * @param array $args Method arguments.
+     * @return \BEdita\Core\Model\Entity\ObjectType
+     */
+    protected function objectType(...$args)
+    {
+        return $this->getTable()->behaviors()->call('objectType', $args);
+    }
+
+    /**
      * Get available properties for object type
      *
-     * @return array
+     * @return \BEdita\Core\Model\Entity\Property[]
      */
     public function getAvailable()
     {
@@ -53,21 +79,23 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
+        // @todo Add cache for properties.
         try {
-            $objectType = TableRegistry::get('ObjectTypes')->get($this->getTable()->getAlias());
-        } catch (RecordNotFoundException $ex) {
-            return $this->available = [];
+            $objectType = $this->objectType($this->getTable()->getAlias());
+        } catch (RecordNotFoundException $e) {
+            return [];
         }
-
-        // @todo add cache for properties
-        $props = TableRegistry::get('Properties')->find()
+        if (!$objectType->has('properties')) {
+            $objectType->properties = TableRegistry::get('Properties')
+                ->find()
                 ->where([
                     'object_type_id' => $objectType->id,
                     'enabled' => 1,
                 ])
                 ->all();
+        }
 
-        $this->available = $props->indexBy('name')->toArray();
+        $this->available = collection($objectType->properties)->indexBy('name')->toArray();
 
         return $this->available;
     }
@@ -85,13 +113,13 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Set custom properties keys as main properties
      *
-     * @param \Cake\Event\Event $event The beforeFind event that was fired.
-     * @param \Cake\ORM\Query $query Query
+     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @return void
      */
     public function beforeFind(Event $event, Query $query)
     {
-        $query->formatResults(function ($results) {
+        $query->formatResults(function (CollectionInterface $results) {
             return $results->map(function ($row) {
                 return $this->promoteProperties($row);
             });
@@ -99,7 +127,19 @@ class CustomPropertiesBehavior extends Behavior
     }
 
     /**
-     * Promote the properties in configuration `field` to first citizen property.
+     * Set custom properties in their dedicated field.
+     *
+     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity.
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        $this->demoteProperties($entity);
+    }
+
+    /**
+     * Promote the properties in configured `field` to first-class citizen properties.
      * Missing properties in `$entity` but available will be filled with default values.
      *
      * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to work on
@@ -107,11 +147,11 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected function promoteProperties($entity)
     {
-        if ((!is_array($entity) && !($entity instanceof EntityInterface)) || !$this->isFieldSet($entity)) {
+        $field = $this->getConfig('field');
+        if ((!is_array($entity) && !($entity instanceof EntityInterface)) || !$this->isFieldSet($entity, $field)) {
             return $entity;
         }
 
-        $field = $this->getConfig('field');
         if (empty($entity[$field]) || !is_array($entity[$field])) {
             $entity[$field] = [];
         }
@@ -122,7 +162,11 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         $customProps = $entity[$field];
-        unset($entity[$field]);
+        if ($entity instanceof EntityInterface) {
+            $entity->setHidden([$field], true);
+        } else {
+            unset($entity[$field]);
+        }
 
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
@@ -134,21 +178,52 @@ class CustomPropertiesBehavior extends Behavior
     }
 
     /**
-     * Check if configured field containing custom properties is set in `$entity`.
-     * For "set" is intended that it is present in `$entity` with any value.
+     * Send custom properties back to where they came from.
      *
-     * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to check
-     * @return bool
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
      */
-    protected function isFieldSet($entity)
+    protected function demoteProperties(EntityInterface $entity)
     {
         $field = $this->getConfig('field');
+        $value = (array)$entity->get($field);
 
+        $dirty = false;
+        $available = $this->getAvailable();
+        foreach ($available as $property) {
+            $propertyName = $property->name;
+            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
+                continue;
+            }
+
+            $dirty = true;
+            $value[$propertyName] = $entity->get($propertyName);
+        }
+
+        $entity->set($field, $value);
+        $entity->setDirty($field, $dirty);
+    }
+
+    /**
+     * Check if configured field containing custom properties is set in `$entity`.
+     *
+     * A field is considered "set" if it is present in `$entity` with any value, including `NULL`.
+     *
+     * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to check.
+     * @param string $field The field being looked for.
+     * @return bool
+     */
+    protected function isFieldSet($entity, $field)
+    {
         $allProperties = $entity;
         if ($entity instanceof EntityInterface) {
-            $allProperties = clone $entity;
-            $allProperties->setHidden([]);
-            $allProperties = $allProperties->toArray();
+            $hidden = $entity->getHidden();
+            try {
+                $entity->setHidden([]);
+                $allProperties = $entity->toArray();
+            } finally {
+                $entity->setHidden($hidden);
+            }
         }
 
         return array_key_exists($field, $allProperties);

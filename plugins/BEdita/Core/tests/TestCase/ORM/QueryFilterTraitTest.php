@@ -44,13 +44,6 @@ class QueryFilterTraitTest extends TestCase
     public $fakeAnimals;
 
     /**
-     * Query Filter class.
-     *
-     * @var QueryFilterTestCase
-     */
-    protected $queryFilter;
-
-    /**
      * {@inheritDoc}
      */
     public function setUp()
@@ -155,7 +148,7 @@ class QueryFilterTraitTest extends TestCase
     /**
      * Test fields filter method.
      *
-     * @param array $conditions Date conditions.
+     * @param array $options Options.
      * @param array|false $numExpected Number of expected results.
      * @return void
      *

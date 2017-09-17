@@ -14,8 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Model\Table\RolesTable;
-use BEdita\Core\Model\Table\UsersTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,19 +11,20 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\API\Controller\Component;
+namespace BEdita\API\Datasource;
 
-use Cake\Controller\Component\PaginatorComponent as CakePaginatorComponent;
+use Cake\Datasource\Paginator;
 use Cake\Datasource\RepositoryInterface;
 use Cake\Network\Exception\BadRequestException;
 
 /**
- * Handles pagination.
+ * Handle model pagination using JSON API conventions.
  *
  * @since 4.0.0
  */
-class PaginatorComponent extends CakePaginatorComponent
+class JsonApiPaginator extends Paginator
 {
+
     /**
      * {@inheritDoc}
      */
@@ -35,24 +36,25 @@ class PaginatorComponent extends CakePaginatorComponent
     ];
 
     /**
-     * Max limit per pagination items
+     * Max limit per pagination items.
+     *
+     * @var int
      */
     const MAX_LIMIT = 500;
 
     /**
      * {@inheritDoc}
      */
-    public function mergeOptions($alias, $settings)
+    public function checkLimit(array $options)
     {
-        $options = parent::mergeOptions($alias, $settings);
-        $options['maxLimit'] = min($options['maxLimit'], static::MAX_LIMIT);
+        $options['maxLimit'] = min((int)$options['maxLimit'], static::MAX_LIMIT);
 
         if (!empty($options['page_size'])) {
             $options['limit'] = $options['page_size'];
         }
         unset($options['page_size']);
 
-        return $options;
+        return parent::checkLimit($options);
     }
 
     /**

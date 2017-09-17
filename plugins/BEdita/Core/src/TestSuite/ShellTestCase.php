@@ -174,7 +174,7 @@ abstract class ShellTestCase extends TestCase
         $shell = array_shift($args);
 
         $Shell = (new ShellDispatcher())->findShell($shell);
-        $Shell->io($io ?: new ConsoleIo($this->_out, $this->_err));
+        $Shell->setIo($io ?: new ConsoleIo($this->_out, $this->_err));
         $Shell->initialize();
 
         try {

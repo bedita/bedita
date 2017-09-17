@@ -73,7 +73,7 @@ class SaveEntityActionTest extends TestCase
     public function testExecuteValitationErrors()
     {
         $table = TableRegistry::get('FakeAnimals');
-        $table->validator(
+        $table->setValidator(
             $table::DEFAULT_VALIDATOR,
             (new Validator())
                 ->requirePresence('name')

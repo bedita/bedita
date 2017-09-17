@@ -51,16 +51,16 @@ class Database
             $table = $collection->describe($tableName);
             $columns = $table->columns();
             foreach ($columns as $col) {
-                $schema[$tableName]['columns'][$col] = $table->column($col);
+                $schema[$tableName]['columns'][$col] = $table->getColumn($col);
                 unset($schema[$tableName]['columns'][$col]['collate']);
             }
             $constraints = $table->constraints();
             foreach ($constraints as $cons) {
-                $schema[$tableName]['constraints'][$cons] = $table->constraint($cons);
+                $schema[$tableName]['constraints'][$cons] = $table->getConstraint($cons);
             }
             $indexes = $table->indexes();
             foreach ($indexes as $idx) {
-                $schema[$tableName]['indexes'][$idx] = $table->index($idx);
+                $schema[$tableName]['indexes'][$idx] = $table->getIndex($idx);
             }
         }
 
@@ -142,7 +142,7 @@ class Database
      * Get basic database connection info
      *
      * @param string $dbConfig Input database configuration ('default' as default)
-     * @param string $version Retrieve or not version info
+     * @param bool $version Retrieve or not version info
      * @return array containing requested configuration
      *          + 'vendor' key (mysql, sqlite, postgres,...)
      */
@@ -230,7 +230,7 @@ class Database
      * Executes SQL query using transactions.
      * Returns an array providing information on SQL query results
      *
-     * @param string $sql      SQL query to execute.
+     * @param string|string[] $sql      SQL query to execute.
      * @param string $dbConfig Database config to use ('default' as default)
      *
      * @return array containing keys: 'success' (boolean), 'error' (string with error message),

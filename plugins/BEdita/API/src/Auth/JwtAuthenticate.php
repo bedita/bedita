@@ -199,7 +199,7 @@ class JwtAuthenticate extends BaseAuthenticate
     protected function decode($token, ServerRequest $request)
     {
         try {
-            $payload = JWT::decode($token, Security::salt(), $this->_config['allowedAlgorithms']);
+            $payload = JWT::decode($token, Security::getSalt(), $this->_config['allowedAlgorithms']);
 
             if (isset($payload->aud)) {
                 $audience = Router::url($payload->aud, true);

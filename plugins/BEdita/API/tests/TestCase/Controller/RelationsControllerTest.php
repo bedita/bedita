@@ -155,7 +155,7 @@ class RelationsControllerTest extends IntegrationTestCase
                 'pagination' => [
                     'count' => 0,
                     'page' => 1,
-                    'page_count' => 0,
+                    'page_count' => 1,
                     'page_items' => 0,
                     'page_size' => 20,
                 ],

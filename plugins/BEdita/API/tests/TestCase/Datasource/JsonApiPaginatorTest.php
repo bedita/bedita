@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,19 +11,17 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\API\Test\TestCase\Controller\Component;
+namespace BEdita\API\Test\TestCase\Datasource;
 
-use BEdita\API\Controller\Component\PaginatorComponent;
-use Cake\Controller\ComponentRegistry;
-use Cake\Controller\Controller;
-use Cake\Network\Request;
+use BEdita\API\Datasource\JsonApiPaginator;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\Component\PaginatorComponent
+ * @coversDefaultClass \BEdita\API\Datasource\JsonApiPaginator
  */
-class PaginatorComponentTest extends TestCase
+class JsonApiPaginatorTest extends TestCase
 {
 
     /**
@@ -43,7 +41,7 @@ class PaginatorComponentTest extends TestCase
      *
      * @return array
      */
-    public function mergeOptionsProvider()
+    public function checkLimitProvider()
     {
         return [
             'default' => [
@@ -54,22 +52,16 @@ class PaginatorComponentTest extends TestCase
                     'whitelist' => ['page', 'page_size', 'sort'],
                 ],
                 [],
-                'MyModel',
             ],
             'customLimit' => [
                 [
                     'page' => 1,
-                    'limit' => 10,
+                    'limit' => 5,
                     'maxLimit' => 100,
                     'whitelist' => ['page', 'page_size', 'sort'],
                 ],
                 [
                     'limit' => 5,
-                ],
-                'MyModel',
-                [
-                    'limit' => 10,
-                    'maxLimit' => 100,
                 ],
             ],
             'customPageSize' => [
@@ -82,55 +74,27 @@ class PaginatorComponentTest extends TestCase
                 [
                     'page_size' => 5,
                 ],
-                'MyModel',
-                [
-                    'limit' => 10,
-                    'maxLimit' => 100,
-                ],
-            ],
-            'noOverride' => [
-                [
-                    'page' => 1,
-                    'limit' => 10,
-                    'maxLimit' => 100,
-                    'whitelist' => ['page'],
-                ],
-                [
-                    'page_size' => 5,
-                ],
-                'MyModel',
-                [
-                    'limit' => 10,
-                    'maxLimit' => 100,
-                ],
-                ['page'],
             ],
         ];
     }
 
     /**
-     * Test `mergeOptions()` method.
+     * Test `checkLimit()` method.
      *
      * @param array $expected Expected result.
-     * @param array $query Query params.
-     * @param string $alias Model alias.
-     * @param array $settings Additional settings.
-     * @param array|null $whitelist Overridable configuration items whitelist.
+     * @param array $options Paginator options.
      * @return void
      *
-     * @dataProvider mergeOptionsProvider
-     * @covers ::mergeOptions()
+     * @dataProvider checkLimitProvider()
+     * @covers ::checkLimit()
      */
-    public function testMergeOptions(array $expected, array $query, $alias, array $settings = [], array $whitelist = null)
+    public function testCheckLimit(array $expected, array $options)
     {
-        $request = new Request(compact('query'));
-        $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
-        if ($whitelist) {
-            $component->setConfig('whitelist', $whitelist, false);
-        }
+        $paginator = new JsonApiPaginator();
 
-        $options = $component->mergeOptions($alias, $settings);
-        $this->assertEquals($expected, $options);
+        $options = $paginator->checkLimit($options + $paginator->getConfig());
+
+        static::assertEquals($expected, $options);
     }
 
     /**
@@ -153,15 +117,15 @@ class PaginatorComponentTest extends TestCase
                 '-name',
             ],
             'multipleFields' => [
-                false,
+                new BadRequestException('Unsupported sorting field'),
                 'username,created',
             ],
             'unallowedField' => [
-                false,
+                new BadRequestException('Unsupported sorting field'),
                 '-this_field_does_not_exist',
             ],
             'explicitAsc' => [
-                false,
+                new BadRequestException('Unsupported sorting field'),
                 '+name',
             ],
         ];
@@ -170,26 +134,26 @@ class PaginatorComponentTest extends TestCase
     /**
      * Test `validateSort()` method.
      *
-     * @param array|false $expected Expected result.
+     * @param array|\Exception $expected Expected result.
      * @param string|null $sort `sort` query parameter in request.
      * @return void
      *
-     * @dataProvider validateSortProvider
+     * @dataProvider validateSortProvider()
      * @covers ::validateSort()
      */
     public function testValidateSort($expected, $sort = null)
     {
-        if ($expected === false) {
-            $this->expectException('Cake\Network\Exception\BadRequestException');
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $request = new Request(['query' => compact('sort')]);
-        $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
-
+        $paginator = new JsonApiPaginator();
         $repository = TableRegistry::get('Roles')->find()->repository();
-        $options = $component->mergeOptions('Roles', []);
 
-        $options = $component->validateSort($repository, $options);
-        $this->assertEquals($expected, $options['order']);
+        $options = $paginator->validateSort($repository, compact('sort'));
+
+        static::assertEquals($expected, $options['order']);
     }
 }

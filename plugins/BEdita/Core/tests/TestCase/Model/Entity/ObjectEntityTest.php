@@ -207,16 +207,16 @@ class ObjectEntityTest extends TestCase
     /**
      * Test `visibleProperties` method.
      *
-     * @param array|null $expected Expected result.
      * @param array $properties Properties to set.
-     * @param string $objectType Object type.
+     * @param array $expectedVisible Expected result.
+     * @param int $objectTypeId Object type ID.
      * @return void
      *
      * @covers ::visibleProperties()
      * @covers ::loadObjectType()
      * @dataProvider visiblePropertiesProvider()
      */
-    public function testVisibleProperties($properties, $expectedVisible, $objectTypeId)
+    public function testVisibleProperties($properties, array $expectedVisible, $objectTypeId)
     {
         $entity = new ObjectEntity();
         $entity->object_type_id = $objectTypeId;

@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Mailer;
 
-use BEdita\Core\Model\Entity\Application;
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
 use Cake\Mailer\MailerAwareTrait;

@@ -229,7 +229,7 @@ class CheckSchemaTaskTest extends ShellTestCase
         $this->assertNotAborted();
         $this->assertFalse($result);
         foreach ($constraints as $constraint) {
-            $info = $table->constraint($constraint);
+            $info = $table->getConstraint($constraint);
             if ($info && isset($info['type']) && $info['type'] !== Table::CONSTRAINT_FOREIGN) {
                 continue;
             }

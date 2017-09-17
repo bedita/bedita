@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Datasource\JsonApiPaginator;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -47,14 +48,14 @@ class AppController extends Controller
 
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
-        $this->loadComponent('BEdita/API.Paginator', (array)Configure::read('Pagination'));
-
+        $this->loadComponent('Paginator', (array)Configure::read('Pagination'));
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
             $this->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->request->is('json') ? 'json' : null,
                 'checkMediaType' => $this->request->is('jsonapi'),
             ]);
+            $this->Paginator->setPaginator(new JsonApiPaginator());
 
             $this->RequestHandler->setConfig('inputTypeMap.json', [[$this->JsonApi, 'parseInput']], false);
             $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');

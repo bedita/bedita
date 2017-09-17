@@ -102,7 +102,7 @@ class AsyncJobsTableTest extends TestCase
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
 
         $eventDispatched = 0;
-        $this->AsyncJobs->eventManager()->on('AsyncJob.lock', function () use (&$eventDispatched) {
+        $this->AsyncJobs->getEventManager()->on('AsyncJob.lock', function () use (&$eventDispatched) {
             $eventDispatched++;
 
             /* @var \Cake\Database\Connection $connection */
@@ -149,7 +149,7 @@ class AsyncJobsTableTest extends TestCase
         $success = 'Job completed successfully thanks to Gustavo Supporto!';
 
         $eventDispatched = 0;
-        $this->AsyncJobs->eventManager()->on('AsyncJob.complete', function () use (&$eventDispatched, $success) {
+        $this->AsyncJobs->getEventManager()->on('AsyncJob.complete', function () use (&$eventDispatched, $success) {
             $eventDispatched++;
 
             /* @var \Cake\Database\Connection $connection */
@@ -159,7 +159,7 @@ class AsyncJobsTableTest extends TestCase
             static::assertSame($success, func_get_arg(2));
             static::assertTrue($connection->inTransaction());
         });
-        $this->AsyncJobs->eventManager()->on('AsyncJob.fail', function () {
+        $this->AsyncJobs->getEventManager()->on('AsyncJob.fail', function () {
             static::fail('Wrong event dispatched');
         });
 
@@ -185,7 +185,7 @@ class AsyncJobsTableTest extends TestCase
         $success = false;
 
         $eventDispatched = 0;
-        $this->AsyncJobs->eventManager()->on('AsyncJob.fail', function () use (&$eventDispatched, $success) {
+        $this->AsyncJobs->getEventManager()->on('AsyncJob.fail', function () use (&$eventDispatched, $success) {
             $eventDispatched++;
 
             /* @var \Cake\Database\Connection $connection */
@@ -195,7 +195,7 @@ class AsyncJobsTableTest extends TestCase
             static::assertSame($success, func_get_arg(2));
             static::assertTrue($connection->inTransaction());
         });
-        $this->AsyncJobs->eventManager()->on('AsyncJob.complete', function () {
+        $this->AsyncJobs->getEventManager()->on('AsyncJob.complete', function () {
             static::fail('Wrong event dispatched');
         });
 

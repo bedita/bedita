@@ -118,9 +118,9 @@ class AsyncJobsTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('payload', 'json');
+        $schema->setColumnType('payload', 'json');
 
-        return parent::_initializeSchema($schema);
+        return $schema;
     }
 
     /**

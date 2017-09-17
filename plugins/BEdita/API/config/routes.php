@@ -30,7 +30,7 @@ Router::plugin(
             'streams',
             'users',
         ];
-        $routes->routeClass(InflectedRoute::class);
+        $routes->setRouteClass(InflectedRoute::class);
 
         // Home.
         $routes->redirect(

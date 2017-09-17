@@ -286,7 +286,7 @@ class InheritanceEventHandlerTest extends TestCase
         $expectedFelines = $this->fakeFelines->find()->count();
 
         $eventDispatched = 0;
-        $this->fakeAnimals->eventManager()->on('Model.beforeSave', function () use (&$eventDispatched) {
+        $this->fakeAnimals->getEventManager()->on('Model.beforeSave', function () use (&$eventDispatched) {
             $eventDispatched++;
 
             /* @var \Cake\Database\Connection $connection */
@@ -343,7 +343,7 @@ class InheritanceEventHandlerTest extends TestCase
         $expectedFelines = $this->fakeFelines->find()->count();
 
         $eventDispatched = 0;
-        $this->fakeAnimals->eventManager()->on('Model.beforeDelete', function () use (&$eventDispatched) {
+        $this->fakeAnimals->getEventManager()->on('Model.beforeDelete', function () use (&$eventDispatched) {
             $eventDispatched++;
 
             /* @var \Cake\Database\Connection $connection */

@@ -46,7 +46,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      */
     public function init()
     {
-        $this->eventManager()->on($this);
+        $this->getEventManager()->on($this);
 
         if ($this->table === null) {
             $this->table = $this->_tableFromClass();
@@ -104,7 +104,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
         array_walk(
             $fields,
             function (&$column, $columnName) use ($table) {
-                $column = $table->column($columnName);
+                $column = $table->getColumn($columnName);
                 unset($column['collate']);
             }
         );
@@ -113,7 +113,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
         array_walk(
             $fields['_constraints'],
             function (&$constraint, $constraintName) use ($table) {
-                $constraint = $table->constraint($constraintName);
+                $constraint = $table->getConstraint($constraintName);
             }
         );
 
@@ -121,7 +121,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
         array_walk(
             $fields['_indexes'],
             function (&$index, $indexName) use ($table) {
-                $index = $table->index($indexName);
+                $index = $table->getIndex($indexName);
             }
         );
 
