@@ -33,9 +33,9 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/relations',
-                'first' => 'http://api.example.com/relations',
-                'last' => 'http://api.example.com/relations',
+                'self' => 'http://api.example.com/model/relations',
+                'first' => 'http://api.example.com/model/relations',
+                'last' => 'http://api.example.com/model/relations',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -62,19 +62,19 @@ class RelationsControllerTest extends IntegrationTestCase
                         'params' => null,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/relations/1',
+                        'self' => 'http://api.example.com/model/relations/1',
                     ],
                     'relationships' => [
                         'left_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/relations/1/relationships/left_object_types',
-                                'related' => 'http://api.example.com/relations/1/left_object_types',
+                                'self' => 'http://api.example.com/model/relations/1/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/1/left_object_types',
                             ],
                         ],
                         'right_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/relations/1/relationships/right_object_types',
-                                'related' => 'http://api.example.com/relations/1/right_object_types',
+                                'self' => 'http://api.example.com/model/relations/1/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/1/right_object_types',
                             ],
                         ],
                     ],
@@ -103,19 +103,19 @@ class RelationsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/relations/2',
+                        'self' => 'http://api.example.com/model/relations/2',
                     ],
                     'relationships' => [
                         'left_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/relations/2/relationships/left_object_types',
-                                'related' => 'http://api.example.com/relations/2/left_object_types',
+                                'self' => 'http://api.example.com/model/relations/2/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/2/left_object_types',
                             ],
                         ],
                         'right_object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/relations/2/relationships/right_object_types',
-                                'related' => 'http://api.example.com/relations/2/right_object_types',
+                                'self' => 'http://api.example.com/model/relations/2/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/2/right_object_types',
                             ],
                         ],
                     ],
@@ -124,7 +124,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/relations');
+        $this->get('/model/relations');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -144,9 +144,9 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/relations',
-                'first' => 'http://api.example.com/relations',
-                'last' => 'http://api.example.com/relations',
+                'self' => 'http://api.example.com/model/relations',
+                'first' => 'http://api.example.com/model/relations',
+                'last' => 'http://api.example.com/model/relations',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -166,7 +166,7 @@ class RelationsControllerTest extends IntegrationTestCase
         TableRegistry::get('Relations')->deleteAll([]);
 
         $this->configRequestHeaders();
-        $this->get('/relations');
+        $this->get('/model/relations');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -186,7 +186,7 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/relations/1',
+                'self' => 'http://api.example.com/model/relations/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
@@ -203,14 +203,14 @@ class RelationsControllerTest extends IntegrationTestCase
                 'relationships' => [
                     'left_object_types' => [
                         'links' => [
-                            'self' => 'http://api.example.com/relations/1/relationships/left_object_types',
-                            'related' => 'http://api.example.com/relations/1/left_object_types',
+                            'self' => 'http://api.example.com/model/relations/1/relationships/left_object_types',
+                            'related' => 'http://api.example.com/model/relations/1/left_object_types',
                         ],
                     ],
                     'right_object_types' => [
                         'links' => [
-                            'self' => 'http://api.example.com/relations/1/relationships/right_object_types',
-                            'related' => 'http://api.example.com/relations/1/right_object_types',
+                            'self' => 'http://api.example.com/model/relations/1/relationships/right_object_types',
+                            'related' => 'http://api.example.com/model/relations/1/right_object_types',
                         ],
                     ],
                 ],
@@ -218,7 +218,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/relations/1');
+        $this->get('/model/relations/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -239,7 +239,7 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/relations/99',
+                'self' => 'http://api.example.com/model/relations/99',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -248,7 +248,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/relations/99');
+        $this->get('/model/relations/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
@@ -288,7 +288,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/relations', json_encode(compact('data')));
+        $this->post('/model/relations', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
@@ -298,7 +298,7 @@ class RelationsControllerTest extends IntegrationTestCase
             ->order(['id' => 'DESC'])
             ->first();
 
-        $this->assertHeader('Location', 'http://api.example.com/relations/' . $relation->id);
+        $this->assertHeader('Location', 'http://api.example.com/model/relations/' . $relation->id);
 
         $expected = array_merge(['id' => $relation->id], $data['attributes']);
         static::assertEquals($expected, $relation->toArray());
@@ -325,7 +325,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $count = $Relations->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/relations', json_encode(compact('data')));
+        $this->post('/model/relations', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
@@ -351,7 +351,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/relations/1', json_encode(compact('data')));
+        $this->patch('/model/relations/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -383,7 +383,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $expected = $Relations->get(1)->get('label');
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/relations/2', json_encode(compact('data')));
+        $this->patch('/model/relations/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
@@ -401,7 +401,7 @@ class RelationsControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/relations/1');
+        $this->delete('/model/relations/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
@@ -421,13 +421,13 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/relations/1/left_object_types',
-                'first' => 'http://api.example.com/relations/1/left_object_types',
-                'last' => 'http://api.example.com/relations/1/left_object_types',
+                'self' => 'http://api.example.com/model/relations/1/left_object_types',
+                'first' => 'http://api.example.com/model/relations/1/left_object_types',
+                'last' => 'http://api.example.com/model/relations/1/left_object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
-                'available' => 'http://api.example.com/object_types',
+                'available' => 'http://api.example.com/model/object_types',
             ],
             'meta' => [
                 'pagination' => [
@@ -460,25 +460,25 @@ class RelationsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_types/1',
+                        'self' => 'http://api.example.com/model/object_types/1',
                     ],
                     'relationships' => [
                         'properties' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/1/relationships/properties',
-                                'related' => 'http://api.example.com/object_types/1/properties',
+                                'self' => 'http://api.example.com/model/object_types/1/relationships/properties',
+                                'related' => 'http://api.example.com/model/object_types/1/properties',
                             ],
                         ],
                         'left_relations' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/1/relationships/left_relations',
-                                'related' => 'http://api.example.com/object_types/1/left_relations',
+                                'self' => 'http://api.example.com/model/object_types/1/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/1/left_relations',
                             ],
                         ],
                         'right_relations' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/1/relationships/right_relations',
-                                'related' => 'http://api.example.com/object_types/1/right_relations',
+                                'self' => 'http://api.example.com/model/object_types/1/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/1/right_relations',
                             ],
                         ],
                     ],
@@ -487,7 +487,7 @@ class RelationsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/relations/1/left_object_types');
+        $this->get('/model/relations/1/left_object_types');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         /*

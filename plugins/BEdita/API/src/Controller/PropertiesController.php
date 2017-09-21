@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/properties` endpoint.
+ * Controller for `/model/properties` endpoint.
  *
  * @since 4.0.0
  *
@@ -26,6 +26,11 @@ class PropertiesController extends ResourcesController
      * {@inheritDoc}
      */
     public $modelClass = 'Properties';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_routeNamePrefix = 'api:model';
 
     /**
      * {@inheritDoc}

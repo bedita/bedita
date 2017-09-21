@@ -23,12 +23,14 @@ Router::plugin(
     ],
     function (RouteBuilder $routes) {
         $resourcesControllers = [
-            'object_types',
-            'properties',
-            'relations',
             'roles',
             'streams',
             'users',
+        ];
+        $modelingControllers = [
+            'object_types',
+            'properties',
+            'relations',
         ];
         $routes->setRouteClass(InflectedRoute::class);
 
@@ -107,6 +109,29 @@ Router::plugin(
             '/streams/upload/:fileName',
             ['controller' => 'Streams', 'action' => 'upload'],
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
+        );
+
+        // Modeling.
+        $modelingControllers = implode('|', $modelingControllers);
+        $routes->connect(
+            '/model/:controller',
+            ['action' => 'index'],
+            ['_name' => 'model:index', 'controller' => $modelingControllers]
+        );
+        $routes->connect(
+            '/model/:controller/:id',
+            ['action' => 'resource'],
+            ['_name' => 'model:resource', 'pass' => ['id'], 'controller' => $modelingControllers]
+        );
+        $routes->connect(
+            '/model/:controller/:related_id/:relationship',
+            ['action' => 'related'],
+            ['_name' => 'model:related', 'controller' => $modelingControllers]
+        );
+        $routes->connect(
+            '/model/:controller/:id/relationships/:relationship',
+            ['action' => 'relationships'],
+            ['_name' => 'model:relationships', 'controller' => $modelingControllers]
         );
 
         // Resources.

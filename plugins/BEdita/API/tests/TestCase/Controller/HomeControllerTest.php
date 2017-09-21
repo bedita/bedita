@@ -178,8 +178,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
-                    '/relations' => [
-                        'href' => 'http://api.example.com/relations',
+                    '/model' => [
+                        'href' => 'http://api.example.com/model',
                         'hints' => [
                             'allow' => [
                                 'GET', 'POST', 'PATCH', 'DELETE'
@@ -189,12 +189,12 @@ class HomeControllerTest extends IntegrationTestCase
                                 'application/vnd.api+json'
                             ],
                             'display' => [
-                                'label' => 'Relations',
+                                'label' => 'Model',
                             ]
                         ],
                     ],
-                    '/object_types' => [
-                        'href' => 'http://api.example.com/object_types',
+                    '/admin' => [
+                        'href' => 'http://api.example.com/admin',
                         'hints' => [
                             'allow' => [
                                 'GET', 'POST', 'PATCH', 'DELETE'
@@ -204,7 +204,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'application/vnd.api+json'
                             ],
                             'display' => [
-                                'label' => 'ObjectTypes',
+                                'label' => 'Admin',
                             ]
                         ],
                     ],

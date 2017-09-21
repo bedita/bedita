@@ -49,7 +49,7 @@ definitions:
     UserParam: { properties: { data: { required: [id, type], properties: { id: { type: integer }, type: { type: string, enum: [users] } } } } }
     404Response: { type: object, properties: { error: { type: object, properties: { status: { type: integer, enum: ['404'] }, title: { type: string, enum: ['Not Found'] } } }, links: { type: object, properties: { self: { type: string }, home: { type: string } } } } }
     Home200Response: { properties: { links: { properties: { self: { type: string }, home: { type: string } } }, meta: { properties: { resources: { $ref: '#/definitions/MetaResources' } } } } }
-    MetaResources: { properties: { /objects: { $ref: '#/definitions/Resource' }, /users: { $ref: '#/definitions/Resource' }, /roles: { $ref: '#/definitions/Resource' }, /object_types: { $ref: '#/definitions/Resource' }, /status: { $ref: '#/definitions/Resource' } } }
+    MetaResources: { properties: { /objects: { $ref: '#/definitions/Resource' }, /users: { $ref: '#/definitions/Resource' }, /roles: { $ref: '#/definitions/Resource' }, /model/object_types: { $ref: '#/definitions/Resource' }, /status: { $ref: '#/definitions/Resource' } } }
     Resource: { properties: { href: { type: string }, hints: { $ref: '#/definitions/Hint' } } }
     Hint: { properties: { allow: { type: array, items: { type: string } }, formats: { type: array, items: { type: string } } } }
     Relantionship: { properties: { roles: { $ref: '#/definitions/RelationShipRole' } } }

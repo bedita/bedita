@@ -217,6 +217,16 @@ trait JsonApiTrait
     }
 
     /**
+     * Get prefix used for `_name` in routing urls creation.
+     *
+     * @return string
+     */
+    protected function routeNamePrefix()
+    {
+        return 'api:resources';
+    }
+
+    /**
      * Getter for `links`.
      *
      * @return array
@@ -225,7 +235,7 @@ trait JsonApiTrait
     {
         $self = Router::url(
             [
-                '_name' => 'api:resources:resource',
+                '_name' => $this->routeNamePrefix() . ':resource',
                 'controller' => $this->getType(),
                 'id' => $this->getId(),
             ],
@@ -281,7 +291,7 @@ trait JsonApiTrait
         foreach ($associations as $relationship) {
             $self = Router::url(
                 [
-                    '_name' => 'api:resources:relationships',
+                    '_name' => $this->routeNamePrefix() . ':relationships',
                     'controller' => $this->getType(),
                     'relationship' => $relationship,
                     'id' => $this->getId(),
@@ -290,7 +300,7 @@ trait JsonApiTrait
             );
             $related = Router::url(
                 [
-                    '_name' => 'api:resources:related',
+                    '_name' => $this->routeNamePrefix() . ':related',
                     'controller' => $this->getType(),
                     'relationship' => $relationship,
                     'related_id' => $this->getId(),
