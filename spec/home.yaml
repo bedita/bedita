@@ -49,7 +49,7 @@ definitions:
         $ref: '#/definitions/Resource'
       '/roles':
         $ref: '#/definitions/Resource'
-      '/object_types':
+      '/model/object_types':
         $ref: '#/definitions/Resource'
       '/status':
         $ref: '#/definitions/Resource'

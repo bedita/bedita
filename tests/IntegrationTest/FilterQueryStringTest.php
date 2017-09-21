@@ -187,7 +187,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         $this->configRequestHeaders();
 
-        $this->get('/object_types?filter[by_relation][name]=test');
+        $this->get('/model/object_types?filter[by_relation][name]=test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);

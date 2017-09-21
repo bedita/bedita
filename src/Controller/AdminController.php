@@ -32,6 +32,11 @@ class AdminController extends ResourcesController
     public $modelClass = null;
 
     /**
+     * {@inheritDoc}
+     */
+    protected $_routeNamePrefix = 'api:admin';
+
+    /**
      * Resource name, one of `$this->config('allowedResources')`
      */
     public $resourceName = null;
@@ -76,7 +81,7 @@ class AdminController extends ResourcesController
     {
         return Router::url(
             [
-                '_name' => 'api:admin:resource',
+                '_name' => $this->_routeNamePrefix . ':resource',
                 'item' => $this->resourceName,
                 'id' => $id,
                 'controller' => $this->name,
