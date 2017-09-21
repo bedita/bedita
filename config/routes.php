@@ -30,6 +30,7 @@ Router::plugin(
         $modelingControllers = [
             'object_types',
             'properties',
+            'property_types',
             'relations',
         ];
         $routes->setRouteClass(InflectedRoute::class);
