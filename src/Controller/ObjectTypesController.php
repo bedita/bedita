@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/model/model/object_types` endpoint.
+ * Controller for `/model/object_types` endpoint.
  *
  * @since 4.0.0
  *
