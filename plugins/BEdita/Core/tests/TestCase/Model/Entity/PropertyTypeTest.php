@@ -69,7 +69,7 @@ class PropertyTypeTest extends TestCase
     {
         $propertyType = $this->PropertyTypes->get(1);
         $this->assertEquals('string', $propertyType->name);
-        $this->assertNull($propertyType->params);
+        $this->assertEquals(['type' => 'string'], $propertyType->params);
 
         $data = [
             'name' => 'othername',
