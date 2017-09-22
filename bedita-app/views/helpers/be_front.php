@@ -728,6 +728,8 @@ class BeFrontHelper extends AppHelper {
 			$htmlMenu .= $this->menuBranch($section, $options);
 		}
 
+		$htmlMenu .= "</ul>";
+
 		return $htmlMenu;
 	}
 
