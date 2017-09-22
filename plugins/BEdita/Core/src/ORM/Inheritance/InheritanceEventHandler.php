@@ -45,6 +45,8 @@ class InheritanceEventHandler implements EventListenerInterface
 
     /**
      * Save entities in inherited tables before saving entity on this table.
+     * A special `$options` key `_inherited` is set to true to let know
+     * to other listeners if the save action affects an inherited table.
      *
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
@@ -69,7 +71,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Save parent entity.
-        $options = ['atomic' => false] + $options->getArrayCopy();
+        $options = ['atomic' => false, '_inherited' => true] + $options->getArrayCopy();
         $options['associated'] = array_diff_key(
             $options['associated'],
             array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys()))
