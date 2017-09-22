@@ -30,7 +30,7 @@ class PropertyTypesController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    protected $_routeNamePrefix = 'api:model';
+    protected $routeNamePrefix = 'api:model';
 
     /**
      * {@inheritDoc}
