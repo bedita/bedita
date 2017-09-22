@@ -70,7 +70,7 @@ abstract class ResourcesController extends AppController
      *
      * @var string
      */
-    protected $_routeNamePrefix = 'api:resources';
+    protected $routeNamePrefix = 'api:resources';
 
     /**
      * {@inheritDoc}
@@ -206,7 +206,7 @@ abstract class ResourcesController extends AppController
     {
         return Router::url(
             [
-                '_name' => $this->_routeNamePrefix . ':resource',
+                '_name' => $this->routeNamePrefix . ':resource',
                 'controller' => $this->name,
                 'id' => $id,
             ],
@@ -394,7 +394,7 @@ abstract class ResourcesController extends AppController
 
         return Router::url(
             [
-                '_name' => $this->_routeNamePrefix . ':index',
+                '_name' => $this->routeNamePrefix . ':index',
                 'controller' => $destinationEntity['type'],
             ],
             true
