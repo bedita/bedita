@@ -666,6 +666,7 @@ $config["geoTagOptions"] = array(
 		18 => "neighbourhood",
 		16 => "quarter",
 		14 => "city",
+		11 => "small region",
 		9 => "district",
 		7 => "country",
 		4 => "continent",
