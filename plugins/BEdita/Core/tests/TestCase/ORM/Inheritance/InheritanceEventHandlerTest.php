@@ -319,10 +319,12 @@ class InheritanceEventHandlerTest extends TestCase
      */
     public function testBeforeSaveOptions()
     {
+        $eventDispatchedFelines = $eventDispatchedMammals = $eventDispatchedAnimals = 0;
         // Main table
         $this->fakeFelines->eventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) {
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedFelines) {
+                $eventDispatchedFelines++;
                 static::assertArrayNotHasKey('_inherited', $options);
                 static::assertTrue($options['atomic']);
             }
@@ -331,7 +333,8 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeMammals->eventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) {
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedMammals) {
+                $eventDispatchedMammals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
@@ -341,7 +344,8 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeAnimals->eventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) {
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedAnimals) {
+                $eventDispatchedAnimals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
@@ -355,6 +359,10 @@ class InheritanceEventHandlerTest extends TestCase
             'family' => 'Cats',
         ]);
         $result = $this->fakeFelines->save($feline);
+
+        static::assertSame(1, $eventDispatchedFelines);
+        static::assertSame(1, $eventDispatchedMammals);
+        static::assertSame(1, $eventDispatchedAnimals);
     }
 
     /**
