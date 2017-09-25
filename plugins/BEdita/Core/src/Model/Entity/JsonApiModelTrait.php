@@ -13,9 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use Cake\ORM\TableRegistry;
-use Cake\Routing\Router;
-
 /**
  * Trait for exposing useful properties required for JSON API response on `/model` resources.
  *
