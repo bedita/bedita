@@ -42,9 +42,9 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/properties',
-                'first' => 'http://api.example.com/properties',
-                'last' => 'http://api.example.com/properties',
+                'self' => 'http://api.example.com/model/properties',
+                'first' => 'http://api.example.com/model/properties',
+                'last' => 'http://api.example.com/model/properties',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -77,7 +77,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/1',
+                        'self' => 'http://api.example.com/model/properties/1',
                     ],
                 ],
                 [
@@ -98,7 +98,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/2',
+                        'self' => 'http://api.example.com/model/properties/2',
                     ],
                 ],
                 [
@@ -119,7 +119,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/3',
+                        'self' => 'http://api.example.com/model/properties/3',
                     ],
                 ],
                 [
@@ -140,7 +140,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/4',
+                        'self' => 'http://api.example.com/model/properties/4',
                     ],
                 ],
                 [
@@ -161,7 +161,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/5',
+                        'self' => 'http://api.example.com/model/properties/5',
                     ],
                 ],
                 [
@@ -182,7 +182,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/6',
+                        'self' => 'http://api.example.com/model/properties/6',
                     ],
                 ],
                 [
@@ -203,14 +203,14 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'modified' => '2017-09-05T11:10:00+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/properties/7',
+                        'self' => 'http://api.example.com/model/properties/7',
                     ],
                 ],
             ],
         ];
 
         $this->configRequestHeaders();
-        $this->get('/properties');
+        $this->get('/model/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -230,9 +230,9 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/properties',
-                'first' => 'http://api.example.com/properties',
-                'last' => 'http://api.example.com/properties',
+                'self' => 'http://api.example.com/model/properties',
+                'first' => 'http://api.example.com/model/properties',
+                'last' => 'http://api.example.com/model/properties',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -252,7 +252,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         TableRegistry::get('Properties')->deleteAll([]);
 
         $this->configRequestHeaders();
-        $this->get('/properties');
+        $this->get('/model/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -272,7 +272,7 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/properties/1',
+                'self' => 'http://api.example.com/model/properties/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
@@ -296,7 +296,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/properties/1');
+        $this->get('/model/properties/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -316,7 +316,7 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/properties/999999',
+                'self' => 'http://api.example.com/model/properties/999999',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -325,7 +325,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/properties/999999');
+        $this->get('/model/properties/999999');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
@@ -363,11 +363,11 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/properties', json_encode(compact('data')));
+        $this->post('/model/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/properties/8');
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/8');
         $this->assertTrue(TableRegistry::get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
@@ -391,7 +391,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         $count = TableRegistry::get('Properties')->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/properties', json_encode(compact('data')));
+        $this->post('/model/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
@@ -418,7 +418,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/properties/1', json_encode(compact('data')));
+        $this->patch('/model/properties/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -444,7 +444,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/properties/2', json_encode(compact('data')));
+        $this->patch('/model/properties/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
@@ -463,7 +463,7 @@ class PropertiesControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/properties/1');
+        $this->delete('/model/properties/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');

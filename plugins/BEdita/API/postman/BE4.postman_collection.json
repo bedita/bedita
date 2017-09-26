@@ -717,7 +717,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types",
+						"url": "{{be4Url}}/model/object_types",
 						"method": "GET",
 						"header": [
 							{
@@ -775,7 +775,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types",
+						"url": "{{be4Url}}/model/object_types",
 						"method": "POST",
 						"header": [
 							{
@@ -839,7 +839,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeName}}",
+						"url": "{{be4Url}}/model/object_types/{{objectTypeName}}",
 						"method": "GET",
 						"header": [
 							{
@@ -893,7 +893,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
+						"url": "{{be4Url}}/model/object_types/{{objectTypeId}}",
 						"method": "PATCH",
 						"header": [
 							{
@@ -4170,7 +4170,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeName}}",
+						"url": "{{be4Url}}/model/object_types/{{objectTypeName}}",
 						"method": "DELETE",
 						"header": [
 							{

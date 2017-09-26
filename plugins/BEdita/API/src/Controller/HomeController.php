@@ -37,9 +37,9 @@ class HomeController extends AppController
      */
     protected $defaultEndpoints = [
         '/auth' => ['GET', 'POST'],
-        '/object_types' => 'ALL',
+        '/admin' => 'ALL',
+        '/model' => 'ALL',
         '/objects' => 'ALL',
-        '/relations' => 'ALL',
         '/roles' => 'ALL',
         '/signup' => ['POST'],
         '/status' => ['GET'],

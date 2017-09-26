@@ -42,7 +42,7 @@ use Cake\ORM\TableRegistry;
 class Property extends Entity implements JsonApiSerializable
 {
 
-    use JsonApiTrait;
+    use JsonApiModelTrait;
 
     /**
      * {@inheritDoc}

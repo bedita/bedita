@@ -13,18 +13,19 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/model/object_types` endpoint.
+ * Controller for `/model/property_types` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
+ * @property \BEdita\Core\Model\Table\PropertyTypesTable $PropertyTypes
  */
-class ObjectTypesController extends ResourcesController
+class PropertyTypesController extends ResourcesController
 {
+
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'ObjectTypes';
+    public $modelClass = 'PropertyTypes';
 
     /**
      * {@inheritDoc}
@@ -37,8 +38,6 @@ class ObjectTypesController extends ResourcesController
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'properties' => ['properties'],
-            'left_relations' => ['relations'],
-            'right_relations' => ['relations'],
         ],
     ];
 }

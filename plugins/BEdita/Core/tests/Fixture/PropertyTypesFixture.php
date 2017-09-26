@@ -31,15 +31,19 @@ class PropertyTypesFixture extends TestFixture
     public $records = [
         [
             'name' => 'string',
+            'params' => '{"type": "string"}'
         ],
         [
             'name' => 'date',
+            'params' => '{"type": "string"}'
         ],
         [
             'name' => 'number',
+            'params' => '{"type": "number"}'
         ],
         [
             'name' => 'boolean',
+            'params' => '{"type": "boolean"}'
         ],
     ];
 }

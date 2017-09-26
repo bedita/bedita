@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,19 +13,22 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\ORM\Entity;
-
 /**
- * Property Type Entity.
- *
- * @property string $name
- * @property string $params
+ * Trait for exposing useful properties required for JSON API response on `/model` resources.
  *
  * @since 4.0.0
  */
-class PropertyType extends Entity implements JsonApiSerializable
+trait JsonApiModelTrait
 {
+    use JsonApiTrait;
 
-    use JsonApiModelTrait;
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function routeNamePrefix()
+    {
+        return 'api:model';
+    }
 }

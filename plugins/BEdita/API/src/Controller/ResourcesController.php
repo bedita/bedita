@@ -66,6 +66,13 @@ abstract class ResourcesController extends AppController
     protected $Table;
 
     /**
+     * Prefix used in `_name` creating route urls
+     *
+     * @var string
+     */
+    protected $routeNamePrefix = 'api:resources';
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
@@ -199,7 +206,7 @@ abstract class ResourcesController extends AppController
     {
         return Router::url(
             [
-                '_name' => 'api:resources:resource',
+                '_name' => $this->routeNamePrefix . ':resource',
                 'controller' => $this->name,
                 'id' => $id,
             ],
@@ -387,7 +394,7 @@ abstract class ResourcesController extends AppController
 
         return Router::url(
             [
-                '_name' => 'api:resources:index',
+                '_name' => $this->routeNamePrefix . ':index',
                 'controller' => $destinationEntity['type'],
             ],
             true

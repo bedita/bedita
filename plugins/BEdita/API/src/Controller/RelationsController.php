@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 /**
- * Controller for `/relations` endpoint.
+ * Controller for `/model/relations` endpoint.
  *
  * @since 4.0.0
  *
@@ -25,6 +25,11 @@ class RelationsController extends ResourcesController
      * {@inheritDoc}
      */
     public $modelClass = 'Relations';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $routeNamePrefix = 'api:model';
 
     /**
      * {@inheritDoc}

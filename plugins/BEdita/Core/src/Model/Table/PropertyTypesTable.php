@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -58,6 +59,18 @@ class PropertyTypesTable extends Table
             ->allowEmpty('params');
 
         return $validator;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->setColumnType('params', 'json');
+
+        return $schema;
     }
 
     /**

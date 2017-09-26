@@ -40,7 +40,7 @@ use Cake\Utility\Inflector;
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {
-    use JsonApiTrait {
+    use JsonApiModelTrait {
         listAssociations as protected jsonApiListAssociations;
     }
 
