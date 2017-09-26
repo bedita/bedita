@@ -15,6 +15,8 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\InheritanceEventHandler;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -306,6 +308,61 @@ class InheritanceEventHandlerTest extends TestCase
         static::assertSame($expectedFelines, $this->fakeFelines->find()->count());
         static::assertSame($expectedMammals, $this->fakeMammals->find()->count());
         static::assertSame($expectedAnimals, $this->fakeAnimals->find()->count());
+    }
+
+    /**
+     * Test options passed in che chain
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveOptions()
+    {
+        $eventDispatchedFelines = $eventDispatchedMammals = $eventDispatchedAnimals = 0;
+        // Main table
+        $this->fakeFelines->eventManager()->on(
+            'Model.beforeSave',
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedFelines) {
+                $eventDispatchedFelines++;
+                static::assertArrayNotHasKey('_inherited', $options);
+                static::assertTrue($options['atomic']);
+            }
+        );
+
+        // Inherited table
+        $this->fakeMammals->eventManager()->on(
+            'Model.beforeSave',
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedMammals) {
+                $eventDispatchedMammals++;
+                static::assertArrayHasKey('_inherited', $options);
+                static::assertTrue($options['_inherited']);
+                static::assertFalse($options['atomic']);
+            }
+        );
+
+        // Inherited table
+        $this->fakeAnimals->eventManager()->on(
+            'Model.beforeSave',
+            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedAnimals) {
+                $eventDispatchedAnimals++;
+                static::assertArrayHasKey('_inherited', $options);
+                static::assertTrue($options['_inherited']);
+                static::assertFalse($options['atomic']);
+            }
+        );
+
+        $feline = $this->fakeFelines->newEntity([
+            'name' => 'Gastone',
+            'legs' => 4,
+            'subclass' => 'Lucky pets',
+            'family' => 'Cats',
+        ]);
+        $result = $this->fakeFelines->save($feline);
+
+        static::assertSame(1, $eventDispatchedFelines);
+        static::assertSame(1, $eventDispatchedMammals);
+        static::assertSame(1, $eventDispatchedAnimals);
     }
 
     /**
