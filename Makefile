@@ -16,7 +16,7 @@ COMPONENT_PATH[core]=Core
 # Github settings
 UPLOAD_HOST=https://uploads.github.com
 API_HOST=https://api.github.com
-OWNER=stefanorosanelli
+OWNER=bedita
 REMOTE=origin
 
 ifdef GITHUB_TOKEN
