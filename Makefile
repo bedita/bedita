@@ -29,7 +29,7 @@ DASH_VERSION=$(shell echo $(VERSION) | sed -e s/\\./-/g)
 
 # Version related vars
 VERSION_CONTENT="[BEdita] \nversion = "
-VERSION_FILE=plugins/BEdita/Core/config/bedita.ini
+VERSION_FILE="plugins/BEdita/Core/config/bedita.ini"
 VERSION_TAG=v$(VERSION)
 
 # Main branch for BEdita 4
@@ -98,7 +98,7 @@ bump-version: guard-VERSION
 # Tag a release
 tag-release: guard-VERSION bump-version
 	@echo "Tagging release $(VERSION)"
-	git tag -s $(VERSION_TAG) -m "BEdita $(VERSION)"
+	git tag $(VERSION_TAG) -m "BEdita $(VERSION)"
 	git push $(REMOTE)
 	git push $(REMOTE) --tags
 
