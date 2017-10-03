@@ -7,6 +7,12 @@ use Migrations\AbstractSeed;
  * Create new application from env vars:
  *  - 'api_key' => BEDITA_API_KEY
  *  - 'name' => BEDITA_APP_NAME (optional)
+ *
+ * PLease note:
+ *  - If an `api_key` with same value is found no action is taken.
+ *  - If no BEDITA_APP_NAME env is set default `manager` value is used.
+ *  - If an application `name` with same value (BEDITA_APP_NAME or `manager`)
+ * is found an hash suffix is added.
  */
 class ApplicationFromEnvSeed extends AbstractSeed
 {
