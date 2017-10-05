@@ -40,7 +40,7 @@ return [
         'namespace' => 'BEdita\App',
         'encoding' => env('APP_ENCODING', 'UTF-8'),
         'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
-        'base' => false,
+        'base' => env('BEDITA_BASE_URL', false),
         'dir' => 'src',
         'webroot' => 'webroot',
         'wwwRoot' => WWW_ROOT,
@@ -395,7 +395,7 @@ return [
      * - `autoload` - boolean - (default: false) Whether or not you want an autoloader registered
      */
     'Plugins' => [
-        'BEdita/DevTools' => ['debugOnly' => true, 'bootstrap' => true],
+      'BEdita/DevTools' => ['debugOnly' => true, 'bootstrap' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
     ],
 
