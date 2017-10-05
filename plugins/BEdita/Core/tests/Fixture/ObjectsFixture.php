@@ -17,7 +17,7 @@ class ObjectsFixture extends TestFixture
      */
     public $records = [
         [
-            'object_type_id' => 3,
+            'object_type_id' => 4,
             'status' => 'on',
             'uname' => 'first-user',
             'locked' => 1,
@@ -34,7 +34,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
         ],
         [
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'status' => 'on',
             'uname' => 'title-one',
             'locked' => 1,
@@ -53,7 +53,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => '2016-05-13 07:09:23'
         ],
         [
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'status' => 'draft',
             'uname' => 'title-two',
             'locked' => 0,
@@ -72,7 +72,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null
         ],
         [
-            'object_type_id' => 2,
+            'object_type_id' => 3,
             'status' => 'on',
             'uname' => 'gustavo-supporto',
             'locked' => 0,
@@ -87,7 +87,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1
         ],
         [
-            'object_type_id' => 3,
+            'object_type_id' => 4,
             'status' => 'on',
             'uname' => 'second-user',
             'locked' => 0,
@@ -105,7 +105,7 @@ class ObjectsFixture extends TestFixture
             'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
         ],
         [
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'status' => 'on',
             'uname' => 'title-one-deleted',
             'locked' => 0,
@@ -124,7 +124,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => '2016-10-13 07:09:23'
         ],
         [
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'status' => 'on',
             'uname' => 'title-two-deleted',
             'locked' => 0,
@@ -143,7 +143,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => '2016-10-13 07:09:23'
         ],
         [
-            'object_type_id' => 5,
+            'object_type_id' => 6,
             'status' => 'on',
             'uname' => 'the-two-towers',
             'locked' => 0,
@@ -162,7 +162,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null
         ],
         [
-            'object_type_id' => 6,
+            'object_type_id' => 7,
             'status' => 'on',
             'uname' => 'event-one',
             'locked' => 0,
@@ -181,7 +181,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null
         ],
         [
-            'object_type_id' => 7,
+            'object_type_id' => 8,
             'status' => 'on',
             'uname' => 'media-one',
             'locked' => 0,

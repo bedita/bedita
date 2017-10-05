@@ -106,7 +106,7 @@ class ProfilesTableTest extends TestCase
                 false,
                 [
                     'email' => 'gustavo.supporto@channelweb.it',
-                    'object_type_id' => 2,
+                    'object_type_id' => 3,
                     'status' => 'draft',
                     'lang' => 'eng',
                 ],
@@ -189,7 +189,7 @@ class ProfilesTableTest extends TestCase
         sort($expectedProperties);
 
         $profile = $this->Profiles->find()
-            ->where(['object_type_id' => 2])
+            ->where(['object_type_id' => 3])
             ->first();
         $visibleProperties = $profile->visibleProperties();
         sort($visibleProperties);

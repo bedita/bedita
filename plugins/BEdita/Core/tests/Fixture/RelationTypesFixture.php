@@ -30,13 +30,8 @@ class RelationTypesFixture extends TestFixture
     public $records = [
         [
             'relation_id' => 1,
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'side' => 'left',
-        ],
-        [
-            'relation_id' => 1,
-            'object_type_id' => 1,
-            'side' => 'right',
         ],
         [
             'relation_id' => 1,
@@ -44,13 +39,18 @@ class RelationTypesFixture extends TestFixture
             'side' => 'right',
         ],
         [
+            'relation_id' => 1,
+            'object_type_id' => 3,
+            'side' => 'right',
+        ],
+        [
             'relation_id' => 2,
-            'object_type_id' => 5,
+            'object_type_id' => 6,
             'side' => 'left',
         ],
         [
             'relation_id' => 2,
-            'object_type_id' => 5,
+            'object_type_id' => 6,
             'side' => 'right',
         ],
     ];

@@ -158,7 +158,7 @@ class ObjectsTableTest extends TestCase
                     6 => 'title one deleted',
                     7 => 'title two deleted',
                 ],
-                [1],
+                [2],
             ],
             'multiple' => [
                 [
