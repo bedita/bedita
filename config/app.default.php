@@ -395,7 +395,7 @@ return [
      * - `autoload` - boolean - (default: false) Whether or not you want an autoloader registered
      */
     'Plugins' => [
-      'BEdita/DevTools' => ['debugOnly' => true, 'bootstrap' => true],
+        'BEdita/DevTools' => ['debugOnly' => true, 'bootstrap' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
     ],
 
