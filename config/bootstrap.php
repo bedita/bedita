@@ -57,6 +57,14 @@ use Cake\Utility\Security;
 //         ->toServer();
 // }
 
+/**
+ * In `config/environment.php` you may set some environment variables
+ * used in configuration
+ */
+if (file_exists(CONFIG . 'environment.php')) {
+    include CONFIG . 'environment.php';
+}
+
 /*
  * Read configuration file and inject configuration into various
  * CakePHP classes.
