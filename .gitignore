@@ -6,6 +6,7 @@
 /config/app.php
 /config/app.json
 /config/.env
+/config/environment.php
 /coverage/*
 /docs/*
 /index.html
