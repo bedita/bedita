@@ -25,11 +25,22 @@ use Cake\Core\Plugin;
 class NotReserved
 {
     /**
-      * The list of reserved names
-      *
-      * @var array
-      */
+     * The list of reserved names
+     *
+     * @var array
+     */
     protected static $reserved = null;
+
+    /**
+     * Clear reserved names list
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        static::$reserved = null;
+        Configure::write('Reserved', null);
+    }
 
     /**
      * Load list of reserved names in `$reserved`

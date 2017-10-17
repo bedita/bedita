@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
+use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;

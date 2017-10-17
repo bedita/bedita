@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Validation;
 
-use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validator;
 
 /**
  * Validator for object types.
@@ -56,7 +56,7 @@ class ObjectTypesValidator extends Validator
 
                     return ($context['data']['name'] !== $value);
                 },
-                'message' =>'Name and singular fields must be different'
+                'message' => 'Name and singular fields must be different'
             ])
             ->add('singular', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->add('singular', 'notReserved', ['rule' => 'allowed', 'provider' => 'reserved']);

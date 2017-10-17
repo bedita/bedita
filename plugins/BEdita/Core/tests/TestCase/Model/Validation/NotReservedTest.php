@@ -53,10 +53,12 @@ class NotReservedTest extends TestCase
      * @dataProvider reservedProvider()
      * @covers ::loadReserved()
      * @covers ::allowed()
+     * @covers ::clear()
      */
     public function testReserved($value, $expected)
     {
         $rule = new NotReserved();
+        $rule->clear();
         $result = $rule->allowed($value);
         static::assertEquals($expected, $result);
         // avoid reload in repeated allowed
