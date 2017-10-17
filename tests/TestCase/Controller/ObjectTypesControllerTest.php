@@ -573,6 +573,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      */
     public function testAddInvalid()
     {
+        // missing mandatory `name`, `singular`
         $data = [
             'type' => 'object_types',
             'attributes' => [
@@ -584,7 +585,34 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
 
+        // add reserved word failrure
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'applications',
+                'singular' => 'application',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+
+        // add same `name`, `singular`
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'gustavo',
+                'singular' => 'gustavo',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
