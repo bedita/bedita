@@ -157,6 +157,33 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Profiles',
                 ],
             ],
+            'sameNameSingular' => [
+                false,
+                [
+                    'singular' => 'gustavo',
+                    'name' => 'gustavo',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'reservedName' => [
+                false,
+                [
+                    'singular' => 'application_item',
+                    'name' => 'applications',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'reservedSingular' => [
+                false,
+                [
+                    'singular' => 'role',
+                    'name' => 'role_list',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
         ];
     }
 

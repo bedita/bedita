@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
@@ -50,6 +51,11 @@ class ObjectTypesTable extends Table
      * @var string
      */
     const CACHE_CONFIG = '_bedita_object_types_';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = ObjectTypesValidator::class;
 
     /**
      * {@inheritDoc}
@@ -95,46 +101,6 @@ class ObjectTypesTable extends Table
                 $through->aliasField('side') => 'right',
             ],
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name')
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
-            ->allowEmpty('singular')
-            ->add('singular', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
-            ->allowEmpty('description');
-
-        $validator
-            ->requirePresence('plugin', 'create')
-            ->notEmpty('plugin');
-
-        $validator
-            ->requirePresence('model', 'create')
-            ->notEmpty('model');
-
-        $validator
-            ->allowEmpty('associations');
-
-        $validator
-            ->allowEmpty('hidden');
-
-        return $validator;
     }
 
     /**
