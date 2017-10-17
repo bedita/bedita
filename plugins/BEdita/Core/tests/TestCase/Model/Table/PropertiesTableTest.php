@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -28,7 +29,13 @@ class PropertiesTableTest extends TestCase
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
     ];
 
     /**
@@ -60,13 +67,13 @@ class PropertiesTableTest extends TestCase
     public function testInitialization()
     {
         $this->Properties->initialize([]);
-        $this->assertEquals('properties', $this->Properties->getTable());
-        $this->assertEquals('id', $this->Properties->getPrimaryKey());
-        $this->assertEquals('name', $this->Properties->getDisplayField());
+        static::assertEquals('properties', $this->Properties->getTable());
+        static::assertEquals('id', $this->Properties->getPrimaryKey());
+        static::assertEquals('name', $this->Properties->getDisplayField());
 
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->ObjectTypes);
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->PropertyTypes);
-        $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Properties->behaviors()->get('Timestamp'));
+        static::assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->ObjectTypes);
+        static::assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->PropertyTypes);
+        static::assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Properties->behaviors()->get('Timestamp'));
     }
 
     /**
@@ -112,11 +119,105 @@ class PropertiesTableTest extends TestCase
         $property->property = 'string';
 
         $error = (bool)$property->getErrors();
-        $this->assertEquals($expected, !$error);
+        static::assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->Properties->save($property);
-            $this->assertTrue((bool)$success);
+            static::assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Data provider for `testFindObjectType` test case.
+     *
+     * @return array
+     */
+    public function findObjectTypeProvider()
+    {
+        $objects = [
+            'uname',
+            'status',
+            'published',
+            'lang',
+            'locked',
+
+            'title',
+            'description',
+            'body',
+            'extra',
+
+            'publish_start',
+            'publish_end',
+            'created',
+            'modified',
+            'created_by',
+            'modified_by',
+        ];
+        $media = [
+            'name',
+
+            'provider',
+            'provider_uid',
+            'provider_url',
+            'provider_thumbnail',
+            'provider_extra',
+        ];
+
+        return [
+            'objects' => [
+                $objects,
+                ['objects'],
+            ],
+            'documents' => [
+                array_merge(
+                    $objects,
+                    [ // Documents custom properties.
+                        'another_title',
+                        'another_description',
+                    ]
+                ),
+                ['documents'],
+            ],
+            'media' => [
+                array_merge(
+                    $objects,
+                    $media
+                ),
+                ['media'],
+            ],
+            'too few' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                [],
+            ],
+            'too many' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                ['gustavo', 'supporto'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by object type.
+     *
+     * @param array|\Exception $expected List of expected properties names.
+     * @param array $options Options to be passed to finder.
+     * @return void
+     *
+     * @dataProvider findObjectTypeProvider()
+     * @covers ::findObjectType()
+     */
+    public function testFindObjectType($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Properties->find('objectType', $options)
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
     }
 }
