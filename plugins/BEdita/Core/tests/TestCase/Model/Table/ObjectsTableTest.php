@@ -4,6 +4,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -186,8 +187,32 @@ class ObjectsTableTest extends TestCase
                 ['ne' => 'documents'],
             ],
             'missing' => [
-                false,
+                new RecordNotFoundException('Record not found in table "object_types"'),
                 ['document', 'profiles', 0],
+            ],
+            'abstract' => [
+                [
+                    1 => 'Mr. First User',
+                    2 => 'title one',
+                    3 => 'title two',
+                    4 => 'Gustavo Supporto profile',
+                    5 => 'Miss Second User',
+                    6 => 'title one deleted',
+                    7 => 'title two deleted',
+                    8 => 'The Two Towers',
+                    9 => 'first event',
+                    10 => 'first media',
+                ],
+                ['objects'],
+            ],
+            'polluted array' => [
+                [
+                    4 => 'Gustavo Supporto profile',
+                ],
+                [
+                    'profiles',
+                    'banana' => 33,
+                ],
             ],
         ];
     }
@@ -195,7 +220,7 @@ class ObjectsTableTest extends TestCase
     /**
      * Test object types finder.
      *
-     * @param array|false $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param array $types Array of object types to filter for.
      * @return void
      *
@@ -204,8 +229,10 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindType($expected, array $types)
     {
-        if (!$expected) {
-            $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->Objects->find('list')->find('type', $types)->toArray();
