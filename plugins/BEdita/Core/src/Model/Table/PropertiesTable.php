@@ -13,8 +13,13 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
+use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Query as DatabaseQuery;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -91,5 +96,51 @@ class PropertiesTable extends Table
         $rules->add($rules->existsIn(['property_type_id'], 'PropertyTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Return properties for an object type, considering inheritance.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Filter options.
+     * @return \Cake\ORM\Query
+     */
+    public function findObjectType(Query $query, array $options = [])
+    {
+        $options = array_filter($options);
+        if (count($options) !== 1) {
+            throw new BadFilterException(__d('bedita', 'Missing object type to get properties for'));
+        }
+        $for = reset($options);
+
+        // Build CTE sub-query.
+        $from = (new DatabaseQuery($this->getConnection()))
+            ->select(['*'])
+            ->from($this->getTable())
+            ->unionAll(
+                (new DatabaseQuery($this->getConnection()))
+                    ->select(['*'])
+                    ->from(TableRegistry::get('StaticProperties')->getTable())
+            );
+
+        // Ugly workaround to make UUIDs work. Without this they would be cast to integers with funny results.
+        $query
+            ->getTypeMap()
+            ->setDefaults([
+                $this->getAlias() . '__id' => 'uuid',
+                $this->aliasField('id') => 'uuid',
+                'id' => 'uuid',
+            ]);
+        $query->addDefaultTypes($this);
+
+        return $query
+            ->from([$this->getAlias() => $from])
+            ->where(function (QueryExpression $exp) use ($for) {
+                return $exp->in(
+                    $this->aliasField($this->ObjectTypes->getForeignKey()),
+                    $this->ObjectTypes->find('path', compact('for'))
+                        ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
+                );
+            });
     }
 }
