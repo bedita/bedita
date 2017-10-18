@@ -19,7 +19,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_title',
             'property_type_id' => 1,
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -32,7 +32,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_description',
             'property_type_id' => 1,
-            'object_type_id' => 1,
+            'object_type_id' => 2,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -45,7 +45,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_username',
             'property_type_id' => 1,
-            'object_type_id' => 3,
+            'object_type_id' => 4,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -58,7 +58,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_email',
             'property_type_id' => 1,
-            'object_type_id' => 3,
+            'object_type_id' => 4,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -71,7 +71,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_birthdate',
             'property_type_id' => 2,
-            'object_type_id' => 2,
+            'object_type_id' => 3,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -84,7 +84,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'another_surname',
             'property_type_id' => 1,
-            'object_type_id' => 2,
+            'object_type_id' => 3,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2016-12-31 23:09:23',
@@ -97,7 +97,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'disabled_property',
             'property_type_id' => 1,
-            'object_type_id' => 3,
+            'object_type_id' => 4,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2017-09-05 11:10:00',

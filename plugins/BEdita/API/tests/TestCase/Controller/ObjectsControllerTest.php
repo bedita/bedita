@@ -613,7 +613,71 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
         $this->assertHeader('Location', 'http://api.example.com/documents/11');
-        static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
+        static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
+    }
+
+    /**
+     * Test add method with an abstract object type.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testAddAbstract()
+    {
+        $data = [
+            'type' => 'objects',
+            'attributes' => [
+                'title' => 'A new generic object',
+            ],
+        ];
+        $expected = [
+            'status' => '403',
+            'title' => 'Abstract object types cannot be instantiated',
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/objects', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+        static::assertFalse(TableRegistry::get('Documents')->exists($data['attributes']));
+    }
+
+    /**
+     * Test add method with an abstract object type.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testAddAbstractMedia()
+    {
+        $data = [
+            'type' => 'media',
+            'attributes' => [
+                'title' => 'A new generic media',
+            ],
+        ];
+        $expected = [
+            'status' => '403',
+            'title' => 'Abstract object types cannot be instantiated',
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/media', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+        static::assertFalse(TableRegistry::get('Documents')->exists($data['attributes']));
     }
 
     /**

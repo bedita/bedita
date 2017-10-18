@@ -106,7 +106,7 @@ class PropertyTest extends TestCase
         return [
             'document' => [
                 'documents',
-                1,
+                2,
             ],
             'non existent' => [
                 null,
@@ -148,7 +148,7 @@ class PropertyTest extends TestCase
     {
         return [
             'document' => [
-                1,
+                2,
                 'documents',
             ],
             'non existent' => [

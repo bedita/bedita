@@ -55,8 +55,10 @@ class GetObjectAction extends BaseAction
             'deleted' => (int)!empty($data['deleted']),
         ];
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
+        $options = [];
         if (!empty($this->objectType)) {
-            $conditions['object_type_id'] = $this->objectType->id;
+            $finder = 'type';
+            $options = (array)$this->objectType->id;
 
             $assoc = $this->objectType->associations;
             if (!empty($assoc)) {
@@ -64,6 +66,6 @@ class GetObjectAction extends BaseAction
             }
         }
 
-        return $this->Table->get($data['primaryKey'], compact('conditions', 'contain'));
+        return $this->Table->get($data['primaryKey'], $options + compact('conditions', 'contain', 'finder'));
     }
 }

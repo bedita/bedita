@@ -57,8 +57,9 @@ class ListObjectsAction extends BaseAction
             'deleted' => (int)!empty($data['deleted']),
         ];
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
+        $type = null;
         if (!empty($this->objectType)) {
-            $filter['object_type_id'] = $this->objectType->id;
+            $type = $this->objectType->id;
 
             $assoc = $this->objectType->associations;
             if (!empty($assoc)) {
@@ -74,7 +75,11 @@ class ListObjectsAction extends BaseAction
         }
 
         $action = new ListEntitiesAction(['table' => $this->Table]);
+        $query = $action->execute(compact('filter', 'contain'));
+        if (isset($type)) {
+            $query = $query->find('type', (array)$type);
+        }
 
-        return $action->execute(compact('filter', 'contain'));
+        return $query;
     }
 }

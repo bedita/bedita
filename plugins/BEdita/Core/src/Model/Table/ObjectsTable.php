@@ -15,10 +15,11 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
-use BEdita\Core\ORM\QueryFilterTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -47,8 +48,6 @@ use Cake\ORM\Table;
  */
 class ObjectsTable extends Table
 {
-
-    use QueryFilterTrait;
 
     /**
      * {@inheritDoc}
@@ -128,6 +127,24 @@ class ObjectsTable extends Table
     }
 
     /**
+     * Perform checks on abstract types.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return bool
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        $objectType = $this->ObjectTypes->get($entity->get('type'));
+        if ($objectType->get('is_abstract')) {
+            // Cannot save objects of an abstract type.
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -155,13 +172,44 @@ class ObjectsTable extends Table
      */
     protected function findType(Query $query, array $options)
     {
-        foreach ($options as &$type) {
-            $type = $this->ObjectTypes->get($type)->id;
-        }
-        unset($type);
         $field = $this->aliasField($this->ObjectTypes->getForeignKey());
 
-        return $this->fieldsFilter($query, [$field => $options]);
+        return $query->where(function (QueryExpression $exp) use ($field, $options) {
+            $in = [];
+            $notIn = [];
+            foreach ($options as $key => $value) {
+                if (!is_int($key) && !in_array($key, ['eq', '=', 'neq', 'ne', '!=', '<>'], true)) {
+                    continue;
+                }
+                $value = $this->ObjectTypes->get($value);
+
+                $objectTypeIds[] = $value->id;
+                if ($value->get('is_abstract')) {
+                    $objectTypeIds = array_merge(
+                        $objectTypeIds,
+                        $this->ObjectTypes
+                            ->find('children', ['for' => $value->id])
+                            ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->toList()
+                    );
+                }
+
+                if (in_array($key, ['neq', 'ne', '!=', '<>'], true)) {
+                    $notIn = $objectTypeIds;
+                } else {
+                    $in = array_merge($in, $objectTypeIds);
+                }
+            }
+
+            if (!empty($in)) {
+                $exp = $exp->in($field, $in);
+            }
+            if (!empty($notIn)) {
+                $exp = $exp->notIn($field, $notIn);
+            }
+
+            return $exp;
+        });
     }
 
     /**

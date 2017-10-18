@@ -117,7 +117,7 @@ class ObjectEntityTest extends TestCase
         return [
             'document' => [
                 'documents',
-                1,
+                2,
             ],
             'non existent' => [
                 null,
@@ -180,7 +180,7 @@ class ObjectEntityTest extends TestCase
                     'description',
                     'type',
                 ],
-                1,
+                2,
             ],
             'non existent' => [
                 ['body'],
@@ -199,7 +199,7 @@ class ObjectEntityTest extends TestCase
                     'description',
                     'type',
                 ],
-                4,
+                5,
             ],
         ];
     }
@@ -238,7 +238,7 @@ class ObjectEntityTest extends TestCase
     {
         return [
             'document' => [
-                1,
+                2,
                 'documents',
             ],
             'non existent' => [

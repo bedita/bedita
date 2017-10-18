@@ -52,10 +52,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 7,
+                    'count' => 8,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 7,
+                    'page_items' => 8,
                     'page_size' => 20,
                 ],
             ],
@@ -64,21 +64,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'document',
-                        'name' => 'documents',
+                        'singular' => 'object',
+                        'name' => 'objects',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
                         'hidden' => null,
+                        'is_abstract' => true,
                     ],
                     'meta' => [
-                        'alias' => 'Documents',
-                        'relations' => [
-                            'test',
-                            'inverse_test',
-                        ],
+                        'alias' => 'Objects',
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/1',
@@ -94,13 +92,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/1/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/1/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/1/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/1/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/1/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/1/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -108,18 +112,20 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'profile',
-                        'name' => 'profiles',
+                        'singular' => 'document',
+                        'name' => 'documents',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Profiles',
-                        'table' => 'BEdita/Core.Profiles',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects',
                         'associations' => null,
                         'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'Profiles',
+                        'alias' => 'Documents',
                         'relations' => [
+                            'test',
                             'inverse_test',
                         ],
                     ],
@@ -137,13 +143,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/2/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/2/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/2/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/2/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/2/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -151,18 +163,21 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '3',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'user',
-                        'name' => 'users',
+                        'singular' => 'profile',
+                        'name' => 'profiles',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Users',
-                        'table' => 'BEdita/Core.Users',
+                        'model' => 'Profiles',
+                        'table' => 'BEdita/Core.Profiles',
                         'associations' => null,
                         'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'Users',
-                        'relations' => [],
+                        'alias' => 'Profiles',
+                        'relations' => [
+                            'inverse_test',
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/3',
@@ -178,13 +193,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/3/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/3/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/3/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/3/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/3/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/3/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -192,17 +213,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '4',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'news',
-                        'name' => 'news',
+                        'singular' => 'user',
+                        'name' => 'users',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Objects',
-                        'table' => 'BEdita/Core.Objects',
+                        'model' => 'Users',
+                        'table' => 'BEdita/Core.Users',
                         'associations' => null,
-                        'hidden' => ['body'],
+                        'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'News',
+                        'alias' => 'Users',
                         'relations' => [],
                     ],
                     'links' => [
@@ -219,13 +241,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/4/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/4/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/4/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/4/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/4/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/4/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -233,21 +261,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '5',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'location',
-                        'name' => 'locations',
+                        'singular' => 'news',
+                        'name' => 'news',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Locations',
-                        'table' => 'BEdita/Core.Locations',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects',
                         'associations' => null,
-                        'hidden' => null,
+                        'hidden' => ['body'],
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'Locations',
-                        'relations' => [
-                            'another_test',
-                            'inverse_another_test',
-                        ],
+                        'alias' => 'News',
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/5',
@@ -263,13 +289,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/5/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/5/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/5/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/5/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/5/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/5/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -277,18 +309,22 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '6',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'event',
-                        'name' => 'events',
+                        'singular' => 'location',
+                        'name' => 'locations',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Objects',
-                        'table' => 'BEdita/Core.Objects',
-                        'associations' => ['DateRanges'],
+                        'model' => 'Locations',
+                        'table' => 'BEdita/Core.Locations',
+                        'associations' => null,
                         'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'Events',
-                        'relations' => [],
+                        'alias' => 'Locations',
+                        'relations' => [
+                            'another_test',
+                            'inverse_another_test',
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/6',
@@ -304,13 +340,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/6/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/6/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/6/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/6/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/6/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/6/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -318,17 +360,18 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '7',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'media',
-                        'name' => 'media',
+                        'singular' => 'event',
+                        'name' => 'events',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Media',
-                        'table' => 'BEdita/Core.Media',
-                        'associations' => ['Streams'],
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => ['DateRanges'],
                         'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
-                        'alias' => 'Media',
+                        'alias' => 'Events',
                         'relations' => [],
                     ],
                     'links' => [
@@ -345,13 +388,67 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/7/relationships/left_relations',
                                 'related' => 'http://api.example.com/model/object_types/7/left_relations',
-                            ]
+                            ],
                         ],
                         'right_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/7/relationships/right_relations',
                                 'related' => 'http://api.example.com/model/object_types/7/right_relations',
-                            ]
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/7/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/7/parent',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '8',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'media',
+                        'name' => 'media',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Media',
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams'],
+                        'hidden' => null,
+                        'is_abstract' => true,
+                    ],
+                    'meta' => [
+                        'alias' => 'Media',
+                        'relations' => [],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/8',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/8/relationships/properties',
+                                'related' => 'http://api.example.com/model/object_types/8/properties',
+                            ],
+                        ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/8/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/8/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/8/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/8/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/8/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/8/parent',
+                            ],
                         ],
                     ],
                 ],
@@ -431,11 +528,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/model/object_types/1',
+                'self' => 'http://api.example.com/model/object_types/2',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
-                'id' => '1',
+                'id' => '2',
                 'type' => 'object_types',
                 'attributes' => [
                     'singular' => 'document',
@@ -446,6 +543,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
+                    'is_abstract' => false,
                 ],
                 'meta' => [
                     'alias' => 'Documents',
@@ -457,20 +555,26 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'relationships' => [
                     'properties' => [
                         'links' => [
-                            'self' => 'http://api.example.com/model/object_types/1/relationships/properties',
-                            'related' => 'http://api.example.com/model/object_types/1/properties',
+                            'self' => 'http://api.example.com/model/object_types/2/relationships/properties',
+                            'related' => 'http://api.example.com/model/object_types/2/properties',
                         ],
                     ],
                     'left_relations' => [
                         'links' => [
-                            'self' => 'http://api.example.com/model/object_types/1/relationships/left_relations',
-                            'related' => 'http://api.example.com/model/object_types/1/left_relations',
+                            'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',
+                            'related' => 'http://api.example.com/model/object_types/2/left_relations',
                         ],
                     ],
                     'right_relations' => [
                         'links' => [
-                            'self' => 'http://api.example.com/model/object_types/1/relationships/right_relations',
-                            'related' => 'http://api.example.com/model/object_types/1/right_relations',
+                            'self' => 'http://api.example.com/model/object_types/2/relationships/right_relations',
+                            'related' => 'http://api.example.com/model/object_types/2/right_relations',
+                        ],
+                    ],
+                    'parent' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/model/object_types/2/relationships/parent',
+                            'related' => 'http://api.example.com/model/object_types/2/parent',
                         ],
                     ],
                 ],
@@ -478,7 +582,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/model/object_types/1');
+        $this->get('/model/object_types/2');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         /*
@@ -559,7 +663,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/object_types/8');
+        $this->assertHeader('Location', 'http://api.example.com/model/object_types/9');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 
@@ -601,7 +705,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testEdit()
     {
         $data = [
-            'id' => '1',
+            'id' => '2',
             'type' => 'object_types',
             'attributes' => [
                 'singular' => 'document new',
@@ -609,13 +713,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/model/object_types/1', json_encode(compact('data')));
+        $this->patch('/model/object_types/2', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         $ObjectTypes = TableRegistry::get('ObjectTypes');
-        $entity = $ObjectTypes->get(1);
+        $entity = $ObjectTypes->get(2);
         $this->assertEquals('document new', $entity->get('singular'));
 
         // restore previous values
@@ -635,7 +739,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testEditConflict()
     {
         $data = [
-            'id' => '1',
+            'id' => '2',
             'type' => 'object_types',
             'attributes' => [
                 'singular' => 'profile new',
@@ -643,12 +747,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/model/object_types/2', json_encode(compact('data')));
+        $this->patch('/model/object_types/3', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(1)->get('singular'));
-        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('singular'));
+        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(2)->get('singular'));
+        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(3)->get('singular'));
     }
 
     /**
@@ -662,10 +766,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/model/object_types/1');
+        $this->delete('/model/object_types/2');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 2]));
     }
 }
