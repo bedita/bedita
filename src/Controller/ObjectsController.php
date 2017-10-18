@@ -72,26 +72,24 @@ class ObjectsController extends ResourcesController
         parent::initialize();
 
         $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
-        if ($type !== false && $type !== 'objects') {
-            try {
-                $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
-                $this->modelClass = $this->objectType->alias;
-                $this->Table = TableRegistry::get($this->modelClass);
-            } catch (RecordNotFoundException $e) {
-                $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
+        try {
+            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            $this->modelClass = $this->objectType->alias;
+            $this->Table = TableRegistry::get($this->modelClass);
+        } catch (RecordNotFoundException $e) {
+            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
 
-                throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
-            }
+            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
+        }
 
-            $behaviorRegistry = $this->Table->behaviors();
-            if ($behaviorRegistry->hasMethod('getRelations')) {
-                $relations = array_keys($behaviorRegistry->call('getRelations'));
-                $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
-            }
+        $behaviorRegistry = $this->Table->behaviors();
+        if ($behaviorRegistry->hasMethod('getRelations')) {
+            $relations = array_keys($behaviorRegistry->call('getRelations'));
+            $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
+        }
 
-            if (isset($this->JsonApi)) {
-                $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
-            }
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
         }
     }
 
@@ -122,6 +120,11 @@ class ObjectsController extends ResourcesController
 
         if ($this->request->is('post')) {
             // Add a new entity.
+            if ($this->objectType->is_abstract) {
+                // Refuse to save an abstract object type.
+                throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
+            }
+
             $entity = $this->Table->newEntity();
             $entity->set('type', $this->request->getData('type'));
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);

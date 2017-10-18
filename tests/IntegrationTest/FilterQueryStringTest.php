@@ -142,18 +142,19 @@ class FilterQueryStringTest extends IntegrationTestCase
         return [
             'simple' => [
                'filter[geo][center]=44.4944183,11.3464055',
-               '/documents'
+               '/documents',
             ],
             'bad' => [
                'filter[cool_filter]=top',
+                '/events',
             ],
             'banana' => [
                'filter[geo][banana]=44.4944183,11.3464055',
-               '/locations'
+               '/locations',
             ],
             'banana2' => [
                'filter[date_ranges][banana][gt]=2017-01-01',
-               '/events'
+               '/events',
             ],
         ];
     }
@@ -168,7 +169,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @dataProvider badFilterProvider
      * @coversNothing
      */
-    public function testBadFilter($query, $endpoint = '/events')
+    public function testBadFilter($query, $endpoint)
     {
         $this->configRequestHeaders();
         $this->get($endpoint . '?' . $query);
