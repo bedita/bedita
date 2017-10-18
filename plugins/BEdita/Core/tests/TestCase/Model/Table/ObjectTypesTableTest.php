@@ -219,7 +219,7 @@ class ObjectTypesTableTest extends TestCase
         return [
             'id' => [
                 [
-                    'id' => 1,
+                    'id' => 2,
                     'singular' => 'document',
                     'name' => 'documents',
                     'description' => null,
@@ -233,12 +233,13 @@ class ObjectTypesTableTest extends TestCase
                         'test',
                         'inverse_test',
                     ],
+                    'is_abstract' => false,
                 ],
-                1,
+                2,
             ],
             'stringId' => [
                 [
-                    'id' => 1,
+                    'id' => 2,
                     'singular' => 'document',
                     'name' => 'documents',
                     'description' => null,
@@ -252,12 +253,13 @@ class ObjectTypesTableTest extends TestCase
                         'test',
                         'inverse_test',
                     ],
+                    'is_abstract' => false,
                 ],
-                '1',
+                '2',
             ],
             'singular' => [
                 [
-                    'id' => 1,
+                    'id' => 2,
                     'singular' => 'document',
                     'name' => 'documents',
                     'description' => null,
@@ -271,12 +273,13 @@ class ObjectTypesTableTest extends TestCase
                         'test',
                         'inverse_test',
                     ],
+                    'is_abstract' => false,
                 ],
                 'document',
             ],
             'plural' => [
                 [
-                    'id' => 1,
+                    'id' => 2,
                     'singular' => 'document',
                     'name' => 'documents',
                     'description' => null,
@@ -290,12 +293,13 @@ class ObjectTypesTableTest extends TestCase
                         'test',
                         'inverse_test',
                     ],
+                    'is_abstract' => false,
                 ],
                 'documents',
             ],
             'notUnderscored' => [
                 [
-                    'id' => 1,
+                    'id' => 2,
                     'singular' => 'document',
                     'name' => 'documents',
                     'description' => null,
@@ -309,6 +313,7 @@ class ObjectTypesTableTest extends TestCase
                         'test',
                         'inverse_test',
                     ],
+                    'is_abstract' => false,
                 ],
                 'Documents',
             ],
@@ -369,21 +374,21 @@ class ObjectTypesTableTest extends TestCase
     public function testInvalidateCacheAfterSave()
     {
         $entity = $this->ObjectTypes->get('document');
-        $this->ObjectTypes->get(2);
-        $this->ObjectTypes->get(5);
+        $this->ObjectTypes->get(3);
+        $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
@@ -398,20 +403,20 @@ class ObjectTypesTableTest extends TestCase
     public function testInvalidateCacheAfterDelete()
     {
         $entity = $this->ObjectTypes->get('document');
-        $this->ObjectTypes->get(2);
-        $this->ObjectTypes->get(5);
+        $this->ObjectTypes->get(3);
+        $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_1_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }

@@ -440,7 +440,7 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 [
-                    'id' => '1',
+                    'id' => '2',
                     'type' => 'object_types',
                     'attributes' => [
                         'singular' => 'document',
@@ -451,6 +451,7 @@ class RelationsControllerTest extends IntegrationTestCase
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
                         'hidden' => null,
+                        'is_abstract' => false,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -460,25 +461,31 @@ class RelationsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/model/object_types/1',
+                        'self' => 'http://api.example.com/model/object_types/2',
                     ],
                     'relationships' => [
                         'properties' => [
                             'links' => [
-                                'self' => 'http://api.example.com/model/object_types/1/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/1/properties',
+                                'self' => 'http://api.example.com/model/object_types/2/relationships/properties',
+                                'related' => 'http://api.example.com/model/object_types/2/properties',
                             ],
                         ],
                         'left_relations' => [
                             'links' => [
-                                'self' => 'http://api.example.com/model/object_types/1/relationships/left_relations',
-                                'related' => 'http://api.example.com/model/object_types/1/left_relations',
+                                'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/2/left_relations',
                             ],
                         ],
                         'right_relations' => [
                             'links' => [
-                                'self' => 'http://api.example.com/model/object_types/1/relationships/right_relations',
-                                'related' => 'http://api.example.com/model/object_types/1/right_relations',
+                                'self' => 'http://api.example.com/model/object_types/2/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/2/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/2/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/2/parent',
                             ],
                         ],
                     ],

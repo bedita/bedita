@@ -99,7 +99,7 @@ class ObjectTypeTest extends TestCase
             ],
         ];
 
-        $objectType = $this->ObjectTypes->get(1);
+        $objectType = $this->ObjectTypes->get(2);
 
         static::assertEquals($expected, $objectType->extract($objectType->getVirtual()));
     }
@@ -217,7 +217,7 @@ class ObjectTypeTest extends TestCase
         $expected = [
             'inverse_test',
         ];
-        $objectType = $this->ObjectTypes->get(2);
+        $objectType = $this->ObjectTypes->get(3);
 
         static::assertEquals($expected, $objectType->relations, '', 0, 10, true);
     }

@@ -55,7 +55,7 @@ class AppController extends Controller
                 'contentType' => $this->request->is('json') ? 'json' : null,
                 'checkMediaType' => $this->request->is('jsonapi'),
             ]);
-            $this->Paginator->setPaginator(new JsonApiPaginator());
+            $this->Paginator->setPaginator((new JsonApiPaginator())->setConfig($this->Paginator->getConfig()));
 
             $this->RequestHandler->setConfig('inputTypeMap.json', [[$this->JsonApi, 'parseInput']], false);
             $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');

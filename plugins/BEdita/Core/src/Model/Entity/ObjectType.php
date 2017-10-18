@@ -33,10 +33,15 @@ use Cake\Utility\Inflector;
  * @property string $associations
  * @property string $hidden
  * @property string[] $relations
+ * @property bool $is_abstract
+ * @property int $parent_id
+ * @property int $tree_left
+ * @property int $tree_right
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  * @property \BEdita\Core\Model\Entity\Property[] $properties
+ * @property \BEdita\Core\Model\Entity\ObjectType $parent
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {
@@ -57,6 +62,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         'table' => true,
         'associations' => true,
         'hidden' => true,
+        'is_abstract' => true,
     ];
 
     /**
@@ -73,6 +79,9 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'objects',
+        'parent_id',
+        'tree_left',
+        'tree_right',
     ];
 
     /**

@@ -62,8 +62,8 @@ class RelationsBehaviorTest extends TestCase
         static::assertTrue($Profiles->hasBehavior('ObjectType'));
         static::assertTrue($Locations->hasBehavior('ObjectType'));
 
-        static::assertSame(1, $Documents->objectType()->id);
-        static::assertSame(2, $Profiles->objectType()->id);
+        static::assertSame(2, $Documents->objectType()->id);
+        static::assertSame(3, $Profiles->objectType()->id);
 
         static::assertInstanceOf(BelongsToMany::class, $Documents->association('Test'));
         static::assertSame('BEdita/Core.Objects', $Documents->association('Test')->className());

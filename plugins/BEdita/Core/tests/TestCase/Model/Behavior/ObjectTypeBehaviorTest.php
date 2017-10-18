@@ -50,7 +50,7 @@ class ObjectTypeBehaviorTest extends TestCase
             'setter' => [
                 'documents',
                 'Documents',
-                1,
+                2,
             ],
             'setter by name' => [
                 'documents',

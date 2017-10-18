@@ -100,6 +100,15 @@ class ObjectTypesTable extends Table
                 $through->aliasField('side') => 'right',
             ],
         ]);
+
+        $this->belongsTo('Parent', [
+            'foreign_key' => 'parent_id',
+            'className' => 'ObjectTypes',
+        ]);
+        $this->addBehavior('Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+        ]);
     }
 
     /**

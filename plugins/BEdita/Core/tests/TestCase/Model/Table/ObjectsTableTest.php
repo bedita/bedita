@@ -1,8 +1,11 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -27,7 +30,9 @@ class ObjectsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
@@ -158,7 +163,7 @@ class ObjectsTableTest extends TestCase
                     6 => 'title one deleted',
                     7 => 'title two deleted',
                 ],
-                [1],
+                [2],
             ],
             'multiple' => [
                 [
@@ -182,8 +187,32 @@ class ObjectsTableTest extends TestCase
                 ['ne' => 'documents'],
             ],
             'missing' => [
-                false,
+                new RecordNotFoundException('Record not found in table "object_types"'),
                 ['document', 'profiles', 0],
+            ],
+            'abstract' => [
+                [
+                    1 => 'Mr. First User',
+                    2 => 'title one',
+                    3 => 'title two',
+                    4 => 'Gustavo Supporto profile',
+                    5 => 'Miss Second User',
+                    6 => 'title one deleted',
+                    7 => 'title two deleted',
+                    8 => 'The Two Towers',
+                    9 => 'first event',
+                    10 => 'first media',
+                ],
+                ['objects'],
+            ],
+            'polluted array' => [
+                [
+                    4 => 'Gustavo Supporto profile',
+                ],
+                [
+                    'profiles',
+                    'banana' => 33,
+                ],
             ],
         ];
     }
@@ -191,7 +220,7 @@ class ObjectsTableTest extends TestCase
     /**
      * Test object types finder.
      *
-     * @param array|false $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param array $types Array of object types to filter for.
      * @return void
      *
@@ -200,8 +229,10 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindType($expected, array $types)
     {
-        if (!$expected) {
-            $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->Objects->find('list')->find('type', $types)->toArray();
@@ -293,16 +324,62 @@ class ObjectsTableTest extends TestCase
      */
     public function testEmoji()
     {
-        $objectsTable = TableRegistry::get('Objects');
-        $object = $objectsTable->get(1);
+        $object = $this->Objects->get(1);
         $expected = "🙈 😂 😱";
         $info = Database::basicInfo();
         if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
             $expected = "";
         }
         $object['description'] = $expected;
-        $objectsTable->save($object);
-        $object = $objectsTable->get(1);
-        $this->assertEquals($object['description'], $expected);
+        $this->Objects->save($object);
+        $object = $this->Objects->get(1);
+        static::assertEquals($object['description'], $expected);
+    }
+
+    /**
+     * Data provider for `testSaveAbstractTypes` test case.
+     *
+     * @return array
+     */
+    public function saveAbstractTypesProvider()
+    {
+        return [
+            'objects' => [
+                true,
+                'objects',
+            ],
+            'media' => [
+                true,
+                'media',
+            ],
+            'documents' => [
+                false,
+                'documents',
+            ],
+        ];
+    }
+
+    /**
+     * Test that save of abstract types fails as expected.
+     *
+     * @param bool $abstract Is the type abstract?
+     * @param string $type Type being saved.
+     * @return void
+     *
+     * @covers ::beforeSave()
+     * @dataProvider saveAbstractTypesProvider()
+     */
+    public function testSaveAbstractTypes($abstract, $type)
+    {
+        if ($abstract) {
+            $this->expectException(PersistenceFailedException::class);
+        }
+
+        $object = $this->Objects->newEntity();
+        $object->type = $type;
+
+        $result = $this->Objects->saveOrFail($object);
+
+        static::assertInstanceOf(ObjectEntity::class, $result);
     }
 }
