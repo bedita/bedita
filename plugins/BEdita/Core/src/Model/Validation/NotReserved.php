@@ -29,7 +29,7 @@ class NotReserved
      *
      * @var array
      */
-    protected static $reserved = null;
+    protected static $reserved = [];
 
     /**
      * Clear reserved names list
@@ -38,7 +38,7 @@ class NotReserved
      */
     public function clear()
     {
-        static::$reserved = null;
+        static::$reserved = [];
         Configure::write('Reserved', null);
     }
 
