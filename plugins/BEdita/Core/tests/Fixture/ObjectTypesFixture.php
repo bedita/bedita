@@ -49,7 +49,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Users',
         ],
         [
-            'singular' => 'news',
+            'singular' => 'news_item',
             'name' => 'news',
             'description' => null,
             'plugin' => 'BEdita/Core',
@@ -72,7 +72,7 @@ class ObjectTypesFixture extends TestFixture
             'associations' => '["DateRanges"]',
         ],
         [
-            'singular' => 'media',
+            'singular' => 'media_item',
             'name' => 'media',
             'description' => null,
             'plugin' => 'BEdita/Core',
