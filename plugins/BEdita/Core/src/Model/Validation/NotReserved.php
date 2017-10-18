@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Validation;
 
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 
 /**
  * Reusable class to check for reserved names.
