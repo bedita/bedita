@@ -192,7 +192,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '4',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'news',
+                        'singular' => 'news_item',
                         'name' => 'news',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
@@ -318,7 +318,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '7',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'media',
+                        'singular' => 'media_item',
                         'name' => 'media',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
