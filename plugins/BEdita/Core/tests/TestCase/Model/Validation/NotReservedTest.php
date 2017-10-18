@@ -46,8 +46,8 @@ class NotReservedTest extends TestCase
     /**
      * Test reserved rule.
      *
-     * @param string|null $expected Expected alias, or `null`.
-     * @param string $alias Alias to search for.
+     * @param string $value Test value.
+     * @param boolean $expected Expected result.
      * @return void
      *
      * @dataProvider reservedProvider()

@@ -589,7 +589,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
 
-        // add reserved word failrure
+        // add reserved word failure
         $data = [
             'type' => 'object_types',
             'attributes' => [
