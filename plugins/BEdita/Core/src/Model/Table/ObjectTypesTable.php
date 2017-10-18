@@ -24,7 +24,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use Cake\Validation\Validator;
 
 /**
  * ObjectTypes Model
