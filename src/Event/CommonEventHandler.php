@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Event;
 
+use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -61,10 +62,12 @@ class CommonEventHandler implements EventListenerInterface
      */
     public function buildMiddlewareStack(Event $event, MiddlewareQueue $middleware)
     {
-        $middleware->insertBefore(
-            ErrorHandlerMiddleware::class,
-            new CorsMiddleware(Configure::read('CORS'))
-        );
+        $middleware
+            ->prepend(new AnalyticsMiddleware())
+            ->insertBefore(
+                ErrorHandlerMiddleware::class,
+                new CorsMiddleware(Configure::read('CORS'))
+            );
     }
 
     /**
