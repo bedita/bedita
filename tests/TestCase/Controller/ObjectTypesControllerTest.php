@@ -571,7 +571,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::initialize()
      */
-    public function testAddInvalid()
+    public function testAddMissing()
     {
         // missing mandatory `name`, `singular`
         $data = [
@@ -582,13 +582,23 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $count = TableRegistry::get('ObjectTypes')->find()->count();
-
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
 
+    /**
+     * Test with reserve words.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testReserved()
+    {
         // add reserved word failure
         $data = [
             'type' => 'object_types',
@@ -597,12 +607,25 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'singular' => 'application',
             ],
         ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
 
+    /**
+     * Test failure with same `name` and `singular`.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testNameSingular()
+    {
         // add same `name`, `singular`
         $data = [
             'type' => 'object_types',
@@ -611,6 +634,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'singular' => 'gustavo',
             ],
         ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
