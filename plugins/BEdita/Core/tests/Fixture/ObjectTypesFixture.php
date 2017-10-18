@@ -72,7 +72,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Users',
         ],
         [
-            'singular' => 'news',
+            'singular' => 'news_item',
             'name' => 'news',
             'is_abstract' => false,
             'parent_id' => 1,
@@ -107,7 +107,7 @@ class ObjectTypesFixture extends TestFixture
             'associations' => '["DateRanges"]',
         ],
         [
-            'singular' => 'media',
+            'singular' => 'media_item',
             'name' => 'media',
             'is_abstract' => true,
             'parent_id' => 1,

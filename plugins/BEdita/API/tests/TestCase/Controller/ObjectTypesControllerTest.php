@@ -261,7 +261,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '5',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'news',
+                        'singular' => 'news_item',
                         'name' => 'news',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
@@ -408,7 +408,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '8',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'media',
+                        'singular' => 'media_item',
                         'name' => 'media',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
@@ -675,8 +675,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::initialize()
      */
-    public function testAddInvalid()
+    public function testAddMissing()
     {
+        // missing mandatory `name`, `singular`
         $data = [
             'type' => 'object_types',
             'attributes' => [
@@ -685,10 +686,62 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $count = TableRegistry::get('ObjectTypes')->find()->count();
-
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
 
+    /**
+     * Test with reserve words.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testReserved()
+    {
+        // add reserved word failure
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'applications',
+                'singular' => 'application',
+            ],
+        ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
+
+    /**
+     * Test failure with same `name` and `singular`.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testNameSingular()
+    {
+        // add same `name`, `singular`
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'gustavo',
+                'singular' => 'gustavo',
+            ],
+        ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
