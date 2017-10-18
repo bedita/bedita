@@ -20,6 +20,13 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
+stages:
+  - name: minimal
+  - name: reference
+  - name: complete
+  - name: deploy
+    if: repo = bedita/bedita AND branch = 4-cactus AND type IN (push, api)
+
 jobs:
   fast_finish: true
 
@@ -105,9 +112,6 @@ jobs:
       php: 7.1
       services: []
       addons: {}
-      branches: # Hopefully this will work someday.
-        only:
-          - 4-cactus
       before_script: skip
       script: skip
       deploy:
@@ -121,10 +125,6 @@ jobs:
           - "BEDITA_ADMIN_USR=admin BEDITA_ADMIN_PWD=heroku bin/cake migrations seed -p BEdita/Core --seed AdminFromEnvSeed"
         api_key:
           secure: IoV+GK7hyX8/uWmuF7xuc+4SM0a9mCmKAckOTJ+LZj1zpzXRE8LkPXm5GnuYoO/ambRoZkORDwclrXMsloY3TJMFvJxG6UnOlKANBzwKankZK6vWv0O3Jni4TtbW48OShH7yj6iCS7uvwPFrA76c21qlLBp34QAFJO0y73lS+sY=
-        on:
-          repo: bedita/bedita # Play nicely on forks.
-          branch:
-            - 4-cactus
 
   allow_failures:
     - env: "RUN=phpstan"
