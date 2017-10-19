@@ -14,8 +14,7 @@ namespace BEdita\API\Middleware;
 
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Core\Configure;
-use Cake\Http\Response;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Log\Log;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +26,8 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AnalyticsMiddleware
 {
+    use EventDispatcherTrait;
+
     /**
      * Request start time
      *
@@ -42,16 +43,8 @@ class AnalyticsMiddleware
     protected $data = [];
 
     /**
-     * Registered callbacks for custom analytics data
-     *
-     * @var array
-     */
-    protected static $callbacks = [];
-
-    /**
      * Configure analytics logger if not configured yet
      *
-     * @return void
      */
     public function __construct()
     {
@@ -93,41 +86,20 @@ class AnalyticsMiddleware
     }
 
     /**
-     * Register new analytics extension callback
-     *
-     * @param mixed $newCallback Callback to register
-     * @return void
-     */
-    public static function registerCallback($newCallback)
-    {
-        if (!is_callable($newCallback)) {
-            Log::warning('Bad callback ' . print_r($newCallback, true));
-
-            return;
-        }
-        static::$callbacks[] = $newCallback;
-    }
-
-    /**
-     * Get analytics custom data from registered callbacks
+     * Get analytics custom data from event listeners
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array
      */
-    protected function readCallbackData(ServerRequestInterface $request, ResponseInterface $response)
+    protected function readCustomData(ServerRequestInterface $request, ResponseInterface $response)
     {
-        if (empty(static::$callbacks)) {
+        $event = $this->dispatchEvent('Analytics.custom', [$request, $response]);
+        if (empty($event->result)) {
             return [];
         }
 
-        $res = [];
-        $params = [$request, $response];
-        foreach (static::$callbacks as $call) {
-            $res[] = call_user_func_array($call, $params);
-        }
-
-        return $res;
+        return (array)$event->result;
     }
 
     /**
@@ -170,7 +142,7 @@ class AnalyticsMiddleware
             'q' => $request->getUri()->getQuery(),
             's' => $response->getStatusCode(),
             'c' => $this->getAppErrorCode($response),
-            'x' => $this->readCallBackData($request, $response),
+            'x' => $this->readCustomData($request, $response),
         ];
         $this->data['e'] = round(microtime(true) - $this->startTime, 4, PHP_ROUND_HALF_EVEN);
 
