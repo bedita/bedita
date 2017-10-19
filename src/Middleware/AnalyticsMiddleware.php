@@ -131,6 +131,25 @@ class AnalyticsMiddleware
     }
 
     /**
+     * Read custom error code
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
+     * @return string|null
+     */
+    public function getAppErrorCode(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() < 400) {
+            return null;
+        }
+        $body = json_decode($response->getBody(), true);
+        if (empty($body['error']['code'])) {
+            return null;
+        }
+
+        return $body['error']['code'];
+    }
+
+    /**
      * The middleware action.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
@@ -142,9 +161,6 @@ class AnalyticsMiddleware
     {
         $response = $next($request, $response);
 
-        /**
-         * TODO: add custom application error code
-         */
         $this->data = [
             'r' => $request->getEnv('REQUEST_TIME'),
             'a' => CurrentApplication::getApplicationId(),
@@ -153,9 +169,10 @@ class AnalyticsMiddleware
             'url' => $request->getUri()->getPath(),
             'q' => $request->getUri()->getQuery(),
             's' => $response->getStatusCode(),
+            'c' => $this->getAppErrorCode($response),
             'x' => $this->readCallBackData($request, $response),
-            'e' => round(microtime(true) - $this->startTime, 4, PHP_ROUND_HALF_EVEN),
         ];
+        $this->data['e'] = round(microtime(true) - $this->startTime, 4, PHP_ROUND_HALF_EVEN);
 
         Log::info(json_encode($this->data), 'analytics');
 
