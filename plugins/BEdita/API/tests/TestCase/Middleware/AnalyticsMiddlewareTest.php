@@ -67,12 +67,6 @@ class AnalyticsMiddlewareTest extends TestCase
                 'undefined',
                 [],
             ],
-            'badFunction' => [
-                function (array $data) {
-                    return 'result';
-                },
-                [],
-            ],
             'simple' => [
                 function (ServerRequestInterface $request, Response $response) {
                     return 'result';

@@ -19,7 +19,6 @@ use Cake\Http\Response;
 use Cake\Log\Log;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 
 /**
  * Middleware to trace analytics data
@@ -43,7 +42,7 @@ class AnalyticsMiddleware
     protected $data = [];
 
     /**
-     * Registered callbacks fo analytics extensions
+     * Registered callbacks for custom analytics data
      *
      * @var array
      */
@@ -85,7 +84,7 @@ class AnalyticsMiddleware
     /**
      * Getter for $data
      *
-     * @return float
+     * @return array
      * @codeCoverageIgnore
      */
     public function getData()
@@ -125,12 +124,7 @@ class AnalyticsMiddleware
         $res = [];
         $params = [$request, $response];
         foreach (static::$callbacks as $call) {
-            try {
-                $values = call_user_func_array($call, $params);
-                $res[] = $values;
-            } catch (Throwable $t) {
-                Log::error('Error calling callback ' . print_r($call, true));
-            }
+            $res[] = call_user_func_array($call, $params);
         }
 
         return $res;
