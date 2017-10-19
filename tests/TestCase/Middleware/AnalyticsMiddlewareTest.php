@@ -13,6 +13,8 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\AnalyticsMiddleware;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Log\Log;
@@ -56,19 +58,21 @@ class AnalyticsMiddlewareTest extends TestCase
     }
 
     /**
-     * Data provider for `testCallback`
+     * Data provider for `testCustomData`
      *
      * @return void
      */
-    public function callbackProvider()
+    public function customProvider()
     {
         return [
             'empty' => [
-                'undefined',
-                [],
+                function () {
+                    return null;
+                },
+                []
             ],
             'simple' => [
-                function (ServerRequestInterface $request, Response $response) {
+                function (Event $e, ServerRequestInterface $request, Response $response) {
                     return 'result';
                 },
                 ['result'],
@@ -81,36 +85,28 @@ class AnalyticsMiddlewareTest extends TestCase
      *
      * @return void
      *
-     * @dataProvider callbackProvider
-     * @covers ::registerCallback()
-     * @covers ::readCallbackData()
+     * @dataProvider customProvider
+     * @covers ::readCustomData()
      */
-    public function testCallback($callback, $expected)
+    public function testCustomData($callback, $expected)
     {
-        $server = [
-            'REQUEST_URI' => '/home',
-            'REQUEST_METHOD' => 'GET',
-            'HTTP_ACCEPT' => 'application/json',
-            'HTTP_ORIGIN' => 'http://api.example.com',
-        ];
+        EventManager::instance()->on('Analytics.custom', $callback);
 
-        $request = ServerRequestFactory::fromGlobals($server);
+        $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
         $next = function ($req, $res) {
             return $res;
         };
-
-        AnalyticsMiddleware::registerCallback($callback);
         $middleware = new AnalyticsMiddleware();
-
         $middleware($request, $response, $next);
 
         $data = $middleware->getData();
         static::assertNotEmpty($data);
         static::assertArrayHasKey('x', $data);
         static::assertEquals($data['x'], $expected);
-    }
 
+        EventManager::instance()->off('Analytics.custom', $callback);
+    }
 
     /**
      * Data provider for `testCallback`
