@@ -110,4 +110,58 @@ class AnalyticsMiddlewareTest extends TestCase
         static::assertArrayHasKey('x', $data);
         static::assertEquals($data['x'], $expected);
     }
+
+
+    /**
+     * Data provider for `testCallback`
+     *
+     * @return void
+     */
+    public function errorCodeProvider()
+    {
+        return [
+            'empty' => [
+                '{"error":{"status":"401","title":"Expired token","code":"be_token_expired"}}',
+                401,
+                'be_token_expired',
+            ],
+            'simple' => [
+                '{"error":{"status":"404","title":"Not Found"}}',
+                404,
+                null,
+            ],
+            'data' => [
+                '{"data":{}}',
+                200,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test getAppErrorCode() method
+     *
+     * @return void
+     *
+     * @dataProvider errorCodeProvider
+     * @covers ::getAppErrorCode()
+     */
+    public function testAppErrorCode($body, $status, $expected)
+    {
+        $request = ServerRequestFactory::fromGlobals();
+        $response = new Response();
+        $response = $response->withStatus($status)->withStringBody($body);
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $middleware = new AnalyticsMiddleware();
+        $middleware($request, $response, $next);
+
+        $data = $middleware->getData();
+        static::assertNotEmpty($data);
+        static::assertArrayHasKey('c', $data);
+        static::assertEquals($data['c'], $expected);
+    }
+
 }
