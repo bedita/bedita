@@ -159,5 +159,4 @@ class AnalyticsMiddlewareTest extends TestCase
         static::assertArrayHasKey('c', $data);
         static::assertEquals($data['c'], $expected);
     }
-
 }
