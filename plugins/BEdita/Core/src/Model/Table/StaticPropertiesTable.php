@@ -108,6 +108,8 @@ class StaticPropertiesTable extends PropertiesTable
             $table->addConstraint($safeRename($constraint), $attributes);
         }
 
+        // Execute SQL to create table. In MySQL the transaction is completely useless,
+        // because `CREATE TABLE` implicitly implies a commit.
         $connection->transactional(function () use ($connection, $table) {
             foreach ($table->createSql($connection) as $statement) {
                 $connection->execute($statement);
@@ -193,7 +195,7 @@ class StaticPropertiesTable extends PropertiesTable
             $property = $this->newEntity(compact('name'));
             $property->id = Text::uuid();
             $property->set('object_type_id', $objectType->id);
-            $property->set('property_type_id', $this->PropertyTypes->find()->firstOrFail()->id);
+            $property->set('property_type_id', $this->PropertyTypes->find()->firstOrFail()->id); // TODO
             $property->set('description', Hash::get($column, 'comment'));
 
             $properties[] = $property;

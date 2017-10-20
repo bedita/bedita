@@ -123,7 +123,8 @@ class PropertiesTable extends Table
                     ->from(TableRegistry::get('StaticProperties')->getTable())
             );
 
-        // Ugly workaround to make UUIDs work. Without this they would be cast to integers with funny results.
+        // Ugly workaround to make static properties UUIDs work.
+        // Without this they would be cast to integers with funny results.
         $query
             ->getTypeMap()
             ->setDefaults([
