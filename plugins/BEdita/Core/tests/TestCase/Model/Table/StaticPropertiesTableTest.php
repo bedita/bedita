@@ -85,7 +85,7 @@ class StaticPropertiesTableTest extends TestCase
         $this->StaticProperties = TableRegistry::get('StaticProperties');
 
         static::assertSame(Property::class, $this->StaticProperties->getEntityClass());
-        static::assertRegExp('/^static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
+        static::assertRegExp('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
         $otherInstance = TableRegistry::get('BEdita/Core.StaticProperties');
 
@@ -111,7 +111,11 @@ class StaticPropertiesTableTest extends TestCase
         static::assertSame($Properties->getConnection(), $this->StaticProperties->getConnection());
         //static::assertTrue($staticPropSchema->isTemporary()); // Does not work as expected.
 
-        $prefix = sprintf('%s_', str_replace('_', '', $this->StaticProperties->getTable()));
+        $tableName = $this->StaticProperties->getTable();
+        if (strpos($tableName, '.')) {
+            list(, $tableName) = explode('.', $tableName);
+        }
+        $prefix = sprintf('%s_', str_replace('_', '', $tableName));
 
         // Check that columns have the same definition, except ID.
         foreach ($staticPropSchema->columns() as $column) {
@@ -143,20 +147,10 @@ class StaticPropertiesTableTest extends TestCase
             static::assertEquals($propSchema->getIndex($correspondingIndex), $definition);
         }
 
-        // Check that constraints have the same definition, but different name, and there are no foreign keys.
+        // Check that there are no foreign keys.
         foreach ($staticPropSchema->constraints() as $constraint) {
-            $correspondingConstraint = sprintf('properties_%s', substr($constraint, strlen($prefix)));
             $definition = $staticPropSchema->getConstraint($constraint);
-
-            if ($definition['type'] === TableSchema::CONSTRAINT_FOREIGN) {
-                static::fail('Temporary table should not have foreign keys');
-            }
-            if ($constraint !== TableSchema::CONSTRAINT_PRIMARY) {
-                static::assertStringStartsWith($prefix, $constraint);
-            } else {
-                $correspondingConstraint = TableSchema::CONSTRAINT_PRIMARY;
-            }
-            static::assertEquals($propSchema->getConstraint($correspondingConstraint), $definition);
+            static::assertNotSame(TableSchema::CONSTRAINT_FOREIGN, $definition['type']);
         }
     }
 
@@ -173,7 +167,6 @@ class StaticPropertiesTableTest extends TestCase
                     'object_type_id' => 1,
                     'property_type_id' => 1,
                     'name' => 'status',
-                    'description' => 'object status: on, draft, off',
                 ],
                 [
                     'object_type_id' => 1,
@@ -192,7 +185,6 @@ class StaticPropertiesTableTest extends TestCase
                     'object_type_id' => 3,
                     'property_type_id' => 1,
                     'name' => 'email',
-                    'description' => 'first email, can be NULL',
                 ],
                 [
                     'object_type_id' => 3,

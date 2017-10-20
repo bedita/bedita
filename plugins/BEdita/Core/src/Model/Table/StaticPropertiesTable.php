@@ -17,7 +17,8 @@ use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Utility\Text;
 use Cake\Cache\Cache;
-use Cake\Database\Schema\Collection;
+use Cake\Database\Connection;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Schema\TableSchema;
 use Cake\Log\Log;
 use Cake\ORM\Table;
@@ -52,7 +53,22 @@ class StaticPropertiesTable extends PropertiesTable
             function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX)
         ));
 
+        // Create the temporary table.
         $this->createTable();
+
+        if ($this->getConnection()->getDriver() instanceof Postgres) {
+            // If we're using PostgreSQL we must instruct CakePHP to use the correct schema (which is deduced by
+            // the current connection) to describe the temporary table, otherwise it thinks that the table has
+            // zero columns, and the ORM fails to create new entities and persist them.
+            // This query must be executed after the temporary table has been created, because the schema
+            // is not present at all until at least a temporary table has been created.
+            $schema = $this->getConnection()
+                ->execute("SELECT nspname FROM pg_namespace WHERE oid = pg_my_temp_schema();")
+                ->fetch();
+            $this->setTable(sprintf('%s.%s', $schema[0], $this->getTable()));
+        }
+
+        // Insert data into table.
         $this->addSchemaDetails();
     }
 
@@ -66,13 +82,11 @@ class StaticPropertiesTable extends PropertiesTable
         Log::debug('Using temporary table for static properties'); // Log for statistics purposes... :/
 
         $tableName = $this->getTable();
-        $connection = $this->getConnection();
-        $schemaCollection = $connection->getSchemaCollection();
         $parentTable = TableRegistry::get('Properties');
-        $safeRename = function ($indexOrConstraint) {
+        $safeRename = function ($indexOrConstraint) use ($tableName) {
             return preg_replace(
                 '/^properties_/',
-                sprintf('%s_', str_replace('_', '', $this->getTable())),
+                sprintf('%s_', str_replace('_', '', $tableName)),
                 $indexOrConstraint
             );
         };
@@ -82,7 +96,7 @@ class StaticPropertiesTable extends PropertiesTable
         $table->setTemporary(true);
 
         // Copy options, columns, indexes and constraints (except foreign keys) from `properties`.
-        $schema = $schemaCollection->describe($parentTable->getTable());
+        $schema = $parentTable->getSchema();
         $table->setOptions($schema->getOptions());
         foreach ($schema->columns() as $column) {
             $attributes = $schema->getColumn($column);
@@ -108,7 +122,7 @@ class StaticPropertiesTable extends PropertiesTable
 
         // Execute SQL to create table. In MySQL the transaction is completely useless,
         // because `CREATE TABLE` implicitly implies a commit.
-        $connection->transactional(function () use ($connection, $table) {
+        $this->getConnection()->transactional(function (Connection $connection) use ($table) {
             foreach ($table->createSql($connection) as $statement) {
                 $connection->execute($statement);
             }
@@ -144,7 +158,7 @@ class StaticPropertiesTable extends PropertiesTable
                             $accumulator['tables'][] = $tableName;
                             $accumulator['properties'] = array_merge(
                                 $accumulator['properties'],
-                                $this->prepareTableFields($schemaCollection, $objectType, $table)
+                                $this->prepareTableFields($objectType, $table)
                             );
 
                             return $accumulator;
@@ -165,14 +179,15 @@ class StaticPropertiesTable extends PropertiesTable
     /**
      * Return an array of Property entities that represent object type concrete fields.
      *
-     * @param \Cake\Database\Schema\Collection $schemaCollection Schema collection.
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
      * @param \Cake\ORM\Table $table Table object.
      * @return \BEdita\Core\Model\Entity\Property[]
      */
-    protected function prepareTableFields(Collection $schemaCollection, ObjectType $objectType, Table $table)
+    protected function prepareTableFields(ObjectType $objectType, Table $table)
     {
-        $schema = $schemaCollection->describe($table->getTable());
+        $schema = $table->getConnection()
+            ->getSchemaCollection()
+            ->describe($table->getTable());
 
         $sampleEntity = $table->newEntity();
         $hiddenProperties = $sampleEntity->getHidden();
