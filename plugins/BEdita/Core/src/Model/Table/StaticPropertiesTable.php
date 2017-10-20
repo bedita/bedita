@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\Utility\Text;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\Collection;
 use Cake\Database\Schema\TableSchema;
@@ -22,7 +23,6 @@ use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Cake\Utility\Text;
 
 /**
  * Properties Model
@@ -185,24 +185,16 @@ class StaticPropertiesTable extends PropertiesTable
                 continue;
             }
 
-            // Seed generator with a 32-bit integer so that `Text::uuid()` yields the same result
-            // across subsequent runs for the same (object type name, column name) tuple.
-            // CRC32 is a hash algorithm that is NOT safe for security purposes, but it should be OK for our case.
-            srand(hexdec(hash('crc32', sprintf('%s.%s', $objectType->name, $name))));
-
             $column = $schema->getColumn($name);
 
             $property = $this->newEntity(compact('name'));
-            $property->id = Text::uuid();
+            $property->id = Text::uuid5(sprintf('%s.%s', $objectType->name, $name));
             $property->set('object_type_id', $objectType->id);
             $property->set('property_type_id', $this->PropertyTypes->find()->firstOrFail()->id); // TODO
             $property->set('description', Hash::get($column, 'comment'));
 
             $properties[] = $property;
         }
-
-        // Seed the random number generator again, so it returns to its normal behavior.
-        srand();
 
         return $properties;
     }
