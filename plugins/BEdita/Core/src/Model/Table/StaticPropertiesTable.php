@@ -37,8 +37,6 @@ class StaticPropertiesTable extends PropertiesTable
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
