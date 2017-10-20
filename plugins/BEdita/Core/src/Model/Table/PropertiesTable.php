@@ -132,12 +132,20 @@ class PropertiesTable extends Table
     protected function findStatic(Query $query)
     {
         // Build CTE sub-query.
+        $select = array_combine(
+            $this->getSchema()->columns(),
+            $this->getSchema()->columns()
+        );
+        $select[$this->getPrimaryKey()] = $query->func()->concat([
+            '',
+            $this->getPrimaryKey() => 'identifier',
+        ]); // Use implicit type conversion, or PostgreSQL will complain about mixing integers and UUIDs.
         $from = (new DatabaseQuery($this->getConnection()))
-            ->select(['*'])
+            ->select($select)
             ->from($this->getTable())
             ->unionAll(
                 (new DatabaseQuery($this->getConnection()))
-                    ->select(['*'])
+                    ->select($select)
                     ->from(TableRegistry::get('StaticProperties')->getTable())
             );
 
