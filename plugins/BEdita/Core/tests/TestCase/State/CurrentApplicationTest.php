@@ -80,6 +80,24 @@ class CurrentApplicationTest extends TestCase
     }
 
     /**
+     * Test `getApplicationId` method.
+     *
+     * @return void
+     *
+     * @covers ::id()
+     * @covers ::getApplicationId()
+     */
+    public function testGetApplicationId()
+    {
+        static::assertNull(null, CurrentApplication::getApplicationId());
+
+        $application = $this->Applications->get(1);
+        CurrentApplication::setApplication($application);
+
+        static::assertSame(1, CurrentApplication::getApplicationId());
+    }
+
+    /**
      * Test `setApplication` method.
      *
      * @return void
