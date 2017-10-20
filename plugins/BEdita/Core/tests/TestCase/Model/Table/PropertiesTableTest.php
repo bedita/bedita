@@ -134,6 +134,82 @@ class PropertiesTableTest extends TestCase
      */
     public function findObjectTypeProvider()
     {
+        return [
+            'objects' => [
+                [],
+                ['objects'],
+            ],
+            'documents' => [
+                [
+                    'another_title',
+                    'another_description',
+                ],
+                ['documents'],
+            ],
+            'media' => [
+                [],
+                ['media'],
+            ],
+            'profiles' => [
+                [
+                    'another_birthdate',
+                    'another_surname',
+                ],
+                ['profiles'],
+            ],
+            'users' => [
+                [
+                    'another_birthdate',
+                    'another_surname',
+                    'another_username',
+                    'another_email',
+                    'disabled_property',
+                ],
+                ['users'],
+            ],
+            'too few' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                [],
+            ],
+            'too many' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                ['gustavo', 'supporto'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by object type that includes static properties.
+     *
+     * @param array|\Exception $expected List of expected properties names.
+     * @param array $options Options to be passed to finder.
+     * @return void
+     *
+     * @dataProvider findObjectTypeProvider()
+     * @covers ::findObjectType()
+     */
+    public function testFindObjectType($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Properties->find('objectType', $options)
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Data provider for `testFindStatic` test case.
+     *
+     * @return array
+     */
+    public function findStaticProvider()
+    {
         $objects = [
             'uname',
             'status',
@@ -185,28 +261,20 @@ class PropertiesTableTest extends TestCase
                 ),
                 ['media'],
             ],
-            'too few' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                [],
-            ],
-            'too many' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                ['gustavo', 'supporto'],
-            ],
         ];
     }
 
     /**
-     * Test finder by object type.
+     * Test finder by object type that includes static properties.
      *
      * @param array|\Exception $expected List of expected properties names.
-     * @param array $options Options to be passed to finder.
+     * @param array $options Options to be passed to object types finder.
      * @return void
      *
-     * @dataProvider findObjectTypeProvider()
-     * @covers ::findObjectType()
+     * @dataProvider findStaticProvider()
+     * @covers ::findStatic()
      */
-    public function testFindObjectType($expected, array $options)
+    public function testFindStatic($expected, array $options)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -215,6 +283,7 @@ class PropertiesTableTest extends TestCase
         }
 
         $result = $this->Properties->find('objectType', $options)
+            ->find('static')
             ->extract('name')
             ->toList();
 

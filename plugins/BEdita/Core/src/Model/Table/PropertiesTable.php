@@ -105,7 +105,7 @@ class PropertiesTable extends Table
      * @param array $options Filter options.
      * @return \Cake\ORM\Query
      */
-    public function findObjectType(Query $query, array $options = [])
+    protected function findObjectType(Query $query, array $options = [])
     {
         $options = array_filter($options);
         if (count($options) !== 1) {
@@ -113,6 +113,24 @@ class PropertiesTable extends Table
         }
         $for = reset($options);
 
+        return $query
+            ->where(function (QueryExpression $exp) use ($for) {
+                return $exp->in(
+                    $this->aliasField($this->ObjectTypes->getForeignKey()),
+                    $this->ObjectTypes->find('path', compact('for'))
+                        ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
+                );
+            });
+    }
+
+    /**
+     * Include static properties.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findStatic(Query $query)
+    {
         // Build CTE sub-query.
         $from = (new DatabaseQuery($this->getConnection()))
             ->select(['*'])
@@ -134,14 +152,6 @@ class PropertiesTable extends Table
             ]);
         $query->addDefaultTypes($this);
 
-        return $query
-            ->from([$this->getAlias() => $from])
-            ->where(function (QueryExpression $exp) use ($for) {
-                return $exp->in(
-                    $this->aliasField($this->ObjectTypes->getForeignKey()),
-                    $this->ObjectTypes->find('path', compact('for'))
-                        ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
-                );
-            });
+        return $query->from([$this->getAlias() => $from]);
     }
 }
