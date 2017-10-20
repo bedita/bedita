@@ -80,11 +80,12 @@ class Text extends CakeText
 
         // Get hexadecimal components of namespace
         $hex = str_replace('-', '', $uuid);
+        $length = strlen($hex);
 
         // Convert to bits
         $bin = '';
-        for ($i = 0; $i < strlen($hex); $i += 2) {
-            $bin .= chr(hexdec($hex[$i] . $hex[$i+1]));
+        for ($i = 0; $i < $length; $i += 2) {
+            $bin .= chr(hexdec($hex[$i] . $hex[$i + 1]));
         }
 
         return $bin;
@@ -106,7 +107,8 @@ class Text extends CakeText
 
         $hash = sha1($bin . $name);
 
-        return sprintf('%08s-%04s-%04x-%04x-%12s',
+        return sprintf(
+            '%08s-%04s-%04x-%04x-%12s',
             // 32 bits for "time_low"
             substr($hash, 0, 8),
             // 16 bits for "time_mid"
