@@ -557,8 +557,10 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'lang' => 'eng',
                         'publish_start' => null,
                         'publish_end' => null,
-                        'another_username' => null,
-                        'another_email' => null,
+                        'another_username' => null, // custom property
+                        'another_email' => null, // custom property
+                        'another_surname' => null, // inherited custom property
+                        'another_birthdate' => null, // inherited custom property
                     ],
                     'meta' => [
                         'blocked' => false,
