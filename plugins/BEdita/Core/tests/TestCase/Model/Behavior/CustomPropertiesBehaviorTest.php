@@ -66,12 +66,24 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function getAvailableProvider()
     {
         return [
-            'noProps' => [
+            'locations' => [
                 [],
                 'Locations',
             ],
-            'userProp' => [
-                ['another_username', 'another_email'],
+            'profiles' => [
+                [
+                    'another_surname',
+                    'another_birthdate',
+                ],
+                'Profiles',
+            ],
+            'users' => [
+                [
+                    'another_username',
+                    'another_email',
+                    'another_surname',
+                    'another_birthdate',
+                ],
                 'Users',
             ],
         ];
@@ -148,6 +160,8 @@ class CustomPropertiesBehaviorTest extends TestCase
         $expected = [
             'another_username' => null,
             'another_email' => null,
+            'another_surname' => null,
+            'another_birthdate' => null,
         ];
         $user = TableRegistry::get('Users');
         $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
@@ -241,9 +255,12 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_username' => 'gustavo',
                     'another_email' => null,
+                    'another_surname' => 'Support',
+                    'another_birthdate' => null,
                 ],
                 [
                     'another_username' => 'gustavo',
+                    'another_surname' => 'Support',
                 ],
                 1,
                 'Users',
@@ -252,6 +269,8 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_username' => 'synapse',
                     'another_email' => 'gustavo@example.org',
+                    'another_surname' => null,
+                    'another_birthdate' => null,
                 ],
                 [
                     'another_email' => 'gustavo@example.org',
@@ -263,6 +282,8 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_username' => null,
                     'another_email' => null,
+                    'another_surname' => null,
+                    'another_birthdate' => null,
                 ],
                 [
                     'password' => 'hohoho',
@@ -274,6 +295,8 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_username' => 'gustavo',
                     'another_email' => null,
+                    'another_surname' => null,
+                    'another_birthdate' => null,
                 ],
                 [
                     'another_username' => 'gustavo',
