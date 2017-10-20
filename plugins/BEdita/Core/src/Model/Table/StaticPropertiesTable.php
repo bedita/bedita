@@ -122,7 +122,7 @@ class StaticPropertiesTable extends PropertiesTable
      *
      * @return void
      */
-    public function addSchemaDetails()
+    protected function addSchemaDetails()
     {
         $properties = Cache::remember(
             'static_properties',
