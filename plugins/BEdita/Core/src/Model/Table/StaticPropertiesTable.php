@@ -19,6 +19,8 @@ use BEdita\Core\Utility\Text;
 use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Query;
 use Cake\Database\Schema\TableSchema;
 use Cake\Log\Log;
 use Cake\ORM\Table;
@@ -62,8 +64,13 @@ class StaticPropertiesTable extends PropertiesTable
             // zero columns, and the ORM fails to create new entities and persist them.
             // This query must be executed after the temporary table has been created, because the schema
             // is not present at all until at least a temporary table has been created.
-            $schema = $this->getConnection()
-                ->execute("SELECT nspname FROM pg_namespace WHERE oid = pg_my_temp_schema();")
+            $schema = (new Query($this->getConnection()))
+                ->select(['nspname'])
+                ->from(['pg_namespace'])
+                ->where([
+                    'oid' => new FunctionExpression('pg_my_temp_schema'),
+                ])
+                ->execute()
                 ->fetch();
             $this->setTable(sprintf('%s.%s', $schema[0], $this->getTable()));
         }
