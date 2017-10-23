@@ -429,9 +429,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->setupAuthComponent();
         $this->setupValidatorComponent();
         // Cross origin check.
-        if (!$this->checkOrigin()) {
-            throw new BeditaForbiddenException('Unallowed Origin');
-        }
+        $this->checkOrigin();
 
         $this->ResponseHandler->sendHeader('Access-Control-Allow-Methods', "POST, GET, PUT, DELETE, OPTIONS, HEAD");
         $acrh = env('HTTP_ACCESS_CONTROL_REQUEST_HEADERS');
@@ -2149,6 +2147,7 @@ abstract class ApiBaseController extends FrontendController {
         $parsed = parse_url(array_key_exists('HTTP_ORIGIN', $_SERVER) ? $_SERVER['HTTP_ORIGIN'] : null);
         $origin = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
         $origin .= isset($parsed['host']) ? $parsed['host'] : '';
+        $origin .= isset($parsed['port']) ? ':' . $parsed['port'] : '';
 
         $replace = array(
             '\*\*\.' => '(([a-z0-9_\-]+\.)*[a-z0-9_\-]+\.)?',
