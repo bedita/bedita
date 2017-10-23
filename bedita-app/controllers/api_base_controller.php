@@ -2136,7 +2136,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @return bool
      */
-    private function checkOrigin() {
+    protected function checkOrigin() {
         $allowed = Configure::read('api.allowedOrigins');
         if (!is_array($allowed)) {
             $allowed = (!empty($allowed)) ? array($allowed) : array('*');
