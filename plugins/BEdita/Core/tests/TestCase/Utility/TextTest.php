@@ -32,6 +32,12 @@ class TextTest extends TestCase
     public function uuid5Provider()
     {
         return [
+            'invalid namespace' => [
+                new \LogicException('The UUID provided for the namespace is not valid.'),
+                'whatever',
+                'invalid uuid',
+            ],
+
             /* @see https://github.com/lootils/uuid/blob/master/test/UUIDTest.php */
             'nil' => [
                 'd221f29a-4332-5f0d-b323-c5206a2e86ce',
@@ -68,16 +74,23 @@ class TextTest extends TestCase
     /**
      * Test UUID version 5 generator.
      *
-     * @param string $expected Expected result.
+     * @param string|\Exception $expected Expected result.
      * @param string $name Name.
      * @param string $namespace Namespace.
      * @return void
      *
      * @dataProvider uuid5Provider()
      * @covers ::uuid5()
+     * @covers ::uuidToBin()
      */
     public function testUuid5($expected, $name, $namespace)
     {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
         $result = Text::uuid5($name, $namespace);
 
         static::assertSame($expected, $result);
