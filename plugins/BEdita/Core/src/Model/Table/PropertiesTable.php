@@ -132,7 +132,7 @@ class PropertiesTable extends Table
     protected function findStatic(Query $query)
     {
         // Build CTE sub-query.
-        $select = array_combine(
+        $select = array_combine( // Use column name as column alias (`SELECT status AS status, title AS title, ...`).
             $this->getSchema()->columns(),
             $this->getSchema()->columns()
         );

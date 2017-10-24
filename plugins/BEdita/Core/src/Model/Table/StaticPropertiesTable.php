@@ -150,7 +150,7 @@ class StaticPropertiesTable extends PropertiesTable
                 return $this->ObjectTypes->find()
                     ->contain(['Parent'])
                     ->order([
-                        $this->ObjectTypes->aliasField('tree_left') => 'ASC' // Ensure parent tables are processed first!
+                        $this->ObjectTypes->aliasField('tree_left') => 'ASC', // Ensure parent tables are processed first!
                     ])
                     ->reduce(
                         function (array $accumulator, ObjectType $objectType) {

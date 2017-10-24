@@ -15,6 +15,9 @@ namespace BEdita\Core\Utility;
 
 use Cake\Utility\Text as CakeText;
 
+/**
+ * Text handling utilities.
+ */
 class Text extends CakeText
 {
 
