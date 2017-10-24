@@ -49,7 +49,7 @@ class StaticPropertiesTable extends PropertiesTable
 
         // Use a unique table name for each instance. This avoids conflicts if we don't drop the temporary table.
         // Temporary tables can be safely left there, since they will be deleted as soon as the connection
-        // to the database is closed.
+        // to the database is closed. Doing so, we never explicitly drop a temporary table.
         $this->setTable(sprintf(
             'static_properties_%016x',
             function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX)
@@ -59,11 +59,11 @@ class StaticPropertiesTable extends PropertiesTable
         $this->createTable();
 
         if ($this->getConnection()->getDriver() instanceof Postgres) {
-            // If we're using PostgreSQL we must instruct CakePHP to use the correct schema (which is deduced by
-            // the current connection) to describe the temporary table, otherwise it thinks that the table has
-            // zero columns, and the ORM fails to create new entities and persist them.
-            // This query must be executed after the temporary table has been created, because the schema
-            // is not present at all until at least a temporary table has been created.
+            // If we're using PostgreSQL we must tell CakePHP to use the correct namespace (that depends on
+            // the current connection) to describe the temporary table, or it will believe that the table has
+            // zero columns, and the ORM will fail to create new entities and persist them.
+            // This query must be executed _after_ the temporary table has been created, because the namespace
+            // is not present at all until at least one temporary table has been created.
             $schema = (new Query($this->getConnection()))
                 ->select(['nspname'])
                 ->from(['pg_namespace'])
@@ -185,6 +185,10 @@ class StaticPropertiesTable extends PropertiesTable
 
     /**
      * Return an array of Property entities that represent object type concrete fields.
+     *
+     * Static properties are assigned a UUID version 5 based on their `table_name.column_name`, so that
+     * the ID is consistent across subsequent requests and even installations. For instance,
+     * `objects.status` will always have ID `bd4dae3e-6b54-5d46-b4e2-a8d553676a82`.
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
      * @param \Cake\ORM\Table $table Table object.
