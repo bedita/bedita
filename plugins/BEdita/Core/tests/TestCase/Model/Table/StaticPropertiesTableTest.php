@@ -173,10 +173,9 @@ class StaticPropertiesTableTest extends TestCase
                     'name' => 'status',
                 ],
             ],
-            'objects.id' => [
+            '*.id' => [
                 null, // ID should never be present.
                 [
-                    'object_type_id' => 1,
                     'name' => 'id',
                 ],
             ],
