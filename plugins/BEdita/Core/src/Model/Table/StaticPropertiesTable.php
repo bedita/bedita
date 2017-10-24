@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Utility\Text;
 use Cake\Cache\Cache;
 use Cake\Database\Connection;
@@ -146,41 +147,71 @@ class StaticPropertiesTable extends PropertiesTable
         $properties = Cache::remember(
             'static_properties',
             function () {
-                $schemaCollection = $this->getConnection()->getSchemaCollection();
-                $result = $this->ObjectTypes->find()
-                    ->select(
-                        [$this->ObjectTypes->getPrimaryKey(), $this->ObjectTypes->getDisplayField()]
-                    )
-                    ->order(['tree_left' => 'ASC']) // Ensure parent tables are processed first!
+                return $this->ObjectTypes->find()
+                    ->contain(['Parent'])
+                    ->order([
+                        $this->ObjectTypes->aliasField('tree_left') => 'ASC' // Ensure parent tables are processed first!
+                    ])
                     ->reduce(
-                        function (array $accumulator, ObjectType $objectType) use ($schemaCollection) {
-                            $table = TableRegistry::get($objectType->alias);
-                            $tableName = $table->getTable();
-                            if (in_array($tableName, $accumulator['tables'])) {
-                                // Table already processed. This happens for "null extensions", like documents that
-                                // extend objects, but don't have their own table.
-                                return $accumulator;
+                        function (array $accumulator, ObjectType $objectType) {
+                            $tables = $this->listOwnTables($objectType);
+                            foreach ($tables as $table) {
+                                $accumulator = array_merge(
+                                    $accumulator,
+                                    $this->prepareTableFields($objectType, $table)
+                                );
                             }
-
-                            $accumulator['tables'][] = $tableName;
-                            $accumulator['properties'] = array_merge(
-                                $accumulator['properties'],
-                                $this->prepareTableFields($objectType, $table)
-                            );
 
                             return $accumulator;
                         },
-                        [
-                            'tables' => [],
-                            'properties' => [],
-                        ]
+                        []
                     );
-
-                return $result['properties'];
             },
             ObjectTypesTable::CACHE_CONFIG
         );
         $this->saveMany($properties);
+    }
+
+    /**
+     * List models that are specific for the object type.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
+     * @return \Cake\ORM\Table[]
+     */
+    protected function listOwnTables(ObjectType $objectType)
+    {
+        $table = TableRegistry::get($objectType->alias);
+        $tables = [$table];
+        if ($table instanceof InheritanceTable) {
+            $tables = array_merge($tables, $table->inheritedTables());
+        }
+
+        if (!$objectType->has('parent')) {
+            // Object type does not have a parent.
+            return $tables;
+        }
+
+        $parentTable = TableRegistry::get($objectType->parent->alias);
+        if ($parentTable->getTable() === $table->getTable()) {
+            // Same physical table as parent object: nothing to do. This happens for
+            // "null extensions", like documents that extend objects, but don't have
+            // their own table.
+            return [];
+        }
+
+        if ($table instanceof InheritanceTable) {
+            // Object type own tables are tables in inheritance chain that are not in
+            // parent object type's inheritance chain.
+            $commonTables = $table->commonInheritance($parentTable);
+            $tables = array_filter(
+                $tables,
+                function (Table $table) use ($commonTables) {
+                    return !in_array($table, $commonTables, true);
+                }
+            ); // `array_diff($tables, $table->commonInheritance($parentTable))` does not work. :(
+        }
+
+        return $tables;
     }
 
     /**

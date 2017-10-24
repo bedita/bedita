@@ -209,6 +209,7 @@ class StaticPropertiesTableTest extends TestCase
      *
      * @dataProvider addSchemaDetailsProvider()
      * @covers ::addSchemaDetails()
+     * @covers ::listOwnTables()
      * @covers ::prepareTableFields()
      */
     public function testAddSchemaDetails(array $expected = null, array $conditions)
