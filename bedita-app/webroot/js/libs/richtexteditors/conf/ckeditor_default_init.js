@@ -151,7 +151,25 @@ BEDITA.richtexteditor = {
 			forcePasteAsPlainText:true,
 			startupOutlineBlocks: false,
 			height:660
-		}
+		},
+
+		configNotes: { //mceNotes
+			toolbar: [
+				{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'NumberedList','BulletedList','Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+				{ name: 'document', groups: [ 'mode' ], items: [ 'Source'] },
+			],
+			allowedContent: true,
+			resize_enabled: true,
+			autocorrect_enabled: false,
+			extraPlugins: 'codemirror,onchange',
+			language: BEDITA.currLang2,
+			codemirror: { theme: 'lesser-dark' },
+			entities:false,
+			fillEmptyBlocks:false,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: false,
+			height:520
+		},
 	}
 };
 
@@ -166,7 +184,9 @@ $(window).load(function() {
 	$( '.richtextMini' ).ckeditor(BEDITA.richtexteditor.ckeditor.configMini);
 	$('.richtextNewsletterTemplate').ckeditor(BEDITA.richtexteditor.ckeditor.configNewsletterTemplate);
 	$('.richtextNewsletterMessage').ckeditor(BEDITA.richtexteditor.ckeditor.configNewsletterMessage);
-		
+	$('textarea.mceNotes').ckeditor(BEDITA.richtexteditor.ckeditor.configNotes);
+
+
 	if (BEDITA.webroot) {
 		if(typeof CKEDITOR.config.contentsCss === 'string') {
 			CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, BEDITA.webroot + 'js/libs/richtexteditors/conf/ckeditor_default_init.css'];
