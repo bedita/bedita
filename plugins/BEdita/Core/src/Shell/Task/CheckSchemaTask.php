@@ -18,6 +18,7 @@ use Cake\Console\Exception\MissingTaskException;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
+use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -92,8 +93,13 @@ class CheckSchemaTask extends Shell
         if (!$this->param('ignore-migration-status')) {
             $this->checkMigrationsStatus($connection);
         }
-        $this->checkConventions($connection);
-        $this->checkDiff($connection);
+
+        if ($connection->getDriver() instanceof Mysql) {
+            $this->checkConventions($connection);
+            $this->checkDiff($connection);
+        } else {
+            $this->out('=====> <warning>SQL conventions and schema differences can only be checked on MySQL</warning>');
+        }
 
         return $this->formatMessages();
     }
@@ -112,9 +118,9 @@ class CheckSchemaTask extends Shell
         ]);
         $status = $migrations->status();
 
-        $this->verbose('Checking migrations status:');
+        $this->verbose('=====> Checking migrations status:');
         foreach ($status as $item) {
-            $info = sprintf(' - Migration <comment>%s</comment> (%s) is ', $item['name'], $item['id']);
+            $info = sprintf('=====>  - Migration <comment>%s</comment> (%s) is ', $item['name'], $item['id']);
             if ($item['status'] === 'up') {
                 $this->verbose($info . '<info>UP</info>');
                 continue;
@@ -124,7 +130,7 @@ class CheckSchemaTask extends Shell
             $this->messages['phinxlog'] = true;
         }
 
-        $this->verbose('');
+        $this->verbose('=====> ');
     }
 
     /**
@@ -169,11 +175,11 @@ class CheckSchemaTask extends Shell
      */
     protected function checkConventions(Connection $connection)
     {
-        $this->verbose('Checking SQL conventions:');
+        $this->verbose('=====> Checking SQL conventions:');
         $allColumns = [];
         $tables = $this->filterPhinxlogTables($connection->getSchemaCollection()->listTables());
         foreach ($tables as $table) {
-            $this->verbose(sprintf(' - Checking table <comment>%s</comment>... ', $table), 0);
+            $this->verbose(sprintf('=====>  - Checking table <comment>%s</comment>... ', $table), 0);
 
             $schema = $connection->getSchemaCollection()->describe($table);
             $errors = [];
@@ -186,19 +192,6 @@ class CheckSchemaTask extends Shell
                     compact('table', 'allColumns')
                 );
                 $allColumns[$column] = $table;
-
-                //  previous 4-cactus version
-//                $errorMsg = $this->checkSymbol($column);
-//                if ($column === $table) {
-//                    $errorMsg[] = 'same name as table';
-//                }
-//                if (!in_array($column, ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params', 'label', 'priority']) && substr($column, -3) !== '_id') {
-//                    if (array_key_exists($column, $allColumns)) {
-//                        $errorMsg[] = sprintf('already defined in "%s"', $allColumns[$column]);
-//                    }
-//                    $allColumns[$column] = $table;
-//                }
-//                $errors['column'][$column]['naming'] = $errorMsg;
             }
 
             foreach ($schema->indexes() as $index) {
@@ -220,7 +213,7 @@ class CheckSchemaTask extends Shell
             $this->verbose('<info>DONE</info>');
         }
 
-        $this->verbose('');
+        $this->verbose('=====> ');
     }
 
     /**
@@ -234,12 +227,12 @@ class CheckSchemaTask extends Shell
         try {
             $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
         } catch (MissingTaskException $e) {
-            $this->err('Unable to check schema differences: ' . $e->getMessage());
+            $this->out(sprintf('=====> <error>Unable to check schema differences: %s</error>', $e->getMessage()));
 
             return;
         }
 
-        $this->verbose('Checking schema differences:');
+        $this->verbose('=====> Checking schema differences:');
 
         $diffTask->connection = $connection->configName();
         $diffTask->params['plugin'] = 'BEdita/Core';
@@ -251,7 +244,7 @@ class CheckSchemaTask extends Shell
         }
         $diff = $diff['data'];
 
-        $this->verbose(' - Checking tables added or removed... ', 0);
+        $this->verbose('=====>  - Checking tables added or removed... ', 0);
         foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['add'])) as $table) {
             $this->messages[$table]['table'][$table]['add'] = true;
         }
@@ -262,7 +255,7 @@ class CheckSchemaTask extends Shell
         $this->verbose('<info>DONE</info>');
 
         foreach ($diff as $table => $elements) {
-            $this->verbose(sprintf(' - Checking table <comment>%s</comment>... ', $table), 0);
+            $this->verbose(sprintf('=====>  - Checking table <comment>%s</comment>... ', $table), 0);
 
             foreach ($elements as $type => $changes) {
                 $type = Inflector::singularize($type);
@@ -276,7 +269,7 @@ class CheckSchemaTask extends Shell
             $this->verbose('<info>DONE</info>');
         }
 
-        $this->verbose('');
+        $this->verbose('=====> ');
     }
 
     /**
@@ -287,7 +280,7 @@ class CheckSchemaTask extends Shell
     protected function formatMessages()
     {
         if (!empty($this->messages['phinxlog'])) {
-            $this->quiet('<warning>Migration history is not in sync with migration files.</warning>');
+            $this->quiet('=====> <warning>Migration history is not in sync with migration files.</warning>');
         }
         unset($this->messages['phinxlog']);
 
@@ -320,22 +313,22 @@ class CheckSchemaTask extends Shell
             }
 
             if (!empty($lines)) {
-                $this->quiet(sprintf('Table <comment>%s</comment>:', $table));
+                $this->quiet(sprintf('=====> =====> Table <comment>%s</comment>:', $table));
                 $this->quiet(array_map(
                     function ($line) {
-                        return sprintf(' - <warning>%s</warning>', $line);
+                        return sprintf('=====>  - <warning>%s</warning>', $line);
                     },
                     $lines
                 ));
                 $check = false;
             } else {
-                $this->verbose(sprintf('Table <comment>%s</comment>: <info>OK</info>', $table));
+                $this->verbose(sprintf('=====> Table <comment>%s</comment>: <info>OK</info>', $table));
             }
         }
 
         if ($check) {
-            $this->verbose('');
-            $this->out('<info>Everything seems just fine. Have a nice day!</info>');
+            $this->verbose('=====> ');
+            $this->out('=====> <success>Everything seems just fine. Have a nice day!</success>');
         }
 
         return $check;

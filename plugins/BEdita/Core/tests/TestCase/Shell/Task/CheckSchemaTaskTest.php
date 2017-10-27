@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
+use BEdita\Core\Shell\Task\CheckSchemaTask;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -69,7 +70,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         Plugin::unload('Migrations');
 
-        $this->invoke(['db_admin', 'check_schema']);
+        $this->invoke([CheckSchemaTask::class]);
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
 
         $this->assertAborted();
@@ -122,15 +123,15 @@ class CheckSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $result = $this->invoke(['db_admin', 'check_schema']);
+        $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        $this->assertFalse($result);
+        static::assertFalse($result);
         $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
         $this->assertOutputContains('Column name "password" is not valid (reserved word)');
         $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
         $this->assertOutputContains('Index name "mytestindex" is not valid');
-        $this->assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
+        static::assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
     }
 
     /**
@@ -142,14 +143,14 @@ class CheckSchemaTaskTest extends ShellTestCase
     public function testCheckSchema()
     {
         $info = ConnectionManager::get('default')->config();
-        if (strstr($info['driver'], 'Mysql') === false) {
-            $this->markTestSkipped('Successful schema checks happens only on default driver (currently MySQL)');
-        }
 
-        $result = $this->invoke(['db_admin', 'check_schema']);
+        $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        $this->assertTrue($result);
+        static::assertTrue($result);
+        if (strstr($info['driver'], 'Mysql') === false) {
+            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+        }
     }
 
     /**
@@ -171,10 +172,10 @@ class CheckSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $result = $this->invoke(['db_admin', 'check_schema']);
+        $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        $this->assertFalse($result);
+        static::assertFalse($result);
         $this->assertOutputContains('Table "foo_bar" has been added');
     }
 
@@ -197,10 +198,10 @@ class CheckSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $result = $this->invoke(['db_admin', 'check_schema']);
+        $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        $this->assertFalse($result);
+        static::assertFalse($result);
         $this->assertOutputContains('Table "config" has been removed');
     }
 
@@ -224,10 +225,10 @@ class CheckSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $result = $this->invoke(['db_admin', 'check_schema']);
+        $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        $this->assertFalse($result);
+        static::assertFalse($result);
         foreach ($constraints as $constraint) {
             $info = $table->getConstraint($constraint);
             if ($info && isset($info['type']) && $info['type'] !== Table::CONSTRAINT_FOREIGN) {
