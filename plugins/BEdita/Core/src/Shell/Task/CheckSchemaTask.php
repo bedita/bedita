@@ -60,14 +60,14 @@ class CheckSchemaTask extends Shell
                 'Also, migrations status and SQL naming conventions are checked.',
             ])
             ->addOption('connection', [
-                'help' => 'Connection name to use',
+                'help' => 'Connection name to use.',
                 'short' => 'c',
                 'required' => false,
                 'default' => 'default',
                 'choices' => ConnectionManager::configured(),
             ])
             ->addOption('ignore-migration-status', [
-                'help' => 'Skip checks on migration status',
+                'help' => 'Skip checks on migration status.',
                 'boolean' => true,
             ]);
 

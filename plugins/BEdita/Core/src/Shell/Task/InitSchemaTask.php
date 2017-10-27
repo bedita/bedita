@@ -58,7 +58,7 @@ class InitSchemaTask extends Shell
                 'boolean' => true,
             ])
             ->addOption('connection', [
-                'help' => 'Connection name to use',
+                'help' => 'Connection name to use.',
                 'short' => 'c',
                 'required' => false,
                 'default' => 'default',

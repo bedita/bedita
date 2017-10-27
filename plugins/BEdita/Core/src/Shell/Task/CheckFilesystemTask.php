@@ -36,11 +36,11 @@ class CheckFilesystemTask extends Shell
                 'Check filesystem permissions.',
             ])
             ->addArgument('paths ...', [
-                'help' => 'List of directories to check if they are writable',
+                'help' => 'List of directories to check if they are writable.',
                 'required' => false,
             ])
             ->addOption('httpd-user', [
-                'help' => 'Manually set HTTPD user, instead of relying on automatic detection',
+                'help' => 'Manually set HTTPD user, instead of relying on automatic detection.',
                 'required' => false,
             ]);
 
@@ -53,7 +53,7 @@ class CheckFilesystemTask extends Shell
      * @param string[] ...$paths List of paths to check if they are writable.
      * @return bool
      */
-    function main(...$paths)
+    public function main(...$paths)
     {
         static $cmd = 'ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1';
 

@@ -42,12 +42,12 @@ class SetupConnectionTask extends Shell
                 'Setup database connection.',
             ])
             ->addOption('config-file', [
-                'help' => 'Configuration file',
+                'help' => 'Configuration file where updated connection config will be saved.',
                 'required' => false,
                 'default' => CONFIG . 'app.php',
             ])
             ->addOption('connection', [
-                'help' => 'Connection name to use',
+                'help' => 'Connection name to use.',
                 'short' => 'c',
                 'required' => false,
                 'default' => 'default',
