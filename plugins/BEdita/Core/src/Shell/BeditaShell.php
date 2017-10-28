@@ -147,7 +147,21 @@ class BeditaShell extends Shell
         $this->adminUser();
         $this->hr();
 
+        $this->info('Default API KEY is: ' . $this->defaultApiKey());
+
         return true;
+    }
+
+    /**
+     * Display default application api key
+     *
+     * @return string Default application api key
+     */
+    protected function defaultApiKey()
+    {
+        $application = TableRegistry::get('Applications')->get(1);
+
+        return !empty($application) ? $application->get('api_key') : '';
     }
 
     /**
