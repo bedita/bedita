@@ -39,7 +39,6 @@ class ApplicationsTableTest extends TestCase
      */
     public $currentApplication;
 
-
     /**
      * Fixtures
      *
