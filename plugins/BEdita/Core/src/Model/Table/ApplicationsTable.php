@@ -96,7 +96,7 @@ class ApplicationsTable extends Table
     /**
      * Generate the api key on application creation.
      *
-     * If applications is DEFAULT_APPLICATION or current invoking application and `enabled` to false
+     * If applications is DEFAULT_APPLICATION or current invoking application and `enabled` is `false`
      * raise an ImmutableResourceException
      *
      * @param \Cake\Event\Event $event The event dispatched
