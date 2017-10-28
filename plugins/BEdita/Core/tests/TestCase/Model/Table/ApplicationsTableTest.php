@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ApplicationsTable;
+use BEdita\Core\State\CurrentApplication;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -29,6 +31,14 @@ class ApplicationsTableTest extends TestCase
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
     public $Applications;
+
+    /**
+     * Current application to restore
+     *
+     * @var \BEdita\Core\Model\Entity\Application
+     */
+    public $currentApplication;
+
 
     /**
      * Fixtures
@@ -48,6 +58,7 @@ class ApplicationsTableTest extends TestCase
     {
         parent::setUp();
         $this->Applications = TableRegistry::get('Applications');
+        $this->currentApplication = CurrentApplication::getApplication();
     }
 
     /**
@@ -58,6 +69,7 @@ class ApplicationsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Applications);
+        CurrentApplication::setApplication($this->currentApplication);
 
         parent::tearDown();
     }
@@ -166,6 +178,7 @@ class ApplicationsTableTest extends TestCase
      * @return void
      *
      * @covers ::beforeSave()
+     * @covers ::beforeDelete()
      * @covers ::generateApiKey()
      * @dataProvider apiKeyGenerationProvider
      */
@@ -203,6 +216,8 @@ class ApplicationsTableTest extends TestCase
                 $this->assertTrue(ctype_xdigit($testApp->api_key));
                 $this->assertEquals(40, strlen($testApp->api_key));
             }
+            $success = $this->Applications->delete($application);
+            $this->assertTrue((bool)$success);
         }
     }
 
@@ -253,5 +268,75 @@ class ApplicationsTableTest extends TestCase
         $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
 
         static::assertSame($expected, $count);
+    }
+
+    /**
+     * Test exception removing default application
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not delete "Application" 1
+     * @covers ::beforeDelete()
+     */
+    public function testDeleteDefaultApplication()
+    {
+        $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
+        $this->Applications->delete($application);
+    }
+
+    /**
+     * Test exception removing current application
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not delete "Application" 2
+     * @covers ::beforeDelete()
+     */
+    public function testDeleteCurrentApplication()
+    {
+        $application = $this->Applications->get(2);
+        CurrentApplication::setApplication($application);
+        $this->Applications->delete($application);
+    }
+
+    /**
+     * Test exception disabling default application
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not disable "Application" 1
+     * @covers ::beforeSave()
+     */
+    public function testDisableDefaultApplication()
+    {
+        $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
+        $application->enabled = 0;
+        $this->Applications->save($application);
+    }
+
+    /**
+     * Test exception disabling current application in use
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not disable "Application" 2
+     * @covers ::beforeSave()
+     */
+    public function testDisableCurrentApplication()
+    {
+        $application = $this->Applications->get(2);
+        $application->enabled = 1;
+        $this->Applications->save($application);
+        CurrentApplication::setApplication($application);
+        $application->enabled = 0;
+        $this->Applications->save($application);
     }
 }
