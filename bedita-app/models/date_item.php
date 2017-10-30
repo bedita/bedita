@@ -124,7 +124,7 @@ class DateItem extends BEAppModel
      * @param mixed $date Date (or array of dates) to be prepared.
      * @return mixed Prepared date(s).
      */
-    protected function prepareDate($column, $date) {
+    public function prepareDate($column, $date) {
         if (is_array($date)) {
             foreach ($date as &$d) {
                 $d = $this->prepareDate($column, $d);
