@@ -91,10 +91,10 @@ class CurrentApplication
     /**
      * Static wrapper around {@see self::set()}.
      *
-     * @param \BEdita\Core\Model\Entity\Application $application Application instance.
+     * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return void
      */
-    public static function setApplication(Application $application)
+    public static function setApplication(Application $application = null)
     {
         static::getInstance()->set($application);
     }
