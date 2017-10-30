@@ -102,6 +102,7 @@ class ApplicationsTable extends Table
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not disableable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
