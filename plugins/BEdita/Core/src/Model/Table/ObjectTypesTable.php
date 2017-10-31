@@ -18,7 +18,9 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -50,6 +52,13 @@ class ObjectTypesTable extends Table
      * @var string
      */
     const CACHE_CONFIG = '_bedita_object_types_';
+
+    /**
+     * Default parent id 1 for `objects`.
+     *
+     * @var int
+     */
+    const DEFAULT_PARENT_ID = 1;
 
     /**
      * {@inheritDoc}
@@ -186,13 +195,29 @@ class ObjectTypesTable extends Table
     }
 
     /**
+     * Set default parent on creation if missing.
+     *
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if ($entity->isNew() && empty($entity->parent_id)) {
+            $entity->parent_id = self::DEFAULT_PARENT_ID;
+        }
+    }
+
+    /**
      * Invalidate cache after saving an object type.
+     * Recover Nested Set Model tree structure (tree_left, tree_right)
      *
      * @return void
      */
     public function afterSave()
     {
         Cache::clear(false, self::CACHE_CONFIG);
+        $this->behaviors()->get('Tree')->recover();
     }
 
     /**

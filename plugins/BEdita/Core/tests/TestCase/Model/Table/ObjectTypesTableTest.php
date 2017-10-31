@@ -44,6 +44,8 @@ class ObjectTypesTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.profiles',
@@ -496,5 +498,37 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertArrayHasKey('LeftRelations', $contain);
         static::assertArrayHasKey('RightRelations', $contain);
+    }
+
+    /**
+     * Test default parent.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testParent()
+    {
+        $data = [
+            'singular' => 'foo',
+            'name' => 'foos',
+            'plugin' => 'BEdita/Core',
+            'model' => 'Objects',
+        ];
+
+        $objectType = $this->ObjectTypes->newEntity();
+        $this->ObjectTypes->patchEntity($objectType, $data);
+
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertTrue((bool)$success);
+
+        $this->ObjectTypes->delete($objectType);
+        $data['parent_name'] = 'objects';
+        $this->ObjectTypes->patchEntity($objectType, $data);
+
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertTrue((bool)$success);
+
+        $this->ObjectTypes->delete($objectType);
     }
 }
