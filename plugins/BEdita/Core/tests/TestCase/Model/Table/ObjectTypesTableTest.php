@@ -501,34 +501,52 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
+     * Provider for `testParent`
+     *
+     * @return array
+     */
+    public function parentProvider()
+    {
+        return [
+            'foo' => [
+                [
+                    'singular' => 'foo',
+                    'name' => 'foos',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ]
+            ],
+            'cats' => [
+                [
+                    'singular' => 'foo',
+                    'name' => 'foos',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'parent_name' => 'objects',
+                ]
+            ],
+        ];
+    }
+
+    /**
      * Test default parent.
      *
      * @return void
      *
+     * @dataProvider parentProvider
      * @covers ::beforeSave()
      */
-    public function testParent()
+    public function testParent($data)
     {
-        $data = [
-            'singular' => 'foo',
-            'name' => 'foos',
-            'plugin' => 'BEdita/Core',
-            'model' => 'Objects',
-        ];
-
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
+
+        $parentId = empty($data['parent_name']) ?
+            ObjectTypesTable::DEFAULT_PARENT_ID : $this->ObjectTypes->get($data['parent_name'])->id;
+
+        static::assertSame($parentId, $success->parent_id);
         static::assertTrue((bool)$success);
-
-        $this->ObjectTypes->delete($objectType);
-        $data['parent_name'] = 'objects';
-        $this->ObjectTypes->patchEntity($objectType, $data);
-
-        $success = $this->ObjectTypes->save($objectType);
-        static::assertTrue((bool)$success);
-
-        $this->ObjectTypes->delete($objectType);
     }
 }
