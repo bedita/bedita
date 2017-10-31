@@ -55,32 +55,67 @@ class CheckFilesystemTask extends Shell
      */
     public function main(...$paths)
     {
-        static $cmd = 'ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1';
-
         // Load paths to be checked.
         $paths = array_unique(array_filter($paths) ?: [TMP, LOGS]);
 
         // Detect HTTP daemon user.
-        $httpdUser = $this->param('httpd-user');
-        if (empty($httpdUser)) {
-            $this->verbose('=====> Trying to detect HTTPD user');
-            $this->verbose(sprintf('=====> <comment>%s</comment>', $cmd));
-            $httpdUser = exec($cmd);
-        }
+        $httpdUser = $this->getHttpdUser();
         if (empty($httpdUser)) {
             $this->out('=====> <warning>Unable to detect webserver user</warning>');
 
             return false;
         }
 
+        // Check that paths are writable by HTTPD user.
+        if (!$this->checkPaths($paths, $httpdUser)) {
+            $this->out('=====> <warning>Potential issues were found, please check your installation</warning>');
+
+            return false;
+        }
+
+        $this->out('=====> <success>Filesystem permissions look alright. Time to write something in those shiny folders!</success>');
+
+        return true;
+    }
+
+    /**
+     * Get or detect HTTPD user name.
+     *
+     * @return string
+     */
+    protected function getHttpdUser()
+    {
+        static $cmd = 'ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1';
+
+        $httpdUser = $this->param('httpd-user');
+        if (!empty($httpdUser)) {
+            return $httpdUser;
+        }
+
+        $this->verbose('=====> Trying to detect HTTPD user');
+        $this->verbose(sprintf('=====> <comment>%s</comment>', $cmd));
+        $httpdUser = exec($cmd);
+
+        return $httpdUser;
+    }
+
+    /**
+     * Check that paths
+     *
+     * @param string[] $paths List of paths to check.
+     * @param string $user Name of user to check permissions for.
+     * @return bool
+     */
+    protected function checkPaths(array $paths, $user)
+    {
         // Get info about HTTP daemon user.
-        $httpdUser = posix_getpwnam($httpdUser);
-        $httpdGroup = posix_getgrgid($httpdUser['gid']);
+        $user = posix_getpwnam($user);
+        $group = posix_getgrgid($user['gid']);
         $this->verbose(
-            sprintf('=====> Detected webserver user: <info>%s</info> (ID: <info>%d</info>)', $httpdUser['name'], $httpdUser['uid'])
+            sprintf('=====> Detected webserver user: <info>%s</info> (ID: <info>%d</info>)', $user['name'], $user['uid'])
         );
         $this->verbose(
-            sprintf('=====> Detected webserver group: <info>%s</info> (ID: <info>%d</info>)', $httpdGroup['name'], $httpdGroup['gid'])
+            sprintf('=====> Detected webserver group: <info>%s</info> (ID: <info>%d</info>)', $group['name'], $group['gid'])
         );
 
         // Check paths.
@@ -113,21 +148,13 @@ class CheckFilesystemTask extends Shell
 
                 continue;
             }
-            if (($ownerUser['uid'] !== $httpdUser['uid'] || (($perms >> 6) & 07) !== 07) && ($ownerGroup['gid'] !== $httpdGroup['gid'] || (($perms >> 3) & 07) !== 07)) {
+            if (($ownerUser['uid'] !== $user['uid'] || (($perms >> 6) & 07) !== 07) && ($ownerGroup['gid'] !== $group['gid'] || (($perms >> 3) & 07) !== 07)) {
                 $ok = false;
                 $this->out(sprintf('=====> <warning>Path "%s" might not be writable by webserver user</warning>', $path));
             }
             $this->verbose(sprintf('=====> <info>Path "%s" is writable by webserver user</info>', $path));
         }
 
-        if ($ok === false) {
-            $this->out('=====> <warning>Potential issues were found, please check your installation</warning>');
-
-            return false;
-        }
-
-        $this->out('=====> <success>Filesystem permissions look alright. Time to write something in those shiny folders!</success>');
-
-        return true;
+        return $ok;
     }
 }
