@@ -213,6 +213,10 @@ class ObjectType extends Entity implements JsonApiSerializable
             return null;
         }
 
+        if (!empty($this->parent)) {
+            return $this->parent->get('name');
+        }
+
         return TableRegistry::get('ObjectTypes')->get($this->parent_id)->get('name');
     }
 
@@ -226,6 +230,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     {
         try {
             $objectType = TableRegistry::get('ObjectTypes')->get($parentName);
+            $this->parent = $objectType;
             $this->parent_id = $objectType->id;
         } catch (RecordNotFoundException $e) {
             return null;
