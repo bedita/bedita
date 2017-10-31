@@ -27,7 +27,17 @@ use Cake\Validation\Validator;
 /**
  * Applications Model
  *
+ * @method \BEdita\Core\Model\Entity\Application get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
  * @since 4.0.0
  */
@@ -106,7 +116,7 @@ class ApplicationsTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        if (!$entity->isNew() && $entity->enabled == false &&
+        if (!$entity->isNew() && $entity->get('enabled') == false &&
             in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
             throw new ImmutableResourceException(__d('bedita', 'Could not disable "Application" {0}', $entity->id));
         }
