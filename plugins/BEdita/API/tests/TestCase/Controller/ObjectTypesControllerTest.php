@@ -225,7 +225,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
-                        'parent_name' => 'profiles',
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Users',
