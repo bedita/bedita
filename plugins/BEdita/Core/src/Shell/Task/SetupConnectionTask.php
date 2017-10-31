@@ -52,6 +52,31 @@ class SetupConnectionTask extends Shell
                 'required' => false,
                 'default' => 'default',
                 'choices' => ConnectionManager::configured(),
+            ])
+            ->addOption('connection-driver', [
+                'help' => 'Driver to use for new connection. Useful for unattended runs.',
+                'required' => false,
+                'choices' => ['Mysql', 'Postgres', 'Sqlite'],
+            ])
+            ->addOption('connection-host', [
+                'help' => 'Database host for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-port', [
+                'help' => 'Database port for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-database', [
+                'help' => 'Database name (or path for SQLite) for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-username', [
+                'help' => 'Database username for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-password', [
+                'help' => 'Database password for new connection. Useful for unattended runs.',
+                'required' => false,
             ]);
 
         return $parser;
@@ -153,20 +178,53 @@ class SetupConnectionTask extends Shell
         $config = array_fill_keys(['host', 'port', 'database', 'username', 'password'], '');
         $config += $connection->config();
 
-        $driver = $this->in('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+        // Database driver.
+        if (!$this->param('connection-driver')) {
+            $this->params['connection-driver'] = $this->in('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+        }
+        $driver = $this->param('connection-driver');
         $config['driver'] = sprintf('Cake\Database\Driver\%s', $driver);
+
         if ($driver === 'Sqlite') {
-            $config['database'] = $this->in('Enter database path:', null, TMP . 'bedita.sqlite');
+            // Database path.
+            if (!$this->param('connection-database')) {
+                $this->params['connection-database'] = $this->in('Enter database path:', null, TMP . 'bedita.sqlite');
+            }
+            $config['database'] = $this->param('connection-database');
 
             return new Connection($config);
         }
 
-        $config['host'] = $this->in('Enter database host:', null, 'localhost');
-        $config['port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? 3306 : 5432);
-        $config['database'] = $this->in('Enter database name:', null, 'bedita');
-        $config['username'] = $this->in('Enter username to connect to database:');
-        $this->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
-        $config['password'] = $this->in('Enter password to connect to database:');
+        // Database host.
+        if (!$this->param('connection-host')) {
+            $this->params['connection-host'] = $this->in('Enter database host:', null, 'localhost');
+        }
+        $config['host'] = $this->param('connection-host');
+
+        // Database port.
+        if (!$this->param('connection-port')) {
+            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? 3306 : 5432);
+        }
+        $config['port'] = $this->param('connection-port');
+
+        // Database name.
+        if (!$this->param('connection-database')) {
+            $this->params['connection-database'] = $this->in('Enter database name:', null, 'bedita');
+        }
+        $config['database'] = $this->param('connection-database');
+
+        // Database username.
+        if (!$this->param('connection-username')) {
+            $this->params['connection-username'] = $this->in('Enter username to connect to database:');
+        }
+        $config['username'] = $this->param('connection-username');
+
+        // Database password.
+        if (!$this->param('connection-password')) {
+            $this->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
+            $this->params['connection-password'] = $this->in('Enter password to connect to database:');
+        }
+        $config['password'] = $this->param('connection-password');
 
         return new Connection($config);
     }
