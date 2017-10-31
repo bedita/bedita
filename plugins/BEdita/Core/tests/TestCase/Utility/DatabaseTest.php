@@ -56,7 +56,7 @@ class DatabaseTest extends TestCase
         $this->fixtureManager->shutDown();
 
         $fixtures = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures);
+        $this->loadFixtures(...$fixtures);
         $schema = Database::currentSchema();
 
         $this->assertCount(count($fixtures), $schema);
@@ -100,11 +100,11 @@ class DatabaseTest extends TestCase
         $this->fixtureManager->shutDown();
 
         $fixtures1 = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures1);
+        $this->loadFixtures(...$fixtures1);
         $schema1 = Database::currentSchema();
 
         $fixtures2 = ['Roles', 'Users'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures2);
+        $this->loadFixtures(...$fixtures2);
         $schema2 = Database::currentSchema();
 
         $fixtures2 = array_merge($fixtures1, $fixtures2);
