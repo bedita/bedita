@@ -305,7 +305,7 @@ class BeditaShellTest extends ShellTestCase
     /**
      * Test full setup on an already initialized instance in a completely non-interactive mode.
      *
-     * @covers ::setup()
+     * @covers ::check()
      */
     public function testCheck()
     {

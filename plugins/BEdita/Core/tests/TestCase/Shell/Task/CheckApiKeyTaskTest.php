@@ -18,6 +18,9 @@ use BEdita\Core\Shell\Task\CheckApiKeyTask;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\ORM\TableRegistry;
 
+/**
+ * @covers \BEdita\Core\Shell\Task\CheckApiKeyTask
+ */
 class CheckApiKeyTaskTest extends ShellTestCase
 {
 
