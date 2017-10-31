@@ -17,6 +17,7 @@ use BEdita\Core\Shell\Task\CheckSchemaTask;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
+use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 
@@ -46,11 +47,25 @@ class CheckSchemaTaskTest extends ShellTestCase
         parent::tearDown();
 
         Plugin::load('Migrations');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
 
         ConnectionManager::get('default')
             ->disableConstraints(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
+                foreach ($tables as $table) {
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+                }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
@@ -86,10 +101,8 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testOffendedConventions()
     {
+        /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
 
         $table = new Table('foo_bar');
         $table
@@ -126,12 +139,17 @@ class CheckSchemaTaskTest extends ShellTestCase
         $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        static::assertFalse($result);
-        $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
-        $this->assertOutputContains('Column name "password" is not valid (reserved word)');
-        $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
-        $this->assertOutputContains('Index name "mytestindex" is not valid');
-        static::assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
+        if ($connection->getDriver() instanceof Mysql) {
+            static::assertFalse($result);
+            $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
+            $this->assertOutputContains('Column name "password" is not valid (reserved word)');
+            $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
+            $this->assertOutputContains('Index name "mytestindex" is not valid');
+            static::assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
+        } else {
+            static::assertTrue($result);
+            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+        }
     }
 
     /**
@@ -142,13 +160,14 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testCheckSchema()
     {
-        $info = ConnectionManager::get('default')->config();
+        /* @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
 
         $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
         static::assertTrue($result);
-        if (strstr($info['driver'], 'Mysql') === false) {
+        if (!($connection->getDriver() instanceof Mysql)) {
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
     }
@@ -162,10 +181,8 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testAddTable()
     {
+        /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
 
         $table = new Table('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
         foreach ($table->createSql($connection) as $statement) {
@@ -175,8 +192,13 @@ class CheckSchemaTaskTest extends ShellTestCase
         $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        static::assertFalse($result);
-        $this->assertOutputContains('Table "foo_bar" has been added');
+        if ($connection->getDriver() instanceof Mysql) {
+            static::assertFalse($result);
+            $this->assertOutputContains('Table "foo_bar" has been added');
+        } else {
+            static::assertTrue($result);
+            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+        }
     }
 
     /**
@@ -188,10 +210,8 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testRemoveTable()
     {
+        /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
 
         $table = $connection->getSchemaCollection()->describe('config');
         foreach ($table->dropSql($connection) as $statement) {
@@ -201,8 +221,13 @@ class CheckSchemaTaskTest extends ShellTestCase
         $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        static::assertFalse($result);
-        $this->assertOutputContains('Table "config" has been removed');
+        if ($connection->getDriver() instanceof Mysql) {
+            static::assertFalse($result);
+            $this->assertOutputContains('Table "config" has been removed');
+        } else {
+            static::assertTrue($result);
+            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+        }
     }
 
     /**
@@ -214,10 +239,8 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testUpdateConstraints()
     {
+        /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
 
         $table = $connection->getSchemaCollection()->describe('objects');
         $constraints = $table->constraints();
@@ -228,14 +251,19 @@ class CheckSchemaTaskTest extends ShellTestCase
         $result = $this->invoke([CheckSchemaTask::class]);
 
         $this->assertNotAborted();
-        static::assertFalse($result);
-        foreach ($constraints as $constraint) {
-            $info = $table->getConstraint($constraint);
-            if ($info && isset($info['type']) && $info['type'] !== Table::CONSTRAINT_FOREIGN) {
-                continue;
-            }
+        if ($connection->getDriver() instanceof Mysql) {
+            static::assertFalse($result);
+            foreach ($constraints as $constraint) {
+                $info = $table->getConstraint($constraint);
+                if ($info && isset($info['type']) && $info['type'] !== Table::CONSTRAINT_FOREIGN) {
+                    continue;
+                }
 
-            $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
+                $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
+            }
+        } else {
+            static::assertTrue($result);
+            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
     }
 }
