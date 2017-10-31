@@ -121,9 +121,23 @@ class BeditaShell extends Shell
             $this->out('=====> Configuring default administrator user');
             $this->SetupAdminUser->params = $this->params;
             $this->SetupAdminUser->main();
+
+            $this->info('Default API KEY is: ' . $this->defaultApiKey());
         } finally {
             ConnectionManager::dropAlias('default');
         }
+    }
+
+    /**
+     * Display default application api key
+     *
+     * @return string Default application api key
+     */
+    protected function defaultApiKey()
+    {
+        $application = $this->loadModel('Applications')->get(1);
+
+        return !empty($application) ? $application->get('api_key') : '';
     }
 
     /**

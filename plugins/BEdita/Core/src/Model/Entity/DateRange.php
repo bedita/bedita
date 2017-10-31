@@ -149,7 +149,7 @@ class DateRange extends Entity
      */
     public static function union(...$dateRanges)
     {
-        $dateRanges = call_user_func_array('array_merge', $dateRanges);
+        $dateRanges = array_merge(...$dateRanges);
 
         return static::normalize($dateRanges);
     }
