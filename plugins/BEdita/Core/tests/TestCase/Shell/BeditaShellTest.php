@@ -169,6 +169,7 @@ class BeditaShellTest extends ShellTestCase
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
+        $this->assertOutputContains('Checking API key');
     }
 
     /**
@@ -278,6 +279,7 @@ class BeditaShellTest extends ShellTestCase
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
+        $this->assertOutputContains('Checking API key');
     }
 
     /**
@@ -297,6 +299,7 @@ class BeditaShellTest extends ShellTestCase
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
+        $this->assertOutputContains('Checking API key');
     }
 
     /**

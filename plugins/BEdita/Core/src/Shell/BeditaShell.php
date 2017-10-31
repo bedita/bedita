@@ -25,6 +25,7 @@ use Cake\Datasource\ConnectionManager;
  *
  * @since 4.0.0
  *
+ * @property \BEdita\Core\Shell\Task\CheckApiKeyTask $CheckApiKey
  * @property \BEdita\Core\Shell\Task\CheckFilesystemTask $CheckFilesystem
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $InitSchema
@@ -38,6 +39,7 @@ class BeditaShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
+        'CheckApiKey' => ['className' => 'BEdita/Core.CheckApiKey'],
         'CheckFilesystem' => ['className' => 'BEdita/Core.CheckFilesystem'],
         'CheckSchema' => ['className' => 'BEdita/Core.CheckSchema'],
         'InitSchema' => ['className' => 'BEdita/Core.InitSchema'],
@@ -63,7 +65,8 @@ class BeditaShell extends Shell
                     $this->InitSchema->getOptionParser()->options(),
                     $this->CheckSchema->getOptionParser()->options(),
                     $this->CheckFilesystem->getOptionParser()->options(),
-                    $this->SetupAdminUser->getOptionParser()->options()
+                    $this->SetupAdminUser->getOptionParser()->options(),
+                    $this->CheckApiKey->getOptionParser()->options()
                 ),
             ],
         ]);
@@ -74,7 +77,8 @@ class BeditaShell extends Shell
                 'description' => 'Use this shell command to check current instance configuration/status.',
                 'options' => array_merge(
                     $this->CheckSchema->getOptionParser()->options(),
-                    $this->CheckFilesystem->getOptionParser()->options()
+                    $this->CheckFilesystem->getOptionParser()->options(),
+                    $this->CheckApiKey->getOptionParser()->options()
                 ),
             ],
         ]);
@@ -122,22 +126,14 @@ class BeditaShell extends Shell
             $this->SetupAdminUser->params = $this->params;
             $this->SetupAdminUser->main();
 
-            $this->info('Default API KEY is: ' . $this->defaultApiKey());
+            $this->hr();
+
+            $this->out('=====> Checking API key');
+            $this->CheckApiKey->params = $this->params;
+            $this->CheckApiKey->main();
         } finally {
             ConnectionManager::dropAlias('default');
         }
-    }
-
-    /**
-     * Display default application api key
-     *
-     * @return string Default application api key
-     */
-    protected function defaultApiKey()
-    {
-        $application = $this->loadModel('Applications')->get(1);
-
-        return !empty($application) ? $application->get('api_key') : '';
     }
 
     /**
