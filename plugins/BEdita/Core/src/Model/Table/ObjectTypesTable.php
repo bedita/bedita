@@ -201,7 +201,7 @@ class ObjectTypesTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeRules(Event $event, EntityInterface $entity)
     {
         if ($entity->isNew() && empty($entity->parent_id)) {
             $entity->parent_id = self::DEFAULT_PARENT_ID;
@@ -217,7 +217,6 @@ class ObjectTypesTable extends Table
     public function afterSave()
     {
         Cache::clear(false, self::CACHE_CONFIG);
-        $this->behaviors()->get('Tree')->recover();
     }
 
     /**
