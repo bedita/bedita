@@ -73,6 +73,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => true,
+                        'parent_name' => null,
                     ],
                     'meta' => [
                         'alias' => 'Objects',
@@ -121,6 +122,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -172,6 +174,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Profiles',
@@ -222,6 +225,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'profiles',
                     ],
                     'meta' => [
                         'alias' => 'Users',
@@ -270,6 +274,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => ['body'],
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'News',
@@ -318,6 +323,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Locations',
@@ -369,6 +375,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => ['DateRanges'],
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Events',
@@ -417,6 +424,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => ['Streams'],
                         'hidden' => null,
                         'is_abstract' => true,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Media',
@@ -544,6 +552,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'associations' => null,
                     'hidden' => null,
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 'meta' => [
                     'alias' => 'Documents',
