@@ -42,12 +42,16 @@ class InitSchemaTaskTest extends ShellTestCase
      */
     public function tearDown()
     {
-        parent::tearDown();
-
         ConnectionManager::get('default')
-            ->disableConstraints(function (Connection $connection) {
+            ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
+                foreach ($tables as $table) {
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+                }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
@@ -55,6 +59,8 @@ class InitSchemaTaskTest extends ShellTestCase
                     }
                 }
             });
+
+        parent::tearDown();
     }
 
     /**

@@ -54,10 +54,8 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public static function tearDownAfterClass()
     {
-        parent::tearDownAfterClass();
-
         ConnectionManager::get('default')
-            ->disableConstraints(function (Connection $connection) {
+            ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
@@ -73,6 +71,8 @@ class CheckSchemaTaskTest extends ShellTestCase
                     }
                 }
             });
+
+        parent::tearDownAfterClass();
     }
 
     /**

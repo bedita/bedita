@@ -111,9 +111,19 @@ class InitSchemaTask extends Shell
 
         $this->out('Dropping all tables in database...');
         $connection
-            ->disableConstraints(function (Connection $connection) {
+            ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
+                foreach ($tables as $table) {
+                    $this->verbose(sprintf(' - Dropping constraints for table <comment>%s</comment>... ', $table), 0);
+
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+
+                    $this->verbose('<info>DONE</info>');
+                }
                 foreach ($tables as $table) {
                     $this->verbose(sprintf(' - Dropping table <comment>%s</comment>... ', $table), 0);
 
