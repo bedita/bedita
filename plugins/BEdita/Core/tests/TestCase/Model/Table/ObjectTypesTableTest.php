@@ -534,7 +534,7 @@ class ObjectTypesTableTest extends TestCase
      * @return void
      *
      * @dataProvider parentProvider
-     * @covers ::beforeSave()
+     * @covers ::beforeRules()
      */
     public function testParent($data)
     {
