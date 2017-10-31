@@ -77,6 +77,10 @@ class SetupConnectionTask extends Shell
             ->addOption('connection-password', [
                 'help' => 'Database password for new connection. Useful for unattended runs.',
                 'required' => false,
+            ])
+            ->addOption('connection-password-empty', [
+                'help' => 'Use empty password for new connection. Useful for unattended runs.',
+                'boolean' => true,
             ]);
 
         return $parser;
@@ -220,7 +224,9 @@ class SetupConnectionTask extends Shell
         $config['username'] = $this->param('connection-username');
 
         // Database password.
-        if (!$this->param('connection-password')) {
+        if ($this->param('connection-password-empty')) {
+            $this->params['connection-password'] = '';
+        } elseif (!$this->param('connection-password')) {
             $this->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
             $this->params['connection-password'] = $this->in('Enter password to connect to database:');
         }

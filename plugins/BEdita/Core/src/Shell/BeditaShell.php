@@ -71,7 +71,7 @@ class BeditaShell extends Shell
         $parser->addSubcommand('check', [
             'help' => 'Check current setup.',
             'parser' => [
-                'description' => 'Use this interactive shell command to check current instance configuration/status.',
+                'description' => 'Use this shell command to check current instance configuration/status.',
                 'options' => array_merge(
                     $this->CheckSchema->getOptionParser()->options(),
                     $this->CheckFilesystem->getOptionParser()->options()
@@ -114,7 +114,9 @@ class BeditaShell extends Shell
 
         $this->hr();
 
-        ConnectionManager::alias($this->param('connection'), 'default');
+        if ($this->param('connection') !== 'default') {
+            ConnectionManager::alias($this->param('connection'), 'default');
+        }
         try {
             $this->out('=====> Configuring default administrator user');
             $this->SetupAdminUser->params = $this->params;

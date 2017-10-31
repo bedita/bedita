@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
-use BEdita\Core\Test\TestCase\Shell\Task\SetupConnectionTaskTest;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Console\ConsoleInput;
 use Cake\Console\ConsoleIo;
@@ -29,6 +28,20 @@ class BeditaShellTest extends ShellTestCase
 {
 
     /**
+     * Name for temporary configuration file.
+     *
+     * @var string
+     */
+    const TEMP_CONNECTION = Task\SetupConnectionTaskTest::TEMP_CONNECTION;
+
+    /**
+     * Name for temporary configuration file.
+     *
+     * @var string
+     */
+    const TEMP_FILE = Task\SetupConnectionTaskTest::TEMP_FILE;
+
+    /**
      * {@inheritDoc}
      */
     public function setUp()
@@ -36,6 +49,8 @@ class BeditaShellTest extends ShellTestCase
         parent::setUp();
 
         $this->fixtureManager->shutDown();
+
+        ConnectionManager::alias('test', 'default');
 
         // Try to avoid "database schema has changed" error on SQLite.
         try {
@@ -50,8 +65,8 @@ class BeditaShellTest extends ShellTestCase
      */
     public function tearDown()
     {
-        if (in_array(SetupConnectionTaskTest::TEMP_CONNECTION, ConnectionManager::configured())) {
-            ConnectionManager::get(SetupConnectionTaskTest::TEMP_CONNECTION)
+        if (in_array(static::TEMP_CONNECTION, ConnectionManager::configured())) {
+            ConnectionManager::get(static::TEMP_CONNECTION)
                 ->transactional(function (Connection $connection) {
                     $tables = $connection->getSchemaCollection()->listTables();
 
@@ -68,11 +83,10 @@ class BeditaShellTest extends ShellTestCase
                         }
                     }
                 });
-            ConnectionManager::drop(SetupConnectionTaskTest::TEMP_CONNECTION);
-            ConnectionManager::alias('test', 'default');
+            ConnectionManager::drop(static::TEMP_CONNECTION);
         }
-        if (file_exists(SetupConnectionTaskTest::TEMP_FILE)) {
-            unlink(SetupConnectionTaskTest::TEMP_FILE);
+        if (file_exists(static::TEMP_FILE)) {
+            unlink(static::TEMP_FILE);
         }
 
         parent::tearDown();
@@ -97,7 +111,7 @@ class BeditaShellTest extends ShellTestCase
     {
         // Setup configuration file.
         file_put_contents(
-            SetupConnectionTaskTest::TEMP_FILE,
+            static::TEMP_FILE,
             file_get_contents(CONFIG . 'app.default.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
@@ -113,7 +127,7 @@ class BeditaShellTest extends ShellTestCase
             'password' => '__BE4_DB_PASSWORD__',
         ];
         $config += $originalConfig;
-        ConnectionManager::setConfig(SetupConnectionTaskTest::TEMP_CONNECTION, $config);
+        ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
 
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
 
@@ -132,7 +146,7 @@ class BeditaShellTest extends ShellTestCase
                 Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
-                $originalConfig['password'], // Password
+                Hash::get($originalConfig, 'password', ''), // Password
                 'y', // Seed
                 'gustavo', // Admin username
                 'supporto', // Admin password
@@ -145,7 +159,7 @@ class BeditaShellTest extends ShellTestCase
         $io = new ConsoleIo($this->_out, $this->_err, $stdin);
 
         $this->invoke(
-            ['bedita', 'setup', '--connection', SetupConnectionTaskTest::TEMP_CONNECTION, '--config-file', SetupConnectionTaskTest::TEMP_FILE],
+            ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
             [],
             $io
         );
@@ -166,7 +180,7 @@ class BeditaShellTest extends ShellTestCase
     {
         // Setup configuration file.
         file_put_contents(
-            SetupConnectionTaskTest::TEMP_FILE,
+            static::TEMP_FILE,
             file_get_contents(CONFIG . 'app.default.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
@@ -182,7 +196,7 @@ class BeditaShellTest extends ShellTestCase
             'password' => '__BE4_DB_PASSWORD__',
         ];
         $config += $originalConfig;
-        ConnectionManager::setConfig(SetupConnectionTaskTest::TEMP_CONNECTION, $config);
+        ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
 
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
         $defaultPort = $driver === 'Mysql' ? 3306 : 5432;
@@ -230,10 +244,6 @@ class BeditaShellTest extends ShellTestCase
                 '--connection-username',
                 $originalConfig['username'],
 
-                // Password
-                '--connection-password',
-                $originalConfig['password'],
-
                 // Seed
                 '--seed',
 
@@ -245,12 +255,20 @@ class BeditaShellTest extends ShellTestCase
                 '--admin-password',
                 'supporto',
             ];
+
+            // Password
+            if (!empty($originalConfig['password'])) {
+                $cliOptions[] = '--connection-password';
+                $cliOptions[] = $originalConfig['password'];
+            } else {
+                $cliOptions[] = '--connection-password-empty';
+            }
         }
 
         // Invoke task.
         $this->invoke(
             array_merge(
-                ['bedita', 'setup', '--connection', SetupConnectionTaskTest::TEMP_CONNECTION, '--config-file', SetupConnectionTaskTest::TEMP_FILE],
+                ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
                 $cliOptions
             )
         );
