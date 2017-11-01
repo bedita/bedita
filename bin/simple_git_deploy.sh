@@ -25,26 +25,28 @@ APP_USER=''
 APP_PREFIX_CMD=''
 
 BE4_DIR=$(dirname $(cd $(dirname "$0") && pwd))
+echo "Using '$BE4_DIR' as BEdita root directory"
+
 if [ $# -eq 0 ]; then
     CURR_USR=`whoami`
-    echo "Using current user ($CURR_USR) as deploy and app user"
+    echo "Using current user '$CURR_USR' as deploy and app user"
 fi
 
 if [ ! -z "$1" ]; then
     DEPLOY_USER="$1"
-    echo "Using $1 as deploy user"
+    echo "Using '$1' as deploy user"
     DEPLOY_PREFIX_CMD="sudo -H -u $DEPLOY_USER "
 fi
 
 if [ $# -eq 1 ]; then
     APP_USER="$1"
-    echo "Using $1 as app user too"
+    echo "Using '$1' as app user too"
     APP_PREFIX_CMD="sudo -H -u $APP_USER "
 fi
 
 if [ ! -z "$2" ]; then
     APP_USER="$2"
-    echo "Using $2 as app user"
+    echo "Using '$2' as app user"
     APP_PREFIX_CMD="sudo -H -u $APP_USER "
 fi
 
@@ -54,13 +56,13 @@ declare -a PLUGINS_DIR
 if [ ! -z "$3" ]; then
     if [ "$3" = "--all-plugins" ]; then
         echo "Look for plugins in plugins/ folder"
-        for dir in ./plugins/*/ ; do
-            if [[ -d $dir/.git ]]; then
+        for dir in ${BE4_DIR}/plugins/*/ ; do
+            if [[ -d ${dir}/.git ]]; then
                 echo "plugin found: $dir"
                 PLUGINS_DIR+=("$dir")
             else
-                for subdir in $dir/*/ ; do
-            if [[ -d $subdir/.git ]]; then
+                for subdir in ${dir}*/ ; do
+                if [[ -d ${subdir}/.git ]]; then
                         echo "plugin found: $subdir"
                         PLUGINS_DIR+=("$subdir")
                     fi
@@ -71,10 +73,10 @@ if [ ! -z "$3" ]; then
         echo "Look for valid plugins in $3"
         IFS=',' read -a PLUGINS_LIST <<< "$3"
         for dir in "${PLUGINS_LIST[@]}"; do
-            plug_dir="./plugins/$dir"
+            plug_dir="$BE4_DIR/plugins/$dir"
             if [[ -d $plug_dir/.git ]]; then
-                echo "plugin found: $dir"
-                PLUGINS_DIR+=("$plug_dir")
+                echo "plugin found: ${plug_dir}/"
+                PLUGINS_DIR+=("${plug_dir}/")
             else
                 echo "plugin NOT found: $plug_dir"
             fi
@@ -84,8 +86,8 @@ fi
 
 # 2. update from git
 echo "Pull from git on current branch"
-echo "$DEPLOY_PREFIX_CMD git pull"
-$DEPLOY_PREFIX_CMD git pull
+echo "$DEPLOY_PREFIX_CMD git -C $BE4_DIR pull"
+$DEPLOY_PREFIX_CMD git -C $BE4_DIR pull
 
 for PLUGIN in ${PLUGINS_DIR[*]};
 do
@@ -94,24 +96,31 @@ do
 done
 
 # 3. run composer install
-echo "$DEPLOY_PREFIX_CMD composer install --no-interaction"
-$DEPLOY_PREFIX_CMD composer install --no-interaction
+echo "$DEPLOY_PREFIX_CMD composer install --no-interaction --working-dir=$BE4_DIR"
+$DEPLOY_PREFIX_CMD composer install --no-interaction --working-dir=$BE4_DIR
 
 # 4. run migrations
-echo "$DEPLOY_PREFIX_CMD bin/cake migrations migrate -p BEdita/Core"
-$DEPLOY_PREFIX_CMD bin/cake migrations migrate -p BEdita/Core
+MIGRATION_SCHEMA="config/Migrations/schema-dump-default.lock"
 
-echo "$DEPLOY_PREFIX_CMD git checkout -- plugins/BEdita/Core/config/Migrations/schema-dump-default.lock"
-$DEPLOY_PREFIX_CMD git checkout -- plugins/BEdita/Core/config/Migrations/schema-dump-default.lock
+echo "$DEPLOY_PREFIX_CMD $BE4_DIR/bin/cake migrations migrate -p BEdita/Core"
+$DEPLOY_PREFIX_CMD $BE4_DIR/bin/cake migrations migrate -p BEdita/Core
 
+echo "$DEPLOY_PREFIX_CMD git -C $BE4_DIR checkout -- plugins/BEdita/Core/$MIGRATION_SCHEMA"
+$DEPLOY_PREFIX_CMD git -C $BE4_DIR checkout -- plugins/BEdita/Core/$MIGRATION_SCHEMA
+
+BE4_PLUGINS_PATH="$BE4_DIR/plugins/"
 for PLUGIN in ${PLUGINS_DIR[*]};
 do
-    echo "$DEPLOY_PREFIX_CMD bin/cake migrations migrate -p ${PLUGIN:10}"
-    $DEPLOY_PREFIX_CMD bin/cake migrations migrate -p ${PLUGIN:10}
-    echo "$DEPLOY_PREFIX_CMD git -C $PLUGIN checkout -- config/Migrations/schema-dump-default.lock"
-    $DEPLOY_PREFIX_CMD git -C $PLUGIN checkout -- config/Migrations/schema-dump-default.lock
+    if [ -e "$PLUGIN$MIGRATION_SCHEMA" ]; then
+        echo "$DEPLOY_PREFIX_CMD $BE4_DIR/bin/cake migrations migrate -p ${PLUGIN#$BE4_PLUGINS_PATH}"
+        $DEPLOY_PREFIX_CMD $BE4_DIR/bin/cake migrations migrate -p ${PLUGIN#$BE4_PLUGINS_PATH}
+        echo "$DEPLOY_PREFIX_CMD git -C $PLUGIN checkout -- $MIGRATION_SCHEMA"
+        $DEPLOY_PREFIX_CMD git -C $PLUGIN checkout -- $MIGRATION_SCHEMA
+    else
+        echo "Skipping migrations for plugin $PLUGIN"
+    fi
 done
 
 # 5. clear cache
-echo "$APP_PREFIX_CMD bin/cake cache clear_all"
-$APP_PREFIX_CMD bin/cake cache clear_all
+echo "$APP_PREFIX_CMD $BE4_DIR/bin/cake cache clear_all"
+$APP_PREFIX_CMD $BE4_DIR/bin/cake cache clear_all
