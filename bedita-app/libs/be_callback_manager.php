@@ -159,6 +159,7 @@ class BeCallbackManager {
      *
      * @throws BeditaInternalErrorException if the listener is not callable
      * @param mixed $listener Callback or full qualified name of callback
+     * @param array $data The data passed to listener.
      * @return mixed the result of listener call
      */
     private function callListener($listener, array $data = array()) {
@@ -166,6 +167,13 @@ class BeCallbackManager {
             list($class, $method) = $listener;
             if (is_string($class) && ClassRegistry::isKeySet($class)) {
                 $listener = array(ClassRegistry::getObject($class), $method);
+            }
+
+            $modelBehaviorCallback = array('beforeValidate', 'beforeSave', 'beforeFind', 'beforeDelete', 'afterSave', 'afterFind', 'afterDelete');
+            $reflectionMethod = new ReflectionMethod($listener[0], $listener[1]);
+            if (in_array($method, $modelBehaviorCallback) && $reflectionMethod->class === 'ModelBehavior') {
+                $event = array_pop($data);
+                return $event->result;
             }
         }
 
