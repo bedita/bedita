@@ -32,14 +32,14 @@ class BeditaShellTest extends ShellTestCase
      *
      * @var string
      */
-    const TEMP_CONNECTION = Task\SetupConnectionTaskTest::TEMP_CONNECTION;
+    const TEMP_CONNECTION = 'temporary_connection';
 
     /**
      * Name for temporary configuration file.
      *
      * @var string
      */
-    const TEMP_FILE = Task\SetupConnectionTaskTest::TEMP_FILE;
+    const TEMP_FILE = TMP . 'app.temp.php';
 
     /**
      * {@inheritDoc}
