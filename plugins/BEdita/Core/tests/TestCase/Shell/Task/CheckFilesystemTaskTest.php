@@ -17,7 +17,7 @@ use BEdita\Core\Shell\Task\CheckFilesystemTask;
 use BEdita\Core\TestSuite\ShellTestCase;
 
 /**
- * @covers \BEdita\Core\Shell\Task\CheckFilesystemTask
+ * @coversDefaultClass \BEdita\Core\Shell\Task\CheckFilesystemTask
  */
 class CheckFilesystemTaskTest extends ShellTestCase
 {
@@ -64,6 +64,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution with auto-detection of Web server user when Web server is running.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::getHttpdUser()
      */
     public function testExecuteAutodetectOk()
     {
@@ -86,6 +89,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution with auto-detection of Web server user when Web server is **NOT** running.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::getHttpdUser()
      */
     public function testExecuteAutodetectFail()
     {
@@ -108,6 +114,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution when the path to check does not exist.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::checkPaths()
      */
     public function testExecuteMissingDirectory()
     {
@@ -121,6 +130,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution when the path is not writable for the CLI user.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::checkPaths()
      */
     public function testExecuteNotWritableCli()
     {
@@ -137,6 +149,8 @@ class CheckFilesystemTaskTest extends ShellTestCase
 
     /**
      * Data provider for `testExecuteNotWritableWebServer` test case.
+     *
+     * @return array
      */
     public function executeNotWritableWebServerProvider()
     {
@@ -155,6 +169,8 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * @return void
      *
      * @dataProvider executeNotWritableWebServerProvider()
+     * @covers ::main()
+     * @covers ::checkPaths()
      */
     public function testExecuteNotWritableWebServer($perms)
     {
@@ -173,6 +189,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution when the path is world writable.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::checkPaths()
      */
     public function testExecuteWorldWritable()
     {

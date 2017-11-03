@@ -23,7 +23,7 @@ use Cake\Utility\Hash;
 use Cake\Utility\Text;
 
 /**
- * @covers \BEdita\Core\Shell\Task\SetupConnectionTask
+ * @coversDefaultClass \BEdita\Core\Shell\Task\SetupConnectionTask
  */
 class SetupConnectionTaskTest extends ShellTestCase
 {
@@ -61,6 +61,10 @@ class SetupConnectionTaskTest extends ShellTestCase
      * Test execution when connection is already configured and we're **NOT** able to connect.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::checkCanConnect()
      */
     public function testExecuteConfiguredFail()
     {
@@ -88,6 +92,10 @@ class SetupConnectionTaskTest extends ShellTestCase
      * Test execution when connection is already configured and we're able to connect.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::checkCanConnect()
      */
     public function testExecuteConfiguredOk()
     {
@@ -102,6 +110,11 @@ class SetupConnectionTaskTest extends ShellTestCase
      * provided credentials.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::readConnectionParams()
+     * @covers ::checkCanConnect()
      */
     public function testExecuteInteractiveFail()
     {
@@ -153,6 +166,12 @@ class SetupConnectionTaskTest extends ShellTestCase
      * Test execution when connection is not yet configured and the provided configuration file is **NOT** valid.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::readConnectionParams()
+     * @covers ::checkCanConnect()
+     * @covers ::saveConnectionConfig()
      */
     public function testExecuteInteractiveInvalidFile()
     {
@@ -207,6 +226,12 @@ class SetupConnectionTaskTest extends ShellTestCase
      * Test execution when connection is not yet configured and everything goes alright.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::readConnectionParams()
+     * @covers ::checkCanConnect()
+     * @covers ::saveConnectionConfig()
      */
     public function testExecuteInteractiveOk()
     {
@@ -286,6 +311,12 @@ class SetupConnectionTaskTest extends ShellTestCase
      * Test execution when connection is not yet configured and everything goes alright with an unattended run.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::readConnectionParams()
+     * @covers ::checkCanConnect()
+     * @covers ::saveConnectionConfig()
      */
     public function testExecuteNonInteractiveOk()
     {

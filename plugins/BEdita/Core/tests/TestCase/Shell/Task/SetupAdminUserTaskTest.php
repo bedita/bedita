@@ -21,7 +21,7 @@ use Cake\Console\ConsoleIo;
 use Cake\ORM\TableRegistry;
 
 /**
- * @covers \BEdita\Core\Shell\Task\SetupAdminUserTask
+ * @coversDefaultClass \BEdita\Core\Shell\Task\SetupAdminUserTask
  */
 class SetupAdminUserTaskTest extends ShellTestCase
 {
@@ -73,6 +73,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin user is missing.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteMissingUser()
     {
@@ -88,6 +90,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin users has already been configured and is kept as is.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteExistingUsersNoOverwrite()
     {
@@ -117,6 +121,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin users has already been configured and is kept as is with CLI options.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteExistingUsersNoOverwriteNonInteractive()
     {
@@ -141,6 +147,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin users has already been configured and is overwritten.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteExistingUsersOverwrite()
     {
@@ -174,6 +182,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin users has already been configured and is overwritten with CLI options.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteExistingUsersOverwriteNonInteractive()
     {
@@ -202,6 +212,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when default admin users hasn't been configured yet.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteDefaultUser()
     {
@@ -230,6 +242,8 @@ class SetupAdminUserTaskTest extends ShellTestCase
      * Test execution when persistence of user credential fails.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecutePersistenceFailed()
     {

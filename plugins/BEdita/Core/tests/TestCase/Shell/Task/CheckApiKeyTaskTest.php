@@ -19,7 +19,7 @@ use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\ORM\TableRegistry;
 
 /**
- * @covers \BEdita\Core\Shell\Task\CheckApiKeyTask
+ * @coversDefaultClass \BEdita\Core\Shell\Task\CheckApiKeyTask
  */
 class CheckApiKeyTaskTest extends ShellTestCase
 {
@@ -64,6 +64,8 @@ class CheckApiKeyTaskTest extends ShellTestCase
      * Test execution when default application is missing.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteMissingApplication()
     {
@@ -79,6 +81,8 @@ class CheckApiKeyTaskTest extends ShellTestCase
      * Test execution when default application has empty API key.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteApplicationEmptyApiKey()
     {
@@ -95,6 +99,8 @@ class CheckApiKeyTaskTest extends ShellTestCase
      * Test execution when everything looks OK.
      *
      * @return void
+     *
+     * @covers ::main()
      */
     public function testExecuteOk()
     {
