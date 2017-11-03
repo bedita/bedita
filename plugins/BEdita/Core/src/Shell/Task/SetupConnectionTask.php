@@ -255,12 +255,14 @@ class SetupConnectionTask extends Shell
             '__BE4_DB_PORT__' => Hash::get($config, 'port', ''),
             '__BE4_DB_DATABASE__' => Hash::get($config, 'database', ''),
             '__BE4_DB_USERNAME__' => Hash::get($config, 'username', ''),
-
-            // Escape special characters in password. Hopefully, other values will never contain
-            // single quotes or backslashes, and leaving this little bug open lets us easily test
-            // validation of PHP syntax.
-            '__BE4_DB_PASSWORD__' => str_replace(['\'', '\\'], ['\\\'', '\\\\'], Hash::get($config, 'password', '')),
+            '__BE4_DB_PASSWORD__' => Hash::get($config, 'password', ''),
         ];
+        $replace = array_map( // Escape special characters.
+            function ($value) {
+                return str_replace(['\'', '\\'], ['\\\'', '\\\\'], $value);
+            },
+            $replace
+        );
 
         // Replace placeholders in current file's content.
         $contents = str_replace(
