@@ -202,7 +202,7 @@ class SetupConnectionTaskTest extends ShellTestCase
                 Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
-                $originalConfig['password'], // Password
+                Hash::get($originalConfig, 'password', ''), // Password
             ];
         }
         $stdin = $this->getMockBuilder(ConsoleInput::class)
@@ -272,7 +272,7 @@ class SetupConnectionTaskTest extends ShellTestCase
                 Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
-                $originalConfig['password'], // Password
+                Hash::get($originalConfig, 'password', ''), // Password
             ];
         }
         $stdin = $this->getMockBuilder(ConsoleInput::class)
@@ -377,11 +377,15 @@ class SetupConnectionTaskTest extends ShellTestCase
                 // Username
                 '--connection-username',
                 $originalConfig['username'],
-
-                // Password
-                '--connection-password',
-                $originalConfig['password'],
             ];
+
+            // Password
+            if (!empty($originalConfig['password'])) {
+                $cliOptions[] = '--connection-password';
+                $cliOptions[] = $originalConfig['password'];
+            } else {
+                $cliOptions[] = '--connection-password-empty';
+            }
         }
 
         // Invoke task.
