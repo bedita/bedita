@@ -300,7 +300,7 @@ class SetupConnectionTaskTest extends ShellTestCase
         static::assertNotSame($connection, $newConnection);
         static::assertArraySubset(array_intersect_key($originalConfig, array_flip($relevantKeys)), $newConfig);
 
-        // Perform additional assertions on connection.
+        // Perform additional assertions on configuration.
         $fileContents = include static::TEMP_FILE;
         static::assertTrue(is_array($fileContents));
         $config = Hash::get($fileContents, 'Datasources.default');
@@ -408,10 +408,110 @@ class SetupConnectionTaskTest extends ShellTestCase
         static::assertNotSame($connection, $newConnection);
         static::assertArraySubset(array_intersect_key($originalConfig, array_flip($relevantKeys)), $newConfig);
 
-        // Perform additional assertions on connection.
+        // Perform additional assertions on configuration.
         $fileContents = include static::TEMP_FILE;
         static::assertTrue(is_array($fileContents));
         $config = Hash::get($fileContents, 'Datasources.default');
         static::assertEquals($newConfig, array_intersect_key($config, array_flip($relevantKeys)));
+    }
+
+    /**
+     * Test execution when connection is not yet configured and everything goes alright with an unattended run.
+     *
+     * @return void
+     *
+     * @covers ::main()
+     * @covers ::isConnectionConfigured()
+     * @covers ::readConnectionParams()
+     * @covers ::checkCanConnect()
+     * @covers ::saveConnectionConfig()
+     */
+    public function testExecuteSyntaxError()
+    {
+        // Setup configuration file.
+        $fileContents = file_get_contents(CONFIG . 'app.default.php') . '?><?php }}{{$YNTAX]][[ERROR))((;;!:?';
+        file_put_contents(
+            static::TEMP_FILE,
+            $fileContents,
+            EXTR_OVERWRITE | LOCK_EX
+        );
+
+        // Setup temporary configuration.
+        $originalConfig = ConnectionManager::get('default')->config();
+        $config = [
+            'className' => Connection::class,
+            'host' => '__BE4_DB_HOST__',
+            'port' => '__BE4_DB_PORT__',
+            'database' => '__BE4_DB_DATABASE__',
+            'username' => '__BE4_DB_USERNAME__',
+            'password' => '__BE4_DB_PASSWORD__',
+        ];
+        $config += $originalConfig;
+        ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
+        $connection = ConnectionManager::get(static::TEMP_CONNECTION);
+
+        $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
+        $defaultPort = $driver === 'Mysql' ? 3306 : 5432;
+
+        // CLI options.
+        $cliOptions = [
+            // Driver
+            '--connection-driver',
+            $driver,
+
+            // Database path
+            '--connection-database',
+            $originalConfig['database'],
+        ];
+        if ($driver !== 'Sqlite') {
+            $cliOptions = [
+                // Driver
+                '--connection-driver',
+                $driver,
+
+                // Hostname
+                '--connection-host',
+                $originalConfig['host'],
+
+                // Port
+                '--connection-port',
+                Hash::get($originalConfig, 'port', $defaultPort),
+
+                // Database name
+                '--connection-database',
+                $originalConfig['database'],
+
+                // Username
+                '--connection-username',
+                $originalConfig['username'],
+            ];
+
+            // Password
+            if (!empty($originalConfig['password'])) {
+                $cliOptions[] = '--connection-password';
+                $cliOptions[] = $originalConfig['password'];
+            } else {
+                $cliOptions[] = '--connection-password-empty';
+            }
+        }
+
+        // Invoke task.
+        $this->invoke(
+            array_merge(
+                [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
+                $cliOptions
+            )
+        );
+
+        $this->assertAborted();
+        $this->assertErrorContains('Updated configuration file has invalid syntax');
+
+        // Perform additional assertions on connection.
+        $newConnection = ConnectionManager::get(static::TEMP_CONNECTION);
+        static::assertSame($connection, $newConnection);
+
+        // Perform additional assertions on configuration.
+        $newFileContents = file_get_contents(static::TEMP_FILE);
+        static::assertSame($fileContents, $newFileContents);
     }
 }
