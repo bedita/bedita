@@ -48,6 +48,10 @@ class CheckFilesystemTaskTest extends ShellTestCase
      * Test execution when permissions are ok.
      *
      * @return void
+     *
+     * @covers ::main()
+     * @covers ::getHttpdUser()
+     * @covers ::checkPaths()
      */
     public function testExecuteOk()
     {
