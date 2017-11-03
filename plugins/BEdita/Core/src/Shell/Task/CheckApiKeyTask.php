@@ -57,8 +57,6 @@ class CheckApiKeyTask extends Shell
         } catch (RecordNotFoundException $e) {
             $this->verbose('<error>FAIL</error>');
             $this->abort('Default application is missing, please check your installation');
-
-            return false;
         }
 
         if (empty($application->api_key)) {
