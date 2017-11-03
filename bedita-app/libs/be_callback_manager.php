@@ -169,8 +169,13 @@ class BeCallbackManager {
                 $listener = array(ClassRegistry::getObject($class), $method);
             }
 
+            try {
+                $reflectionMethod = new ReflectionMethod($listener[0], $listener[1]);
+            } catch (ReflectionException $ex) {
+                throw new BeditaInternalErrorException('Listener not callable: ' . print_r($listener, true));
+            }
+
             $modelBehaviorCallback = array('beforeValidate', 'beforeSave', 'beforeFind', 'beforeDelete', 'afterSave', 'afterFind', 'afterDelete');
-            $reflectionMethod = new ReflectionMethod($listener[0], $listener[1]);
             if (in_array($method, $modelBehaviorCallback) && $reflectionMethod->class === 'ModelBehavior') {
                 $event = array_pop($data);
                 return $event->result;
