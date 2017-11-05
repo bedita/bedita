@@ -21,6 +21,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -196,15 +197,24 @@ class ObjectTypesTable extends Table
 
     /**
      * Set default parent on creation if missing.
+     * Prevent delete if type is abstract and a subtype exists.
+     *
+     * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
+     * in order to be executed before corresponding methods in `TreeBehavior`.
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException if operation on entity is not allowed
      */
     public function beforeRules(Event $event, EntityInterface $entity)
     {
         if ($entity->isNew() && empty($entity->parent_id)) {
             $entity->parent_id = self::DEFAULT_PARENT_ID;
+        }
+        $eventData = $event->getData();
+        if (!empty($eventData['operation']) && $eventData['operation'] === 'delete'
+            && $entity->get('is_abstract') && $this->find()->where(['parent_id' => $entity->id])->first()) {
+            throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
         }
     }
 
@@ -217,6 +227,21 @@ class ObjectTypesTable extends Table
     public function afterSave()
     {
         Cache::clear(false, self::CACHE_CONFIG);
+    }
+
+    /**
+     * Don't allow delete actions if at least an object of this type exists.
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException if entity is not deletable
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if (TableRegistry::get('Objects')->find()->where(['object_type_id' => $entity->id])->count() > 0) {
+            throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
+        }
     }
 
     /**
