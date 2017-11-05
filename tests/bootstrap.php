@@ -47,3 +47,5 @@ Configure::write('Filesystem', [
     ],
 ]);
 Configure::write('debug', true);
+
+Cache::clearAll();
