@@ -37,22 +37,20 @@ class DatabaseTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.config',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.users',
     ];
 
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function setUp()
     {
-        // seems not needed, but without `fixtureManager->shutDown`
-        // an integrity constraint error on foreign key is raised
+        parent::setUp();
+
         $this->fixtureManager->shutDown();
-        parent::tearDown();
     }
 
     /**
@@ -64,9 +62,7 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
-        $this->fixtureManager->shutDown();
-
-        $fixtures = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
+        $fixtures = ['Config', 'ObjectTypes', 'Roles', 'Applications'];
         call_user_func_array([$this, 'loadFixtures'], $fixtures);
         $schema = Database::currentSchema();
 
@@ -108,13 +104,11 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
-        $this->fixtureManager->shutDown();
-
-        $fixtures1 = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
+        $fixtures1 = ['Config', 'ObjectTypes', 'Applications'];
         call_user_func_array([$this, 'loadFixtures'], $fixtures1);
         $schema1 = Database::currentSchema();
 
-        $fixtures2 = ['Roles', 'Users'];
+        $fixtures2 = ['AsyncJobs', 'Roles'];
         call_user_func_array([$this, 'loadFixtures'], $fixtures2);
         $schema2 = Database::currentSchema();
 
@@ -133,12 +127,12 @@ class DatabaseTest extends TestCase
             $this->assertContains(Inflector::underscore($v), $diff2['missing']['tables']);
         }
 
-        unset($schema2['objects']['indexes']);
-        $schema2['objects']['columns']['tttt'] = $schema2['objects']['columns']['title'];
-        unset($schema2['objects']['columns']['title']);
-        $schema2['objects']['columns']['body'] = $schema1['objects']['columns']['publish_start'];
+        unset($schema2['roles']['indexes']);
+        $schema2['roles']['columns']['tttt'] = $schema2['roles']['columns']['name'];
+        unset($schema2['roles']['columns']['name']);
+        $schema2['roles']['columns']['description'] = $schema1['applications']['columns']['description'];
         $diff1 = Database::schemaCompare($schema1, $schema2);
-        $this->assertCount(3, $diff1);
+        $this->assertCount(0, $diff1);
     }
 
     /**
@@ -207,12 +201,12 @@ class DatabaseTest extends TestCase
     public function sqlExecute()
     {
         return [
-            ["SELECT id from users", true, 2, 1],
+            ["SELECT id from applications", true, 2, 1],
             ["SELECT id from properties", false, 0, 0],
-            ["SELECT id from users", false, 0, 0, 'zzzzzzzzz'],
-            ["UPDATE profiles SET name='Germano', surname='Mosconi' WHERE id = 1;\n" .
-             "UPDATE profiles SET person_title='Spiritual Guide' WHERE id = 1;", true, 2, 2],
-            ["SELECT name from config;\n" . "SELECT name from profiles;", true, 13, 2],
+            ["SELECT id from roles", false, 0, 0, 'zzzzzzzzz'],
+            ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
+             "UPDATE applications SET name='Gustano' WHERE id = 1;", true, 2, 2],
+            ["SELECT name from config;\n" . "SELECT name from roles;", true, 12, 2],
             ["SELECT something", false, 0, 0],
             [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
         ];
@@ -234,7 +228,7 @@ class DatabaseTest extends TestCase
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
-        $this->loadFixtures('Config', 'ObjectTypes', 'Objects', 'Users', 'Profiles');
+        $this->loadFixtures('Config', 'ObjectTypes', 'Roles', 'Applications');
 
         $res = Database::executeTransaction($sql, $dbConfig);
         $this->assertNotEmpty($res);
