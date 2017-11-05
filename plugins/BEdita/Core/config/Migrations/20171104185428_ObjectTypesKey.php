@@ -17,6 +17,9 @@ class ObjectTypesKey extends AbstractMigration
             ->dropForeignKey(
                 'object_type_id'
             )
+            ->update();
+
+        $this->table('objects')
             ->addForeignKey(
                 'object_type_id',
                 'object_types',
