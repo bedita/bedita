@@ -56,6 +56,10 @@ class ObjectsHandlerTest extends TestCase
      */
     public function tearDown()
     {
+        // seems not needed, but without `fixtureManager->shutDown`
+        // an integrity constraint error on foreign key is raised
+        $this->fixtureManager->shutDown();
+
         parent::tearDown();
 
         LoggedUser::resetUser();

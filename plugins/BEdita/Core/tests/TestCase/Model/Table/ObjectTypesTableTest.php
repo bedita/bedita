@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -409,11 +410,12 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterDelete()
     {
-        $entity = $this->ObjectTypes->get('document');
+        // there are no 'news` in objects fixture, safe to delete it
+        $entity = $this->ObjectTypes->get('news_item');
         $this->ObjectTypes->get(3);
         $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
@@ -421,7 +423,7 @@ class ObjectTypesTableTest extends TestCase
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
@@ -548,5 +550,48 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertSame($parentId, $success->parent_id);
         static::assertTrue((bool)$success);
+    }
+
+    /**
+     * Data provider for `testBeforeDelete`
+     *
+     * @return array
+     */
+    public function beforeDeleteProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+                new ForbiddenException('Abstract type with existing subtypes'),
+            ],
+            // there are no 'news` in objects fixture, safe to delete for now
+            'news' => [
+                'news',
+                true,
+            ],
+            'documents' => [
+                'documents',
+                new ForbiddenException('Objects of this type exist'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeDelete`
+     *
+     * @return void
+     * @dataProvider beforeDeleteProvider
+     * @covers ::beforeDelete()
+     * @covers ::beforeRules()
+     */
+    public function testBeforeDelete($typeName, $expected)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+        $entity = $this->ObjectTypes->get($typeName);
+        $result = $this->ObjectTypes->delete($entity);
+        static::assertEquals($expected, $result);
     }
 }
