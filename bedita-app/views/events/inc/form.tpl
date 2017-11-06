@@ -11,8 +11,12 @@
 	{include file="../inc/form_properties.tpl" comments=true}
 
 	{$view->element('form_previews')}
-	
-	{$view->element('form_calendar_dates')}
+
+	{if !empty($conf->eventsCalendarDatesElement)}
+		{$view->element($conf->eventsCalendarDatesElement.name, $conf->eventsCalendarDatesElement.options)}
+	{else}
+		{$view->element('form_calendar_dates')}
+	{/if}
 	
 	{assign_associative var="params" title="Event Locations"}
 	{$view->element('form_geotag', $params)}
