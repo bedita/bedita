@@ -349,3 +349,13 @@ $config['objectCakeCache'] = true;
 //      'publications' => true, // stats about publications
 //      'editors' => true, // status about content editors
 // );
+
+/**
+ * Custom event calendar dates element.
+ * - name is the element name
+ * - options can be used to use an element of plugged module
+ */
+// $config['eventsCalendarDatesElement'] = array(
+//     'name' => 'form_event_calendar_dates',
+//     'options' => array('plugin' => 'timelines'),
+// );
