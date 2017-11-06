@@ -13,7 +13,9 @@ $(document).ready(function(){
             timeFormat: 'G:i'
         }
 
-    	$('.timeStart, .timeEnd', '.daterow').timepicker(timePickerOptions);
+        if ($.fn.timepicker) {
+            $('.timeStart, .timeEnd', '.daterow').timepicker(timePickerOptions);
+        }
 
         var numDates = $('.daterow').length;
 
