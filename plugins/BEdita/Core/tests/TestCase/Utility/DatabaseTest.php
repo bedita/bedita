@@ -127,12 +127,12 @@ class DatabaseTest extends TestCase
             $this->assertContains(Inflector::underscore($v), $diff2['missing']['tables']);
         }
 
-        unset($schema2['roles']['indexes']);
-        $schema2['roles']['columns']['tttt'] = $schema2['roles']['columns']['name'];
-        unset($schema2['roles']['columns']['name']);
-        $schema2['roles']['columns']['description'] = $schema1['applications']['columns']['description'];
+        unset($schema2['object_types']['indexes']);
+        $schema2['object_types']['columns']['tttt'] = $schema2['object_types']['columns']['name'];
+        unset($schema2['object_types']['columns']['name']);
+        $schema2['object_types']['columns']['description'] = $schema1['applications']['columns']['created'];
         $diff1 = Database::schemaCompare($schema1, $schema2);
-        $this->assertCount(0, $diff1);
+        $this->assertCount(3, $diff1);
     }
 
     /**
@@ -167,8 +167,8 @@ class DatabaseTest extends TestCase
         $info = Database::basicInfo();
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
         static::assertTrue($result);
-        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'ZZZZ']);
-        static::assertFalse(($info['vendor'] !== 'sqlite') ? $result : !$result);
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'zzzzzzzzz']);
+        static::assertFalse($result);
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);
     }
