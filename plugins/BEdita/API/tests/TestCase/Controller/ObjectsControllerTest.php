@@ -316,7 +316,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '10',
-                    'type' => 'media',
+                    'type' => 'files',
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'media-one',
@@ -337,13 +337,13 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified_by' => 1,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/media/10',
+                        'self' => 'http://api.example.com/files/10',
                     ],
                     'relationships' => [
                         'streams' => [
                             'links' => [
-                                'related' => 'http://api.example.com/media/10/streams',
-                                'self' => 'http://api.example.com/media/10/relationships/streams',
+                                'related' => 'http://api.example.com/files/10/streams',
+                                'self' => 'http://api.example.com/files/10/relationships/streams',
                             ],
                         ],
                     ],
