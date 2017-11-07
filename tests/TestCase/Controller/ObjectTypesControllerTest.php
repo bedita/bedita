@@ -435,12 +435,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/9',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/9/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/9/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/9/relationships/left_relations',

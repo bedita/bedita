@@ -327,6 +327,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'eng',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'media_property' => 'synapse', // inherited custom property
                     ],
                     'meta' => [
                         'locked' => false,
