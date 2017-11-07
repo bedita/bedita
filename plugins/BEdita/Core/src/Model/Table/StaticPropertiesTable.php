@@ -36,7 +36,7 @@ use Cake\Utility\Hash;
  *
  * @since 4.0.0
  */
-class StaticPropertiesTable extends PropertiesTable
+class StaticPropertiesTable extends Table
 {
 
     /**
@@ -45,6 +45,22 @@ class StaticPropertiesTable extends PropertiesTable
     public function initialize(array $config)
     {
         parent::initialize($config);
+
+        $this->setDisplayField('name');
+
+        $this->addBehavior('Timestamp');
+
+        $this->belongsTo('PropertyTypes', [
+            'foreignKey' => 'property_type_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.PropertyTypes'
+        ]);
+
+        $this->belongsTo('ObjectTypes', [
+            'foreignKey' => 'object_type_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.ObjectTypes',
+        ]);
 
         $this->setEntityClass(Property::class);
 
@@ -78,17 +94,6 @@ class StaticPropertiesTable extends PropertiesTable
 
         // Insert data into table.
         $this->addSchemaDetails();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    protected function _initializeSchema(TableSchema $schema)
-    {
-        return parent::_initializeSchema($schema)
-            ->setColumnType('id', 'uuid');
     }
 
     /**
