@@ -23,9 +23,6 @@
     "require": {
         "php": ">=5.6.0",
         "cakephp/cakephp": "~3.5.2",
-        "mobiledetect/mobiledetectlib": "2.*",
-        "cakephp/migrations": "~1.7",
-        "cakephp/plugin-installer": "*",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {
@@ -45,6 +42,10 @@
             "BEdita\\App\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
+    },
+    "replace": {
+        "bedita/core": "self.version",
+        "bedita/api": "self.version"
     },
     "scripts": {
         "post-install-cmd": "BEdita\\App\\Console\\Installer::postInstall",
