@@ -268,6 +268,21 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                         ],
                     ],
+                    '/files' => [
+                        'href' => 'http://api.example.com/files',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE',
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json',
+                            ],
+                            'display' => [
+                                'label' => 'Files',
+                            ],
+                        ],
+                    ],
                 ],
                 'project' => $project,
                 'version' => $version,
