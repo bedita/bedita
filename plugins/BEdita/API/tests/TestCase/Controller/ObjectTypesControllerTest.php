@@ -562,6 +562,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         TableRegistry::get('Properties')->deleteAll([]);
+        TableRegistry::get('Objects')->deleteAll([]);
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
         $this->configRequestHeaders();
@@ -877,10 +878,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/model/object_types/2');
+        $this->delete('/model/object_types/5');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 2]));
+        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 5]));
     }
 }
