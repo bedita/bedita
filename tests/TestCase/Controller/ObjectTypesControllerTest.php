@@ -82,12 +82,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/1',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/1/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/1/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/1/relationships/left_relations',
@@ -133,12 +127,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/2',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/2/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/2/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',
@@ -183,12 +171,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/3',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/3/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/3/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/3/relationships/left_relations',
@@ -231,12 +213,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/4',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/4/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/4/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/4/relationships/left_relations',
@@ -279,12 +255,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/5',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/5/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/5/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/5/relationships/left_relations',
@@ -330,12 +300,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/6',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/6/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/6/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/6/relationships/left_relations',
@@ -378,12 +342,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/7',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/7/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/7/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/7/relationships/left_relations',
@@ -426,12 +384,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/8',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/8/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/8/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/8/relationships/left_relations',
@@ -553,12 +505,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                 ],
                 'relationships' => [
-                    'properties' => [
-                        'links' => [
-                            'self' => 'http://api.example.com/model/object_types/2/relationships/properties',
-                            'related' => 'http://api.example.com/model/object_types/2/properties',
-                        ],
-                    ],
                     'left_relations' => [
                         'links' => [
                             'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',
