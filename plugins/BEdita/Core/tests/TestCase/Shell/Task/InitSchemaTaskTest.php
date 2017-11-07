@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
+use BEdita\Core\Shell\Task\InitSchemaTask;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -41,12 +42,16 @@ class InitSchemaTaskTest extends ShellTestCase
      */
     public function tearDown()
     {
-        parent::tearDown();
-
         ConnectionManager::get('default')
-            ->disableConstraints(function (Connection $connection) {
+            ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
+                foreach ($tables as $table) {
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+                }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
@@ -54,6 +59,8 @@ class InitSchemaTaskTest extends ShellTestCase
                     }
                 }
             });
+
+        parent::tearDown();
     }
 
     /**
@@ -73,7 +80,7 @@ class InitSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $this->invoke(['db_admin', 'init', '--no-force', '--no-seed']);
+        $this->invoke([InitSchemaTask::class, '--no-force', '--no-seed']);
 
         $this->assertAborted();
     }
@@ -90,7 +97,7 @@ class InitSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $this->invoke(['db_admin', 'init', '--no-force', '--no-seed']);
+        $this->invoke([InitSchemaTask::class, '--no-force', '--no-seed']);
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
@@ -117,7 +124,7 @@ class InitSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $this->invoke(['db_admin', 'init', '--force', '--no-seed']);
+        $this->invoke([InitSchemaTask::class, '--force', '--no-seed']);
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
@@ -139,7 +146,7 @@ class InitSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $this->invoke(['db_admin', 'init', '--no-force', '--seed']);
+        $this->invoke([InitSchemaTask::class, '--no-force', '--seed']);
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
@@ -176,7 +183,7 @@ class InitSchemaTaskTest extends ShellTestCase
                 ])
             );
 
-        $this->invoke(['db_admin', 'init'], [], $io);
+        $this->invoke([InitSchemaTask::class], [], $io);
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
