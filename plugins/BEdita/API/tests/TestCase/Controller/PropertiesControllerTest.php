@@ -42,9 +42,9 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/model/properties',
-                'first' => 'http://api.example.com/model/properties',
-                'last' => 'http://api.example.com/model/properties',
+                'self' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
+                'first' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
+                'last' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -210,7 +210,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/model/properties');
+        $this->get('/model/properties?filter[type]=dynamic');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -230,9 +230,9 @@ class PropertiesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/model/properties',
-                'first' => 'http://api.example.com/model/properties',
-                'last' => 'http://api.example.com/model/properties',
+                'self' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
+                'first' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
+                'last' => 'http://api.example.com/model/properties?' . http_build_query(['filter' => ['type' => 'dynamic']]),
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -252,7 +252,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         TableRegistry::get('Properties')->deleteAll([]);
 
         $this->configRequestHeaders();
-        $this->get('/model/properties');
+        $this->get('/model/properties?filter[type]=dynamic');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);

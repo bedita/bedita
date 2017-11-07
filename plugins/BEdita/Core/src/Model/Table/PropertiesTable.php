@@ -16,6 +16,8 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
+use Cake\Database\Schema\TableSchema;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -99,6 +101,32 @@ class PropertiesTable extends Table
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        return parent::_initializeSchema($schema)
+            ->setColumnType('id', 'string');
+    }
+
+    /**
+     * Find both static and dynamic properties by default.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\ORM\Query $query Query object.
+     * @return void
+     */
+    public function beforeFind(Event $event, Query $query)
+    {
+        $from = $query->from();
+        if (empty($from)) {
+            $query->find('type', ['both']);
+        }
+    }
+
+    /**
      * Return properties for an object type, considering inheritance.
      *
      * @param \Cake\ORM\Query $query Query object instance.
@@ -124,42 +152,53 @@ class PropertiesTable extends Table
     }
 
     /**
-     * Include static properties.
+     * Find properties by their type (either `'static'`, `'dynamic'` or `'both'`).
      *
      * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findStatic(Query $query)
+    protected function findType(Query $query, array $options)
     {
-        // Build CTE sub-query.
-        $select = array_combine( // Use column name as column alias (`SELECT status AS status, title AS title, ...`).
-            $this->getSchema()->columns(),
-            $this->getSchema()->columns()
-        );
-        $select[$this->getPrimaryKey()] = $query->func()->concat([
-            '',
-            $this->getPrimaryKey() => 'identifier',
-        ]); // Use implicit type conversion, or PostgreSQL will complain about mixing integers and UUIDs.
-        $from = (new DatabaseQuery($this->getConnection()))
-            ->select($select)
-            ->from($this->getTable())
-            ->unionAll(
-                (new DatabaseQuery($this->getConnection()))
+        if (empty($options[0]) || !in_array($options[0], ['static', 'dynamic', 'both'])) {
+            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'type'));
+        }
+
+        switch ($options[0]) {
+            case 'static':
+                $table = TableRegistry::get('StaticProperties')
+                    ->setAlias($this->getAlias());
+                $from = $table->getTable();
+                break;
+
+            case 'dynamic':
+                $from = $this->getTable();
+                break;
+
+            case 'both':
+            default:
+                $table = TableRegistry::get('StaticProperties')
+                    ->setAlias($this->getAlias());
+
+                // Build CTE sub-query.
+                $select = array_combine( // Use column name as column alias (`SELECT status AS status, title AS title, ...`).
+                    $this->getSchema()->columns(),
+                    $this->getSchema()->columns()
+                );
+                $select[$this->getPrimaryKey()] = $query->func()->concat([
+                    '',
+                    $this->getPrimaryKey() => 'identifier',
+                ]); // Use implicit type conversion, or PostgreSQL will complain about mixing integers and UUIDs.
+                $from = (new DatabaseQuery($this->getConnection()))
                     ->select($select)
-                    ->from(TableRegistry::get('StaticProperties')->getTable())
-            );
+                    ->from($this->getTable())
+                    ->unionAll(
+                        (new DatabaseQuery($this->getConnection()))
+                            ->select($select)
+                            ->from($table->getTable())
+                    );
+        }
 
-        // Ugly workaround to make static properties UUIDs work.
-        // Without this they would be cast to integers with funny results.
-        $query
-            ->getTypeMap()
-            ->setDefaults([
-                $this->getAlias() . '__id' => 'uuid',
-                $this->aliasField('id') => 'uuid',
-                'id' => 'uuid',
-            ]);
-        $query->addDefaultTypes($this);
-
-        return $query->from([$this->getAlias() => $from]);
+        return $query->from([$this->getAlias() => $from], true);
     }
 }

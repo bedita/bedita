@@ -88,6 +88,7 @@ class CustomPropertiesBehavior extends Behavior
         if (!$objectType->has('properties')) {
             $objectType->properties = TableRegistry::get('Properties')
                 ->find('objectType', [$objectType->id])
+                ->find('type', ['dynamic'])
                 ->where([
                     'enabled' => true,
                 ])

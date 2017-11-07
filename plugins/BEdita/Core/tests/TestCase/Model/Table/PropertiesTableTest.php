@@ -179,7 +179,7 @@ class PropertiesTableTest extends TestCase
     }
 
     /**
-     * Test finder by object type that includes static properties.
+     * Test finder by object type.
      *
      * @param array|\Exception $expected List of expected properties names.
      * @param array $options Options to be passed to finder.
@@ -197,6 +197,7 @@ class PropertiesTableTest extends TestCase
         }
 
         $result = $this->Properties->find('objectType', $options)
+            ->find('type', ['dynamic'])
             ->extract('name')
             ->toList();
 
@@ -204,11 +205,11 @@ class PropertiesTableTest extends TestCase
     }
 
     /**
-     * Data provider for `testFindStatic` test case.
+     * Data provider for `testFindType` test case.
      *
      * @return array
      */
-    public function findStaticProvider()
+    public function findTypeProvider()
     {
         $objects = [
             'uname',
@@ -238,28 +239,38 @@ class PropertiesTableTest extends TestCase
             'provider_thumbnail',
             'provider_extra',
         ];
+        $documentsCustom = [ // Documents custom properties.
+            'another_title',
+            'another_description',
+        ];
 
         return [
-            'objects' => [
+            'objects both' => [
                 $objects,
-                ['objects'],
+                'objects',
             ],
-            'documents' => [
-                array_merge(
-                    $objects,
-                    [ // Documents custom properties.
-                        'another_title',
-                        'another_description',
-                    ]
-                ),
-                ['documents'],
+            'documents both' => [
+                array_merge($objects, $documentsCustom),
+                'documents',
             ],
-            'media' => [
-                array_merge(
-                    $objects,
-                    $media
-                ),
-                ['media'],
+            'media both' => [
+                array_merge($objects, $media),
+                'media',
+            ],
+            'documents static' => [
+                $objects,
+                'documents',
+                'static',
+            ],
+            'documents dynamic' => [
+                $documentsCustom,
+                'documents',
+                'dynamic',
+            ],
+            'media dynamic' => [
+                [],
+                'media',
+                'dynamic',
             ],
         ];
     }
@@ -268,13 +279,14 @@ class PropertiesTableTest extends TestCase
      * Test finder by object type that includes static properties.
      *
      * @param array|\Exception $expected List of expected properties names.
-     * @param array $options Options to be passed to object types finder.
+     * @param string $objectType Object type to find properties for
+     * @param string $type Type of properties to be returned.
      * @return void
      *
-     * @dataProvider findStaticProvider()
-     * @covers ::findStatic()
+     * @dataProvider findTypeProvider()
+     * @covers ::findType()
      */
-    public function testFindStatic($expected, array $options)
+    public function testFindType($expected, $objectType, $type = 'both')
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -282,8 +294,8 @@ class PropertiesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Properties->find('objectType', $options)
-            ->find('static')
+        $result = $this->Properties->find('objectType', [$objectType])
+            ->find('type', [$type])
             ->extract('name')
             ->toList();
 

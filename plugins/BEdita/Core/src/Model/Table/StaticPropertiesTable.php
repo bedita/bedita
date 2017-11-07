@@ -81,6 +81,17 @@ class StaticPropertiesTable extends PropertiesTable
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        return parent::_initializeSchema($schema)
+            ->setColumnType('id', 'uuid');
+    }
+
+    /**
      * Create temporary table with same columns, options and indexes as `properties`.
      *
      * @return void
