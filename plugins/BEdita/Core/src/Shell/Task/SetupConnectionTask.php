@@ -291,6 +291,10 @@ class SetupConnectionTask extends Shell
         fwrite($pipes[0], $contents);
         fclose($pipes[0]);
 
+        // Read pipes for the sake of it. We don't actually need their contents, but exit code might be wrong otherwise.
+        stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[2]);
+
         // Check exit code (should be 0 if syntax is valid).
         $exitCode = proc_close($process);
         if ($exitCode !== 0) {
