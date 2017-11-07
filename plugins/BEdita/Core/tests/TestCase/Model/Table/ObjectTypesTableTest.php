@@ -579,6 +579,8 @@ class ObjectTypesTableTest extends TestCase
     /**
      * Test `beforeDelete`
      *
+     * @param string $typeName Object type name to delete
+     * @param mixed $expected Expected result: exception or boolean
      * @return void
      * @dataProvider beforeDeleteProvider
      * @covers ::beforeDelete()
@@ -588,7 +590,7 @@ class ObjectTypesTableTest extends TestCase
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectExceptionMessage($expected->getMessage());
         }
         $entity = $this->ObjectTypes->get($typeName);
         $result = $this->ObjectTypes->delete($entity);
