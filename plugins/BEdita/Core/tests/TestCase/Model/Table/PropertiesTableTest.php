@@ -147,8 +147,18 @@ class PropertiesTableTest extends TestCase
                 ['documents'],
             ],
             'media' => [
-                [],
+                [
+                    'media_property',
+                ],
                 ['media'],
+            ],
+            'files' => [
+                [
+                    'disabled_property',
+                    'media_property',
+                    'files_property',
+                ],
+                ['files'],
             ],
             'profiles' => [
                 [
@@ -159,11 +169,8 @@ class PropertiesTableTest extends TestCase
             ],
             'users' => [
                 [
-                    'another_birthdate',
-                    'another_surname',
                     'another_username',
                     'another_email',
-                    'disabled_property',
                 ],
                 ['users'],
             ],
@@ -243,6 +250,12 @@ class PropertiesTableTest extends TestCase
             'another_title',
             'another_description',
         ];
+        $mediaCustom = [ // Media custom properties.
+            'media_property',
+        ];
+        $filesCustom = [ // Files custom properties.
+            'files_property',
+        ];
 
         return [
             'objects both' => [
@@ -254,8 +267,12 @@ class PropertiesTableTest extends TestCase
                 'documents',
             ],
             'media both' => [
-                array_merge($objects, $media),
+                array_merge($objects, $media, $mediaCustom),
                 'media',
+            ],
+            'files both' => [
+                array_merge($objects, $media, $mediaCustom, $filesCustom),
+                'files',
             ],
             'documents static' => [
                 $objects,
@@ -268,8 +285,18 @@ class PropertiesTableTest extends TestCase
                 'dynamic',
             ],
             'media dynamic' => [
-                [],
+                $mediaCustom,
                 'media',
+                'dynamic',
+            ],
+            'files dynamic' => [
+                array_merge($mediaCustom, $filesCustom),
+                'files',
+                'dynamic',
+            ],
+            'locations dynamic' => [
+                [],
+                'locations',
                 'dynamic',
             ],
         ];
@@ -296,6 +323,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', [$objectType])
             ->find('type', [$type])
+            ->where(['enabled' => true])
             ->extract('name')
             ->toList();
 

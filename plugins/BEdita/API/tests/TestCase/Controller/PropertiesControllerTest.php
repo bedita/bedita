@@ -51,10 +51,10 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 7,
+                    'count' => 9,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 7,
+                    'page_items' => 9,
                     'page_size' => 20,
                 ],
             ],
@@ -194,7 +194,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'options_list' => null,
                         'description' => 'Disabled property example',
                         'property_type_name' => 'string',
-                        'object_type_name' => 'users',
+                        'object_type_name' => 'files',
                         'label' => null,
                         'list_view' => true,
                     ],
@@ -204,6 +204,48 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/properties/7',
+                    ],
+                ],
+                [
+                    'id' => '8',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'media_property',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'description' => null,
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'media',
+                        'label' => null,
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2017-11-07T18:32:00+00:00',
+                        'modified' => '2017-11-07T18:32:00+00:00',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/properties/8',
+                    ],
+                ],
+                [
+                    'id' => '9',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'files_property',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'description' => null,
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'files',
+                        'label' => null,
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2017-11-07T18:32:00+00:00',
+                        'modified' => '2017-11-07T18:32:00+00:00',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/properties/9',
                     ],
                 ],
             ],
@@ -367,8 +409,8 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/properties/8');
-        $this->assertTrue(TableRegistry::get('Properties')->exists(['name' => 'yet_another_body']));
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/10');
+        static::assertTrue(TableRegistry::get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
     /**

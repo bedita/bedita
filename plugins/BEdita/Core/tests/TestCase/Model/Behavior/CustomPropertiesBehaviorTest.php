@@ -38,6 +38,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.media',
     ];
 
     /**
@@ -81,10 +82,21 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_username',
                     'another_email',
-                    'another_surname',
-                    'another_birthdate',
                 ],
                 'Users',
+            ],
+            'media' => [
+                [
+                    'media_property',
+                ],
+                'Media',
+            ],
+            'files' => [
+                [
+                    'media_property',
+                    'files_property',
+                ],
+                'Files',
             ],
         ];
     }
@@ -158,12 +170,10 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testDefaultValues()
     {
         $expected = [
-            'another_username' => null,
-            'another_email' => null,
-            'another_surname' => null,
-            'another_birthdate' => null,
+            'media_property' => null,
+            'files_property' => null,
         ];
-        $user = TableRegistry::get('Users');
+        $user = TableRegistry::get('Files');
         $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
         static::assertEquals($expected, $result);
     }
@@ -177,14 +187,14 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         return [
             'simple' => [
-                ['another_username', 'another_email'],
-                1,
-                'Users',
+                ['media_property', 'files_property'],
+                10,
+                'Files',
             ],
             'no hydration' => [
-                ['another_username', 'another_email'],
-                1,
-                'Users',
+                ['media_property', 'files_property'],
+                10,
+                'Files',
                 false,
             ],
             'empty' => [
@@ -253,57 +263,48 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
-                    'another_username' => 'gustavo',
-                    'another_email' => null,
-                    'another_surname' => 'Support',
-                    'another_birthdate' => null,
+                    'media_property' => 'gustavo',
+                    'files_property' => null,
                 ],
                 [
-                    'another_username' => 'gustavo',
-                    'another_surname' => 'Support',
+                    'media_property' => 'gustavo',
                 ],
-                1,
-                'Users',
+                10,
+                'Files',
             ],
             'overwrite' => [
                 [
-                    'another_username' => 'synapse',
-                    'another_email' => 'gustavo@example.org',
-                    'another_surname' => null,
-                    'another_birthdate' => null,
+                    'media_property' => 'synapse',
+                    'files_property' => 'gustavo@example.org',
                 ],
                 [
-                    'another_email' => 'gustavo@example.org',
+                    'files_property' => 'gustavo@example.org',
                 ],
-                5,
-                'Users',
+                10,
+                'Files',
             ],
             'empty' => [
                 [
-                    'another_username' => null,
-                    'another_email' => null,
-                    'another_surname' => null,
-                    'another_birthdate' => null,
+                    'media_property' => null,
+                    'files_property' => null,
                 ],
                 [
-                    'password' => 'hohoho',
+                    'media_property' => null,
                 ],
-                1,
-                'Users',
+                10,
+                'Files',
             ],
             'disabledProperty' => [
                 [
-                    'another_username' => 'gustavo',
-                    'another_email' => null,
-                    'another_surname' => null,
-                    'another_birthdate' => null,
+                    'media_property' => 'gustavo',
+                    'files_property' => null,
                 ],
                 [
-                    'another_username' => 'gustavo',
+                    'media_property' => 'gustavo',
                     'disabled_property' => 'do not write it!',
                 ],
-                1,
-                'Users',
+                10,
+                'Files',
             ],
         ];
     }
