@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -25,12 +27,29 @@ use Cake\Validation\Validator;
 /**
  * Applications Model
  *
+ * @method \BEdita\Core\Model\Entity\Application get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
  * @since 4.0.0
  */
 class ApplicationsTable extends Table
 {
+    /**
+     * Default application id
+     *
+     * @var int
+     */
+    const DEFAULT_APPLICATION = 1;
+
     /**
      * {@inheritDoc}
      *
@@ -85,19 +104,26 @@ class ApplicationsTable extends Table
     }
 
     /**
-     * Generate the api key on application creation
+     * Generate the api key on application creation.
+     *
+     * If applications is DEFAULT_APPLICATION or current invoking application and `enabled` is `false`
+     * raise an ImmutableResourceException
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not disableable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        if (!$entity->isNew() || $entity->has('api_key')) {
-            return;
+        if (!$entity->isNew() && $entity->get('enabled') == false &&
+            in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not disable "Application" {0}', $entity->id));
         }
 
-        $entity->set('api_key', static::generateApiKey());
+        if ($entity->isNew() && !$entity->has('api_key')) {
+            $entity->set('api_key', static::generateApiKey());
+        }
     }
 
     /**
@@ -128,5 +154,20 @@ class ApplicationsTable extends Table
                 $this->aliasField('api_key') => $options['apiKey'],
                 $this->aliasField('enabled') => true,
             ]);
+    }
+
+    /**
+     * Before delete checks: if applications is DEFAULT_APPLICATION or current raise a ImmutableResourceException
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if (in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not delete "Application" {0}', $entity->id));
+        }
     }
 }

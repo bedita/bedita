@@ -37,11 +37,10 @@ class DatabaseTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.config',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -55,8 +54,8 @@ class DatabaseTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
-        $fixtures = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures);
+        $fixtures = ['Config', 'ObjectTypes', 'Roles', 'Applications'];
+        $this->loadFixtures(...$fixtures);
         $schema = Database::currentSchema();
 
         $this->assertCount(count($fixtures), $schema);
@@ -99,12 +98,12 @@ class DatabaseTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
-        $fixtures1 = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures1);
+        $fixtures1 = ['Config', 'ObjectTypes', 'Applications'];
+        $this->loadFixtures(...$fixtures1);
         $schema1 = Database::currentSchema();
 
-        $fixtures2 = ['Roles', 'Users'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures2);
+        $fixtures2 = ['AsyncJobs', 'Roles'];
+        $this->loadFixtures(...$fixtures2);
         $schema2 = Database::currentSchema();
 
         $fixtures2 = array_merge($fixtures1, $fixtures2);
@@ -122,10 +121,10 @@ class DatabaseTest extends TestCase
             $this->assertContains(Inflector::underscore($v), $diff2['missing']['tables']);
         }
 
-        unset($schema2['objects']['indexes']);
-        $schema2['objects']['columns']['tttt'] = $schema2['objects']['columns']['title'];
-        unset($schema2['objects']['columns']['title']);
-        $schema2['objects']['columns']['body'] = $schema1['objects']['columns']['publish_start'];
+        unset($schema2['object_types']['indexes']);
+        $schema2['object_types']['columns']['tttt'] = $schema2['object_types']['columns']['name'];
+        unset($schema2['object_types']['columns']['name']);
+        $schema2['object_types']['columns']['description'] = $schema1['applications']['columns']['created'];
         $diff1 = Database::schemaCompare($schema1, $schema2);
         $this->assertCount(3, $diff1);
     }
@@ -162,8 +161,8 @@ class DatabaseTest extends TestCase
         $info = Database::basicInfo();
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
         static::assertTrue($result);
-        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'ZZZZ']);
-        static::assertFalse(($info['vendor'] !== 'sqlite') ? $result : !$result);
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'zzzzzzzzz']);
+        static::assertFalse($result);
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);
     }
@@ -196,12 +195,12 @@ class DatabaseTest extends TestCase
     public function sqlExecute()
     {
         return [
-            ["SELECT id from users", true, 2, 1],
+            ["SELECT id from applications", true, 2, 1],
             ["SELECT id from properties", false, 0, 0],
-            ["SELECT id from users", false, 0, 0, 'zzzzzzzzz'],
-            ["UPDATE profiles SET name='Germano', surname='Mosconi' WHERE id = 1;\n" .
-             "UPDATE profiles SET person_title='Spiritual Guide' WHERE id = 1;", true, 2, 2],
-            ["SELECT name from config;\n" . "SELECT name from profiles;", true, 13, 2],
+            ["SELECT id from roles", false, 0, 0, 'zzzzzzzzz'],
+            ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
+             "UPDATE applications SET name='Gustano' WHERE id = 1;", true, 2, 2],
+            ["SELECT name from config;\n" . "SELECT name from roles;", true, 12, 2],
             ["SELECT something", false, 0, 0],
             [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
         ];
@@ -223,7 +222,7 @@ class DatabaseTest extends TestCase
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
-        $this->loadFixtures('Config', 'ObjectTypes', 'Objects', 'Users', 'Profiles');
+        $this->loadFixtures('Config', 'ObjectTypes', 'Roles', 'Applications');
 
         $res = Database::executeTransaction($sql, $dbConfig);
         $this->assertNotEmpty($res);

@@ -13,17 +13,20 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use Cake\Validation\Validator;
 
 /**
  * ObjectTypes Model
@@ -50,6 +53,18 @@ class ObjectTypesTable extends Table
      * @var string
      */
     const CACHE_CONFIG = '_bedita_object_types_';
+
+    /**
+     * Default parent id 1 for `objects`.
+     *
+     * @var int
+     */
+    const DEFAULT_PARENT_ID = 1;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = ObjectTypesValidator::class;
 
     /**
      * {@inheritDoc}
@@ -104,46 +119,6 @@ class ObjectTypesTable extends Table
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name')
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
-            ->allowEmpty('singular')
-            ->add('singular', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
-            ->allowEmpty('description');
-
-        $validator
-            ->requirePresence('plugin', 'create')
-            ->notEmpty('plugin');
-
-        $validator
-            ->requirePresence('model', 'create')
-            ->notEmpty('model');
-
-        $validator
-            ->allowEmpty('associations');
-
-        $validator
-            ->allowEmpty('hidden');
-
-        return $validator;
     }
 
     /**
@@ -221,13 +196,52 @@ class ObjectTypesTable extends Table
     }
 
     /**
+     * Set default parent on creation if missing.
+     * Prevent delete if type is abstract and a subtype exists.
+     *
+     * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
+     * in order to be executed before corresponding methods in `TreeBehavior`.
+     *
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @throws \Cake\Network\Exception\ForbiddenException if operation on entity is not allowed
+     */
+    public function beforeRules(Event $event, EntityInterface $entity)
+    {
+        if ($entity->isNew() && empty($entity->parent_id)) {
+            $entity->set('parent_id', self::DEFAULT_PARENT_ID);
+        }
+        $eventData = $event->getData();
+        if (!empty($eventData['operation']) && $eventData['operation'] === 'delete'
+            && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
+            throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
+        }
+    }
+
+    /**
      * Invalidate cache after saving an object type.
+     * Recover Nested Set Model tree structure (tree_left, tree_right)
      *
      * @return void
      */
     public function afterSave()
     {
         Cache::clear(false, self::CACHE_CONFIG);
+    }
+
+    /**
+     * Don't allow delete actions if at least an object of this type exists.
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException if entity is not deletable
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if (TableRegistry::get('Objects')->exists(['object_type_id' => $entity->id])) {
+            throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
+        }
     }
 
     /**

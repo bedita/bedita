@@ -35,13 +35,34 @@ class CurrentApplication
     protected $application = null;
 
     /**
-     * Set current application.
+     * Get current application.
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      */
     public function get()
     {
         return $this->application;
+    }
+
+    /**
+     * Get current application id.
+     * Null if no application is set.
+     *
+     * @return int|null
+     */
+    public function id()
+    {
+        return $this->application ? $this->application->id : null;
+    }
+
+    /**
+     * Static wrapper around {@see self::id()}.
+     *
+     * @return \BEdita\Core\Model\Entity\Application|null
+     */
+    public static function getApplicationId()
+    {
+        return static::getInstance()->id();
     }
 
     /**
@@ -70,10 +91,10 @@ class CurrentApplication
     /**
      * Static wrapper around {@see self::set()}.
      *
-     * @param \BEdita\Core\Model\Entity\Application $application Application instance.
+     * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return void
      */
-    public static function setApplication(Application $application)
+    public static function setApplication(Application $application = null)
     {
         static::getInstance()->set($application);
     }

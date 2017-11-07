@@ -47,10 +47,12 @@ class UserMailerTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.async_jobs',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.auth_providers',

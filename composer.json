@@ -2,7 +2,7 @@
     "name": "bedita/bedita",
     "type": "project",
     "description": "BEdita API-first content management server app",
-    "homepage": "http://bedita.com",
+    "homepage": "https://www.bedita.com",
     "license": "LGPL-3.0",
     "support": {
         "source": "https://github.com/bedita/bedita",
@@ -17,15 +17,12 @@
         {
             "name": "ChannelWeb s.r.l.",
             "email": "info@channelweb.it",
-            "homepage": "http://www.channelweb.it"
+            "homepage": "https://www.channelweb.it"
         }
     ],
     "require": {
         "php": ">=5.6.0",
         "cakephp/cakephp": "~3.5.2",
-        "mobiledetect/mobiledetectlib": "2.*",
-        "cakephp/migrations": "~1.7",
-        "cakephp/plugin-installer": "*",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {
@@ -46,6 +43,10 @@
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },
+    "replace": {
+        "bedita/core": "self.version",
+        "bedita/api": "self.version"
+    },
     "scripts": {
         "post-install-cmd": "BEdita\\App\\Console\\Installer::postInstall",
         "post-update-cmd": "BEdita\\App\\Console\\Installer::postInstall",
@@ -53,11 +54,21 @@
         "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
         "check": [
             "@test",
+            "@cs-setup",
             "@cs-check"
         ],
-        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
-        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
-        "test": "phpunit --colors=always"
+        "cs-check": " vendor/bin/phpcs --colors -n -p --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
+        "cs-fix": "vendor/bin/phpcbf --colors --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
+        "cs-setup": [
+            "vendor/bin/phpcs --config-set installed_paths vendor/cakephp/cakephp-codesniffer",
+            "vendor/bin/phpcs --config-set default_standard CakePHP",
+            "vendor/bin/phpcs --config-set colors 1"
+        ],
+        "test": "vendor/bin/phpunit --colors=always",
+        "update-dev": [
+            "@composer update",
+            "@cs-setup"
+        ]
     },
     "extra": {
         "merge-plugin": {

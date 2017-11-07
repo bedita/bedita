@@ -52,10 +52,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 8,
+                    'count' => 9,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 8,
+                    'page_items' => 9,
                     'page_size' => 20,
                 ],
             ],
@@ -73,6 +73,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => true,
+                        'parent_name' => null,
                     ],
                     'meta' => [
                         'alias' => 'Objects',
@@ -115,6 +116,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -160,6 +162,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Profiles',
@@ -204,6 +207,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Users',
@@ -237,7 +241,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '5',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'news',
+                        'singular' => 'news_item',
                         'name' => 'news',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
@@ -246,6 +250,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => ['body'],
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'News',
@@ -288,6 +293,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => null,
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Locations',
@@ -333,6 +339,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => ['DateRanges'],
                         'hidden' => null,
                         'is_abstract' => false,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Events',
@@ -366,7 +373,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '8',
                     'type' => 'object_types',
                     'attributes' => [
-                        'singular' => 'media',
+                        'singular' => 'media_item',
                         'name' => 'media',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
@@ -375,6 +382,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => ['Streams'],
                         'hidden' => null,
                         'is_abstract' => true,
+                        'parent_name' => 'objects',
                     ],
                     'meta' => [
                         'alias' => 'Media',
@@ -400,6 +408,55 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/8/relationships/parent',
                                 'related' => 'http://api.example.com/model/object_types/8/parent',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '9',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'file',
+                        'name' => 'files',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Media',
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams'],
+                        'hidden' => null,
+                        'is_abstract' => false,
+                        'parent_name' => 'media',
+                    ],
+                    'meta' => [
+                        'alias' => 'Files',
+                        'relations' => [],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/9',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/9/relationships/properties',
+                                'related' => 'http://api.example.com/model/object_types/9/properties',
+                            ],
+                        ],
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/9/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/9/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/9/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/9/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/9/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/9/parent',
                             ],
                         ],
                     ],
@@ -457,6 +514,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         TableRegistry::get('Properties')->deleteAll([]);
+        TableRegistry::get('Objects')->deleteAll([]);
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
         $this->configRequestHeaders();
@@ -496,6 +554,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'associations' => null,
                     'hidden' => null,
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 'meta' => [
                     'alias' => 'Documents',
@@ -609,7 +668,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/object_types/9');
+        $this->assertHeader('Location', 'http://api.example.com/model/object_types/10');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 
@@ -621,8 +680,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::initialize()
      */
-    public function testAddInvalid()
+    public function testAddMissing()
     {
+        // missing mandatory `name`, `singular`
         $data = [
             'type' => 'object_types',
             'attributes' => [
@@ -631,10 +691,62 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         $count = TableRegistry::get('ObjectTypes')->find()->count();
-
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
 
+    /**
+     * Test with reserve words.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testReserved()
+    {
+        // add reserved word failure
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'applications',
+                'singular' => 'application',
+            ],
+        ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+    }
+
+    /**
+     * Test failure with same `name` and `singular`.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testNameSingular()
+    {
+        // add same `name`, `singular`
+        $data = [
+            'type' => 'object_types',
+            'attributes' => [
+                'name' => 'gustavo',
+                'singular' => 'gustavo',
+            ],
+        ];
+
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
@@ -712,10 +824,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/model/object_types/2');
+        $this->delete('/model/object_types/5');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 2]));
+        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 5]));
     }
 }

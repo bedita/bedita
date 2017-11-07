@@ -181,7 +181,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null
         ],
         [
-            'object_type_id' => 8,
+            'object_type_id' => 9,
             'status' => 'on',
             'uname' => 'media-one',
             'locked' => 0,

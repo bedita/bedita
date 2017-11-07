@@ -30,14 +30,14 @@ abstract class ShellTestCase extends TestCase
      *
      * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
-    private $_out;
+    protected $_out;
 
     /**
      * Mocked stderr.
      *
      * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
-    private $_err;
+    protected $_err;
 
     /**
      * Has the shell been aborted?

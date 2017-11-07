@@ -67,8 +67,6 @@ class HomeController extends AppController
     {
         $this->request->allowMethod(['get', 'head']);
 
-        $baseUrl = Router::fullBaseUrl();
-
         $endPoints = array_merge($this->objectTypesEndpoints(), $this->defaultEndpoints);
         foreach ($endPoints as $e => $methods) {
             if ($methods === 'ALL') {
@@ -81,7 +79,7 @@ class HomeController extends AppController
                 }
             }
             $resources[$e] = [
-                'href' => $baseUrl . $e,
+                'href' => Router::url($e, true),
                 'hints' => [
                     'allow' => $allow,
                     'formats' => [

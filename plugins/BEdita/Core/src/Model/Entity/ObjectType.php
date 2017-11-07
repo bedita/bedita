@@ -14,8 +14,10 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -37,6 +39,7 @@ use Cake\Utility\Inflector;
  * @property int $parent_id
  * @property int $tree_left
  * @property int $tree_right
+ * @property string $parent_name
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
@@ -63,6 +66,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         'associations' => true,
         'hidden' => true,
         'is_abstract' => true,
+        'parent_name' => true,
     ];
 
     /**
@@ -71,6 +75,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     protected $_virtual = [
         'alias',
         'table',
+        'parent_name',
         'relations',
     ];
 
@@ -196,5 +201,42 @@ class ObjectType extends Entity implements JsonApiSerializable
         $associations = array_diff($associations, ['relations']);
 
         return $associations;
+    }
+
+    /**
+     * Getter for virtual property `parent_name`.
+     *
+     * @return string
+     */
+    protected function _getParentName()
+    {
+        if (!$this->parent_id) {
+            return null;
+        }
+
+        if (!empty($this->parent)) {
+            return $this->parent->get('name');
+        }
+
+        return TableRegistry::get('ObjectTypes')->get($this->parent_id)->get('name');
+    }
+
+    /**
+     * Setter for virtual property `parent_name`.
+     *
+     * @param string $parentName Parent object type name.
+     * @return string
+     */
+    protected function _setParentName($parentName)
+    {
+        try {
+            $objectType = TableRegistry::get('ObjectTypes')->get($parentName);
+            $this->parent = $objectType;
+            $this->parent_id = $objectType->id;
+        } catch (RecordNotFoundException $e) {
+            return null;
+        }
+
+        return $parentName;
     }
 }

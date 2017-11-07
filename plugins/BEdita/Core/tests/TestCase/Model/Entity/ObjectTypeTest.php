@@ -97,6 +97,7 @@ class ObjectTypeTest extends TestCase
                 'test',
                 'inverse_test',
             ],
+            'parent_name' => 'objects',
         ];
 
         $objectType = $this->ObjectTypes->get(2);
@@ -256,5 +257,50 @@ class ObjectTypeTest extends TestCase
         static::assertArrayHasKey('left_relations', $result['relationships']);
         static::assertArrayHasKey('right_relations', $result['relationships']);
         static::assertArrayNotHasKey('relations', $result['relationships']);
+    }
+
+    /**
+     * Data provider for `testGetSetParentName` test case.
+     *
+     * @return array
+     */
+    public function getSetParentNameProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+                null,
+                'not_found',
+                null
+            ],
+            'documents' => [
+                'documents',
+                'objects',
+                'objects',
+                'objects'
+            ],
+        ];
+    }
+
+    /**
+     * Test getter/setter method for `parent_name`.
+     *
+     * @param string $name Object type name.
+     * @param string|null $getExpected Expected parent name result.
+     * @param string $newParent New parent name to set.
+     * @param string|null $setExpected Parent name set expected result.
+     * @return void
+     *
+     * @dataProvider getSetParentNameProvider
+     * @covers ::_getParentName()
+     * @covers ::_setParentName()
+     */
+    public function testGetSetParentName($name, $getExpected, $newParent, $setExpected)
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        static::assertEquals($getExpected, $objectType->parent_name);
+        $objectType->set('parent_name', $newParent);
+        static::assertEquals($setExpected, $objectType->parent_name);
     }
 }

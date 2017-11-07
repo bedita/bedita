@@ -47,3 +47,6 @@ Configure::write('Filesystem', [
     ],
 ]);
 Configure::write('debug', true);
+
+Cache::clear(false, '_cake_core_');
+Cache::clear(false, '_cake_model_');

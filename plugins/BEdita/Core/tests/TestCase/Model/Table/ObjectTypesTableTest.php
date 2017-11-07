@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -44,6 +45,8 @@ class ObjectTypesTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.profiles',
@@ -157,6 +160,33 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Profiles',
                 ],
             ],
+            'sameNameSingular' => [
+                false,
+                [
+                    'singular' => 'gustavo',
+                    'name' => 'gustavo',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'reservedName' => [
+                false,
+                [
+                    'singular' => 'application_item',
+                    'name' => 'applications',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'reservedSingular' => [
+                false,
+                [
+                    'singular' => 'role',
+                    'name' => 'role_list',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
         ];
     }
 
@@ -207,6 +237,7 @@ class ObjectTypesTableTest extends TestCase
                         'inverse_test',
                     ],
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 2,
             ],
@@ -227,6 +258,7 @@ class ObjectTypesTableTest extends TestCase
                         'inverse_test',
                     ],
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 '2',
             ],
@@ -247,6 +279,7 @@ class ObjectTypesTableTest extends TestCase
                         'inverse_test',
                     ],
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 'document',
             ],
@@ -267,6 +300,7 @@ class ObjectTypesTableTest extends TestCase
                         'inverse_test',
                     ],
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 'documents',
             ],
@@ -287,6 +321,7 @@ class ObjectTypesTableTest extends TestCase
                         'inverse_test',
                     ],
                     'is_abstract' => false,
+                    'parent_name' => 'objects',
                 ],
                 'Documents',
             ],
@@ -375,11 +410,12 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterDelete()
     {
-        $entity = $this->ObjectTypes->get('document');
+        // there are no 'news` in objects fixture, safe to delete it
+        $entity = $this->ObjectTypes->get('news_item');
         $this->ObjectTypes->get(3);
         $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
@@ -387,7 +423,7 @@ class ObjectTypesTableTest extends TestCase
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
@@ -464,5 +500,100 @@ class ObjectTypesTableTest extends TestCase
 
         static::assertArrayHasKey('LeftRelations', $contain);
         static::assertArrayHasKey('RightRelations', $contain);
+    }
+
+    /**
+     * Provider for `testParent`
+     *
+     * @return array
+     */
+    public function parentProvider()
+    {
+        return [
+            'foo' => [
+                [
+                    'singular' => 'foo',
+                    'name' => 'foos',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ]
+            ],
+            'cats' => [
+                [
+                    'singular' => 'foo',
+                    'name' => 'foos',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'parent_name' => 'objects',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * Test default parent.
+     *
+     * @return void
+     *
+     * @dataProvider parentProvider
+     * @covers ::beforeRules()
+     */
+    public function testParent($data)
+    {
+        $objectType = $this->ObjectTypes->newEntity();
+        $this->ObjectTypes->patchEntity($objectType, $data);
+
+        $success = $this->ObjectTypes->save($objectType);
+
+        $parentId = empty($data['parent_name']) ?
+            ObjectTypesTable::DEFAULT_PARENT_ID : $this->ObjectTypes->get($data['parent_name'])->id;
+
+        static::assertSame($parentId, $success->parent_id);
+        static::assertTrue((bool)$success);
+    }
+
+    /**
+     * Data provider for `testBeforeDelete`
+     *
+     * @return array
+     */
+    public function beforeDeleteProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+                new ForbiddenException('Abstract type with existing subtypes'),
+            ],
+            // there are no 'news` in objects fixture, safe to delete for now
+            'news' => [
+                'news',
+                true,
+            ],
+            'documents' => [
+                'documents',
+                new ForbiddenException('Objects of this type exist'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeDelete`
+     *
+     * @param string $typeName Object type name to delete
+     * @param mixed $expected Expected result: exception or boolean
+     * @return void
+     * @dataProvider beforeDeleteProvider
+     * @covers ::beforeDelete()
+     * @covers ::beforeRules()
+     */
+    public function testBeforeDelete($typeName, $expected)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $entity = $this->ObjectTypes->get($typeName);
+        $result = $this->ObjectTypes->delete($entity);
+        static::assertEquals($expected, $result);
     }
 }
