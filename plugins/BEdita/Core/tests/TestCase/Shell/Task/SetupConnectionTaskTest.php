@@ -18,6 +18,7 @@ use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Console\ConsoleInput;
 use Cake\Console\ConsoleIo;
 use Cake\Database\Connection;
+use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
@@ -55,6 +56,26 @@ class SetupConnectionTaskTest extends ShellTestCase
         }
 
         parent::tearDown();
+    }
+
+    /**
+     * Test execution when specified connection is **NOT** a valid connection object.
+     *
+     * @return void
+     *
+     * @covers ::main()
+     */
+    public function testExecuteUnknownConnectionType()
+    {
+        // Setup temporary configuration.
+        $connection = $this->getMockBuilder(ConnectionInterface::class)
+            ->getMock();
+        ConnectionManager::setConfig(static::TEMP_CONNECTION, $connection);
+
+        $this->invoke([SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION]);
+
+        $this->assertAborted();
+        $this->assertErrorContains('Invalid connection object');
     }
 
     /**
