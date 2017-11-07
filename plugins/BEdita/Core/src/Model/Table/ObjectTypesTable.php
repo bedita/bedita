@@ -209,11 +209,11 @@ class ObjectTypesTable extends Table
     public function beforeRules(Event $event, EntityInterface $entity)
     {
         if ($entity->isNew() && empty($entity->parent_id)) {
-            $entity->parent_id = self::DEFAULT_PARENT_ID;
+            $entity->set('parent_id', self::DEFAULT_PARENT_ID);
         }
         $eventData = $event->getData();
         if (!empty($eventData['operation']) && $eventData['operation'] === 'delete'
-            && $entity->get('is_abstract') && $this->find()->where(['parent_id' => $entity->id])->first()) {
+            && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
             throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
         }
     }
