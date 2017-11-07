@@ -44,16 +44,6 @@ class DatabaseTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->fixtureManager->shutDown();
-    }
-
-    /**
      * Test currentSchema method
      *
      * @return void
@@ -62,8 +52,10 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
+        $this->fixtureManager->shutDown();
+
         $fixtures = ['Config', 'ObjectTypes', 'Roles', 'Applications'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures);
+        $this->loadFixtures(...$fixtures);
         $schema = Database::currentSchema();
 
         $this->assertCount(count($fixtures), $schema);
@@ -104,12 +96,14 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
+        $this->fixtureManager->shutDown();
+
         $fixtures1 = ['Config', 'ObjectTypes', 'Applications'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures1);
+        $this->loadFixtures(...$fixtures1);
         $schema1 = Database::currentSchema();
 
         $fixtures2 = ['AsyncJobs', 'Roles'];
-        call_user_func_array([$this, 'loadFixtures'], $fixtures2);
+        $this->loadFixtures(...$fixtures2);
         $schema2 = Database::currentSchema();
 
         $fixtures2 = array_merge($fixtures1, $fixtures2);

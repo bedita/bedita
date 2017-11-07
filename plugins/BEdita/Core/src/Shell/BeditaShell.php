@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,59 +10,42 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Utility\Database;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
-use Cake\Filesystem\File;
-use Cake\ORM\TableRegistry;
 
 /**
+ * Shell to manage instance at a system level
+ *
  * Basic shell commands:
  *  - setup a new instance
  *  - check instance
- *  - internal cache cleanup
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Shell\Task\CheckApiKeyTask $CheckApiKey
+ * @property \BEdita\Core\Shell\Task\CheckFilesystemTask $CheckFilesystem
+ * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
+ * @property \BEdita\Core\Shell\Task\InitSchemaTask $InitSchema
+ * @property \BEdita\Core\Shell\Task\SetupAdminUserTask $SetupAdminUser
+ * @property \BEdita\Core\Shell\Task\SetupConnectionTask $SetupConnection
  */
 class BeditaShell extends Shell
 {
 
     /**
-     * User input data array
-     *
-     * @var array
+     * {@inheritDoc}
      */
-    protected $userInputData = null;
-
-    /**
-     * Is configuration modified from startup default?
-     *
-     * @var boolean
-     */
-    protected $configModified = false;
-
-    /**
-     * Default initial user name
-     *
-     * @var string
-     */
-    public static $defaultUsername = 'bedita';
-
-    /**
-     * Default initial user id
-     *
-     * @var int
-     */
-    const DEFAULT_USER_ID = 1;
-
-    /**
-     * Temporary configuration name used in initial setup.
-     *
-     * @var string
-     */
-    const TEMP_SETUP_CFG = '__temp_setup__';
+    public $tasks = [
+        'CheckApiKey' => ['className' => 'BEdita/Core.CheckApiKey'],
+        'CheckFilesystem' => ['className' => 'BEdita/Core.CheckFilesystem'],
+        'CheckSchema' => ['className' => 'BEdita/Core.CheckSchema'],
+        'InitSchema' => ['className' => 'BEdita/Core.InitSchema'],
+        'SetupAdminUser' => ['className' => 'BEdita/Core.SetupAdminUser'],
+        'SetupConnection' => ['className' => 'BEdita/Core.SetupConnection'],
+    ];
 
     /**
      * {@inheritDoc}
@@ -72,26 +55,31 @@ class BeditaShell extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
+
         $parser->addSubcommand('setup', [
-            'help' => 'Setup new instance or check current setup.',
+            'help' => 'Setup new instance.',
             'parser' => [
-                'description' => [
-                    'Use this interactive shell command to setup a new instance ',
-                    'or to check current instance configuration/status.',
-                ],
-                'options' => [
-                    'yes' => [
-                        'help' => 'Respond yes to all questions',
-                        'short' => 'y',
-                        'required' => false,
-                        'default' => true,
-                    ],
-                    'config-file' => [
-                        'help' => 'Configuration file',
-                        'required' => false,
-                        'default' => CONFIG . 'app.php',
-                    ],
-                ],
+                'description' => 'Use this interactive shell command to setup a new instance.',
+                'options' => array_merge(
+                    $this->SetupConnection->getOptionParser()->options(),
+                    $this->InitSchema->getOptionParser()->options(),
+                    $this->CheckSchema->getOptionParser()->options(),
+                    $this->CheckFilesystem->getOptionParser()->options(),
+                    $this->SetupAdminUser->getOptionParser()->options(),
+                    $this->CheckApiKey->getOptionParser()->options()
+                ),
+            ],
+        ]);
+
+        $parser->addSubcommand('check', [
+            'help' => 'Check current setup.',
+            'parser' => [
+                'description' => 'Use this shell command to check current instance configuration/status.',
+                'options' => array_merge(
+                    $this->CheckSchema->getOptionParser()->options(),
+                    $this->CheckFilesystem->getOptionParser()->options(),
+                    $this->CheckApiKey->getOptionParser()->options()
+                ),
             ],
         ]);
 
@@ -99,316 +87,70 @@ class BeditaShell extends Shell
     }
 
     /**
-     * Setup or check BE4 instance
+     * Initial set up for a BEdita instance.
      *
-     * @return bool True on setup terminated with success, false on error or user stop
+     * @return void
      */
     public function setup()
     {
-        $res = $this->databaseConnection();
-        if (!$res) {
-            $this->warn('Setup stopped');
-            if (isset($this->userInputData)) {
-                $this->warn('==> Please check your database connection parameters');
-            }
+        $this->out('=====> Checking connection');
+        $this->SetupConnection->params = $this->params;
+        $this->SetupConnection->main();
 
-            return false;
-        }
-
-        if (empty($this->userInputData)) {
-            $info = Database::basicInfo();
-            $this->info('Current database configuration');
-            if (!empty($info['host'])) {
-                $this->info(' * Host: ' . $info['host']);
-            }
-            $this->info(' * Database: ' . $info['database']);
-            $this->info(' * Vendor: ' . $info['vendor']);
-        }
-
-        $this->info('Database connection is OK');
         $this->hr();
 
-        $this->info('Checking database schema....');
-        if (!$this->initSchema()) {
-            return false;
-        }
-        $this->hr();
-        if (!empty($this->userInputData)) {
-            if (!$this->saveConnectionData()) {
-                return false;
-            }
-        }
-
-        $this->info('Checking filesystem permissions....');
-        $this->checkFs();
-        $this->hr();
-
-        $this->info('Set admin user....');
-        $this->adminUser();
-        $this->hr();
-
-        $this->info('Default API KEY is: ' . $this->defaultApiKey());
-
-        return true;
-    }
-
-    /**
-     * Display default application api key
-     *
-     * @return string Default application api key
-     */
-    protected function defaultApiKey()
-    {
-        $application = TableRegistry::get('Applications')->get(1);
-
-        return !empty($application) ? $application->get('api_key') : '';
-    }
-
-    /**
-     * Initialize and check DB schema
-     *
-     * @return bool True on success, false on user stop
-     */
-    protected function initSchema()
-    {
-        $connection = ConnectionManager::get('default');
-        $tables = $connection->getSchemaCollection()->listTables();
+        $tables = ConnectionManager::get($this->param('connection'))->schemaCollection()->listTables();
         if (empty($tables)) {
-            $this->out('Database is empty');
-            $res = $this->in('Proceed with database schema and data initialization?', ['y', 'n'], 'n');
-            if ($res != 'y') {
-                $this->info('Database creation aborted. Bye.');
-
-                return false;
-            }
-
-            $initSchemaTask = $this->Tasks->load('BEdita/Core.InitSchema');
-            $initSchemaTask->params['connection'] = $connection->configName();
-            $initSchemaTask->main();
-
-            return true;
-        }
-
-        $checkSchemaTask = $this->Tasks->load('BEdita/Core.CheckSchema');
-        $checkSchemaTask->params['connection'] = $connection->configName();
-        $checkSchemaTask->params['ignore-migration-status'] = true;
-        $ok = $checkSchemaTask->main();
-
-        if ($ok !== true) {
-            $this->warn('Schema is not up-to-date!');
-            $this->err('Unable to proceed with setup, please check your database');
-
-            return false;
-        }
-
-        $this->info('Database schema is OK');
-
-        return true;
-    }
-
-    /**
-     * Check filesystem permissions.
-     *
-     * @return void
-     */
-    protected function checkFs()
-    {
-        $httpdUser = exec("ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\\  -f1");
-        if (!empty($httpdUser)) {
-            $this->info('HTTPD (webserver) user seems to be: ' . $httpdUser);
+            $this->out('=====> Initializing schema');
+            $this->InitSchema->params = ['seed' => true] + $this->params;
+            $this->InitSchema->main();
         } else {
-            $this->info('Could not determine HTTPD (webserver) user');
+            $this->out('=====> Checking schema');
+            $this->CheckSchema->params = $this->params;
+            $this->CheckSchema->main();
         }
-        $this->out('tmp/ and logs/ folder should be writable by the webserver');
-        $this->checkDir(TMP, 'tmp/');
-        $this->checkDir(LOGS, 'logs/');
+
+        $this->hr();
+
+        $this->out('=====> Checking filesystem permissions');
+        $this->CheckFilesystem->params = $this->params;
+        $this->CheckFilesystem->main();
+
+        $this->hr();
+
+        if ($this->param('connection') !== 'default') {
+            ConnectionManager::alias($this->param('connection'), 'default');
+        }
+        try {
+            $this->out('=====> Configuring default administrator user');
+            $this->SetupAdminUser->params = $this->params;
+            $this->SetupAdminUser->main();
+
+            $this->hr();
+
+            $this->out('=====> Checking API key');
+            $this->CheckApiKey->params = $this->params;
+            $this->CheckApiKey->main();
+        } finally {
+            ConnectionManager::dropAlias('default');
+        }
     }
 
     /**
-     * Check directory owners & permissions
-     *
-     * @param string $dirPath Folder path to check
-     * @param string $label Folder label/name
+     * Check bedita instance.
      *
      * @return void
      */
-    protected function checkDir($dirPath, $label)
+    public function check()
     {
-        new File($dirPath);
-        $this->out('Checking ' . $label . ' (' . $dirPath . ')');
-        if (!is_dir($dirPath)) {
-            $this->abort('Folder ' . $dirPath . ' not found, please check your installation!');
-        }
-        $owner = posix_getpwuid(fileowner($dirPath));
-        $this->out(' owner: ' . $owner['name']);
-        $group = posix_getgrgid(filegroup($dirPath));
-        $this->out(' group: ' . $group['name']);
-        $perms = substr(decoct(fileperms($dirPath)), 2);
-        $this->out(' perms: ' . $perms);
-    }
+        $this->out('=====> Checking schema');
+        $this->CheckSchema->params = $this->params;
+        $this->CheckSchema->main();
 
-    /**
-     * Check if database connection is working
-     *
-     * @return bool True on success, false on error
-     */
-    protected function checkDbConnection()
-    {
-        $res = Database::connectionTest();
-        if (!$res['success']) {
-            $this->warn('Unable to connect');
-            $this->err('Error message: ' . $res['error']);
-            if ($this->configModified) {
-                $this->warn('==> Please check your database configuration in config/app.php file');
-                $this->warn("==> See 'DataSources' => 'default' array");
-            }
+        $this->hr();
 
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check database connection parameters
-     * On a fresh install placeholders should be found, if placeholders are not found
-     * a manual edit is required
-     *
-     * @return bool True on success, false otherwise
-     */
-    protected function databaseConnection()
-    {
-        $this->configModified = false;
-        $dbParams = Database::basicInfo('default', false);
-        $fields = ['host', 'database', 'username', 'password'];
-        foreach ($fields as $name) {
-            $expected = '__BE4_DB_' . strtoupper($name) . '__';
-            if (empty($dbParams[$name]) || $dbParams[$name] !== $expected) {
-                $this->configModified = true;
-            }
-        }
-
-        if ($this->configModified) {
-            $this->warn('Configuration file has been modified!');
-
-            return $this->checkDbConnection();
-        }
-
-        $this->info('A working database connection is needed in order to continue');
-        $this->info('Parameter needed are: driver, host, port, database, username, password');
-        $this->info('For MySQL and Postgres you need to provide all parameters, for SQLite database path is sufficient');
-
-        $res = $this->in('Proceed with setup?', ['y', 'n'], 'n');
-        if ($res != 'y') {
-            $this->info('Database setup stopped');
-
-            return false;
-        }
-
-        $this->dbConnectionUserInput();
-        $dbParams = array_merge($dbParams, $this->userInputData);
-        $dbParams['className'] = 'Cake\Database\Connection';
-        $dbParams['driver'] = 'Cake\Database\Driver\\' . $this->userInputData['driver'];
-        ConnectionManager::setConfig(self::TEMP_SETUP_CFG, $dbParams);
-        ConnectionManager::alias(self::TEMP_SETUP_CFG, 'default');
-
-        return $this->checkDbConnection();
-    }
-
-    /**
-     * Save database connection data in config/app.php file
-     *
-     * @return bool True on success, false otherwise
-     */
-    protected function saveConnectionData()
-    {
-        if (!is_writable($this->param('config-file'))) {
-            $this->warn('Unable to update configuration file');
-            $this->warn('==> Please check write permission on config/app.php file');
-
-            return false;
-        }
-
-        $content = file_get_contents($this->param('config-file'));
-        $fields = ['host', 'port', 'database', 'username', 'password'];
-        foreach ($fields as $name) {
-            $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
-            $content = str_replace($placeHolder, $this->userInputData[$name], $content);
-        }
-
-        // update driver
-        $oldDriver = "'Cake\Database\Driver\Mysql'";
-        $newDriver = "'Cake\Database\Driver\\" . $this->userInputData['driver'] . "'";
-        $content = str_replace($oldDriver, $newDriver, $content);
-
-        // TODO: better php check for $content?
-        $eval = eval(str_replace('<?php', '', $content));
-        if (empty($eval) || !is_array($eval)) {
-            $this->err('Error updating configuration parameters');
-
-            return false;
-        }
-
-        $this->createFile($this->param('config-file'), $content);
-        $this->configModified = true;
-
-        $this->info('Configuration updated in ' . $this->param('config-file'));
-
-        return true;
-    }
-
-    /**
-     * Get database connection parameters from user
-     *
-     * @return void
-     */
-    protected function dbConnectionUserInput()
-    {
-        $this->userInputData = ['host' => 'localhost', 'port' => '', 'database' => '', 'username' => '', 'password' => ''];
-        $this->userInputData['driver'] = $this->in('Driver?', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
-        if ($this->userInputData['driver'] === 'Sqlite') {
-            $this->userInputData['database'] = $this->in('Sqlite database file path?', null, TMP . 'be4.sqlite');
-
-            return;
-        }
-        $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
-        $defaultPort = ($this->userInputData['driver'] === 'Mysql') ? '3306' : '5432';
-        $this->userInputData['port'] = $this->in('Port?', null, $defaultPort);
-        $this->userInputData['database'] = $this->in('Database?');
-        $this->userInputData['username'] = $this->in('Username?');
-        $this->userInputData['password'] = $this->in('Password?');
-    }
-
-    /**
-     * Initialize and check DB schema
-     *
-     * @return void
-     */
-    protected function adminUser()
-    {
-        $usersTable = TableRegistry::get('Users');
-        $adminUser = $usersTable->get(static::DEFAULT_USER_ID);
-
-        if ($adminUser->username !== static::$defaultUsername) {
-            $this->info('An admin user has already been set: ' . $adminUser->username);
-            $res = $this->in('Overwrite current admin user?', ['y', 'n'], 'n');
-            if ($res != 'y') {
-                $this->info('Admin user ' . $adminUser->username . ' unchanged.');
-
-                return;
-            }
-        }
-
-        $this->info('A new admin user will be created');
-        $data = [];
-        $data['username'] = $this->in('username: ');
-        $data['password_hash'] = $this->in('password: ');
-        $adminUser = $usersTable->patchEntity($adminUser, $data);
-        $adminUser->blocked = false;
-        if (!$usersTable->save($adminUser, ['associated' => false])) {
-             $this->abort('Error saving admin user data');
-        }
-
-        $this->info('Admin user login data updated');
+        $this->out('=====> Checking filesystem permissions');
+        $this->CheckFilesystem->params = $this->params;
+        $this->CheckFilesystem->main();
     }
 }
