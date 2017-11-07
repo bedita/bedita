@@ -43,6 +43,8 @@ use Cake\Utility\Inflector;
  * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
  *
+ * @mixin \Cake\ORM\Behavior\TreeBehavior
+ *
  * @since 4.0.0
  */
 class ObjectTypesTable extends Table
@@ -211,9 +213,7 @@ class ObjectTypesTable extends Table
         if ($entity->isNew() && empty($entity->parent_id)) {
             $entity->set('parent_id', self::DEFAULT_PARENT_ID);
         }
-        $eventData = $event->getData();
-        if (!empty($eventData['operation']) && $eventData['operation'] === 'delete'
-            && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
+        if ($event->getData('operation') === 'delete' && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
             throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
         }
     }
