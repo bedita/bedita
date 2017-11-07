@@ -239,7 +239,7 @@ class ObjectTypesTable extends Table
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (TableRegistry::get('Objects')->find()->where(['object_type_id' => $entity->id])->count() > 0) {
+        if (TableRegistry::get('Objects')->exists(['object_type_id' => $entity->id])) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
         }
     }
