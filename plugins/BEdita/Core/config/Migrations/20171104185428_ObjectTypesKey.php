@@ -35,6 +35,9 @@ class ObjectTypesKey extends AbstractMigration
 
     /**
      * {@inheritDoc}
+     *
+     * Revert action is not implemented since foreign key is the same
+     * but with different setting.
      */
     public function down()
     {
