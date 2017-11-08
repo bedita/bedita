@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -112,51 +112,43 @@ Router::plugin(
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
         );
 
-        // Modeling.
-        $modelingControllers = implode('|', $modelingControllers);
-        $routes->connect(
-            '/model/:controller',
-            ['action' => 'index'],
-            ['_name' => 'model:index', 'controller' => $modelingControllers]
-        );
-        $routes->connect(
-            '/model/:controller/:id',
-            ['action' => 'resource'],
-            ['_name' => 'model:resource', 'pass' => ['id'], 'controller' => $modelingControllers]
-        );
-        $routes->connect(
-            '/model/:controller/:related_id/:relationship',
-            ['action' => 'related'],
-            ['_name' => 'model:related', 'controller' => $modelingControllers]
-        );
-        $routes->connect(
-            '/model/:controller/:id/relationships/:relationship',
-            ['action' => 'relationships'],
-            ['_name' => 'model:relationships', 'controller' => $modelingControllers]
+        $resourcesRoutes = function (array $controllers) {
+            $controller = implode('|', $controllers);
+            return function (RouteBuilder $routes) use ($controller) {
+                $routes->connect(
+                    '/:controller',
+                    ['action' => 'index'],
+                    ['_name' => 'resources:index'] + compact('controller')
+                );
+                $routes->connect(
+                    '/:controller/:id',
+                    ['action' => 'resource'],
+                    ['_name' => 'resources:resource', 'pass' => ['id']] + compact('controller')
+                );
+                $routes->connect(
+                    '/:controller/:related_id/:relationship',
+                    ['action' => 'related'],
+                    ['_name' => 'resources:related'] + compact('controller')
+                );
+                $routes->connect(
+                    '/:controller/:id/relationships/:relationship',
+                    ['action' => 'relationships'],
+                    ['_name' => 'resources:relationships'] + compact('controller')
+                );
+            };
+        };
+
+        // Modeling endpoints.
+        $routes->prefix(
+            'model',
+            [
+                '_namePrefix' => 'model:',
+            ],
+            $resourcesRoutes($modelingControllers)
         );
 
         // Resources.
-        $resourcesControllers = implode('|', $resourcesControllers);
-        $routes->connect(
-            '/:controller',
-            ['action' => 'index'],
-            ['_name' => 'resources:index', 'controller' => $resourcesControllers]
-        );
-        $routes->connect(
-            '/:controller/:id',
-            ['action' => 'resource'],
-            ['_name' => 'resources:resource', 'pass' => ['id'], 'controller' => $resourcesControllers]
-        );
-        $routes->connect(
-            '/:controller/:related_id/:relationship',
-            ['action' => 'related'],
-            ['_name' => 'resources:related', 'controller' => $resourcesControllers]
-        );
-        $routes->connect(
-            '/:controller/:id/relationships/:relationship',
-            ['action' => 'relationships'],
-            ['_name' => 'resources:relationships', 'controller' => $resourcesControllers]
-        );
+        $resourcesRoutes($resourcesControllers)($routes);
 
         // Trash.
         $routes->connect(

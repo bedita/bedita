@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,14 +10,15 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\TestCase\Controller;
+
+namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\RelationsController
+ * @coversDefaultClass \BEdita\API\Controller\Model\RelationsController
  */
 class RelationsControllerTest extends IntegrationTestCase
 {
