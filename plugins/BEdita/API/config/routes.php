@@ -27,6 +27,12 @@ Router::plugin(
             'streams',
             'users',
         ];
+        $adminControllers = [
+            'applications',
+            'async_jobs',
+            'config',
+            'endpoints',
+        ];
         $modelingControllers = [
             'object_types',
             'properties',
@@ -81,18 +87,6 @@ Router::plugin(
             ['_name' => 'login:update']
         );
 
-        // Admin.
-        $routes->connect(
-            '/admin/:item',
-            ['controller' => 'Admin', 'action' => 'index'],
-            ['_name' => 'admin:index', 'pass' => ['item']]
-        );
-        $routes->connect(
-            '/admin/:item/:id',
-            ['controller' => 'Admin', 'action' => 'resource'],
-            ['_name' => 'admin:resource', 'pass' => ['id', 'item']]
-        );
-
         // Signup.
         $routes->connect(
             '/signup',
@@ -114,6 +108,7 @@ Router::plugin(
 
         $resourcesRoutes = function (array $controllers) {
             $controller = implode('|', $controllers);
+
             return function (RouteBuilder $routes) use ($controller) {
                 $routes->connect(
                     '/:controller',
@@ -137,6 +132,15 @@ Router::plugin(
                 );
             };
         };
+
+        // Admin endpoints.
+        $routes->prefix(
+            'admin',
+            [
+                '_namePrefix' => 'admin:',
+            ],
+            $resourcesRoutes($adminControllers)
+        );
 
         // Modeling endpoints.
         $routes->prefix(

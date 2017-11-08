@@ -11,37 +11,30 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Model\Entity;
+namespace BEdita\API\Controller\Admin;
 
-use Cake\ORM\TableRegistry;
-use Cake\Routing\Router;
+use BEdita\API\Controller\ResourcesController;
 
 /**
- * Trait for exposing useful properties required for JSON API response on `/admin` resources.
+ * Base class for all controllers that manage administrator-only resources.
  *
  * @since 4.0.0
  */
-trait JsonApiAdminTrait
+abstract class AdminController extends ResourcesController
 {
-    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    protected function routeNamePrefix()
-    {
-        return 'api:admin:resources';
-    }
+    protected $routeNamePrefix = 'api:admin:resources';
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    protected function getRelationships()
+    public function initialize()
     {
-         return [[], []];
+        parent::initialize();
+
+        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('administratorOnly', true);
     }
 }
