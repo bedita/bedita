@@ -206,6 +206,7 @@ class ObjectTypesTable extends Table
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @return void
      * @throws \Cake\Network\Exception\ForbiddenException if operation on entity is not allowed
      */
     public function beforeRules(Event $event, EntityInterface $entity)

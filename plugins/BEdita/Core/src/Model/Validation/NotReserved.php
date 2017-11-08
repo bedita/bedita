@@ -60,6 +60,7 @@ class NotReserved
      *
      * @param mixed $value Value to check
      * @param array $context Validation context data
+     * @return bool
      */
     public function allowed($value, $context = [])
     {
