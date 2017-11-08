@@ -10,35 +10,31 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
+
+namespace BEdita\API\Controller\Model;
 
 /**
- * Controller for `/model/object_types` endpoint.
+ * Controller for `/model/relations` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
+ * @property \BEdita\Core\Model\Table\RelationsTable $Relations
  */
-class ObjectTypesController extends ResourcesController
+class RelationsController extends ModelController
 {
-    /**
-     * {@inheritDoc}
-     */
-    public $modelClass = 'ObjectTypes';
 
     /**
      * {@inheritDoc}
      */
-    protected $routeNamePrefix = 'api:model';
+    public $modelClass = 'Relations';
 
     /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'left_relations' => ['relations'],
-            'right_relations' => ['relations'],
-            'parent' => ['object_types'],
+            'left_object_types' => ['object_types'],
+            'right_object_types' => ['object_types'],
         ],
     ];
 }

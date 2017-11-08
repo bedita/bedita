@@ -10,34 +10,21 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
+
+namespace BEdita\API\Controller\Model;
+
+use BEdita\API\Controller\ResourcesController;
 
 /**
- * Controller for `/model/properties` endpoint.
+ * Base class for all controllers that manage model-related resources.
  *
  * @since 4.0.0
- *
- * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
-class PropertiesController extends ResourcesController
+abstract class ModelController extends ResourcesController
 {
 
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'Properties';
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $routeNamePrefix = 'api:model';
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_defaultConfig = [
-        'allowedAssociations' => [
-            'object_types' => ['object_types'],
-        ],
-    ];
+    protected $routeNamePrefix = 'api:model:resources';
 }
