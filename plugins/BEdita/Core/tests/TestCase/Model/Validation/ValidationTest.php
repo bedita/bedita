@@ -127,4 +127,105 @@ class ValidationTest extends TestCase
 
         static::assertSame($expected, $result);
     }
+
+    /**
+     * Data provider for `testJsonSchema` test case.
+     *
+     * @return array
+     */
+    public function jsonSchemaProvider()
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                ],
+                'age' => [
+                    'type' => 'integer',
+                    'minimum' => 0,
+                ],
+            ],
+            'additionalProperties' => false,
+            'required' => ['name'],
+        ];
+
+        return [
+            'meta schema' => [
+                true,
+                $schema,
+                'http://json-schema.org/schema#',
+            ],
+            'valid' => [
+                true,
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                ],
+                $schema,
+            ],
+            'missing' => [
+                true,
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                    'whatever' => true,
+                ],
+                null,
+            ],
+            'unknown property' => [
+                'The object must not contain additional properties',
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => 42,
+                    'wtf' => 'this should not be present',
+                ],
+                $schema,
+            ],
+            'invalid value' => [
+                'The number must be at least 0',
+                [
+                    'name' => 'Gustavo Supporto',
+                    'age' => -42,
+                ],
+                $schema,
+            ],
+            'missing required property' => [
+                'The object must contain the properties',
+                [
+                    'age' => 42,
+                ],
+                $schema,
+            ],
+            'wrong type' => [
+                'The data must be a(n) string',
+                [
+                    'name' => true,
+                ],
+                $schema,
+            ],
+        ];
+    }
+
+    /**
+     * Test JSON Schema validator.
+     *
+     * @param true|string $expected Expected result.
+     * @param mixed $value Value being validated.
+     * @param mixed $jsonSchema JSON Schema.
+     * @return void
+     *
+     * @dataProvider jsonSchemaProvider()
+     * @covers ::jsonSchema()
+     */
+    public function testJsonSchema($expected, $value, $jsonSchema)
+    {
+        $result = Validation::jsonSchema($value, $jsonSchema);
+
+        if ($expected === true) {
+            static::assertTrue($result);
+        } else {
+            static::assertContains($expected, $result);
+        }
+    }
 }

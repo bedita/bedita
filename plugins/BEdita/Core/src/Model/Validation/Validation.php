@@ -15,6 +15,8 @@ namespace BEdita\Core\Model\Validation;
 
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Validation\Validation as CakeValidation;
+use League\JsonGuard\Validator as JsonSchemaValidator;
+use League\JsonReference\Dereferencer as JsonSchemaDereferencer;
 
 /**
  * Reusable class to check for reserved names.
@@ -90,5 +92,35 @@ class Validation
         }
 
         return CakeValidation::url($value, true);
+    }
+
+    /**
+     * Validate using JSON Schema.
+     *
+     * @param mixed $value Value being validated.
+     * @param mixed $schema Schema to validate against.
+     * @return true|string
+     */
+    public static function jsonSchema($value, $schema)
+    {
+        if (is_string($schema)) {
+            $schema = JsonSchemaDereferencer::draft6()->dereference($schema);
+        }
+        if (empty($schema)) {
+            return true;
+        }
+
+        $value = json_decode(json_encode($value));
+        $schema = json_decode(json_encode($schema));
+        $validator = new JsonSchemaValidator($value, $schema);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $error = reset($errors);
+
+            return sprintf('%s (in: %s)', $error->getMessage(), $error->getDataPath());
+        }
+
+        return true;
     }
 }
