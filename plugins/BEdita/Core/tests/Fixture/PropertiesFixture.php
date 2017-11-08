@@ -27,7 +27,7 @@ class PropertiesFixture extends TestFixture
             'description' => null,
             'enabled' => 1,
             'label' => null,
-            'list_view' => true
+            'list_view' => true,
         ],
         [
             'name' => 'another_description',
@@ -40,7 +40,7 @@ class PropertiesFixture extends TestFixture
             'description' => null,
             'enabled' => 1,
             'label' => 'Brief description',
-            'list_view' => false
+            'list_view' => false,
         ],
         [
             'name' => 'another_username',
@@ -53,7 +53,7 @@ class PropertiesFixture extends TestFixture
             'description' => 'Username, unique string',
             'enabled' => 1,
             'label' => null,
-            'list_view' => true
+            'list_view' => true,
         ],
         [
             'name' => 'another_email',
@@ -66,7 +66,7 @@ class PropertiesFixture extends TestFixture
             'description' => 'User email',
             'enabled' => 1,
             'label' => null,
-            'list_view' => true
+            'list_view' => true,
         ],
         [
             'name' => 'another_birthdate',
@@ -79,7 +79,7 @@ class PropertiesFixture extends TestFixture
             'description' => null,
             'enabled' => 1,
             'label' => 'Date of birth',
-            'list_view' => false
+            'list_view' => false,
         ],
         [
             'name' => 'another_surname',
@@ -92,12 +92,12 @@ class PropertiesFixture extends TestFixture
             'description' => null,
             'enabled' => 1,
             'label' => null,
-            'list_view' => true
+            'list_view' => true,
         ],
         [
             'name' => 'disabled_property',
             'property_type_id' => 1,
-            'object_type_id' => 4,
+            'object_type_id' => 9,
             'multiple' => 0,
             'options_list' => null,
             'created' => '2017-09-05 11:10:00',
@@ -105,7 +105,33 @@ class PropertiesFixture extends TestFixture
             'description' => 'Disabled property example',
             'enabled' => 0,
             'label' => null,
-            'list_view' => true
+            'list_view' => true,
+        ],
+        [
+            'name' => 'media_property',
+            'property_type_id' => 1,
+            'object_type_id' => 8,
+            'multiple' => 0,
+            'options_list' => null,
+            'created' => '2017-11-07 18:32:00',
+            'modified' => '2017-11-07 18:32:00',
+            'description' => null,
+            'enabled' => 1,
+            'label' => null,
+            'list_view' => true,
+        ],
+        [
+            'name' => 'files_property',
+            'property_type_id' => 1,
+            'object_type_id' => 9,
+            'multiple' => 0,
+            'options_list' => null,
+            'created' => '2017-11-07 18:32:00',
+            'modified' => '2017-11-07 18:32:00',
+            'description' => null,
+            'enabled' => 1,
+            'label' => null,
+            'list_view' => true,
         ],
     ];
 }

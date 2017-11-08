@@ -198,6 +198,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
+            'custom_props' => '{"media_property":"synapse"}',
         ],
     ];
 

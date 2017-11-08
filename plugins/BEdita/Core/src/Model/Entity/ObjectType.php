@@ -84,6 +84,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'objects',
+        'properties',
         'parent_id',
         'tree_left',
         'tree_right',

@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -28,7 +29,13 @@ class PropertiesTableTest extends TestCase
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
     ];
 
     /**
@@ -60,13 +67,13 @@ class PropertiesTableTest extends TestCase
     public function testInitialization()
     {
         $this->Properties->initialize([]);
-        $this->assertEquals('properties', $this->Properties->getTable());
-        $this->assertEquals('id', $this->Properties->getPrimaryKey());
-        $this->assertEquals('name', $this->Properties->getDisplayField());
+        static::assertEquals('properties', $this->Properties->getTable());
+        static::assertEquals('id', $this->Properties->getPrimaryKey());
+        static::assertEquals('name', $this->Properties->getDisplayField());
 
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->ObjectTypes);
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->PropertyTypes);
-        $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Properties->behaviors()->get('Timestamp'));
+        static::assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->ObjectTypes);
+        static::assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->PropertyTypes);
+        static::assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Properties->behaviors()->get('Timestamp'));
     }
 
     /**
@@ -112,11 +119,290 @@ class PropertiesTableTest extends TestCase
         $property->property = 'string';
 
         $error = (bool)$property->getErrors();
-        $this->assertEquals($expected, !$error);
+        static::assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->Properties->save($property);
-            $this->assertTrue((bool)$success);
+            static::assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Data provider for `testFindObjectType` test case.
+     *
+     * @return array
+     */
+    public function findObjectTypeProvider()
+    {
+        return [
+            'objects' => [
+                [],
+                ['objects'],
+            ],
+            'documents' => [
+                [
+                    'another_title',
+                    'another_description',
+                ],
+                ['documents'],
+            ],
+            'media' => [
+                [
+                    'media_property',
+                ],
+                ['media'],
+            ],
+            'files' => [
+                [
+                    'disabled_property',
+                    'media_property',
+                    'files_property',
+                ],
+                ['files'],
+            ],
+            'profiles' => [
+                [
+                    'another_birthdate',
+                    'another_surname',
+                ],
+                ['profiles'],
+            ],
+            'users' => [
+                [
+                    'another_username',
+                    'another_email',
+                ],
+                ['users'],
+            ],
+            'too few' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                [],
+            ],
+            'too many' => [
+                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
+                ['gustavo', 'supporto'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by object type.
+     *
+     * @param array|\Exception $expected List of expected properties names.
+     * @param array $options Options to be passed to finder.
+     * @return void
+     *
+     * @dataProvider findObjectTypeProvider()
+     * @covers ::findObjectType()
+     */
+    public function testFindObjectType($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Properties->find('objectType', $options)
+            ->find('type', ['dynamic'])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Data provider for `testFindType` test case.
+     *
+     * @return array
+     */
+    public function findTypeProvider()
+    {
+        $objects = [
+            'uname',
+            'status',
+            'published',
+            'lang',
+            'locked',
+
+            'title',
+            'description',
+            'body',
+            'extra',
+
+            'publish_start',
+            'publish_end',
+            'created',
+            'modified',
+            'created_by',
+            'modified_by',
+        ];
+        $media = [
+            'name',
+
+            'provider',
+            'provider_uid',
+            'provider_url',
+            'provider_thumbnail',
+            'provider_extra',
+        ];
+        $documentsCustom = [ // Documents custom properties.
+            'another_title',
+            'another_description',
+        ];
+        $mediaCustom = [ // Media custom properties.
+            'media_property',
+        ];
+        $filesCustom = [ // Files custom properties.
+            'files_property',
+        ];
+
+        return [
+            'objects both' => [
+                $objects,
+                'objects',
+            ],
+            'documents both' => [
+                array_merge($objects, $documentsCustom),
+                'documents',
+            ],
+            'media both' => [
+                array_merge($objects, $media, $mediaCustom),
+                'media',
+            ],
+            'files both' => [
+                array_merge($objects, $media, $mediaCustom, $filesCustom),
+                'files',
+            ],
+            'documents static' => [
+                $objects,
+                'documents',
+                'static',
+            ],
+            'documents dynamic' => [
+                $documentsCustom,
+                'documents',
+                'dynamic',
+            ],
+            'media dynamic' => [
+                $mediaCustom,
+                'media',
+                'dynamic',
+            ],
+            'files dynamic' => [
+                array_merge($mediaCustom, $filesCustom),
+                'files',
+                'dynamic',
+            ],
+            'locations dynamic' => [
+                [],
+                'locations',
+                'dynamic',
+            ],
+            'invalid parameters' => [
+                new BadFilterException('Invalid options for finder "type"'),
+                'locations',
+                'gustavo',
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by object type that includes static properties.
+     *
+     * @param array|\Exception $expected List of expected properties names.
+     * @param string $objectType Object type to find properties for
+     * @param string $type Type of properties to be returned.
+     * @return void
+     *
+     * @dataProvider findTypeProvider()
+     * @covers ::findType()
+     */
+    public function testFindType($expected, $objectType, $type = 'both')
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Properties->find('objectType', [$objectType])
+            ->find('type', [$type])
+            ->where(['enabled' => true])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test that by default both static and custom properties are returned.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindDefault()
+    {
+        $expected = [
+            // Objects static properties.
+            'uname',
+            'status',
+            'published',
+            'lang',
+            'locked',
+
+            'title',
+            'description',
+            'body',
+            'extra',
+
+            'publish_start',
+            'publish_end',
+            'created',
+            'modified',
+            'created_by',
+            'modified_by',
+
+            // Media static properties.
+            'name',
+
+            'provider',
+            'provider_uid',
+            'provider_url',
+            'provider_thumbnail',
+            'provider_extra',
+
+            // Media custom properties.
+            'media_property',
+        ];
+
+        $result = $this->Properties->find('objectType', ['media'])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test that default options do not overwrite user-defined options.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindDoNotOverwrite()
+    {
+        $expected = [
+            // Media custom properties.
+            'media_property',
+        ];
+
+        $result = $this->Properties->find('objectType', ['media'])
+            ->find('type', ['dynamic'])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
     }
 }

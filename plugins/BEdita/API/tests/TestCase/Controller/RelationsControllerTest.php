@@ -465,12 +465,6 @@ class RelationsControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/object_types/2',
                     ],
                     'relationships' => [
-                        'properties' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/model/object_types/2/relationships/properties',
-                                'related' => 'http://api.example.com/model/object_types/2/properties',
-                            ],
-                        ],
                         'left_relations' => [
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/2/relationships/left_relations',

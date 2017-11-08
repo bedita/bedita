@@ -41,6 +41,13 @@ class PropertyTest extends TestCase
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**
