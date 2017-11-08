@@ -29,10 +29,17 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
- * Properties Model
+ * Static Properties Model
  *
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
+ *
+ * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
  *
  * @since 4.0.0
  */
