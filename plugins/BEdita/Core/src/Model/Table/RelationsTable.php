@@ -119,7 +119,7 @@ class RelationsTable extends Table
 
             ->allowEmpty('params')
             ->add('params', 'valid', [
-                'rule' => ['jsonSchema', 'http://json-schema.org/schema#'],
+                'rule' => ['jsonSchema', 'http://json-schema.org/draft-06/schema#'],
                 'provider' => 'bedita',
             ]);
 

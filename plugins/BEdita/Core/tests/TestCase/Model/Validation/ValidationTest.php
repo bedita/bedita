@@ -154,7 +154,7 @@ class ValidationTest extends TestCase
             'meta schema' => [
                 true,
                 $schema,
-                'http://json-schema.org/schema#',
+                'http://json-schema.org/draft-06/schema#',
             ],
             'valid' => [
                 true,
