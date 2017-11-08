@@ -152,7 +152,8 @@ Router::plugin(
         );
 
         // Resources.
-        $resourcesRoutes($resourcesControllers)($routes);
+        $callback = $resourcesRoutes($resourcesControllers);
+        $callback($routes);
 
         // Trash.
         $routes->connect(
