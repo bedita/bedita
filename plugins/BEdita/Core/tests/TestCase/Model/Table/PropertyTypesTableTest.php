@@ -13,15 +13,16 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Table\PropertyTypes} Test Case
+ * {@see \BEdita\Core\Model\Table\PropertyTypesTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\PropertyTypes
+ * @coversDefaultClass \BEdita\Core\Model\Table\PropertyTypesTable
  */
-class PropertyTypesTest extends TestCase
+class PropertyTypesTableTest extends TestCase
 {
 
     /**
@@ -46,6 +47,7 @@ class PropertyTypesTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->PropertyTypes = TableRegistry::get('PropertyTypes');
     }
 
@@ -68,8 +70,11 @@ class PropertyTypesTest extends TestCase
     public function testInitialization()
     {
         $this->PropertyTypes->initialize([]);
-        $this->assertEquals('property_types', $this->PropertyTypes->getTable());
-        $this->assertEquals('id', $this->PropertyTypes->getPrimaryKey());
+        static::assertEquals('property_types', $this->PropertyTypes->getTable());
+        static::assertEquals('id', $this->PropertyTypes->getPrimaryKey());
+        static::assertEquals('name', $this->PropertyTypes->getDisplayField());
+
+        static::assertInstanceOf(HasMany::class, $this->PropertyTypes->Properties);
     }
 
     /**
@@ -84,7 +89,9 @@ class PropertyTypesTest extends TestCase
                 true,
                 [
                     'name' => 'propName',
-                    'params' => 'some params',
+                    'params' => [
+                        'type' => 'string',
+                    ],
                 ],
             ],
             'notValid' => [
@@ -112,11 +119,35 @@ class PropertyTypesTest extends TestCase
         $PropertyTypes = $this->PropertyTypes->newEntity($data);
 
         $error = (bool)$PropertyTypes->getErrors();
-        $this->assertEquals($expected, !$error);
+        static::assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->PropertyTypes->save($PropertyTypes);
-            $this->assertTrue((bool)$success);
+            static::assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test after save callback.
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testInvalidateCacheAfterSave()
+    {
+        static::markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test after delete callback.
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testInvalidateCacheAfterDelete()
+    {
+        static::markTestIncomplete('Not implemented yet.');
     }
 }

@@ -70,7 +70,7 @@ class PropertiesFixture extends TestFixture
         ],
         [
             'name' => 'another_birthdate',
-            'property_type_id' => 2,
+            'property_type_id' => 5,
             'object_type_id' => 3,
             'multiple' => 0,
             'options_list' => null,
