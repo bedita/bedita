@@ -299,6 +299,11 @@ class PropertiesTableTest extends TestCase
                 'locations',
                 'dynamic',
             ],
+            'invalid parameters' => [
+                new BadFilterException('Invalid options for finder "type"'),
+                'locations',
+                'gustavo',
+            ],
         ];
     }
 
@@ -324,6 +329,77 @@ class PropertiesTableTest extends TestCase
         $result = $this->Properties->find('objectType', [$objectType])
             ->find('type', [$type])
             ->where(['enabled' => true])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test that by default both static and custom properties are returned.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindDefault()
+    {
+        $expected = [
+            // Objects static properties.
+            'uname',
+            'status',
+            'published',
+            'lang',
+            'locked',
+
+            'title',
+            'description',
+            'body',
+            'extra',
+
+            'publish_start',
+            'publish_end',
+            'created',
+            'modified',
+            'created_by',
+            'modified_by',
+
+            // Media static properties.
+            'name',
+
+            'provider',
+            'provider_uid',
+            'provider_url',
+            'provider_thumbnail',
+            'provider_extra',
+
+            // Media custom properties.
+            'media_property',
+        ];
+
+        $result = $this->Properties->find('objectType', ['media'])
+            ->extract('name')
+            ->toList();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test that default options do not overwrite user-defined options.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindDoNotOverwrite()
+    {
+        $expected = [
+            // Media custom properties.
+            'media_property',
+        ];
+
+        $result = $this->Properties->find('objectType', ['media'])
+            ->find('type', ['dynamic'])
             ->extract('name')
             ->toList();
 
