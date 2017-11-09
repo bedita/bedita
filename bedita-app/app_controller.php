@@ -930,7 +930,7 @@ class AppController extends Controller {
             $this->data['Permission'] = array();
         }
 
-        if (isset($this->data['DateItem'])) {
+        if (isset($this->data['DateItem']) && is_array($this->data['DateItem'])) {
             // reorder array index from 0 to avoid removal
             $this->data['DateItem'] = array_values($this->data['DateItem']);
         }
