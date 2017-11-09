@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Cache\Cache;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
@@ -24,18 +26,18 @@ use Cake\ORM\TableRegistry;
  *
  * @property int $id
  * @property string $name
- * @property int $object_type_id
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
- * @property string $object_type_name
- * @property int $property_type_id
- * @property \BEdita\Core\Model\Entity\PropertyType $property_type
- * @property string $property_type_name
- * @property bool $multiple
- * @property string $options_list
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
  * @property string $description
  * @property bool $enabled
+ * @property bool $is_nullable
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
+ * @property int $object_type_id
+ * @property string $object_type_name
+ * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property int $property_type_id
+ * @property string $property_type_name
+ * @property \BEdita\Core\Model\Entity\PropertyType $property_type
+ * @property mixed $schema
  *
  * @since 4.0.0
  */
@@ -58,6 +60,7 @@ class Property extends Entity implements JsonApiSerializable
         'enabled' => false,
         'created' => false,
         'modified' => false,
+        'schema' => false,
     ];
 
     /**
@@ -66,6 +69,7 @@ class Property extends Entity implements JsonApiSerializable
     protected $_virtual = [
         'property_type_name',
         'object_type_name',
+        'schema',
     ];
 
     /**
@@ -80,6 +84,31 @@ class Property extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * Getter for `property_type` property with lazy loading.
+     *
+     * @return \BEdita\Core\Model\Entity\PropertyType|null
+     */
+    protected function _getPropertyType()
+    {
+        if (array_key_exists('property_type', $this->_properties)) {
+            return $this->_properties['property_type'];
+        }
+
+        try {
+            $this->_properties['property_type'] = TableRegistry::get('PropertyTypes')
+                ->get($this->property_type_id, [
+                    'cache' => ObjectTypesTable::CACHE_CONFIG,
+                ]);
+
+            return $this->_properties['property_type'];
+        } catch (RecordNotFoundException $e) {
+            return null;
+        } catch (InvalidPrimaryKeyException $e) {
+            return null;
+        }
+    }
+
+    /**
      * Getter for `property_type_name` virtual property.
      *
      * @return string
@@ -87,13 +116,7 @@ class Property extends Entity implements JsonApiSerializable
     protected function _getPropertyTypeName()
     {
         if (!$this->property_type) {
-            try {
-                $this->property_type = TableRegistry::get('PropertyTypes')->get($this->property_type_id);
-            } catch (RecordNotFoundException $e) {
-                return null;
-            } catch (InvalidPrimaryKeyException $e) {
-                return null;
-            }
+            return null;
         }
 
         return $this->property_type->name;
@@ -102,21 +125,34 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * Setter for `property_type_name` virtual property.
      *
-     * @param string $property Property type name.
+     * @param string $propertyType Property type name.
      * @return string
      */
-    protected function _setPropertyTypeName($property)
+    protected function _setPropertyTypeName($propertyType)
     {
-        try {
-            $this->property_type = TableRegistry::get('PropertyTypes')->find()
-                ->where(['name' => $property])
-                ->firstOrFail();
-            $this->property_type_id = $this->property_type->id;
-        } catch (RecordNotFoundException $e) {
+        /* @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        $propertyTypes = Cache::remember(
+            'property_types',
+            function () {
+                return TableRegistry::get('PropertyTypes')->find()
+                    ->indexBy('name')
+                    ->toArray();
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
+
+        if (empty($propertyTypes[$propertyType])) {
+            // Unknown property type.
+            $this->property_type = null;
+            $this->property_type_id = null;
+
             return null;
         }
 
-        return $property;
+        $this->property_type = $propertyTypes[$propertyType];
+        $this->property_type_id = $this->property_type->id;
+
+        return $this->property_type->name;
     }
 
     /**
@@ -151,9 +187,38 @@ class Property extends Entity implements JsonApiSerializable
             $this->object_type = TableRegistry::get('ObjectTypes')->get($objectTypeName);
             $this->object_type_id = $this->object_type->id;
         } catch (RecordNotFoundException $e) {
+            $this->object_type = null;
+            $this->object_type_id = null;
+
             return null;
         }
 
         return $objectTypeName;
+    }
+
+    /**
+     * Getter for `schema` virtual property.
+     *
+     * @return mixed
+     */
+    protected function _getSchema()
+    {
+        if (!$this->property_type) {
+            return new \stdClass();
+        }
+
+        $schema = $this->property_type->params;
+        if ($this->is_nullable) {
+            $schema = [
+                'oneOf' => [
+                    [
+                        'type' => 'null',
+                    ],
+                    $schema,
+                ],
+            ];
+        }
+
+        return $schema;
     }
 }

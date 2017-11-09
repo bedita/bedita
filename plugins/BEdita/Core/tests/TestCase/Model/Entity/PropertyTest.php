@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\Model\Entity\PropertyType;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -96,11 +97,11 @@ class PropertyTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(1, $property->id);
-        $this->assertTrue($property->enabled);
-        $this->assertEquals($created, $property->created);
-        $this->assertEquals($modified, $property->modified);
-        $this->assertEquals($data['description'], $property->description);
+        static::assertEquals(1, $property->id);
+        static::assertTrue($property->enabled);
+        static::assertEquals($created, $property->created);
+        static::assertEquals($modified, $property->modified);
+        static::assertEquals($data['description'], $property->description);
     }
 
     /**
@@ -209,6 +210,31 @@ class PropertyTest extends TestCase
     }
 
     /**
+     * Test magic getter for property type.
+     *
+     * @param string|null $expected Expected property type name.
+     * @param mixed $propertyTypeId Property type ID.
+     * @return void
+     *
+     * @covers ::_getPropertyType()
+     * @dataProvider getPropertyTypeNameProvider()
+     */
+    public function testGetPropertyType($expected, $propertyTypeId)
+    {
+        $entity = new Property();
+        $entity->property_type_id = $propertyTypeId;
+
+        $propertyType = $entity->property_type;
+
+        if ($expected === null) {
+            static::assertNull($propertyType);
+        } else {
+            static::assertInstanceOf(PropertyType::class, $propertyType);
+            static::assertSame($expected, $propertyType->name);
+        }
+    }
+
+    /**
      * Test magic getter for property type name property.
      *
      * @param string|null $expected Expected property type name.
@@ -265,5 +291,66 @@ class PropertyTest extends TestCase
         $propertyTypeId = $entity->property_type_id;
 
         static::assertSame($expected, $propertyTypeId);
+    }
+
+    /**
+     * Data provider for `testGetSchema` test case.
+     *
+     * @return array
+     */
+    public function getSchemaProvider()
+    {
+        return [
+            'email' => [
+                [
+                    'type' => 'string',
+                    'format' => 'email',
+                ],
+                'email',
+                false,
+            ],
+            'email (nullable)' => [
+                [
+                    'oneOf' => [
+                        [
+                            'type' => 'null',
+                        ],
+                        [
+                            'type' => 'string',
+                            'format' => 'email',
+                        ],
+                    ],
+                ],
+                'email',
+                true,
+            ],
+            'non-existent' => [
+                new \stdClass(),
+                'gustavo',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test magic getter for property schema.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $propertyTypeName Property type name.
+     * @param bool $isNullable Is the property nullable?
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchema($expected, $propertyTypeName, $isNullable)
+    {
+        $entity = new Property();
+        $entity->property_type_name = $propertyTypeName;
+        $entity->is_nullable = $isNullable;
+
+        $schema = $entity->schema;
+
+        static::assertEquals($expected, $schema);
     }
 }
