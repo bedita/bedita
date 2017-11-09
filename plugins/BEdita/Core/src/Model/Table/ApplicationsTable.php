@@ -61,7 +61,10 @@ class ApplicationsTable extends Table
 
         $this->setDisplayField('name');
         $this->addBehavior('Timestamp');
-        $this->hasMany('EndpointPermissions');
+
+        $this->hasMany('EndpointPermissions', [
+            'dependent' => true,
+        ]);
     }
 
     /**

@@ -34,7 +34,7 @@ class EndpointsFixture extends TestFixture
             'created' => '2016-11-07 13:32:25',
             'modified' => '2016-11-07 13:32:25',
             'enabled' => 1,
-            'object_type_id' => null
+            'object_type_id' => null,
         ],
         [
             'name' => 'home',
@@ -42,7 +42,7 @@ class EndpointsFixture extends TestFixture
             'created' => '2016-11-07 13:32:26',
             'modified' => '2016-11-07 13:32:26',
             'enabled' => 1,
-            'object_type_id' => null
+            'object_type_id' => null,
         ],
         [
             'name' => 'disabled',
@@ -50,7 +50,7 @@ class EndpointsFixture extends TestFixture
             'created' => '2017-05-03 07:12:26',
             'modified' => '2017-05-03 07:12:26',
             'enabled' => 0,
-            'object_type_id' => null
+            'object_type_id' => null,
         ],
     ];
 }

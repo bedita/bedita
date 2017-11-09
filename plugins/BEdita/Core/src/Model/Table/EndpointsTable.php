@@ -20,8 +20,18 @@ use Cake\Validation\Validator;
 /**
  * Endpoints Model
  *
+ * @method \BEdita\Core\Model\Entity\Endpoint get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
  * @since 4.0.0
  */
@@ -41,7 +51,9 @@ class EndpointsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('ObjectTypes');
-        $this->hasMany('EndpointPermissions');
+        $this->hasMany('EndpointPermissions', [
+            'dependent' => true,
+        ]);
     }
 
     /**

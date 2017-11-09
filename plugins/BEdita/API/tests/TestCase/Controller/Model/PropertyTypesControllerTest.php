@@ -10,13 +10,14 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\TestCase\Controller;
+
+namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\PropertyTypesController
+ * @coversDefaultClass \BEdita\API\Controller\Model\PropertyTypesController
  */
 class PropertyTypesControllerTest extends IntegrationTestCase
 {

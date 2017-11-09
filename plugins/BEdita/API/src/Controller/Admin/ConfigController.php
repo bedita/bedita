@@ -11,24 +11,20 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Model\Entity;
+namespace BEdita\API\Controller\Admin;
 
 /**
- * Trait for exposing useful properties required for JSON API response on `/model` resources.
+ * Controller for `/admin/config` endpoint.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
-trait JsonApiModelTrait
+class ConfigController extends AdminController
 {
-    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    protected function routeNamePrefix()
-    {
-        return 'api:model:resources';
-    }
+    public $modelClass = 'Config';
 }

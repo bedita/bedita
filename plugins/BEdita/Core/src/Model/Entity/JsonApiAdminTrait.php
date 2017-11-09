@@ -32,25 +32,7 @@ trait JsonApiAdminTrait
      */
     protected function routeNamePrefix()
     {
-        return 'api:admin';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getLinks()
-    {
-        $table = TableRegistry::get($this->getSource());
-        $primaryKey = $table->getPrimaryKey();
-        $options = [
-            '_name' => $this->routeNamePrefix() . ':resource',
-            'item' => $table->getTable(),
-            'id' => $this->{$primaryKey},
-        ];
-
-        return [
-            'self' => Router::url($options, true),
-        ];
+        return 'api:admin:resources';
     }
 
     /**

@@ -11,24 +11,29 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Model\Entity;
+namespace BEdita\API\Controller\Model;
 
 /**
- * Trait for exposing useful properties required for JSON API response on `/model` resources.
+ * Controller for `/model/properties` endpoint.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
-trait JsonApiModelTrait
+class PropertiesController extends ModelController
 {
-    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    protected function routeNamePrefix()
-    {
-        return 'api:model:resources';
-    }
+    public $modelClass = 'Properties';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'object_types' => ['object_types'],
+        ],
+    ];
 }

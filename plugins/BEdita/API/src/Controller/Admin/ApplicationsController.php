@@ -10,34 +10,21 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
+
+namespace BEdita\API\Controller\Admin;
 
 /**
- * Controller for `/model/property_types` endpoint.
+ * Controller for `/admin/applications` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\PropertyTypesTable $PropertyTypes
+ * @property \BEdita\Core\Model\Table\ApplicationsTable $Applications
  */
-class PropertyTypesController extends ResourcesController
+class ApplicationsController extends AdminController
 {
 
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'PropertyTypes';
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $routeNamePrefix = 'api:model';
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_defaultConfig = [
-        'allowedAssociations' => [
-            'properties' => ['properties'],
-        ],
-    ];
+    public $modelClass = 'Applications';
 }
