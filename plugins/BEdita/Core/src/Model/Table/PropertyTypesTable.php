@@ -26,12 +26,12 @@ use Cake\Validation\Validator;
 /**
  * Property Types - available property types
  *
- * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate($search, callable $callback = null, $options = [])
  *
  * @property \Cake\ORM\Association\HasMany $Properties
  *
