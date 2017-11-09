@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use Cake\Cache\Cache;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,6 +41,15 @@ class PropertyTypesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
     ];
 
     /**
@@ -47,6 +58,9 @@ class PropertyTypesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
         $this->PropertyTypes = TableRegistry::get('PropertyTypes');
     }
@@ -57,6 +71,10 @@ class PropertyTypesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->PropertyTypes);
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
         parent::tearDown();
     }
@@ -136,7 +154,15 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterSave()
     {
-        static::markTestIncomplete('Not implemented yet.');
+        $this->PropertyTypes->Properties->get(1);
+
+        static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+
+        $propertyType = $this->PropertyTypes->get(9);
+        $propertyType->name = 'gustavo';
+        $this->PropertyTypes->save($propertyType);
+
+        static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -148,6 +174,46 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterDelete()
     {
-        static::markTestIncomplete('Not implemented yet.');
+        $this->PropertyTypes->Properties->get(1);
+
+        static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+
+        $propertyType = $this->PropertyTypes->get(9);
+        $this->PropertyTypes->delete($propertyType);
+
+        static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test that an exception is raised when attempting to delete a property type in use.
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete()
+     * @expectedException \Cake\Network\Exception\ForbiddenException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Property type with existing properties
+     */
+    public function testBeforeDeleteInUse()
+    {
+        $propertyType = $this->PropertyTypes->get(1);
+
+        $this->PropertyTypes->delete($propertyType);
+    }
+
+    /**
+     * Test that no exception is raised when attempting to delete a property type not in use.
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete()
+     */
+    public function testBeforeDeleteOk()
+    {
+        $propertyType = $this->PropertyTypes->get(9);
+
+        $success = $this->PropertyTypes->delete($propertyType);
+
+        static::assertTrue($success);
     }
 }

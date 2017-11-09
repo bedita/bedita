@@ -231,6 +231,10 @@ class PropertyTest extends TestCase
         } else {
             static::assertInstanceOf(PropertyType::class, $propertyType);
             static::assertSame($expected, $propertyType->name);
+
+            $secondRound = $entity->property_type;
+
+            static::assertSame($propertyType, $secondRound);
         }
     }
 
