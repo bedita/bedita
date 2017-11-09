@@ -596,4 +596,62 @@ class ObjectTypesTableTest extends TestCase
         $result = $this->ObjectTypes->delete($entity);
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testBeforeSave`
+     *
+     * @return array
+     */
+    public function beforeSaveProvider()
+    {
+        return [
+            'objects' => [
+                [
+                    'id' => 1,
+                    'is_abstract' => false,
+                ],
+                new ForbiddenException('Setting as not abstract forbidden: subtypes exist'),
+            ],
+            // there are no 'news` in objects fixture, safe to set as abstract
+            'news' => [
+                [
+                    'id' => 5,
+                    'is_abstract' => true,
+                ],
+                true,
+            ],
+            'documents' => [
+                [
+                    'id' => 2,
+                    'is_abstract' => true,
+                ],
+                new ForbiddenException('Setting as abstract forbidden: objects of this type exist'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeSave`
+     *
+     * @param string $typeName Object type name to save
+     * @param mixed $expected Expected result: exception or boolean
+     * @return void
+     * @dataProvider beforeSaveProvider
+     * @covers ::beforeSave()
+     * @covers ::objectsExist()
+     */
+    public function testBeforeSave($data, $expected)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $objectType = $this->ObjectTypes->newEntity();
+        if (!empty($data['id'])) {
+            $objectType = $this->ObjectTypes->get($data['id']);
+        }
+        $this->ObjectTypes->patchEntity($objectType, $data);
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertEquals($expected, (bool)$success);
+    }
 }
