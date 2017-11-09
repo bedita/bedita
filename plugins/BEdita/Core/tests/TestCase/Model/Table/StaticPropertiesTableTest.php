@@ -119,23 +119,22 @@ class StaticPropertiesTableTest extends TestCase
 
         // Check that columns have the same definition, except ID.
         foreach ($staticPropSchema->columns() as $column) {
+            $expectedSchema = $propSchema->getColumn($column);
             if ($column === $this->StaticProperties->getPrimaryKey()) {
                 // Primary key has a different definition.
-                static::assertEquals(
-                    [
-                        'type' => 'uuid',
-                        'length' => null,
-                        'null' => false,
-                        'default' => null,
-                        'comment' => '',
-                        'precision' => null,
-                    ],
-                    $staticPropSchema->getColumn($column)
-                );
-
-                continue;
+                $expectedSchema = [
+                    'type' => 'uuid',
+                    'length' => null,
+                    'null' => false,
+                    'default' => null,
+                    'comment' => '',
+                    'precision' => null,
+                ];
+            } elseif (in_array($column, ['created', 'modified'])) {
+                $expectedSchema['null'] = true;
             }
-            static::assertEquals($propSchema->getColumn($column), $staticPropSchema->getColumn($column));
+
+            static::assertEquals($expectedSchema, $staticPropSchema->getColumn($column));
         }
 
         // Check that indexes have the same definition, but different name.
@@ -165,7 +164,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.status' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 1,
+                    'property_type_id' => 2,
                     'name' => 'status',
                 ],
                 [
@@ -182,7 +181,7 @@ class StaticPropertiesTableTest extends TestCase
             'profiles.email' => [
                 [
                     'object_type_id' => 3,
-                    'property_type_id' => 1,
+                    'property_type_id' => 3,
                     'name' => 'email',
                 ],
                 [
@@ -194,6 +193,50 @@ class StaticPropertiesTableTest extends TestCase
                 null, // All fields are inherited from `objects`.
                 [
                     'object_type_id' => 2,
+                ],
+            ],
+            'objects.locked' => [
+                [
+                    'object_type_id' => 1,
+                    'property_type_id' => 7,
+                    'name' => 'locked',
+                ],
+                [
+                    'object_type_id' => 1,
+                    'name' => 'locked',
+                ],
+            ],
+            'objects.created' => [
+                [
+                    'object_type_id' => 1,
+                    'property_type_id' => 5,
+                    'name' => 'created',
+                ],
+                [
+                    'object_type_id' => 1,
+                    'name' => 'created',
+                ],
+            ],
+            'objects.extra' => [
+                [
+                    'object_type_id' => 1,
+                    'property_type_id' => 8,
+                    'name' => 'extra',
+                ],
+                [
+                    'object_type_id' => 1,
+                    'name' => 'extra',
+                ],
+            ],
+            'media.provider_thumbnail' => [
+                [
+                    'object_type_id' => 8,
+                    'property_type_id' => 4,
+                    'name' => 'provider_thumbnail',
+                ],
+                [
+                    'object_type_id' => 8,
+                    'name' => 'provider_thumbnail',
                 ],
             ],
         ];
@@ -210,6 +253,7 @@ class StaticPropertiesTableTest extends TestCase
      * @covers ::addSchemaDetails()
      * @covers ::listOwnTables()
      * @covers ::prepareTableFields()
+     * @covers ::getPropertyType()
      */
     public function testAddSchemaDetails(array $expected = null, array $conditions)
     {
@@ -224,6 +268,7 @@ class StaticPropertiesTableTest extends TestCase
             return;
         }
 
+        static::assertNotNull($result);
         static::assertArraySubset($expected, $result);
 
         $secondResult = TableRegistry::get('BEdita/Core.StaticProperties')->find()

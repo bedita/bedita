@@ -20,7 +20,7 @@ use Cake\ORM\Entity;
  * Property Type Entity.
  *
  * @property string $name
- * @property string $params
+ * @property mixed $params
  *
  * @since 4.0.0
  */

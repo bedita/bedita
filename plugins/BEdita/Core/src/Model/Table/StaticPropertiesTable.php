@@ -55,19 +55,8 @@ class StaticPropertiesTable extends Table
 
         $this->setDisplayField('name');
 
-        $this->addBehavior('Timestamp');
-
-        $this->belongsTo('PropertyTypes', [
-            'foreignKey' => 'property_type_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.PropertyTypes'
-        ]);
-
-        $this->belongsTo('ObjectTypes', [
-            'foreignKey' => 'object_type_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes',
-        ]);
+        $this->belongsTo('PropertyTypes');
+        $this->belongsTo('ObjectTypes');
 
         $this->setEntityClass(Property::class);
 
@@ -135,6 +124,8 @@ class StaticPropertiesTable extends Table
                 // Use custom IDs.
                 $attributes['type'] = 'uuid';
                 $attributes['length'] = null;
+            } elseif (in_array($column, ['created', 'modified'])) {
+                $attributes['null'] = true;
             }
             $table->addColumn($column, $attributes);
         }
@@ -158,6 +149,8 @@ class StaticPropertiesTable extends Table
                 $connection->execute($statement);
             }
         });
+
+        $this->setSchema($table);
     }
 
     /**
@@ -250,10 +243,7 @@ class StaticPropertiesTable extends Table
      */
     protected function prepareTableFields(ObjectType $objectType, Table $table)
     {
-        $schema = $table->getConnection()
-            ->getSchemaCollection()
-            ->describe($table->getTable());
-
+        $schema = $table->getSchema();
         $sampleEntity = $table->newEntity();
         $hiddenProperties = $sampleEntity->getHidden();
 
@@ -268,12 +258,79 @@ class StaticPropertiesTable extends Table
             $property = $this->newEntity(compact('name'));
             $property->id = Text::uuid5(sprintf('%s.%s', $objectType->name, $name));
             $property->set('object_type_id', $objectType->id);
-            $property->set('property_type_id', $this->PropertyTypes->find()->firstOrFail()->id); // TODO
             $property->set('description', Hash::get($column, 'comment'));
+
+            $property->set('property_type_id', $this->getPropertyType($name, $table)->id);
+            $property->set('is_nullable', !empty($column['null']));
 
             $properties[] = $property;
         }
 
         return $properties;
+    }
+
+    /**
+     * Convert column definition to property type.
+     *
+     * @param string $name Column name.
+     * @param \Cake\ORM\Table $table Table object.
+     * @return \BEdita\Core\Model\Entity\PropertyType
+     */
+    protected function getPropertyType($name, Table $table)
+    {
+        /* @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        $propertyTypes = Cache::remember(
+            'property_types',
+            function () {
+                return $this->PropertyTypes->find()
+                    ->indexBy('name')
+                    ->toArray();
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
+
+        // Check if there is a property type whose name matches column name.
+        if (isset($propertyTypes[$name])) {
+            return $propertyTypes[$name];
+        }
+
+        // Check if there is a property type whose name matches an applicable validation rule's name.
+        $rules = array_keys($table->getValidator()->field($name)->rules());
+        foreach ($rules as $ruleName) {
+            if (isset($propertyTypes[$ruleName])) {
+                return $propertyTypes[$ruleName];
+            }
+        }
+
+        // Try to infer a generic type from column definition.
+        $type = $table->getSchema()->getColumnType($name);
+        if (isset($propertyTypes[$type])) {
+            return $propertyTypes[$type];
+        }
+        switch ($type) {
+            // Try to convert specific types to more generic ones.
+            case 'text':
+                $type = 'string';
+                break;
+            case 'integer':
+                $type = 'number';
+                if (Hash::get($table->getSchema()->getColumn($name), 'length') === 1) {
+                    $type = 'boolean';
+                }
+                break;
+            case 'float':
+                $type = 'number';
+                break;
+            case 'datetime':
+            case 'timestamp':
+                $type = 'date';
+                break;
+        }
+        if (isset($propertyTypes[$type])) {
+            return $propertyTypes[$type];
+        }
+
+        // Fallback on string type.
+        return $propertyTypes['string'];
     }
 }
