@@ -61,5 +61,9 @@ class PropertyTypesFixture extends TestFixture
             'name' => 'json',
             'params' => '{"type":"object"}',
         ],
+        [
+            'name' => 'unused property type',
+            'params' => '{"type":"object","properties":{"gustavo":{"const":"supporto"}},"required":["gustavo"]}',
+        ],
     ];
 }
