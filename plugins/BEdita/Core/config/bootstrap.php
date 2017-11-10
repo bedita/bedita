@@ -1,6 +1,7 @@
 <?php
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
@@ -36,6 +37,11 @@ if (!Configure::configured('ini')) {
  */
 Type::set('datetime', new DateTimeType());
 Type::set('timestamp', new DateTimeType());
+
+/**
+ * Use custom BoolType
+ */
+Type::set('boolean', new BoolType());
 
 /**
  * Set loader for translation domain "bedita".
