@@ -271,13 +271,19 @@ class ObjectTypeTest extends TestCase
                 'objects',
                 null,
                 'not_found',
-                null
+                null,
             ],
             'documents' => [
                 'documents',
                 'objects',
                 'objects',
-                'objects'
+                'objects',
+            ],
+            'profilesBadParent' => [
+                'profiles',
+                'objects',
+                'documents',
+                'objects',
             ],
         ];
     }
