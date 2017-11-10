@@ -64,6 +64,20 @@ class ObjectTypesTable extends Table
     const DEFAULT_PARENT_ID = 1;
 
     /**
+     * Default `plugin` if not specified.
+     *
+     * @var int
+     */
+    const DEFAULT_PLUGIN = 'BEdita/Core';
+
+    /**
+     * Default `model` if not specified.
+     *
+     * @var int
+     */
+    const DEFAULT_MODEL = 'Objects';
+
+    /**
      * {@inheritDoc}
      */
     protected $_validatorClass = ObjectTypesValidator::class;
@@ -198,7 +212,7 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * Set default parent on creation if missing.
+     * Set default `parent_id`, `plugin` and `model` on creation if missing.
      * Prevent delete if type is abstract and a subtype exists.
      *
      * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
@@ -211,8 +225,16 @@ class ObjectTypesTable extends Table
      */
     public function beforeRules(Event $event, EntityInterface $entity)
     {
-        if ($entity->isNew() && empty($entity->parent_id)) {
-            $entity->set('parent_id', self::DEFAULT_PARENT_ID);
+        if ($entity->isNew()) {
+            if (empty($entity->get('parent_id'))) {
+                $entity->set('parent_id', self::DEFAULT_PARENT_ID);
+            }
+            if (empty($entity->get('plugin'))) {
+                $entity->set('plugin', self::DEFAULT_PLUGIN);
+            }
+            if (empty($entity->get('model'))) {
+                $entity->set('model', self::DEFAULT_MODEL);
+            }
         }
         if ($event->getData('operation') === 'delete' && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
             throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
@@ -254,12 +276,12 @@ class ObjectTypesTable extends Table
     /**
      * Check if objects of a certain type id exist
      *
-     * @param int $id Object type id
+     * @param int $typeId Object type id
      * @return bool True if at least an object exists, false otherwise
      */
-    protected function objectsExist($id)
+    protected function objectsExist($typeId)
     {
-        return TableRegistry::get('Objects')->exists(['object_type_id' => $id]);
+        return TableRegistry::get('Objects')->exists(['object_type_id' => $typeId]);
     }
 
     /**

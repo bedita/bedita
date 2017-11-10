@@ -150,6 +150,24 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                 ],
             ],
+            'notNumericName' => [
+                false,
+                [
+                    'singular' => '123_item',
+                    'name' => '123',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'notNumericSingular' => [
+                false,
+                [
+                    'singular' => '123',
+                    'name' => '123s',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
             'notUniqueNotNew' => [
                 false,
                 [
@@ -503,19 +521,17 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Provider for `testParent`
+     * Provider for `testModelRules`
      *
      * @return array
      */
-    public function parentProvider()
+    public function modelRulesProvider()
     {
         return [
             'foo' => [
                 [
                     'singular' => 'foo',
                     'name' => 'foos',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                 ]
             ],
             'cats' => [
@@ -531,19 +547,20 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Test default parent.
+     * Test default parent, plugin and model.
      *
      * @return void
      *
-     * @dataProvider parentProvider
+     * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
-    public function testParent($data)
+    public function testDefaultModelRules($data)
     {
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
+        static::assertNotEmpty($success);
 
         $parentId = empty($data['parent_name']) ?
             ObjectTypesTable::DEFAULT_PARENT_ID : $this->ObjectTypes->get($data['parent_name'])->id;
