@@ -75,10 +75,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => true,
                         'parent_name' => null,
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Objects',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/1',
@@ -118,6 +122,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -125,6 +130,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'test',
                             'inverse_test',
                         ],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/2',
@@ -164,12 +172,16 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Profiles',
                         'relations' => [
                             'inverse_test',
                         ],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/3',
@@ -209,10 +221,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Users',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/4',
@@ -252,10 +268,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => ['body'],
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'News',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/5',
@@ -295,6 +315,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Locations',
@@ -302,6 +323,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'another_test',
                             'inverse_another_test',
                         ],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/6',
@@ -341,10 +365,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Events',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/7',
@@ -384,10 +412,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => true,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Media',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/8',
@@ -427,10 +459,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'media',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Files',
                         'relations' => [],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/9',
@@ -550,6 +586,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'hidden' => null,
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'enabled' => true,
                 ],
                 'meta' => [
                     'alias' => 'Documents',
@@ -557,6 +594,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'test',
                         'inverse_test',
                     ],
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
                 ],
                 'relationships' => [
                     'left_relations' => [

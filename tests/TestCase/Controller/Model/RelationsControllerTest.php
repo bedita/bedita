@@ -454,6 +454,7 @@ class RelationsControllerTest extends IntegrationTestCase
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
+                        'enabled' => true,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -461,6 +462,9 @@ class RelationsControllerTest extends IntegrationTestCase
                             'test',
                             'inverse_test',
                         ],
+                        'created' => '2017-11-10T09:27:23+00:00',
+                        'modified' => '2017-11-10T09:27:23+00:00',
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/2',
