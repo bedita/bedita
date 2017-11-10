@@ -64,8 +64,6 @@ class ObjectType extends Entity implements JsonApiSerializable
         'name' => true,
         'singular' => true,
         'description' => true,
-        'plugin' => true,
-        'model' => true,
         'table' => true,
         'associations' => true,
         'hidden' => true,
@@ -89,6 +87,8 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'objects',
+        'model',
+        'plugin',
         'properties',
         'parent_id',
         'tree_left',
