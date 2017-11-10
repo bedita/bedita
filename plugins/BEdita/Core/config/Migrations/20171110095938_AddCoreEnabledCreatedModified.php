@@ -76,7 +76,7 @@ class AddCoreEnabledCreatedModified extends AbstractMigration
 
         // UPDATE core_type
         $coreTypes = "'objects', 'profiles', 'users', 'documents', 'events', 'media', 'images', 'audio', 'videos', 'files', 'news', 'locations'";
-        $this->query(sprintf("UPDATE object_types SET core_type = 1 WHERE name IN (%s)", $coreTypes));
+        $this->query(sprintf("UPDATE object_types SET core_type = TRUE WHERE name IN (%s)", $coreTypes));
     }
 
     /**
