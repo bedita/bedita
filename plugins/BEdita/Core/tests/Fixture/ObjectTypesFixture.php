@@ -37,6 +37,10 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'document',
@@ -48,6 +52,10 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'profile',
@@ -59,6 +67,10 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Profiles',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'user',
@@ -70,6 +82,10 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Users',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'news_item',
@@ -82,6 +98,10 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
             'hidden' => '["body"]',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'location',
@@ -93,6 +113,10 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Locations',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'event',
@@ -105,6 +129,10 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
             'associations' => '["DateRanges"]',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'media_item',
@@ -117,6 +145,10 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Media',
             'associations' => '["Streams"]',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
         [
             'singular' => 'file',
@@ -129,6 +161,10 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Media',
             'associations' => '["Streams"]',
+            'created' => '2017-11-10 09:27:23',
+            'modified' => '2017-11-10 09:27:23',
+            'enable' => true,
+            'core_type' => true,
         ],
     ];
 

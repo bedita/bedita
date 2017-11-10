@@ -131,6 +131,7 @@ class ObjectTypesTable extends Table
             'foreign_key' => 'parent_id',
             'className' => 'ObjectTypes',
         ]);
+        $this->addBehavior('Timestamp');
         $this->addBehavior('Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',

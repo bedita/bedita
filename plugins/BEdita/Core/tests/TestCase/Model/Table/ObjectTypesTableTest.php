@@ -256,6 +256,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 2,
             ],
@@ -277,6 +281,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 '2',
             ],
@@ -298,6 +306,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'document',
             ],
@@ -319,6 +331,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'documents',
             ],
@@ -340,6 +356,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'Documents',
             ],
@@ -386,6 +406,8 @@ class ObjectTypesTableTest extends TestCase
         // remove 'left_relations' and 'right_relations' because contain to many data
         $result = Hash::remove($result, 'left_relations');
         $result = Hash::remove($result, 'right_relations');
+        $result['created'] = $result['created']->jsonSerialize();
+        $result['modified'] = $result['modified']->jsonSerialize();
 
         static::assertEquals($expected, $result);
     }
