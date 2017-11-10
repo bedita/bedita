@@ -200,84 +200,72 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
-     * Test finder of objects by query string.
+     * Data provider for `testSearchFilter` test case.
      *
-     * @return void
-     *
-     * @coversNothing
+     * @return array
      */
-    public function testFindQuery()
+    public function searchFilterProvider()
     {
-        $expected = ['2', '3', '9', '10'];
-        $this->configRequestHeaders();
-
-        $this->get('/objects?filter[query]=here');
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-
-        static::assertArrayHasKey('data', $result);
-        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+        return [
+            'here' => [
+                '/objects?filter[query]=here',
+                [
+                    '2',
+                    '3',
+                    '9',
+                    '10',
+                ],
+            ],
+            'locations' => [
+                '/locations?filter[query]=bologna',
+                [
+                    '8',
+                ],
+            ],
+            'users' => [
+                '/users?filter[query]=second',
+                [
+                    '5',
+                ],
+            ],
+            'here2' => [
+                '/objects?q=here',
+                [
+                    '2',
+                    '3',
+                    '9',
+                    '10',
+                ],
+            ],
+            'roles' => [
+                '/roles?q=first',
+                [
+                    '1',
+                ],
+            ],
+            'object_types' => [
+                '/model/object_types?filter[query]=profile',
+                [
+                    '3',
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test finder of locations by query string.
+     * Test finder of objects by search string using `filter[query]` or `q`.
      *
      * @return void
+     * @param string $url Url string.
+     * @param array $expected Expected result.
      *
+     * @dataProvider searchFilterProvider
      * @coversNothing
      */
-    public function testFindQueryLocations()
+    public function testSearchFilter($url, $expected)
     {
-        $expected = [8];
         $this->configRequestHeaders();
-
-        $this->get('/locations?filter[query]=bologna');
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-
-        static::assertArrayHasKey('data', $result);
-        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
-    }
-
-    /**
-     * Test finder of users by query string.
-     *
-     * @return void
-     *
-     * @coversNothing
-     */
-    public function testFindQueryUsers()
-    {
-        $expected = [5];
-        $this->configRequestHeaders();
-
-        $this->get('/users?filter[query]=second');
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-
-        static::assertArrayHasKey('data', $result);
-        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
-    }
-
-    /**
-     * Test finder of objects by query string using shorthand `?q=` query parameter.
-     *
-     * @return void
-     *
-     * @coversNothing
-     */
-    public function testFindQueryAlias()
-    {
-        $expected = ['2', '3', '9', '10'];
-        $this->configRequestHeaders();
-
-        $this->get('/objects?q=here');
+        $this->get($url);
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
