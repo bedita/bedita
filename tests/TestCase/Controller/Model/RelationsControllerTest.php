@@ -447,8 +447,6 @@ class RelationsControllerTest extends IntegrationTestCase
                         'singular' => 'document',
                         'name' => 'documents',
                         'description' => null,
-                        'plugin' => 'BEdita/Core',
-                        'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
                         'hidden' => null,
