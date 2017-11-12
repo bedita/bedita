@@ -690,10 +690,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testAddNotEnabled()
     {
-        $entity = TableRegistry::get('ObjectTypes')->get('news');
-        $entity->set('enabled', false);
-        $success = TableRegistry::get('ObjectTypes')->save($entity);
-
         $data = [
             'type' => 'news',
             'attributes' => [
