@@ -236,7 +236,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     {
         try {
             $objectType = TableRegistry::get('ObjectTypes')->get($parentName);
-            if (!$objectType->get('is_abstract')) {
+            if (!$objectType->get('is_abstract') || !$objectType->get('enabled')) {
                 return null;
             }
             $this->parent = $objectType;

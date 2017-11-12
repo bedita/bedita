@@ -337,41 +337,50 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
-     * Data provider for `testSaveAbstractTypes` test case.
+     * Data provider for `testSaveAbstractDisabledTypes` test case.
      *
      * @return array
      */
-    public function saveAbstractTypesProvider()
+    public function saveAbstractDisabledTypes()
     {
         return [
             'objects' => [
+                true,
                 true,
                 'objects',
             ],
             'media' => [
                 true,
+                true,
                 'media',
             ],
             'documents' => [
                 false,
+                true,
                 'documents',
+            ],
+            'news' => [
+                true,
+                false,
+                'news',
             ],
         ];
     }
 
     /**
-     * Test that save of abstract types fails as expected.
+     * Test that save of abstract or not enabled types fails as expected.
      *
      * @param bool $abstract Is the type abstract?
+     * @param bool $enabled Is the type enabled?
      * @param string $type Type being saved.
      * @return void
      *
      * @covers ::beforeSave()
-     * @dataProvider saveAbstractTypesProvider()
+     * @dataProvider saveAbstractDisabledTypes()
      */
-    public function testSaveAbstractTypes($abstract, $type)
+    public function testSaveAbstractDisabledTypes($abstract, $enabled, $type)
     {
-        if ($abstract) {
+        if ($abstract || !$enabled) {
             $this->expectException(PersistenceFailedException::class);
         }
 

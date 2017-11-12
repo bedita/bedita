@@ -39,7 +39,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Objects',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -54,7 +54,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Objects',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -69,7 +69,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Profiles',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -84,7 +84,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Users',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -100,8 +100,8 @@ class ObjectTypesFixture extends TestFixture
             'hidden' => '["body"]',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
-            'core_type' => true,
+            'enabled' => false,
+            'core_type' => false,
         ],
         [
             'singular' => 'location',
@@ -115,7 +115,7 @@ class ObjectTypesFixture extends TestFixture
             'model' => 'Locations',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -131,7 +131,7 @@ class ObjectTypesFixture extends TestFixture
             'associations' => '["DateRanges"]',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -147,7 +147,7 @@ class ObjectTypesFixture extends TestFixture
             'associations' => '["Streams"]',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
         [
@@ -163,7 +163,7 @@ class ObjectTypesFixture extends TestFixture
             'associations' => '["Streams"]',
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
-            'enable' => true,
+            'enabled' => true,
             'core_type' => true,
         ],
     ];

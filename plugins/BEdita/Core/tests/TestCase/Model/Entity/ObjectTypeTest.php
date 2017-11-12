@@ -38,6 +38,7 @@ class ObjectTypeTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
     ];
@@ -308,5 +309,30 @@ class ObjectTypeTest extends TestCase
         static::assertEquals($getExpected, $objectType->parent_name);
         $objectType->set('parent_name', $newParent);
         static::assertEquals($setExpected, $objectType->parent_name);
+    }
+
+    /**
+     * Test set failure if `parent_name` is not `enabled`.
+     *
+     * @return void
+     *
+     * @covers ::_setParentName()
+     */
+    public function testSetParentNameDisabled()
+    {
+        $data = [
+            'singular' => 'foo',
+            'name' => 'foos',
+            'is_abstract' => true,
+            'enabled' => false,
+        ];
+        $objectType = $this->ObjectTypes->newEntity();
+        $this->ObjectTypes->patchEntity($objectType, $data);
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertTrue((bool)$success);
+
+        $objectType = $this->ObjectTypes->get('news');
+        $objectType->set('parent_name', 'foos');
+        static::assertEquals('objects', $objectType->parent_name);
     }
 }

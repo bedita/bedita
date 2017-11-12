@@ -127,7 +127,7 @@ class ObjectsTable extends Table
     }
 
     /**
-     * Perform checks on abstract types.
+     * Perform checks on abstract and not enabled types.
      *
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
@@ -136,7 +136,7 @@ class ObjectsTable extends Table
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $objectType = $this->ObjectTypes->get($entity->get('type'));
-        if ($objectType->get('is_abstract')) {
+        if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
             // Cannot save objects of an abstract type.
             return false;
         }

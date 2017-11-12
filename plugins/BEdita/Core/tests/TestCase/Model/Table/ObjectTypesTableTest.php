@@ -49,6 +49,7 @@ class ObjectTypesTableTest extends TestCase
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
@@ -593,14 +594,13 @@ class ObjectTypesTableTest extends TestCase
                 'objects',
                 new ForbiddenException('Abstract type with existing subtypes'),
             ],
-            // there are no 'news` in objects fixture, safe to delete for now
+            'documents' => [
+                'documents',
+                new ForbiddenException('Core types are not removable'),
+            ],
             'news' => [
                 'news',
                 true,
-            ],
-            'documents' => [
-                'documents',
-                new ForbiddenException('Objects of this type exist'),
             ],
         ];
     }
@@ -624,6 +624,58 @@ class ObjectTypesTableTest extends TestCase
         $entity = $this->ObjectTypes->get($typeName);
         $result = $this->ObjectTypes->delete($entity);
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test delete failure when `Objects of this type exist`
+     *
+     * @return void
+     * @covers ::beforeDelete()
+     */
+    public function testDeleteWithObjects()
+    {
+        $expected = new ForbiddenException('Objects of this type exist');
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+
+        $data = [
+            'singular' => 'foo',
+            'name' => 'foos',
+        ];
+        $entity = $this->ObjectTypes->newEntity();
+        $entity = $this->ObjectTypes->patchEntity($entity, $data);
+        $this->ObjectTypes->save($entity);
+
+        $data = [
+            'title' => 'Foo',
+        ];
+        $table = TableRegistry::get('Foos');
+        $entity = $table->newEntity();
+        $entity = $table->patchEntity($entity, $data);
+        $entity->created_by = 1;
+        $entity->modified_by = 1;
+        $success = $table->save($entity);
+        static::assertTrue((bool)$success);
+
+        $objectType = $this->ObjectTypes->get('foos');
+        $this->ObjectTypes->delete($objectType);
+    }
+
+    /**
+     * Test `parent_name`change with existing objects
+     *
+     * @return void
+     * @covers ::beforeRules()
+     */
+    public function testChangeParent()
+    {
+        $expected = new ForbiddenException('Parent type change forbidden: objects of this type exist');
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+
+        $objectType = $this->ObjectTypes->get('users');
+        $objectType->set('parent_name', 'media');
+        $success = $this->ObjectTypes->save($objectType);
     }
 
     /**
@@ -655,6 +707,20 @@ class ObjectTypesTableTest extends TestCase
                     'is_abstract' => true,
                 ],
                 new ForbiddenException('Setting as abstract forbidden: objects of this type exist'),
+            ],
+            'documentsDisable' => [
+                [
+                    'id' => 2,
+                    'enabled' => false,
+                ],
+                new ForbiddenException('Type disable forbidden: objects of this type exist'),
+            ],
+            'mediaDisable' => [
+                [
+                    'id' => 8,
+                    'enabled' => false,
+                ],
+                new ForbiddenException('Type disable forbidden: subtypes exist'),
             ],
         ];
     }

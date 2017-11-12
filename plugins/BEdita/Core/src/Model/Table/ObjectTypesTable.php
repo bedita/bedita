@@ -214,7 +214,9 @@ class ObjectTypesTable extends Table
 
     /**
      * Set default `parent_id`, `plugin` and `model` on creation if missing.
-     * Prevent delete if type is abstract and a subtype exists.
+     * Prevent delete if:
+     *  - type is abstract and a subtype exists
+     *  - is a `core_type`, you may set `enabled` false in this case
      *
      * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
      * in order to be executed before corresponding methods in `TreeBehavior`.
@@ -237,8 +239,16 @@ class ObjectTypesTable extends Table
                 $entity->set('model', self::DEFAULT_MODEL);
             }
         }
-        if ($event->getData('operation') === 'delete' && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
-            throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
+        if ($event->getData('operation') === 'delete') {
+            if ($entity->get('is_abstract') && $this->childCount($entity) > 0) {
+                throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
+            }
+            if ($entity->get('core_type')) {
+                throw new ForbiddenException(__d('bedita', 'Core types are not removable'));
+            }
+        }
+        if ($entity->isDirty('parent_name') && $this->objectsExist($entity->get('id'))) {
+            throw new ForbiddenException(__d('bedita', 'Parent type change forbidden: objects of this type exist'));
         }
     }
 
@@ -257,6 +267,7 @@ class ObjectTypesTable extends Table
      * Forbidden operations:
      *  - `is_abstract` set to `true` if at least an object of this type exists
      *  - `is_abstract` set to `false` if a subtype exist.
+     *  - `enabled` is set to false and objects of this type or subtypes exist
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
@@ -270,6 +281,13 @@ class ObjectTypesTable extends Table
                 throw new ForbiddenException(__d('bedita', 'Setting as abstract forbidden: objects of this type exist'));
             } elseif (!$entity->get('is_abstract') && $this->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Setting as not abstract forbidden: subtypes exist'));
+            }
+        }
+        if ($entity->isDirty('enabled') && !$entity->get('enabled')) {
+            if ($this->objectsExist($entity->get('id'))) {
+                throw new ForbiddenException(__d('bedita', 'Type disable forbidden: objects of this type exist'));
+            } elseif ($this->childCount($entity) > 0) {
+                throw new ForbiddenException(__d('bedita', 'Type disable forbidden: subtypes exist'));
             }
         }
     }
