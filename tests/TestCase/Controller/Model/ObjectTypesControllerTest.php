@@ -258,14 +258,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'hidden' => ['body'],
                         'is_abstract' => false,
                         'parent_name' => 'objects',
-                        'enabled' => true,
+                        'enabled' => false,
                     ],
                     'meta' => [
                         'alias' => 'News',
                         'relations' => [],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
-                        'core_type' => true,
+                        'core_type' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/5',
