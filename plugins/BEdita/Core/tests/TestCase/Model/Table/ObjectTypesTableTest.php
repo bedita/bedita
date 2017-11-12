@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
@@ -721,6 +722,13 @@ class ObjectTypesTableTest extends TestCase
                     'enabled' => false,
                 ],
                 new ForbiddenException('Type disable forbidden: subtypes exist'),
+            ],
+            'tableNotFound' => [
+                [
+                    'id' => 2,
+                    'table' => 'Missing/Plugin.NotFound',
+                ],
+                new BadRequestException('"Missing/Plugin.NotFound" is not a valid model table name'),
             ],
         ];
     }

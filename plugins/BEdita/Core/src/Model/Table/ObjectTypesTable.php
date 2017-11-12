@@ -16,11 +16,13 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
+use Cake\Core\App;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -268,11 +270,12 @@ class ObjectTypesTable extends Table
      *  - `is_abstract` set to `true` if at least an object of this type exists
      *  - `is_abstract` set to `false` if a subtype exist.
      *  - `enabled` is set to false and objects of this type or subtypes exist
+     *  - `table` is not a valid table model class
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException if entity is not saveable
+     * @throws \Cake\Network\Exception\ForbiddenException|\Cake\Network\Exception\BadRequestException if entity is not saveable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
@@ -289,6 +292,9 @@ class ObjectTypesTable extends Table
             } elseif ($this->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Type disable forbidden: subtypes exist'));
             }
+        }
+        if ($entity->isDirty('table') && !App::className($entity->get('table'), 'Model/Table', 'Table')) {
+            throw new BadRequestException(__d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')]));
         }
     }
 
