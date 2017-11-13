@@ -68,14 +68,14 @@ class ObjectTypesTable extends Table
     /**
      * Default `plugin` if not specified.
      *
-     * @var int
+     * @var string
      */
     const DEFAULT_PLUGIN = 'BEdita/Core';
 
     /**
      * Default `model` if not specified.
      *
-     * @var int
+     * @var string
      */
     const DEFAULT_MODEL = 'Objects';
 
