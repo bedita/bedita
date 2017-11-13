@@ -736,7 +736,7 @@ class ObjectTypesTableTest extends TestCase
     /**
      * Test `beforeSave`
      *
-     * @param string $typeName Object type name to save
+     * @param array $data Data to save
      * @param mixed $expected Expected result: exception or boolean
      * @return void
      * @dataProvider beforeSaveProvider
