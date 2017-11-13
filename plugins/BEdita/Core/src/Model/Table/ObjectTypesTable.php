@@ -234,8 +234,8 @@ class ObjectTypesTable extends Table
             if (empty($entity->get('parent_id'))) {
                 $entity->set('parent_id', self::DEFAULT_PARENT_ID);
             }
-            if (empty($entity->get('plugin'))) {
-                $entity->set('plugin', self::DEFAULT_PLUGIN);
+            if (empty($entity->get('table'))) {
+                $entity->set('table', self::DEFAULT_PLUGIN . '.' . self::DEFAULT_MODEL);
             }
             if (empty($entity->get('model'))) {
                 $entity->set('model', self::DEFAULT_MODEL);
