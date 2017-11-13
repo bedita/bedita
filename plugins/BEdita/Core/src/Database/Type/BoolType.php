@@ -22,7 +22,6 @@ use InvalidArgumentException;
  */
 class BoolType extends CakeBoolType
 {
-
     /**
      * Convert bool data into the database format.
      * `true` and `false` as strings are accepted, other strings are discarded
@@ -33,22 +32,13 @@ class BoolType extends CakeBoolType
      */
     public function toDatabase($value, Driver $driver)
     {
-        if ($value === true || $value === false || $value === null) {
-            return $value;
-        }
-
-        if (in_array($value, [1, 0, '1', '0'], true)) {
-            return (bool)$value;
-        }
-        if (is_string($value)) {
-            if (strtolower($value) === 'true') {
-                return true;
-            } elseif (strtolower($value) === 'false') {
-                return false;
-            } else {
-                return null;
+        try {
+            return parent::toDatabase($value, $driver);
+        } catch (InvalidArgumentException $e) {
+            if (is_string($value)) {
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             }
+            throw $e;
         }
-        throw new InvalidArgumentException('Cannot convert value to bool');
     }
 }
