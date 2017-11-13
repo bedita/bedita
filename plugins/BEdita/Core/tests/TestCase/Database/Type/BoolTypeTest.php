@@ -82,8 +82,8 @@ class BoolTypeTest extends TestCase
     /**
      * Test `toDatabase` method
      *
-     * @param mixed $expected Expected result
      * @param mixed $input Input data to be marshaled.
+     * @param mixed $expected Expected result
      * @return void
      *
      * @dataProvider toDatabaseProvider
