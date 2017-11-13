@@ -121,6 +121,13 @@ class ObjectTypesTable extends Table
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'name' => 10,
+                'singular' => 10,
+                'description' => 5,
+            ],
+        ]);
     }
 
     /**

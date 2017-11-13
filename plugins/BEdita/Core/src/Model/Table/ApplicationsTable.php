@@ -61,6 +61,12 @@ class ApplicationsTable extends Table
 
         $this->setDisplayField('name');
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'name' => 10,
+                'description' => 5,
+            ],
+        ]);
 
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
