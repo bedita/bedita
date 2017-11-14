@@ -70,7 +70,7 @@ class BoolTypeTest extends TestCase
             ],
             [
                 "gustavo",
-                null,
+                new InvalidArgumentException('Cannot convert value to bool'),
             ],
             [
                 [1, 2, 3],

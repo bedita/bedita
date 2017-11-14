@@ -24,7 +24,7 @@ class BoolType extends CakeBoolType
 {
     /**
      * Convert bool data into the database format.
-     * `true` and `false` as strings are accepted, other strings are discarded
+     * `true` and `false` as strings are accepted, other strings will cause an `InvalidArgumentException`
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
@@ -36,7 +36,10 @@ class BoolType extends CakeBoolType
             return parent::toDatabase($value, $driver);
         } catch (InvalidArgumentException $e) {
             if (is_string($value)) {
-                return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                if ($value !== null) {
+                    return $value;
+                }
             }
             throw $e;
         }
