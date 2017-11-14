@@ -237,9 +237,6 @@ class ObjectTypesTable extends Table
             if (empty($entity->get('table'))) {
                 $entity->set('table', self::DEFAULT_PLUGIN . '.' . self::DEFAULT_MODEL);
             }
-            if (empty($entity->get('model'))) {
-                $entity->set('model', self::DEFAULT_MODEL);
-            }
         }
         if ($event->getData('operation') === 'delete') {
             if ($entity->get('is_abstract') && $this->childCount($entity) > 0) {
