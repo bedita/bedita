@@ -37,8 +37,14 @@ class ObjectTypeTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.locations',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
     ];
@@ -334,5 +340,104 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get('news');
         $objectType->set('parent_name', 'foos');
         static::assertEquals('objects', $objectType->parent_name);
+    }
+
+    /**
+     * Data provider for `testGetSchema`.
+     *
+     * @return array
+     */
+    public function getSchemaProvider()
+    {
+        return [
+            'objects' => [
+                false,
+                'objects',
+            ],
+            'media' => [
+                false,
+                'media',
+            ],
+            'documents' => [
+                [
+                    'type' => 'object',
+                    'properties' => [
+                        'title' => [
+                            'oneOf' => [
+                                ['type' => 'null'],
+                                ['type' => 'string'],
+                            ],
+                        ],
+                        'description' => [
+                            'oneOf' => [
+                                ['type' => 'null'],
+                                ['type' => 'string'],
+                            ],
+                        ],
+                        'body' => [
+                            'oneOf' => [
+                                ['type' => 'null'],
+                                ['type' => 'string'],
+                            ],
+                        ],
+                        'uname' => [
+                            'type' => 'string',
+                        ],
+                        'status' => [
+                            'type' => 'string',
+                            'enum' => ['on', 'off', 'draft'],
+                        ],
+                        'locked' => [
+                            'type' => 'boolean',
+                        ],
+                        'extra' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                    'required' => [
+                        'status',
+                        'uname',
+                        'locked',
+                    ],
+                ],
+                'documents',
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `schema`.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $name Object type name.
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchema($expected, $name)
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $schema = $objectType->schema;
+
+        static::assertEquals($expected, $schema);
+    }
+
+    /**
+     * Test getter for `schema` when properties have not been loaded.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaNoProperties()
+    {
+        $objectType = $this->ObjectTypes->newEntity();
+        $objectType->is_abstract = false;
+
+        $schema = $objectType->schema;
+
+        static::assertTrue($schema);
     }
 }

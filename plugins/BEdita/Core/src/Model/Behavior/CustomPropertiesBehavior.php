@@ -19,7 +19,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 
 /**
  * CustomProperties behavior
@@ -79,20 +78,10 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
-        // @todo Add cache for properties.
         try {
             $objectType = $this->objectType($this->getTable()->getAlias());
         } catch (RecordNotFoundException $e) {
             return [];
-        }
-        if (!$objectType->has('properties')) {
-            $objectType->properties = TableRegistry::get('Properties')
-                ->find('objectType', [$objectType->id])
-                ->find('type', ['dynamic'])
-                ->where([
-                    'enabled' => true,
-                ])
-                ->all();
         }
 
         $this->available = collection($objectType->properties)->indexBy('name')->toArray();

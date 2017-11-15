@@ -204,7 +204,7 @@ class Property extends Entity implements JsonApiSerializable
     protected function _getSchema()
     {
         if (!$this->property_type) {
-            return new \stdClass();
+            return true;
         }
 
         $schema = $this->property_type->params;

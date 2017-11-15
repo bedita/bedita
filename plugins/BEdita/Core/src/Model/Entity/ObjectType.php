@@ -49,6 +49,7 @@ use Cake\Utility\Inflector;
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  * @property \BEdita\Core\Model\Entity\Property[] $properties
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
+ * @property mixed $schema
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {
@@ -246,5 +247,33 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         return $parentName;
+    }
+
+    /**
+     * Getter for virtual property `schema`.
+     *
+     * @return mixed
+     */
+    protected function _getSchema()
+    {
+        if ($this->is_abstract) {
+            return false;
+        }
+
+        $allProperties = TableRegistry::get('Properties')
+            ->find('objectType', [$this->id])
+            ->toArray();
+
+        $type = 'object';
+        $properties = $required = [];
+        foreach ($allProperties as $property) {
+            $properties[$property->name] = $property->schema;
+
+            if (!$property->is_nullable) {
+                $required[] = $property->name;
+            }
+        }
+
+        return compact('type', 'properties', 'required');
     }
 }

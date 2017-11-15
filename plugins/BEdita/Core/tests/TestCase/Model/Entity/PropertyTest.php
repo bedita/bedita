@@ -329,7 +329,7 @@ class PropertyTest extends TestCase
                 true,
             ],
             'non-existent' => [
-                new \stdClass(),
+                true,
                 'gustavo',
                 true,
             ],
