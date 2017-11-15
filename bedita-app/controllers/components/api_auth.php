@@ -61,20 +61,26 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
     protected $token = null;
 
     /**
-     * The payload used token generation
+     * The payload used for token generation
      *
      * @var array
      */
     protected $payload = array();
 
     /**
-     * Configuration used to customize token generation
+     * Configuration used to customize token generation.
+     * - `JWT` contains configurations to generate the `access_token`
+     * - `refreshTokenExpiresIn` is the `refresh_token` expires time from now.
+     *   It can be configured with relative time from now. See `strtotime()`.
      *
      * @var array
      */
     public $config = array(
-        'expiresIn' => 600, // in seconds (10 minutes)
-        'alg' => 'HS256'
+        'JWT' => array(
+            'expiresIn' => 600, // in seconds (10 minutes)
+            'alg' => 'HS256',
+        ),
+        'refreshTokenExpiresIn' => '1 month',
     );
 
     /**
@@ -88,9 +94,9 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
         Configure::write('Session.start', false);
         $this->controller = $controller;
         $this->token = null;
-        $jwtConf = Configure::read('api.auth.JWT');
-        if ($jwtConf) {
-            $this->config = $jwtConf + $this->config;
+        $authConf = Configure::read('api.auth');
+        if ($authConf && is_array($authConf)) {
+            $this->config = Set::merge($this->config, $authConf);
         }
     }
 
@@ -103,8 +109,8 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
      * @return void
      */
     public function startup($controller , $settings = array()) {
-        if (empty($this->config['iss'])) {
-            $this->config['iss'] = $controller->viewVars['publication']['public_url'];
+        if (empty($this->config['JWT']['iss'])) {
+            $this->config['JWT']['iss'] = $controller->viewVars['publication']['public_url'];
         }
     }
 
@@ -170,8 +176,10 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
     }
 
     /**
-     * Generate and return a new JWT
-     * If user is not identified in return null
+     * Generate and return a new JWT.
+     * If user is not identified in return null.
+     * 
+     * The garbage collection of refresh_token is also applied.
      *
      * @return string|null
      */
@@ -180,15 +188,19 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
         if (!empty($this->user)) {
             $iat = time();
             $this->payload = array(
-                'iss' => $this->config['iss'],
+                'iss' => $this->config['JWT']['iss'],
                 'iat' => $iat,
                 //'jti' => uniqid(), // a unique id for this token (for revocation purposes, it should be blacklisted)
-                'exp' => $iat + $this->config['expiresIn'],
+                'exp' => $iat + $this->config['JWT']['expiresIn'],
                 'id' => $this->user['id']
             );
 
-            $this->token = JWT::encode($this->payload, Configure::read('Security.salt'), $this->config['alg']);
+            $this->token = JWT::encode($this->payload, Configure::read('Security.salt'), $this->config['JWT']['alg']);
         }
+
+        // refresh_token garbage collection
+        $this->gc();
+
         return $this->token;
     }
 
@@ -210,6 +222,26 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
     }
 
     /**
+     * Garbage collection for `refresh_token`.
+     * Delete from `hash_jobs` table the reference to expired `refresh_token`
+     * with some probability
+     *
+     * @return void
+     */
+    protected function gc() {
+        if (mt_rand(1, 100) > 5) {
+            return;
+        }
+
+        $hashJob = ClassRegistry::init('HashJob');
+        $now = date('Y-m-d H:i:s');
+        $hashJob->deleteAll(array(
+            'service_type' => 'refresh_token',
+            'expired <' => $now,
+        ));
+    }
+
+    /**
      * Generate a refresh token to use for renew JWT
      * The refresh token is saved in hash_jobs table
      * If user is not identified then return false
@@ -227,7 +259,7 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
             'service_type' => 'refresh_token',
             'user_id' => $this->user['id'],
             'hash' => $refreshToken,
-            'expired' => '2050-01-01',
+            'expired' => $this->getRefreshTokenExpireDate(),
             'used_for' => 'JWT'
         );
         if (!$hashJob->save($data)) {
@@ -237,10 +269,26 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
     }
 
     /**
+     * Return the expire date for `refresh_token`
+     *
+     * @return string
+     * @throws BeditaInternalErrorException When calculation of expired time for refresh_token fails.
+     */
+    protected function getRefreshTokenExpireDate() {
+        $expireDate = date('Y-m-d H:i:s', strtotime($this->config['refreshTokenExpiresIn']));
+        if ($expireDate === false) {
+            throw new BeditaInternalErrorException('Error calculating the expired time for refresh_token using ' . $this->config['refreshTokenExpiresIn']);
+        }
+
+        return $expireDate;
+    }
+
+    /**
      * Revoke a refresh token
      *
      * @param string $refreshToken the rfresh token to remove
      * @return bool
+     * @throws BeditaNotFoundException When missing refresh token to revoke
      */
     public function revokeRefreshToken($refreshToken) {
         if (!$this->identify()) {
@@ -312,7 +360,8 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
      * Find the user starting from a token and a token type:
      *
      * - if $type is 'jwt' try to get user starting from JWT
-     * - if $type is 'refresh' try to get user starting from refresh token saved in hash_jobs table
+     * - if $type is 'refresh' try to get user starting from refresh token saved in `hash_jobs` table.
+     *   `hash_jobs` table is touched to update `expired` field.
      *
      * If no user was found return false
      *
@@ -324,7 +373,7 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
         if ($type == 'jwt') {
             try {
                 $salt = Configure::read('Security.salt');
-                $decodedToken = JWT::decode($token, $salt, array($this->config['alg']));
+                $decodedToken = JWT::decode($token, $salt, array($this->config['JWT']['alg']));
             } catch (ExpiredException  $e) {
                 throw new BeditaUnauthorizedException('token_expired');
             } catch (Exception $e) {
@@ -353,6 +402,11 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
             if (empty($hash)) {
                 return false;
             }
+
+            // update expired field
+            $hash['HashJob']['expired'] = $this->getRefreshTokenExpireDate();
+            $hashJob->save($hash);
+
             $userId = $hash['HashJob']['user_id'];
         } else {
             return false;
