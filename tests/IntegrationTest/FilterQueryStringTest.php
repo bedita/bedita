@@ -336,6 +336,70 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testFieldsFilter` test case.
+     *
+     * @return array
+     */
+    public function fieldsFilterProvider()
+    {
+        return [
+            'simple' => [
+                '/objects',
+                'filter[uname]=title-one',
+                [
+                   '2',
+                ],
+            ],
+            'boolean' => [
+                '/model/object_types',
+                'filter[is_abstract]=true',
+                [
+                   '1',
+                   '8',
+                ],
+            ],
+            'users' => [
+                '/users',
+                'filter[email]=second.user@example.com',
+                [
+                   '5',
+                ],
+            ],
+            'emptyRoles' => [
+                '/roles',
+                'filter[name]=gustavo',
+                [
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[{field}]` query string.
+     *
+     * @param string $endpoint Endpoint.
+     * @param string $query Query string.
+     * @param array $expected Expected results ids.
+     * @return void
+     *
+     * @dataProvider fieldsFilterProvider
+     * @coversNothing
+     */
+    public function testFieldsFilter($endpoint, $query, $expected)
+    {
+        $this->configRequestHeaders();
+
+        $this->get("$endpoint?$query");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
+
+    /**
      * Data provider for `testTrashFilter` test case.
      *
      * @return array
