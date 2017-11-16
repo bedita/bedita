@@ -124,6 +124,10 @@ class ObjectsController extends ResourcesController
                 // Refuse to save an abstract object type.
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
             }
+            if (!$this->objectType->enabled) {
+                // Refuse to save a disabled object type.
+                throw new ForbiddenException(__d('bedita', 'Disabled object types cannot be instantiated'));
+            }
 
             $entity = $this->Table->newEntity();
             $entity->set('type', $this->request->getData('type'));

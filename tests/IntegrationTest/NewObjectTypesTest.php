@@ -38,8 +38,6 @@ class NewObjectTypesTest extends IntegrationTestCase
                 [
                     'name' => 'cats',
                     'singular' => 'cat',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                 ],
                 [
                     'description' => 'another cat',
@@ -49,8 +47,7 @@ class NewObjectTypesTest extends IntegrationTestCase
                 [
                     'name' => 'songs',
                     'singular' => 'song',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Media',
+                    'table' => 'BEdita/Core.Media',
                     'parent_name' => 'media',
                 ],
                 [

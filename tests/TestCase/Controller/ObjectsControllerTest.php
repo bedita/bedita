@@ -682,6 +682,36 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test add not `enabled` object type.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     */
+    public function testAddNotEnabled()
+    {
+        $data = [
+            'type' => 'news',
+            'attributes' => [
+                'title' => 'A new disabled object',
+            ],
+        ];
+        $expected = [
+            'status' => '403',
+            'title' => 'Disabled object types cannot be instantiated',
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/news', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
      * Test add wrong type method.
      *
      * @return void
