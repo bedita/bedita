@@ -743,6 +743,10 @@ class BeFrontHelper extends AppHelper {
 	 * @return string
 	 */
 	private function menuBranch(array $section, array $options) {
+		if (empty($section['menu'])) {
+			return '';
+		}
+
 		$liClasses = $options["liClass"];
 		if (!empty($this->_section['nickname']) &&
 				($this->_section["nickname"] == $section["nickname"] || strstr($this->_section["canonicalPath"], '/' . $section["nickname"] . '/'))) {
