@@ -76,7 +76,7 @@ class JsonSchema
      */
     public static function resourceSchema($name)
     {
-        $table = TableRegistry::get(Inflector::camelize($name));
+        $table = TableRegistry::get((string)Inflector::camelize($name));
         $entity = $table->newEntity();
         $schema = $table->getSchema();
         $hiddenProperties = $entity->hiddenProperties();
@@ -89,7 +89,7 @@ class JsonSchema
             }
 
             $metadata = $schema->getColumn($column);
-            $properties[$column] = static::convertColumn($column, $metadata, $entity->isAccessible($column));
+            $properties[$column] = static::convertColumn($column, $metadata, $entity->accessible($column));
             if ($metadata['default'] === null && $metadata['null'] === false) {
                 $required[] = $column;
             }
@@ -102,7 +102,7 @@ class JsonSchema
      * Convert column metadata to JSON Schema property
      *
      * @param string $name Column name
-     * @param mixed $metadata Column metadata
+     * @param array $metadata Column metadata
      * @param bool $accessible Property accessibility
      * @return array JSON Schema single property data
      */
@@ -144,7 +144,7 @@ class JsonSchema
     /**
      * Object type properties representation as array
      *
-     * @param mixed $objectType Object type to represent
+     * @param \Cake\Datasource\EntityInterface $objectType Object type to represent
      * @return array JSON Schema array with `properties` and `required`
      */
     public static function objectSchema($objectType)
@@ -157,7 +157,7 @@ class JsonSchema
         $properties = [];
         $required = [];
         foreach ($objectProperties as $property) {
-            $properties[$property['name']] = static::convertProperty($property, $entity->isAccessible($property['name']));
+            $properties[$property['name']] = static::convertProperty($property, $entity->accessible($property['name']));
         }
 
         return compact('properties', 'required');
@@ -166,7 +166,7 @@ class JsonSchema
     /**
      * Convert `Property` entity to JSON Schema property
      *
-     * @param mixed $property Property to convert
+     * @param array $property Property to convert
      * @param bool $accessible Property accessibility
      * @return array JSON Schema single property data
      */

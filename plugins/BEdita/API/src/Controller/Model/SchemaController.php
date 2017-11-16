@@ -15,7 +15,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\AppController;
 use BEdita\Core\Model\Schema\JsonSchema;
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Routing\Router;
 
@@ -34,7 +33,7 @@ class SchemaController extends AppController
     {
         parent::initialize();
         $this->components()->unload('JsonApi');
-        $this->viewBuilder()->className('Json');
+        $this->viewBuilder()->setClassName('Json');
     }
 
     /**
@@ -56,7 +55,7 @@ class SchemaController extends AppController
     {
         $this->request->allowMethod(['get']);
 
-        $url = Router::fullBaseUrl() . $this->request->here();
+        $url = Router::fullBaseUrl() . $this->request->getRequestTarget();
         $this->set(JsonSchema::generate($typeName, $url));
         $this->set('_serialize', true);
     }
