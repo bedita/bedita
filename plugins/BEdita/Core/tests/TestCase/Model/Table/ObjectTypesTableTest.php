@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
@@ -49,6 +50,7 @@ class ObjectTypesTableTest extends TestCase
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
@@ -150,6 +152,24 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                 ],
             ],
+            'notNumericName' => [
+                false,
+                [
+                    'singular' => '123_item',
+                    'name' => '123',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'notNumericSingular' => [
+                false,
+                [
+                    'singular' => '123',
+                    'name' => '123s',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
             'notUniqueNotNew' => [
                 false,
                 [
@@ -227,8 +247,6 @@ class ObjectTypesTableTest extends TestCase
                     'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
@@ -238,6 +256,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 2,
             ],
@@ -248,8 +270,6 @@ class ObjectTypesTableTest extends TestCase
                     'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
@@ -259,6 +279,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 '2',
             ],
@@ -269,8 +293,6 @@ class ObjectTypesTableTest extends TestCase
                     'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
@@ -280,6 +302,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'document',
             ],
@@ -290,8 +316,6 @@ class ObjectTypesTableTest extends TestCase
                     'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
@@ -301,6 +325,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'documents',
             ],
@@ -311,8 +339,6 @@ class ObjectTypesTableTest extends TestCase
                     'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
                     'hidden' => null,
@@ -322,6 +348,10 @@ class ObjectTypesTableTest extends TestCase
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
+                    'created' => '2017-11-10T09:27:23+00:00',
+                    'modified' => '2017-11-10T09:27:23+00:00',
+                    'core_type' => true,
+                    'enabled' => true,
                 ],
                 'Documents',
             ],
@@ -368,6 +398,8 @@ class ObjectTypesTableTest extends TestCase
         // remove 'left_relations' and 'right_relations' because contain to many data
         $result = Hash::remove($result, 'left_relations');
         $result = Hash::remove($result, 'right_relations');
+        $result['created'] = $result['created']->jsonSerialize();
+        $result['modified'] = $result['modified']->jsonSerialize();
 
         static::assertEquals($expected, $result);
     }
@@ -503,19 +535,17 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Provider for `testParent`
+     * Provider for `testModelRules`
      *
      * @return array
      */
-    public function parentProvider()
+    public function modelRulesProvider()
     {
         return [
             'foo' => [
                 [
                     'singular' => 'foo',
                     'name' => 'foos',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
                 ]
             ],
             'cats' => [
@@ -531,19 +561,20 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Test default parent.
+     * Test default parent, plugin and model.
      *
      * @return void
      *
-     * @dataProvider parentProvider
+     * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
-    public function testParent($data)
+    public function testDefaultModelRules($data)
     {
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
+        static::assertNotEmpty($success);
 
         $parentId = empty($data['parent_name']) ?
             ObjectTypesTable::DEFAULT_PARENT_ID : $this->ObjectTypes->get($data['parent_name'])->id;
@@ -564,14 +595,13 @@ class ObjectTypesTableTest extends TestCase
                 'objects',
                 new ForbiddenException('Abstract type with existing subtypes'),
             ],
-            // there are no 'news` in objects fixture, safe to delete for now
+            'documents' => [
+                'documents',
+                new ForbiddenException('Core types are not removable'),
+            ],
             'news' => [
                 'news',
                 true,
-            ],
-            'documents' => [
-                'documents',
-                new ForbiddenException('Objects of this type exist'),
             ],
         ];
     }
@@ -595,5 +625,136 @@ class ObjectTypesTableTest extends TestCase
         $entity = $this->ObjectTypes->get($typeName);
         $result = $this->ObjectTypes->delete($entity);
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test delete failure when `Objects of this type exist`
+     *
+     * @return void
+     * @covers ::beforeDelete()
+     */
+    public function testDeleteWithObjects()
+    {
+        $expected = new ForbiddenException('Objects of this type exist');
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+
+        $data = [
+            'singular' => 'foo',
+            'name' => 'foos',
+        ];
+        $entity = $this->ObjectTypes->newEntity();
+        $entity = $this->ObjectTypes->patchEntity($entity, $data);
+        $this->ObjectTypes->save($entity);
+
+        $data = [
+            'title' => 'Foo',
+        ];
+        $table = TableRegistry::get('Foos');
+        $entity = $table->newEntity();
+        $entity = $table->patchEntity($entity, $data);
+        $entity->created_by = 1;
+        $entity->modified_by = 1;
+        $success = $table->save($entity);
+        static::assertTrue((bool)$success);
+
+        $objectType = $this->ObjectTypes->get('foos');
+        $this->ObjectTypes->delete($objectType);
+    }
+
+    /**
+     * Test `parent_name`change with existing objects
+     *
+     * @return void
+     * @covers ::beforeRules()
+     */
+    public function testChangeParent()
+    {
+        $expected = new ForbiddenException('Parent type change forbidden: objects of this type exist');
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+
+        $objectType = $this->ObjectTypes->get('users');
+        $objectType->set('parent_name', 'media');
+        $success = $this->ObjectTypes->save($objectType);
+    }
+
+    /**
+     * Data provider for `testBeforeSave`
+     *
+     * @return array
+     */
+    public function beforeSaveProvider()
+    {
+        return [
+            'objects' => [
+                [
+                    'id' => 1,
+                    'is_abstract' => false,
+                ],
+                new ForbiddenException('Setting as not abstract forbidden: subtypes exist'),
+            ],
+            // there are no 'news` in objects fixture, safe to set as abstract
+            'news' => [
+                [
+                    'id' => 5,
+                    'is_abstract' => true,
+                ],
+                true,
+            ],
+            'documents' => [
+                [
+                    'id' => 2,
+                    'is_abstract' => true,
+                ],
+                new ForbiddenException('Setting as abstract forbidden: objects of this type exist'),
+            ],
+            'documentsDisable' => [
+                [
+                    'id' => 2,
+                    'enabled' => false,
+                ],
+                new ForbiddenException('Type disable forbidden: objects of this type exist'),
+            ],
+            'mediaDisable' => [
+                [
+                    'id' => 8,
+                    'enabled' => false,
+                ],
+                new ForbiddenException('Type disable forbidden: subtypes exist'),
+            ],
+            'tableNotFound' => [
+                [
+                    'id' => 2,
+                    'table' => 'Missing/Plugin.NotFound',
+                ],
+                new BadRequestException('"Missing/Plugin.NotFound" is not a valid model table name'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeSave`
+     *
+     * @param array $data Data to save
+     * @param mixed $expected Expected result: exception or boolean
+     * @return void
+     * @dataProvider beforeSaveProvider
+     * @covers ::beforeSave()
+     * @covers ::objectsExist()
+     */
+    public function testBeforeSave($data, $expected)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $objectType = $this->ObjectTypes->newEntity();
+        if (!empty($data['id'])) {
+            $objectType = $this->ObjectTypes->get($data['id']);
+        }
+        $this->ObjectTypes->patchEntity($objectType, $data);
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertEquals($expected, (bool)$success);
     }
 }

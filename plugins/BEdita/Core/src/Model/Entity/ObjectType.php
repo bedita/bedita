@@ -40,6 +40,10 @@ use Cake\Utility\Inflector;
  * @property int $tree_left
  * @property int $tree_right
  * @property string $parent_name
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
+ * @property bool $core_type
+ * @property bool $enabled
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
@@ -60,13 +64,12 @@ class ObjectType extends Entity implements JsonApiSerializable
         'name' => true,
         'singular' => true,
         'description' => true,
-        'plugin' => true,
-        'model' => true,
         'table' => true,
         'associations' => true,
         'hidden' => true,
         'is_abstract' => true,
         'parent_name' => true,
+        'enabled' => true,
     ];
 
     /**
@@ -84,6 +87,8 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'objects',
+        'model',
+        'plugin',
         'properties',
         'parent_id',
         'tree_left',
@@ -231,6 +236,9 @@ class ObjectType extends Entity implements JsonApiSerializable
     {
         try {
             $objectType = TableRegistry::get('ObjectTypes')->get($parentName);
+            if (!$objectType->get('is_abstract') || !$objectType->get('enabled')) {
+                return null;
+            }
             $this->parent = $objectType;
             $this->parent_id = $objectType->id;
         } catch (RecordNotFoundException $e) {

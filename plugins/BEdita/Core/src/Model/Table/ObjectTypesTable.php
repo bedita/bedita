@@ -16,11 +16,13 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
+use Cake\Core\App;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -62,6 +64,20 @@ class ObjectTypesTable extends Table
      * @var int
      */
     const DEFAULT_PARENT_ID = 1;
+
+    /**
+     * Default `plugin` if not specified.
+     *
+     * @var string
+     */
+    const DEFAULT_PLUGIN = 'BEdita/Core';
+
+    /**
+     * Default `model` if not specified.
+     *
+     * @var string
+     */
+    const DEFAULT_MODEL = 'Objects';
 
     /**
      * {@inheritDoc}
@@ -117,6 +133,7 @@ class ObjectTypesTable extends Table
             'foreign_key' => 'parent_id',
             'className' => 'ObjectTypes',
         ]);
+        $this->addBehavior('Timestamp');
         $this->addBehavior('Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
@@ -205,8 +222,10 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * Set default parent on creation if missing.
-     * Prevent delete if type is abstract and a subtype exists.
+     * Set default `parent_id`, `plugin` and `model` on creation if missing.
+     * Prevent delete if:
+     *  - type is abstract and a subtype exists
+     *  - is a `core_type`, you may set `enabled` false in this case
      *
      * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
      * in order to be executed before corresponding methods in `TreeBehavior`.
@@ -218,11 +237,24 @@ class ObjectTypesTable extends Table
      */
     public function beforeRules(Event $event, EntityInterface $entity)
     {
-        if ($entity->isNew() && empty($entity->parent_id)) {
-            $entity->set('parent_id', self::DEFAULT_PARENT_ID);
+        if ($entity->isNew()) {
+            if (empty($entity->get('parent_id'))) {
+                $entity->set('parent_id', self::DEFAULT_PARENT_ID);
+            }
+            if (empty($entity->get('table'))) {
+                $entity->set('table', self::DEFAULT_PLUGIN . '.' . self::DEFAULT_MODEL);
+            }
         }
-        if ($event->getData('operation') === 'delete' && $entity->get('is_abstract') && $this->childCount($entity) > 0) {
-            throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
+        if ($event->getData('operation') === 'delete') {
+            if ($entity->get('is_abstract') && $this->childCount($entity) > 0) {
+                throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
+            }
+            if ($entity->get('core_type')) {
+                throw new ForbiddenException(__d('bedita', 'Core types are not removable'));
+            }
+        }
+        if ($entity->isDirty('parent_name') && $this->objectsExist($entity->get('id'))) {
+            throw new ForbiddenException(__d('bedita', 'Parent type change forbidden: objects of this type exist'));
         }
     }
 
@@ -238,16 +270,60 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * Don't allow delete actions if at least an object of this type exists.
+     * Forbidden operations:
+     *  - `is_abstract` set to `true` if at least an object of this type exists
+     *  - `is_abstract` set to `false` if a subtype exist.
+     *  - `enabled` is set to false and objects of this type or subtypes exist
+     *  - `table` is not a valid table model class
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
-     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException|\Cake\Network\Exception\BadRequestException if entity is not saveable
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if ($entity->isDirty('is_abstract')) {
+            if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
+                throw new ForbiddenException(__d('bedita', 'Setting as abstract forbidden: objects of this type exist'));
+            } elseif (!$entity->get('is_abstract') && $this->childCount($entity) > 0) {
+                throw new ForbiddenException(__d('bedita', 'Setting as not abstract forbidden: subtypes exist'));
+            }
+        }
+        if ($entity->isDirty('enabled') && !$entity->get('enabled')) {
+            if ($this->objectsExist($entity->get('id'))) {
+                throw new ForbiddenException(__d('bedita', 'Type disable forbidden: objects of this type exist'));
+            } elseif ($this->childCount($entity) > 0) {
+                throw new ForbiddenException(__d('bedita', 'Type disable forbidden: subtypes exist'));
+            }
+        }
+        if ($entity->isDirty('table') && !App::className($entity->get('table'), 'Model/Table', 'Table')) {
+            throw new BadRequestException(__d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')]));
+        }
+    }
+
+    /**
+     * Check if objects of a certain type id exist
+     *
+     * @param int $typeId Object type id
+     * @return bool True if at least an object exists, false otherwise
+     */
+    protected function objectsExist($typeId)
+    {
+        return TableRegistry::get('Objects')->exists(['object_type_id' => $typeId]);
+    }
+
+    /**
+     * Don't allow delete actions if at least an object of this type exists.
+     *
+     * @param \Cake\Event\Event $event The beforeDelete event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be deleted
      * @return void
      * @throws \Cake\Network\Exception\ForbiddenException if entity is not deletable
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (TableRegistry::get('Objects')->exists(['object_type_id' => $entity->id])) {
+        if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
         }
     }

@@ -42,12 +42,16 @@ class ObjectTypesValidator extends Validator
         $this
             ->requirePresence('name', 'create')
             ->notEmpty('name')
+            // `name` must contain at least a letter (avoid conflicts with ids)
+            ->regex('name', '/^([a-zA-Z]+)/')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->add('name', 'notReserved', ['rule' => 'allowed', 'provider' => 'reserved']);
 
         $this
             ->requirePresence('singular', 'create')
             ->notEmpty('singular')
+            // `singular` must contain at least a letter (avoid conflicts with ids)
+            ->regex('singular', '/^([a-zA-Z]+)/')
             ->add('singular', 'notSameAs', [
                 'rule' => function ($value, $context) {
                     if (empty($context['data']['name'])) {
@@ -63,14 +67,6 @@ class ObjectTypesValidator extends Validator
 
         $this
             ->allowEmpty('description');
-
-        $this
-            ->requirePresence('plugin', 'create')
-            ->notEmpty('plugin');
-
-        $this
-            ->requirePresence('model', 'create')
-            ->notEmpty('model');
 
         $this
             ->allowEmpty('associations');
