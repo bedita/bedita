@@ -381,6 +381,15 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Return the current `$paginationOptions`
+     *
+     * @return array
+     */
+    public function getPagination() {
+        return $this->paginationOptions;
+    }
+
+    /**
      * Setup the pagination options self:paginationOptions
      * Merging default with query url params
      *

@@ -510,17 +510,19 @@ class ApiFormatterComponent extends Object {
         }
 
         // count not accessible relations
-        $permission = ClassRegistry::init('Permission');
-        $user = $this->controller->ApiAuth->getUser();
-        $conditionsForbidden = array('BEObject.status' => $this->controller->getStatus()) + $relationsFilter;
-        $countForbidden = $permission->relatedObjectsNotAccessibile(
-            $object['id'],
-            array(
-                'count' => true,
-                'objectConditions' => $conditionsForbidden
-            ),
-            $user
-        );
+        if (!$this->controller->getShowUnauthorized() && !$this->controller->getSkipCheck()) {
+            $permission = ClassRegistry::init('Permission');
+            $user = $this->controller->ApiAuth->getUser();
+            $conditionsForbidden = array('BEObject.status' => $this->controller->getStatus()) + $relationsFilter;
+            $countForbidden = $permission->relatedObjectsNotAccessibile(
+                $object['id'],
+                array(
+                    'count' => true,
+                    'objectConditions' => $conditionsForbidden
+                ),
+                $user
+            );
+        }
 
         $excludeRelations = Configure::read('excludeRelationsFrontend');
         $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
@@ -582,30 +584,33 @@ class ApiFormatterComponent extends Object {
         $countContents = $tree->countChildrenContents($object['id'], $options);
         $countSections = $tree->countChildrenSections($object['id'], $options);
 
-        $permissionJoin = array(
-            'table' => 'permissions',
-            'alias' => 'Permission',
-            'type' => 'inner',
-            'conditions' => array(
-                'Permission.object_id = Tree.id',
-                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
-                'Permission.switch' => 'group',
-            )
-        );
-        $options['joins'][] = $permissionJoin;
-        $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
-        $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
+        if (!$this->controller->getShowUnauthorized() && !$this->controller->getSkipCheck()) {
+            $permissionJoin = array(
+                'table' => 'permissions',
+                'alias' => 'Permission',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = Tree.id',
+                    'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                    'Permission.switch' => 'group',
+                )
+            );
+            $options['joins'][] = $permissionJoin;
+            $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
+            $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
 
-        $user = $this->controller->ApiAuth->getUser();
-        if (!empty($user)) {
-            $groupsIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
-            $options['conditions']['NOT']['Permission.ugid'] = $groupsIds;
-            $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
-            $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
+            $user = $this->controller->ApiAuth->getUser();
+            if (!empty($user)) {
+                $groupsIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
+                $options['conditions']['NOT']['Permission.ugid'] = $groupsIds;
+                $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
+                $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
+            }
+
+            $countContents -= $countContentsForbidden;
+            $countSections -= $countSectionsForbidden;
         }
 
-        $countContents -= $countContentsForbidden;
-        $countSections -= $countSectionsForbidden;
         $countChildren = $countContents + $countSections;
         $url = $this->controller->baseUrl() . '/objects/' . $object['id'] . '/';
 

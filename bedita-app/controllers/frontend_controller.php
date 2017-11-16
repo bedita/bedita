@@ -1738,11 +1738,16 @@ abstract class FrontendController extends AppController {
         if (!$user) {
             $user = array();
         }
-        $objectsForbidden = ClassRegistry::init('Permission')->relatedObjectsNotAccessibile(
-            $id,
-            array('relation' => $relation),
-            $user
-        );
+
+        if ($this->showUnauthorized || $this->skipCheck) {
+            $objectsForbidden = array();
+        } else {
+            $objectsForbidden = ClassRegistry::init('Permission')->relatedObjectsNotAccessibile(
+                $id,
+                array('relation' => $relation),
+                $user
+            );
+        }
 
         if (!empty($objectsForbidden)) {
             $options['filter']['NOT']['BEObject.id'] = $objectsForbidden;
@@ -3231,5 +3236,41 @@ abstract class FrontendController extends AppController {
         }
         $this->objectCache = array_diff_key($this->objectCache, array_flip($ids));
         return $this->objectCache;
+    }
+
+    /**
+     * Getter for self::showUnauthorized
+     *
+     * @return bool
+     */
+    public function getShowUnauthorized() {
+        return $this->showUnauthorized;
+    }
+
+    /**
+     * Setter for self::showUnauthorized
+     *
+     * @return bool
+     */
+    public function setShowUnauthorized($value) {
+        $this->showUnauthorized = (bool)$value;
+    }
+
+    /**
+     * Getter for self::skipCheck
+     *
+     * @return bool
+     */
+    public function getSkipCheck() {
+        return $this->skipCheck;
+    }
+
+    /**
+     * Setter for self::skipCheck
+     *
+     * @return bool
+     */
+    public function setSkipCheck($value) {
+        $this->skipCheck = (bool)$value;
     }
 }
