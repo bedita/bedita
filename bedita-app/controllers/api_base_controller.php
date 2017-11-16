@@ -1989,7 +1989,7 @@ abstract class ApiBaseController extends FrontendController {
             }
             $data = array(
                 'access_token' => $token,
-                'expires_in' => $this->ApiAuth->config['expiresIn'],
+                'expires_in' => $this->ApiAuth->config['JWT']['expiresIn'],
                 'refresh_token' => $refreshToken
             );
         } elseif ($grantType == 'refresh_token') {
@@ -2004,7 +2004,7 @@ abstract class ApiBaseController extends FrontendController {
 
             $data = array(
                 'access_token' => $token,
-                'expires_in' => $this->ApiAuth->config['expiresIn'],
+                'expires_in' => $this->ApiAuth->config['JWT']['expiresIn'],
                 'refresh_token' => $params['refresh_token']
             );
         } else {
