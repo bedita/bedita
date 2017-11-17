@@ -28,6 +28,6 @@ done
 LIB=$(dirname -- "$LIB")/
 APP=`pwd`
 
-exec php -q "$LIB"cake.php -working "$APP" "$@"
+exec php -d "memory_limit=-1" -q "$LIB"cake.php -working "$APP" "$@"
 
 exit;
