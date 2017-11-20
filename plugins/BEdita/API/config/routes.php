@@ -148,7 +148,15 @@ Router::plugin(
             [
                 '_namePrefix' => 'model:',
             ],
-            $resourcesRoutes($modelingControllers)
+            function (RouteBuilder $routes) use ($modelingControllers, $resourcesRoutes) {
+                $callback = $resourcesRoutes($modelingControllers);
+                $callback($routes);
+                $routes->connect(
+                    '/schema/:type',
+                    ['controller' => 'Schema', 'action' => 'jsonSchema'],
+                    ['_name' => 'schema', 'pass' => ['type']]
+                );
+            }
         );
 
         // Resources.
