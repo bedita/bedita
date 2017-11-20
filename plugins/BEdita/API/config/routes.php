@@ -148,7 +148,7 @@ Router::plugin(
             [
                 '_namePrefix' => 'model:',
             ],
-            function ($routes) use ($modelingControllers, $resourcesRoutes) {
+            function (RouteBuilder $routes) use ($modelingControllers, $resourcesRoutes) {
                 $callback = $resourcesRoutes($modelingControllers);
                 $callback($routes);
                 $routes->connect(
