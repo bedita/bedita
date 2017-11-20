@@ -46,7 +46,6 @@ class JsonSchema
     public static function generate($typeName, $url)
     {
         $isResource = in_array($typeName, static::VALID_RESOURCES);
-        $schema = [];
         if ($isResource) {
             $schema = static::resourceSchema($typeName);
         } else {
@@ -59,7 +58,7 @@ class JsonSchema
         }
 
         $baseSchema = [
-            'definitions' => json_decode("{}"),
+            'definitions' => new \stdClass(),
             '$id' => $url,
             '$schema' => 'http://json-schema.org/draft-06/schema#',
             'type' => 'object',
@@ -89,7 +88,7 @@ class JsonSchema
             }
 
             $metadata = $schema->getColumn($column);
-            $properties[$column] = static::convertColumn($column, $metadata, $entity->accessible($column));
+            $properties[$column] = static::convertColumn($column, $metadata, $entity->isAccessible($column));
             if ($metadata['default'] === null && $metadata['null'] === false) {
                 $required[] = $column;
             }
@@ -157,7 +156,7 @@ class JsonSchema
         $properties = [];
         $required = [];
         foreach ($objectProperties as $property) {
-            $properties[$property['name']] = static::convertProperty($property, $entity->accessible($property['name']));
+            $properties[$property['name']] = static::convertProperty($property, $entity->isAccessible($property['name']));
         }
 
         return compact('properties', 'required');
