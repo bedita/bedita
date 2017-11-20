@@ -39,6 +39,9 @@ class SchemaController extends AppController
     /**
      * {@inheritDoc}
      *
+     * Intentionally left blank to override parent method.
+     * Avoid content-type negotiation checks based on `Accept` header.
+     *
      * @codeCoverageIgnore
      */
     public function beforeFilter(Event $event)
@@ -55,7 +58,7 @@ class SchemaController extends AppController
     {
         $this->request->allowMethod(['get']);
 
-        $url = Router::fullBaseUrl() . $this->request->getRequestTarget();
+        $url = (string)$this->request->getUri();
         $this->set(JsonSchema::generate($typeName, $url));
         $this->set('_serialize', true);
     }
