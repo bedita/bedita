@@ -1371,6 +1371,9 @@ abstract class FrontendController extends AppController {
         $obj = null;
         if ($this->BeObjectCache) {
             $obj = $this->BeObjectCache->read($obj_id, $bindings);
+            if (!empty($obj['status']) && !in_array($obj['status'], $this->status)) {
+                throw new BeditaNotFoundException(__('Content not found', true) . ' id: ' . $obj_id);
+            }
         }
 
         if (empty($obj)) {
