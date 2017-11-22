@@ -13,7 +13,6 @@
 
 namespace BEdita\API\View;
 
-use BEdita\API\Utility\JsonApi;
 use Cake\View\JsonView;
 
 /**
