@@ -27,13 +27,25 @@ use Cake\Routing\Router;
 class SchemaController extends AppController
 {
     /**
+     * JSON Schema content type.
+     *
+     * @var string
+     */
+    const CONTENT_TYPE = 'application/schema+json';
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
     {
         parent::initialize();
-        $this->components()->unload('JsonApi');
-        $this->viewBuilder()->setClassName('Json');
+        if ($this->components()->get('JsonApi')) {
+            $this->components()->unload('JsonApi');
+        }
+        $this->viewBuilder()->setClassName('BEdita\API\View\JsonSchemaView');
+        $this->response->type([
+            'jsonschema' => self::CONTENT_TYPE,
+        ]);
     }
 
     /**

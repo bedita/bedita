@@ -35,27 +35,53 @@ class SchemaControllerTest extends IntegrationTestCase
     ];
 
     /**
+     * Data provider for `testJsonSchema`
+     *
+     * @return void
+     */
+    public function jsonSchemaProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+            ],
+            'roles' => [
+                'roles',
+                'application/schema+json'
+            ],
+            'users' => [
+                'users',
+                'text/html'
+            ],
+        ];
+    }
+
+    /**
      * Test `jsonSchema` method.
      *
+     * @param string $type Type name
+     * @param string $accept Accept request header
      * @return void
      *
      * @covers ::jsonSchema()
      * @covers ::initialize()
+     * @dataProvider jsonSchemaProvider
      */
-    public function testJsonSchema()
+    public function testJsonSchema($type, $accept = '')
     {
         $expected = [
             'definitions' => [],
-            '$id' => 'http://api.example.com/model/schema/objects',
+            '$id' => "http://api.example.com/model/schema/$type",
             '$schema' => 'http://json-schema.org/draft-06/schema#',
             'type' => 'object',
         ];
-        $this->configRequestHeaders();
-        $this->get('/model/schema/objects');
+        $headers = empty($accept) ? [] : ['Accept' => $accept];
+        $this->configRequestHeaders('GET', $headers);
+        $this->get("/model/schema/$type");
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
-        $this->assertContentType('application/json');
+        $this->assertContentType('application/schema+json');
         static::assertArraySubset($expected, $result);
     }
 }
