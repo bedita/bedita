@@ -45,7 +45,7 @@ class JsonSchemaTest extends TestCase
     ];
 
     /**
-     * Data provider for `testUuid5` test case.
+     * Data provider for `testGenerate` test case.
      *
      * @return array
      */

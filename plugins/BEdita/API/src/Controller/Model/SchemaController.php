@@ -27,12 +27,21 @@ use Cake\Routing\Router;
 class SchemaController extends AppController
 {
     /**
+     * JSON Schema content type.
+     *
+     * @var string
+     */
+    const CONTENT_TYPE = 'application/schema+json';
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
     {
         parent::initialize();
-        $this->components()->unload('JsonApi');
+        if ($this->components()->has('JsonApi')) {
+            $this->components()->unload('JsonApi');
+        }
         $this->viewBuilder()->setClassName('Json');
     }
 
@@ -52,7 +61,7 @@ class SchemaController extends AppController
      * Get JSON-SCHEMA of a type.
      *
      * @param string $typeName Name of an object type or of a resource type.
-     * @return void
+     * @return \Cake\Http\Response
      */
     public function jsonSchema($typeName)
     {
@@ -61,5 +70,7 @@ class SchemaController extends AppController
         $url = (string)$this->request->getUri();
         $this->set(JsonSchema::generate($typeName, $url));
         $this->set('_serialize', true);
+
+        return $this->render()->withType(static::CONTENT_TYPE);
     }
 }
