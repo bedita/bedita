@@ -37,7 +37,7 @@ class SchemaControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testJsonSchema`
      *
-     * @return void
+     * @return array
      */
     public function jsonSchemaProvider()
     {
