@@ -66,6 +66,13 @@ class PropertiesTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.ObjectTypes',
         ]);
+
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'name' => 10,
+                'description' => 5,
+            ],
+        ]);
     }
 
     /**

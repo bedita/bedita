@@ -76,6 +76,15 @@ class RelationsTable extends Table
                 $through->aliasField('side') => 'right',
             ],
         ]);
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'name' => 10,
+                'inverse_name' => 10,
+                'description' => 5,
+                'label' => 5,
+                'inverse_label' => 5,
+            ],
+        ]);
     }
 
     /**

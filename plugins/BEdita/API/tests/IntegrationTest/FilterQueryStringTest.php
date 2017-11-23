@@ -249,6 +249,23 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '3',
                 ],
             ],
+            'relations' => [
+                '/model/relations?q=another',
+                [
+                    '2',
+                ],
+            ],
+            'properties' => [
+                '/model/properties?filter[query]=another',
+                [
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5',
+                    '6',
+                ],
+            ],
         ];
     }
 
