@@ -14,17 +14,16 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
-use BEdita\Core\TestSuite\ShellTestCase;
-use Cake\Console\ConsoleInput;
-use Cake\Console\ConsoleIo;
+use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends ShellTestCase
+class BeditaShellTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -152,24 +151,19 @@ class BeditaShellTest extends ShellTestCase
                 'supporto', // Admin password
             ];
         }
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls(...$returnValues);
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
 
-        $this->invoke(
-            ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-            [],
-            $io
+        $this->exec(
+            sprintf('bedita setup --connection %s --config-file %s', static::TEMP_CONNECTION, static::TEMP_FILE),
+            $returnValues
         );
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
         $this->assertOutputContains('Checking API key');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -267,19 +261,23 @@ class BeditaShellTest extends ShellTestCase
         }
 
         // Invoke task.
-        $this->invoke(
-            array_merge(
-                ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                $cliOptions
+        $this->exec(
+            implode(
+                ' ',
+                array_merge(
+                    ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
+                    $cliOptions
+                )
             )
         );
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
         $this->assertOutputContains('Checking API key');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -289,17 +287,18 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testSetupExistingNonInteractive()
     {
-        $this->invoke([InitSchemaTask::class, '--seed', '--force']);
+        $this->exec(sprintf('%s --force --seed', InitSchemaTask::class));
 
         // Invoke task.
-        $this->invoke(['bedita', 'setup', '--admin-overwrite', '--admin-username', 'gustavo', '--admin-password', 'supporto']);
+        $this->exec('bedita setup --admin-overwrite --admin-username gustavo --admin-password supporto');
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
         $this->assertOutputContains('Checking API key');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -309,13 +308,14 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testCheck()
     {
-        $this->invoke([InitSchemaTask::class, '--seed', '--force']);
+        $this->exec(sprintf('%s --force --seed', InitSchemaTask::class));
 
         // Invoke task.
-        $this->invoke(['bedita', 'check']);
+        $this->exec('bedita check');
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
+        $this->assertErrorEmpty();
     }
 }

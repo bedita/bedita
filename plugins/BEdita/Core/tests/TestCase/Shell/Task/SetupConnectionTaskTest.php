@@ -14,19 +14,18 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\SetupConnectionTask;
-use BEdita\Core\TestSuite\ShellTestCase;
-use Cake\Console\ConsoleInput;
-use Cake\Console\ConsoleIo;
+use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupConnectionTask
  */
-class SetupConnectionTaskTest extends ShellTestCase
+class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -72,9 +71,9 @@ class SetupConnectionTaskTest extends ShellTestCase
             ->getMock();
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $connection);
 
-        $this->invoke([SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION]);
+        $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION));
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('Invalid connection object');
     }
 
@@ -102,9 +101,9 @@ class SetupConnectionTaskTest extends ShellTestCase
         }
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
 
-        $this->invoke([SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION]);
+        $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION));
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
         $this->assertErrorContains('Connection to database could not be established');
     }
@@ -120,10 +119,11 @@ class SetupConnectionTaskTest extends ShellTestCase
      */
     public function testExecuteConfiguredOk()
     {
-        $this->invoke([SetupConnectionTask::class]);
+        $this->exec(SetupConnectionTask::class);
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Connection is still ok. Relax...');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -169,16 +169,11 @@ class SetupConnectionTaskTest extends ShellTestCase
                 Text::uuid(), // Password
             ];
         }
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls(...$returnValues);
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
 
         // Invoke task.
-        $this->invoke([SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION], [], $io);
+        $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION), $returnValues);
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
         $this->assertErrorContains('Connection to database could not be established');
     }
@@ -226,20 +221,14 @@ class SetupConnectionTaskTest extends ShellTestCase
                 Hash::get($originalConfig, 'password', ''), // Password
             ];
         }
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls(...$returnValues);
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
 
         // Invoke task.
-        $this->invoke(
-            [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', TMP . Text::uuid()],
-            [],
-            $io
+        $this->exec(
+            sprintf('%s --connection %s --config-file %s', SetupConnectionTask::class, static::TEMP_CONNECTION, TMP . Text::uuid()),
+            $returnValues
         );
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('Unable to read from or write to configuration file');
     }
 
@@ -296,21 +285,15 @@ class SetupConnectionTaskTest extends ShellTestCase
                 Hash::get($originalConfig, 'password', ''), // Password
             ];
         }
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls(...$returnValues);
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
 
         // Invoke task.
-        $this->invoke(
-            [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-            [],
-            $io
+        $this->exec(
+            sprintf('%s --connection %s --config-file %s', SetupConnectionTask::class, static::TEMP_CONNECTION, static::TEMP_FILE),
+            $returnValues
         );
 
-        $this->assertNotAborted($this->getError());
-        $this->assertErrorEquals('');
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
         $this->assertOutputContains('Configuration saved');
         $this->assertOutputContains('Connection is ok. It\'s time to start using BEdita!');
 
@@ -410,15 +393,18 @@ class SetupConnectionTaskTest extends ShellTestCase
         }
 
         // Invoke task.
-        $this->invoke(
-            array_merge(
-                [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                $cliOptions
+        $this->exec(
+            implode(
+                ' ',
+                array_merge(
+                    [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
+                    $cliOptions
+                )
             )
         );
 
-        $this->assertNotAborted($this->getError());
-        $this->assertErrorEquals('');
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
         $this->assertOutputContains('Configuration saved');
         $this->assertOutputContains('Connection is ok. It\'s time to start using BEdita!');
 
@@ -517,14 +503,17 @@ class SetupConnectionTaskTest extends ShellTestCase
         }
 
         // Invoke task.
-        $this->invoke(
-            array_merge(
-                [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                $cliOptions
+        $this->exec(
+            implode(
+                ' ',
+                array_merge(
+                    [SetupConnectionTask::class, '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
+                    $cliOptions
+                )
             )
         );
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('Updated configuration file has invalid syntax');
 
         // Perform additional assertions on connection.

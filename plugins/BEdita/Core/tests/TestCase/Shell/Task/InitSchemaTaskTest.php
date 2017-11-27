@@ -14,17 +14,18 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
-use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
  * @covers \BEdita\Core\Shell\Task\InitSchemaTask
  */
-class InitSchemaTaskTest extends ShellTestCase
+class InitSchemaTaskTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -80,9 +81,10 @@ class InitSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $this->invoke([InitSchemaTask::class, '--no-force', '--no-seed']);
+        $this->exec(sprintf('%s --no-force --no-seed', InitSchemaTask::class));
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertErrorContains('Database is not empty, no action has been performed');
     }
 
     /**
@@ -97,12 +99,13 @@ class InitSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $this->invoke([InitSchemaTask::class, '--no-force', '--no-seed']);
+        $this->exec(sprintf('%s --no-force --no-seed', InitSchemaTask::class));
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
+        static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
         return TableRegistry::get('ObjectTypes')->find()->count();
     }
@@ -124,12 +127,13 @@ class InitSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $this->invoke([InitSchemaTask::class, '--force', '--no-seed']);
+        $this->exec(sprintf('%s --force --no-seed', InitSchemaTask::class));
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
+        static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -146,12 +150,13 @@ class InitSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $this->invoke([InitSchemaTask::class, '--no-force', '--seed']);
+        $this->exec(sprintf('%s --no-force --seed', InitSchemaTask::class));
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
+        static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -174,22 +179,14 @@ class InitSchemaTaskTest extends ShellTestCase
             $connection->query($statement);
         }
 
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $io->method('askChoice')
-            ->will(
-                $this->returnValueMap([
-                    ['Do you really want to proceed?', ['y', 'n'], 'n', 'y'],
-                    ['Would you like to populate your database with an optional set of data?', ['y', 'n'], 'y', 'n'],
-                ])
-            );
-
-        $this->invoke([InitSchemaTask::class], [], $io);
+        $this->exec(InitSchemaTask::class, ['y', 'n']);
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
+        static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
-        $this->assertEquals($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
+        static::assertEquals($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
     }
 }

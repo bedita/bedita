@@ -14,12 +14,13 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\CheckFilesystemTask;
-use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Console\Shell;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckFilesystemTask
  */
-class CheckFilesystemTaskTest extends ShellTestCase
+class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -57,10 +58,10 @@ class CheckFilesystemTaskTest extends ShellTestCase
     {
         mkdir(static::TEMP_DIR);
 
-        $result = $this->invoke([CheckFilesystemTask::class, '--httpd-user', exec('whoami'), static::TEMP_DIR]);
+        $this->exec(sprintf('%s --httpd-user %s %s', CheckFilesystemTask::class, exec('whoami'), static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertTrue($result);
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
         $this->assertOutputContains('Filesystem permissions look alright. Time to write something in those shiny folders');
     }
 
@@ -82,11 +83,11 @@ class CheckFilesystemTaskTest extends ShellTestCase
         mkdir(static::TEMP_DIR);
         chmod(static::TEMP_DIR, 0757);
 
-        $result = $this->invoke([CheckFilesystemTask::class, '--verbose', static::TEMP_DIR]);
+        $this->exec(sprintf('%s --verbose %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertTrue($result);
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Detected webserver user: <info>%s</info>', $user));
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -107,11 +108,11 @@ class CheckFilesystemTaskTest extends ShellTestCase
         mkdir(static::TEMP_DIR);
         chmod(static::TEMP_DIR, 0757);
 
-        $result = $this->invoke([CheckFilesystemTask::class, static::TEMP_DIR]);
+        $this->exec(sprintf('%s %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertFalse($result);
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Unable to detect webserver user');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -124,9 +125,9 @@ class CheckFilesystemTaskTest extends ShellTestCase
      */
     public function testExecuteMissingDirectory()
     {
-        $this->invoke([CheckFilesystemTask::class, '--httpd-user', exec('whoami'), static::TEMP_DIR]);
+        $this->exec(sprintf('%s --httpd-user %s %s', CheckFilesystemTask::class, exec('whoami'), static::TEMP_DIR));
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains(sprintf('Path "%s" does not exist or is not a directory', static::TEMP_DIR));
     }
 
@@ -143,12 +144,12 @@ class CheckFilesystemTaskTest extends ShellTestCase
         mkdir(static::TEMP_DIR);
         chmod(static::TEMP_DIR, 0555);
 
-        $result = $this->invoke([CheckFilesystemTask::class, '--httpd-user', 'nobody', static::TEMP_DIR]);
+        $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertFalse($result);
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains(sprintf('Path "%s" might not be writable by CLI user', static::TEMP_DIR));
         $this->assertOutputContains('Potential issues were found, please check your installation');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -181,12 +182,12 @@ class CheckFilesystemTaskTest extends ShellTestCase
         mkdir(static::TEMP_DIR);
         chmod(static::TEMP_DIR, $perms);
 
-        $result = $this->invoke([CheckFilesystemTask::class, '--httpd-user', 'nobody', static::TEMP_DIR]);
+        $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertFalse($result);
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains(sprintf('Path "%s" might not be writable by webserver user', static::TEMP_DIR));
         $this->assertOutputContains('Potential issues were found, please check your installation');
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -202,11 +203,11 @@ class CheckFilesystemTaskTest extends ShellTestCase
         mkdir(static::TEMP_DIR);
         chmod(static::TEMP_DIR, 0757);
 
-        $result = $this->invoke([CheckFilesystemTask::class, '--httpd-user', 'nobody', static::TEMP_DIR]);
+        $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertNotAborted();
-        static::assertTrue($result);
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Path "%s" is world writable!', static::TEMP_DIR));
         $this->assertOutputContains('Filesystem permissions look alright. Time to write something in those shiny folders');
+        $this->assertErrorEmpty();
     }
 }
