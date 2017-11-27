@@ -13,6 +13,12 @@
 
 namespace BEdita\Core\Shell;
 
+use BEdita\Core\Shell\Task\CheckApiKeyTask;
+use BEdita\Core\Shell\Task\CheckFilesystemTask;
+use BEdita\Core\Shell\Task\CheckSchemaTask;
+use BEdita\Core\Shell\Task\InitSchemaTask;
+use BEdita\Core\Shell\Task\SetupAdminUserTask;
+use BEdita\Core\Shell\Task\SetupConnectionTask;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
 
@@ -39,12 +45,12 @@ class BeditaShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'CheckApiKey' => ['className' => 'BEdita/Core.CheckApiKey'],
-        'CheckFilesystem' => ['className' => 'BEdita/Core.CheckFilesystem'],
-        'CheckSchema' => ['className' => 'BEdita/Core.CheckSchema'],
-        'InitSchema' => ['className' => 'BEdita/Core.InitSchema'],
-        'SetupAdminUser' => ['className' => 'BEdita/Core.SetupAdminUser'],
-        'SetupConnection' => ['className' => 'BEdita/Core.SetupConnection'],
+        'CheckApiKey' => ['className' => CheckApiKeyTask::class],
+        'CheckFilesystem' => ['className' => CheckFilesystemTask::class],
+        'CheckSchema' => ['className' => CheckSchemaTask::class],
+        'InitSchema' => ['className' => InitSchemaTask::class],
+        'SetupAdminUser' => ['className' => SetupAdminUserTask::class],
+        'SetupConnection' => ['className' => SetupConnectionTask::class],
     ];
 
     /**
