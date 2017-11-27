@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -33,21 +34,14 @@ class ResourcesShell extends Shell
      *
      * @var string[]
      */
-    protected $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
+    protected static $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
 
     /**
      * Editable resource fields
      *
      * @var string[]
      */
-    protected $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
-
-    /**
-     * Resource model table
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $modelTable = null;
+    protected static $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
 
     /**
      * {@inheritDoc}
@@ -64,7 +58,7 @@ class ResourcesShell extends Shell
                 'short' => 't',
                 'required' => true,
                 'default' => null,
-                'choices' => $this->acceptedTypes,
+                'choices' => static::$acceptedTypes,
             ],
         ];
 
@@ -123,7 +117,7 @@ class ResourcesShell extends Shell
                         'help' => 'Field name',
                         'short' => 'f',
                         'required' => true,
-                        'choices' => $this->editableFields,
+                        'choices' => static::$editableFields,
                     ],
                 ],
             ]
@@ -133,35 +127,57 @@ class ResourcesShell extends Shell
     }
 
     /**
-     * Init model table using --type|-t option
+     * Init model table using `--type|-t` option
      *
-     * @return void
+     * @return \Cake\ORM\Table
      */
-    protected function initModel()
+    protected function getTable()
     {
         $modelName = Inflector::camelize($this->param('type'));
-        $this->modelTable = TableRegistry::get($modelName);
+
+        return TableRegistry::get($modelName);
+    }
+
+    /**
+     * Return entity by ID or name.
+     *
+     * @param mixed $id Entity ID or name.
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getEntity($id)
+    {
+        $table = $this->getTable();
+        try {
+            if (!is_numeric($id)) {
+                return $table
+                    ->find()
+                    ->where(['name' => $id])
+                    ->firstOrFail();
+            }
+
+            return $table->get($id);
+        } catch (RecordNotFoundException $e) {
+            $this->abort($e->getMessage());
+        }
     }
 
     /**
      * Create a new resource
      *
-     * @return \Cake\ORM\Entity $entity Entity created
+     * @return void
      */
     public function add()
     {
-        $this->initModel();
-        $entity = $this->modelTable->newEntity();
+        $table = $this->getTable();
+        $entity = $table->newEntity();
         if ($this->param('type') === 'endpoint_permissions') {
             $this->setupEndpointPermissionEntity($entity);
         } else {
             $this->setupDefaultEntity($entity);
         }
 
-        $this->modelTable->save($entity);
-        $this->out('Resource with id ' . $entity->id . ' created');
-
-        return $entity;
+        $table->saveOrFail($entity);
+        $this->out(sprintf('Resource with id %d created', $entity->id));
     }
 
     /**
@@ -178,7 +194,7 @@ class ResourcesShell extends Shell
             'role_id' => 'Roles',
         ];
         foreach ($fieldsTables as $field => $table) {
-            $id = $this->in($table . ' id or name');
+            $id = $this->in(sprintf('%s id or name', $table));
             if ($id && !is_numeric($id)) {
                 $id = TableRegistry::get($table)->find()->where(['name' => $id])->firstOrFail()->id;
             }
@@ -217,33 +233,32 @@ class ResourcesShell extends Shell
      */
     public function edit($id)
     {
-        $this->initModel();
+        $table = $this->getTable();
         $entity = $this->getEntity($id);
         $field = $this->param('field');
-        if ($field === 'api_key' && $this->modelTable instanceof ApplicationsTable) {
-             $entity->set('api_key', $this->modelTable->generateApiKey());
+        if ($field === 'api_key' && $table instanceof ApplicationsTable) {
+             $entity->set('api_key', ApplicationsTable::generateApiKey());
         } else {
             $value = $this->in(sprintf('New value for "%s" [current is "%s"]', $field, $entity->get($field)));
             $entity->set($field, $value);
         }
-        $this->modelTable->save($entity);
-        $this->out('Resource with id ' . $entity->id . ' modified');
+        $table->saveOrFail($entity);
+        $this->out(sprintf('Resource with id %d modified', $entity->id));
     }
 
     /**
      * List entities
      *
-     * @return array applications list
+     * @return void
      */
     public function ls()
     {
-        $this->initModel();
-        $action = new ListEntitiesAction(['table' => $this->modelTable]);
+        $table = $this->getTable();
+        $action = new ListEntitiesAction(compact('table'));
         $query = $action(['filter' => $this->param('filter')]);
         $results = $query->toArray();
-        $this->out($results ?: 'empty set');
-
-        return $results;
+        $this->out(sprintf('<info>%d result(s) found</info>', count($results)));
+        $this->out($results);
     }
 
     /**
@@ -254,37 +269,20 @@ class ResourcesShell extends Shell
      */
     public function rm($id)
     {
-        $this->initModel();
+        $table = $this->getTable();
         $res = $this->in(sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $this->param('type'), $id), ['y', 'n'], 'n');
-        if ($res != 'y') {
-            $this->info('Remove not executed');
+        if ($res !== 'y') {
+            $this->info('No action performed');
 
             return false;
         }
+
         $entity = $this->getEntity($id);
-        $action = new DeleteEntityAction(['table' => $this->modelTable]);
+        $action = new DeleteEntityAction(compact('table'));
         $action(compact('entity'));
 
-        $this->out('Record ' . $id . ' deleted');
+        $this->out(sprintf('Record %d deleted', $id));
 
         return true;
-    }
-
-    /**
-     * Return entity by $id name|id
-     *
-     * @param mixed $id entity name|id
-     * @return \Cake\Datasource\EntityInterface entity
-     */
-    protected function getEntity($id)
-    {
-        if (!is_numeric($id)) {
-            return $this->modelTable
-                ->find()
-                ->where(['name' => $id])
-                ->firstOrFail();
-        }
-
-        return $this->modelTable->get($id);
     }
 }
