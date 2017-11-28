@@ -12,71 +12,38 @@
  */
 namespace BEdita\API\Test\TestCase\Shell;
 
-use BEdita\API\Shell\SpecShell;
-use Cake\TestSuite\TestCase;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * \BEdita\API\Shell\SpecShell Test Case
  *
  * @coversDefaultClass \BEdita\API\Shell\SpecShell
  */
-class SpecShellTest extends TestCase
+class SpecShellTest extends ConsoleIntegrationTestCase
 {
 
     /**
-     * ConsoleIo mock
+     * Name for temporary configuration file.
      *
-     * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
+     * @var string
      */
-    public $io;
+    const TEMP_FILE = TMP . 'spec.yaml';
 
     /**
-     * Test subject
-     *
-     * @var \BEdita\API\Shell\SpecShell
-     */
-    public $SpecShell;
-
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->SpecShell = new SpecShell($this->io);
-        $this->SpecShell->initialize();
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function tearDown()
     {
-        unset($this->SpecShell);
+        if (file_exists(static::TEMP_FILE)) {
+            unlink(static::TEMP_FILE);
+        }
 
         parent::tearDown();
     }
 
     /**
-     * Test getOptionParser method
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testGetOptionParser()
-    {
-        $parser = $this->SpecShell->getOptionParser();
-        $subCommands = $parser->subcommands();
-        $this->assertCount(1, $subCommands);
-    }
-
-    /**
-     * Test generate method
+     * Test generate method.
      *
      * @return void
      *
@@ -84,24 +51,13 @@ class SpecShellTest extends TestCase
      */
     public function testGenerate()
     {
-        $yamlFile = tempnam(TMP, '__testyaml');
-        if (file_exists($yamlFile)) {
-            unlink($yamlFile);
-        }
-        $this->assertFileNotExists($yamlFile);
-        $this->SpecShell->params['output'] = $yamlFile;
+        $this->exec(sprintf('spec generate --output %s', static::TEMP_FILE));
 
-        $this->SpecShell->generate();
-        $this->assertFileExists($yamlFile);
+        static::assertFileExists(static::TEMP_FILE);
 
-        $mapChoice = [
-            ['Overwrite yaml file "' . $yamlFile . '"?', ['y', 'n'], 'n', 'n'],
-        ];
-        $this->io->method('askChoice')
-             ->will($this->returnValueMap($mapChoice));
-        $this->SpecShell->generate();
+        $result = Yaml::parse(file_get_contents(static::TEMP_FILE));
 
-        unlink($yamlFile);
-        $this->assertFileNotExists($yamlFile);
+        static::assertArrayHasKey('paths', $result);
+        static::assertArrayHasKey('definitions', $result);
     }
 }
