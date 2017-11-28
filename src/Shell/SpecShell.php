@@ -14,39 +14,17 @@ namespace BEdita\API\Shell;
 
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
+use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Generate OpenAPI 2 YAML file merging multiple yaml files in /spec folder
+ * Generate OpenAPI 2 YAML file merging multiple YAML files in /spec folder
+ *
  * @since 4.0.0
  */
 class SpecShell extends Shell
 {
-
-    /**
-     * Default YAML OpenAPI file
-     *
-     * @var string
-     */
-    const YAML_SPEC_FILE = 'be4.yaml';
-
-    /**
-     * Yaml specifications folder path
-     *
-     * @var string
-     */
-    public $specDir = null;
-
-    /**
-     * {@inheritDoc}
-     * @codeCoverageIgnore
-     */
-    public function initialize()
-    {
-        parent::initialize();
-        $this->specDir = Plugin::path('BEdita/API') . 'spec' . DS;
-    }
 
     /**
      * {@inheritDoc}
@@ -61,14 +39,20 @@ class SpecShell extends Shell
             'parser' => [
                 'description' => [
                     'This command to generates a single YAML OpenAPI 2 spec file.',
-                    'File is built merging yaml files in /spec foler.',
+                    'File is built merging yaml files in /spec folder.',
                 ],
                 'options' => [
+                    'spec' => [
+                        'help' => 'Path where spec files are located',
+                        'short' => 's',
+                        'required' => false,
+                        'default' => Plugin::path('BEdita/API') . 'spec' . DS,
+                    ],
                     'output' => [
-                        'help' => 'Specifiy output file path',
+                        'help' => 'Specify output file path',
                         'short' => 'o',
                         'required' => false,
-                        'default' => $this->specDir . self::YAML_SPEC_FILE,
+                        'default' => Plugin::path('BEdita/API') . 'spec' . DS . 'be4.yaml',
                     ],
                 ],
             ],
@@ -78,42 +62,33 @@ class SpecShell extends Shell
     }
 
     /**
-     * Save YAML OpenAPI 2 spec file
-     * Generated file has  default path BEdita/API/spec/be4.yaml)
+     * Save YAML OpenAPI 2 spec file.
      *
      * @return void
      */
     public function generate()
     {
-        $yamlFile = $this->params['output'];
-        if (file_exists($yamlFile)) {
-            $res = $this->in('Overwrite yaml file "' . $yamlFile . '"?', ['y', 'n'], 'n');
-            if ($res != 'y') {
-                $this->info('Yaml file not updated');
-
-                return;
-            }
-        }
-        $dir = new Folder($this->specDir);
+        $output = new File($this->param('output'));
+        $dir = new Folder($this->param('spec'));
         $files = $dir->find('.*\.yaml', true);
-        $be4Spec = ['paths' => [], 'definitions' => []];
+        $result = ['paths' => [], 'definitions' => []];
         foreach ($files as $file) {
-            if ($file !== self::YAML_SPEC_FILE) {
-                $yamlData = Yaml::parse(file_get_contents($dir->pwd() . DS . $file));
-                $be4Spec = array_merge($yamlData, $be4Spec);
-                if (!empty($yamlData['paths'])) {
-                    $be4Spec['paths'] += $yamlData['paths'];
-                }
-                $be4Spec['definitions'] = array_merge(
-                    empty($yamlData['definitions']) ? [] : $yamlData['definitions'],
-                    $be4Spec['definitions']
-                );
+            $file = new File($dir->realpath($file));
+            if ($file->path === $output->path) {
+                continue;
+            }
+
+            $data = Yaml::parse($file->read());
+            $result = array_merge($data, $result);
+            if (!empty($data['paths'])) {
+                $result['paths'] += $data['paths'];
+            }
+            if (!empty($data['definitions'])) {
+                $result['definitions'] = array_merge($data['definitions'], $result['definitions']);
             }
         }
-        $be4Yaml = Yaml::dump($be4Spec, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+        $result = Yaml::dump($result, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
 
-        file_put_contents($yamlFile, $be4Yaml);
-
-        $this->info('Yaml file updated ' . $yamlFile);
+        $this->createFile($output->path, $result);
     }
 }
