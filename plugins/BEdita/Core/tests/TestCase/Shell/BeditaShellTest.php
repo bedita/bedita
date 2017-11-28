@@ -49,8 +49,6 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
 
         $this->fixtureManager->shutDown();
 
-        ConnectionManager::alias('test', 'default');
-
         // Try to avoid "database schema has changed" error on SQLite.
         try {
             ConnectionManager::get('default')->schemaCollection()->listTables();
@@ -87,18 +85,9 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);
         }
+        ConnectionManager::alias('test', 'default');
 
         parent::tearDown();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-
-        ConnectionManager::alias('test', 'default');
     }
 
     /**
@@ -134,7 +123,6 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
         $returnValues = [
             $driver, // Driver
             $originalConfig['database'], // Database path
-            'y', // Seed
             'gustavo', // Admin username
             'supporto', // Admin password
         ];
@@ -146,7 +134,6 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
                 Hash::get($originalConfig, 'password', ''), // Password
-                'y', // Seed
                 'gustavo', // Admin username
                 'supporto', // Admin password
             ];
