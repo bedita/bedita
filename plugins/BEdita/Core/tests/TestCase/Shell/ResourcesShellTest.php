@@ -74,7 +74,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      *
      * @dataProvider addProvider()
      * @covers ::add()
-     * @covers ::initModel()
+     * @covers ::getTable()
      * @covers ::setupDefaultEntity()
      */
     public function testAddDefault($expected, $type, $name, $description = '')
@@ -136,7 +136,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      *
      * @dataProvider addPermissionProvider
      * @covers ::add()
-     * @covers ::initModel()
+     * @covers ::getTable()
      * @covers ::setupEndpointPermissionEntity()
      */
     public function testAddPermission($application, $endpoint, $role, $read, $write)
@@ -189,7 +189,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @dataProvider editProvider
      * @covers ::edit()
      * @covers ::getEntity()
-     * @covers ::initModel()
+     * @covers ::getTable()
      */
     public function testEdit($type, $resId, $field, $value = null)
     {
