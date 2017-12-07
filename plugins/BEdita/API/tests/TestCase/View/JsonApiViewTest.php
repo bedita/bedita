@@ -207,6 +207,36 @@ class JsonApiViewTest extends TestCase
                     '_serialize' => [],
                 ],
             ],
+            'commonFields' => [
+                json_encode([
+                    'links' => [
+                        'self' => 'http://example.com/objects',
+                    ],
+                ]),
+                [
+                    '_links' => [
+                        'self' => 'http://example.com/objects',
+                    ],
+                    '_fields' => 'title,descritpion',
+                    '_serialize' => [],
+                ],
+            ],
+            'sparseFields' => [
+                json_encode([
+                    'links' => [
+                        'self' => 'http://example.com/roles',
+                    ],
+                ]),
+                [
+                    '_links' => [
+                        'self' => 'http://example.com/roles',
+                    ],
+                    '_fields' => [
+                        'roles' => 'name,descritpion',
+                    ],
+                    '_serialize' => [],
+                ],
+            ],
         ];
     }
 

@@ -40,6 +40,7 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -134,7 +135,7 @@ class JsonApiTraitTest extends TestCase
         static::assertEquals($expected, $attributes);
 
         // test with `fields`
-        $role = $this->Roles->get(1)->jsonApiSerialize(0, ['name', 'description']);
+        $role = $this->Roles->get(1)->jsonApiSerialize(0, ['roles' => ['name', 'description']]);
         $attributes = array_keys($role['attributes']);
         static::assertEquals($expected, $attributes);
     }
@@ -145,6 +146,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @covers ::getLinks()
+     * @covers ::routeNamePrefix()
      */
     public function testGetLinks()
     {
@@ -455,6 +457,20 @@ class JsonApiTraitTest extends TestCase
                 ['attributes', 'meta', 'links', 'relationships', 'included'],
                 JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS,
             ],
+            'commonFields' => [
+                ['meta'],
+                JsonApiSerializable::JSONAPIOPT_EXCLUDE_META,
+                [
+                    '_common' => ['name', 'description'],
+                ],
+            ],
+            'sparseFields' => [
+                ['meta'],
+                JsonApiSerializable::JSONAPIOPT_EXCLUDE_META,
+                [
+                    'roles' => ['name', 'description'],
+                ],
+            ],
         ];
     }
 
@@ -469,7 +485,7 @@ class JsonApiTraitTest extends TestCase
      * @covers ::setFields()
      * @dataProvider jsonApiSerializeProvider()
      */
-    public function testJsonApiSerialize($excludedKeys, $options)
+    public function testJsonApiSerialize($excludedKeys, $options, $fields = null)
     {
         $expected = [
             'id' => '1',
@@ -497,7 +513,7 @@ class JsonApiTraitTest extends TestCase
         ];
         $expected = array_diff_key($expected, array_flip($excludedKeys));
 
-        $role = $this->Roles->get(1)->jsonApiSerialize($options);
+        $role = $this->Roles->get(1)->jsonApiSerialize($options, $fields);
         $role = json_decode(json_encode($role), true);
 
         static::assertEquals($expected, $role);
