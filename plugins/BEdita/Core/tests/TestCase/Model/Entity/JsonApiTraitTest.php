@@ -479,6 +479,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @param string[] $excludedKeys Keys to be excluded.
      * @param int $options JSON API serializer options.
+     * @param array $fields Fields filter data.
      * @return void
      *
      * @covers ::jsonApiSerialize()
