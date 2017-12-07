@@ -86,7 +86,7 @@ class JsonApiView extends JsonView
         if (empty($this->viewVars['_fields'])) {
             return [];
         }
-        if (!empty($this->viewVars['_fields']) && is_string($this->viewVars['_fields'])) {
+        if (is_string($this->viewVars['_fields'])) {
             return ['_common' => explode(',', $this->viewVars['_fields'])];
         }
         $res = [];
