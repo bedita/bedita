@@ -75,9 +75,9 @@ class JsonApiView extends JsonView
     }
 
     /**
-     * Returns a formatted array from `fields` query string, as sparse fieldset or comma separated list
-     * see http://jsonapi.org/format/#fetching-sparse-fieldsets
-     * It's an associative array with type names as keys or `_common` key for type independent fields filter
+     * Return a formatted array from `fields` query string to apply common or sparse fields filters.
+     * It's an associative array with type names as keys or `_common` key for type independent filters.
+     * See http://jsonapi.org/format/#fetching-sparse-fieldsets
      *
      * @return array Formatted `fields` associative array
      */
