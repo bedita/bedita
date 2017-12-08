@@ -45,17 +45,7 @@ class JsonSchema
      */
     public static function generate($typeName, $url)
     {
-        $isResource = in_array($typeName, static::VALID_RESOURCES);
-        if ($isResource) {
-            $schema = static::resourceSchema($typeName);
-        } else {
-            try {
-                $objectType = TableRegistry::get('ObjectTypes')->get($typeName);
-                $schema = static::objectSchema($objectType);
-            } catch (RecordNotFoundException $e) {
-                throw new NotFoundException(__d('bedita', 'Type "{0}" not found', $typeName));
-            }
-        }
+        $schema = static::typeSchema($typeName);
 
         $baseSchema = [
             'definitions' => new \stdClass(),
@@ -65,6 +55,29 @@ class JsonSchema
         ];
 
         return array_merge($baseSchema, $schema);
+    }
+
+    /**
+     * Schema of a resource or object type
+     *
+     * @param string $typeName Resource or object type name
+     * @return array Associative array representing type schema
+     * @throws \Cake\Network\Exception\NotFoundException if no type is found
+     */
+    public static function typeSchema($typeName)
+    {
+        $isResource = in_array($typeName, static::VALID_RESOURCES);
+        if ($isResource) {
+            return static::resourceSchema($typeName);
+        } else {
+            try {
+                $objectType = TableRegistry::get('ObjectTypes')->get($typeName);
+
+                return static::objectSchema($objectType);
+            } catch (RecordNotFoundException $e) {
+                throw new NotFoundException(__d('bedita', 'Type "{0}" not found', $typeName));
+            }
+        }
     }
 
     /**
