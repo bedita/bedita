@@ -26,5 +26,17 @@ class ConfigController extends AdminController
     /**
      * {@inheritDoc}
      */
+    public function initialize()
+    {
+        parent::initialize();
+
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->setConfig('clientGeneratedIds', true);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public $modelClass = 'Config';
 }
