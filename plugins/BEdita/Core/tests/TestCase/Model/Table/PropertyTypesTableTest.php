@@ -178,7 +178,7 @@ class PropertyTypesTableTest extends TestCase
 
         static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
 
-        $propertyType = $this->PropertyTypes->get(9);
+        $propertyType = $this->PropertyTypes->get(10);
         $this->PropertyTypes->delete($propertyType);
 
         static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
@@ -210,7 +210,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeDeleteOk()
     {
-        $propertyType = $this->PropertyTypes->get(9);
+        $propertyType = $this->PropertyTypes->get(10);
 
         $success = $this->PropertyTypes->delete($propertyType);
 

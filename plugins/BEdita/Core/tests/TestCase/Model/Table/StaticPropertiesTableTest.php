@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
@@ -84,7 +84,7 @@ class StaticPropertiesTableTest extends TestCase
     {
         $this->StaticProperties = TableRegistry::get('StaticProperties');
 
-        static::assertSame(Property::class, $this->StaticProperties->getEntityClass());
+        static::assertSame(StaticProperty::class, $this->StaticProperties->getEntityClass());
         static::assertRegExp('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
         $otherInstance = TableRegistry::get('BEdita/Core.StaticProperties');
@@ -164,7 +164,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.status' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 2,
+                    'property_type_id' => 3,
                     'name' => 'status',
                 ],
                 [
@@ -181,7 +181,7 @@ class StaticPropertiesTableTest extends TestCase
             'profiles.email' => [
                 [
                     'object_type_id' => 3,
-                    'property_type_id' => 3,
+                    'property_type_id' => 4,
                     'name' => 'email',
                 ],
                 [
@@ -198,7 +198,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.locked' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 7,
+                    'property_type_id' => 8,
                     'name' => 'locked',
                 ],
                 [
@@ -209,7 +209,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.created' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 5,
+                    'property_type_id' => 6,
                     'name' => 'created',
                 ],
                 [
@@ -220,7 +220,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.extra' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 8,
+                    'property_type_id' => 9,
                     'name' => 'extra',
                 ],
                 [
@@ -231,7 +231,7 @@ class StaticPropertiesTableTest extends TestCase
             'media.provider_thumbnail' => [
                 [
                     'object_type_id' => 8,
-                    'property_type_id' => 4,
+                    'property_type_id' => 5,
                     'name' => 'provider_thumbnail',
                 ],
                 [

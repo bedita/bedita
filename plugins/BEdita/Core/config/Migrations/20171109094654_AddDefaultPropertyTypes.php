@@ -35,6 +35,10 @@ class AddDefaultPropertyTypes extends AbstractMigration
                     'params' => '{"type":"string"}',
                 ],
                 [
+                    'name' => 'text',
+                    'params' => '{"type":"string","contentMediaType":"text/html"}',
+                ],
+                [
                     'name' => 'status',
                     'params' => '{"type":"string","enum":["on","off","draft"]}',
                 ],
