@@ -67,13 +67,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_title',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -88,13 +86,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_description',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => 'Brief description',
-                        'list_view' => false,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -109,13 +105,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_username',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => 'Username, unique string',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -130,13 +124,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_email',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => 'User email',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -151,13 +143,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_birthdate',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'date',
                         'object_type_name' => 'profiles',
                         'label' => 'Date of birth',
-                        'list_view' => false,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -172,13 +162,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'another_surname',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'profiles',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -193,13 +181,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'disabled_property',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => 'Disabled property example',
                         'property_type_name' => 'string',
                         'object_type_name' => 'files',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2017-09-05T11:10:00+00:00',
@@ -214,13 +200,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'media_property',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'media',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2017-11-07T18:32:00+00:00',
@@ -235,13 +219,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'files_property',
-                        'multiple' => false,
-                        'options_list' => null,
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'files',
                         'label' => null,
-                        'list_view' => true,
+                        'is_nullable' => true,
                     ],
                     'meta' => [
                         'created' => '2017-11-07T18:32:00+00:00',
@@ -260,7 +242,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -302,7 +284,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -325,13 +307,11 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'type' => 'properties',
                 'attributes' => [
                     'name' => 'another_title',
-                    'multiple' => false,
-                    'options_list' => null,
                     'description' => null,
                     'property_type_name' => 'string',
                     'object_type_name' => 'documents',
                     'label' => null,
-                    'list_view' => true,
+                    'is_nullable' => true,
                 ],
                 'meta' => [
                     'created' => '2016-12-31T23:09:23+00:00',
@@ -346,7 +326,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -375,13 +355,13 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertArrayNotHasKey('data', $result);
-        $this->assertArrayHasKey('links', $result);
-        $this->assertArrayHasKey('error', $result);
-        $this->assertEquals($expected['links'], $result['links']);
-        $this->assertArraySubset($expected['error'], $result['error']);
-        $this->assertArrayHasKey('title', $result['error']);
-        $this->assertNotEmpty($result['error']['title']);
+        static::assertArrayNotHasKey('data', $result);
+        static::assertArrayHasKey('links', $result);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals($expected['links'], $result['links']);
+        static::assertArraySubset($expected['error'], $result['error']);
+        static::assertArrayHasKey('title', $result['error']);
+        static::assertNotEmpty($result['error']['title']);
     }
 
     /**
@@ -401,8 +381,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'name' => 'yet_another_body',
                 'object_type_name' => 'documents',
                 'property_type_name' => 'string',
-                'multiple' => 0,
-                'options_list' => null,
                 'description' => null,
             ],
         ];
@@ -440,7 +418,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Properties')->find()->count());
+        static::assertEquals($count, TableRegistry::get('Properties')->find()->count());
     }
 
     /**
@@ -467,7 +445,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('nice description', TableRegistry::get('Properties')->get(1)->get('description'));
+        static::assertEquals('nice description', TableRegistry::get('Properties')->get(1)->get('description'));
     }
 
     /**
@@ -493,8 +471,8 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('another_title', TableRegistry::get('Properties')->get(1)->get('name'));
-        $this->assertEquals('another_description', TableRegistry::get('Properties')->get(2)->get('name'));
+        static::assertEquals('another_title', TableRegistry::get('Properties')->get(1)->get('name'));
+        static::assertEquals('another_description', TableRegistry::get('Properties')->get(2)->get('name'));
     }
 
     /**
@@ -512,6 +490,6 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Properties')->exists(['id' => 1]));
+        static::assertFalse(TableRegistry::get('Properties')->exists(['id' => 1]));
     }
 }
