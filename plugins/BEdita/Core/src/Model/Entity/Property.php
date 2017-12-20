@@ -20,6 +20,8 @@ use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
+use League\JsonReference\ScopeResolver\JsonSchemaScopeResolver;
 
 /**
  * Property Entity.
@@ -29,6 +31,7 @@ use Cake\ORM\TableRegistry;
  * @property string $description
  * @property bool $enabled
  * @property bool $is_nullable
+ * @property bool $required
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property int $object_type_id
@@ -37,7 +40,6 @@ use Cake\ORM\TableRegistry;
  * @property int $property_type_id
  * @property string $property_type_name
  * @property \BEdita\Core\Model\Entity\PropertyType $property_type
- * @property mixed $schema
  *
  * @since 4.0.0
  */
@@ -60,7 +62,8 @@ class Property extends Entity implements JsonApiSerializable
         'enabled' => false,
         'created' => false,
         'modified' => false,
-        'schema' => false,
+        'default' => false,
+        'required' => false,
     ];
 
     /**
@@ -69,7 +72,6 @@ class Property extends Entity implements JsonApiSerializable
     protected $_virtual = [
         'property_type_name',
         'object_type_name',
-        'schema',
     ];
 
     /**
@@ -197,18 +199,36 @@ class Property extends Entity implements JsonApiSerializable
     }
 
     /**
-     * Getter for `schema` virtual property.
+     * Getter for `required` virtual property.
      *
+     * @return bool
+     */
+    protected function _getRequired()
+    {
+        return !$this->is_nullable;
+    }
+
+    /**
+     * Get property schema.
+     *
+     * @param string|null $accessMode Access mode (either `"readOnly"` or `"writeOnly"`, or `null` for read-write access).
      * @return mixed
      */
-    protected function _getSchema()
+    public function getSchema($accessMode = null)
     {
         if (!$this->property_type) {
+            // Missing property type. Validation party: anything is allowed.
             return true;
         }
 
         $schema = $this->property_type->params;
+        if (!is_array($schema)) {
+            // Booleans are valid schemas, though they're quite uncommon.
+            return $schema;
+        }
+
         if ($this->is_nullable) {
+            // Property is nullable.
             $schema = [
                 'oneOf' => [
                     [
@@ -217,6 +237,14 @@ class Property extends Entity implements JsonApiSerializable
                     $schema,
                 ],
             ];
+        }
+
+        // Additional metadata.
+        $schema[JsonSchemaScopeResolver::KEYWORD_DRAFT_6] = sprintf('/properties/%s', $this->name);
+        $schema['title'] = Inflector::humanize($this->name);
+        $schema['description'] = $this->description;
+        if (in_array($accessMode, ['readOnly', 'writeOnly'])) {
+            $schema[$accessMode] = true;
         }
 
         return $schema;

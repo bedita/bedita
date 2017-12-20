@@ -298,6 +298,43 @@ class PropertyTest extends TestCase
     }
 
     /**
+     * Data provider for `testGetRequired` test case.
+     *
+     * @return array
+     */
+    public function getRequiredProvider()
+    {
+        return [
+            'true' => [
+                true,
+                false,
+            ],
+            'false' => [
+                false,
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `required` virtual property.
+     *
+     * @param bool $expected Expected result.
+     * @param bool $isNullable Is property nullable?
+     * @return void
+     *
+     * @dataProvider getRequiredProvider()
+     * @covers ::_getRequired()
+     */
+    public function testGetRequired($expected, $isNullable)
+    {
+        $entity = new Property();
+        $entity->is_nullable = $isNullable;
+
+        static::assertSame($expected, $entity->required);
+    }
+
+    /**
      * Data provider for `testGetSchema` test case.
      *
      * @return array
@@ -307,6 +344,9 @@ class PropertyTest extends TestCase
         return [
             'email' => [
                 [
+                    '$id' => '/properties/email',
+                    'title' => 'Email',
+                    'description' => null,
                     'type' => 'string',
                     'format' => 'email',
                 ],
@@ -315,6 +355,9 @@ class PropertyTest extends TestCase
             ],
             'email (nullable)' => [
                 [
+                    '$id' => '/properties/email',
+                    'title' => 'Email',
+                    'description' => null,
                     'oneOf' => [
                         [
                             'type' => 'null',
@@ -328,6 +371,19 @@ class PropertyTest extends TestCase
                 'email',
                 true,
             ],
+            'email (read only)' => [
+                [
+                    '$id' => '/properties/email',
+                    'title' => 'Email',
+                    'description' => null,
+                    'type' => 'string',
+                    'format' => 'email',
+                    'readOnly' => true,
+                ],
+                'email',
+                false,
+                'readOnly',
+            ],
             'non-existent' => [
                 true,
                 'gustavo',
@@ -337,23 +393,25 @@ class PropertyTest extends TestCase
     }
 
     /**
-     * Test magic getter for property schema.
+     * Test generator for property schema.
      *
      * @param mixed $expected Expected result.
      * @param string $propertyTypeName Property type name.
      * @param bool $isNullable Is the property nullable?
+     * @param string|null $mode Property access mode.
      * @return void
      *
      * @dataProvider getSchemaProvider()
-     * @covers ::_getSchema()
+     * @covers ::getSchema()
      */
-    public function testGetSchema($expected, $propertyTypeName, $isNullable)
+    public function testGetSchema($expected, $propertyTypeName, $isNullable, $mode = null)
     {
         $entity = new Property();
+        $entity->name = $propertyTypeName;
         $entity->property_type_name = $propertyTypeName;
         $entity->is_nullable = $isNullable;
 
-        $schema = $entity->schema;
+        $schema = $entity->getSchema($mode);
 
         static::assertEquals($expected, $schema);
     }

@@ -21,6 +21,7 @@ use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -136,5 +137,67 @@ class PropertyTypesTable extends Table
     public function afterDelete()
     {
         Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
+
+    /**
+     * Detect most appropriate property type for a column.
+     *
+     * @param string $name Column name.
+     * @param \Cake\ORM\Table $table Table object.
+     * @return \BEdita\Core\Model\Entity\PropertyType
+     */
+    public function detect($name, Table $table)
+    {
+        /* @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        $propertyTypes = Cache::remember(
+            'property_types',
+            function () {
+                return $this->find()
+                    ->indexBy('name')
+                    ->toArray();
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
+
+        // Check if there is a property type whose name matches column name.
+        if (isset($propertyTypes[$name])) {
+            return $propertyTypes[$name];
+        }
+
+        // Check if there is a property type whose name matches an applicable validation rule's name.
+        $rules = array_keys($table->getValidator()->field($name)->rules());
+        foreach ($rules as $ruleName) {
+            if (isset($propertyTypes[$ruleName])) {
+                return $propertyTypes[$ruleName];
+            }
+        }
+
+        // Try to infer a generic type from column definition.
+        $type = $table->getSchema()->getColumnType($name);
+        if (isset($propertyTypes[$type])) {
+            return $propertyTypes[$type];
+        }
+        switch ($type) {
+            // Try to convert specific types to more generic ones.
+            case 'integer':
+                $type = 'number';
+                if (Hash::get($table->getSchema()->getColumn($name), 'length') === 1) {
+                    $type = 'boolean';
+                }
+                break;
+            case 'float':
+                $type = 'number';
+                break;
+            case 'datetime':
+            case 'timestamp':
+                $type = 'date';
+                break;
+        }
+        if (isset($propertyTypes[$type])) {
+            return $propertyTypes[$type];
+        }
+
+        // Fallback on string type.
+        return $propertyTypes['string'];
     }
 }

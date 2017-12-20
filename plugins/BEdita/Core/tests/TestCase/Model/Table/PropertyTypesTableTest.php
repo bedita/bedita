@@ -18,6 +18,7 @@ use Cake\Cache\Cache;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validator;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertyTypesTable} Test Case
@@ -50,6 +51,7 @@ class PropertyTypesTableTest extends TestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.locations',
         'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.streams',
     ];
 
     /**
@@ -215,5 +217,80 @@ class PropertyTypesTableTest extends TestCase
         $success = $this->PropertyTypes->delete($propertyType);
 
         static::assertTrue($success);
+    }
+
+    /**
+     * Data provider for `testDetect` test case.
+     *
+     * @return array
+     */
+    public function detectProvider()
+    {
+        return [
+            'by name' => [
+                'status',
+                'status',
+                'Objects',
+            ],
+            'by validation rule' => [
+                'email',
+                'email',
+                'Profiles',
+            ],
+            'by type name' => [
+                'string',
+                'lang',
+                'Objects',
+            ],
+            'integer' => [
+                'number',
+                'duration',
+                'Streams',
+            ],
+            'float' => [
+                'number',
+                'duration',
+                'Streams',
+                'float',
+            ],
+            'date' => [
+                'date',
+                'created',
+                'Streams',
+            ],
+            'fallback' => [
+                'string',
+                'created',
+                'Objects',
+                'gustavo',
+            ],
+        ];
+    }
+
+    /**
+     * Test automatic detection of field type.
+     *
+     * @param string $expected Expected property type name.
+     * @param string $name Column name.
+     * @param string $table Table name.
+     * @param string $overrideType Column type to override.
+     * @return void
+     *
+     * @dataProvider detectProvider()
+     * @covers ::detect()
+     */
+    public function testDetect($expected, $name, $table, $overrideType = null)
+    {
+        $table = TableRegistry::get($table);
+        if ($overrideType !== null) {
+            $table
+                ->setValidator('default', new Validator())
+                ->getSchema()
+                ->setColumnType($name, $overrideType);
+        }
+
+        $result = $this->PropertyTypes->detect($name, $table)->name;
+
+        static::assertSame($expected, $result);
     }
 }
