@@ -18,9 +18,9 @@ use Cake\Network\Exception\NotFoundException;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Schema\JsonSchema} Test Case
+ * {@see \BEdita\Core\Utility\JsonSchema} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Schema\JsonSchema
+ * @coversDefaultClass \BEdita\Core\Utility\JsonSchema
  */
 class JsonSchemaTest extends TestCase
 {
