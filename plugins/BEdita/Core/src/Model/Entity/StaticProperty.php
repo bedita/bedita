@@ -163,8 +163,13 @@ class StaticProperty extends Property
         }
 
         $default = Hash::get($schema, 'default', null);
+        if (is_string($default) && substr($default, 0, strlen('NULL::')) === 'NULL::') {
+            // Postgres has a funny notion of `null`.
+            return $this->_properties['default'] = null;
+        }
+
         $typeName = $this->table->getSchema()->getColumnType($this->name);
-        if ($default === 'CURRENT_TIMESTAMP' && in_array($typeName, ['date', 'datetime', 'time', 'timestamp'])) {
+        if (in_array($default, ['CURRENT_TIMESTAMP', 'now()']) && in_array($typeName, ['date', 'datetime', 'time', 'timestamp'])) {
             // Default value is not meaningful in this case.
             return $this->_properties['default'] = null;
         }
