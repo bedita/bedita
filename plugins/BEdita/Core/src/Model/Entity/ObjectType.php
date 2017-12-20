@@ -256,24 +256,32 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function _getSchema()
     {
-        if ($this->is_abstract) {
+        if ($this->is_abstract || empty($this->id)) {
             return false;
         }
 
+        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
         $allProperties = TableRegistry::get('Properties')
             ->find('objectType', [$this->id])
             ->toArray();
+        $entity = TableRegistry::get($this->name)->newEntity();
+        $hiddenProperties = $entity->hiddenProperties();
 
-        $type = 'object';
         $properties = $required = [];
         foreach ($allProperties as $property) {
-            $properties[$property->name] = $property->schema;
+            $accessMode = null;
+            if (!$entity->isAccessible($property->name)) {
+                $accessMode = 'readOnly';
+            } elseif (in_array($property->name, $hiddenProperties)) {
+                $accessMode = 'writeOnly';
+            }
+            $properties[$property->name] = $property->getSchema($accessMode);
 
-            if (!$property->is_nullable) {
+            if ($property->required && $accessMode !== 'readOnly') {
                 $required[] = $property->name;
             }
         }
 
-        return compact('type', 'properties', 'required');
+        return compact('properties', 'required');
     }
 }

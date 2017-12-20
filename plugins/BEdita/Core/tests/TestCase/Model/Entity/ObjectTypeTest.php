@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectType} Test Case
@@ -239,6 +240,7 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetRelationsAssociationsNotLoaded()
     {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
         $objectType = $this->ObjectTypes->find()
             ->contain(['LeftRelations'], true)
             ->firstOrFail();
@@ -360,45 +362,182 @@ class ObjectTypeTest extends TestCase
             ],
             'documents' => [
                 [
-                    'type' => 'object',
                     'properties' => [
                         'title' => [
+                            '$id' => '/properties/title',
+                            'title' => 'Title',
                             'oneOf' => [
-                                ['type' => 'null'],
-                                ['type' => 'string'],
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
                             ],
                         ],
                         'description' => [
+                            '$id' => '/properties/description',
+                            'title' => 'Description',
                             'oneOf' => [
-                                ['type' => 'null'],
-                                ['type' => 'string'],
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
                             ],
                         ],
                         'body' => [
+                            '$id' => '/properties/body',
+                            'title' => 'Body',
                             'oneOf' => [
-                                ['type' => 'null'],
-                                ['type' => 'string'],
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
                             ],
                         ],
                         'uname' => [
+                            '$id' => '/properties/uname',
+                            'title' => 'Uname',
                             'type' => 'string',
+                            'maxLength' => 255,
                         ],
                         'status' => [
+                            '$id' => '/properties/status',
+                            'title' => 'Status',
                             'type' => 'string',
                             'enum' => ['on', 'off', 'draft'],
+                            'default' => 'draft',
+                        ],
+                        'lang' => [
+                            '$id' => '/properties/lang',
+                            'title' => 'Lang',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
                         ],
                         'locked' => [
+                            '$id' => '/properties/locked',
+                            'title' => 'Locked',
                             'type' => 'boolean',
+                            'readOnly' => true,
+                            'default' => false,
                         ],
                         'extra' => [
-                            'type' => 'object',
+                            '$id' => '/properties/extra',
+                            'title' => 'Extra',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'object',
+                                ],
+                            ],
+                        ],
+                        'created' => [
+                            '$id' => '/properties/created',
+                            'title' => 'Created',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'modified' => [
+                            '$id' => '/properties/modified',
+                            'title' => 'Modified',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'created_by' => [
+                            '$id' => '/properties/created_by',
+                            'title' => 'Created By',
+                            'type' => 'number',
+                            'readOnly' => true,
+                        ],
+                        'modified_by' => [
+                            '$id' => '/properties/modified_by',
+                            'title' => 'Modified By',
+                            'type' => 'number',
+                            'readOnly' => true,
+                        ],
+                        'published' => [
+                            '$id' => '/properties/published',
+                            'title' => 'Published',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                            'readOnly' => true,
+                        ],
+                        'publish_start' => [
+                            '$id' => '/properties/publish_start',
+                            'title' => 'Publish Start',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'publish_end' => [
+                            '$id' => '/properties/publish_end',
+                            'title' => 'Publish End',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'another_title' => [
+                            '$id' => '/properties/another_title',
+                            'title' => 'Another Title',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                        ],
+                        'another_description' => [
+                            '$id' => '/properties/another_description',
+                            'title' => 'Another Description',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
                         ],
                     ],
-                    'required' => [
-                        'status',
-                        'uname',
-                        'locked',
-                    ],
+                    'required' => [],
                 ],
                 'documents',
             ],
@@ -420,6 +559,10 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get($name);
 
         $schema = $objectType->schema;
+        if (is_array($schema)) {
+            // Ignore description because it is empty on SQLite.
+            $schema = Hash::remove($schema, 'properties.{*}.description');
+        }
 
         static::assertEquals($expected, $schema);
     }
@@ -438,6 +581,6 @@ class ObjectTypeTest extends TestCase
 
         $schema = $objectType->schema;
 
-        static::assertTrue($schema);
+        static::assertFalse($schema);
     }
 }

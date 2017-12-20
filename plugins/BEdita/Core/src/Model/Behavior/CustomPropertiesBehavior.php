@@ -19,6 +19,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
+use Cake\ORM\TableRegistry;
 
 /**
  * CustomProperties behavior
@@ -80,11 +81,15 @@ class CustomPropertiesBehavior extends Behavior
 
         try {
             $objectType = $this->objectType($this->getTable()->getAlias());
+            $properties = TableRegistry::get('Properties')->find('type', ['dynamic'])
+                ->find('objectType', [$objectType->id])
+                ->where(['enabled' => true])
+                ->all();
         } catch (RecordNotFoundException $e) {
             return [];
         }
 
-        $this->available = collection($objectType->properties)->indexBy('name')->toArray();
+        $this->available = collection($properties)->indexBy('name')->toArray();
 
         return $this->available;
     }
