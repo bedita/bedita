@@ -277,7 +277,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             }
             $properties[$property->name] = $property->getSchema($accessMode);
 
-            if ($property->required && $accessMode !== 'readOnly') {
+            if ($property->required && $accessMode === null) {
                 $required[] = $property->name;
             }
         }

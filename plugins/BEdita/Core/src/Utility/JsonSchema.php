@@ -114,7 +114,7 @@ class JsonSchema
             }
             $property = new StaticProperty(compact('name', 'table'));
             $properties[$name] = $property->getSchema($accessMode);
-            if ($property->required && $accessMode !== 'readOnly') {
+            if ($property->required && $accessMode === null) {
                 $required[] = $name;
             }
         }
