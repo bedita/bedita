@@ -58,6 +58,10 @@ class PropertyTypesFixture extends TestFixture
             'params' => '{"type":"number"}',
         ],
         [
+            'name' => 'integer',
+            'params' => '{"type":"integer"}',
+        ],
+        [
             'name' => 'boolean',
             'params' => '{"type":"boolean"}',
         ],

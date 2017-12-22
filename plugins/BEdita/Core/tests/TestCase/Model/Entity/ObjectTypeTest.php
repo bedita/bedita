@@ -463,13 +463,13 @@ class ObjectTypeTest extends TestCase
                         'created_by' => [
                             '$id' => '/properties/created_by',
                             'title' => 'Created By',
-                            'type' => 'number',
+                            'type' => 'integer',
                             'readOnly' => true,
                         ],
                         'modified_by' => [
                             '$id' => '/properties/modified_by',
                             'title' => 'Modified By',
-                            'type' => 'number',
+                            'type' => 'integer',
                             'readOnly' => true,
                         ],
                         'published' => [

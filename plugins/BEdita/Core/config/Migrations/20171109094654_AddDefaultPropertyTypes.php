@@ -59,6 +59,10 @@ class AddDefaultPropertyTypes extends AbstractMigration
                     'params' => '{"type":"number"}',
                 ],
                 [
+                    'name' => 'integer',
+                    'params' => '{"type":"integer"}',
+                ],
+                [
                     'name' => 'boolean',
                     'params' => '{"type":"boolean"}',
                 ],

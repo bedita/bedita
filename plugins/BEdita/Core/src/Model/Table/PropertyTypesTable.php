@@ -179,12 +179,6 @@ class PropertyTypesTable extends Table
         }
         switch ($type) {
             // Try to convert specific types to more generic ones.
-            case 'integer':
-                $type = 'number';
-                if (Hash::get($table->getSchema()->getColumn($name), 'length') === 1) {
-                    $type = 'boolean';
-                }
-                break;
             case 'float':
                 $type = 'number';
                 break;
