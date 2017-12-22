@@ -21,7 +21,6 @@ use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
