@@ -313,7 +313,7 @@ class CheckSchemaTask extends Shell
             }
 
             if (!empty($lines)) {
-                $this->quiet(sprintf('=====> =====> Table <comment>%s</comment>:', $table));
+                $this->quiet(sprintf('=====> Table <comment>%s</comment>:', $table));
                 $this->quiet(array_map(
                     function ($line) {
                         return sprintf('=====>  - <warning>%s</warning>', $line);

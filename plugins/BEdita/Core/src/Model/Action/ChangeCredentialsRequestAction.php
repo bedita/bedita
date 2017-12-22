@@ -15,7 +15,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
-use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
@@ -101,7 +101,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     public function validate(array $data)
     {
         $validator = new Validator();
-        $validator->setProvider('customUrl', new CustomUrlValidationProvider());
+        $validator->setProvider('bedita', Validation::class);
 
         $validator->email('contact')
             ->notEmpty('contact')
@@ -110,8 +110,8 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
             ->notEmpty('change_url')
             ->requirePresence('change_url')
             ->add('activation_url', 'customUrl', [
-                'rule' => 'isValidUrl',
-                'provider' => 'customUrl',
+                'rule' => 'url',
+                'provider' => 'bedita',
             ]);
 
         $errors = $validator->errors($data);

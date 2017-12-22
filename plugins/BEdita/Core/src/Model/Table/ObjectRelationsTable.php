@@ -1,11 +1,11 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use League\JsonGuard\Validator as JsonSchemaValidator;
 
 /**
  * ObjectRelations Model
@@ -107,17 +107,7 @@ class ObjectRelationsTable extends Table
             return true;
         }
 
-        $value = json_decode(json_encode($value));
-        $validator = new JsonSchemaValidator($value, $context['providers']['jsonSchema']);
-
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            $error = reset($errors);
-
-            return sprintf('%s (in: %s)', $error->getMessage(), $error->getDataPath());
-        }
-
-        return true;
+        return Validation::jsonSchema($value, $context['providers']['jsonSchema']);
     }
 
     /**

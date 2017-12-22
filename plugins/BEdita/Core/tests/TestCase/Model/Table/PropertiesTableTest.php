@@ -2,8 +2,11 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validation;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
@@ -326,12 +329,25 @@ class PropertiesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
+        $count = 0;
         $result = $this->Properties->find('objectType', [$objectType])
             ->find('type', [$type])
             ->where(['enabled' => true])
+            ->each(function ($row) use (&$count) {
+                $count++;
+                static::assertTrue(is_object($row));
+
+                $class = Property::class;
+                if (Validation::uuid($row->id)) {
+                    $class = StaticProperty::class;
+                }
+
+                static::assertSame($class, get_class($row));
+            })
             ->extract('name')
             ->toList();
 
+        static::assertCount($count, $result);
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
 

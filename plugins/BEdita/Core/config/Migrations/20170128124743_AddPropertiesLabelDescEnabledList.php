@@ -1,9 +1,15 @@
 <?php
 use Migrations\AbstractMigration;
 
+/**
+ * Add label, description, enabled and list view columns to `properties` table.
+ */
 class AddPropertiesLabelDescEnabledList extends AbstractMigration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public function up()
     {
 
@@ -27,7 +33,7 @@ class AddPropertiesLabelDescEnabledList extends AbstractMigration
                 'null' => true,
             ])
             ->addColumn('list_view', 'boolean', [
-                'comment' => 'property displayed in list view (backend operations)',
+                'comment' => 'property displayed in list view backend operations',
                 'default' => true,
                 'length' => null,
                 'null' => false,
@@ -35,17 +41,17 @@ class AddPropertiesLabelDescEnabledList extends AbstractMigration
             ->update();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function down()
     {
-
         $this->table('properties')
             ->removeColumn('description')
             ->removeColumn('enabled')
             ->removeColumn('label')
             ->removeColumn('list_view')
             ->update();
-
-        $this->dropTable('b_edita_core_phinxlog');
     }
 }
 

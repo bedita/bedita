@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Utility\Text;
 use Cake\Cache\Cache;
@@ -26,7 +25,6 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * Static Properties Model
@@ -34,12 +32,13 @@ use Cake\Utility\Hash;
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  *
- * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty findOrCreate($search, callable $callback = null, $options = [])
  *
  * @since 4.0.0
  */
@@ -55,21 +54,8 @@ class StaticPropertiesTable extends Table
 
         $this->setDisplayField('name');
 
-        $this->addBehavior('Timestamp');
-
-        $this->belongsTo('PropertyTypes', [
-            'foreignKey' => 'property_type_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.PropertyTypes'
-        ]);
-
-        $this->belongsTo('ObjectTypes', [
-            'foreignKey' => 'object_type_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes',
-        ]);
-
-        $this->setEntityClass(Property::class);
+        $this->belongsTo('PropertyTypes');
+        $this->belongsTo('ObjectTypes');
 
         // Use a unique table name for each instance. This avoids conflicts if we don't drop the temporary table.
         // Temporary tables can be safely left there, since they will be deleted as soon as the connection
@@ -135,6 +121,8 @@ class StaticPropertiesTable extends Table
                 // Use custom IDs.
                 $attributes['type'] = 'uuid';
                 $attributes['length'] = null;
+            } elseif (in_array($column, ['created', 'modified'])) {
+                $attributes['null'] = true;
             }
             $table->addColumn($column, $attributes);
         }
@@ -158,6 +146,8 @@ class StaticPropertiesTable extends Table
                 $connection->execute($statement);
             }
         });
+
+        $this->setSchema($table);
     }
 
     /**
@@ -250,10 +240,7 @@ class StaticPropertiesTable extends Table
      */
     protected function prepareTableFields(ObjectType $objectType, Table $table)
     {
-        $schema = $table->getConnection()
-            ->getSchemaCollection()
-            ->describe($table->getTable());
-
+        $schema = $table->getSchema();
         $sampleEntity = $table->newEntity();
         $hiddenProperties = $sampleEntity->getHidden();
 
@@ -263,13 +250,9 @@ class StaticPropertiesTable extends Table
                 continue;
             }
 
-            $column = $schema->getColumn($name);
-
-            $property = $this->newEntity(compact('name'));
+            $property = $this->newEntity(compact('name', 'table'));
             $property->id = Text::uuid5(sprintf('%s.%s', $objectType->name, $name));
             $property->set('object_type_id', $objectType->id);
-            $property->set('property_type_id', $this->PropertyTypes->find()->firstOrFail()->id); // TODO
-            $property->set('description', Hash::get($column, 'comment'));
 
             $properties[] = $property;
         }

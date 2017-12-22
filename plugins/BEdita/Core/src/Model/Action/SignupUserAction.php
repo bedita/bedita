@@ -15,7 +15,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
-use BEdita\Core\Model\Validation\CustomUrlValidationProvider;
+use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -125,18 +125,18 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected function validate(array $data)
     {
         $validator = new Validator();
-        $validator->setProvider('customUrl', new CustomUrlValidationProvider());
+        $validator->setProvider('bedita', Validation::class);
 
         $validator
             ->requirePresence('activation_url')
             ->add('activation_url', 'customUrl', [
-                'rule' => 'isValidUrl',
-                'provider' => 'customUrl',
+                'rule' => 'url',
+                'provider' => 'bedita',
             ])
 
             ->add('redirect_url', 'customUrl', [
-                'rule' => 'isValidUrl',
-                'provider' => 'customUrl',
+                'rule' => 'url',
+                'provider' => 'bedita',
             ]);
 
         return $validator->errors($data);
