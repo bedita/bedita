@@ -39,7 +39,7 @@ class JsonApiView extends JsonView
     protected function _dataToSerialize($serialize = true)
     {
         if (empty($this->viewVars['_error'])) {
-            $fields = empty($this->viewVars['_fields']) ? [] : explode(',', $this->viewVars['_fields']);
+            $fields = $this->parseFieldsQuery();
             $data = parent::_dataToSerialize($serialize) ?: [];
             $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
             if ($data) {
@@ -72,5 +72,28 @@ class JsonApiView extends JsonView
         }
 
         return compact('error', 'data', 'links', 'meta', 'included');
+    }
+
+    /**
+     * Return a formatted array from `fields` query string to apply common or sparse fields filters.
+     * It's an associative array with type names as keys or `_common` key for type independent filters.
+     * See http://jsonapi.org/format/#fetching-sparse-fieldsets
+     *
+     * @return array Formatted `fields` associative array
+     */
+    protected function parseFieldsQuery()
+    {
+        if (empty($this->viewVars['_fields'])) {
+            return [];
+        }
+        if (is_string($this->viewVars['_fields'])) {
+            return ['_common' => explode(',', $this->viewVars['_fields'])];
+        }
+        $res = [];
+        foreach ($this->viewVars['_fields'] as $type => $val) {
+            $res[$type] = explode(',', $val);
+        }
+
+        return $res;
     }
 }

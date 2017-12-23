@@ -39,7 +39,7 @@ class FieldsQueryStringTest extends IntegrationTestCase
                 ['created']
             ],
             'none' => [
-                '/users?fields=gustavo',
+                '/users?fields[users]=gustavo',
                 [],
                 []
             ],
@@ -52,6 +52,11 @@ class FieldsQueryStringTest extends IntegrationTestCase
                 '/roles/1?fields=unchangeable',
                 [],
                 ['unchangeable'],
+            ],
+            'sparse' => [
+                '/roles?fields[roles]=name',
+                ['name'],
+                []
             ],
         ];
     }
