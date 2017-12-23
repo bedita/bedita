@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
@@ -95,32 +96,32 @@ class RelationsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->setProvider('bedita', Validation::class)
 
-        $validator
+            ->integer('id')
+            ->allowEmpty('id', 'create')
+
             ->requirePresence('name', 'create')
             ->notEmpty('name')
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-        $validator
             ->requirePresence('label', 'create')
-            ->notEmpty('label');
+            ->notEmpty('label')
 
-        $validator
             ->requirePresence('inverse_name', 'create')
             ->notEmpty('inverse_name')
-            ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-        $validator
             ->requirePresence('inverse_label', 'create')
-            ->notEmpty('inverse_label');
+            ->notEmpty('inverse_label')
 
-        $validator
-            ->allowEmpty('description');
+            ->allowEmpty('description')
 
-        $validator
-            ->allowEmpty('params');
+            ->allowEmpty('params')
+            ->add('params', 'valid', [
+                'rule' => ['jsonSchema', 'http://json-schema.org/draft-06/schema#'],
+                'provider' => 'bedita',
+            ]);
 
         return $validator;
     }

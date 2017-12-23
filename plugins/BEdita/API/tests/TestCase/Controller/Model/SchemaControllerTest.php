@@ -42,16 +42,16 @@ class SchemaControllerTest extends IntegrationTestCase
     public function jsonSchemaProvider()
     {
         return [
-            'objects' => [
-                'objects',
+            'locations' => [
+                'locations',
             ],
             'roles' => [
                 'roles',
-                'application/schema+json'
+                'application/schema+json',
             ],
             'users' => [
                 'users',
-                'text/html'
+                'text/html',
             ],
         ];
     }
@@ -83,5 +83,24 @@ class SchemaControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/schema+json');
         static::assertArraySubset($expected, $result);
+    }
+
+    /**
+     * Test `jsonSchema` method with an abstract object type.
+     *
+     * @return void
+     *
+     * @covers ::jsonSchema()
+     * @covers ::initialize()
+     */
+    public function testJsonSchemaAbstractType()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('model/schema/objects');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/schema+json');
+        static::assertFalse($result);
     }
 }

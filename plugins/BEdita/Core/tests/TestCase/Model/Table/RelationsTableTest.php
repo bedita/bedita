@@ -93,9 +93,11 @@ class RelationsTableTest extends TestCase
                     'inverse_label' => 'My Inverse Relation',
                     'description' => 'null',
                     'params' => [
-                        [
-                            'name' => 'param1',
-                            'type' => 'string',
+                        'type' => 'object',
+                        'properties' => [
+                            'param1' => [
+                                'type' => 'string',
+                            ],
                         ],
                     ],
                 ],

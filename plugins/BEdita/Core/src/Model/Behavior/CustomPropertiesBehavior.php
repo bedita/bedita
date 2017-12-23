@@ -79,23 +79,17 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
-        // @todo Add cache for properties.
         try {
             $objectType = $this->objectType($this->getTable()->getAlias());
+            $properties = TableRegistry::get('Properties')->find('type', ['dynamic'])
+                ->find('objectType', [$objectType->id])
+                ->where(['enabled' => true])
+                ->all();
         } catch (RecordNotFoundException $e) {
             return [];
         }
-        if (!$objectType->has('properties')) {
-            $objectType->properties = TableRegistry::get('Properties')
-                ->find('objectType', [$objectType->id])
-                ->find('type', ['dynamic'])
-                ->where([
-                    'enabled' => true,
-                ])
-                ->all();
-        }
 
-        $this->available = collection($objectType->properties)->indexBy('name')->toArray();
+        $this->available = collection($properties)->indexBy('name')->toArray();
 
         return $this->available;
     }

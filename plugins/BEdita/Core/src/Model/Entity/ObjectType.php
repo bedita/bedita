@@ -49,6 +49,7 @@ use Cake\Utility\Inflector;
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  * @property \BEdita\Core\Model\Entity\Property[] $properties
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
+ * @property mixed $schema
  */
 class ObjectType extends Entity implements JsonApiSerializable
 {
@@ -246,5 +247,41 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         return $parentName;
+    }
+
+    /**
+     * Getter for virtual property `schema`.
+     *
+     * @return mixed
+     */
+    protected function _getSchema()
+    {
+        if ($this->is_abstract || empty($this->id)) {
+            return false;
+        }
+
+        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
+        $allProperties = TableRegistry::get('Properties')
+            ->find('objectType', [$this->id])
+            ->toArray();
+        $entity = TableRegistry::get($this->name)->newEntity();
+        $hiddenProperties = $entity->hiddenProperties();
+
+        $properties = $required = [];
+        foreach ($allProperties as $property) {
+            $accessMode = null;
+            if (!$entity->isAccessible($property->name)) {
+                $accessMode = 'readOnly';
+            } elseif (in_array($property->name, $hiddenProperties)) {
+                $accessMode = 'writeOnly';
+            }
+            $properties[$property->name] = $property->getSchema($accessMode);
+
+            if ($property->required && $accessMode === null) {
+                $required[] = $property->name;
+            }
+        }
+
+        return compact('properties', 'required');
     }
 }

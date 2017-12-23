@@ -31,19 +31,47 @@ class PropertyTypesFixture extends TestFixture
     public $records = [
         [
             'name' => 'string',
-            'params' => '{"type": "string"}'
+            'params' => '{"type":"string"}',
+        ],
+        [
+            'name' => 'text',
+            'params' => '{"type":"string","contentMediaType":"text/html"}',
+        ],
+        [
+            'name' => 'status',
+            'params' => '{"type":"string","enum":["on","off","draft"]}',
+        ],
+        [
+            'name' => 'email',
+            'params' => '{"type":"string","format":"email"}',
+        ],
+        [
+            'name' => 'url',
+            'params' => '{"type":"string","format":"uri"}',
         ],
         [
             'name' => 'date',
-            'params' => '{"type": "string"}'
+            'params' => '{"type":"string","format":"date-time"}',
         ],
         [
             'name' => 'number',
-            'params' => '{"type": "number"}'
+            'params' => '{"type":"number"}',
+        ],
+        [
+            'name' => 'integer',
+            'params' => '{"type":"integer"}',
         ],
         [
             'name' => 'boolean',
-            'params' => '{"type": "boolean"}'
+            'params' => '{"type":"boolean"}',
+        ],
+        [
+            'name' => 'json',
+            'params' => '{"type":"object"}',
+        ],
+        [
+            'name' => 'unused property type',
+            'params' => '{"type":"object","properties":{"gustavo":{"const":"supporto"}},"required":["gustavo"]}',
         ],
     ];
 }

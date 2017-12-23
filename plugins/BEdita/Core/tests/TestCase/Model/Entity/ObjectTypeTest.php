@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectType} Test Case
@@ -37,8 +38,14 @@ class ObjectTypeTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.locations',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
     ];
@@ -233,6 +240,7 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetRelationsAssociationsNotLoaded()
     {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
         $objectType = $this->ObjectTypes->find()
             ->contain(['LeftRelations'], true)
             ->firstOrFail();
@@ -334,5 +342,245 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get('news');
         $objectType->set('parent_name', 'foos');
         static::assertEquals('objects', $objectType->parent_name);
+    }
+
+    /**
+     * Data provider for `testGetSchema`.
+     *
+     * @return array
+     */
+    public function getSchemaProvider()
+    {
+        return [
+            'objects' => [
+                false,
+                'objects',
+            ],
+            'media' => [
+                false,
+                'media',
+            ],
+            'documents' => [
+                [
+                    'properties' => [
+                        'title' => [
+                            '$id' => '/properties/title',
+                            'title' => 'Title',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'description' => [
+                            '$id' => '/properties/description',
+                            'title' => 'Description',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'body' => [
+                            '$id' => '/properties/body',
+                            'title' => 'Body',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'uname' => [
+                            '$id' => '/properties/uname',
+                            'title' => 'Uname',
+                            'type' => 'string',
+                            'maxLength' => 255,
+                        ],
+                        'status' => [
+                            '$id' => '/properties/status',
+                            'title' => 'Status',
+                            'type' => 'string',
+                            'enum' => ['on', 'off', 'draft'],
+                            'default' => 'draft',
+                        ],
+                        'lang' => [
+                            '$id' => '/properties/lang',
+                            'title' => 'Lang',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                        ],
+                        'locked' => [
+                            '$id' => '/properties/locked',
+                            'title' => 'Locked',
+                            'type' => 'boolean',
+                            'readOnly' => true,
+                            'default' => false,
+                        ],
+                        'extra' => [
+                            '$id' => '/properties/extra',
+                            'title' => 'Extra',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'object',
+                                ],
+                            ],
+                        ],
+                        'created' => [
+                            '$id' => '/properties/created',
+                            'title' => 'Created',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'modified' => [
+                            '$id' => '/properties/modified',
+                            'title' => 'Modified',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'created_by' => [
+                            '$id' => '/properties/created_by',
+                            'title' => 'Created By',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
+                        'modified_by' => [
+                            '$id' => '/properties/modified_by',
+                            'title' => 'Modified By',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
+                        'published' => [
+                            '$id' => '/properties/published',
+                            'title' => 'Published',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                            'readOnly' => true,
+                        ],
+                        'publish_start' => [
+                            '$id' => '/properties/publish_start',
+                            'title' => 'Publish Start',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'publish_end' => [
+                            '$id' => '/properties/publish_end',
+                            'title' => 'Publish End',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'another_title' => [
+                            '$id' => '/properties/another_title',
+                            'title' => 'Another Title',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                        ],
+                        'another_description' => [
+                            '$id' => '/properties/another_description',
+                            'title' => 'Another Description',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'required' => [],
+                ],
+                'documents',
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `schema`.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $name Object type name.
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchema($expected, $name)
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $schema = $objectType->schema;
+        if (is_array($schema)) {
+            // Ignore description because it is empty on SQLite.
+            $schema = Hash::remove($schema, 'properties.{*}.description');
+        }
+
+        static::assertEquals($expected, $schema);
+    }
+
+    /**
+     * Test getter for `schema` when properties have not been loaded.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaNoProperties()
+    {
+        $objectType = $this->ObjectTypes->newEntity();
+        $objectType->is_abstract = false;
+
+        $schema = $objectType->schema;
+
+        static::assertFalse($schema);
     }
 }

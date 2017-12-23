@@ -368,7 +368,11 @@ trait JsonApiTrait
     {
         $id = $this->getId();
         $type = $this->getType();
-        $this->setFields($fields);
+        if (!empty($fields[$type])) {
+            $this->setFields($fields[$type]);
+        } elseif (!empty($fields['_common'])) {
+            $this->setFields($fields['_common']);
+        }
 
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES) === 0) {
             $attributes = $this->getAttributes();

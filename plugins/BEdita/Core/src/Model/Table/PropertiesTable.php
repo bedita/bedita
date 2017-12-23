@@ -14,14 +14,18 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Entity\Property;
+use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validation;
 use Cake\Validation\Validator;
 
 /**
@@ -30,6 +34,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  *
+ * @method \BEdita\Core\Model\Entity\Property get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
@@ -213,6 +218,16 @@ class PropertiesTable extends Table
                     );
         }
 
-        return $query->from([$this->getAlias() => $from], true);
+        return $query
+            ->from([$this->getAlias() => $from], true)
+            ->formatResults(function (ResultSetInterface $results) {
+                return $results->map(function ($row) {
+                    if (!($row instanceof Property) || empty($row->id) || !Validation::uuid($row->id)) {
+                        return $row;
+                    }
+
+                    return StaticProperty::fromProperty($row);
+                });
+            });
     }
 }
