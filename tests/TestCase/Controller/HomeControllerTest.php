@@ -55,7 +55,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Auth',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/documents' => [
@@ -70,7 +71,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Documents',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/profiles' => [
@@ -85,7 +87,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Profiles',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/objects' => [
@@ -100,7 +103,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Objects',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/users' => [
@@ -115,7 +119,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Users',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/news' => [
@@ -130,7 +135,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'News',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/locations' => [
@@ -145,7 +151,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Locations',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/events' => [
@@ -160,7 +167,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Events',
-                            ]
+                            ],
+                            'object_type' => true,
                         ],
                     ],
                     '/roles' => [
@@ -175,7 +183,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Roles',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/model' => [
@@ -190,7 +199,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Model',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/admin' => [
@@ -205,7 +215,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Admin',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/status' => [
@@ -220,7 +231,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Status',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/signup' => [
@@ -235,7 +247,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Signup',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/trash' => [
@@ -250,7 +263,8 @@ class HomeControllerTest extends IntegrationTestCase
                             ],
                             'display' => [
                                 'label' => 'Trash',
-                            ]
+                            ],
+                            'object_type' => false,
                         ],
                     ],
                     '/media' => [
@@ -266,6 +280,7 @@ class HomeControllerTest extends IntegrationTestCase
                             'display' => [
                                 'label' => 'Media',
                             ],
+                            'object_type' => true,
                         ],
                     ],
                     '/files' => [
@@ -281,6 +296,7 @@ class HomeControllerTest extends IntegrationTestCase
                             'display' => [
                                 'label' => 'Files',
                             ],
+                            'object_type' => true,
                         ],
                     ],
                 ],
