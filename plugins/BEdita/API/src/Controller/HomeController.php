@@ -67,7 +67,8 @@ class HomeController extends AppController
     {
         $this->request->allowMethod(['get', 'head']);
 
-        $endPoints = array_merge($this->objectTypesEndpoints(), $this->defaultEndpoints);
+        $objectTypesEndpoints = $this->objectTypesEndpoints();
+        $endPoints = array_merge($objectTypesEndpoints, $this->defaultEndpoints);
         foreach ($endPoints as $e => $methods) {
             if ($methods === 'ALL') {
                 $methods = ['GET', 'POST', 'PATCH', 'DELETE'];
@@ -88,7 +89,8 @@ class HomeController extends AppController
                     ],
                     'display' => [
                         'label' => Inflector::camelize(substr($e, 1)),
-                    ]
+                    ],
+                    'object_type' => !empty($objectTypesEndpoints[$e]),
                 ],
             ];
         }
