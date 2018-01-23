@@ -329,7 +329,6 @@ class ApiValidatorComponent extends Object {
 
     /**
      * Check if an object is reachable:
-     * - if `enableObjectReachableCheck` is set to false, skip check
      * - check if object is reacheable looking also permissions
      * - if it fails check again if it's reachable but without checking permissions
      *     - if it fails, then it throws 404
@@ -340,28 +339,30 @@ class ApiValidatorComponent extends Object {
      * @see self::isObjectReachable()
      * @param int $objectId the object id
      * @return void
+     * @throws BeditaNotFoundException on object not found
+     * @throws BeditaUnauthorizedException on unauthorized user session
+     * @throws BeditaForbiddenException on forbidden access to object
      */
-    public function checkObjectReachable($objectId) {
-        if ($this->enableObjectReachableCheck) {
-            if (empty($objectId)) {
-                throw new BeditaNotFoundException();
+    public function checkObjectReachable($objectId) {        
+        if (empty($objectId)) {
+            throw new BeditaNotFoundException();
+        }
+        // check if object $id is reachable
+        if (!$this->isObjectReachable($objectId)) {
+            // redo without checking permissions to know if it has to return 404
+            if (!$this->isObjectReachable($objectId, false)) {
+                throw new BeditaNotFoundException('Object ' . $objectId . ' not found');
             }
-            // check if object $id is reachable
-            if (!$this->isObjectReachable($objectId)) {
-                // redo without checking permissions to know if it has to return 404
-                if (!$this->isObjectReachable($objectId, false)) {
-                    throw new BeditaNotFoundException('Object ' . $objectId . ' not found');
-                }
-                if (!$this->controller->BeAuth->identify()) {
-                    throw new BeditaUnauthorizedException();
-                }
-                throw new BeditaForbiddenException('Object ' . $objectId . ' is forbidden');
+            if (!$this->controller->BeAuth->identify()) {
+                throw new BeditaUnauthorizedException();
             }
+            throw new BeditaForbiddenException('Object ' . $objectId . ' is forbidden');
         }
     }
 
     /**
      * Return true if object $objectId is reachable, false otherwise.
+     * If `enableObjectReachableCheck` is set to false, skip check.
      * 'Reachable' means that object is on publication tree or have at least a related object on tree
      * If $checkPermission is true an additional check on 'frontend_acccess_with_block' permission is done
      *
@@ -370,6 +371,9 @@ class ApiValidatorComponent extends Object {
      * @return boolean
      */
     public function isObjectReachable($objectId, $checkPermissions = true) {
+        if (!$this->enableObjectReachableCheck) {
+            return true;
+        }
         $tree = ClassRegistry::init('Tree');
         $publication = $this->controller->getPublication();
         $isOnTree = $tree->isOnTree($objectId, $publication['id'], $this->controller->getStatus());
