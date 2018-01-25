@@ -48,6 +48,6 @@ class DateTimeType extends CakeDateTimeType
             }
         }
 
-        return $value;
+        return !empty($value) ? $value : null;
     }
 }

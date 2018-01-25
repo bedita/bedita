@@ -153,4 +153,21 @@ class DateTimeTypeTest extends TestCase
 
         static::assertSame($input, $result);
     }
+
+    /**
+     * Test empty string `marshal`
+     *
+     * @return void
+     *
+     * @covers ::marshal
+     */
+    public function testMarshalEmpty()
+    {
+        $dateTimeType = new DateTimeType();
+        $result = $dateTimeType->marshal('');
+        static::assertNull($result);
+
+        $result = $dateTimeType->marshal(false);
+        static::assertNull($result);
+    }
 }
