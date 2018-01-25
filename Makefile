@@ -98,7 +98,7 @@ bump-version: guard-VERSION
 # Tag a release
 tag-release: guard-VERSION bump-version
 	@echo "Tagging release $(VERSION)"
-	git tag $(VERSION_TAG) -m "BEdita $(VERSION)"
+	git tag -a $(VERSION_TAG) -m "BEdita $(VERSION)"
 	git push $(REMOTE)
 	git push $(REMOTE) --tags
 
