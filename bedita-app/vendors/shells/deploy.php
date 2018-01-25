@@ -705,9 +705,10 @@ class DeployShell extends BeditaBaseShell {
                         if (empty($issueResponse['headers']) || $issueResponse['headers']['Status'] != '200 OK' || empty($issueResponse['headers']['X-RateLimit-Remaining'])) {
                             $this->out('Something goes wrong reading issue data from github :(');
                             $this->out('This is github response:');
+                            $this->out();
                             $this->out($response);
-                            $this->out('Changelog aborted... bye');
-                            return false;
+                            $this->out('ISSUE: '. $issue . ', COMMIT: ' . $commitMessage);
+                            $this->out();
                         }
                         $mapIssues[$issue] = $issueResponse['content'];
                     }
