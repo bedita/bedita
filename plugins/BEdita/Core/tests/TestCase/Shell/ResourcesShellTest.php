@@ -1,9 +1,10 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Shell;
 
-use BEdita\Core\TestSuite\ShellTestCase;
-use Cake\Datasource\Exception\RecordNotFoundException;
+use BEdita\Core\Model\Entity\EndpointPermission;
+use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Inflector;
 
 /**
@@ -11,7 +12,7 @@ use Cake\Utility\Inflector;
  *
  * @coversDefaultClass \BEdita\Core\Shell\ResourcesShell
  */
-class ResourcesShellTest extends ShellTestCase
+class ResourcesShellTest extends ConsoleIntegrationTestCase
 {
     /**
      * Fixtures
@@ -35,13 +36,6 @@ class ResourcesShellTest extends ShellTestCase
     ];
 
     /**
-     * ConsoleIo mock
-     *
-     * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
-     */
-    public $io;
-
-    /**
      * Data provider for `testAddDefault` test case.
      *
      * @return array
@@ -50,19 +44,21 @@ class ResourcesShellTest extends ShellTestCase
     {
         return [
             'role' => [
+                true,
                 'roles',
-                'newrole'
+                'newrole',
             ],
             'app' => [
+                true,
                 'applications',
                 'newapp',
-                'description of the new app'
+                'description of the new app',
             ],
             'abort' => [
+                'Resource name cannot be empty',
                 'endpoints',
                 '',
-                '',
-                false
+                null,
             ],
         ];
     }
@@ -70,37 +66,36 @@ class ResourcesShellTest extends ShellTestCase
     /**
      * Test `add` method
      *
-     * @param string $type Resource type
-     * @param string $name Resource name
-     * @param string $description Resource description
-     * @param bool $success Operation success
+     * @param bool|string $expected Expected success or error message.
+     * @param string $type Resource type.
+     * @param string $name Resource name.
+     * @param string $description Resource description.
      * @return void
      *
-     * @dataProvider addProvider
+     * @dataProvider addProvider()
      * @covers ::add()
-     * @covers ::initModel()
+     * @covers ::getTable()
      * @covers ::setupDefaultEntity()
      */
-    public function testAddDefault($type, $name, $description = null, $success = true)
+    public function testAddDefault($expected, $type, $name, $description = '')
     {
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $input = array_filter(
+            [$name, $description],
+            function ($val) {
+                return !is_null($val);
+            }
+        );
+        $this->exec(sprintf('resources add -t %s', $type), $input);
 
-        $map = [
-            ['Resource name', null, $name],
-            ['Resource description (optional)', null, $description],
-        ];
-        $io->method('ask')
-             ->will(static::returnValueMap($map));
-
-        $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
-
-        if ($success) {
-            $table = Inflector::camelize($type);
-            $id = $this->resourceIdByName($table, $name);
-            static::assertTrue(!empty($id));
-            TableRegistry::get($table)->delete($res);
+        $exists = TableRegistry::get(Inflector::camelize($type))->exists(compact('name'));
+        if ($expected === true) {
+            static::assertTrue($exists);
+            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertErrorEmpty();
         } else {
-            $this->assertAborted();
+            static::assertFalse($exists);
+            $this->assertExitCode(Shell::CODE_ERROR);
+            $this->assertErrorContains($expected);
         }
     }
 
@@ -112,14 +107,14 @@ class ResourcesShellTest extends ShellTestCase
     public function addPermissionProvider()
     {
         return [
-            'perms1' => [
+            [
                 1,
                 'home',
                 2,
                 'mine',
                 'block'
             ],
-            'perms2' => [
+            [
                 1,
                 3,
                 'first role',
@@ -141,46 +136,23 @@ class ResourcesShellTest extends ShellTestCase
      *
      * @dataProvider addPermissionProvider
      * @covers ::add()
-     * @covers ::initModel()
+     * @covers ::getTable()
      * @covers ::setupEndpointPermissionEntity()
      */
     public function testAddPermission($application, $endpoint, $role, $read, $write)
     {
-        $type = 'endpoint_permissions';
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $this->exec('resources add -t endpoint_permissions', [$application, $endpoint, $role, $read, $write]);
 
-        $map = [
-            ['Applications id or name', null, $application],
-            ['Endpoints id or name', null, $endpoint],
-            ['Roles id or name', null, $role],
-        ];
-        $io->method('ask')
-             ->will(static::returnValueMap($map));
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
 
-        $perms = ['true', 'false', 'block', 'mine'];
-        $mapChoice = [
-            ["'read' permission", $perms, null, $read],
-            ["'write' permission", $perms, null, $write],
-        ];
-        $io->method('askChoice')
-             ->will(static::returnValueMap($mapChoice));
+        $endpointPermission = TableRegistry::get('EndpointPermissions')->find()->last();
 
-        $res = $this->invoke(['resources', 'add', '-t', $type], [], $io);
+        $read = EndpointPermission::decode(EndpointPermission::encode($read));
+        $write = EndpointPermission::decode(EndpointPermission::encode($write));
 
-        static::assertNotEmpty($res);
-        $testRead = $res->read;
-        if (is_bool($testRead)) {
-            $testRead = $testRead ? 'true' : 'false';
-        }
-        static::assertEquals($testRead, $read);
-
-        $testWrite = $res->write;
-        if (is_bool($testWrite)) {
-            $testWrite = $testWrite ? 'true' : 'false';
-        }
-        static::assertEquals($testWrite, $write);
-
-        TableRegistry::get('EndpointPermissions')->delete($res);
+        static::assertSame($read, $endpointPermission->read);
+        static::assertSame($write, $endpointPermission->write);
     }
 
     /**
@@ -191,12 +163,12 @@ class ResourcesShellTest extends ShellTestCase
     public function editProvider()
     {
         return [
-            'appApiKey' => [
+            'Applications.api_key' => [
                 'applications',
                 'Disabled app',
                 'api_key',
             ],
-            'appEnable' => [
+            'Applications.enabled' => [
                 'applications',
                 2,
                 'enabled',
@@ -217,113 +189,131 @@ class ResourcesShellTest extends ShellTestCase
      * @dataProvider editProvider
      * @covers ::edit()
      * @covers ::getEntity()
-     * @covers ::initModel()
+     * @covers ::getTable()
      */
     public function testEdit($type, $resId, $field, $value = null)
     {
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-
-        $modelName = Inflector::camelize($type);
-        $id = $resId;
-        if (!is_numeric($id)) {
-            $id = $this->resourceIdByName($modelName, $id);
+        $table = TableRegistry::get(Inflector::camelize($type));
+        if (is_numeric($resId)) {
+            $entity = $table->get($resId);
+        } else {
+            $entity = $table->find()->where(['name' => $resId])->firstOrFail();
         }
-        $entity = TableRegistry::get($modelName)->get($id);
-        $currValue = $entity->get($field);
+        $oldValue = $entity->get($field);
 
-        $inMsg = sprintf('New value for "%s" [current is "%s"]', $field, $currValue);
-        $map = [
-            [$inMsg, null, $value]
+        $input = array_filter(
+            [$value],
+            function ($val) {
+                return !is_null($val);
+            }
+        );
+        $this->exec(sprintf('resources edit -t %s -f %s "%s"', $type, $field, $resId), $input);
+
+        $newValue = $table->get($entity->id)->get($field);
+        if ($value !== null) {
+            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertErrorEmpty();
+            static::assertEquals($value, $newValue);
+        } else {
+            static::assertNotEquals($oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Data provider for `testList` test case.
+     *
+     * @return array
+     */
+    public function listProvider()
+    {
+        return [
+            'applications' => [
+                2,
+                'applications',
+            ],
+            'endpoints' => [
+                3,
+                'endpoints',
+            ],
+            'roles' => [
+                2,
+                'roles',
+            ],
         ];
-        $io->method('ask')
-             ->will(static::returnValueMap($map));
-
-        $this->invoke(['resources', 'edit', '-t', $type, '-f', $field, $resId], [], $io);
-
-        $entity = TableRegistry::get($modelName)->get($id);
-        static::assertNotEquals($currValue, $entity->get($field));
-        if ($value) {
-            static::assertEquals($value, $entity->get($field));
-        }
-        // restore value
-        $entity->set($field, $currValue);
-        TableRegistry::get($modelName)->save($entity);
     }
 
     /**
      * Test ls method
      *
+     * @param int $expected Expected count.
+     * @param string $type Resource type.
      * @return void
      *
+     * @dataProvider listProvider()
      * @covers ::ls()
      */
-    public function testList()
+    public function testList($expected, $type)
     {
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $this->exec(sprintf('resources ls -t %s', $type));
 
-        $res = $this->invoke(['resources', 'ls', '-t', 'applications'], [], $io);
-        static::assertEquals(count($res), 2);
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
+        $this->assertOutputContains(sprintf('%d result(s) found', $expected));
+    }
 
-        $res = $this->invoke(['resources', 'ls', '-t', 'endpoints'], [], $io);
-        static::assertEquals(count($res), 3);
-
-        $res = $this->invoke(['resources', 'ls', '-t', 'roles'], [], $io);
-        static::assertEquals(count($res), 2);
+    /**
+     * Data provider for `testRemove` test case.
+     *
+     * @return array
+     */
+    public function removeProvider()
+    {
+        return [
+            'no confirm' => [
+                false,
+                2,
+                'n',
+            ],
+            'confirm' => [
+                true,
+                2,
+                'y',
+            ],
+            'not found' => [
+                false,
+                'this-app-does-not-exist',
+                'y',
+            ],
+        ];
     }
 
     /**
      * Test rm method
      *
+     * @param bool $expected Expected result.
+     * @param int|string $id Resource ID or name.
+     * @param string $answer Given answer (y/n).
+     * @return void
+     *
+     * @dataProvider removeProvider()
      * @covers ::rm()
      * @covers ::getEntity()
      */
-    public function testRemove()
+    public function testRemove($expected, $id, $answer)
     {
-        $entity = TableRegistry::get('Applications')->newEntity();
-        $entity->name = 'a-new-app';
-        $entity->description = 'make apps great again';
-        TableRegistry::get('Applications')->save($entity);
+        $countBefore = TableRegistry::get('Applications')->find()->count();
 
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $this->exec(sprintf('resources rm -t applications %s', $id), [$answer]);
 
-        $inMsg = sprintf('You are REMOVING "applications" with name or id "%s" - are you sure?', $entity->id);
-        $mapChoice = [
-            [$inMsg, ['y', 'n'], 'n']
-        ];
-        $io->method('askChoice')
-             ->will(static::returnValueMap($mapChoice));
+        $countAfter = TableRegistry::get('Applications')->find()->count();
 
-        $res = $this->invoke(['resources', 'rm', '-t', 'applications', $entity->id], [], $io);
-        static::assertFalse($res);
-
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $mapChoice = [
-            [$inMsg, ['y', 'n'], 'n', 'y']
-        ];
-        $io->method('askChoice')
-             ->will(static::returnValueMap($mapChoice));
-
-        $res = $this->invoke(['resources', 'rm', '-t', 'applications', $entity->id], [], $io);
-        static::assertTrue($res);
-
-        $notFound = false;
-        try {
-            TableRegistry::get('Applications')->get($entity->id);
-        } catch (RecordNotFoundException $e) {
-            $notFound = true;
+        if ($expected) {
+            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertErrorEmpty();
+            static::assertSame($countBefore - 1, $countAfter);
+        } else {
+            $this->assertExitCode(Shell::CODE_ERROR);
+            static::assertSame($countBefore, $countAfter);
         }
-        static::assertTrue($notFound);
-    }
-
-    /**
-     * Return resource id find by $name name
-     *
-     * @param string $modelName Model name.
-     * @param string $name Resource name.
-     * @return int $id Resource identifier.
-     */
-    private function resourceIdByName($modelName, $name)
-    {
-        return TableRegistry::get($modelName)->find()->where(['name' => $name])->firstOrFail()->id;
     }
 }

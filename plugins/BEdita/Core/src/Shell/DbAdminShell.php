@@ -12,6 +12,8 @@
  */
 namespace BEdita\Core\Shell;
 
+use BEdita\Core\Shell\Task\CheckSchemaTask;
+use BEdita\Core\Shell\Task\InitSchemaTask;
 use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
@@ -34,8 +36,8 @@ class DbAdminShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'Init' => ['className' => 'BEdita/Core.InitSchema'],
-        'CheckSchema' => ['className' => 'BEdita/Core.CheckSchema'],
+        'Init' => ['className' => InitSchemaTask::class],
+        'CheckSchema' => ['className' => CheckSchemaTask::class],
     ];
 
     /**

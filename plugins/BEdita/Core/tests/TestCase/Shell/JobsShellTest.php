@@ -15,7 +15,8 @@ namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
-use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Console\Shell;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Text;
 
 /**
@@ -23,7 +24,7 @@ use Cake\Utility\Text;
  *
  * @coversDefaultClass \BEdita\Core\Shell\JobsShell
  */
-class JobsShellTest extends ShellTestCase
+class JobsShellTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -49,7 +50,7 @@ class JobsShellTest extends ShellTestCase
      * Get mock service.
      *
      * @param bool|\Exception $return Return value for `run()` method.
-     * @return \BEdita\Core\Job\JobService
+     * @return \BEdita\Core\Job\JobService|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getMockService($return = true)
     {
@@ -76,11 +77,11 @@ class JobsShellTest extends ShellTestCase
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService());
 
-        $result = $this->invoke(['jobs', 'run', $uuid]);
+        $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
-        static::assertNull($result);
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -94,11 +95,11 @@ class JobsShellTest extends ShellTestCase
         $uuid = Text::uuid(); // This UUID hopefully does not exist. :)
         ServiceRegistry::set('example', $this->getMockService());
 
-        $result = $this->invoke(['jobs', 'run', $uuid]);
+        $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Could not obtain lock');
-        static::assertNull($result);
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -113,12 +114,11 @@ class JobsShellTest extends ShellTestCase
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService($exception));
 
-        $result = $this->invoke(['jobs', 'run', $uuid]);
+        $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorContains('BadMethodCallException with message "example"');
         $this->assertErrorContains('failed');
-        static::assertNull($result);
     }
 
     /**
@@ -132,11 +132,10 @@ class JobsShellTest extends ShellTestCase
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService(false));
 
-        $result = $this->invoke(['jobs', 'run', $uuid]);
+        $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorContains('failed');
-        static::assertNull($result);
     }
 
     /**
@@ -150,11 +149,10 @@ class JobsShellTest extends ShellTestCase
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService(false));
 
-        $result = $this->invoke(['jobs', 'run', '-F', $uuid]);
+        $this->exec(sprintf('jobs run -F %s', $uuid));
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('failed');
-        static::assertSame(1, $result);
     }
 
     /**
@@ -166,13 +164,15 @@ class JobsShellTest extends ShellTestCase
     public function testPending()
     {
         ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example2', $this->getMockService());
+        ServiceRegistry::set('signup', $this->getMockService());
 
-        $result = $this->invoke(['jobs', 'pending']);
+        $this->exec('jobs pending');
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
         $this->assertOutputContains('Operation complete');
-        static::assertNull($result);
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -185,11 +185,11 @@ class JobsShellTest extends ShellTestCase
     {
         ServiceRegistry::set('example', $this->getMockService());
 
-        $result = $this->invoke(['jobs', 'pending', '--limit', '0']);
+        $this->exec('jobs pending --limit 0');
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('Nothing to do');
-        static::assertNull($result);
+        $this->assertErrorEmpty();
     }
 
     /**
@@ -202,10 +202,9 @@ class JobsShellTest extends ShellTestCase
     {
         ServiceRegistry::set('example', $this->getMockService(false));
 
-        $result = $this->invoke(['jobs', 'pending', '-F']);
+        $this->exec('jobs pending -F');
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('failed');
-        static::assertSame(1, $result);
     }
 }

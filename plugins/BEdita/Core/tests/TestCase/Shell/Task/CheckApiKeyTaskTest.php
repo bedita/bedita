@@ -15,13 +15,14 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\Shell\Task\CheckApiKeyTask;
-use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckApiKeyTask
  */
-class CheckApiKeyTaskTest extends ShellTestCase
+class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -71,9 +72,9 @@ class CheckApiKeyTaskTest extends ShellTestCase
     {
         $this->Applications->deleteAll(['id' => ApplicationsTable::DEFAULT_APPLICATION]);
 
-        $this->invoke([CheckApiKeyTask::class]);
+        $this->exec(CheckApiKeyTask::class);
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('Default application is missing, please check your installation');
     }
 
@@ -88,10 +89,9 @@ class CheckApiKeyTaskTest extends ShellTestCase
     {
         $this->Applications->updateAll(['api_key' => ''], ['id' => ApplicationsTable::DEFAULT_APPLICATION]);
 
-        $result = $this->invoke([CheckApiKeyTask::class]);
+        $this->exec(CheckApiKeyTask::class);
 
-        $this->assertNotAborted();
-        static::assertFalse($result);
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Default application has no API key');
     }
 
@@ -106,10 +106,9 @@ class CheckApiKeyTaskTest extends ShellTestCase
     {
         $apiKey = $this->Applications->get(1)->api_key;
 
-        $result = $this->invoke([CheckApiKeyTask::class]);
+        $this->exec(CheckApiKeyTask::class);
 
-        $this->assertNotAborted();
-        static::assertTrue($result);
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Default API key is: <info>%s</info>', $apiKey));
     }
 }

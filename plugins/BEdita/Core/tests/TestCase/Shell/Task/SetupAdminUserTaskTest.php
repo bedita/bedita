@@ -15,15 +15,14 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Shell\Task\SetupAdminUserTask;
-use BEdita\Core\TestSuite\ShellTestCase;
-use Cake\Console\ConsoleInput;
-use Cake\Console\ConsoleIo;
+use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupAdminUserTask
  */
-class SetupAdminUserTaskTest extends ShellTestCase
+class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -80,9 +79,9 @@ class SetupAdminUserTaskTest extends ShellTestCase
     {
         $this->Users->deleteAll(['id' => UsersTable::ADMIN_USER]);
 
-        $this->invoke([SetupAdminUserTask::class]);
+        $this->exec(SetupAdminUserTask::class);
 
-        $this->assertAborted();
+        $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains(sprintf('Missing user %d!', UsersTable::ADMIN_USER));
     }
 
@@ -99,19 +98,14 @@ class SetupAdminUserTaskTest extends ShellTestCase
 
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls('n');
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
-
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class], [], $io);
+        $this->exec(SetupAdminUserTask::class, ['n']);
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         $this->assertOutputContains('Do you want to overwrite current admin user?');
         $this->assertOutputContains('Existing administrator user has been preserved. Don\'t panic!');
+        $this->assertErrorEmpty();
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($username, $user->username);
@@ -131,13 +125,14 @@ class SetupAdminUserTaskTest extends ShellTestCase
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class, '--no-admin-overwrite']);
+        $this->exec(sprintf('%s --no-admin-overwrite', SetupAdminUserTask::class));
 
-        $this->assertNotAborted();
-        $output = $this->getOutput();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         static::assertNotContains('Do you want to overwrite current admin user?', $output);
         $this->assertOutputContains('Existing administrator user has been preserved. Don\'t panic!');
+        $this->assertErrorEmpty();
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($username, $user->username);
@@ -158,21 +153,16 @@ class SetupAdminUserTaskTest extends ShellTestCase
 
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
-        $stdin = $this->getMockBuilder(ConsoleInput::class)
-            ->getMock();
-        $stdin->method('read')
-            ->willReturnOnConsecutiveCalls('y', $newUsername, $newPassword);
-        $io = new ConsoleIo($this->_out, $this->_err, $stdin);
-
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class], [], $io);
+        $this->exec(SetupAdminUserTask::class, ['y', $newUsername, $newPassword]);
 
-        $this->assertNotAborted();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         $this->assertOutputContains('Do you want to overwrite current admin user?');
         $this->assertOutputContains('Enter new username for default admin user:');
         $this->assertOutputContains('Enter new password for default admin user:');
         $this->assertOutputContains('Administrator user set up. You are now ready to rock BEdita!');
+        $this->assertErrorEmpty();
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($newUsername, $user->username);
@@ -194,15 +184,16 @@ class SetupAdminUserTaskTest extends ShellTestCase
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class, '--admin-overwrite', '--admin-username', $newUsername, '--admin-password', $newPassword]);
+        $this->exec(sprintf('%s --admin-overwrite --admin-username %s --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertNotAborted();
-        $output = $this->getOutput();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         static::assertNotContains('Do you want to overwrite current admin user?', $output);
         static::assertNotContains('Enter new username for default admin user:', $output);
         static::assertNotContains('Enter new password for default admin user:', $output);
         $this->assertOutputContains('Administrator user set up. You are now ready to rock BEdita!');
+        $this->assertErrorEmpty();
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($newUsername, $user->username);
@@ -224,15 +215,16 @@ class SetupAdminUserTaskTest extends ShellTestCase
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class, '--admin-overwrite', '--admin-username', $newUsername, '--admin-password', $newPassword]);
+        $this->exec(sprintf('%s --admin-username %s --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertNotAborted();
-        $output = $this->getOutput();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $output = implode(PHP_EOL, $this->_out->messages());
         static::assertNotContains('has already been configured', $output);
         static::assertNotContains('Do you want to overwrite current admin user?', $output);
         static::assertNotContains('Enter new username for default admin user:', $output);
         static::assertNotContains('Enter new password for default admin user:', $output);
         $this->assertOutputContains('Administrator user set up. You are now ready to rock BEdita!');
+        $this->assertErrorEmpty();
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($newUsername, $user->username);
@@ -254,10 +246,10 @@ class SetupAdminUserTaskTest extends ShellTestCase
         $this->Users->updateAll(compact('username'), ['id' => UsersTable::ADMIN_USER]);
 
         // Invoke task.
-        $this->invoke([SetupAdminUserTask::class, '--admin-overwrite', '--admin-username', $newUsername, '--admin-password', $newPassword]);
+        $this->exec(sprintf('%s --admin-username "%s" --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertAborted();
-        $output = $this->getOutput();
+        $this->assertExitCode(Shell::CODE_ERROR);
+        $output = implode(PHP_EOL, $this->_out->messages());
         static::assertNotContains('has already been configured', $output);
         static::assertNotContains('Do you want to overwrite current admin user?', $output);
         static::assertNotContains('Enter new username for default admin user:', $output);

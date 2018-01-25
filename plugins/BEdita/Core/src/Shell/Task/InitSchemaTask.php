@@ -105,8 +105,7 @@ class InitSchemaTask extends Shell
             $this->params['force'] = ($this->in('Do you really want to proceed?', ['y', 'n'], 'n') === 'y');
         }
         if (!$this->param('force')) {
-            // Exiting with exit code 74 (see http://tldp.org/LDP/abs/html/exitcodes.html and /usr/include/sysexits.h)
-            $this->abort('Database is not empty, no action has been performed', 74);
+            $this->abort('Database is not empty, no action has been performed');
         }
 
         $this->out('Dropping all tables in database...');
