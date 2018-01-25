@@ -3,7 +3,7 @@
     "type": "cakephp-plugin",
     "description": "A plugin to enable REST API in any BEdita application.",
     "keywords": ["cakephp", "cake3", "plugin", "bedita", "api", "rest", "travis", "scrutinizer", "coveralls"],
-    "license": "LGPL-3.0",
+    "license": "LGPL-3.0-or-later",
     "support": {
         "source": "https://github.com/bedita/bedita",
         "issues": "https://github.com/bedita/bedita/issues"
