@@ -52,6 +52,8 @@ class JsonSchema
             return $schema;
         }
 
+        $schema['revision'] = sprintf("%u", crc32(json_encode($schema)));
+
         $baseSchema = [
             'definitions' => new \stdClass(),
             '$id' => $url,

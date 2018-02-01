@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -204,10 +205,43 @@ class JsonSchemaTest extends TestCase
         } else {
             static::assertNotEmpty($result);
 
-            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required'];
+            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'revision'];
             static::assertEquals($keys, array_keys($result), '', 0, 10, true);
             static::assertEquals($expected['properties'], array_keys($result['properties']), '', 0, 10, true);
             static::assertEquals($expected['required'], $result['required'], '', 0, 10, true);
         }
+    }
+
+    /**
+     * Test revision change
+     *
+     * @return void
+     */
+    public function testRevision()
+    {
+        $type = 'documents';
+        $url = 'http://api.example.com/model/schema/' . $type;
+        $result = JsonSchema::generate($type, $url);
+
+        $revision = $result['revision'];
+        static::assertNotEmpty($revision);
+
+        // add custom property
+        $properties = TableRegistry::get('Properties');
+        $data = [
+            'name' => 'gustavo',
+            'description' => ',',
+            'property_type_name' => 'string',
+            'object_type_name' => 'documents',
+        ];
+        $entity = $properties->newEntity();
+        $entity = $properties->patchEntity($entity, $data);
+        $properties->save($entity);
+
+        $result = JsonSchema::generate($type, $url);
+        $newRevision = $result['revision'];
+
+        static::assertNotEmpty($newRevision);
+        static::assertNotEquals($revision, $newRevision);
     }
 }
