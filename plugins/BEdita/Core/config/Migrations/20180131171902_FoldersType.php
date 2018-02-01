@@ -34,7 +34,7 @@ class FoldersType extends AbstractMigration
                     'singular' => 'folder',
                     'description' => 'Folder model',
                     'plugin' => 'BEdita/Core',
-                    'model' => 'Object',
+                    'model' => 'Objects',
                     'created' => date('Y-m-d H:i:s'),
                     'modified' => date('Y-m-d H:i:s'),
                     'parent_id' => 1,
