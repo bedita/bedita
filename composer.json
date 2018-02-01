@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "cakephp/cakephp": "~3.5.2",
+        "cakephp/cakephp": "~3.5.3",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {
