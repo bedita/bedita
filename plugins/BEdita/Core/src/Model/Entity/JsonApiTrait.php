@@ -311,6 +311,9 @@ trait JsonApiTrait
             if ($this->has($relationship)) {
                 $entities = $this->get($relationship);
                 $data = $this->getIncluded($entities);
+                if (!is_array($entities)) {
+                    $entities = [$entities];
+                }
                 $included = array_merge($included, $entities);
             }
 
@@ -337,7 +340,7 @@ trait JsonApiTrait
             function (BelongsToMany $val) {
                 return $val->junction()->getAlias();
             },
-            $associations->type('BelongsToMany')
+            $associations->getByType('BelongsToMany')
         );
 
         $relationships = [];

@@ -32,6 +32,13 @@ class JsonApiTraitTest extends TestCase
     public $Roles;
 
     /**
+     * Helper table.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectTypesTable
+     */
+    public $ObjectTypes;
+
+    /**
      * Fixtures
      *
      * @var array
@@ -57,6 +64,7 @@ class JsonApiTraitTest extends TestCase
         parent::setUp();
 
         $this->Roles = TableRegistry::get('Roles');
+        $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
 
     /**
@@ -65,6 +73,7 @@ class JsonApiTraitTest extends TestCase
     public function tearDown()
     {
         unset($this->Roles);
+        unset($this->ObjectTypes);
 
         parent::tearDown();
     }
@@ -240,6 +249,63 @@ class JsonApiTraitTest extends TestCase
 
         static::assertSame($expected, $relationships);
         static::assertCount(1, $included);
+    }
+
+    /**
+     * Test getter for relationships with included resources.
+     *
+     * @return void
+     *
+     * @covers ::getRelationships()
+     * @covers ::getIncluded()
+     * @covers ::listAssociations()
+     */
+    public function testGetRelationshipsIncludedSingle()
+    {
+        $expected = [
+            'left_relations' => [
+                'data' => [
+                    [
+                        'id' => '1',
+                        'type' => 'relations',
+                    ],
+                ],
+                'links' => [
+                    'related' => '/model/object_types/2/left_relations',
+                    'self' => '/model/object_types/2/relationships/left_relations',
+                ],
+            ],
+            'right_relations' => [
+                'data' => [
+                    [
+                        'id' => '1',
+                        'type' => 'relations',
+                    ],
+                ],
+                'links' => [
+                    'related' => '/model/object_types/2/right_relations',
+                    'self' => '/model/object_types/2/relationships/right_relations',
+                ],
+            ],
+            'parent' => [
+                'data' => [
+                    'id' => '1',
+                    'type' => 'object_types',
+                ],
+                'links' => [
+                    'related' => '/model/object_types/2/parent',
+                    'self' => '/model/object_types/2/relationships/parent',
+                ],
+            ],
+        ];
+
+        $objectType = $this->ObjectTypes->get(2, ['contain' => ['Parent', 'RightRelations', 'LeftRelations']])->jsonApiSerialize();
+
+        $relationships = $objectType['relationships'];
+        $included = $objectType['included'];
+
+        static::assertSame($expected, $relationships);
+        static::assertCount(3, $included);
     }
 
     /**
