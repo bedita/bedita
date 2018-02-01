@@ -55,6 +55,11 @@ class TreesTable extends Table
             'className' => 'BEdita/Core.Trees',
             'foreignKey' => 'parent_id'
         ]);
+
+        $this->addBehavior('Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+        ]);
     }
 
     /**
