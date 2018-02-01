@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListObjectsAction;
+use BEdita\Core\Test\Fixture\ObjectsFixture;
 use Cake\Database\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -50,7 +51,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(8, $result->count());
+        static::assertSame(10, $result->count());
     }
 
     /**
@@ -101,6 +102,6 @@ class ListObjectsActionTest extends TestCase
         ]);
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(6, $result->count());
+        static::assertSame(8, $result->count());
     }
 }

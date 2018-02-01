@@ -299,6 +299,22 @@ class HomeControllerTest extends IntegrationTestCase
                             'object_type' => true,
                         ],
                     ],
+                    '/folders' => [
+                        'href' => 'http://api.example.com/folders',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE',
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json',
+                            ],
+                            'display' => [
+                                'label' => 'Folders',
+                            ],
+                            'object_type' => true,
+                        ],
+                    ],
                 ],
                 'project' => $project,
                 'version' => $version,
