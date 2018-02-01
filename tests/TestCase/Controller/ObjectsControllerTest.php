@@ -53,10 +53,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 8,
+                    'count' => 10,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 8,
+                    'page_items' => 10,
                     'page_size' => 20,
                 ],
             ],
@@ -349,6 +349,58 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '11',
+                    'type' => 'folders',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'root-folder',
+                        'title' => 'Root Folder',
+                        'description' => 'first root folder',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2018-01-31T07:09:23+00:00',
+                        'modified' => '2018-01-31T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/folders/11',
+                    ],
+                ],
+                [
+                    'id' => '12',
+                    'type' => 'folders',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'sub-folder',
+                        'title' => 'Sub Folder',
+                        'description' => 'sub folder of root folder',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2018-01-31T07:09:23+00:00',
+                        'modified' => '2018-01-31T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/folders/12',
+                    ],
+                ],
             ],
         ];
 
@@ -613,7 +665,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
-        $this->assertHeader('Location', 'http://api.example.com/documents/11');
+        $this->assertHeader('Location', 'http://api.example.com/documents/13');
         static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
     }
 
