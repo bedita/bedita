@@ -57,7 +57,7 @@ class JsonSchema
             ObjectTypesTable::CACHE_CONFIG
         );
 
-        if (!$schema) {
+        if (!is_array($schema)) {
             return $schema;
         }
 
@@ -103,7 +103,7 @@ class JsonSchema
      */
     protected static function addRevision($schema)
     {
-        if (!$schema) {
+        if (!is_array($schema)) {
             return $schema;
         }
         $schema['revision'] = sprintf("%u", crc32(json_encode($schema)));
