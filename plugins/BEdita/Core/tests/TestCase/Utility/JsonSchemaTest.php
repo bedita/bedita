@@ -110,6 +110,8 @@ class JsonSchemaTest extends TestCase
                     'required' => [
                         'username',
                     ],
+                    'revision' => '',
+                    'readOnly' => true,
                 ],
                 'users',
             ],
@@ -125,6 +127,7 @@ class JsonSchemaTest extends TestCase
                     'required' => [
                         'name',
                     ],
+                    'revision' => '',
                 ],
                 'roles',
             ],
@@ -150,6 +153,8 @@ class JsonSchemaTest extends TestCase
                         'uname',
                     ],
                     'required' => [],
+                    'revision' => '',
+                    'readOnly' => false,
                 ],
                 'documents',
             ],
@@ -172,6 +177,7 @@ class JsonSchemaTest extends TestCase
                         'file_name',
                         'mime_type',
                     ],
+                    'revision' => '',
                 ],
                 'streams',
             ],
@@ -215,6 +221,7 @@ class JsonSchemaTest extends TestCase
     /**
      * Test revision change
      *
+     * @covers ::addRevision()
      * @return void
      */
     public function testRevision()
@@ -226,22 +233,41 @@ class JsonSchemaTest extends TestCase
         $revision = $result['revision'];
         static::assertNotEmpty($revision);
 
-        // add custom property
+        // add custom property and check schema revision change
         $properties = TableRegistry::get('Properties');
         $data = [
             'name' => 'gustavo',
-            'description' => ',',
+            'description' => '',
             'property_type_name' => 'string',
             'object_type_name' => 'documents',
         ];
         $entity = $properties->newEntity();
         $entity = $properties->patchEntity($entity, $data);
-        $properties->save($entity);
-
+        $entity = $properties->save($entity);
         $result = JsonSchema::generate($type, $url);
-        $newRevision = $result['revision'];
 
-        static::assertNotEmpty($newRevision);
-        static::assertNotEquals($revision, $newRevision);
+        static::assertNotEmpty($result['revision']);
+        static::assertNotEquals($revision, $result['revision']);
+
+        // remove custom property and check schema revision is unchanged
+        $properties->deleteOrFail($entity);
+        $result = JsonSchema::generate($type, $url);
+
+        static::assertNotEmpty($result['revision']);
+        static::assertEquals($revision, $result['revision']);
+    }
+
+    /**
+     * Test revision on abstract type
+     *
+     * @covers ::addRevision()
+     * @return void
+     */
+    public function testNoRevision()
+    {
+        $type = 'objects';
+        $url = 'http://api.example.com/model/schema/' . $type;
+        $result = JsonSchema::generate($type, $url);
+        static::assertFalse($result);
     }
 }
