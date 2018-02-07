@@ -26,17 +26,50 @@ class Tree extends BEAppModel
 {
 
 	public $primaryKey = "object_path";
-    /**
+	
+	/**
      * Object cache 
      * 
      */
-    protected $BeObjectCache = null;
+	protected $BeObjectCache = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public $validate = array(
+        'id' => array(
+            'rule' => 'validateBranchNode',
+            'message' => 'Ubiquitous sections/publications are not allowed',
+        ),
+    );
 
     public function  __construct() {
         parent::__construct();
         if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
+    }
+
+    /**
+     * Custom validation rule to verify that a node (section)
+     * is not already on the tree.
+     * A section must stay only in one tree node.
+     *
+     * @param array $check The array to validate
+     * @return bool
+     */
+    public function validateBranchNode($check) {
+        if (empty($check) || empty($check['id'])) {
+            return true;
+        }
+
+        $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($check['id']);
+        $objectType = Configure::read('objectTypes.' . $objectTypeId . '.name');
+        if (!in_array($objectType, array('section', 'area'))) {
+            return true;
+        }
+
+        return !$this->isOnTree($check['id']);
     }
 
 	/**

@@ -199,6 +199,13 @@ class TreeTestCase extends BeditaTestCase {
 		pr($tree);
 	}
 
+	public function testFailSaveSectionAlreadyOnTree() {
+		$idParent = $this->savedIds["Section 1"];
+		$idSection = $this->savedIds["Section 12"];
+		$res = $this->Tree->appendChild($idSection, $idParent);
+		$this->assertFalse($res);
+	}
+
 	public function testDeleteAppendedChild() {
 		$idDoc = $this->savedIds["Document 1"];
 		$res = ClassRegistry::init("Document")->delete($idDoc);
