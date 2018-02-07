@@ -15,6 +15,8 @@ namespace BEdita\Core\Utility;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\StaticProperty;
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
@@ -47,7 +49,14 @@ class JsonSchema
      */
     public static function generate($typeName, $url)
     {
-        $schema = static::typeSchema($typeName);
+        $schema = Cache::remember(
+            'schema_' . $typeName,
+            function () use ($typeName) {
+                return static::addRevision(static::typeSchema($typeName));
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
+
         if (!is_array($schema)) {
             return $schema;
         }
@@ -84,6 +93,22 @@ class JsonSchema
         } catch (RecordNotFoundException $e) {
             throw new NotFoundException(__d('bedita', 'Type "{0}" not found', $typeName));
         }
+    }
+
+    /**
+     * Add revision information to schema
+     *
+     * @param array|bool $schema Schema array or `false`
+     * @return array|bool Schema with `revision` or `false`
+     */
+    protected static function addRevision($schema)
+    {
+        if (!is_array($schema)) {
+            return $schema;
+        }
+        $schema['revision'] = sprintf("%u", crc32(json_encode($schema)));
+
+        return $schema;
     }
 
     /**
