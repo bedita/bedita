@@ -8,7 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
- * @property int $parent_id
+ * @property int $parent_node_id
  * @property int $root_id
  * @property int $tree_left
  * @property int $tree_right

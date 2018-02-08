@@ -42,23 +42,25 @@ class TreesTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
         ]);
-        $this->belongsTo('ParentTrees', [
+        $this->belongsTo('ParentNode', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_node_id'
         ]);
         $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
         ]);
-        $this->hasMany('ChildTrees', [
+        $this->hasMany('ChildNodes', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_node_id'
         ]);
 
         $this->addBehavior('Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
+            'parent' => 'parent_node_id',
+            'level' => 'depth_level',
         ]);
     }
 
@@ -74,23 +76,10 @@ class TreesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->integer('tree_left')
-            ->requirePresence('tree_left', 'create')
-            ->notEmpty('tree_left');
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create');
 
-        $validator
-            ->integer('tree_right')
-            ->requirePresence('tree_right', 'create')
-            ->notEmpty('tree_right');
-
-        $validator
-            ->integer('depth_level')
-            ->requirePresence('depth_level', 'create')
-            ->notEmpty('depth_level');
-
-        $validator
-            ->integer('menu')
-            ->requirePresence('menu', 'create')
+        $validator->boolean('menu')
             ->notEmpty('menu');
 
         return $validator;
@@ -104,8 +93,16 @@ class TreesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        $rules->add($rules->existsIn(['parent_id'], 'ParentTrees'));
+        $rules->add($rules->existsIn(
+            ['parent_id'],
+            'ParentNode',
+            ['allowNullableNulls' => true]
+        ));
         $rules->add($rules->existsIn(['root_id'], 'Objects'));
+
+        // $rules->add(function ($entity, $options) {
+
+        // }, 'isFolderNotUbiquitous');
 
         return $rules;
     }
