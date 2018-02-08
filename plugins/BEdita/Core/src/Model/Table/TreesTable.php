@@ -37,19 +37,27 @@ class TreesTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        // associations with objects
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
         ]);
-        $this->belongsTo('ParentNode', [
-            'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_node_id'
+        $this->belongsTo('ParentObjects', [
+            'foreignKey' => 'parent_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.Objects'
         ]);
         $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
+        ]);
+
+        // associations with trees
+        $this->belongsTo('ParentNode', [
+            'className' => 'BEdita/Core.Trees',
+            'foreignKey' => 'parent_node_id'
         ]);
         $this->hasMany('ChildNodes', [
             'className' => 'BEdita/Core.Trees',
@@ -93,12 +101,17 @@ class TreesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
+        $rules->add($rules->existsIn(['root_id'], 'RootObjects'));
         $rules->add($rules->existsIn(
             ['parent_id'],
+            'ParentObjects',
+            ['allowNullableNulls' => true]
+        ));
+        $rules->add($rules->existsIn(
+            ['parent_node_id'],
             'ParentNode',
             ['allowNullableNulls' => true]
         ));
-        $rules->add($rules->existsIn(['root_id'], 'Objects'));
 
         // $rules->add(function ($entity, $options) {
 

@@ -34,7 +34,7 @@ class FoldersType extends AbstractMigration
                     'singular' => 'folder',
                     'description' => 'Folder model',
                     'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
+                    'model' => 'Folders',
                     'created' => date('Y-m-d H:i:s'),
                     'modified' => date('Y-m-d H:i:s'),
                     'parent_id' => 1,
@@ -64,5 +64,15 @@ class FoldersType extends AbstractMigration
      */
     public function down()
     {
+        $adapter = $this->getAdapter();
+        $table = new Table([
+            'table' => 'object_types',
+            'connection' => $adapter->getCakeConnection(),
+        ]);
+        $table->addBehavior('Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+        ]);
+        $table->delete($table->find()->where(['name' => 'folders'])->firstOrFail());
     }
 }

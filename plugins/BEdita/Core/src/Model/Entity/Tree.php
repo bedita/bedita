@@ -8,16 +8,19 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
- * @property int $parent_node_id
+ * @property int $parent_id
  * @property int $root_id
+ * @property int $parent_node_id
  * @property int $tree_left
  * @property int $tree_right
  * @property int $depth_level
  * @property int $menu
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
- * @property \BEdita\Core\Model\Entity\ParentTree $parent_tree
- * @property \BEdita\Core\Model\Entity\ChildTree[] $child_trees
+ * @property \BEdita\Core\Model\Entity\ObjectEntity $parent_object
+ * @property \BEdita\Core\Model\Entity\ObjectEntity $root_object
+ * @property \BEdita\Core\Model\Entity\Tree $parent_node
+ * @property \BEdita\Core\Model\Entity\Tree[] $child_nodes
  */
 class Tree extends Entity
 {

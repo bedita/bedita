@@ -1,20 +1,25 @@
 <?php
 use Migrations\AbstractMigration;
 
-class RenameTreesParentNodeId extends AbstractMigration
+class AddTreesParentNodeId extends AbstractMigration
 {
 
     public function up()
     {
         $this->table('trees')
-            ->dropForeignKey([], 'trees_parentid_fk')
-            ->removeIndexByName('trees_parentid_idx')
             ->removeIndexByName('trees_rootleft_idx')
             ->removeIndexByName('trees_rootright_idx')
             ->update();
 
         $this->table('trees')
-            ->renameColumn('parent_id', 'parent_node_id')
+            ->addColumn('parent_node_id', 'integer', [
+                'comment' => 'parent node id',
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+                'signed' => false,
+                'after' => 'root_id',
+            ])
             ->changeColumn('menu', 'boolean', [
                 'default' => '1',
                 'limit' => null,
@@ -73,25 +78,17 @@ class RenameTreesParentNodeId extends AbstractMigration
         $this->table('trees')
             ->removeIndexByName('trees_left_idx')
             ->removeIndexByName('trees_right_idx')
-            ->removeIndexByName('trees_parentid_idx')
+            ->removeIndexByName('trees_parentnodeid_idx')
             ->update();
 
         $this->table('trees')
-            ->renameColumn('parent_node_id', 'parent_id')
+            ->removeColumn('parent_node_id')
             ->changeColumn('menu', 'integer', [
                 'comment' => 'menu on/off',
                 'default' => '1',
                 'length' => 10,
                 'null' => false,
             ])
-            ->addIndex(
-                [
-                    'parent_id',
-                ],
-                [
-                    'name' => 'trees_parentid_idx',
-                ]
-            )
             ->addIndex(
                 [
                     'root_id',
@@ -108,19 +105,6 @@ class RenameTreesParentNodeId extends AbstractMigration
                 ],
                 [
                     'name' => 'trees_rootright_idx',
-                ]
-            )
-            ->update();
-
-        $this->table('trees')
-            ->addForeignKey(
-                'parent_id',
-                'objects',
-                'id',
-                [
-                    'constraint' => 'trees_parentid_fk',
-                    'update' => 'NO ACTION',
-                    'delete' => 'CASCADE'
                 ]
             )
             ->update();
