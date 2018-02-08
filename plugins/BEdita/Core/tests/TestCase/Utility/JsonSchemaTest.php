@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -109,6 +110,8 @@ class JsonSchemaTest extends TestCase
                     'required' => [
                         'username',
                     ],
+                    'revision' => '',
+                    'readOnly' => true,
                 ],
                 'users',
             ],
@@ -124,6 +127,7 @@ class JsonSchemaTest extends TestCase
                     'required' => [
                         'name',
                     ],
+                    'revision' => '',
                 ],
                 'roles',
             ],
@@ -149,6 +153,8 @@ class JsonSchemaTest extends TestCase
                         'uname',
                     ],
                     'required' => [],
+                    'revision' => '',
+                    'readOnly' => false,
                 ],
                 'documents',
             ],
@@ -171,6 +177,7 @@ class JsonSchemaTest extends TestCase
                         'file_name',
                         'mime_type',
                     ],
+                    'revision' => '',
                 ],
                 'streams',
             ],
@@ -204,10 +211,63 @@ class JsonSchemaTest extends TestCase
         } else {
             static::assertNotEmpty($result);
 
-            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required'];
+            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'revision'];
             static::assertEquals($keys, array_keys($result), '', 0, 10, true);
             static::assertEquals($expected['properties'], array_keys($result['properties']), '', 0, 10, true);
             static::assertEquals($expected['required'], $result['required'], '', 0, 10, true);
         }
+    }
+
+    /**
+     * Test revision change
+     *
+     * @covers ::addRevision()
+     * @return void
+     */
+    public function testRevision()
+    {
+        $type = 'documents';
+        $url = 'http://api.example.com/model/schema/' . $type;
+        $result = JsonSchema::generate($type, $url);
+
+        $revision = $result['revision'];
+        static::assertNotEmpty($revision);
+
+        // add custom property and check schema revision change
+        $properties = TableRegistry::get('Properties');
+        $data = [
+            'name' => 'gustavo',
+            'description' => '',
+            'property_type_name' => 'string',
+            'object_type_name' => 'documents',
+        ];
+        $entity = $properties->newEntity();
+        $entity = $properties->patchEntity($entity, $data);
+        $entity = $properties->save($entity);
+        $result = JsonSchema::generate($type, $url);
+
+        static::assertNotEmpty($result['revision']);
+        static::assertNotEquals($revision, $result['revision']);
+
+        // remove custom property and check schema revision is unchanged
+        $properties->deleteOrFail($entity);
+        $result = JsonSchema::generate($type, $url);
+
+        static::assertNotEmpty($result['revision']);
+        static::assertEquals($revision, $result['revision']);
+    }
+
+    /**
+     * Test revision on abstract type
+     *
+     * @covers ::addRevision()
+     * @return void
+     */
+    public function testNoRevision()
+    {
+        $type = 'objects';
+        $url = 'http://api.example.com/model/schema/' . $type;
+        $result = JsonSchema::generate($type, $url);
+        static::assertFalse($result);
     }
 }
