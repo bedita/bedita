@@ -38,7 +38,7 @@ class Tree extends BEAppModel
      */
     public $validate = array(
         'id' => array(
-            'rule' => 'validateBranchNode',
+            'rule' => 'isUniqueSection',
             'message' => 'Ubiquitous sections/publications are not allowed',
         ),
     );
@@ -51,16 +51,16 @@ class Tree extends BEAppModel
     }
 
     /**
-     * Custom validation rule to verify that a node (section)
+     * Custom validation rule to verify that a branch node (section, publication)
      * is not already on the tree.
      * A section must stay only in one tree node.
      *
      * @param array $check The array to validate
      * @return bool
      */
-    public function validateBranchNode($check) {
+    public function isUniqueSection($check) {
         if (empty($check) || empty($check['id'])) {
-            return true;
+            return false;
         }
 
         $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($check['id']);
@@ -69,7 +69,7 @@ class Tree extends BEAppModel
             return true;
         }
 
-        return !$this->isOnTree($check['id']);
+        return $this->isUnique($check);
     }
 
 	/**
