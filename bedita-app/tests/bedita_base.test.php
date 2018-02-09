@@ -19,24 +19,22 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import('Controller', 'App'); // base controller, beditaexcepion...
+App::import('Lib', 'BeLib');
+
 /**
- *
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * BeditaTestData base class
  */
 class BeditaTestData extends Object {
 	var $data =  array() ;
 	function &getData() { return $this->data ;  }
 }
 
-App::import('Controller', 'App'); // base controller, beditaexcepion...
-
 class BeditaTestController extends AppController{}
 
+/**
+ * BeditaTestCase base class
+ */
 class BeditaTestCase extends CakeTestCase {
 
 	var $dataSource	= 'test' ;
@@ -90,7 +88,9 @@ class BeditaTestCase extends CakeTestCase {
 	 * Default constructor, loads models, components, data....
 	 */
 	public   function __construct ($t=NULL, $phpDataDir=NULL) {
-		parent::__construct() ;
+		parent::__construct();
+
+		BeLib::getObject("BeConfigure")->initConfig();
 
 		// setup unit test user id
 		$conf = Configure::getInstance() ;
