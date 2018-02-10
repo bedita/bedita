@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -51,7 +51,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'schema' => [
                     'users' => [
                         '$id' => 'http://api.example.com/model/schema/users',
-                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
                     ],
                 ],
             ],
@@ -309,7 +309,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'schema' => [
                     'users' => [
                         '$id' => 'http://api.example.com/model/schema/users',
-                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
                     ],
                 ],
             ],
@@ -561,7 +561,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'schema' => [
                     'roles' => [
                         '$id' => 'http://api.example.com/model/schema/roles',
-                        'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                     ],
                 ],
             ],

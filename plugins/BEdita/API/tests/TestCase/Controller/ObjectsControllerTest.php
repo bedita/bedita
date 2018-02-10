@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -63,27 +63,27 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'users' => [
                         '$id' => 'http://api.example.com/model/schema/users',
-                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
                     ],
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
                     'profiles' => [
                         '$id' => 'http://api.example.com/model/schema/profiles',
-                        'revision' => TestData::SCHEMA_REVISIONS['profiles'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
                     ],
                     'locations' => [
                         '$id' => 'http://api.example.com/model/schema/locations',
-                        'revision' => TestData::SCHEMA_REVISIONS['locations'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['locations'],
                     ],
                     'events' => [
                         '$id' => 'http://api.example.com/model/schema/events',
-                        'revision' => TestData::SCHEMA_REVISIONS['events'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['events'],
                     ],
                     'files' => [
                         '$id' => 'http://api.example.com/model/schema/files',
-                        'revision' => TestData::SCHEMA_REVISIONS['files'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['files'],
                     ],
                 ]
             ],
@@ -489,7 +489,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ]
                 ]
             ]
@@ -561,7 +561,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ]
                 ]
             ]
@@ -1042,11 +1042,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
                     'profiles' => [
                         '$id' => 'http://api.example.com/model/schema/profiles',
-                        'revision' => TestData::SCHEMA_REVISIONS['profiles'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
                     ],
                 ],
             ],
@@ -1899,11 +1899,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
                     'profiles' => [
                         '$id' => 'http://api.example.com/model/schema/profiles',
-                        'revision' => TestData::SCHEMA_REVISIONS['profiles'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
                     ],
                 ],
             ],

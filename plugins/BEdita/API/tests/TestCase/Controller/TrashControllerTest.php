@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 
@@ -69,7 +69,7 @@ class TrashControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
                 ],
             ],
@@ -228,7 +228,7 @@ class TrashControllerTest extends IntegrationTestCase
                 'schema' => [
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
-                        'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
                 ],
             ],

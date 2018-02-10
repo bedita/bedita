@@ -14,7 +14,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ResourcesController
@@ -591,11 +591,11 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'schema' => [
                     'roles' => [
                         '$id' => 'http://api.example.com/model/schema/roles',
-                        'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                     ],
                     'users' => [
                         '$id' => 'http://api.example.com/model/schema/users',
-                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
                     ],
                 ],
             ],

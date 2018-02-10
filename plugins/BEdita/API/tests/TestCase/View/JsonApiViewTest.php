@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\View;
 
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
@@ -105,7 +105,7 @@ class JsonApiViewTest extends TestCase
                         'schema' => [
                             'roles' => [
                                 '$id' => '/model/schema/roles',
-                                'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                                'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                             ],
                         ],
                     ],
@@ -147,7 +147,7 @@ class JsonApiViewTest extends TestCase
                         'schema' => [
                             'roles' => [
                                 '$id' => '/model/schema/roles',
-                                'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                                'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                             ],
                         ],
                     ],

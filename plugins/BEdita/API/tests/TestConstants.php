@@ -16,14 +16,14 @@ namespace BEdita\API\Test;
 /**
  * Test utility class with useful constants
  */
-class TestData
+class TestConstants
 {
     /**
-     * Revision for each resource and object used in tests
+     * Schema revision for each resource and object used in tests
      *
      * @var array
      */
-    public const SCHEMA_REVISIONS = [
+    const SCHEMA_REVISIONS = [
         'documents' => '1626723409',
         'events' => '4232492187',
         'files' => '2375452932',
