@@ -40,6 +40,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.external_auth',
                     'plugin.BEdita/Core.object_types',
                     'plugin.BEdita/Core.objects',
+                    'plugin.BEdita/Core.locations',
+                    'plugin.BEdita/Core.media',
                     'plugin.BEdita/Core.profiles',
                     'plugin.BEdita/Core.users',
                     'plugin.BEdita/Core.roles',
@@ -61,6 +63,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.external_auth',
                     'plugin.BEdita/Core.object_types',
                     'plugin.BEdita/Core.objects',
+                    'plugin.BEdita/Core.locations',
+                    'plugin.BEdita/Core.media',
                     'plugin.BEdita/Core.profiles',
                     'plugin.BEdita/Core.users',
                     'plugin.BEdita/Core.roles',
@@ -72,10 +76,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.relation_types',
                     'plugin.BEdita/Core.properties',
                     'plugin.BEdita/Core.property_types',
-                    'plugin.BEdita/Core.locations',
                 ],
                 [
-                    'plugin.BEdita/Core.locations',
                     'plugin.BEdita/Core.users',
                 ]
             ]

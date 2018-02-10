@@ -14,6 +14,7 @@
 namespace BEdita\API\TestSuite;
 
 use BEdita\API\Event\CommonEventHandler;
+use BEdita\API\Utility\JsonApi;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
@@ -49,6 +50,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
@@ -96,6 +99,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
             'className' => 'Debug'
         ]);
 
+        JsonApi::resetSchemaInfo();
         EventManager::instance()->on(new CommonEventHandler());
     }
 

@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestData;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -46,6 +47,12 @@ class UsersControllerTest extends IntegrationTestCase
                     'page_count' => 1,
                     'page_items' => 2,
                     'page_size' => 20,
+                ],
+                'schema' => [
+                    'users' => [
+                        '$id' => 'http://api.example.com/model/schema/users',
+                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                    ],
                 ],
             ],
             'data' => [
@@ -298,6 +305,14 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                 ],
             ],
+            'meta' => [
+                'schema' => [
+                    'users' => [
+                        '$id' => 'http://api.example.com/model/schema/users',
+                        'revision' => TestData::SCHEMA_REVISIONS['users'],
+                    ],
+                ],
+            ],
         ];
 
         $this->configRequestHeaders();
@@ -542,6 +557,12 @@ class UsersControllerTest extends IntegrationTestCase
                     'page_count' => 1,
                     'page_items' => 1,
                     'page_size' => 20,
+                ],
+                'schema' => [
+                    'roles' => [
+                        '$id' => 'http://api.example.com/model/schema/roles',
+                        'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                    ],
                 ],
             ],
             'data' => [

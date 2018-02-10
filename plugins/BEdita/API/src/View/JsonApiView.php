@@ -50,6 +50,7 @@ class JsonApiView extends JsonView
                 unset($included);
             } else {
                 $included = JsonApi::formatData($included, $options, $fields);
+                unset($included['_schema']);
             }
         } else {
             $error = $this->viewVars['_error'];
@@ -65,6 +66,11 @@ class JsonApiView extends JsonView
 
         if (!empty($this->viewVars['_meta'])) {
             $meta = $this->viewVars['_meta'];
+        }
+
+        if (!empty($data['_schema'])) {
+            $meta['schema'] = $data['_schema'];
+            unset($data['_schema']);
         }
 
         if (empty($serialize)) {
