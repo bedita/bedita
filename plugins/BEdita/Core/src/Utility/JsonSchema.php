@@ -113,13 +113,12 @@ class JsonSchema
         // properties order also differs between Sqlite and Mysql
         ksort($schemaNoDesc['properties']);
         $schema['revision'] = sprintf("%u", crc32(json_encode($schemaNoDesc)));
-        Cache::write('revision_schema_' . $type, $schema['revision'], ObjectTypesTable::CACHE_CONFIG);
 
         return $schema;
     }
 
     /**
-     * Get revision of a type schema
+     * Get current revision of a type schema
      *
      * @param string $type Resource or object type name
      * @return string|bool Schema revision or `false` if no schema is found
@@ -127,17 +126,18 @@ class JsonSchema
      */
     public static function schemaRevision($type)
     {
-        $revision = Cache::read('revision_schema_' . $type, ObjectTypesTable::CACHE_CONFIG);
-        if (!empty($revision)) {
-            return $revision;
-        }
+        return Cache::remember(
+            'revision_schema_' . $type,
+            function () use ($type) {
+                $schema = static::generate($type, '');
+                if (!is_array($schema)) {
+                    return $schema;
+                }
 
-        $schema = static::generate($type, '');
-        if (!is_array($schema)) {
-            return $schema;
-        }
-
-        return $schema['revision'];
+                return $schema['revision'];
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
     }
 
     /**
