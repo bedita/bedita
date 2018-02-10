@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Utility;
 
-use BEdita\API\Test\TestData;
+use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Table;
@@ -133,7 +133,7 @@ class JsonApiTest extends TestCase
                     '_schema' => [
                         'roles' => [
                             '$id' => '/model/schema/roles',
-                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                         ]
                     ]
                 ],
@@ -194,7 +194,7 @@ class JsonApiTest extends TestCase
                     '_schema' => [
                         'roles' => [
                             '$id' => '/model/schema/roles',
-                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                         ]
                     ]
                 ],
@@ -255,7 +255,7 @@ class JsonApiTest extends TestCase
                     '_schema' => [
                         'roles' => [
                             '$id' => '/model/schema/roles',
-                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                         ]
                     ]
                 ],
@@ -287,7 +287,7 @@ class JsonApiTest extends TestCase
                     '_schema' => [
                         'roles' => [
                             '$id' => '/model/schema/roles',
-                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                         ]
                     ]
                 ],
@@ -319,7 +319,7 @@ class JsonApiTest extends TestCase
                     '_schema' => [
                         'roles' => [
                             '$id' => '/model/schema/roles',
-                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                         ]
                     ]
                 ],
@@ -576,7 +576,7 @@ class JsonApiTest extends TestCase
             '_schema' => [
                 'documents' => [
                     '$id' => '/model/schema/documents',
-                    'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                    'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                 ]
             ]
         ];
@@ -598,7 +598,7 @@ class JsonApiTest extends TestCase
     {
         $expected = [
             '$id' => '/model/schema/roles',
-            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
         ];
 
         JsonApi::resetSchemaInfo();
