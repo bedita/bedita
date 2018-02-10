@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Utility;
 
+use BEdita\API\Test\TestData;
 use BEdita\API\Utility\JsonApi;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Table;
@@ -38,9 +39,13 @@ class JsonApiTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
@@ -125,6 +130,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all');
@@ -180,6 +191,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->all();
@@ -235,6 +252,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->toArray();
@@ -261,6 +284,12 @@ class JsonApiTest extends TestCase
                             ],
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -287,6 +316,12 @@ class JsonApiTest extends TestCase
                             ],
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -513,6 +548,8 @@ class JsonApiTest extends TestCase
                 'lang' => 'eng',
                 'publish_start' => '2016-05-13T07:09:23+00:00',
                 'publish_end' => '2016-05-13T07:09:23+00:00',
+                'another_title' => null,
+                'another_description' => null,
             ],
             'meta' => [
                 'locked' => true,
@@ -536,11 +573,40 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
+            '_schema' => [
+                'documents' => [
+                    '$id' => '/model/schema/documents',
+                    'revision' => TestData::SCHEMA_REVISIONS['documents'],
+                ]
+            ]
         ];
 
         $result = JsonApi::formatData(TableRegistry::get('Documents')->get(2));
         $result = json_decode(json_encode($result), true);
 
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `schemaInfo` method
+     *
+     * @return void
+     * @covers ::schemaInfo
+     * @covers ::resetSchemaInfo
+     */
+    public function testSchemaInfo()
+    {
+        $expected = [
+            '$id' => '/model/schema/roles',
+            'revision' => TestData::SCHEMA_REVISIONS['roles'],
+        ];
+
+        JsonApi::resetSchemaInfo();
+        $result = JsonApi::schemaInfo('roles');
+        static::assertEquals($expected, $result);
+
+        // use internal array
+        $result = JsonApi::schemaInfo('roles');
         static::assertEquals($expected, $result);
     }
 }

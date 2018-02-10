@@ -13,8 +13,10 @@
 namespace BEdita\API\Utility;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
 use Cake\ORM\Query;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
 /**
@@ -24,6 +26,30 @@ use Cake\Utility\Hash;
  */
 class JsonApi
 {
+    /**
+     * JSON Schema type information.
+     * Array containing URL and revision for each type included in response.
+     *
+     * @var array
+     */
+    protected static $_schema = [];
+
+    /**
+     * Resource types not having a JSON Schema.
+     *
+     * @var array
+     */
+    protected static $_noSchema = [
+        'applications',
+        'async_jobs',
+        'config',
+        'endpoints',
+        'object_types',
+        'properties',
+        'property_types',
+        'relations'
+    ];
+
     /**
      * Format single or multiple data items in JSON API format.
      *
@@ -52,7 +78,7 @@ class JsonApi
             $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
-        $data = [];
+        $data = $types = [];
         foreach ($items as $item) {
             if (!$item instanceof JsonApiSerializable) {
                 throw new \InvalidArgumentException(sprintf(
@@ -65,13 +91,81 @@ class JsonApi
             $item = $item->jsonApiSerialize($options, $fields);
             if (isset($item['included'])) {
                 $included = array_merge($included, $item['included']);
+                foreach ($included as $inc) {
+                    if (!empty($inc['type'])) {
+                        $types[] = $inc['type'];
+                    }
+                }
                 unset($item['included']);
             }
 
             $data[] = $item;
+            if (!empty($item['attributes']) && !empty($item['type'])) {
+                $types[] = $item['type'];
+            }
         }
 
-        return $single ? $data[0] : $data;
+        $data = $single ? $data[0] : $data;
+        $schema = static::metaSchema(array_unique($types));
+        if (!empty($schema)) {
+            $data['_schema'] = $schema;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Create meta schema info for types
+     *
+     * @param array $types Type names array
+     * @return array
+     */
+    protected static function metaSchema($types)
+    {
+        $schema = [];
+        foreach ($types as $type) {
+            if (empty($schema[$type]) && !in_array($type, static::$_noSchema)) {
+                $schema[$type] = static::schemaInfo($type);
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Get JSON Schema info for a $type: URL and revision.
+     *
+     * @param string $type Type name
+     * @return array
+     */
+    public static function schemaInfo($type)
+    {
+        if (!empty(static::$_schema[$type])) {
+            return static::$_schema[$type];
+        }
+
+        static::$_schema[$type] = [
+            '$id' => Router::url(
+                [
+                    '_name' => 'api:model:schema',
+                    'type' => $type,
+                ],
+                true
+            ),
+            'revision' => JsonSchema::schemaRevision($type),
+        ];
+
+        return static::$_schema[$type];
+    }
+
+    /**
+     * Reset internal schema info array.
+     *
+     * @return void
+     */
+    public static function resetSchemaInfo()
+    {
+        static::$_schema = [];
     }
 
     /**
