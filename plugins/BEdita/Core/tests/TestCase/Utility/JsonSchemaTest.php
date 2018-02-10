@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonSchema;
+use Cake\Cache\Cache;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -44,6 +46,16 @@ class JsonSchemaTest extends TestCase
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.streams',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
 
     /**
      * Data provider for `testGenerate` test case.
@@ -270,4 +282,56 @@ class JsonSchemaTest extends TestCase
         $result = JsonSchema::generate($type, $url);
         static::assertFalse($result);
     }
+
+    /**
+     * Data provider for `testGenerate` test case.
+     *
+     * @return array
+     */
+    public function schemaRevisionProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+                false,
+            ],
+            'documents' => [
+                'documents',
+                '1389311771',
+            ],
+        ];
+    }
+
+    /**
+     * Test schemaRevision method
+
+     * @param string $type Type name
+     * @param string|bool $expected Expected revision
+     * @return void
+     * @covers ::schemaRevision()
+     * @dataProvider schemaRevisionProvider
+     */
+    public function testSchemaRevision($type, $expected)
+    {
+        $result = JsonSchema::schemaRevision($type);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test schemaRevision method with cache
+
+     * @return void
+     * @covers ::schemaRevision()
+     */
+    // public function testSchemaRevisionCache()
+    // {
+    //     $type = 'documents';
+    //     $result = JsonSchema::schemaRevision($type);
+    //     $expected = Cache::read('revision_schema_' . $type, ObjectTypesTable::CACHE_CONFIG);
+    //     static::assertEquals($expected, $result);
+
+    //     // this will read from cache
+    //     $resultCache = JsonSchema::schemaRevision($type);
+    //     static::assertEquals($resultCache, $result);
+    // }
 }
