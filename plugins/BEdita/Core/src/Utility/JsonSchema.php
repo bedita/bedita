@@ -20,6 +20,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -107,7 +108,11 @@ class JsonSchema
         if (!is_array($schema)) {
             return $schema;
         }
-        $schema['revision'] = sprintf("%u", crc32(json_encode($schema)));
+        // remove 'description' from crc32 signature calculation -> not available in Sqlite
+        $schemaNoDesc = Hash::remove($schema, 'properties.{*}.description');
+        // properties order also differs between Sqlite and Mysql
+        ksort($schemaNoDesc['properties']);
+        $schema['revision'] = sprintf("%u", crc32(json_encode($schemaNoDesc)));
         Cache::write('revision_schema_' . $type, $schema['revision'], ObjectTypesTable::CACHE_CONFIG);
 
         return $schema;
