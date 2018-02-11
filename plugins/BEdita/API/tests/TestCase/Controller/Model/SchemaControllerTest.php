@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case
@@ -102,5 +103,27 @@ class SchemaControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/schema+json');
         static::assertFalse($result);
+    }
+
+    /**
+     * Test ETag response header and Not Modified response.
+     *
+     * @return void
+     *
+     * @covers ::jsonSchema()
+     */
+    public function testETag()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('/model/schema/roles');
+
+        $etagHeader = $this->_response->getHeaderLine('ETag');
+        static::assertEquals(TestConstants::SCHEMA_REVISIONS['roles'], trim($etagHeader, '"'));
+
+        $this->configRequestHeaders('GET', ['If-None-Match' => $etagHeader]);
+        $this->get('/model/schema/roles');
+
+        $this->assertResponseCode(304);
+        static::assertEmpty((string)$this->_response->getBody());
     }
 }
