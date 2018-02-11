@@ -215,6 +215,7 @@ class SetAssociatedActionTest extends TestCase
         }
 
         static::assertEquals($expected, $result);
-        static::assertEquals(count($related), $count);
+        $relCount = is_array($related) ? count($related) : (empty($related) ? 0 : 1);
+        static::assertEquals($relCount, $count);
     }
 }
