@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -32,14 +32,14 @@ class JsonApi
      *
      * @var array
      */
-    protected static $_schema = [];
+    protected static $schema = [];
 
     /**
      * Resource types not having a JSON Schema.
      *
      * @var array
      */
-    protected static $_noSchema = [
+    protected static $noSchema = [
         'applications',
         'async_jobs',
         'config',
@@ -124,7 +124,7 @@ class JsonApi
     {
         $schema = [];
         foreach ($types as $type) {
-            if (empty($schema[$type]) && !in_array($type, static::$_noSchema)) {
+            if (empty($schema[$type]) && !in_array($type, static::$noSchema)) {
                 $schema[$type] = static::schemaInfo($type);
             }
         }
@@ -140,11 +140,11 @@ class JsonApi
      */
     public static function schemaInfo($type)
     {
-        if (!empty(static::$_schema[$type])) {
-            return static::$_schema[$type];
+        if (!empty(static::$schema[$type])) {
+            return static::$schema[$type];
         }
 
-        static::$_schema[$type] = [
+        static::$schema[$type] = [
             '$id' => Router::url(
                 [
                     '_name' => 'api:model:schema',
@@ -155,7 +155,7 @@ class JsonApi
             'revision' => JsonSchema::schemaRevision($type),
         ];
 
-        return static::$_schema[$type];
+        return static::$schema[$type];
     }
 
     /**
@@ -165,7 +165,7 @@ class JsonApi
      */
     public static function resetSchemaInfo()
     {
-        static::$_schema = [];
+        static::$schema = [];
     }
 
     /**
