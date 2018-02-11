@@ -316,22 +316,4 @@ class JsonSchemaTest extends TestCase
         $result = JsonSchema::schemaRevision($type);
         static::assertEquals($expected, $result);
     }
-
-    /**
-     * Test schemaRevision method with cache
-
-     * @return void
-     * @covers ::schemaRevision()
-     */
-    // public function testSchemaRevisionCache()
-    // {
-    //     $type = 'documents';
-    //     $result = JsonSchema::schemaRevision($type);
-    //     $expected = Cache::read('revision_schema_' . $type, ObjectTypesTable::CACHE_CONFIG);
-    //     static::assertEquals($expected, $result);
-
-    //     // this will read from cache
-    //     $resultCache = JsonSchema::schemaRevision($type);
-    //     static::assertEquals($resultCache, $result);
-    // }
 }
