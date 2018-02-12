@@ -95,7 +95,7 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/objects',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
@@ -271,7 +271,7 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/media',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE',
+                                'GET', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
