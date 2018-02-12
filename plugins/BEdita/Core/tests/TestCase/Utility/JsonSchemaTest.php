@@ -76,6 +76,7 @@ class JsonSchemaTest extends TestCase
             'users' => [
                 [
                     'properties' => [
+                        'id',
                         'another_email',
                         'another_username',
                         'birthdate',
@@ -130,6 +131,7 @@ class JsonSchemaTest extends TestCase
             'roles' => [
                 [
                     'properties' => [
+                        'id',
                         'created',
                         'description',
                         'modified',
@@ -146,6 +148,7 @@ class JsonSchemaTest extends TestCase
             'documents' => [
                 [
                     'properties' => [
+                        'id',
                         'another_description',
                         'another_title',
                         'body',
@@ -173,6 +176,7 @@ class JsonSchemaTest extends TestCase
             'streams' => [
                 [
                     'properties' => [
+                        'uuid',
                         'created',
                         'duration',
                         'file_name',
@@ -297,7 +301,7 @@ class JsonSchemaTest extends TestCase
             ],
             'documents' => [
                 'documents',
-                '1389311771',
+                '3090683659',
             ],
         ];
     }
@@ -306,7 +310,7 @@ class JsonSchemaTest extends TestCase
      * Test schemaRevision method
 
      * @param string $type Type name
-     * @param string|bool $expected Expected revision
+     * @param string|bool $expected Expected revision1389311771
      * @return void
      * @covers ::schemaRevision()
      * @dataProvider schemaRevisionProvider
