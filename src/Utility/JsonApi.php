@@ -15,6 +15,7 @@ namespace BEdita\API\Utility;
 use BEdita\Core\Utility\JsonApiSerializable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
@@ -26,30 +27,6 @@ use Cake\Utility\Hash;
  */
 class JsonApi
 {
-    /**
-     * JSON Schema type information.
-     * Array containing URL and revision for each type included in response.
-     *
-     * @var array
-     */
-    protected static $schema = [];
-
-    /**
-     * Resource types not having a JSON Schema.
-     *
-     * @var array
-     */
-    protected static $noSchema = [
-        'applications',
-        'async_jobs',
-        'config',
-        'endpoints',
-        'object_types',
-        'properties',
-        'property_types',
-        'relations'
-    ];
-
     /**
      * Format single or multiple data items in JSON API format.
      *
@@ -106,7 +83,7 @@ class JsonApi
         }
 
         $data = $single ? $data[0] : $data;
-        $schema = static::metaSchema(array_unique($types));
+        $schema = static::metaSchema(array_filter(array_unique($types)));
         if (!empty($schema)) {
             $data['_schema'] = $schema;
         }
@@ -124,8 +101,9 @@ class JsonApi
     {
         $schema = [];
         foreach ($types as $type) {
-            if (empty($schema[$type]) && !in_array($type, static::$noSchema)) {
-                $schema[$type] = static::schemaInfo($type);
+            $info = static::schemaInfo($type);
+            if ($info) {
+                $schema[$type] = $info;
             }
         }
 
@@ -136,15 +114,17 @@ class JsonApi
      * Get JSON Schema info for a $type: URL and revision.
      *
      * @param string $type Type name
-     * @return array
+     * @return array|null Schema info array or null if no suitable schema is found
      */
     public static function schemaInfo($type)
     {
-        if (!empty(static::$schema[$type])) {
-            return static::$schema[$type];
+        try {
+            $revision = JsonSchema::schemaRevision($type);
+        } catch (NotFoundException $ex) {
+            return null;
         }
 
-        static::$schema[$type] = [
+        return [
             '$id' => Router::url(
                 [
                     '_name' => 'api:model:schema',
@@ -152,20 +132,8 @@ class JsonApi
                 ],
                 true
             ),
-            'revision' => JsonSchema::schemaRevision($type),
+            'revision' => $revision,
         ];
-
-        return static::$schema[$type];
-    }
-
-    /**
-     * Reset internal schema info array.
-     *
-     * @return void
-     */
-    public static function resetSchemaInfo()
-    {
-        static::$schema = [];
     }
 
     /**
