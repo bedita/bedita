@@ -53,7 +53,7 @@ class JsonSchema
         $schema = Cache::remember(
             'schema_' . $type,
             function () use ($type) {
-                return static::addRevision(static::typeSchema($type), $type);
+                return static::addRevision(static::typeSchema($type));
             },
             ObjectTypesTable::CACHE_CONFIG
         );
@@ -100,10 +100,9 @@ class JsonSchema
      * Add revision information to schema
      *
      * @param array|bool $schema Schema array or `false`
-     * @param string $type Resource or object type name
      * @return array|bool Schema with `revision` or `false`
      */
-    protected static function addRevision($schema, $type)
+    protected static function addRevision($schema)
     {
         if (!is_array($schema)) {
             return $schema;
