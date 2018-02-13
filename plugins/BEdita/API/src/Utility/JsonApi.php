@@ -27,14 +27,6 @@ use Cake\Utility\Hash;
 class JsonApi
 {
     /**
-     * JSON Schema type information.
-     * Array containing URL and revision for each type included in response.
-     *
-     * @var array
-     */
-    protected static $schema = [];
-
-    /**
      * Resource types not having a JSON Schema.
      *
      * @var array
@@ -140,11 +132,7 @@ class JsonApi
      */
     public static function schemaInfo($type)
     {
-        if (!empty(static::$schema[$type])) {
-            return static::$schema[$type];
-        }
-
-        static::$schema[$type] = [
+        return [
             '$id' => Router::url(
                 [
                     '_name' => 'api:model:schema',
@@ -154,18 +142,6 @@ class JsonApi
             ),
             'revision' => JsonSchema::schemaRevision($type),
         ];
-
-        return static::$schema[$type];
-    }
-
-    /**
-     * Reset internal schema info array.
-     *
-     * @return void
-     */
-    public static function resetSchemaInfo()
-    {
-        static::$schema = [];
     }
 
     /**

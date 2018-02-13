@@ -661,7 +661,6 @@ class JsonApiTest extends TestCase
      *
      * @return void
      * @covers ::schemaInfo
-     * @covers ::resetSchemaInfo
      */
     public function testSchemaInfo()
     {
@@ -670,7 +669,6 @@ class JsonApiTest extends TestCase
             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
         ];
 
-        JsonApi::resetSchemaInfo();
         $result = JsonApi::schemaInfo('roles');
         static::assertEquals($expected, $result);
 
