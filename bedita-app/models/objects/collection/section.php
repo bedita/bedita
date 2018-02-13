@@ -179,8 +179,10 @@ class Section extends BeditaCollectionModel
 				$row["Tree"]["area_id"] = $sectionId;
 				$row["Tree"]["object_path"] = preg_replace($objectPathPattern, $replacement, $row["Tree"]["object_path"]);
 				$row["Tree"]["parent_path"] = preg_replace($parentPathPattern, $replacement, $row["Tree"]["parent_path"]);
-				$this->Tree->create();
-				if (!$this->Tree->save($row)) {
+                $this->Tree->create();
+                // skip validation because updating object_path (that is the trees primary key) of a
+                // section already present in the tree would fail
+				if (!$this->Tree->save($row, array('validate' => false))) {
 					throw new BeditaException(__("Error updating tree", true), $row["Tree"]);
 				}
 			}

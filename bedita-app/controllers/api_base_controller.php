@@ -1315,7 +1315,10 @@ abstract class ApiBaseController extends FrontendController {
             if (empty($row)) {
                 $priority = !empty($child['priority']) ? $child['priority'] : null;
                 if (!$tree->appendChild($child['child_id'], $objectId, $priority)) {
-                    throw new BeditaInternalErrorException('Error appending ' . $child['child_id'] . ' to ' . $objectId);
+                    throw new BeditaInternalErrorException(
+                        'Error appending ' . $child['child_id'] . ' to ' . $objectId,
+                        $tree->validationErrors
+                    );
                 }
                 $created = true;
             // update priority if any and different from current value
