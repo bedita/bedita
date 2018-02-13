@@ -245,8 +245,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      */
     public function testExecuteInteractiveOk()
     {
-        static $relevantKeys = ['className', 'driver', 'host', 'port', 'database', 'username', 'password'];
-
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
@@ -271,11 +269,13 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
 
         // Mock input values.
+        $relevantKeys = ['className', 'driver', 'database'];
         $returnValues = [
             $driver, // Driver
             $originalConfig['database'], // Database path
         ];
         if ($driver !== 'Sqlite') {
+            $relevantKeys = ['className', 'driver', 'host', 'port', 'database', 'username', 'password'];
             $returnValues = [
                 $driver, // Driver
                 $originalConfig['host'], // Hostname
@@ -324,8 +324,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      */
     public function testExecuteNonInteractiveOk()
     {
-        static $relevantKeys = ['className', 'driver', 'host', 'port', 'database', 'username', 'password'];
-
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
@@ -350,6 +348,8 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
         $defaultPort = $driver === 'Mysql' ? 3306 : 5432;
 
+        $relevantKeys = ['className', 'driver', 'database'];
+
         // CLI options.
         $cliOptions = [
             // Driver
@@ -361,6 +361,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
             $originalConfig['database'],
         ];
         if ($driver !== 'Sqlite') {
+            $relevantKeys = ['className', 'driver', 'host', 'port', 'database', 'username', 'password'];
             $cliOptions = [
                 // Driver
                 '--connection-driver',

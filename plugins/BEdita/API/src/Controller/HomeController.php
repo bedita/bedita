@@ -39,7 +39,6 @@ class HomeController extends AppController
         '/auth' => ['GET', 'POST'],
         '/admin' => 'ALL',
         '/model' => 'ALL',
-        '/objects' => 'ALL',
         '/roles' => 'ALL',
         '/signup' => ['POST'],
         '/status' => ['GET'],
@@ -108,10 +107,10 @@ class HomeController extends AppController
      */
     protected function objectTypesEndpoints()
     {
-        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'name'])->toArray();
+        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])->toArray();
         $endPoints = [];
-        foreach ($allTypes as $t) {
-            $endPoints['/' . $t] = 'ALL';
+        foreach ($allTypes as $t => $abstract) {
+            $endPoints['/' . $t] = $abstract ? ['GET', 'DELETE'] : 'ALL';
         }
 
         return $endPoints;

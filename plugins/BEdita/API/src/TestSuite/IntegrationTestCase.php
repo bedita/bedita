@@ -99,7 +99,6 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
             'className' => 'Debug'
         ]);
 
-        JsonApi::resetSchemaInfo();
         EventManager::instance()->on(new CommonEventHandler());
     }
 

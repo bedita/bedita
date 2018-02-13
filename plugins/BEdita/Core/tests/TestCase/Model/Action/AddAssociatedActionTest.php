@@ -163,6 +163,7 @@ class AddAssociatedActionTest extends TestCase
         }
 
         $this->assertEquals($expected, $result);
-        $this->assertEquals(count($related), $count);
+        $relCount = is_array($related) ? count($related) : (empty($related) ? 0 : 1);
+        $this->assertEquals($relCount, $count);
     }
 }
