@@ -254,7 +254,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         static::assertNotContains('Do you want to overwrite current admin user?', $output);
         static::assertNotContains('Enter new username for default admin user:', $output);
         static::assertNotContains('Enter new password for default admin user:', $output);
-        $this->assertErrorContains('Entity save failure.');
+        $this->assertErrorContains('Entity save failure');
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         static::assertSame($username, $user->username);
