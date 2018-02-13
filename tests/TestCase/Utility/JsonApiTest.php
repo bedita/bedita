@@ -657,25 +657,41 @@ class JsonApiTest extends TestCase
     }
 
     /**
+     * Data provider for `testSchemaInfo` test case.
+     *
+     * @return array
+     */
+    public function schemaInfoProvider()
+    {
+        return [
+            'roles' => [
+                'roles',
+                [
+                    '$id' => '/model/schema/roles',
+                    'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                ],
+            ],
+            'objects' => [
+                'object_types',
+                null,
+            ],
+            'properties' => [
+                'properties',
+                null,
+            ],
+        ];
+    }
+
+    /**
      * Test `schemaInfo` method
      *
      * @return void
      * @covers ::schemaInfo
-     * @covers ::resetSchemaInfo
+     * @dataProvider schemaInfoProvider
      */
-    public function testSchemaInfo()
+    public function testSchemaInfo($type, $expected)
     {
-        $expected = [
-            '$id' => '/model/schema/roles',
-            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-        ];
-
-        JsonApi::resetSchemaInfo();
-        $result = JsonApi::schemaInfo('roles');
-        static::assertEquals($expected, $result);
-
-        // use internal array
-        $result = JsonApi::schemaInfo('roles');
+        $result = JsonApi::schemaInfo($type);
         static::assertEquals($expected, $result);
     }
 }
