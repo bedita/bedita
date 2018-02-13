@@ -14,7 +14,6 @@
 namespace BEdita\API\TestSuite;
 
 use BEdita\API\Event\CommonEventHandler;
-use BEdita\API\Utility\JsonApi;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
