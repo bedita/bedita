@@ -20,6 +20,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -43,16 +44,16 @@ class JsonSchema
     /**
      * Generate JSON Schema draft-6 (https://tools.ietf.org/html/draft-wright-json-schema-01)
      *
-     * @param string $typeName Type name of a resource or object
+     * @param string $type Type name of a resource or object
      * @param string $url Url of this schema
      * @return mixed
      */
-    public static function generate($typeName, $url)
+    public static function generate($type, $url)
     {
         $schema = Cache::remember(
-            'schema_' . $typeName,
-            function () use ($typeName) {
-                return static::addRevision(static::typeSchema($typeName));
+            'schema_' . $type,
+            function () use ($type) {
+                return static::addRevision(static::typeSchema($type));
             },
             ObjectTypesTable::CACHE_CONFIG
         );
@@ -74,24 +75,24 @@ class JsonSchema
     /**
      * Schema of a resource or object type
      *
-     * @param string $typeName Resource or object type name
+     * @param string $type Resource or object type name
      * @return mixed
      * @throws \Cake\Network\Exception\NotFoundException if no type is found
      */
-    public static function typeSchema($typeName)
+    public static function typeSchema($type)
     {
-        if (in_array($typeName, static::VALID_RESOURCES)) {
-            return static::resourceSchema($typeName);
+        if (in_array($type, static::VALID_RESOURCES)) {
+            return static::resourceSchema($type);
         }
 
         /* @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
         $ObjectTypes = TableRegistry::get('ObjectTypes');
         try {
-            $objectType = $ObjectTypes->get($typeName);
+            $objectType = $ObjectTypes->get($type);
 
             return static::objectSchema($objectType);
         } catch (RecordNotFoundException $e) {
-            throw new NotFoundException(__d('bedita', 'Type "{0}" not found', $typeName));
+            throw new NotFoundException(__d('bedita', 'Type "{0}" not found', $type));
         }
     }
 
@@ -106,9 +107,36 @@ class JsonSchema
         if (!is_array($schema)) {
             return $schema;
         }
-        $schema['revision'] = sprintf("%u", crc32(json_encode($schema)));
+        // remove 'description' from crc32 signature calculation -> not available in Sqlite
+        $schemaNoDesc = Hash::remove($schema, 'properties.{*}.description');
+        // properties order also differs between Sqlite and Mysql
+        ksort($schemaNoDesc['properties']);
+        $schema['revision'] = sprintf("%u", crc32(json_encode($schemaNoDesc)));
 
         return $schema;
+    }
+
+    /**
+     * Get current revision of a type schema
+     *
+     * @param string $type Resource or object type name
+     * @return string|bool Schema revision or `false` if no schema is found
+     * @throws \Cake\Network\Exception\NotFoundException if no type is found
+     */
+    public static function schemaRevision($type)
+    {
+        return Cache::remember(
+            'revision_schema_' . $type,
+            function () use ($type) {
+                $schema = static::generate($type, '');
+                if (!is_array($schema)) {
+                    return $schema;
+                }
+
+                return $schema['revision'];
+            },
+            ObjectTypesTable::CACHE_CONFIG
+        );
     }
 
     /**

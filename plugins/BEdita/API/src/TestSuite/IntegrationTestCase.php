@@ -49,6 +49,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
