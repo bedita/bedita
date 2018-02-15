@@ -310,7 +310,7 @@ class JsonSchemaTest extends TestCase
      * Test schemaRevision method
 
      * @param string $type Type name
-     * @param string|bool $expected Expected revision1389311771
+     * @param string|bool $expected Expected revision
      * @return void
      * @covers ::schemaRevision()
      * @dataProvider schemaRevisionProvider

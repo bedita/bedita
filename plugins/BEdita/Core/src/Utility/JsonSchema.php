@@ -156,7 +156,7 @@ class JsonSchema
         $required = [];
         foreach ($schema->columns() as $name) {
             if (in_array($name, $hiddenProperties)) {
-                    continue;
+                continue;
             }
 
             $accessMode = null;
