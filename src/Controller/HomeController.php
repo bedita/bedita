@@ -41,27 +41,27 @@ class HomeController extends AppController
            'methods' => ['GET', 'POST'],
            'multiple_types' => false,
         ],
-        '/admin' =>  [
+        '/admin' => [
             'methods' => 'ALL',
             'multiple_types' => true,
          ],
-         '/model' =>  [
+         '/model' => [
             'methods' => 'ALL',
             'multiple_types' => true,
          ],
-         '/roles' =>  [
+         '/roles' => [
             'methods' => 'ALL',
             'multiple_types' => false,
          ],
-         '/signup' =>  [
+         '/signup' => [
             'methods' => ['POST'],
             'multiple_types' => false,
          ],
-         '/status' =>  [
+         '/status' => [
             'methods' => ['GET'],
             'multiple_types' => false,
          ],
-         '/trash' =>  [
+         '/trash' => [
             'methods' => 'ALL',
             'multiple_types' => true,
          ],
@@ -119,6 +119,7 @@ class HomeController extends AppController
                 $allow[] = $method;
             }
         }
+
         return [
             'href' => Router::url($endpoint, true),
             'hints' => [
@@ -135,7 +136,6 @@ class HomeController extends AppController
             ],
         ];
     }
-
 
     /**
      * Returns available object types to list as endpoints
