@@ -17,7 +17,7 @@ ENV DEBUG ${DEBUG:-false}
 WORKDIR /var/www/html
 VOLUME /var/www/webroot/files
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
-    && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction --quiet
+    && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction
 
 # Activate headers module
 RUN a2enmod headers
