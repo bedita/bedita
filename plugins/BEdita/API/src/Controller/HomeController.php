@@ -107,7 +107,10 @@ class HomeController extends AppController
      */
     protected function objectTypesEndpoints()
     {
-        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])->toArray();
+        $allTypes = TableRegistry::get('ObjectTypes')
+                        ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
+                        ->where(['enabled' => true])
+                        ->toArray();
         $endPoints = [];
         foreach ($allTypes as $t => $abstract) {
             $endPoints['/' . $t] = $abstract ? ['GET', 'DELETE'] : 'ALL';
