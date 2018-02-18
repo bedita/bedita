@@ -729,7 +729,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::index()
+     * @covers ::initialize()
      */
     public function testAddNotEnabled()
     {
@@ -740,15 +740,15 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
         $expected = [
-            'status' => '403',
-            'title' => 'Disabled object types cannot be instantiated',
+            'status' => '404',
+            'title' => 'A route matching "/news" could not be found.',
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/news', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
@@ -773,7 +773,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/news', json_encode(compact('data')));
+        $this->post('/profiles', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
@@ -842,7 +842,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
 
         $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/news/3', json_encode(compact('data')));
+        $this->patch('/profiles/3', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');

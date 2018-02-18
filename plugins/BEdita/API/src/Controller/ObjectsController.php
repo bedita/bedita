@@ -88,6 +88,11 @@ class ObjectsController extends ResourcesController
             $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
         }
 
+        // Requested object type endpoint MUST be `enabled`
+        if (!$this->objectType->get('enabled')) {
+            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
+        }
+
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
         }
@@ -123,10 +128,6 @@ class ObjectsController extends ResourcesController
             if ($this->objectType->is_abstract) {
                 // Refuse to save an abstract object type.
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
-            }
-            if (!$this->objectType->enabled) {
-                // Refuse to save a disabled object type.
-                throw new ForbiddenException(__d('bedita', 'Disabled object types cannot be instantiated'));
             }
 
             $entity = $this->Table->newEntity();
