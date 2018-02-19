@@ -363,6 +363,12 @@ class ObjectTypeTest extends TestCase
             'documents' => [
                 [
                     'properties' => [
+                        'id' => [
+                            '$id' => '/properties/id',
+                            'title' => 'Id',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
                         'title' => [
                             '$id' => '/properties/title',
                             'title' => 'Title',

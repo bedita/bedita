@@ -155,7 +155,7 @@ class JsonSchema
         $properties = [];
         $required = [];
         foreach ($schema->columns() as $name) {
-            if (in_array($name, (array)$table->getPrimaryKey()) || in_array($name, $hiddenProperties)) {
+            if (in_array($name, $hiddenProperties)) {
                 continue;
             }
 
