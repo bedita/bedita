@@ -30,19 +30,41 @@ class HomeController extends AppController
 {
 
     /**
-     * Default endpoints with supported methods
-     * 'ALL' means 'GET', 'POST', 'PATCH' and 'DELETE' are supported
+     * Default endpoints with:
+     *  - supported methods, where 'ALL' means 'GET', 'POST', 'PATCH' and 'DELETE' are supported
+     *  - multiple types flag, if true multiple types are handled (like abstract object types or `/trash`)
      *
      * @var array
      */
     protected $defaultEndpoints = [
-        '/auth' => ['GET', 'POST'],
-        '/admin' => 'ALL',
-        '/model' => 'ALL',
-        '/roles' => 'ALL',
-        '/signup' => ['POST'],
-        '/status' => ['GET'],
-        '/trash' => 'ALL',
+        '/auth' => [
+           'methods' => ['GET', 'POST'],
+           'multiple_types' => false,
+        ],
+        '/admin' => [
+            'methods' => 'ALL',
+            'multiple_types' => true,
+         ],
+         '/model' => [
+            'methods' => 'ALL',
+            'multiple_types' => true,
+         ],
+         '/roles' => [
+            'methods' => 'ALL',
+            'multiple_types' => false,
+         ],
+         '/signup' => [
+            'methods' => ['POST'],
+            'multiple_types' => false,
+         ],
+         '/status' => [
+            'methods' => ['GET'],
+            'multiple_types' => false,
+         ],
+         '/trash' => [
+            'methods' => 'ALL',
+            'multiple_types' => true,
+         ],
     ];
 
     /**
@@ -66,38 +88,53 @@ class HomeController extends AppController
     {
         $this->request->allowMethod(['get', 'head']);
 
-        $objectTypesEndpoints = $this->objectTypesEndpoints();
-        $endPoints = array_merge($objectTypesEndpoints, $this->defaultEndpoints);
-        foreach ($endPoints as $e => $methods) {
-            if ($methods === 'ALL') {
-                $methods = ['GET', 'POST', 'PATCH', 'DELETE'];
-            }
-            $allow = [];
-            foreach ($methods as $method) {
-                if ($this->checkAuthorization($e, $method)) {
-                    $allow[] = $method;
-                }
-            }
-            $resources[$e] = [
-                'href' => Router::url($e, true),
-                'hints' => [
-                    'allow' => $allow,
-                    'formats' => [
-                        'application/json',
-                        'application/vnd.api+json',
-                    ],
-                    'display' => [
-                        'label' => Inflector::camelize(substr($e, 1)),
-                    ],
-                    'object_type' => !empty($objectTypesEndpoints[$e]),
-                ],
-            ];
+        $default = Hash::insert($this->defaultEndpoints, '{*}.object_type', false);
+        $endPoints = array_merge($this->objectTypesEndpoints(), $default);
+        foreach ($endPoints as $e => $data) {
+            $resources[$e] = $this->endpointFeatures($e, $data);
         }
         $project = Configure::read('Project');
         $version = Configure::read('BEdita.version');
 
         $this->set('_meta', compact('resources', 'project', 'version'));
         $this->set('_serialize', []);
+    }
+
+    /**
+     * Return endpoint features to display in `/home` response
+     *
+     * @param string $endpoint Endpoint name
+     * @param array $options Endpoint options - methods and multiple types flag
+     * @return array Array of features
+     */
+    protected function endpointFeatures($endpoint, $options)
+    {
+        $methods = $options['methods'];
+        if ($methods === 'ALL') {
+            $methods = ['GET', 'POST', 'PATCH', 'DELETE'];
+        }
+        $allow = [];
+        foreach ($methods as $method) {
+            if ($this->checkAuthorization($endpoint, $method)) {
+                $allow[] = $method;
+            }
+        }
+
+        return [
+            'href' => Router::url($endpoint, true),
+            'hints' => [
+                'allow' => $allow,
+                'formats' => [
+                    'application/json',
+                    'application/vnd.api+json',
+                ],
+                'display' => [
+                    'label' => Inflector::camelize(substr($endpoint, 1)),
+                ],
+                'object_type' => $options['object_type'],
+                'multiple_types' => $options['multiple_types'],
+            ],
+        ];
     }
 
     /**
@@ -110,7 +147,11 @@ class HomeController extends AppController
         $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])->toArray();
         $endPoints = [];
         foreach ($allTypes as $t => $abstract) {
-            $endPoints['/' . $t] = $abstract ? ['GET', 'DELETE'] : 'ALL';
+            $endPoints['/' . $t] = [
+                'methods' => $abstract ? ['GET', 'DELETE'] : 'ALL',
+                'object_type' => true,
+                'multiple_types' => $abstract,
+            ];
         }
 
         return $endPoints;
