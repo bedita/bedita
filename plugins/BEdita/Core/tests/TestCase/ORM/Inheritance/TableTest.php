@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
+use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\Time;
@@ -40,6 +41,18 @@ class TableTest extends TestCase
         parent::setUp();
 
         $this->setupTables();
+    }
+
+    /**
+     * Test marshaller
+     *
+     * @return void
+     *
+     * @covers ::marshaller()
+     */
+    public function testMarshaller()
+    {
+        static::assertInstanceOf(Marshaller::class, $this->fakeFelines->marshaller());
     }
 
     /**
