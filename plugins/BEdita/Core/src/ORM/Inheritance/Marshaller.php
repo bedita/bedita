@@ -15,7 +15,7 @@ namespace BEdita\Core\ORM\Inheritance;
 
 use Cake\Database\Type;
 use Cake\ORM\Marshaller as CakeMarshaller;
-use Cake\ORM\Table;
+use Cake\ORM\Table as CakeTable;
 
 /**
  * Extends \Cake\ORM\Marshaller providing the property map of the entire inheritance
@@ -47,11 +47,11 @@ class Marshaller extends CakeMarshaller
     /**
      * Build the map of property of the given table.
      *
-     * @param Table $table The table to check for property existance
+     * @param \Cake\ORM\Table $table The table to check for property existance
      * @param array $data The data that has to be marshalled
      * @return array
      */
-    protected function buildTablePropertyMap(Table $table, array $data)
+    protected function buildTablePropertyMap(CakeTable $table, array $data)
     {
         $map = [];
         $schema = $table->getSchema();
