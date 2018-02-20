@@ -66,6 +66,12 @@ class SchemaController extends AppController
     {
         $this->request->allowMethod(['get']);
 
+        $response = $this->response->withEtag((string)JsonSchema::schemaRevision($typeName));
+        if ($response->checkNotModified($this->request)) {
+            return $response;
+        }
+        $this->response = $response;
+
         $url = (string)$this->request->getUri();
         $schema = JsonSchema::generate($typeName, $url);
 

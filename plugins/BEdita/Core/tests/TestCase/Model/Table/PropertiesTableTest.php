@@ -222,6 +222,7 @@ class PropertiesTableTest extends TestCase
     public function findTypeProvider()
     {
         $objects = [
+            'id',
             'uname',
             'status',
             'published',
@@ -362,6 +363,7 @@ class PropertiesTableTest extends TestCase
     {
         $expected = [
             // Objects static properties.
+            'id',
             'uname',
             'status',
             'published',
