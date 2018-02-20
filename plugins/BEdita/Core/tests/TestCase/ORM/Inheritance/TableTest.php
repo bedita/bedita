@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
+use Cake\I18n\Time;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -172,11 +173,14 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
+        $updatedAt = new Time('2018-02-20 09:50:00');
+
         $feline = $felines->first();
         $expected = [
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
+            'updated_at' => $updatedAt,
             'subclass' => 'Eutheria',
             'family' => 'purring cats'
         ];
@@ -205,12 +209,14 @@ class TableTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
+                'updated_at' => $updatedAt,
                 'subclass' => 'Eutheria'
             ],
             [
                 'id' => 2,
                 'name' => 'koala',
                 'legs' => 4,
+                'updated_at' => null,
                 'subclass' => 'Marsupial'
             ]
         ];

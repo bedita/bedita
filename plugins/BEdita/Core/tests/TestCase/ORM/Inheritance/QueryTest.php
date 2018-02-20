@@ -71,7 +71,14 @@ class QueryTest extends TestCase
     {
         return [
             'default' => [
-                ['FakeFelines.id', 'FakeFelines.name', 'FakeFelines.legs', 'FakeFelines.subclass', 'FakeFelines.family'],
+                [
+                    'FakeFelines.id',
+                    'FakeFelines.name',
+                    'FakeFelines.legs',
+                    'FakeFelines.updated_at',
+                    'FakeFelines.subclass',
+                    'FakeFelines.family'
+                ],
                 [],
                 true,
             ],
@@ -118,6 +125,7 @@ class QueryTest extends TestCase
             'id' => 'fake_felines.id',
             'name' => 'fake_animals.name',
             'legs' => 'fake_animals.legs',
+            'updated_at' => 'fake_animals.updated_at',
             'subclass' => 'fake_mammals.subclass',
             'family' => 'fake_felines.family',
         ];
