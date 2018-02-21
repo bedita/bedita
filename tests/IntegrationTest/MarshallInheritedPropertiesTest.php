@@ -16,7 +16,7 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
- * Test that the inherited propertiesare correctly marshalled into main entity.
+ * Test that the inherited properties are correctly marshalled into main entity.
  */
 class MarshallInheritedPropertiesTest extends IntegrationTestCase
 {
