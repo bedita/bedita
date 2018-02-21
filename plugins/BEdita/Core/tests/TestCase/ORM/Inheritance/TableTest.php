@@ -14,10 +14,11 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
+use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
-use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Table as CakeTable;
+use Cake\I18n\Time;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -28,46 +29,7 @@ use Cake\TestSuite\TestCase;
  */
 class TableTest extends TestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_felines',
-        'plugin.BEdita/Core.fake_articles',
-    ];
-
-    /**
-     * Table FakeAnimals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeAnimals;
-
-    /**
-     * Table FakeMammals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeMammals;
-
-    /**
-     * Table FakeFelines
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeFelines;
-
-    /**
-     * Table options used for initialization
-     *
-     * @var array
-     */
-    protected $tableOptions = ['className' => Table::class];
+    use FakeAnimalsTrait;
 
     /**
      * setUp method
@@ -78,21 +40,19 @@ class TableTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
-        $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
+        $this->setupTables();
     }
 
     /**
-     * Setup inheritance associations
+     * Test marshaller
      *
      * @return void
+     *
+     * @covers ::marshaller()
      */
-    protected function setupAssociations()
+    public function testMarshaller()
     {
-        $this->fakeMammals->extensionOf('FakeAnimals');
-        $this->fakeFelines->extensionOf('FakeMammals');
-        $this->fakeAnimals->hasMany('FakeArticles');
+        static::assertInstanceOf(Marshaller::class, $this->fakeFelines->marshaller());
     }
 
     /**
@@ -143,7 +103,7 @@ class TableTest extends TestCase
         $felinesInheritance = $this->fakeFelines->inheritedTable();
         static::assertEquals('FakeMammals', $felinesInheritance->getAlias());
 
-        $felinesDeepInheritance = array_map(function (CakeTable $inherited) {
+        $felinesDeepInheritance = array_map(function (Table $inherited) {
             return $inherited->getAlias();
         }, $this->fakeFelines->inheritedTables());
 
@@ -226,11 +186,14 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
+        $updatedAt = new Time('2018-02-20 09:50:00');
+
         $feline = $felines->first();
         $expected = [
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
+            'updated_at' => $updatedAt,
             'subclass' => 'Eutheria',
             'family' => 'purring cats'
         ];
@@ -259,12 +222,14 @@ class TableTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
+                'updated_at' => $updatedAt,
                 'subclass' => 'Eutheria'
             ],
             [
                 'id' => 2,
                 'name' => 'koala',
                 'legs' => 4,
+                'updated_at' => null,
                 'subclass' => 'Marsupial'
             ]
         ];
@@ -307,6 +272,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
+            'updated_at' => new Time('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [
@@ -371,7 +337,7 @@ class TableTest extends TestCase
 
         $allColumns = $this->fakeFelines->getSchema()->columns();
         foreach ($this->fakeFelines->inheritedTables() as $t) {
-            if (!($t instanceof CakeTable)) {
+            if (!($t instanceof Table)) {
                 static::fail('Unexpected table object');
             }
 

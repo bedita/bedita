@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -112,16 +113,41 @@ class ListEntitiesActionTest extends TestCase
         return [
             'plain' => [
                 [
-                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
-                    ['id' => 2, 'name' => 'koala', 'legs' => 4],
-                    ['id' => 3, 'name' => 'eagle', 'legs' => 2],
+                    [
+                        'id' => 1,
+                        'name' => 'cat',
+                        'legs' => 4,
+                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'koala',
+                        'legs' => 4,
+                        'updated_at' => null,
+                    ],
+                    [
+                        'id' => 3,
+                        'name' => 'eagle',
+                        'legs' => 2,
+                        'updated_at' => null,
+                    ],
                 ],
                 null,
             ],
             'field' => [
                 [
-                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
-                    ['id' => 2, 'name' => 'koala', 'legs' => 4],
+                    [
+                        'id' => 1,
+                        'name' => 'cat',
+                        'legs' => 4,
+                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'koala',
+                        'legs' => 4,
+                        'updated_at' => null,
+                    ],
                 ],
                 [
                     'legs' => 4,
@@ -133,13 +159,24 @@ class ListEntitiesActionTest extends TestCase
             ],
             'association' => [
                 [
-                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                    [
+                        'id' => 1,
+                        'name' => 'cat',
+                        'legs' => 4,
+                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                    ],
                 ],
                 'fake_articles=1',
             ],
             'inheritedField' => [
                 [
-                    ['id' => 1, 'name' => 'cat', 'legs' => 4, 'subclass' => 'Eutheria'],
+                    [
+                        'id' => 1,
+                        'name' => 'cat',
+                        'legs' => 4,
+                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'subclass' => 'Eutheria',
+                    ],
                 ],
                 [
                     'name' => 'cat',
@@ -189,6 +226,7 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
+                'updated_at' => new Time('2018-02-20 09:50:00'),
                 'fake_articles' => [
                     [
                         'id' => 1,
@@ -208,12 +246,14 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 2,
                 'name' => 'koala',
                 'legs' => 4,
+                'updated_at' => null,
                 'fake_articles' => [],
             ],
             [
                 'id' => 3,
                 'name' => 'eagle',
                 'legs' => 2,
+                'updated_at' => null,
                 'fake_articles' => [],
             ],
         ];

@@ -53,6 +53,14 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      */
+    public function marshaller()
+    {
+        return new Marshaller($this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function query()
     {
         return new Query($this->getConnection(), $this);
