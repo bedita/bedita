@@ -170,7 +170,12 @@ class ListEntitiesActionTest extends TestCase
             ],
             'associationList' => [
                 [
-                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                    [
+                        'id' => 1,
+                        'name' => 'cat',
+                        'legs' => 4,
+                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                    ],
                 ],
                 ['fake_articles' => [1, 2] ],
             ],
