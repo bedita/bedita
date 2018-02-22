@@ -137,6 +137,12 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'fake_articles=1',
             ],
+            'associationList' => [
+                [
+                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                ],
+                ['fake_articles' => [1, 2] ],
+            ],
             'inheritedField' => [
                 [
                     ['id' => 1, 'name' => 'cat', 'legs' => 4, 'subclass' => 'Eutheria'],
