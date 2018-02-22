@@ -27,32 +27,7 @@ use Cake\Utility\Inflector;
  */
 class AssociationCollectionTest extends TestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_felines',
-        'plugin.BEdita/Core.fake_articles',
-    ];
-
-    /**
-     * Table FakeAnimals
-     *
-     * @var \Cake\ORM\Table
-     */
-    public $fakeAnimals;
-
-    /**
-     * Table FakeMammals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeMammals;
+    use FakeAnimalsTrait;
 
     /**
      * {@inheritDoc}
@@ -61,10 +36,9 @@ class AssociationCollectionTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
-        $this->fakeAnimals->hasMany('FakeArticles', ['dependent' => true]);
+        $this->setupTables();
 
-        $this->fakeMammals = TableRegistry::get('FakeMammals', ['className' => Table::class]);
+        $this->fakeAnimals->hasMany('FakeArticles', ['dependent' => true]);
         $this->fakeMammals->extensionOf('FakeAnimals');
         $this->fakeMammals->hasMany('FakeFelines', [
             'className' => Table::class,

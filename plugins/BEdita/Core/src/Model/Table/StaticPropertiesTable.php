@@ -246,7 +246,8 @@ class StaticPropertiesTable extends Table
 
         $properties = [];
         foreach ($schema->columns() as $name) {
-            if (in_array($name, (array)$table->getPrimaryKey()) || in_array($name, $hiddenProperties)) {
+            // primary keys saved only for root `objects' table
+            if ((in_array($name, (array)$table->getPrimaryKey()) && !empty($objectType->parent)) || in_array($name, $hiddenProperties)) {
                 continue;
             }
 

@@ -28,6 +28,7 @@ class HomeControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::endpointFeatures()
      * @covers ::objectTypesEndpoints()
      * @covers ::checkAuthorization()
      * @covers ::unloggedAuthorized()
@@ -57,6 +58,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Auth',
                             ],
                             'object_type' => false,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/documents' => [
@@ -73,6 +75,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Documents',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/profiles' => [
@@ -89,6 +92,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Profiles',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/objects' => [
@@ -105,6 +109,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Objects',
                             ],
                             'object_type' => true,
+                            'multiple_types' => true,
                         ],
                     ],
                     '/users' => [
@@ -121,22 +126,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Users',
                             ],
                             'object_type' => true,
-                        ],
-                    ],
-                    '/news' => [
-                        'href' => 'http://api.example.com/news',
-                        'hints' => [
-                            'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
-                            ],
-                            'formats' => [
-                                'application/json',
-                                'application/vnd.api+json'
-                            ],
-                            'display' => [
-                                'label' => 'News',
-                            ],
-                            'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/locations' => [
@@ -153,6 +143,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Locations',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/events' => [
@@ -169,6 +160,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Events',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/roles' => [
@@ -185,6 +177,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Roles',
                             ],
                             'object_type' => false,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/model' => [
@@ -201,6 +194,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Model',
                             ],
                             'object_type' => false,
+                            'multiple_types' => true,
                         ],
                     ],
                     '/admin' => [
@@ -217,6 +211,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Admin',
                             ],
                             'object_type' => false,
+                            'multiple_types' => true,
                         ],
                     ],
                     '/status' => [
@@ -233,6 +228,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Status',
                             ],
                             'object_type' => false,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/signup' => [
@@ -249,6 +245,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Signup',
                             ],
                             'object_type' => false,
+                            'multiple_types' => false,
                         ],
                     ],
                     '/trash' => [
@@ -265,6 +262,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Trash',
                             ],
                             'object_type' => false,
+                            'multiple_types' => true,
                         ],
                     ],
                     '/media' => [
@@ -281,6 +279,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Media',
                             ],
                             'object_type' => true,
+                            'multiple_types' => true,
                         ],
                     ],
                     '/files' => [
@@ -297,6 +296,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Files',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                 ],

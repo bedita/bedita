@@ -24,13 +24,13 @@ class TestConstants
      * @var array
      */
     const SCHEMA_REVISIONS = [
-        'applications' => '320029666',
-        'documents' => '1389311771',
-        'events' => '3616621047',
-        'files' => '336351369',
-        'locations' => '1962607368',
-        'profiles' => '4263816212',
-        'roles' => '2455170079',
-        'users' => '3778063754',
+        'applications' => '2244706479',
+        'documents' => '3090683659',
+        'events' => '1906204265',
+        'files' => '894208275',
+        'locations' => '1369205356',
+        'profiles' => '3766083092',
+        'roles' => '2845943672',
+        'users' => '4176671339',
     ];
 }
