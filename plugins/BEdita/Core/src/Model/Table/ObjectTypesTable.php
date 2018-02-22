@@ -253,7 +253,7 @@ class ObjectTypesTable extends Table
                 throw new ForbiddenException(__d('bedita', 'Core types are not removable'));
             }
         }
-        if ($entity->isDirty('parent_name') && $this->objectsExist($entity->get('id'))) {
+        if ($entity->isDirty('parent_id') && $this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Parent type change forbidden: objects of this type exist'));
         }
     }

@@ -240,8 +240,11 @@ class ObjectType extends Entity implements JsonApiSerializable
             if (!$objectType->get('is_abstract') || !$objectType->get('enabled')) {
                 return null;
             }
-            $this->parent = $objectType;
-            $this->parent_id = $objectType->id;
+
+            if ($this->parent_id !== $objectType->id) {
+                $this->parent = $objectType;
+                $this->parent_id = $objectType->id;
+            }
         } catch (RecordNotFoundException $e) {
             return null;
         }
