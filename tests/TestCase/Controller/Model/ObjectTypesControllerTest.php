@@ -800,6 +800,32 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test edit method with no change data.
+     *
+     * @return void
+     *
+     * @covers ::resource()
+     * @covers ::initialize()
+     */
+    public function testEditNoChange()
+    {
+        $data = [
+            'id' => '2',
+            'type' => 'object_types',
+            'attributes' => [
+                'is_abstract' => false,
+                'parent_name' => 'objects',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/model/object_types/2', json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test edit method with ID conflict.
      *
      * @return void
