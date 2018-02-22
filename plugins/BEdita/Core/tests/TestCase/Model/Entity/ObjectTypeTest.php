@@ -294,6 +294,12 @@ class ObjectTypeTest extends TestCase
                 'documents',
                 'objects',
             ],
+            'changeParent' => [
+                'profiles',
+                'objects',
+                'media',
+                'media',
+            ],
         ];
     }
 
