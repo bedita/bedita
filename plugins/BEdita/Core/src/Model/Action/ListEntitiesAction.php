@@ -104,11 +104,11 @@ class ListEntitiesAction extends BaseAction
             if ($this->Table->associations()->has($camelizedKey)) {
                 // Associated match (primary key only).
                 $target = $this->Table->association($camelizedKey)->getTarget();
-                $targetPrimaryKey = array_map(
-                    [$target, 'aliasField'],
-                    (array)$target->getPrimaryKey()
-                );
-                $conditions = array_combine($targetPrimaryKey, (array)$value);
+                $targetPrimaryKey = $target->aliasField($target->getPrimaryKey());
+                if (is_array($value)) {
+                    $targetPrimaryKey .= ' IN';
+                }
+                $conditions = [$targetPrimaryKey => $value];
 
                 $query = $query
                     ->distinct(array_map(
