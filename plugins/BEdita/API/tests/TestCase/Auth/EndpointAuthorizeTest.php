@@ -148,6 +148,18 @@ class EndpointAuthorizeTest extends TestCase
                 1,
                 new Uri('/auth'),
             ],
+            '/documents' => [
+                new Endpoint(
+                    [
+                        'name' => 'documents',
+                        'enabled' => true
+                    ],
+                    [
+                        'source' => 'Endpoints'
+                    ]
+                ),
+                new Uri('/documents'),
+            ],
             '/home/sweet/home' => [
                 2,
                 new Uri('/home/sweet/home'),
@@ -179,7 +191,7 @@ class EndpointAuthorizeTest extends TestCase
             '/disabled/endpoint' => [
                 new NotFoundException('Resource not found.'),
                 new Uri('/disabled/endpoint'),
-            ]
+            ],
         ];
     }
 

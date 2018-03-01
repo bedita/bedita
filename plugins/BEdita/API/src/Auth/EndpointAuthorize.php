@@ -218,7 +218,7 @@ class EndpointAuthorize extends BaseAuthorize
             $this->endpoint = $Endpoints->newEntity(
                 [
                     'name' => $endpointName,
-                    'enabled' => true,
+                    'enabled' => 1,
                 ],
                 ['validate' => false]
             );
