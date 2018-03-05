@@ -39,6 +39,8 @@ class ProfilesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -184,6 +186,8 @@ class ProfilesTableTest extends TestCase
             'publish_start',
             'publish_end',
             'type',
+            'another_birthdate',
+            'another_surname',
         ];
 
         sort($expectedProperties);
@@ -219,5 +223,27 @@ class ProfilesTableTest extends TestCase
                 continue;
             }
         }
+    }
+
+    /**
+     * Test `beforeSave` method.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave()
+    {
+        $data = [
+            'name' => 'Gustavo',
+            'surname' => 'Supporto',
+            'email' => '',
+        ];
+
+        $profile = $this->Profiles->newEntity($data);
+        $profile->type = 'profiles';
+
+        $success = $this->Profiles->save($profile);
+        static::assertTrue((bool)$success);
+        static::assertNull($success->get('email'));
     }
 }

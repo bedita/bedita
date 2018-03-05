@@ -601,4 +601,32 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Test empty `email` case.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testEmptyEmail()
+    {
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'gustavo_supporto',
+                'password_hash' => 'help me!',
+                'email' => '',
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/users', json_encode(compact('data')));
+
+        $this->assertResponseCode(201);
+
+        $user = TableRegistry::get('Users')->get(11);
+        static::assertEquals('gustavo_supporto', $user['username']);
+        static::assertNull($user['email']);
+    }
 }
