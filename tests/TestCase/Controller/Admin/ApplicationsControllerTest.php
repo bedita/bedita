@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -48,6 +49,12 @@ class ApplicationsControllerTest extends IntegrationTestCase
                     'page_count' => 1,
                     'page_items' => 2,
                     'page_size' => 20,
+                ],
+                'schema' => [
+                    'applications' => [
+                        '$id' => 'http://api.example.com/model/schema/applications',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['applications'],
+                    ],
                 ],
             ],
             'data' => [
@@ -167,6 +174,15 @@ class ApplicationsControllerTest extends IntegrationTestCase
                     'api_key' => API_KEY,
                     'created' => '2016-10-28T07:10:57+00:00',
                     'modified' => '2016-10-28T07:10:57+00:00',
+                ],
+            ],
+            'meta' => [
+
+                'schema' => [
+                    'applications' => [
+                        '$id' => 'http://api.example.com/model/schema/applications',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['applications'],
+                    ],
                 ],
             ],
         ];

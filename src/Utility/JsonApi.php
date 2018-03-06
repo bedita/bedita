@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,8 +13,11 @@
 namespace BEdita\API\Utility;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
 /**
@@ -52,7 +55,7 @@ class JsonApi
             $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
-        $data = [];
+        $data = $types = [];
         foreach ($items as $item) {
             if (!$item instanceof JsonApiSerializable) {
                 throw new \InvalidArgumentException(sprintf(
@@ -65,13 +68,72 @@ class JsonApi
             $item = $item->jsonApiSerialize($options, $fields);
             if (isset($item['included'])) {
                 $included = array_merge($included, $item['included']);
+                foreach ($included as $inc) {
+                    if (!empty($inc['type'])) {
+                        $types[] = $inc['type'];
+                    }
+                }
                 unset($item['included']);
             }
 
             $data[] = $item;
+            if (!empty($item['attributes']) && !empty($item['type'])) {
+                $types[] = $item['type'];
+            }
         }
 
-        return $single ? $data[0] : $data;
+        $data = $single ? $data[0] : $data;
+        $schema = static::metaSchema(array_filter(array_unique($types)));
+        if (!empty($schema)) {
+            $data['_schema'] = $schema;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Create meta schema info for types
+     *
+     * @param array $types Type names array
+     * @return array
+     */
+    protected static function metaSchema($types)
+    {
+        $schema = [];
+        foreach ($types as $type) {
+            $info = static::schemaInfo($type);
+            if ($info) {
+                $schema[$type] = $info;
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Get JSON Schema info for a $type: URL and revision.
+     *
+     * @param string $type Type name
+     * @return array|null Schema info array or null if no suitable schema is found
+     */
+    public static function schemaInfo($type)
+    {
+        try {
+            $revision = JsonSchema::schemaRevision($type);
+        } catch (NotFoundException $ex) {
+            return null;
+        }
+
+        return [
+            '$id' => Router::url(
+                [
+                    '_name' => 'api:model:schema',
+                    'type' => $type,
+                ],
+                true
+            ),
+            'revision' => $revision,
+        ];
     }
 
     /**
