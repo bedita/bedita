@@ -15,6 +15,8 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\ProfilesValidator;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 
 /**
@@ -89,5 +91,19 @@ class ProfilesTable extends Table
         $rules->add($rules->isUnique(['email']));
 
         return $rules;
+    }
+
+    /**
+     * Before save checks: if `email` is empty set it to NULL to avoid unique constraint errors
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if (empty($entity->get('email'))) {
+            $entity->set('email', null);
+        }
     }
 }
