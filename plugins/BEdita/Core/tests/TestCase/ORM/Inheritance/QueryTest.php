@@ -14,10 +14,8 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Query;
-use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\ValueBinder;
 use Cake\ORM\Query as CakeQuery;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -27,46 +25,7 @@ use Cake\TestSuite\TestCase;
  */
 class QueryTest extends TestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_felines',
-        'plugin.BEdita/Core.fake_articles',
-    ];
-
-    /**
-     * Table FakeAnimals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeAnimals;
-
-    /**
-     * Table FakeMammals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeMammals;
-
-    /**
-     * Table FakeFelines
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeFelines;
-
-    /**
-     * Table options used for initialization
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $tableOptions = ['className' => Table::class];
+    use FakeAnimalsTrait;
 
     /**
      * setUp method
@@ -77,14 +36,8 @@ class QueryTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
-        $this->fakeAnimals->hasMany('FakeArticles');
-
-        $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
-        $this->fakeMammals->extensionOf('FakeAnimals');
-
-        $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
-        $this->fakeFelines->extensionOf('FakeMammals');
+        $this->setupTables();
+        $this->setupAssociations();
     }
 
     /**
@@ -118,7 +71,14 @@ class QueryTest extends TestCase
     {
         return [
             'default' => [
-                ['FakeFelines.id', 'FakeFelines.name', 'FakeFelines.legs', 'FakeFelines.subclass', 'FakeFelines.family'],
+                [
+                    'FakeFelines.id',
+                    'FakeFelines.name',
+                    'FakeFelines.legs',
+                    'FakeFelines.updated_at',
+                    'FakeFelines.subclass',
+                    'FakeFelines.family'
+                ],
                 [],
                 true,
             ],
@@ -165,6 +125,7 @@ class QueryTest extends TestCase
             'id' => 'fake_felines.id',
             'name' => 'fake_animals.name',
             'legs' => 'fake_animals.legs',
+            'updated_at' => 'fake_animals.updated_at',
             'subclass' => 'fake_mammals.subclass',
             'family' => 'fake_felines.family',
         ];

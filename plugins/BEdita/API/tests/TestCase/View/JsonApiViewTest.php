@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\View;
 
+use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
@@ -39,6 +40,7 @@ class JsonApiViewTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
@@ -99,6 +101,14 @@ class JsonApiViewTest extends TestCase
                             ],
                         ],
                     ],
+                    'meta' => [
+                        'schema' => [
+                            'roles' => [
+                                '$id' => '/model/schema/roles',
+                                'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                            ],
+                        ],
+                    ],
                 ]),
                 function (Table $Table) {
                     return [
@@ -130,6 +140,14 @@ class JsonApiViewTest extends TestCase
                                     'self' => '/roles/1/relationships/users',
                                     'related' => '/roles/1/users',
                                 ],
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'schema' => [
+                            'roles' => [
+                                '$id' => '/model/schema/roles',
+                                'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
                             ],
                         ],
                     ],

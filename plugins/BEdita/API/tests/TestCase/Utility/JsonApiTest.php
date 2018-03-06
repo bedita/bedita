@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Utility;
 
+use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Table;
@@ -38,9 +39,14 @@ class JsonApiTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
@@ -125,6 +131,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all');
@@ -180,6 +192,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->all();
@@ -235,6 +253,12 @@ class JsonApiTest extends TestCase
                             'self' => '/roles/2',
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->toArray();
@@ -261,6 +285,12 @@ class JsonApiTest extends TestCase
                             ],
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -287,6 +317,12 @@ class JsonApiTest extends TestCase
                             ],
                         ],
                     ],
+                    '_schema' => [
+                        'roles' => [
+                            '$id' => '/model/schema/roles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                        ]
+                    ]
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -333,7 +369,74 @@ class JsonApiTest extends TestCase
                     return $Table->get(1);
                 },
                 JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META,
-            ]
+            ],
+            'included' => [
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'title-one',
+                        'title' => 'title one',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => [
+                            'abstract' => 'abstract here',
+                            'list' => ['one', 'two', 'three'],
+                        ],
+                        'lang' => 'eng',
+                        'publish_start' => '2016-05-13T07:09:23+00:00',
+                        'publish_end' => '2016-05-13T07:09:23+00:00',
+                        'another_title' => null,
+                        'another_description' => null,
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => '/documents/2/test',
+                                'self' => '/documents/2/relationships/test',
+                            ],
+                            'data' => [
+                                [
+                                    'id' => '4',
+                                    'type' => 'profiles',
+                                ],
+                                [
+                                    'id' => '3',
+                                    'type' => 'documents',
+                                ],
+                            ]
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => '/documents/2/inverse_test',
+                                'self' => '/documents/2/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    '_schema' => [
+                        'profiles' => [
+                            '$id' => '/model/schema/profiles',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
+                        ],
+                        'documents' => [
+                            '$id' => '/model/schema/documents',
+                            'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                        ],
+                    ],
+                ],
+                function () {
+                    return TableRegistry::get('Documents')->get(2, ['contain' => ['Test']]);
+                },
+            ],
         ];
     }
 
@@ -348,6 +451,7 @@ class JsonApiTest extends TestCase
      *
      * @dataProvider formatDataProvider
      * @covers ::formatData
+     * @covers ::metaSchema
      */
     public function testFormatData($expected, callable $items, $options = 0)
     {
@@ -513,6 +617,8 @@ class JsonApiTest extends TestCase
                 'lang' => 'eng',
                 'publish_start' => '2016-05-13T07:09:23+00:00',
                 'publish_end' => '2016-05-13T07:09:23+00:00',
+                'another_title' => null,
+                'another_description' => null,
             ],
             'meta' => [
                 'locked' => true,
@@ -536,11 +642,56 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
+            '_schema' => [
+                'documents' => [
+                    '$id' => '/model/schema/documents',
+                    'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                ]
+            ]
         ];
 
         $result = JsonApi::formatData(TableRegistry::get('Documents')->get(2));
         $result = json_decode(json_encode($result), true);
 
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testSchemaInfo` test case.
+     *
+     * @return array
+     */
+    public function schemaInfoProvider()
+    {
+        return [
+            'roles' => [
+                'roles',
+                [
+                    '$id' => '/model/schema/roles',
+                    'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
+                ],
+            ],
+            'objects' => [
+                'object_types',
+                null,
+            ],
+            'properties' => [
+                'properties',
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test `schemaInfo` method
+     *
+     * @return void
+     * @covers ::schemaInfo
+     * @dataProvider schemaInfoProvider
+     */
+    public function testSchemaInfo($type, $expected)
+    {
+        $result = JsonApi::schemaInfo($type);
         static::assertEquals($expected, $result);
     }
 }

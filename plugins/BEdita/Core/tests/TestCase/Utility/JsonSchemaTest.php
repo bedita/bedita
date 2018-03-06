@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonSchema;
+use Cake\Cache\Cache;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -46,6 +48,16 @@ class JsonSchemaTest extends TestCase
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+    }
+
+    /**
      * Data provider for `testGenerate` test case.
      *
      * @return array
@@ -64,6 +76,7 @@ class JsonSchemaTest extends TestCase
             'users' => [
                 [
                     'properties' => [
+                        'id',
                         'another_email',
                         'another_username',
                         'birthdate',
@@ -118,6 +131,7 @@ class JsonSchemaTest extends TestCase
             'roles' => [
                 [
                     'properties' => [
+                        'id',
                         'created',
                         'description',
                         'modified',
@@ -134,6 +148,7 @@ class JsonSchemaTest extends TestCase
             'documents' => [
                 [
                     'properties' => [
+                        'id',
                         'another_description',
                         'another_title',
                         'body',
@@ -161,6 +176,7 @@ class JsonSchemaTest extends TestCase
             'streams' => [
                 [
                     'properties' => [
+                        'uuid',
                         'created',
                         'duration',
                         'file_name',
@@ -269,5 +285,39 @@ class JsonSchemaTest extends TestCase
         $url = 'http://api.example.com/model/schema/' . $type;
         $result = JsonSchema::generate($type, $url);
         static::assertFalse($result);
+    }
+
+    /**
+     * Data provider for `testGenerate` test case.
+     *
+     * @return array
+     */
+    public function schemaRevisionProvider()
+    {
+        return [
+            'objects' => [
+                'objects',
+                false,
+            ],
+            'documents' => [
+                'documents',
+                '3090683659',
+            ],
+        ];
+    }
+
+    /**
+     * Test schemaRevision method
+
+     * @param string $type Type name
+     * @param string|bool $expected Expected revision
+     * @return void
+     * @covers ::schemaRevision()
+     * @dataProvider schemaRevisionProvider
+     */
+    public function testSchemaRevision($type, $expected)
+    {
+        $result = JsonSchema::schemaRevision($type);
+        static::assertEquals($expected, $result);
     }
 }

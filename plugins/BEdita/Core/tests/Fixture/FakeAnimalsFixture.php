@@ -28,6 +28,7 @@ class FakeAnimalsFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
         'name' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'precision' => null],
         'legs' => ['type' => 'integer', 'length' => 2, 'null' => true, 'default' => null, 'precision' => null],
+        'updated_at' => ['type' => 'datetime', 'null' => true, 'default' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -41,7 +42,7 @@ class FakeAnimalsFixture extends TestFixture
      * {@inheritDoc}
      */
     public $records = [
-        ['name' => 'cat', 'legs' => 4],
+        ['name' => 'cat', 'legs' => 4, 'updated_at' => '2018-02-20 09:50:00'],
         ['name' => 'koala', 'legs' => 4],
         ['name' => 'eagle', 'legs' => 2],
     ];

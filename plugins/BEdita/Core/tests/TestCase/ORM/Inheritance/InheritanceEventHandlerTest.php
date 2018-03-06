@@ -14,11 +14,10 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\InheritanceEventHandler;
-use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -28,39 +27,7 @@ use Cake\TestSuite\TestCase;
  */
 class InheritanceEventHandlerTest extends TestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_felines',
-        'plugin.BEdita/Core.fake_articles',
-    ];
-
-    /**
-     * Table FakeAnimals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeAnimals;
-
-    /**
-     * Table FakeMammals
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeMammals;
-
-    /**
-     * Table FakeFelines
-     *
-     * @var \BEdita\Core\ORM\Inheritance\Table
-     */
-    public $fakeFelines;
+    use FakeAnimalsTrait;
 
     /**
      * setUp method
@@ -71,12 +38,8 @@ class InheritanceEventHandlerTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeFelines = TableRegistry::get('FakeFelines', ['className' => Table::class]);
-        $this->fakeMammals = TableRegistry::get('FakeMammals', ['className' => Table::class]);
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
-        $this->fakeMammals->extensionOf('FakeAnimals');
-        $this->fakeFelines->extensionOf('FakeMammals');
-        $this->fakeAnimals->hasMany('FakeArticles', ['dependent' => true]);
+        $this->setupTables();
+        $this->setupAssociations();
     }
 
     /**
@@ -226,6 +189,7 @@ class InheritanceEventHandlerTest extends TestCase
                     'family' => 'purring cats',
                     'legs' => 4,
                     'subclass' => 'None',
+                    'updated_at' => new Time('2018-02-20 09:50:00'),
                 ],
                 [
                     'id' => 1,

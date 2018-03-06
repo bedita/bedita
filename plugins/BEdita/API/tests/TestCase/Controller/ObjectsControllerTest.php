@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -59,6 +60,32 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'page_items' => 10,
                     'page_size' => 20,
                 ],
+                'schema' => [
+                    'users' => [
+                        '$id' => 'http://api.example.com/model/schema/users',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
+                    ],
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ],
+                    'profiles' => [
+                        '$id' => 'http://api.example.com/model/schema/profiles',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
+                    ],
+                    'locations' => [
+                        '$id' => 'http://api.example.com/model/schema/locations',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['locations'],
+                    ],
+                    'events' => [
+                        '$id' => 'http://api.example.com/model/schema/events',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['events'],
+                    ],
+                    'files' => [
+                        '$id' => 'http://api.example.com/model/schema/files',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['files'],
+                    ],
+                ]
             ],
             'data' => [
                 [
@@ -510,6 +537,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                 ],
             ],
+            'meta' => [
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ]
+                ]
+            ]
         ];
 
         $this->configRequestHeaders();
@@ -574,6 +609,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                 ],
             ],
+            'meta' => [
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ]
+                ]
+            ]
         ];
 
         $this->configRequestHeaders();
@@ -738,7 +781,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::index()
+     * @covers ::initialize()
      */
     public function testAddNotEnabled()
     {
@@ -749,15 +792,15 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
         $expected = [
-            'status' => '403',
-            'title' => 'Disabled object types cannot be instantiated',
+            'status' => '404',
+            'title' => 'A route matching "/news" could not be found.',
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/news', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
@@ -782,7 +825,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/news', json_encode(compact('data')));
+        $this->post('/profiles', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
@@ -851,7 +894,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
 
         $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/news/3', json_encode(compact('data')));
+        $this->patch('/profiles/3', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
@@ -1047,6 +1090,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'page_count' => 1,
                     'page_items' => 2,
                     'page_size' => 20,
+                ],
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ],
+                    'profiles' => [
+                        '$id' => 'http://api.example.com/model/schema/profiles',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
+                    ],
                 ],
             ],
         ];
@@ -1891,6 +1944,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                    ],
+                ],
+            ],
+            'meta' => [
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ],
+                    'profiles' => [
+                        '$id' => 'http://api.example.com/model/schema/profiles',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
                     ],
                 ],
             ],
