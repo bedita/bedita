@@ -1,8 +1,12 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -41,17 +45,16 @@ class TreesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
         ]);
         $this->belongsTo('ParentObjects', [
             'foreignKey' => 'parent_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Folders'
         ]);
         $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Folders'
         ]);
 
         // associations with trees
@@ -113,10 +116,63 @@ class TreesTable extends Table
             ['allowNullableNulls' => true]
         ));
 
-        // $rules->add(function ($entity, $options) {
-
-        // }, 'isFolderNotUbiquitous');
+        $rules->add(
+            [$this, 'isParentValid'],
+            'isParentValid',
+            [
+                'message' => __d('bedita', 'Parent {0} must be a folder or null', $entity->parent_id),
+            ]
+        );
 
         return $rules;
+    }
+
+    /**
+     * Check that `parent_id` property of the entity corresponds to a folder
+     *
+     * @param EntityInterface $entity The entity to validate
+     * @return bool
+     */
+    public function isParentValid(EntityInterface $entity)
+    {
+        if ($entity->parent_id === null) {
+            return true;
+        }
+
+        $table = TableRegistry::get('Objects');
+        $isParentFolder = $table->find()
+            ->where([
+                $table->aliasField('id') => $entity->parent_id,
+            ])
+            ->innerJoinWith('ObjectTypes', function (Query $query) {
+                return $query->where(['ObjectTypes.name' => 'folders']);
+            })
+            ->count();
+
+        return $isParentFolder === 1;
+    }
+
+    /**
+     * Update `root_id` of children if needed.
+     *
+     * @param Event $event The event
+     * @param EntityInterface $entity The entity persisted
+     * @return void
+     */
+    public function afterSave(Event $event, EntityInterface $entity)
+    {
+        if ($entity->isNew()) {
+            return;
+        }
+
+        // update root_id
+        $this->updateAll(
+            ['root_id' => $entity->root_id],
+            [
+                'tree_left >' => $entity->tree_left,
+                'tree_right <' => $entity->tree_right,
+                'root_id !=' => $entity->root_id,
+            ]
+        );
     }
 }

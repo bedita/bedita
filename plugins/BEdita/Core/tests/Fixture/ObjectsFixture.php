@@ -16,6 +16,7 @@ class ObjectsFixture extends TestFixture
      * @var array
      */
     public $records = [
+        // 1
         [
             'object_type_id' => 4,
             'status' => 'on',
@@ -33,6 +34,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
         ],
+        // 2
         [
             'object_type_id' => 2,
             'status' => 'on',
@@ -52,6 +54,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => '2016-05-13 07:09:23',
             'publish_end' => '2016-05-13 07:09:23'
         ],
+        // 3
         [
             'object_type_id' => 2,
             'status' => 'draft',
@@ -71,6 +74,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null
         ],
+        // 4
         [
             'object_type_id' => 3,
             'status' => 'on',
@@ -86,6 +90,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1
         ],
+        // 5
         [
             'object_type_id' => 4,
             'status' => 'on',
@@ -104,6 +109,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
         ],
+        // 6
         [
             'object_type_id' => 2,
             'status' => 'on',
@@ -123,6 +129,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => '2016-10-13 07:09:23',
             'publish_end' => '2016-10-13 07:09:23'
         ],
+        // 7
         [
             'object_type_id' => 2,
             'status' => 'on',
@@ -142,6 +149,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => '2016-10-13 07:09:23',
             'publish_end' => '2016-10-13 07:09:23'
         ],
+        // 8
         [
             'object_type_id' => 6,
             'status' => 'on',
@@ -161,6 +169,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null
         ],
+        // 9
         [
             'object_type_id' => 7,
             'status' => 'on',
@@ -180,6 +189,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null
         ],
+        // 10
         [
             'object_type_id' => 9,
             'status' => 'on',
@@ -200,6 +210,7 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null,
             'custom_props' => '{"media_property":"synapse"}',
         ],
+        // 11
         [
             'object_type_id' => 10,
             'status' => 'on',
@@ -219,6 +230,7 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null,
         ],
+        // 12
         [
             'object_type_id' => 10,
             'status' => 'on',
@@ -230,6 +242,26 @@ class ObjectsFixture extends TestFixture
             'published' => null,
             'title' => 'Sub Folder',
             'description' => 'sub folder of root folder',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+        ],
+        // 13
+        [
+            'object_type_id' => 10,
+            'status' => 'on',
+            'uname' => 'another-root-folder',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2018-03-08 12:20:00',
+            'modified' => '2018-03-08 12:20:00',
+            'published' => null,
+            'title' => 'Another Root Folder',
+            'description' => 'second root folder',
             'body' => null,
             'extra' => null,
             'lang' => 'eng',
