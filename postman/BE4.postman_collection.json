@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "BE4",
-		"_postman_id": "3eaebcf7-fb2c-2d56-03cd-9d2773c1a8fc",
+		"_postman_id": "1b58101b-8775-4f7f-827b-27123fdd8985",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2955,21 +2955,19 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7fc1e6e5-9535-4303-9693-eb29fc111046",
+								"id": "76757be0-41c8-46a6-ac53-5a84da20fa75",
 								"type": "text/javascript",
 								"exec": [
-									"/*",
-									"tests[\"Status code is 201\"] = responseCode.code === 201;",
-									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"//tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"//tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
 									"try {",
 									"    var responseJSON = JSON.parse(responseBody);",
 									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
 									"        postman.setEnvironmentVariable(\"streamUuid\", responseJSON.data.id);        ",
 									"    }",
 									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}",
-									"*/"
+									"    //tests[\"Error in parsing response\"] = e;",
+									"}"
 								]
 							}
 						}
@@ -2995,8 +2993,8 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "file",
+							"file": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
@@ -3019,12 +3017,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a2fe1c73-0583-4373-8c8c-cf1dea8687e3",
+								"id": "9f331eae-5f9c-4078-8399-4b8a6651127b",
 								"type": "text/javascript",
 								"exec": [
-									"/*",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"*/"
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
 								]
 							}
 						}
@@ -3069,21 +3065,19 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "04f4b814-5800-43d7-a2ed-2210b4d7cba7",
+								"id": "561339bd-4a14-44f3-86df-fb850bf43bf8",
 								"type": "text/javascript",
 								"exec": [
-									"/*",
-									"tests[\"Status code is 201\"] = responseCode.code === 201;",
-									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"//tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"//tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
 									"try {",
 									"    var responseJSON = JSON.parse(responseBody);",
 									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
 									"        postman.setEnvironmentVariable(\"imageId\", responseJSON.data.id);        ",
 									"    }",
 									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}",
-									"*/"
+									"//    tests[\"Error in parsing response\"] = e;",
+									"}"
 								]
 							}
 						}
@@ -3131,12 +3125,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "bc1d8d09-2417-4502-812d-b362bcaa2b35",
+								"id": "24cea6a4-1002-4ea2-a486-c7d6717353b7",
 								"type": "text/javascript",
 								"exec": [
-									"/*",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"*/"
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
 								]
 							}
 						}
@@ -3187,12 +3179,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0953724e-e113-4982-801f-b047489bdc5e",
+								"id": "2797e3b7-08ec-4832-aa5e-2d31ca3ed745",
 								"type": "text/javascript",
 								"exec": [
-									"/*",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"*/"
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
 								]
 							}
 						}
