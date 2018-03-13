@@ -313,6 +313,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'Folders',
                             ],
                             'object_type' => true,
+                            'multiple_types' => false,
                         ],
                     ],
                 ],
