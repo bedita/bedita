@@ -120,7 +120,8 @@ class TreesTable extends Table
             [$this, 'isParentValid'],
             'isParentValid',
             [
-                'message' => __d('bedita', 'Parent {0} must be a folder or null', $entity->parent_id),
+                'errorField' => 'parent_id',
+                'message' => __d('bedita', 'parent_id must be null or corresponding to a folder'),
             ]
         );
 
