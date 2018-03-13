@@ -168,7 +168,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             $entity = $table->newEntity();
         }
 
-        $associations = static::listAssociations($table, $entity->getHidden());
+        $associations = $entity::listAssociations($table, $entity->getHidden());
         foreach ($associations as $relationship) {
             $self = Router::url(
                 [
