@@ -25,7 +25,9 @@ class MediaTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.media'
+        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**

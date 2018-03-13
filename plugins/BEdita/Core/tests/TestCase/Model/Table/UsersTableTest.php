@@ -48,6 +48,8 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.external_auth',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.property_types',
     ];
 
     /**
