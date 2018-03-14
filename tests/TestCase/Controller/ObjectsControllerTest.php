@@ -54,10 +54,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 10,
+                    'count' => 11,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 10,
+                    'page_items' => 11,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -84,6 +84,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'files' => [
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
+                    ],
+                    'folders' => [
+                        '$id' => 'http://api.example.com/model/schema/folders',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
                     ],
                 ]
             ],
@@ -118,6 +122,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/parents',
+                                'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
                     ],
@@ -163,6 +173,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/parents',
+                                'self' => 'http://api.example.com/documents/2/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -203,6 +219,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/parents',
+                                'self' => 'http://api.example.com/documents/3/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -235,6 +257,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
                     ],
@@ -271,6 +299,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/roles',
                                 'self' => 'http://api.example.com/users/5/relationships/roles',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/parents',
+                                'self' => 'http://api.example.com/users/5/relationships/parents',
                             ],
                         ],
                     ],
@@ -313,6 +347,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/parents',
+                                'self' => 'http://api.example.com/locations/8/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -339,6 +379,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/events/9',
+                    ],
+                    'relationships' => [
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/parents',
+                                'self' => 'http://api.example.com/events/9/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -374,6 +422,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/files/10/relationships/streams',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/parents',
+                                'self' => 'http://api.example.com/files/10/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -401,6 +455,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/folders/11',
                     ],
+                    'relationships' => [
+                        'parent' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/parent',
+                                'self' => 'http://api.example.com/folders/11/relationships/parent',
+                            ],
+                        ],
+                        'children' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/children',
+                                'self' => 'http://api.example.com/folders/11/relationships/children',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '12',
@@ -426,6 +494,60 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/12',
+                    ],
+                    'relationships' => [
+                        'parent' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/parent',
+                                'self' => 'http://api.example.com/folders/12/relationships/parent',
+                            ],
+                        ],
+                        'children' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/children',
+                                'self' => 'http://api.example.com/folders/12/relationships/children',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '13',
+                    'type' => 'folders',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'another-root-folder',
+                        'title' => 'Another Root Folder',
+                        'description' => 'second root folder',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2018-03-08T12:20:00+00:00',
+                        'modified' => '2018-03-08T12:20:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/folders/13',
+                    ],
+                    'relationships' => [
+                        'parent' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/parent',
+                                'self' => 'http://api.example.com/folders/13/relationships/parent',
+                            ],
+                        ],
+                        'children' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/children',
+                                'self' => 'http://api.example.com/folders/13/relationships/children',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -535,6 +657,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                         ],
                     ],
+                    'parents' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/parents',
+                            'self' => 'http://api.example.com/documents/2/relationships/parents',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -605,6 +733,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/inverse_test',
                             'self' => 'http://api.example.com/documents/6/relationships/inverse_test',
+                        ],
+                    ],
+                    'parents' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/parents',
+                            'self' => 'http://api.example.com/documents/6/relationships/parents',
                         ],
                     ],
                 ],
@@ -708,7 +842,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
-        $this->assertHeader('Location', 'http://api.example.com/documents/13');
+        $this->assertHeader('Location', 'http://api.example.com/documents/14');
         static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
     }
 
@@ -1022,6 +1156,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'locked' => false,
@@ -1065,6 +1205,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/parents',
+                                'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
                     ],
@@ -1152,6 +1298,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1178,6 +1330,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/parents',
+                                'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
                     ],
@@ -1254,6 +1412,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1321,6 +1485,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
                     ],
@@ -1502,6 +1672,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
                     ],
@@ -1859,6 +2035,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                         'data' => [],
                     ],
+                    'parents' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/parents',
+                            'related' => 'http://api.example.com/documents/2/parents',
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -1897,6 +2079,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/inverse_test',
                                 'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
                     ],
@@ -1942,6 +2130,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/inverse_test',
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/parents',
+                                'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
                     ],

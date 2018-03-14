@@ -57,6 +57,12 @@ class ResourcesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/parents',
+                                'self' => 'http://api.example.com/users/1/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -582,6 +588,12 @@ class ResourcesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/parents',
+                                'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
                     ],
