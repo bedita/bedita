@@ -14,6 +14,7 @@
 namespace BEdita\Core\ORM\Association;
 
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Table;
 
 /**
  * Plain extension of {@see \Cake\ORM\Association\BelongsToMany} used to detect relations between BEdita objects.
@@ -54,5 +55,40 @@ class RelatedTo extends BelongsToMany
         $subQuery = $this->_appendJunctionJoin($subQuery, $conditions);
 
         return $subQuery;
+    }
+
+    /**
+     * Is source table abstract?
+     *
+     * @return bool
+     */
+    public function isSourceAbstract()
+    {
+        return $this->isAbstract($this->getSource());
+    }
+
+    /**
+     * Is target table abstract?
+     *
+     * @return bool
+     */
+    public function isTargetAbstract()
+    {
+        return $this->isAbstract($this->getTarget());
+    }
+
+    /**
+     * Given a table says if it describes an abstract object type
+     *
+     * @param Table $table The table to verify
+     * @return bool
+     */
+    protected function isAbstract(Table $table)
+    {
+        if (!$table->behaviors()->has('ObjectType')) {
+            return false;
+        }
+
+        return $table->objectType()->is_abstract;
     }
 }
