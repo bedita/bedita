@@ -506,6 +506,12 @@ class RolesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/parents',
+                                'self' => 'http://api.example.com/users/1/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
             ],

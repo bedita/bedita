@@ -421,6 +421,12 @@ class JsonApiTest extends TestCase
                                 'self' => '/documents/2/relationships/inverse_test',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => '/documents/2/parents',
+                                'self' => '/documents/2/relationships/parents',
+                            ],
+                        ],
                     ],
                     '_schema' => [
                         'profiles' => [
@@ -639,6 +645,12 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/inverse_test',
                         'self' => '/documents/2/relationships/inverse_test',
+                    ],
+                ],
+                'parents' => [
+                    'links' => [
+                        'related' => '/documents/2/parents',
+                        'self' => '/documents/2/relationships/parents',
                     ],
                 ],
             ],
