@@ -62,7 +62,7 @@ class Tree extends Entity
      *
      * When `$parent_id` is not null the parent node is retrieved and
      * - the `root_id` is set equal to parent node `root_id`
-     * - the `parent_node_id` is set to pthe parent node `id`
+     * - the `parent_node_id` is set to the parent node `id`
      *
      * @param int|null $parentId The value to set
      * @return int|null

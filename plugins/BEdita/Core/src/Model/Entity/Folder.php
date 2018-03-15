@@ -22,6 +22,7 @@ use Cake\Utility\Hash;
  * Folder Entity
  *
  * @property int $parent_id
+ * @property \BEdita\Core\Model\Entity\Folder|null $parent
  *
  * @since 4.0.0
  */

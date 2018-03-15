@@ -85,10 +85,10 @@ class FoldersTable extends ObjectsTable
      * Custom rule for checking that entity has at most one parent.
      * The check is done on `parents` property
      *
-     * @param EntityInterface $entity The entity to check
+     * @param Folder $entity The folder entity to check
      * @return bool
      */
-    public function hasAtMostOneParent(EntityInterface $entity)
+    public function hasAtMostOneParent(Folder $entity)
     {
         if (empty($entity->parents)) {
             return true;
