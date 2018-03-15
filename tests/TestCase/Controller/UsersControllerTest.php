@@ -643,7 +643,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
 
-        $user = TableRegistry::get('Users')->get(11);
+        $user = TableRegistry::get('Users')->get($this->lastObjectId());
         static::assertEquals('gustavo_supporto', $user['username']);
         static::assertNull($user['email']);
     }
