@@ -36,7 +36,7 @@ jobs:
       php: 5.6
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
-      php: 7.0
+      php: 7.2
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
       php: 7.0
