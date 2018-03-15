@@ -1,9 +1,21 @@
 <?php
 use Migrations\AbstractMigration;
 
+/**
+ * Migration for:
+ *
+ * - add `parent_node_id`
+ * - change `menu` to boolean
+ * - add indexes
+ *
+ * @since 4.0.0
+ */
 class AddTreesParentNodeId extends AbstractMigration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public function up()
     {
         $this->table('trees')
@@ -74,6 +86,9 @@ class AddTreesParentNodeId extends AbstractMigration
             ->update();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function down()
     {
         $this->table('trees')
