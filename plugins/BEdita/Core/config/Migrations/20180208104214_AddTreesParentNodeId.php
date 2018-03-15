@@ -89,12 +89,7 @@ class AddTreesParentNodeId extends AbstractMigration
 
         $this->table('trees')
             ->removeColumn('parent_node_id')
-            ->changeColumn('menu', 'integer', [
-                'comment' => 'menu on/off',
-                'default' => '1',
-                'length' => 10,
-                'null' => false,
-            ])
+            ->removeColumn('menu')
             ->addIndex(
                 [
                     'root_id',
@@ -114,6 +109,15 @@ class AddTreesParentNodeId extends AbstractMigration
                 ]
             )
             ->update();
+
+        $this->table('trees')
+            ->addColumn('menu', 'integer', [
+                'comment' => 'menu on/off',
+                'default' => '1',
+                'limit' => 10,
+                'null' => true,
+                'signed' => false,
+            ])
+            ->update();
     }
 }
-
