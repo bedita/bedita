@@ -24,7 +24,7 @@ use Cake\TestSuite\TestCase;
 /**
  * BEdita\Core\Model\Table\TreesTable Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\FoldersTable
+ * @coversDefaultClass \BEdita\Core\Model\Table\TreesTable
  */
 class TreesTableTest extends TestCase
 {

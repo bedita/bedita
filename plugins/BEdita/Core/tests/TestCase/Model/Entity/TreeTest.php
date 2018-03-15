@@ -74,7 +74,7 @@ class TreeTest extends TestCase
      *
      * @return void
      *
-     * @covers :: _setParentId()
+     * @covers ::_setParentId()
      */
     public function testSetParentId()
     {
@@ -94,7 +94,7 @@ class TreeTest extends TestCase
      *
      * @return void
      *
-     * @covers :: _setParentObject()
+     * @covers ::_setParentObject()
      */
     public function testSetParentObject()
     {
