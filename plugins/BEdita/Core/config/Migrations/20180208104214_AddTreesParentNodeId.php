@@ -20,10 +20,16 @@ class AddTreesParentNodeId extends AbstractMigration
                 'signed' => false,
                 'after' => 'root_id',
             ])
-            ->changeColumn('menu', 'boolean', [
+            ->removeColumn('menu')
+            ->update();
+
+        $this->table('trees')
+            ->addColumn('menu', 'boolean', [
+                'comment' => 'menu on/off',
                 'default' => '1',
                 'limit' => null,
                 'null' => false,
+                'length' => null,
             ])
             ->update();
 
