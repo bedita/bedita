@@ -1,5 +1,13 @@
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
 checks:
   php: true
+
 filter:
   paths:
     - 'src/*'
