@@ -1,9 +1,17 @@
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
 checks:
   php: true
+
 filter:
   paths:
     - 'src/*'
     - 'plugins/BEdita/API/src/*'
     - 'plugins/BEdita/Core/src/*'
   dependency_paths:
-    - 'vendors/*'
+    - 'vendor/*'
