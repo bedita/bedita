@@ -433,7 +433,7 @@ return [
     'Filesystem' => [
         'default' => [
             'className' => 'BEdita/Core.Local',
-            'path' => WWW_ROOT . DS . 'files',
+            'path' => WWW_ROOT . DS . '_files',
         ],
     ],
 ];
