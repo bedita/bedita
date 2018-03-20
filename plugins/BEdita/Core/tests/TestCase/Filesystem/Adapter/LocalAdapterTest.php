@@ -23,6 +23,24 @@ use League\Flysystem\Adapter\Local;
  */
 class LocalAdapterTest extends TestCase
 {
+    /**
+     * Temporary test files path, removed after test
+     * @var string
+     */
+    const FILES_PATH = WWW_ROOT . 'static-files' . DS . 'subdir';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        if (file_exists(self::FILES_PATH)) {
+            rmdir(self::FILES_PATH);
+            rmdir(WWW_ROOT . 'static-files');
+        }
+
+        parent::tearDown();
+    }
 
     /**
      * Test adapter initialization.
@@ -35,7 +53,7 @@ class LocalAdapterTest extends TestCase
     {
         $fullBaseUrl = 'http://example.org/base';
         $expectedBaseUrl = 'http://example.org/base/static-files/subdir';
-        $path = WWW_ROOT . DS . 'static-files/subdir';
+        $path = self::FILES_PATH;
         $expectedPublicUrl = 'http://example.org/base/static-files/subdir/myObject/image.png';
         $objectPath = '/myObject/image.png';
 
@@ -58,7 +76,7 @@ class LocalAdapterTest extends TestCase
     public function testBuildAdapter()
     {
         $config = [
-            'path' => WWW_ROOT . DS . 'static-files/subdir',
+            'path' => self::FILES_PATH,
         ];
 
         $adapter = new LocalAdapter();
