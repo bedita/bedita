@@ -3,6 +3,7 @@
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
+use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
@@ -61,3 +62,8 @@ I18n::translators()->registerLoader('bedita', function ($name, $locale) {
 });
 
 Configure::load('BEdita/Core.bedita', 'ini');
+
+/**
+ * Load thumbnail generators.
+ */
+Thumbnail::setConfig(Configure::read('Thumbnails.generators'));
