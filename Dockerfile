@@ -27,7 +27,6 @@ RUN echo "Header Set Access-Control-Allow-Origin \"*\"" >> /var/www/html/webroot
     && echo "Header Set Access-Control-Allow-Headers \"content-type, origin, x-api-key, x-requested-with, authorization\"" >> /var/www/html/webroot/.htaccess \
     && echo "Header Set Access-Control-Allow-Methods \"PUT, GET, POST, PATCH, DELETE, OPTIONS\"" >> /var/www/html/webroot/.htaccess
 
-
 ENV LOG_DEBUG_URL="console:///?stream=php://stdout" \
     LOG_ERROR_URL="console:///?stream=php://stderr" \
     DATABASE_URL="sqlite:////var/www/html/bedita.sqlite"
