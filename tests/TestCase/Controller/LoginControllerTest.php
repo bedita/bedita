@@ -165,6 +165,10 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $result['data']['id']);
         $this->assertEquals('users', $result['data']['type']);
         $this->assertNotEmpty($result['data']['attributes']);
+        $this->assertNotEmpty($result['included']);
+        $this->assertEquals(1, count($result['included']));
+        $this->assertEquals(1, $result['included'][0]['id']);
+        $this->assertEquals('roles', $result['included'][0]['type']);
 
         // GET /auth *deprecated*
         $this->configRequest(compact('headers'));

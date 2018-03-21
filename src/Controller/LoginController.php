@@ -203,7 +203,7 @@ class LoginController extends AppController
     }
 
     /**
-     * Read logged user entity.
+     * Read logged user entity including roles.
      *
      * @return \Cake\Datasource\EntityInterface Logged user entity
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
@@ -215,7 +215,7 @@ class LoginController extends AppController
             $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
         }
 
-        return TableRegistry::get('Users')->get($userId);
+        return TableRegistry::get('Users')->get($userId, ['contain' => ['Roles']]);
     }
 
     /**
