@@ -204,4 +204,16 @@ class AssociationCollection extends CakeAssociationCollection
 
         return $iterator;
     }
+
+    /**
+     * Object clone hook.
+     *
+     * Clone the inner association collection.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->innerCollection = clone $this->innerCollection;
+    }
 }

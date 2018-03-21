@@ -330,6 +330,36 @@ class AssociationCollectionTest extends TestCase
     }
 
     /**
+     * Test that the inherited table maintains own associations
+     * also if are removed from main table
+     *
+     * @return void
+     *
+     * @covers ::inheritedAssociations()
+     */
+    public function testNotRemoveAssociationFromInhertedTable()
+    {
+        // setup FakeFelines -> extensionOf FakeMammals -> extensionOf FakeAnimals
+        // FakeAnimals hasMany FakeArticle and we add also a RelatedTo
+        $this->fakeMammals->associations()->remove('FakeFelines');
+        $this->fakeFelines->extensionOf('FakeMammals');
+
+        $relatedToMock = $this->getMockBuilder(RelatedTo::class)
+            ->setConstructorArgs(['TestRelatedTo'])
+            ->setMethods(['isSourceAbstract'])
+            ->getMock();
+
+        $relatedToMock->method('isSourceAbstract')
+            ->willReturn(false);
+
+        $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
+        $collection = new AssociationCollection($this->fakeFelines);
+
+        static::assertEquals(['fakearticles'], $collection->keys());
+        static::assertTrue($this->fakeAnimals->associations()->has('TestRelatedTo'));
+    }
+
+    /**
      * Test get iterator contains own and inherited associations.
      *
      * @return void
@@ -349,5 +379,23 @@ class AssociationCollectionTest extends TestCase
         }
 
         static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test clone hook.
+     *
+     * @return void
+     *
+     * @covers ::__clone()
+     */
+    public function testClone()
+    {
+        $collection = new AssociationCollection($this->fakeMammals);
+        static::assertTrue($collection->has('FakeArticles'));
+
+        $clonedCollection = clone $collection;
+        $clonedCollection->remove('FakeArticles');
+        static::assertFalse($clonedCollection->has('FakeArticles'));
+        static::assertTrue($collection->has('FakeArticles'));
     }
 }
