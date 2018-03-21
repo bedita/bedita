@@ -103,9 +103,19 @@ class TreesTableTest extends TestCase
     public function isParentValidProvider()
     {
         return [
-            'nullIsValid' => [
+            'nullWithoutObjectId' => [
+                false,
+                null,
+            ],
+            'nullAndFolder' => [
                 true,
                 null,
+                12,
+            ],
+            'nullNotFolder' => [
+                false,
+                null,
+                4,
             ],
             'folder' => [
                 true,
@@ -121,14 +131,20 @@ class TreesTableTest extends TestCase
     /**
      * Test for `isParentValid()`
      *
+     * @param bool $expected The expected result
+     * @param int|null $parentId The parent id
+     * @param int|null $objectId The object id
      * @return void
      *
      * @dataProvider isParentValidProvider
      * @covers ::isParentValid()
      */
-    public function testIsParentValid($expected, $parentId)
+    public function testIsParentValid($expected, $parentId, $objectId = null)
     {
         $entity = $this->Trees->newEntity();
+        if ($objectId !== null) {
+            $entity->object_id = $objectId;
+        }
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isParentValid($entity));
     }

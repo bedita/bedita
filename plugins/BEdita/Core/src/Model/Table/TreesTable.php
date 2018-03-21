@@ -130,20 +130,26 @@ class TreesTable extends Table
     }
 
     /**
-     * Check that `parent_id` property of the entity corresponds to a folder
+     * Check that `parent_id` property of the `Tree` entity corresponds to a folder
      *
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate
      * @return bool
      */
     public function isParentValid(Tree $entity)
     {
+        $Objects = TableRegistry::get('Objects');
+        $foldersType = $Objects->ObjectTypes->get('folders')->id;
+        // if parent_id is null then the object_id must refer to a folder (root)
         if ($entity->parent_id === null) {
-            return true;
+            return $Objects->exists([
+                'id' => $entity->object_id,
+                'object_type_id' => $foldersType,
+            ]);
         }
 
-        return TableRegistry::get('Objects')->exists([
+        return $Objects->exists([
             'id' => $entity->parent_id,
-            'object_type_id' => TableRegistry::get('ObjectTypes')->get('folders')->id,
+            'object_type_id' => $foldersType,
         ]);
     }
 
