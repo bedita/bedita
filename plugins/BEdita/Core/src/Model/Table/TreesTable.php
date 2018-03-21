@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Entity\Tree;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -131,26 +132,19 @@ class TreesTable extends Table
     /**
      * Check that `parent_id` property of the entity corresponds to a folder
      *
-     * @param EntityInterface $entity The entity to validate
+     * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate
      * @return bool
      */
-    public function isParentValid(EntityInterface $entity)
+    public function isParentValid(Tree $entity)
     {
         if ($entity->parent_id === null) {
             return true;
         }
 
-        $table = TableRegistry::get('Objects');
-        $isParentFolder = $table->find()
-            ->where([
-                $table->aliasField('id') => $entity->parent_id,
-            ])
-            ->innerJoinWith('ObjectTypes', function (Query $query) {
-                return $query->where(['ObjectTypes.name' => 'folders']);
-            })
-            ->count();
-
-        return $isParentFolder === 1;
+        return TableRegistry::get('Objects')->exists([
+            'id' => $entity->parent_id,
+            'object_type_id' => TableRegistry::get('ObjectTypes')->get('folders')->id,
+        ]);
     }
 
     /**

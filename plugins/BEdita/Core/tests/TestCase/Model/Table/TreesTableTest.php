@@ -203,10 +203,6 @@ class TreesTableTest extends TestCase
             ->where(['object_id' => $entity->parent->id])
             ->first();
 
-        $node = $this->Trees
-            ->find()
-            ->where(['object_id' => $entity->id]);
-
         $parentNode->parent_id = $entity->id;
 
         $this->Trees->save($parentNode);
