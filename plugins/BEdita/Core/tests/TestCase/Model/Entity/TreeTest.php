@@ -45,7 +45,7 @@ class TreeTest extends TestCase
     /**
      * Trees table
      *
-     * @var \BEdita\Core\Model\Table\TreeTable
+     * @var \BEdita\Core\Model\Table\TreesTable
      */
     public $Trees;
 

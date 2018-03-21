@@ -15,7 +15,7 @@ use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
 /**
- * Add `fodlers` core media type.
+ * Add `folders` core media type.
  *
  * @since 4.0.0
  */
