@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
@@ -137,7 +136,7 @@ class TreesTableTest extends TestCase
     /**
      * Data provider for `testChangeRoot()`
      *
-     * @return void
+     * @return array
      */
     public function changeRootProvider()
     {

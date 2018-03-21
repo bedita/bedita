@@ -130,7 +130,7 @@ class RelatedToTest extends TestCase
     /**
      * Data provider for `testIsSourceAbstract()`
      *
-     * @return boolean
+     * @return array
      */
     public function isAbstractProvider()
     {

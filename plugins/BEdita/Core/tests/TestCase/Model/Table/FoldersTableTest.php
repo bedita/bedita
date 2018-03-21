@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\FoldersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;

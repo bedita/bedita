@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;

@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListObjectsAction;
-use BEdita\Core\Test\Fixture\ObjectsFixture;
 use Cake\Database\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
