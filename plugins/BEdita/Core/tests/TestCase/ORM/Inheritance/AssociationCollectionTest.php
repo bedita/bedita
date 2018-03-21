@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\Association;
@@ -98,6 +99,7 @@ class AssociationCollectionTest extends TestCase
      * @covers ::get()
      * @covers ::has()
      * @covers ::inheritAssociation()
+     * @covers ::inheritedAssociations()
      */
     public function testGetHas($expected, $alias)
     {
@@ -126,6 +128,7 @@ class AssociationCollectionTest extends TestCase
      * @dataProvider getProvider()
      * @covers ::getByProperty()
      * @covers ::inheritAssociation()
+     * @covers ::inheritedAssociations()
      */
     public function testGetByProperty($expected, $alias)
     {
@@ -147,6 +150,7 @@ class AssociationCollectionTest extends TestCase
      * @return void
      *
      * @covers ::keys()
+     * @covers ::inheritedAssociations()
      */
     public function testKeys()
     {
@@ -163,9 +167,10 @@ class AssociationCollectionTest extends TestCase
      *
      * @return void
      *
-     * @covers ::type()
+     * @covers ::getByType()
+     * @covers ::inheritedAssociations()
      */
-    public function testType()
+    public function testGetByType()
     {
         $expected = ['FakeFelines', 'FakeArticles'];
 
@@ -174,7 +179,7 @@ class AssociationCollectionTest extends TestCase
             function (Association $association) {
                 return $association->getAlias();
             },
-            $collection->type('HasMany')
+            $collection->getByType('HasMany')
         );
 
         static::assertSame($expected, $aliases);
@@ -262,5 +267,135 @@ class AssociationCollectionTest extends TestCase
         $collection->cascadeDelete($mammal, []);
 
         static::assertSame(0, $this->fakeAnimals->association('FakeArticles')->find()->where(['fake_animal_id' => 1])->count());
+    }
+
+    /**
+     * Test empty inherited associations.
+     *
+     * @return void
+     *
+     * @covers ::inheritedAssociations()
+     */
+    public function testInheritedAssociationsEmpty()
+    {
+        $table = new Table();
+        $collection = new AssociationCollection($table);
+        $expected = [];
+        static::assertEquals($expected, $collection->keys());
+    }
+
+    /**
+     * Data provider for `testInheritedAssociationsRelatedTo()`
+     *
+     * @return array
+     */
+    public function inheritedAssociationsRelatedToProvider()
+    {
+        return [
+            'isAbstract' => [
+                ['fakefelines', 'fakearticles', 'testrelatedto'],
+                true,
+            ],
+            'isConcrete' => [
+                ['fakefelines', 'fakearticles'],
+                false,
+            ],
+        ];
+    }
+
+    /**
+     * Test inherited associations with `RelatedTo` association inherited.
+     *
+     * @param array $expected The expected associations keys
+     * @param bool $isAbstract If the `RelatedTo` refers to abstract source
+     * @return void
+     *
+     * @dataProvider inheritedAssociationsRelatedToProvider
+     * @covers ::inheritedAssociations()
+     */
+    public function testInheritedAssociationsRelatedTo($expected, $isAbstract)
+    {
+        $relatedToMock = $this->getMockBuilder(RelatedTo::class)
+            ->setConstructorArgs(['TestRelatedTo'])
+            ->setMethods(['isSourceAbstract'])
+            ->getMock();
+
+        $relatedToMock->method('isSourceAbstract')
+            ->willReturn($isAbstract);
+
+        $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
+        $collection = new AssociationCollection($this->fakeMammals);
+
+        static::assertEquals($expected, $collection->keys());
+    }
+
+    /**
+     * Test that the inherited table maintains own associations
+     * also if are removed from main table
+     *
+     * @return void
+     *
+     * @covers ::inheritedAssociations()
+     */
+    public function testNotRemoveAssociationFromInhertedTable()
+    {
+        // setup FakeFelines -> extensionOf FakeMammals -> extensionOf FakeAnimals
+        // FakeAnimals hasMany FakeArticle and we add also a RelatedTo
+        $this->fakeMammals->associations()->remove('FakeFelines');
+        $this->fakeFelines->extensionOf('FakeMammals');
+
+        $relatedToMock = $this->getMockBuilder(RelatedTo::class)
+            ->setConstructorArgs(['TestRelatedTo'])
+            ->setMethods(['isSourceAbstract'])
+            ->getMock();
+
+        $relatedToMock->method('isSourceAbstract')
+            ->willReturn(false);
+
+        $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
+        $collection = new AssociationCollection($this->fakeFelines);
+
+        static::assertEquals(['fakearticles'], $collection->keys());
+        static::assertTrue($this->fakeAnimals->associations()->has('TestRelatedTo'));
+    }
+
+    /**
+     * Test get iterator contains own and inherited associations.
+     *
+     * @return void
+     *
+     * @covers ::getIterator()
+     */
+    public function testGetIterator()
+    {
+        $collection = new AssociationCollection($this->fakeMammals);
+        $iterator = $collection->getIterator();
+        static::assertInstanceOf('AppendIterator', $iterator);
+
+        $expected = ['FakeFelines', 'FakeArticles'];
+        $actual = [];
+        foreach ($iterator as $association) {
+            $actual[] = $association->getName();
+        }
+
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test clone hook.
+     *
+     * @return void
+     *
+     * @covers ::__clone()
+     */
+    public function testClone()
+    {
+        $collection = new AssociationCollection($this->fakeMammals);
+        static::assertTrue($collection->has('FakeArticles'));
+
+        $clonedCollection = clone $collection;
+        $clonedCollection->remove('FakeArticles');
+        static::assertFalse($clonedCollection->has('FakeArticles'));
+        static::assertTrue($collection->has('FakeArticles'));
     }
 }

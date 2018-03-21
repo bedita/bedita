@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl

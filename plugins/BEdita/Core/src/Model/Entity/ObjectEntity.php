@@ -45,7 +45,8 @@ use Cake\Routing\Router;
  * @property int $modified_by
  * @property \Cake\I18n\Time $publish_start
  * @property \Cake\I18n\Time $publish_end
- * @property \Bedita\Core\Model\Entity\DateRange[] $date_ranges
+ * @property \BEdita\Core\Model\Entity\DateRange[] $date_ranges
+ * @property \BEdita\Core\Model\Entity\Folder[] $parents
  *
  * @since 4.0.0
  */
@@ -167,7 +168,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             $entity = $table->newEntity();
         }
 
-        $associations = static::listAssociations($table, $entity->getHidden());
+        $associations = $entity::listAssociations($table, $entity->getHidden());
         foreach ($associations as $relationship) {
             $self = Router::url(
                 [

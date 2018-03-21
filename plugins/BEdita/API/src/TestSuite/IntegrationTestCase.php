@@ -62,6 +62,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.trees',
     ];
 
     /**

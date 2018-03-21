@@ -21,6 +21,8 @@ return [
     'async_jobs',
     'config',
     'configs',
+    'folder',
+    'folders',
     'model',
     'models',
     'object_type',

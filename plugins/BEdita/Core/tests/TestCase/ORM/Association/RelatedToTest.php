@@ -126,4 +126,63 @@ class RelatedToTest extends TestCase
 
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testIsSourceAbstract()`
+     *
+     * @return array
+     */
+    public function isAbstractProvider()
+    {
+        return [
+            'abstract' => [
+                true,
+                'Objects',
+            ],
+            'concrete' => [
+                false,
+                'Profiles',
+            ],
+            'concreteBecauseNotAnObjectType' => [
+                false,
+                'Relations',
+            ],
+        ];
+    }
+
+    /**
+     * Test if source table is abstract
+     *
+     * @param bool $expected The expected value
+     * @param string $table The source table name
+     * @return void
+     *
+     * @dataProvider isAbstractProvider
+     * @covers ::isSourceAbstract()
+     * @covers ::isAbstract()
+     */
+    public function testIsSourceAbstract($expected, $table)
+    {
+        $relatedTo = new RelatedTo('SourceAbstract');
+        $relatedTo->setSource(TableRegistry::get($table));
+        static::assertSame($expected, $relatedTo->isSourceAbstract());
+    }
+
+    /**
+     * Test if target table is abstract
+     *
+     * @param bool $expected The expected value
+     * @param string $table The target table name
+     * @return void
+     *
+     * @dataProvider isAbstractProvider
+     * @covers ::isTargetAbstract()
+     * @covers ::isAbstract()
+     */
+    public function testIsTargetAbstract($expected, $table)
+    {
+        $relatedTo = new RelatedTo('SourceAbstract');
+        $relatedTo->setTarget(TableRegistry::get($table));
+        static::assertSame($expected, $relatedTo->isTargetAbstract());
+    }
 }

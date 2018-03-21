@@ -115,6 +115,12 @@ class UsersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
                             ],
                         ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/parents',
+                                'self' => 'http://api.example.com/users/1/relationships/parents',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -174,6 +180,12 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/roles',
                                 'self' => 'http://api.example.com/users/5/relationships/roles',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/parents',
+                                'self' => 'http://api.example.com/users/5/relationships/parents',
                             ],
                         ],
                     ],
@@ -303,6 +315,12 @@ class UsersControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/users/1/relationships/roles',
                         ],
                     ],
+                    'parents' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/parents',
+                            'self' => 'http://api.example.com/users/1/relationships/parents',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -382,7 +400,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/11');
+        $this->assertHeader('Location', 'http://api.example.com/users/14');
         $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
@@ -625,7 +643,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
 
-        $user = TableRegistry::get('Users')->get(11);
+        $user = TableRegistry::get('Users')->get($this->lastObjectId());
         static::assertEquals('gustavo_supporto', $user['username']);
         static::assertNull($user['email']);
     }

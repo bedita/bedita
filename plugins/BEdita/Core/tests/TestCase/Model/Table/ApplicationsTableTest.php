@@ -45,7 +45,11 @@ class ApplicationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoint_permissions',
     ];
 
     /**

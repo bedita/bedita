@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\ORM\Association;
 use Cake\ORM\AssociationCollection as CakeAssociationCollection;
 
@@ -56,9 +57,32 @@ class AssociationCollection extends CakeAssociationCollection
         // Copy existing associations to the new collection. This is the new collection. Associations are copied here.
         $this->_items = $table->associations()->_items;
 
+        $this->innerCollection = new CakeAssociationCollection();
         if ($table->inheritedTable() !== null) {
             $this->innerCollection = $table->inheritedTable()->associations();
         }
+    }
+
+    /**
+     * Get the inherited associations collection.
+     *
+     * The clone of `self::innerCollection` is cleaned by `RelatedTo` associations
+     * that involve concrete objects.
+     *
+     * @return \Cake\ORM\AssociationCollection
+     */
+    protected function inheritedAssociations()
+    {
+        $innerCollection = clone $this->innerCollection;
+        foreach ($innerCollection as $association) {
+            if (!($association instanceof RelatedTo) || $association->isSourceAbstract()) {
+                continue;
+            }
+
+            $innerCollection->remove($association->getName());
+        }
+
+        return $innerCollection;
     }
 
     /**
@@ -93,7 +117,7 @@ class AssociationCollection extends CakeAssociationCollection
     {
         $association = parent::get($alias);
         if ($association === null) {
-            $association = $this->inheritAssociation($this->innerCollection->get($alias));
+            $association = $this->inheritAssociation($this->inheritedAssociations()->get($alias));
         }
 
         return $association;
@@ -106,7 +130,7 @@ class AssociationCollection extends CakeAssociationCollection
     {
         $association = parent::getByProperty($prop);
         if ($association === null) {
-            $association = $this->inheritAssociation($this->innerCollection->getByProperty($prop));
+            $association = $this->inheritAssociation($this->inheritedAssociations()->getByProperty($prop));
         }
 
         return $association;
@@ -117,7 +141,7 @@ class AssociationCollection extends CakeAssociationCollection
      */
     public function has($alias)
     {
-        return parent::has($alias) || $this->innerCollection->has($alias);
+        return parent::has($alias) || $this->inheritedAssociations()->has($alias);
     }
 
     /**
@@ -125,15 +149,15 @@ class AssociationCollection extends CakeAssociationCollection
      */
     public function keys()
     {
-        return array_merge(parent::keys(), $this->innerCollection->keys());
+        return array_merge(parent::keys(), $this->inheritedAssociations()->keys());
     }
 
     /**
      * {@inheritDoc}
      */
-    public function type($class)
+    public function getByType($class)
     {
-        return array_merge(parent::type($class), $this->innerCollection->type($class));
+        return array_merge(parent::getByType($class), $this->inheritedAssociations()->getByType($class));
     }
 
     /**
@@ -165,7 +189,31 @@ class AssociationCollection extends CakeAssociationCollection
     {
         return array_merge(
             parent::_getNoCascadeItems($entity, $options),
-            $this->innerCollection->_getNoCascadeItems($entity, $options)
+            $this->inheritedAssociations()->_getNoCascadeItems($entity, $options)
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator()
+    {
+        $iterator = new \AppendIterator();
+        $iterator->append(new \ArrayIterator($this->_items));
+        $iterator->append($this->inheritedAssociations()->getIterator());
+
+        return $iterator;
+    }
+
+    /**
+     * Object clone hook.
+     *
+     * Clone the inner association collection.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->innerCollection = clone $this->innerCollection;
     }
 }

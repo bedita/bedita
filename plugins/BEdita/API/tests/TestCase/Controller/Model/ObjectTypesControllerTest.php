@@ -53,10 +53,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 9,
+                    'count' => 10,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 9,
+                    'page_items' => 10,
                     'page_size' => 20,
                 ],
             ],
@@ -474,6 +474,51 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '10',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'folder',
+                        'name' => 'folders',
+                        'description' => null,
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => null,
+                        'hidden' => null,
+                        'is_abstract' => false,
+                        'parent_name' => 'objects',
+                        'enabled' => true,
+                    ],
+                    'meta' => [
+                        'alias' => 'Folders',
+                        'relations' => [],
+                        'created' => '2018-01-29T08:47:29+00:00',
+                        'modified' => '2018-01-29T08:47:29+00:00',
+                        'core_type' => true,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/10',
+                    ],
+                    'relationships' => [
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/10/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/10/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/10/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/10/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/10/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/10/parent',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -681,7 +726,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/object_types/10');
+        $this->assertHeader('Location', 'http://api.example.com/model/object_types/11');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 

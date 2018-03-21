@@ -42,6 +42,8 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -383,6 +385,7 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'test',
             'inverse_test',
+            'parents',
         ];
 
         $entity = TableRegistry::get('Documents')->newEntity();
@@ -411,6 +414,12 @@ class ObjectEntityTest extends TestCase
                     'self' => '/users/1/relationships/roles',
                 ],
             ],
+            'parents' => [
+                'links' => [
+                    'related' => '/users/1/parents',
+                    'self' => '/users/1/relationships/parents',
+                ],
+            ],
         ];
 
         $entity = TableRegistry::get('Users')->newEntity();
@@ -433,10 +442,36 @@ class ObjectEntityTest extends TestCase
     {
         $expected = [
             'inverse_test',
+            'parents',
         ];
 
         $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
         $entity->set('type', 'profile');
+        $entity = $entity->jsonApiSerialize();
+
+        $relations = array_keys($entity['relationships']);
+
+        static::assertSame($expected, $relations);
+    }
+
+    /**
+     * Test that starting from ObjectEntity and set a specific type
+     * the relationships returned will be those of specific type.
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsFromObjects()
+    {
+        $expected = [
+            'children',
+            'parent',
+        ];
+
+        $entity = TableRegistry::get('Objects')->newEntity();
+        $entity->set('type', 'folders');
         $entity = $entity->jsonApiSerialize();
 
         $relations = array_keys($entity['relationships']);

@@ -31,6 +31,10 @@ use Cake\ORM\Table;
  * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
  * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
  * @property \Cake\ORM\Association\HasMany $DateRanges
+ * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
+ * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
+ * @property \Cake\ORM\Association\BelongsToMany $Parents
+ * @property \Cake\ORM\Association\HasMany $Trees
  *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
@@ -98,6 +102,13 @@ class ObjectsTable extends Table
         $this->belongsTo('ModifiedByUser', [
             'foreignKey' => 'modified_by',
             'className' => 'BEdita/Core.Users'
+        ]);
+
+        $this->belongsToMany('Parents', [
+            'className' => 'BEdita/Core.Folders',
+            'through' => 'BEdita/Core.Trees',
+            'foreignKey' => 'object_id',
+            'targetForeignKey' => 'parent_id',
         ]);
 
         $this->addBehavior('BEdita/Core.UniqueName');

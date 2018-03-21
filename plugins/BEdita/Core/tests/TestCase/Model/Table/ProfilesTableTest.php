@@ -47,6 +47,9 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.trees',
     ];
 
     /**
@@ -186,6 +189,7 @@ class ProfilesTableTest extends TestCase
             'publish_start',
             'publish_end',
             'type',
+            // custom prop
             'another_birthdate',
             'another_surname',
         ];
