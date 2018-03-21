@@ -42,8 +42,13 @@ FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
     'default' => [
         'className' => 'BEdita/Core.Local',
-        'path' => Plugin::path('BEdita/Core') . DS . 'tests' . DS . 'uploads',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'uploads',
         'baseUrl' => 'https://static.example.org/files',
+    ],
+    'thumbnails' => [
+        'className' => 'BEdita/Core.Local',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'thumbnails',
+        'baseUrl' => 'https://static.example.org/thumbs',
     ],
 ]);
 Configure::write('debug', true);
