@@ -105,11 +105,11 @@ class Tree extends Entity
      */
     protected function _setParentObject(Folder $folder = null)
     {
-        $parentId = ($folder === null) ? null : $folder->id;
-
-        if ($this->parent_id !== $parentId) {
-            $this->parent_id = $parentId;
+        $parentId = null;
+        if ($folder !== null) {
+            $parentId = $folder->id;
         }
+        $this->parent_id = $parentId;
 
         return $folder;
     }
