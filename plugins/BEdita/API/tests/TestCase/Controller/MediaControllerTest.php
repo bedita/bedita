@@ -239,7 +239,6 @@ class MediaControllerTest extends IntegrationTestCase
         static::assertEquals($expected, $thumbnails);
     }
 
-
     /**
      * Test `thumbs` method when media IDs are passed both as query string and in path.
      *
