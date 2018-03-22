@@ -60,6 +60,30 @@ Configure::write('Filesystem', [
         'baseUrl' => 'https://static.example.org/thumbs',
     ],
 ]);
+Configure::write('Thumbnails', [
+    'allowAny' => false,
+    'presets' => [
+        'default' => [
+            'generator' => 'async',
+            'w' => 100,
+            'h' => 100,
+        ],
+        'favicon-sync' => [
+            'generator' => 'default',
+            'w' => 16,
+            'h' => 16,
+            'fm' => 'png',
+        ],
+    ],
+    'generators' => [
+        'default' => [
+            'className' => 'BEdita/Core.Glide',
+        ],
+        'async' => [
+            'className' => 'BEdita/Core.Async',
+        ],
+    ],
+]);
 Configure::write('debug', true);
 
 Cache::clear(false, '_cake_core_');
