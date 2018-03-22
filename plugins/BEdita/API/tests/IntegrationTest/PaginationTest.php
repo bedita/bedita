@@ -40,16 +40,16 @@ class PaginationTest extends IntegrationTestCase
         return [
             'default' => [
                 [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 20,
                 ],
             ],
             'lower' => [
                 [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 3,
                     'page_items' => 5,
@@ -62,10 +62,10 @@ class PaginationTest extends IntegrationTestCase
             ],
             'higher' => [
                 [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 50,
                 ],
                 [
@@ -74,10 +74,10 @@ class PaginationTest extends IntegrationTestCase
             ],
             'too high' => [
                 [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 100,
                 ],
                 [
