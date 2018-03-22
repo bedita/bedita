@@ -139,22 +139,21 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test login authorization.
+     * Test login ok but authorization denied.
      *
      * @return void
      *
      * @covers ::login()
      */
-    public function testLoginAuthorization()
+    public function testLoginAuthorizationDenied()
     {
         // Add role id 2 to user id 5
         $table = TableRegistry::get('RolesUsers');
         $entity = $table->newEntity(['user_id' => 5, 'role_id' => 2]);
         $table->saveOrFail($entity);
 
-        // Permissions on endpoint `auth` for application id 2 amd role 2
-        // 0b0001 --> write NO, read MINE
-        // POST /auth on for role 2 on application 2 MUST fail
+        // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
+        // POST /auth with role id 2 on application id 2 MUST fail
         CurrentApplication::setApplication(TableRegistry::get('Applications')->get(2));
 
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
