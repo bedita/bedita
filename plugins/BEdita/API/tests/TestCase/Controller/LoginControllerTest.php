@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\State\CurrentApplication;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 
@@ -135,6 +136,35 @@ class LoginControllerTest extends IntegrationTestCase
         $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
 
         $this->assertResponseCode(400);
+    }
+
+    /**
+     * Test login authorization.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testLoginAuthorization()
+    {
+        // Add role id 2 to user id 5
+        $table = TableRegistry::get('RolesUsers');
+        $entity = $table->newEntity(['user_id' => 5, 'role_id' => 2]);
+        $table->saveOrFail($entity);
+
+        // Permissions on endpoint `auth` for application id 2 amd role 2
+        // 0b0001 --> write NO, read MINE
+        // POST /auth on for role 2 on application 2 MUST fail
+        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(2));
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+
+        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals('Login not authorized', $result['error']['title']);
     }
 
     /**

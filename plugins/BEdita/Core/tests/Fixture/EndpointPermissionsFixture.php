@@ -56,8 +56,8 @@ class EndpointPermissionsFixture extends TestFixture
         [
             'endpoint_id' => 1,
             'application_id' => 2,
-            'role_id' => null,
-            'permission' => 0b1101,
+            'role_id' => 2,
+            'permission' => 0b0001,
         ],
     ];
 }

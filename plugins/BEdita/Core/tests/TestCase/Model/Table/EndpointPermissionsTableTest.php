@@ -309,7 +309,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         return [
             'first' => [
-                4,
+                3,
                 1,
             ],
             'second' => [
@@ -317,7 +317,7 @@ class EndpointPermissionsTableTest extends TestCase
                 2,
             ],
             'null' => [
-                3,
+                2,
                 '',
             ],
             'first,second' => [
