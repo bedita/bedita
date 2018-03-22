@@ -234,6 +234,8 @@ class MediaControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
 
         $thumbnails = Hash::get((array)$body, 'meta.thumbnails');
+        $expected = Hash::sort($expected, '{*}.uuid');
+        $thumbnails = Hash::sort($thumbnails, '{*}.uuid');
         static::assertEquals($expected, $thumbnails);
     }
 
