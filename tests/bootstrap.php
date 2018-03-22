@@ -16,6 +16,10 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\I18n\Date;
+use Cake\I18n\FrozenDate;
+use Cake\I18n\FrozenTime;
+use Cake\I18n\Time;
 use Cake\Log\Log;
 
 if (getenv('db_dsn')) {
@@ -37,6 +41,11 @@ if (getenv('DEBUG_LOG_QUERIES')) {
         'scopes' => ['queriesLog'],
     ]);
 }
+
+Time::setTestNow('2018-01-01T00:00:00Z');
+FrozenTime::setTestNow('2018-01-01T00:00:00Z');
+Date::setTestNow('2018-01-01T00:00:00Z');
+FrozenDate::setTestNow('2018-01-01T00:00:00Z');
 
 FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
