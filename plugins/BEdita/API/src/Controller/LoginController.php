@@ -103,6 +103,10 @@ class LoginController extends AppController
         if (!$user) {
             throw new UnauthorizedException(__('Login not successful'));
         }
+        // Check endpoint permission on `/auth`
+        if (!$this->Auth->isAuthorized($user)) {
+            throw new UnauthorizedException(__('Login not authorized'));
+        }
 
         $user = $this->reducedUserData($user);
         $jwtMeta = $this->jwtTokens($user);
