@@ -18,6 +18,7 @@ use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Job\Service\ThumbnailService;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Text;
 use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
 
 /**
@@ -121,7 +122,7 @@ class ThumbnailServiceTest extends TestCase
                 true,
                 static::never(),
                 [
-                    'uuid' => 'this-uuid-does-not-exist',
+                    'uuid' => Text::uuid(), // This UUID does not exist.
                     'generator' => 'test',
                     'options' => [
                         'gustavo' => 'supporto',
