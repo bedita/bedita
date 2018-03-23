@@ -275,7 +275,7 @@ class StreamsControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider linkStreamProvider()
-     * @coversNothing
+     * @covers ::initialize()
      */
     public function testLinkStream($expected, $uuid, $type, $id)
     {
