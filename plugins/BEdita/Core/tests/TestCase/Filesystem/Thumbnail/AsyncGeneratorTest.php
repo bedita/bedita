@@ -123,6 +123,7 @@ class AsyncGeneratorTest extends TestCase
      * @return void
      *
      * @covers ::getUrl()
+     * @covers ::getBaseGenerator()
      */
     public function testGetUrl()
     {
@@ -162,6 +163,39 @@ class AsyncGeneratorTest extends TestCase
         $generator = 'test';
 
         static::assertArraySubset(compact('uuid', 'options', 'generator'), $asyncJob->payload);
+        static::assertSame(0, $asyncJob->priority);
+    }
+
+    /**
+     * Test `generate` method when a custom priority is set.
+     *
+     * @return void
+     *
+     * @covers ::generate()
+     */
+    public function testGenerateWithPriority()
+    {
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+        $stream = $this->Streams->get($uuid);
+        $options = ['gustavo' => 'supporto'];
+        $priority = 100;
+
+        $this->generator->setConfig(compact('priority'));
+        $ready = $this->generator->generate($stream, $options);
+
+        static::assertFalse($ready);
+
+        /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
+        $asyncJob = $this->AsyncJobs->find()
+            ->where([
+                'service' => $this->generator->getConfig('service'),
+                'created' => Time::now(),
+            ])
+            ->firstOrFail();
+        $generator = 'test';
+
+        static::assertArraySubset(compact('uuid', 'options', 'generator'), $asyncJob->payload);
+        static::assertSame($priority, $asyncJob->priority);
     }
 
     /**
@@ -170,6 +204,7 @@ class AsyncGeneratorTest extends TestCase
      * @return void
      *
      * @covers ::exists()
+     * @covers ::getBaseGenerator()
      */
     public function testExists()
     {
