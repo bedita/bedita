@@ -30,7 +30,7 @@ class LocalAdapter extends FilesystemAdapter
      */
     protected $_defaultConfig = [
         'baseUrl' => null,
-        'path' => WWW_ROOT . DS . 'files',
+        'path' => WWW_ROOT . '_files',
         'writeFlags' => LOCK_EX,
         'linkHandling' => Local::DISALLOW_LINKS,
         'permissions' => [],
@@ -44,7 +44,7 @@ class LocalAdapter extends FilesystemAdapter
     {
         $success = parent::initialize($config);
 
-        if (empty($this->_config['baseUrl']) && strpos($this->getConfig('path'), WWW_ROOT . DS) === 0) {
+        if (empty($this->_config['baseUrl']) && strpos($this->getConfig('path'), WWW_ROOT) === 0) {
             // Files are stored within the document root, so base URL can be automatically detected if not already set.
             $path = str_replace(DS, '/', substr($this->getConfig('path'), strlen(WWW_ROOT)));
             $this->setConfig('baseUrl', Router::url($path, true));
