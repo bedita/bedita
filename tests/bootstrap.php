@@ -42,10 +42,11 @@ if (getenv('DEBUG_LOG_QUERIES')) {
     ]);
 }
 
-Time::setTestNow('2018-01-01T00:00:00Z');
-FrozenTime::setTestNow('2018-01-01T00:00:00Z');
-Date::setTestNow('2018-01-01T00:00:00Z');
-FrozenDate::setTestNow('2018-01-01T00:00:00Z');
+$now = Time::parse('2018-01-01T00:00:00Z');
+Time::setTestNow($now);
+FrozenTime::setTestNow($now);
+Date::setTestNow($now);
+FrozenDate::setTestNow($now);
 
 FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
