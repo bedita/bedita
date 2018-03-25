@@ -135,7 +135,7 @@ class GlideGenerator extends ThumbnailGenerator
 
             FilesystemRegistry::getMountManager()->put($path, $thumbnail);
         } catch (NotReadableException $e) {
-            throw new InvalidStreamException(__('Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
+            throw new InvalidStreamException(__d('bedita', 'Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
         }
 
         return true;

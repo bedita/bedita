@@ -130,11 +130,11 @@ class Thumbnail
         if (is_string($options)) {
             $key = sprintf('Thumbnails.presets.%s', $options);
             if (!Configure::check($key)) {
-                throw new InvalidThumbnailOptionsException(__('Preset "{0}" not found', $options));
+                throw new InvalidThumbnailOptionsException(__d('bedita', 'Preset "{0}" not found', $options));
             }
             $options = Configure::read($key);
         } elseif (!Configure::read('Thumbnails.allowAny')) {
-            throw new InvalidThumbnailOptionsException(__('Thumbnails can only be generated for one of the configured presets'));
+            throw new InvalidThumbnailOptionsException(__d('bedita', 'Thumbnails can only be generated for one of the configured presets'));
         }
 
         return $options;
