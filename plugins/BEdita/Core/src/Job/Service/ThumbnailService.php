@@ -44,6 +44,8 @@ class ThumbnailService implements JobService
             return true;
         } catch (RecordNotFoundException $e) {
             // Stream not found, mark job as complete anyway.
+            Log::debug(sprintf('Thumbnail service could not find stream "%s"', Hash::get($payload, 'uuid')));
+
             return true;
         } catch (\Exception $e) {
             // Another error occurred. Log the error, and mark job as failed.
