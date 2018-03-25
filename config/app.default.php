@@ -439,12 +439,12 @@ return [
     'Filesystem' => [
         'default' => [
             'className' => 'BEdita/Core.Local',
-            'path' => WWW_ROOT . DS . '_files',
+            'path' => WWW_ROOT . '_files',
             'url' => env('FILESYSTEM_DEFAULT_URL', null),
         ],
         'thumbnails' => [
             'className' => 'BEdita/Core.Local',
-            'path' => WWW_ROOT . DS . '_files' . DS . 'thumbs',
+            'path' => WWW_ROOT . '_files' . DS . 'thumbs',
             'url' => env('FILESYSTEM_THUMBNAILS_URL', null),
         ],
     ],
