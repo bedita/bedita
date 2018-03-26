@@ -54,10 +54,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -550,6 +550,46 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '14',
+                    'type' => 'files',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-two',
+                        'title' => 'second media',
+                        'description' => 'another media description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2018-03-22T16:42:31+00:00',
+                        'modified' => '2018-03-22T16:42:31+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/14',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/streams',
+                                'self' => 'http://api.example.com/files/14/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/parents',
+                                'self' => 'http://api.example.com/files/14/relationships/parents',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -842,7 +882,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
-        $this->assertHeader('Location', 'http://api.example.com/documents/14');
+        $this->assertHeader('Location', 'http://api.example.com/documents/15');
         static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
     }
 

@@ -417,7 +417,7 @@ return [
      * - `name` public name of the project, short expression recommended like `MyProject`, `Nope v1`
      */
     'Project' => [
-        'name' => 'BEdita 4',
+        'name' => env('PROJECT_NAME', 'BEdita 4'),
     ],
 
     /**
@@ -427,13 +427,61 @@ return [
      *      before being "activated"?
      */
     'Signup' => [
-//        'requireActivation' => true,
+        // 'requireActivation' => true,
     ],
 
+    /**
+     * Filesystem configuration.
+     *
+     * Several filesystem configurations allow you to manage your files
+     * separately, and each configuration will behave as an isolate mount-point.
+     */
     'Filesystem' => [
         'default' => [
             'className' => 'BEdita/Core.Local',
-            'path' => WWW_ROOT . DS . '_files',
+            'path' => WWW_ROOT . '_files',
+            'url' => env('FILESYSTEM_DEFAULT_URL', null),
+        ],
+        'thumbnails' => [
+            'className' => 'BEdita/Core.Local',
+            'path' => WWW_ROOT . '_files' . DS . 'thumbs',
+            'url' => env('FILESYSTEM_THUMBNAILS_URL', null),
+        ],
+    ],
+
+    /**
+     * Thumbnails configuration.
+     *
+     * - `allowAny`: set this to `true` to allow clients to pass thumbnail options in request.
+     *      Should be set to `false` on production systems, where only presets are allowed.
+     * - `presets`: list of named presets. Presets are set of options that allow clients to
+     *      generate thumbnails of different formats without giving them full power over thumbnail
+     *      options, which might lead to DoS attacks.
+     * - `generators`: configured generators. Different generators will generate thumbnails using
+     *      different systems. For instance, you may have a default generator that generates the
+     *      thumbnails using GD or Imagik, an asynchronous generator that enqueues thumbnail jobs,
+     *      an external generator that invokes a remote API, ...
+     */
+    'Thumbnails' => [
+        'allowAny' => filter_var(env('THUMBNAILS_ALLOW_ANY', false), FILTER_VALIDATE_BOOLEAN),
+        'presets' => [
+            'default' => [
+                // 'generator' => 'async',
+                'w' => 768,
+                'h' => 576,
+            ],
+        ],
+        'generators' => [
+            'default' => [
+                'className' => 'BEdita/Core.Glide',
+                // 'cache' => 'thumbnails',
+                'url' => env('THUMBNAILS_DEFAULT_URL', null),
+            ],
+            'async' => [
+                'className' => 'BEdita/Core.Async',
+                // 'baseGenerator' => 'default',
+                'url' => env('THUMBNAILS_ASYNC_URL', null),
+            ],
         ],
     ],
 ];

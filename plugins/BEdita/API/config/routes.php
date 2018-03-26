@@ -26,6 +26,7 @@ Router::plugin(
             'roles',
             'streams',
             'users',
+            'media',
         ];
         $adminControllers = [
             'applications',
@@ -99,11 +100,21 @@ Router::plugin(
             ['_name' => 'signup:activation']
         );
 
-        // Upload.
+        // Upload and thumbnails.
         $routes->connect(
             '/streams/upload/:fileName',
             ['controller' => 'Streams', 'action' => 'upload'],
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
+        );
+        $routes->connect(
+            '/media/thumbs/:id',
+            ['controller' => 'Media', 'action' => 'thumbs'],
+            ['_name' => 'media:thumbs', 'pass' => ['id']]
+        );
+        $routes->connect(
+            '/media/thumbs',
+            ['controller' => 'Media', 'action' => 'thumbs'],
+            ['_name' => 'media:thumbs:multiple']
         );
 
         $resourcesRoutes = function (array $controllers) {

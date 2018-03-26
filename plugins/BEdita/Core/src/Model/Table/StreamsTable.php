@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
@@ -153,5 +154,17 @@ class StreamsTable extends Table
             // Fill path where file contents will be stored.
             $entity->uri = $entity->filesystemPath();
         }
+    }
+
+    /**
+     * Clean up all thumbnails after deleting a stream.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Stream $stream Entity.
+     * @return void
+     */
+    public function afterDelete(Event $event, Stream $stream)
+    {
+        Thumbnail::delete($stream);
     }
 }
