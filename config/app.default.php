@@ -425,9 +425,12 @@ return [
      *
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
      *      before being "activated"?
+     * - 'roles' - allowed role names on user signup (this config should be set normally at application level),
+     *      requested user roles MUST be included in this array
      */
     'Signup' => [
         // 'requireActivation' => true,
+        'roles' => [],
     ],
 
     /**
