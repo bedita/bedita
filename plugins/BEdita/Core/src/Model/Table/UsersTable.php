@@ -267,7 +267,7 @@ class UsersTable extends Table
         if (isset($data['password'])) {
             $passwdRule = Configure::read('Auth.passwordRule', null);
             if (!empty($passwdRule) && !preg_match($passwdRule, $data['password'])) {
-                throw new BadRequestException(__d('bedita', Configure::read('Auth.passwordErrorMessage')));
+                throw new BadRequestException(__d('bedita', Configure::read('Auth.passwordValidationMessage')));
             }
         }
     }

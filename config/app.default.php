@@ -438,7 +438,7 @@ return [
      */
     'Auth' => [
         'passwordRule' => '',
-        'passwordErrorMessage' => '',
+        'passwordValidationMessage' => '',
     ],
 
     'Filesystem' => [
