@@ -265,9 +265,9 @@ class UsersTable extends Table
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         if (isset($data['password'])) {
-            $passwdRule = Configure::read('Auth.passwordRule', null);
+            $passwdRule = Configure::read('Auth.passwordPolicy.rule');
             if (!empty($passwdRule) && !preg_match($passwdRule, $data['password'])) {
-                throw new BadRequestException(__d('bedita', Configure::read('Auth.passwordValidationMessage')));
+                throw new BadRequestException(__d('bedita', Configure::read('Auth.passwordPolicy.message')));
             }
         }
     }

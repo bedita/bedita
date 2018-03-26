@@ -433,12 +433,14 @@ return [
     /**
      * Auth default settings.
      *
-     * - 'passwordRule' - simple regexp to match for valid passwords (no regexp if empty)
-     * - 'passwordValidationMessage' -  Error message for passwords not matching given regexp
+     * - 'passwordPolicy.rule' - Regexp, callback or validation class to use as validation rule (only regexp supported for now)
+     * - 'passwordPolicy.message' -  Error message for password validation failure
      */
     'Auth' => [
-        'passwordRule' => '',
-        'passwordValidationMessage' => '',
+        'passwordPolicy' => [
+            'rule' => '',
+            'message' => '',
+        ]
     ],
 
     'Filesystem' => [

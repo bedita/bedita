@@ -405,8 +405,8 @@ class UsersTableTest extends TestCase
      */
     public function testBeforeMarshal($data, $passwdRule, $passwdMessage, $expected)
     {
-        Configure::write('Auth.passwordRule', $passwdRule);
-        Configure::write('Auth.passwordValidationMessage', $passwdMessage);
+        Configure::write('Auth.passwordPolicy.rule', $passwdRule);
+        Configure::write('Auth.passwordPolicy.message', $passwdMessage);
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
             static::expectExceptionMessage($expected->getMessage());
