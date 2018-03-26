@@ -49,14 +49,21 @@ class MediaController extends ObjectsController
             'default' => null,
             'min_range' => 1,
         ];
-        $ids = array_filter(
-            array_map(
-                function ($id) use ($validateOptions) {
-                    return filter_var(trim($id), FILTER_VALIDATE_INT, ['options' => $validateOptions]);
-                },
-                $ids
+        $ids = array_unique(
+            array_filter(
+                array_map(
+                    function ($id) use ($validateOptions) {
+                        return filter_var(trim($id), FILTER_VALIDATE_INT, ['options' => $validateOptions]);
+                    },
+                    $ids
+                )
             )
         );
+
+        $maxLimit = $this->Paginator->getConfig('maxLimit');
+        if (count($ids) > $maxLimit) {
+            throw new BadRequestException(__d('bedita', 'Cannot generate thumbnails for more than {0} media at once', $maxLimit));
+        }
 
         return $ids;
     }
