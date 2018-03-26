@@ -395,7 +395,8 @@ class UsersTableTest extends TestCase
      * Test `beforeMarshal` method
      *
      * @param array $data User data to save
-     * @param array $authCfg Auth configuration, includeing passwd regexp and error message
+     * @param string $passwdRule Password regexp rule
+     * @param string $passwdMessage Password validation error message
      * @param bool|Exception $expected Save result or exception
      *
      * @return void
@@ -405,7 +406,7 @@ class UsersTableTest extends TestCase
     public function testBeforeMarshal($data, $passwdRule, $passwdMessage, $expected)
     {
         Configure::write('Auth.passwordRule', $passwdRule);
-        Configure::write('Auth.passwordErrorMessage', $passwdMessage);
+        Configure::write('Auth.passwordValidationMessage', $passwdMessage);
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
             static::expectExceptionMessage($expected->getMessage());
