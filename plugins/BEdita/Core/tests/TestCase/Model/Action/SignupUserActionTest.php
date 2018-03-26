@@ -45,6 +45,7 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.auth_providers',
