@@ -53,7 +53,7 @@ class StreamsTableTest extends TestCase
      *
      * @var \Cake\Collection\Collection
      */
-    private $keep = [];
+    protected $keep;
 
     /**
      * {@inheritDoc}

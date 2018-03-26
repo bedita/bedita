@@ -27,5 +27,16 @@ class MediaFixture extends TestFixture
             'provider_url' => null,
             'provider_thumbnail' => null,
         ],
+        [
+            'id' => 14,
+            'name' => 'My other media name',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+        ],
     ];
 }

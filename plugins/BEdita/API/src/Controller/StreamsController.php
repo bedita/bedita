@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Zend\Diactoros\Stream;
 
@@ -35,7 +36,7 @@ class StreamsController extends ResourcesController
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'object' => ['media', 'images'],
+            'object' => [], // Descendant types of `media` are automatically added in controller initialization.
         ],
     ];
 
@@ -43,6 +44,21 @@ class StreamsController extends ResourcesController
      * {@inheritDoc}
      */
     public $modelClass = 'Streams';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize()
+    {
+        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
+        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $allowed = $ObjectTypes->find('list')
+            ->where(['parent_id' => $ObjectTypes->get('media')->id])
+            ->toList();
+        $this->setConfig('allowedAssociations.object', $allowed);
+
+        parent::initialize();
+    }
 
     /**
      * {@inheritDoc}

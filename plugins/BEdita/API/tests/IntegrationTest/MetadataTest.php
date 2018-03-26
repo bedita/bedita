@@ -101,7 +101,7 @@ class MetadataTest extends IntegrationTestCase
         static::assertArrayHasKey('modified_by', $body['data']['meta']);
 
         static::assertEquals(
-            time(),
+            Time::now()->timestamp,
             Time::parse($body['data']['meta']['modified'])->getTimestamp(),
             '`modified` field not updated',
             5
