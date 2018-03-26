@@ -196,15 +196,15 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         if (empty($data['roles'])) {
             return;
         }
-        $relatedEntities = $this->loadRoles($data['roles']);
+        $roles = $this->loadRoles($data['roles']);
         $association = $this->Users->associations()->getByProperty('roles');
-        $association->link($entity, $relatedEntities);
+        $association->link($entity, $roles);
     }
 
     /**
      * Load requested roles entities with validation
      *
-     * @param array $roles Requested role names or ids
+     * @param array $roles Requested role names
      * @return \BEdita\Core\Model\Entity\Role[] requested role entities
      * @throws \Cake\Network\Exception\BadRequestException When role validation fails
      */
@@ -212,15 +212,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         $entities = [];
         $allowed = (array)Configure::read('Signup.roles');
-        foreach ($roles as $value) {
-            $role = null;
-            if (is_numeric($value)) {
-                $role = $this->Roles->get($value);
-            } else {
-                $role = $this->Roles->find()->where(['name' => $value])->first();
-            }
-            if (RolesTable::ADMIN_ROLE === $role->get('id') || !in_array($role->get('name'), $allowed)) {
-                throw new BadRequestException(__d('bedita', 'Role "{0}" not allowed on signup', [$role->get('name')]));
+        foreach ($roles as $name) {
+            $role = $this->Roles->find()->where(compact('name'))->first();
+            if (RolesTable::ADMIN_ROLE === $role->get('id') || !in_array($name, $allowed)) {
+                throw new BadRequestException(__d('bedita', 'Role "{0}" not allowed on signup', [$name]));
             }
             $entities[] = $role;
         }
