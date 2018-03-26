@@ -214,6 +214,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '3',
                     '9',
                     '10',
+                    '14',
                 ],
             ],
             'locations' => [
@@ -247,6 +248,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '3',
                     '9',
                     '10',
+                    '14',
                 ],
             ],
             'roles' => [
@@ -331,6 +333,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '11',
                    '12',
                    '13',
+                   '14',
                ],
             ],
             'multi' => [
