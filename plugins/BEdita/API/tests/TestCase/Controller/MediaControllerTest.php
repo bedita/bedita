@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Datasource\JsonApiPaginator;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
@@ -247,7 +248,7 @@ class MediaControllerTest extends IntegrationTestCase
      * @covers ::thumbs()
      * @covers ::getIds()
      */
-    public function testThumbsTooManyIds()
+    public function testThumbsBothIds()
     {
         $this->configRequestHeaders('GET');
         $this->get('/media/thumbs/1?ids=2,3');
@@ -255,6 +256,24 @@ class MediaControllerTest extends IntegrationTestCase
         $body = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(400);
         static::assertSame('Cannot specify IDs in both path and query string', Hash::get($body, 'error.title'));
+    }
+
+    /**
+     * Test thumbnails generation when number of IDs exceeds pagination limits.
+     *
+     * @return void
+     *
+     * @covers ::thumbs()
+     * @covers ::getIds()
+     */
+    public function testThumbsTooManyIds()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('/media/thumbs?ids=' . implode(',', range(1, JsonApiPaginator::MAX_LIMIT + 1)));
+
+        $body = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(400);
+        static::assertRegExp('/^Cannot generate thumbnails for more than \d+ media at once$/', Hash::get($body, 'error.title'));
     }
 
     /**
