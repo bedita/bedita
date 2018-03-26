@@ -15,7 +15,9 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\I18n\Time;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -358,5 +360,61 @@ class UsersTableTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `beforeMarshal`
+     *
+     * @return array
+     */
+    public function beforeMarshalProvider()
+    {
+        return [
+            'ok' => [
+                [
+                    'username' => 'gustavo2',
+                    'password' => 'password2',
+                ],
+                '',
+                '',
+                true,
+            ],
+            'failSimple' => [
+                [
+                    'username' => 'gustavo2',
+                    'password' => 'pp',
+                ],
+                '/\w{3,}/',
+                'Password must contain at least 3 valid alphanumeric characters',
+                new BadRequestException('Password must contain at least 3 valid alphanumeric characters'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeMarshal` method
+     *
+     * @param array $data User data to save
+     * @param array $authCfg Auth configuration, includeing passwd regexp and error message
+     * @param bool|Exception $expected Save result or exception
+     *
+     * @return void
+     * @dataProvider beforeMarshalProvider
+     * @covers ::beforeMarshal()
+     */
+    public function testBeforeMarshal($data, $passwdRule, $passwdMessage, $expected)
+    {
+        Configure::write('Auth.passwordRule', $passwdRule);
+        Configure::write('Auth.passwordErrorMessage', $passwdMessage);
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $user = $this->Users->newEntity();
+        $user = $this->Users->patchEntity($user, $data);
+        $success = $this->Users->save($user);
+
+        $this->assertEquals($expected, (bool)$success);
     }
 }

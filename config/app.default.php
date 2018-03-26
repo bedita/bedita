@@ -430,6 +430,17 @@ return [
 //        'requireActivation' => true,
     ],
 
+    /**
+     * Auth default settings.
+     *
+     * - 'passwordRule' - simple regexp to match for valid passwords (no regexp if empty)
+     * - 'passwordValidationMessage' -  Error message for passwords not matching given regexp
+     */
+    'Auth' => [
+        'passwordRule' => '',
+        'passwordErrorMessage' => '',
+    ],
+
     'Filesystem' => [
         'default' => [
             'className' => 'BEdita/Core.Local',
