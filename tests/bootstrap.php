@@ -16,6 +16,10 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\I18n\Date;
+use Cake\I18n\FrozenDate;
+use Cake\I18n\FrozenTime;
+use Cake\I18n\Time;
 use Cake\Log\Log;
 
 if (getenv('db_dsn')) {
@@ -38,12 +42,47 @@ if (getenv('DEBUG_LOG_QUERIES')) {
     ]);
 }
 
+$now = Time::parse('2018-01-01T00:00:00Z');
+Time::setTestNow($now);
+FrozenTime::setTestNow($now);
+Date::setTestNow($now);
+FrozenDate::setTestNow($now);
+
 FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
     'default' => [
         'className' => 'BEdita/Core.Local',
-        'path' => Plugin::path('BEdita/Core') . DS . 'tests' . DS . 'uploads',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'uploads',
         'baseUrl' => 'https://static.example.org/files',
+    ],
+    'thumbnails' => [
+        'className' => 'BEdita/Core.Local',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'thumbnails',
+        'baseUrl' => 'https://static.example.org/thumbs',
+    ],
+]);
+Configure::write('Thumbnails', [
+    'allowAny' => false,
+    'presets' => [
+        'default' => [
+            'generator' => 'async',
+            'w' => 100,
+            'h' => 100,
+        ],
+        'favicon-sync' => [
+            'generator' => 'default',
+            'w' => 16,
+            'h' => 16,
+            'fm' => 'png',
+        ],
+    ],
+    'generators' => [
+        'default' => [
+            'className' => 'BEdita/Core.Glide',
+        ],
+        'async' => [
+            'className' => 'BEdita/Core.Async',
+        ],
     ],
 ]);
 Configure::write('debug', true);

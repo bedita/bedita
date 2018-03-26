@@ -46,8 +46,8 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
 
         $lastLogin = TableRegistry::get('Users')->get(1)->get('last_login');
-        $this->assertNotNull($lastLogin);
-        $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
+        static::assertNotNull($lastLogin);
+        static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '', 1);
 
         return $result['meta'];
     }

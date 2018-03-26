@@ -241,4 +241,48 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $this->assertHeader('Location', $url);
     }
+
+    /**
+     * Data provider for `testLinkStream` test case.
+     *
+     * @return array
+     */
+    public function linkStreamProvider()
+    {
+        return [
+            'not a media' => [
+                409,
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                'documents',
+                2,
+            ],
+            'media subtype' => [
+                200,
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                'files',
+                10,
+            ],
+        ];
+    }
+
+    /**
+     * Test linking a stream to a media.
+     *
+     * @param int $expected Expected response code.
+     * @param string $uuid Stream UUID.
+     * @param string $type Type of object to be linked.
+     * @param int $id ID of object to be linked.
+     * @return void
+     *
+     * @dataProvider linkStreamProvider()
+     * @covers ::initialize()
+     */
+    public function testLinkStream($expected, $uuid, $type, $id)
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data = compact('id', 'type');
+        $this->patch(sprintf('/streams/%s/relationships/object', $uuid), json_encode(compact('data')));
+
+        $this->assertResponseCode($expected);
+    }
 }

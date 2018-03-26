@@ -25,6 +25,7 @@
         "cakephp/cakephp": "~3.5.3",
         "cakephp/migrations": "~1.7",
         "league/flysystem": "^1.0.40",
+        "league/glide": "^1.2.2",
         "league/json-guard": "~1.0",
         "league/json-reference": "~1.0"
     },
