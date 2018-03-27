@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -53,12 +54,20 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected $AsyncJobs;
 
     /**
+     * The RolesTable table
+     *
+     * @var \BEdita\Core\Model\Table\RolesTable
+     */
+    protected $Roles;
+
+    /**
      * {@inheritdoc}
      */
     protected function initialize(array $config)
     {
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+        $this->Roles = TableRegistry::get('Roles');
 
         $this->getEventManager()->on($this);
     }
@@ -83,6 +92,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         // operations are not in transaction because AsyncJobs could use a different connection
         $user = $this->createUser($data['data']);
         try {
+            // add roles to user, with validity check
+            $this->addRoles($user, $data['data']);
+
             $job = $this->createSignupJob($user);
             $activationUrl = $this->getActivationUrl($job, $data['data']);
 
@@ -94,7 +106,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             throw $e;
         }
 
-        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id]);
+        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
     }
 
     /**
@@ -171,6 +183,45 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 'validate' => 'signup',
             ],
         ]);
+    }
+
+    /**
+     * Add roles to user if requested, with validity check
+     *
+     * @param \BEdita\Core\Model\Entity\User $entity The user created
+     * @param array $data The signup data
+     * @return void
+     */
+    protected function addRoles(User $entity, array $data)
+    {
+        if (empty($data['roles'])) {
+            return;
+        }
+        $roles = $this->loadRoles($data['roles']);
+        $association = $this->Users->associations()->getByProperty('roles');
+        $association->link($entity, $roles);
+    }
+
+    /**
+     * Load requested roles entities with validation
+     *
+     * @param array $roles Requested role names
+     * @return \BEdita\Core\Model\Entity\Role[] requested role entities
+     * @throws \Cake\Network\Exception\BadRequestException When role validation fails
+     */
+    protected function loadRoles(array $roles)
+    {
+        $entities = [];
+        $allowed = (array)Configure::read('Signup.roles');
+        foreach ($roles as $name) {
+            $role = $this->Roles->find()->where(compact('name'))->first();
+            if (RolesTable::ADMIN_ROLE === $role->get('id') || !in_array($name, $allowed)) {
+                throw new BadRequestException(__d('bedita', 'Role "{0}" not allowed on signup', [$name]));
+            }
+            $entities[] = $role;
+        }
+
+        return $entities;
     }
 
     /**

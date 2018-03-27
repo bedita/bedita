@@ -24,6 +24,7 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * @covers \BEdita\Core\Model\Action\SignupUserAction
@@ -36,12 +37,15 @@ class SignupUserActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.roles_users',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.auth_providers',
@@ -256,5 +260,83 @@ class SignupUserActionTest extends TestCase
             static::assertSame(1, $eventDispatched, 'Event not dispatched');
             static::assertFalse(TableRegistry::get('Users')->exists(['username' => 'testsignup']));
         }
+    }
+
+    /**
+     * Data provider for `testRoles()`
+     *
+     * @return array
+     */
+    public function rolesProvider()
+    {
+        return [
+            'admin' => [
+                true,
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'roles' => ['second role'],
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                    ],
+                ],
+                ['second role'],
+            ],
+            'failNoRoles' => [
+                new BadRequestException('Role "second role" not allowed on signup'),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'roles' => ['second role'],
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                    ],
+                ],
+                [],
+            ],
+            'failAdminRole' => [
+                new BadRequestException('Role "first role" not allowed on signup'),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'roles' => ['first role'],
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                    ],
+                ],
+                ['first role'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `addRoles` and `loadRoles` methods
+     *
+     * @param bool|\Exception $expected Expected result.
+     * @param array $data Action data.
+     * @param array $allowed Allowe roles to set in configuration.
+     *
+     * @dataProvider rolesProvider
+     * @return void
+     */
+    public function testRoles($expected, array $data, array $allowed)
+    {
+        Configure::write('Signup.roles', $allowed);
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $action = new SignupUserAction();
+        $result = $action($data);
+
+        static::assertTrue((bool)$result);
+        static::assertSame($data['data']['roles'], Hash::extract($result->get('roles'), '{n}.name'));
     }
 }
