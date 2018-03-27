@@ -431,6 +431,19 @@ return [
     ],
 
     /**
+     * Auth default settings.
+     *
+     * - 'passwordPolicy.rule' - Regexp, callback or validation class to use as validation rule (only regexp supported for now)
+     * - 'passwordPolicy.message' -  Error message for password validation failure
+     */
+    'Auth' => [
+        'passwordPolicy' => [
+            'rule' => '',
+            'message' => '',
+        ]
+    ],
+
+    /**
      * Filesystem configuration.
      *
      * Several filesystem configurations allow you to manage your files

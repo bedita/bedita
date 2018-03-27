@@ -17,10 +17,12 @@ use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
@@ -249,6 +251,24 @@ class UsersTable extends Table
     {
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
+        }
+    }
+
+    /**
+     * If password is changed or created: check regexp rule if present
+     *
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param \ArrayObject $data The input data to save
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException if password is not valid
+     */
+    public function beforeMarshal(Event $event, \ArrayObject $data)
+    {
+        if (isset($data['password'])) {
+            $passwdRule = Configure::read('Auth.passwordPolicy.rule');
+            if (!empty($passwdRule) && !preg_match($passwdRule, $data['password'])) {
+                throw new BadRequestException(__d('bedita', Configure::read('Auth.passwordPolicy.message')));
+            }
         }
     }
 }
