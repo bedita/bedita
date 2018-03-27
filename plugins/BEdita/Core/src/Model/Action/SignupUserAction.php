@@ -91,9 +91,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         // operations are not in transaction because AsyncJobs could use a different connection
         $user = $this->createUser($data['data']);
-        // add roles to user, with validity check
-        $this->addRoles($user, $data['data']);
         try {
+            // add roles to user, with validity check
+            $this->addRoles($user, $data['data']);
+
             $job = $this->createSignupJob($user);
             $activationUrl = $this->getActivationUrl($job, $data['data']);
 
