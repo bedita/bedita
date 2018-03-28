@@ -15,7 +15,8 @@ ENV DEBUG ${DEBUG:-false}
 
 # Install libraries
 WORKDIR /var/www/html
-VOLUME /var/www/webroot/files
+RUN chmod a+rwx /var/www/html/webroot/_files
+VOLUME /var/www/html/webroot/_files
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
     && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction
 
