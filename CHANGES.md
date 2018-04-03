@@ -1,5 +1,41 @@
 # ChangeLog
 
+## Version 4.0.0.beta2 - Cactus
+
+### API changes (4.0.0.beta2)
+
+* [#1434](https://github.com/bedita/bedita/pull/1434) Roles in `/auth/user`
+* [#1438](https://github.com/bedita/bedita/issues/1438) Signup with given roles
+* [#1402](https://github.com/bedita/bedita/issues/1402) Folders API
+* [#1430](https://github.com/bedita/bedita/issues/1430) GET `files` fails with 405
+* [#1421](https://github.com/bedita/bedita/pull/1421) Enable filter on multiple associated items by id
+* [#1416](https://github.com/bedita/bedita/pull/1416) Add multiple types flag to `/home`
+* [#1406](https://github.com/bedita/bedita/issues/1406) Schema info in response in `meta.schema`
+* [#1415](https://github.com/bedita/bedita/pull/1415) Add `id` property to json schema
+* [#1414](https://github.com/bedita/bedita/pull/1414) ETag header on json schema
+* [#1411](https://github.com/bedita/bedita/pull/1411) Create/modify not allowed on abstract endpoints
+* [#1435](https://github.com/bedita/bedita/pull/1435) Login authorization
+
+### Core changes (4.0.0.beta2)
+
+* [#1437](https://github.com/bedita/bedita/pull/1437) Passwd policy
+* [#1436](https://github.com/bedita/bedita/pull/1436) Thumbnails generation
+* [#1408](https://github.com/bedita/bedita/pull/1408) Folders data model
+* [#1412](https://github.com/bedita/bedita/issues/1412) Error saving `object_type` with unchanged `parent_name`
+* [#1418](https://github.com/bedita/bedita/issues/1418) Error saving empty date - CTI problem
+* [#1407](https://github.com/bedita/bedita/pull/1407) Fix warning when including to-one resources
+* [#1425](https://github.com/bedita/bedita/pull/1425) Avoid errors on blank `email`
+* [#1405](https://github.com/bedita/bedita/issues/1405) JSON Schema cache
+* [#1404](https://github.com/bedita/bedita/issues/1404) Add revision to JSON Schema
+* [#1420](https://github.com/bedita/bedita/pull/1420) Error saving unchanged parent name
+* [#1417](https://github.com/bedita/bedita/pull/1417) Disabled types updates
+* [#1433](https://github.com/bedita/bedita/pull/1433) Chore: LocalAdapter path + test
+
+### Integration changes (4.0.0.beta2)
+
+* [#1427](https://github.com/bedita/bedita/pull/1427) Travis PHP 7.2 + new Scrutinizer engine
+* [#1426](https://github.com/bedita/bedita/pull/1426) feat: postman tests refactor + image&stream (upload, create stream, etc.)
+
 ## Version 4.0.0.beta - Cactus
 
 ### API changes (4.0.0.beta)
