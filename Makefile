@@ -93,7 +93,7 @@ bump-version: guard-VERSION
 	@echo "Update version to $(VERSION) in $(VERSION_FILE)"
 	echo $(VERSION_CONTENT)$(VERSION) > $(VERSION_FILE)
 	git add $(VERSION_FILE)
-	git commit -m "chore: update version number to $(VERSION)"
+	git commit -m "chore: update version number to $(VERSION) [ci skip]"
 
 # Tag a release
 tag-release: guard-VERSION bump-version
