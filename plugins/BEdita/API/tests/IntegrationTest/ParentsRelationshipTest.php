@@ -147,6 +147,26 @@ class ParentsRelationshipTest extends IntegrationTestCase
     }
 
     /**
+     * Test not valid type for parents relationship
+     *
+     * @return void
+     */
+    public function testNotAllowedResourceType()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'type' => 'profiles',
+                'id' => '4', // <= he is Gustavo!
+            ],
+        ];
+        $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
+        $this->assertResponseCode(409);
+        $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals('Unsupported resource type', $body['error']['title']);
+    }
+
+    /**
      * Return the count of an object on tree
      *
      * @param int $objectId The object id to count
