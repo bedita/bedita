@@ -2335,6 +2335,8 @@ class ObjectsControllerTest extends IntegrationTestCase
         $controller = new ObjectsController($request);
         $resourceTypes = $controller->JsonApi->getConfig('resourceTypes');
 
+        sort($expected);
+        sort($resourceTypes);
         static::assertEquals($expected, array_values($resourceTypes));
     }
 }
