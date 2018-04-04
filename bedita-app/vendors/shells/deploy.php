@@ -561,18 +561,15 @@ class DeployShell extends BeditaBaseShell {
         $changes = array('user' => array(), 'frontend' => array(), 'developer' => array(), 'other' => array());
         $labelsMap = array('topic - ui' => 'user', 'topic - frontend' => 'frontend');
 
-        $githubUser = $this->in('Github user: ');
-        if (empty($githubUser)) {
-            $this->out('Missing Github user. Exit... bye');
+
+        $githubToken = $this->in('Github personal access token: ');
+        if (empty($githubToken)) {
+            $this->out('Missing Github personal access token. Exit... bye');
             return false;
         }
-
-        $githubPassword = $this->in('Github password: ');
-        if (empty($githubPassword)) {
-            $this->out('Missing Github password. Exit... bye');
-            return false;
-        }
-
+        $header = array();
+        $header[] = 'Authorization: token ' . $githubToken;
+        
         $restClient = ClassRegistry::init('RestClientModel');
         $restClient->setup();
         if (!$restClient->useCurl) {
@@ -580,9 +577,8 @@ class DeployShell extends BeditaBaseShell {
             return false;
         }
         $options = array(
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-            CURLOPT_USERPWD => "$githubUser:$githubPassword",
             CURLOPT_HEADER => true,
+            CURLOPT_HTTPHEADER => $header,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_SSL_VERIFYPEER => 0,
