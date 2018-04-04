@@ -372,6 +372,7 @@ class DateItem extends BEAppModel
             while ($day <= $lastDay) {
                 if (!empty($di['DateItem']['days']) && !in_array(date('N', $time), $di['DateItem']['days'])) {
                     $time = strtotime('+1 day', $time);
+                    $day = date('Y-m-d', $time);
                     continue;
                 }
 
@@ -381,8 +382,9 @@ class DateItem extends BEAppModel
 
                 self::addToCalendar($calendar, $newItem);
 
-                $time += DAY;
+                $time = strtotime('+1 day', $time);
                 $day = date('Y-m-d', $time);
+
             }
         }
         ksort($calendar);
