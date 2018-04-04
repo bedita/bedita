@@ -2320,12 +2320,14 @@ class ObjectsControllerTest extends IntegrationTestCase
     /**
      * Test `resourceTypes` config of `jsonApiComponent` set in `initialize()`
      *
+     * @param array $expected The expected result
+     * @param array $requestData The data needed to create the request
      * @return void
      *
      * @dataProvider resourceTypeProvider
      * @covers ::initialize()
      */
-    public function testInitializeResourceTypes($expected, $requestData)
+    public function testInitializeResourceTypes(array $expected, array $requestData)
     {
         $request = new ServerRequest($requestData + [
             'environment' => [
