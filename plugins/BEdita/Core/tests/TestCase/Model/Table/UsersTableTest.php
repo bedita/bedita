@@ -325,6 +325,7 @@ class UsersTableTest extends TestCase
      * @param array $data Data to be validated.
      *
      * @return void
+     * @covers ::validationSignup()
      * @dataProvider validationSignupProvider
      */
     public function testValidationSignup($expected, array $data)
@@ -340,6 +341,29 @@ class UsersTableTest extends TestCase
             $success = $this->Users->save($user);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test validation signup.
+     *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
+     *
+     * @return void
+     * @covers ::validationSignupExternal()
+     */
+    public function testValidationSignupExternal()
+    {
+        $data = [
+            'username' => 'test',
+            'email' => 'test@email.com',
+        ];
+
+        $user = $this->Users->newEntity();
+        $this->Users->patchEntity($user, $data, ['validate' => 'signupExternal']);
+
+        $error = (bool)$user->getErrors();
+        static::assertEmpty($error);
     }
 
     /**

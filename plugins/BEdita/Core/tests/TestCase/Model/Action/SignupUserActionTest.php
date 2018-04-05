@@ -22,6 +22,7 @@ use Cake\Event\EventManager;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -165,7 +166,7 @@ class SignupUserActionTest extends TestCase
     public function testExecute($expected, array $data)
     {
         if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
+            static::expectException(get_class($expected));
         }
 
         $eventDispatched = 0;
@@ -185,6 +186,92 @@ class SignupUserActionTest extends TestCase
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
         static::assertSame('draft', $result->status);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
+    }
+
+    /**
+     * Provider for `testExecuteExtAuth()`
+     *
+     * @return array
+     */
+    public function executeExtAuthProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'email' => 'testsignup@example.com',
+                        'auth_provider' => 'example',
+                        'provider_username' => 'test',
+                        'provider_userdata' => [
+                            'lot of data',
+                        ],
+                        'access_token' => 'incredibly-long-string',
+                    ],
+                ],
+                [
+                    'owner_id' => 'test',
+                ]
+            ],
+            'oauth2 fail' => [
+                new UnauthorizedException('External auth failed'),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'email' => 'testsignup@example.com',
+                        'auth_provider' => 'example',
+                        'provider_username' => 'not-found',
+                        'provider_userdata' => [],
+                        'access_token' => 'incredibly-long-string',
+                    ],
+                ],
+                [
+                    'owner_id' => 'test',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test command execution with external auth
+     *
+     * @param array|\Exception $expected Expected result.
+     * @param array $data Action data.
+     * @return void
+     *
+     * @dataProvider executeExtAuthProvider
+     */
+    public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $eventDispatched = 0;
+        EventManager::instance()->on('Auth.signupActivation', function (...$arguments) use (&$eventDispatched) {
+            $eventDispatched++;
+
+            static::assertCount(2, $arguments);
+            static::assertInstanceOf(Event::class, $arguments[0]);
+            static::assertInstanceOf(User::class, $arguments[1]);
+        });
+
+        $action = $this->getMockBuilder(SignupUserAction::class)
+            ->setMethods(['getOAuth2Response'])
+            ->getMock();
+
+        $action
+            ->method('getOAuth2Response')
+            ->willReturn($oauthResponse);
+
+        $result = $action($data);
+
+        static::assertTrue((bool)$result);
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('on', $result->status);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 

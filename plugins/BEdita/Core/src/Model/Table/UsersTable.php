@@ -121,6 +121,25 @@ class UsersTable extends Table
     }
 
     /**
+     * External auth signup validation
+     *
+     * @param \Cake\Validation\Validator $validator The validator
+     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
+     */
+    public function validationSignupExternal(Validator $validator)
+    {
+        $validator = $this->validationDefault($validator);
+
+        $validator
+            ->email('email')
+            ->requirePresence('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        return $validator;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore

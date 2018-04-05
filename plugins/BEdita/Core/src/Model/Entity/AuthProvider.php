@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,6 +17,7 @@ use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 
 /**
@@ -73,5 +74,21 @@ class AuthProvider extends Entity
                 return $exp->in($table->aliasField('name'), $roles);
             })
             ->toArray();
+    }
+
+    /**
+     * Check auth providers credentials.
+     * Provider username MUST match external auth provider response.
+     *
+     * @param array $providerResponse Provider response in array format
+     * @param string $providerUsername Provider username to match
+     * @return bool True on success, false on failure
+     */
+    public function checkAuthorization($providerResponse, $providerUsername)
+    {
+        $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
+        $userName = Hash::get($providerResponse, $fieldPath);
+
+        return ($userName === $providerUsername);
     }
 }

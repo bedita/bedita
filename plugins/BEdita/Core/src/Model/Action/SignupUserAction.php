@@ -22,9 +22,11 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
+use Cake\Http\Client;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -61,6 +63,20 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected $Roles;
 
     /**
+     * The ExternalAuth table
+     *
+     * @var \BEdita\Core\Model\Table\ExternalAuthTable
+     */
+    protected $ExternalAuth;
+
+    /**
+     * The HTTP Client table
+     *
+     * @var \Cake\Http\Client
+     */
+    protected $httpClient;
+
+    /**
      * {@inheritdoc}
      */
     protected function initialize(array $config)
@@ -68,6 +84,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
         $this->Roles = TableRegistry::get('Roles');
+        $this->ExternalAuth = TableRegistry::get('ExternalAuth');
+        $this->httpClient = new Client();
 
         $this->getEventManager()->on($this);
     }
@@ -77,6 +95,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @return \BEdita\Core\Model\Entity\User
      * @throws \Cake\Network\Exception\BadRequestException When validation of URL options fails
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
      */
     public function execute(array $data = [])
     {
@@ -91,14 +110,21 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         // operations are not in transaction because AsyncJobs could use a different connection
         $user = $this->createUser($data['data']);
+        if ($user === false) {
+            throw new UnauthorizedException(__d('bedita', 'External auth failed'));
+        }
         try {
             // add roles to user, with validity check
             $this->addRoles($user, $data['data']);
 
-            $job = $this->createSignupJob($user);
-            $activationUrl = $this->getActivationUrl($job, $data['data']);
+            if (empty($data['data']['auth_provider'])) {
+                $job = $this->createSignupJob($user);
+                $activationUrl = $this->getActivationUrl($job, $data['data']);
 
-            $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
+                $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
+            } else {
+                $this->dispatchEvent('Auth.signupActivation', [$user], $this->Users);
+            }
         } catch (\Exception $e) {
             // if async job or send mail fail remove user created and re-throw the exception
             $this->Users->delete($user);
@@ -139,8 +165,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $validator = new Validator();
         $validator->setProvider('bedita', Validation::class);
 
+        if (empty($data['auth_provider'])) {
+            $validator->requirePresence('activation_url');
+        }
+
         $validator
-            ->requirePresence('activation_url')
             ->add('activation_url', 'customUrl', [
                 'rule' => 'url',
                 'provider' => 'bedita',
@@ -155,7 +184,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
-     * Create a new user with status draft.
+     * Create a new user with status:
+     *  - `on` if an external auth provider is used or no activation
+     *    is required via `Signup.requireActivation` config
+     *  - `draft` in other cases.
      *
      * The user is validated using 'signup' validation.
      *
@@ -169,20 +201,83 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
 
         $status = 'draft';
-        if (Configure::read('Signup.requireActivation') === false) {
+        if (!empty($data['auth_provider']) || Configure::read('Signup.requireActivation') === false) {
             $status = 'on';
         }
         unset($data['status']);
 
-        $action = new SaveEntityAction(['table' => $this->Users]);
+        $extAuth = $this->checkExternalAuth($data);
+        if (!$extAuth) {
+            return false;
+        }
 
-        return $action([
+        $validate = empty($data['auth_provider']) ? 'signup' : 'signupExternal';
+        $action = new SaveEntityAction(['table' => $this->Users]);
+        $user = $action([
             'entity' => $this->Users->newEntity()->set('status', $status),
             'data' => $data,
             'entityOptions' => [
-                'validate' => 'signup',
+                'validate' => $validate,
             ],
         ]);
+
+        if (empty($data['auth_provider'])) {
+            return $user;
+        }
+
+        $action = new SaveEntityAction(['table' => $this->ExternalAuth]);
+        $action([
+            'entity' => $this->ExternalAuth->newEntity(),
+            'data' => [
+                'user_id' => $user->get('id'),
+                'auth_provider_id' => $extAuth->get('id'),
+                'params' => $data['provider_userdata'],
+                'provider_username' => $data['provider_username'],
+            ]
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Check external auth data validity
+     *
+     * To perform external auth check these fields are mandatory:
+     *  - "auth_provider": provider name like "google", "facebook"... must be in `auth_providers`
+     *  - "provider_username": id or username of the provider
+     *  - "access_token": token returned by provider to use in check
+     *
+     * @param array $data The signup data
+     * @return \BEdita\Core\Model\Entity\AuthProviderUser|bool AuthProvider entity or true on success, false on failure
+     */
+    protected function checkExternalAuth(array $data)
+    {
+        if (empty($data['auth_provider'])) {
+            return true;
+        }
+        /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        $authProvider = TableRegistry::get('AuthProviders')->find()->where(['name' => $data['auth_provider']])->first();
+        $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
+        if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
+            return false;
+        }
+
+        return $authProvider;
+    }
+
+    /**
+     * Get response from an OAuth2 provider
+     *
+     * @param string $url OAuth2 provider URL
+     * @param string $accessToken Access token to use in request
+     * @return array Response from an OAuth2 provider
+     * @codeCoverageIgnore
+     */
+    protected function getOAuth2Response($url, $accessToken)
+    {
+        $response = $this->httpClient->get($url, [], ['headers' => ['Authorizazion' => 'Bearer ' . $accessToken]]);
+
+        return $response->json;
     }
 
     /**
@@ -265,6 +360,22 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
+     * Send welcome email to user to inform of successfully activation
+     * External auth users are already activated
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\User $user The user
+     * @return void
+     */
+    public function sendActivationMail(Event $event, User $user)
+    {
+        $options = [
+            'params' => compact('user'),
+        ];
+        $this->getMailer('BEdita/Core.User')->send('welcome', [$options]);
+    }
+
+    /**
      * Return the signup activation url
      *
      * @param \BEdita\Core\Model\Entity\AsyncJob $job The async job entity
@@ -287,6 +398,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         return [
             'Auth.signup' => 'sendMail',
+            'Auth.signupActivation' => 'sendActivationMail',
         ];
     }
 }

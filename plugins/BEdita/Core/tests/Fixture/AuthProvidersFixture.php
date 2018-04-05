@@ -28,7 +28,7 @@ class AuthProvidersFixture extends TestFixture
         [
             'name' => 'example',
             'url' => 'https://example.com/oauth2',
-            'params' => '{}',
+            'params' => '{"provider_username_field": "owner_id"}',
         ],
         [
             'name' => 'BEdita/API.Uuid',

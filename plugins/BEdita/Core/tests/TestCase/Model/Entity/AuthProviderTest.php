@@ -148,4 +148,48 @@ class AuthProviderTest extends TestCase
 
         static::assertEquals($expected, $roles);
     }
+
+    /**
+     * Data provider for `testCheckAuthorization` test case.
+     *
+     * @return array
+     */
+    public function checkAuthorizationProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'owner_id' => 'test',
+                ],
+                'test',
+            ],
+            'ko' => [
+                false,
+                [
+                    'some_id' => 'gustavo',
+                ],
+                'test',
+            ],
+        ];
+    }
+
+    /**
+     * Test getter of roles to be associated to users authenticated via auth provider.
+     *
+     * @param bool $expected Expected result.
+     * @param array $configuration Initial configuration.
+     * @param string $username Initial configuration.
+     * @return void
+     *
+     * @covers ::checkAuthorization()
+     * @dataProvider checkAuthorizationProvider()
+     */
+    public function testCheckAuthorization(bool $expected, array $response, $username)
+    {
+        $authProvider = $this->AuthProviders->get(1);
+        $result = $authProvider->checkAuthorization($response, $username);
+
+        static::assertEquals($expected, $result);
+    }
 }
