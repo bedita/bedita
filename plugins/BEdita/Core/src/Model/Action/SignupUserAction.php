@@ -167,6 +167,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         if (empty($data['auth_provider'])) {
             $validator->requirePresence('activation_url');
+        } else {
+            $validator
+                ->requirePresence('provider_username')
+                ->requirePresence('access_token');
         }
 
         $validator
@@ -231,7 +235,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             'data' => [
                 'user_id' => $user->get('id'),
                 'auth_provider_id' => $extAuth->get('id'),
-                'params' => $data['provider_userdata'],
+                'params' => empty($data['provider_userdata']) ? null : $data['provider_userdata'],
                 'provider_username' => $data['provider_username'],
             ]
         ]);
@@ -275,7 +279,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function getOAuth2Response($url, $accessToken)
     {
-        $response = $this->httpClient->get($url, [], ['headers' => ['Authorizazion' => 'Bearer ' . $accessToken]]);
+        $response = $this->httpClient->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
         return $response->json;
     }
