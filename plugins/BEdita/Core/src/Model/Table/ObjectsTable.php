@@ -251,4 +251,28 @@ class ObjectsTable extends Table
             return $exp->eq($this->aliasField($this->CreatedByUser->getForeignKey()), LoggedUser::id());
         });
     }
+
+    /**
+     * Try to get the object `id` from `uname`.
+     *
+     * If `$uname` is numeric it returns immediately.
+     * else try to find it from `uname` field.
+     *
+     * @param int|string $uname Unique identifier for the object.
+     * @return int
+     */
+    public function getId($uname)
+    {
+        if (is_numeric($uname)) {
+            return (int)$uname;
+        }
+
+        $result = $this->find()
+            ->select($this->aliasField('id'))
+            ->where([$this->aliasField('uname') => $uname])
+            ->enableHydration(false)
+            ->firstOrFail();
+
+        return $result['id'];
+    }
 }
