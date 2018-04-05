@@ -185,6 +185,7 @@ class ObjectsController extends ResourcesController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
+        $id = TableRegistry::get('Objects')->getId($id);
         $include = $this->request->getQuery('include');
         $contain = $include ? $this->prepareInclude($include) : [];
 
@@ -230,7 +231,7 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get']);
 
         $relationship = $this->request->getParam('relationship');
-        $relatedId = $this->request->getParam('related_id');
+        $relatedId = TableRegistry::get('Objects')->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
@@ -255,7 +256,7 @@ class ObjectsController extends ResourcesController
      */
     public function relationships()
     {
-        $id = $this->request->getParam('id');
+        $id = TableRegistry::get('Objects')->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
