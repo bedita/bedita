@@ -399,4 +399,52 @@ class ObjectsTableTest extends TestCase
 
         static::assertInstanceOf(ObjectEntity::class, $result);
     }
+
+    /**
+     * Data provider for `testGetId()`
+     *
+     * @return array
+     */
+    public function getIdProvider()
+    {
+        return [
+            'id' => [1, 1],
+            'idString' => [1, '1'],
+            'uname' => [1, 'first-user'],
+            'notFound' => [
+                new RecordNotFoundException('Record not found in table "objects"'),
+                'this-uname-doesnt-exist',
+            ],
+            'null' => [
+                new RecordNotFoundException('Record not found in table "objects"'),
+                null,
+            ],
+            'emptyString' => [
+                new RecordNotFoundException('Record not found in table "objects"'),
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * Test `getId()`
+     *
+     * @param mixed $expected The expected result.
+     * @param int|string $uname The unique object identifier.
+     * @return void
+     *
+     * @dataProvider getIdProvider
+     * @covers ::getId()
+     */
+    public function testGetId($expected, $uname)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $id = $this->Objects->getId($uname);
+        static::assertEquals($expected, $id);
+    }
 }
