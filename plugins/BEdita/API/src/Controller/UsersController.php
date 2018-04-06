@@ -30,6 +30,7 @@ class UsersController extends ObjectsController
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'roles' => ['roles'],
+            'parents' => ['folders'],
         ],
     ];
 }
