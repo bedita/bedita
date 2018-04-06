@@ -12,8 +12,10 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ObjectsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -2273,5 +2275,70 @@ class ObjectsControllerTest extends IntegrationTestCase
             'bedita',
             'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
         ));
+    }
+
+    /**
+     * Data provider fo `testInitializeResourceTypes()`
+     *
+     * @return array
+     */
+    public function resourceTypeProvider()
+    {
+        return [
+            'mainResource' => [
+                ['documents'],
+                [
+                    'params' => [
+                        'controller' => 'Documents',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+            'beditaRelation' => [
+                ['documents', 'profiles'],
+                [
+                    'params' => [
+                        'controller' => 'Documents',
+                        'action' => 'relationships',
+                        'relationship' => 'test',
+                    ],
+                ],
+            ],
+            'parentRelationships' => [
+                ['folders'],
+                [
+                    'params' => [
+                        'controller' => 'Documents',
+                        'action' => 'relationships',
+                        'relationship' => 'parents',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `resourceTypes` config of `jsonApiComponent` set in `initialize()`
+     *
+     * @param array $expected The expected result
+     * @param array $requestData The data needed to create the request
+     * @return void
+     *
+     * @dataProvider resourceTypeProvider
+     * @covers ::initialize()
+     */
+    public function testInitializeResourceTypes(array $expected, array $requestData)
+    {
+        $request = new ServerRequest($requestData + [
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+            ],
+        ]);
+        $controller = new ObjectsController($request);
+        $resourceTypes = $controller->JsonApi->getConfig('resourceTypes');
+
+        sort($expected);
+        sort($resourceTypes);
+        static::assertEquals($expected, array_values($resourceTypes));
     }
 }

@@ -57,6 +57,15 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'parents' => ['folders'],
+        ],
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
     public function initialize()
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
@@ -68,8 +77,6 @@ class ObjectsController extends ResourcesController
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
         }
-
-        parent::initialize();
 
         $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
         try {
@@ -93,8 +100,10 @@ class ObjectsController extends ResourcesController
             throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
 
-        if (isset($this->JsonApi)) {
-            $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
+        parent::initialize();
+
+        if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
+            $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
         }
     }
 

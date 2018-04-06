@@ -85,7 +85,8 @@ abstract class ResourcesController extends AppController
             if ($this->request->getParam('action') === 'relationships') {
                 $this->JsonApi->setConfig(
                     'resourceTypes',
-                    $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship')))
+                    $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship'))),
+                    false
                 );
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
