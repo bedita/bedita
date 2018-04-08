@@ -63,13 +63,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected $Roles;
 
     /**
-     * The ExternalAuth table
-     *
-     * @var \BEdita\Core\Model\Table\ExternalAuthTable
-     */
-    protected $ExternalAuth;
-
-    /**
      * {@inheritdoc}
      */
     protected function initialize(array $config)
@@ -77,7 +70,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $this->Users = TableRegistry::get('Users');
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
         $this->Roles = TableRegistry::get('Roles');
-        $this->ExternalAuth = TableRegistry::get('ExternalAuth');
 
         $this->getEventManager()->on($this);
     }
