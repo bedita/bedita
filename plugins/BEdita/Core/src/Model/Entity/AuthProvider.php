@@ -28,6 +28,9 @@ use Cake\Utility\Text;
  * @property string $slug
  * @property string $url
  * @property string $params
+ * @property bool $enabled
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  *
  * @since 4.0.0
@@ -62,7 +65,7 @@ class AuthProvider extends Entity
      */
     public function getRoles()
     {
-        $roles = (array)Configure::read(sprintf('Roles.%s', $this->name));
+        $roles = (array)Configure::read(sprintf('Roles.%s', $this->auth_class));
         if (empty($roles)) {
             return [];
         }
