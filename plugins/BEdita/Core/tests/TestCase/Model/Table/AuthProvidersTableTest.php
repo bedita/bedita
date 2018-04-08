@@ -173,5 +173,8 @@ class AuthProvidersTableTest extends TestCase
         $result = $this->AuthProviders->find('enabled', ['name' => 'example'])->toArray();
         static::assertNotEmpty($result);
         static::assertEquals(1, count($result));
+
+        $result = $this->AuthProviders->find('enabled', ['name' => 'linkedout'])->toArray();
+        static::assertEmpty($result);
     }
 }
