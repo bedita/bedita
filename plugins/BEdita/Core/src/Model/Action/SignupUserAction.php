@@ -70,13 +70,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected $ExternalAuth;
 
     /**
-     * The HTTP Client table
-     *
-     * @var \Cake\Http\Client
-     */
-    protected $httpClient;
-
-    /**
      * {@inheritdoc}
      */
     protected function initialize(array $config)
@@ -85,7 +78,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
         $this->Roles = TableRegistry::get('Roles');
         $this->ExternalAuth = TableRegistry::get('ExternalAuth');
-        $this->httpClient = new Client();
 
         $this->getEventManager()->on($this);
     }
@@ -210,8 +202,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         unset($data['status']);
 
-        $extAuth = $this->checkExternalAuth($data);
-        if (!$extAuth) {
+        $authProvider = $this->checkExternalAuth($data);
+        if (!$authProvider) {
             return false;
         }
 
@@ -229,16 +221,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             return $user;
         }
 
-        $action = new SaveEntityAction(['table' => $this->ExternalAuth]);
-        $action([
-            'entity' => $this->ExternalAuth->newEntity(),
-            'data' => [
-                'user_id' => $user->get('id'),
-                'auth_provider_id' => $extAuth->get('id'),
-                'params' => empty($data['provider_userdata']) ? null : $data['provider_userdata'],
-                'provider_username' => $data['provider_username'],
-            ]
-        ]);
+        $params = empty($data['provider_userdata']) ? null : $data['provider_userdata'];
+        $username = $data['provider_username'];
+        $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username', 'params'));
 
         return $user;
     }
@@ -260,7 +245,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             return true;
         }
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
-        $authProvider = TableRegistry::get('AuthProviders')->find()->where(['name' => $data['auth_provider']])->first();
+        $authProvider = TableRegistry::get('AuthProviders')->find('enabled', ['name' => $data['auth_provider']])->first();
+        if (empty($authProvider)) {
+            return false;
+        }
         $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
         if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
             return false;
@@ -279,7 +267,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function getOAuth2Response($url, $accessToken)
     {
-        $response = $this->httpClient->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
+        /** @var \Cake\Http\Client\Response $response */
+        $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
         return $response->json;
     }

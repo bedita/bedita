@@ -215,6 +215,21 @@ class SignupUserActionTest extends TestCase
                     'owner_id' => 'test',
                 ]
             ],
+            'bad provider' => [
+                new UnauthorizedException('External auth failed'),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'email' => 'testsignup@example.com',
+                        'auth_provider' => 'someprovider',
+                        'provider_username' => 'test',
+                        'access_token' => 'incredibly-long-string',
+                    ],
+                ],
+                [
+                    'owner_id' => 'test',
+                ]
+            ],
             'oauth2 fail' => [
                 new UnauthorizedException('External auth failed'),
                 [

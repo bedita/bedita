@@ -206,7 +206,7 @@ class UsersTable extends Table
             'params' => $params,
         ]);
 
-        return $this->ExternalAuth->save($externalAuth);
+        return $this->ExternalAuth->saveOrFail($externalAuth);
     }
 
     /**

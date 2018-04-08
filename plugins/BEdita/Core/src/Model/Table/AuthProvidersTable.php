@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use Cake\Collection\Collection;
 use Cake\Core\App;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -108,6 +109,25 @@ class AuthProvidersTable extends Table
         $schema->setColumnType('params', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Finder to find all enabled providers or by name
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options with `name`.
+     * @return \Cake\ORM\Query
+     */
+    protected function findEnabled(Query $query, array $options = [])
+    {
+        return $query->where(function (QueryExpression $exp) use ($options) {
+            $exp = $exp->eq($this->aliasField('enabled'), true);
+            if (!empty($options['name'])) {
+                $exp = $exp->eq($this->aliasField('name'), $options['name']);
+            }
+
+            return $exp;
+        });
     }
 
     /**

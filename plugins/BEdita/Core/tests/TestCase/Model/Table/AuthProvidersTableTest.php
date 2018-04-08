@@ -156,4 +156,22 @@ class AuthProvidersTableTest extends TestCase
         static::assertEquals(['uuid'], array_keys($result['BEdita/API.Uuid']['authProviders']));
         static::assertEquals(['example'], array_keys($result['BEdita/API.OAuth2']['authProviders']));
     }
+
+    /**
+     * Test `findEnabled` method.
+     *
+     * @return void
+
+     * @covers ::findEnabled()
+     */
+    public function testFindEnabled()
+    {
+        $result = $this->AuthProviders->find('enabled')->toArray();
+        static::assertNotEmpty($result);
+        static::assertEquals(3, count($result));
+
+        $result = $this->AuthProviders->find('enabled', ['name' => 'example'])->toArray();
+        static::assertNotEmpty($result);
+        static::assertEquals(1, count($result));
+    }
 }
