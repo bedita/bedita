@@ -108,6 +108,7 @@ class OAuth2Authenticate extends BaseAuthenticate
      */
     protected function getOAuth2Response($url, $accessToken)
     {
+        /** @var \Cake\Http\Client\Response $response */
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
         return $response->json;
