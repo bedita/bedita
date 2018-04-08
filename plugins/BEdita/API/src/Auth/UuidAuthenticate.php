@@ -37,7 +37,8 @@ class UuidAuthenticate extends BaseAuthenticate
     /**
      * Default config for this object.
      *
-     * - `authProvider` The AuthProvider entity associated to this authentication component.
+     * - `authProviders` The AuthProviders entities associated to this authentication component.
+     *      Array formatted with `auth_providers.name` as key, from `AuthProvidersTable::findAuthenticate()`
      * - `header` The header where the token is stored. Defaults to `'Authorization'`.
      * - `headerPrefix` The prefix to the token in header. Defaults to `'UUID'`.
      * - `fields` The fields to use to identify a user by.
@@ -55,7 +56,7 @@ class UuidAuthenticate extends BaseAuthenticate
      * @var array
      */
     protected $_defaultConfig = [
-        'authProvider' => null,
+        'authProviders' => [],
         'header' => 'Authorization',
         'headerPrefix' => 'UUID',
         'fields' => [
@@ -78,12 +79,17 @@ class UuidAuthenticate extends BaseAuthenticate
      */
     protected function _findUser($username, $password = null)
     {
+        $authProvider = collection($this->_config['authProviders'])->first();
+        $this->setconfig('finder', [
+            'externalAuth' => [
+                'auth_provider' => $authProvider
+            ]
+        ]);
+
         $externalAuth = parent::_findUser($username, $password);
         if (!empty($externalAuth)) {
             return $externalAuth;
         }
-
-        $authProvider = $this->_config['authProvider'];
 
         $Table = TableRegistry::get($this->_config['userModel']);
         $Table->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username'));
