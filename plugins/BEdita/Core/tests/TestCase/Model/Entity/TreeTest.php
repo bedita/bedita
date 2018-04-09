@@ -87,6 +87,10 @@ class TreeTest extends TestCase
         $tree->parent_id = $parentNode->object_id;
         static::assertEquals($parentNode->root_id, $tree->root_id);
         static::assertEquals($parentNode->id, $tree->parent_node_id);
+
+        $tree = $this->Trees->get(2);
+        $tree->parent_id = 11;
+        static::assertEquals($tree->root_id, $tree->parent_id);
     }
 
     /**

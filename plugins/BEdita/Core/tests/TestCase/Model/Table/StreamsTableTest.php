@@ -256,6 +256,21 @@ class StreamsTableTest extends TestCase
     }
 
     /**
+     * Test after save event.
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testAfterDelete()
+    {
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+        $stream = $this->Streams->get($uuid);
+        $success = $this->Streams->delete($stream);
+        static::assertNotEmpty($success);
+    }
+
+    /**
      * Test before save event handler with an already persisted entity.
      *
      * @return void
@@ -281,4 +296,5 @@ class StreamsTableTest extends TestCase
 
         static::assertSame($expected, $result);
     }
+
 }

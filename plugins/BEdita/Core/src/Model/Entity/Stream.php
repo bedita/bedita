@@ -164,10 +164,6 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function createStream($source)
     {
-        if (!is_resource($source)) {
-            throw new \InvalidArgumentException('Cannot create a stream out of anything but a resource');
-        }
-
         rewind($source);
 
         $resource = fopen('php://temp', 'wb+');

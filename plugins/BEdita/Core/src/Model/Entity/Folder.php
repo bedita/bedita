@@ -29,6 +29,7 @@ class Folder extends ObjectEntity
 {
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public function __construct(array $properties = [], array $options = [])
     {

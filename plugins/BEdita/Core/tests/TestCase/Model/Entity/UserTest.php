@@ -42,6 +42,7 @@ class UserTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -71,7 +72,8 @@ class UserTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
+     *
+     * @covers ::__construct()
      */
     public function testAccessible()
     {
@@ -96,7 +98,8 @@ class UserTest extends TestCase
      * Test hidden properties.
      *
      * @return void
-     * @coversNothing
+     *
+     * @covers ::__construct()
      */
     public function testHidden()
     {
