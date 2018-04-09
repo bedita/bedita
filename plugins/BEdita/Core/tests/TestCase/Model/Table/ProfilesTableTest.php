@@ -249,5 +249,6 @@ class ProfilesTableTest extends TestCase
         $success = $this->Profiles->save($profile);
         static::assertTrue((bool)$success);
         static::assertNull($success->get('email'));
+        static::assertEquals('Gustavo Supporto', $success->get('title'));
     }
 }
