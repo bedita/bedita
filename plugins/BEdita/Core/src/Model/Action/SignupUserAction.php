@@ -214,8 +214,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
 
         $params = empty($data['provider_userdata']) ? null : $data['provider_userdata'];
-        $username = $data['provider_username'];
-        $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username', 'params'));
+        $providerUsername = $data['provider_username'];
+        $userId = $user->get('id');
+        $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         return $user;
     }

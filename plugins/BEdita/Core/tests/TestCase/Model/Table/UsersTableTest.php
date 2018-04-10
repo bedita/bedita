@@ -171,17 +171,35 @@ class UsersTableTest extends TestCase
      */
     public function testExternalAuthLogin()
     {
+        //1. Add external auth and create new user
         $authProvider = TableRegistry::get('AuthProviders')->get(2);
-        $username = 'gustavo';
+        $providerUsername = 'gustavo';
         $params = ['job' => 'head of technical support'];
+        $userId = null;
 
-        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username', 'params'));
+        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
         $externalAuth = $event->result;
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
+        static::assertEquals(15, $externalAuth->user_id);
+
+        // 2. Add external auth to current user
+        $authProvider = TableRegistry::get('AuthProviders')->get(1);
+        $providerUsername = 'friend of gustavo';
+        $params = ['job' => 'support of technical support'];
+        $userId = 5;
+
+        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
+
+        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        $externalAuth = $event->result;
+        static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
+        static::assertFalse($externalAuth->isNew());
+        static::assertNotNull($externalAuth->id);
+        static::assertEquals(5, $externalAuth->user_id);
     }
 
     /**
