@@ -180,7 +180,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * The user is validated using 'signup' validation.
      *
      * @param array $data The data to save
-     * @return \BEdita\Core\Model\Entity\User
+     * @return \BEdita\Core\Model\Entity\User|bool User created or `false` on error
      */
     protected function createUser(array $data)
     {
@@ -233,7 +233,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *  - "access_token": token returned by provider to use in check
      *
      * @param array $data The signup data
-     * @return \BEdita\Core\Model\Entity\AuthProviderUser|bool AuthProvider entity or true on success, false on failure
+     * @return \BEdita\Core\Model\Entity\AuthProvider|bool AuthProvider entity or `true` on success, `false` on failure
      */
     protected function checkExternalAuth(array $data)
     {
@@ -266,7 +266,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         /** @var \Cake\Http\Client\Response $response */
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        return $response->json;
+        return !empty($response->json) ? $response->json : [];
     }
 
     /**

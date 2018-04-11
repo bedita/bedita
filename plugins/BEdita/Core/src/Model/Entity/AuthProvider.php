@@ -25,6 +25,7 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $name
+ * @property string $auth_class
  * @property string $slug
  * @property string $url
  * @property string $params
@@ -90,7 +91,7 @@ class AuthProvider extends Entity
     public function checkAuthorization($providerResponse, $providerUsername)
     {
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
-        $userName = Hash::get($providerResponse, $fieldPath);
+        $userName = Hash::get($providerResponse, (string)$fieldPath);
 
         return ($userName === $providerUsername);
     }
