@@ -17,6 +17,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
@@ -1157,6 +1158,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::related()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
      */
     public function testRelated()
     {
@@ -1310,6 +1312,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::relationships()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
      */
     public function testListAssociations()
     {
@@ -1408,6 +1411,27 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test related method on folder related relationships.
+     *
+     * @return void
+     *
+     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
+     */
+    public function testListFoldersRelated()
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/12/children');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $expected = 'http://api.example.com/objects';
+
+        static::assertEquals($expected, Hash::get($result, 'links.available'));
     }
 
     /**
