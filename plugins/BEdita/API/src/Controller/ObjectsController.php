@@ -56,11 +56,19 @@ class ObjectsController extends ResourcesController
 
     /**
      * {@inheritDoc}
+     *
+     *  - 'relationAvailableTypes': routes to available object types for predefined relations like `parent`,
+     *      `parents` and `children`
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'parents' => ['folders'],
         ],
+        'relationAvailableTypes' => [
+            'parent' => ['folders'],
+            'parents' => ['folders'],
+            'children' => ['objects'],
+        ]
     ];
 
     /**
@@ -352,29 +360,41 @@ class ObjectsController extends ResourcesController
             return $available;
         }
 
-        foreach ($this->objectType->right_relations as $relation) {
-            if ($relation->inverse_name !== $relationship) {
-                continue;
-            }
-            $result = Hash::extract($relation->left_object_types, '{n}.name');
-        }
-        foreach ($this->objectType->left_relations as $relation) {
-            if ($relation->name !== $relationship) {
-                continue;
-            }
-            $result = Hash::extract($relation->right_object_types, '{n}.name');
-        }
-        if (empty($result)) {
-            return null;
-        }
+        $types = $this->getAvailableTypes($relationship);
 
         return Router::url(
             [
                 '_name' => 'api:objects:index',
                 'object_type' => 'objects',
-                'filter' => ['type' => array_values($result)],
+                'filter' => ['type' => $types],
             ],
             true
         );
+    }
+
+    /**
+     * Return available object types for a relationship
+     *
+     * @param string $relationship relation name
+     * @return array List of available types
+     */
+    protected function getAvailableTypes($relationship)
+    {
+        foreach ($this->objectType->right_relations as $relation) {
+            if ($relation->inverse_name !== $relationship) {
+                continue;
+            }
+
+            return array_values(Hash::extract($relation->left_object_types, '{n}.name'));
+        }
+        foreach ($this->objectType->left_relations as $relation) {
+            if ($relation->name !== $relationship) {
+                continue;
+            }
+
+            return array_values(Hash::extract($relation->right_object_types, '{n}.name'));
+        }
+
+        return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
     }
 }
