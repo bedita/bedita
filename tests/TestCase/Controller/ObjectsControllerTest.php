@@ -1164,107 +1164,65 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/documents/2/test',
+                'self' => 'http://api.example.com/documents/3/inverse_test',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/documents/2/test',
-                'last' => 'http://api.example.com/documents/2/test',
+                'first' => 'http://api.example.com/documents/3/inverse_test',
+                'last' => 'http://api.example.com/documents/3/inverse_test',
                 'prev' => null,
                 'next' => null,
                 'available' => sprintf(
                     'http://api.example.com/objects?%s',
-                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                    http_build_query(['filter' => ['type' => ['documents']]])
                 ),
             ],
             'data' => [
                 [
-                    'id' => '4',
-                    'type' => 'profiles',
-                    'attributes' => [
-                        'status' => 'on',
-                        'uname' => 'gustavo-supporto',
-                        'title' => 'Gustavo Supporto profile',
-                        'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
-                        'body' => null,
-                        'extra' => null,
-                        'publish_start' => null,
-                        'publish_end' => null,
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/profiles/4',
-                    ],
-                    'relationships' => [
-                        'inverse_test' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/profiles/4/inverse_test',
-                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                            ],
-                        ],
-                        'parents' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/profiles/4/parents',
-                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
-                            ],
-                        ],
-                    ],
-                    'meta' => [
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
-                        'created_by' => 1,
-                        'modified_by' => 1,
-                        'relation' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
-                            'params' => null,
-                        ],
-                    ],
-                ],
-                [
-                    'id' => '3',
+                    'id' => '2',
                     'type' => 'documents',
                     'attributes' => [
-                        'status' => 'draft',
-                        'uname' => 'title-two',
-                        'title' => 'title two',
+                        'status' => 'on',
+                        'uname' => 'title-one',
+                        'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
-                        'extra' => null,
+                        'extra' => [
+                            'abstract' => 'abstract here',
+                            'list' => ['one', 'two', 'three'],
+                        ],
                         'lang' => 'eng',
-                        'publish_start' => null,
-                        'publish_end' => null,
+                        'publish_start' => '2016-05-13T07:09:23+00:00',
+                        'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/documents/3',
+                        'self' => 'http://api.example.com/documents/2',
                     ],
                     'relationships' => [
                         'test' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/test',
-                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'related' => 'http://api.example.com/documents/2/test',
+                                'self' => 'http://api.example.com/documents/2/relationships/test',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/inverse_test',
-                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'related' => 'http://api.example.com/documents/2/inverse_test',
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                             ],
                         ],
                         'parents' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/parents',
-                                'self' => 'http://api.example.com/documents/3/relationships/parents',
+                                'related' => 'http://api.example.com/documents/2/parents',
+                                'self' => 'http://api.example.com/documents/2/relationships/parents',
                             ],
                         ],
                     ],
                     'meta' => [
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 1,
                         'relation' => [
                             'priority' => 2,
                             'inv_priority' => 1,
@@ -1275,10 +1233,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 1,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 1,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -1286,16 +1244,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/documents',
                         'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
-                    'profiles' => [
-                        '$id' => 'http://api.example.com/model/schema/profiles',
-                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
-                    ],
                 ],
             ],
         ];
 
         $this->configRequestHeaders();
-        $this->get('/documents/2/test');
+        $this->get('/documents/3/inverse_test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
