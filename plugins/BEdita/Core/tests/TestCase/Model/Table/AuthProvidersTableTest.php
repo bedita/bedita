@@ -170,11 +170,11 @@ class AuthProvidersTableTest extends TestCase
         static::assertNotEmpty($result);
         static::assertEquals(3, count($result));
 
-        $result = $this->AuthProviders->find('enabled', ['name' => 'example'])->toArray();
+        $result = $this->AuthProviders->find('enabled')->where(['name' => 'example'])->toArray();
         static::assertNotEmpty($result);
         static::assertEquals(1, count($result));
 
-        $result = $this->AuthProviders->find('enabled', ['name' => 'linkedout'])->toArray();
+        $result = $this->AuthProviders->find('enabled')->where(['name' => 'linkedout'])->toArray();
         static::assertEmpty($result);
     }
 }

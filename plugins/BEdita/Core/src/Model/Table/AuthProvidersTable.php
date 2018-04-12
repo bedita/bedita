@@ -115,19 +115,13 @@ class AuthProvidersTable extends Table
      * Finder to find all enabled providers or by name
      *
      * @param \Cake\ORM\Query $query Query object.
-     * @param array $options Additional options with `name`.
      * @return \Cake\ORM\Query
      */
-    protected function findEnabled(Query $query, array $options = [])
+    protected function findEnabled(Query $query)
     {
-        return $query->where(function (QueryExpression $exp) use ($options) {
-            $exp = $exp->eq($this->aliasField('enabled'), true);
-            if (!empty($options['name'])) {
-                $exp = $exp->eq($this->aliasField('name'), $options['name']);
-            }
-
-            return $exp;
-        });
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
     }
 
     /**

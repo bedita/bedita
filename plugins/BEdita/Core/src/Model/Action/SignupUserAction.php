@@ -247,7 +247,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected function checkExternalAuth(array $data)
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
-        $authProvider = TableRegistry::get('AuthProviders')->find('enabled', ['name' => $data['auth_provider']])->first();
+        $authProvider = TableRegistry::get('AuthProviders')->find('enabled')
+            ->where(['name' => $data['auth_provider']])
+            ->first();
         if (empty($authProvider)) {
             throw new UnauthorizedException(__d('bedita', 'External auth provider not found'));
         }
@@ -269,7 +271,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function getOAuth2Response($url, $accessToken)
     {
-        /** @var \Cake\Http\Client\Response $response */
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
         return !empty($response->json) ? $response->json : [];
