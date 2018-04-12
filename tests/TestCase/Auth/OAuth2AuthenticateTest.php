@@ -128,7 +128,7 @@ class OAuth2AuthenticateTest extends TestCase
      *
      * @param array|false $expected Expected result.
      * @param \Cake\Http\ServerRequest $request Request.
-     * @param array $oauthResponse OAuth2 server respone.
+     * @param array $oauthResponse OAuth2 server response.
      * @return void
      *
      * @dataProvider authenticateProvider
