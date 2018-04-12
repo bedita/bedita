@@ -57,7 +57,7 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      *
-     *  - 'relationAvailableTypes': routes to available object types for predefined relations like `parent`,
+     *  - 'relationAvailableTypes': available object types for predefined relations like `parent`,
      *      `parents` and `children`
      */
     protected $_defaultConfig = [
