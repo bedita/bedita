@@ -216,7 +216,7 @@ class SignupUserActionTest extends TestCase
                 ]
             ],
             'bad provider' => [
-                new UnauthorizedException('External auth failed'),
+                new UnauthorizedException('External auth provider not found'),
                 [
                     'data' => [
                         'username' => 'testsignup',

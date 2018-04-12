@@ -94,9 +94,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         // operations are not in transaction because AsyncJobs could use a different connection
         $user = $this->createUser($data['data']);
-        if ($user === false) {
-            throw new UnauthorizedException(__d('bedita', 'External auth failed'));
-        }
         try {
             // add roles to user, with validity check
             $this->addRoles($user, $data['data']);
@@ -181,6 +178,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @param array $data The data to save
      * @return \BEdita\Core\Model\Entity\User|bool User created or `false` on error
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
      */
     protected function createUser(array $data)
     {
@@ -189,29 +187,18 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
 
         $status = 'draft';
-        if (!empty($data['auth_provider']) || Configure::read('Signup.requireActivation') === false) {
+        if (Configure::read('Signup.requireActivation') === false) {
             $status = 'on';
         }
         unset($data['status']);
 
-        $authProvider = $this->checkExternalAuth($data);
-        if (!$authProvider) {
-            return false;
-        }
-
-        $validate = empty($data['auth_provider']) ? 'signup' : 'signupExternal';
-        $action = new SaveEntityAction(['table' => $this->Users]);
-        $user = $action([
-            'entity' => $this->Users->newEntity()->set('status', $status),
-            'data' => $data,
-            'entityOptions' => [
-                'validate' => $validate,
-            ],
-        ]);
-
         if (empty($data['auth_provider'])) {
-            return $user;
+            return $this->createUserEntity($data, $status, 'signup');
         }
+
+        $authProvider = $this->checkExternalAuth($data);
+
+        $user = $this->createUserEntity($data, 'on', 'signupExternal');
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -225,6 +212,27 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
+     * Create User model entity.
+     *
+     * @param array $data The signup data
+     * @param string $status User `status`, `on` or `draft`
+     * @param string $validate Validation options to use
+     * @return @return \BEdita\Core\Model\Entity\User The User entity created
+     */
+    protected function createUserEntity(array $data, $status, $validate)
+    {
+        $action = new SaveEntityAction(['table' => $this->Users]);
+
+        return $action([
+            'entity' => $this->Users->newEntity()->set('status', $status),
+            'data' => $data,
+            'entityOptions' => [
+                'validate' => $validate,
+            ],
+        ]);
+    }
+
+    /**
      * Check external auth data validity
      *
      * To perform external auth check these fields are mandatory:
@@ -233,21 +241,19 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *  - "access_token": token returned by provider to use in check
      *
      * @param array $data The signup data
-     * @return \BEdita\Core\Model\Entity\AuthProvider|bool AuthProvider entity or `true` on success, `false` on failure
+     * @return \BEdita\Core\Model\Entity\AuthProvider AuthProvider entity
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
      */
     protected function checkExternalAuth(array $data)
     {
-        if (empty($data['auth_provider'])) {
-            return true;
-        }
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
         $authProvider = TableRegistry::get('AuthProviders')->find('enabled', ['name' => $data['auth_provider']])->first();
         if (empty($authProvider)) {
-            return false;
+            throw new UnauthorizedException(__d('bedita', 'External auth provider not found'));
         }
         $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
         if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
-            return false;
+            throw new UnauthorizedException(__d('bedita', 'External auth failed'));
         }
 
         return $authProvider;
