@@ -80,7 +80,7 @@ class UuidAuthenticate extends BaseAuthenticate
     protected function _findUser($username, $password = null)
     {
         $authProvider = collection($this->_config['authProviders'])->first();
-        $this->setconfig('finder', [
+        $this->setConfig('finder', [
             'externalAuth' => [
                 'auth_provider' => $authProvider
             ]

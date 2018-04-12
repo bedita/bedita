@@ -81,7 +81,7 @@ class OAuth2Authenticate extends BaseAuthenticate
             return false;
         }
 
-        $this->setconfig('finder', [
+        $this->setConfig('finder', [
             'externalAuth' => [
                 'auth_provider' => $authProvider
             ]
@@ -95,7 +95,7 @@ class OAuth2Authenticate extends BaseAuthenticate
      */
     public function getUser(ServerRequest $request)
     {
-        return null;
+        return false;
     }
 
     /**

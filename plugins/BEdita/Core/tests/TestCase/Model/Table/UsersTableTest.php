@@ -364,9 +364,6 @@ class UsersTableTest extends TestCase
     /**
      * Test validation signup.
      *
-     * @param bool $expected Expected result.
-     * @param array $data Data to be validated.
-     *
      * @return void
      * @covers ::validationSignupExternal()
      */
