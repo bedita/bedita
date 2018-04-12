@@ -169,7 +169,7 @@ class OAuth2AuthenticateTest extends TestCase
     {
         $auth = new OAuth2Authenticate(new ComponentRegistry());
         $result = $auth->getUser(new ServerRequest([]));
-        static::assertNull($result);
+        static::assertFalse($result);
     }
 
     /**
