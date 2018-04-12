@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Collection\Collection;
 use Cake\Core\App;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -53,6 +55,8 @@ class AuthProvidersTable extends Table
         $this->setTable('auth_providers');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+
+        $this->addBehavior('Timestamp');
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'auth_provider_id',
@@ -108,36 +112,44 @@ class AuthProvidersTable extends Table
     }
 
     /**
-     * Finder to format results in a way that is suitable for `AuthComponent`.
+     * Finder to find all enabled providers or by name
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @return \Cake\ORM\Query
+     */
+    protected function findEnabled(Query $query)
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
+    }
+
+    /**
+     * Finder to format results for `AuthComponent` configuration.
      *
      * @param \Cake\ORM\Query $query Query object.
      * @return \Cake\ORM\Query
      */
     protected function findAuthenticate(Query $query)
     {
+        $query = $query->where([$this->aliasField('enabled') => true]);
+
         return $query->formatResults(function (ResultSetInterface $results) {
             return $results
                 ->filter(function (EntityInterface $entity) {
-                    $name = $entity->get('name');
-                    $exists = (App::className($name, 'Auth', 'Authenticate') !== false);
+                    $class = $entity->get('auth_class');
+                    $exists = (App::className($class, 'Auth', 'Authenticate') !== false);
                     if (!$exists) {
-                        Log::warning(sprintf('Authentication class "%s" not found', $name));
+                        Log::warning(sprintf('Authentication class "%s" not found', $class));
                     }
 
                     return $exists;
                 })
-                ->indexBy('name')
-                ->map(function (EntityInterface $entity) {
-                    $options = [
-                        'authProvider' => $entity,
-                        'finder' => [
-                            'externalAuth' => [
-                                'auth_provider' => $entity,
-                            ],
-                        ],
+                ->groupBy('auth_class')
+                ->map(function (array $entities) {
+                    return [
+                        'authProviders' => collection($entities)->indexBy('name')->toArray()
                     ];
-
-                    return $options + (array)$entity->get('params');
                 });
         });
     }

@@ -27,13 +27,39 @@ class AuthProvidersFixture extends TestFixture
     public $records = [
         [
             'name' => 'example',
+            'auth_class' => 'BEdita/API.OAuth2',
             'url' => 'https://example.com/oauth2',
-            'params' => '{}',
+            'params' => '{"provider_username_field": "owner_id"}',
+            'enabled' => true,
+            'created' => '2018-04-07 12:51:27',
+            'modified' => '2018-04-07 12:51:27',
         ],
         [
-            'name' => 'BEdita/API.Uuid',
+            'name' => 'uuid',
+            'auth_class' => 'BEdita/API.Uuid',
             'url' => null,
             'params' => null,
+            'enabled' => true,
+            'created' => '2018-04-07 12:51:27',
+            'modified' => '2018-04-07 12:51:27',
+        ],
+        [
+            'name' => 'linkedout',
+            'auth_class' => 'BEdita/API.OAuth2',
+            'url' => 'https://out.example.com/oauth2',
+            'params' => '{"provider_username_field": "owner_id"}',
+            'enabled' => false,
+            'created' => '2018-04-07 12:51:27',
+            'modified' => '2018-04-07 12:51:27',
+        ],
+        [
+            'name' => 'other',
+            'auth_class' => 'SomeAuthClass',
+            'url' => 'https://someother.example.com/oauth2',
+            'params' => '{}',
+            'enabled' => true,
+            'created' => '2018-04-07 12:51:27',
+            'modified' => '2018-04-07 12:51:27',
         ],
     ];
 }
