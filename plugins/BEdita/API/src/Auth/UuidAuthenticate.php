@@ -83,7 +83,7 @@ class UuidAuthenticate extends BaseAuthenticate
         $this->setConfig('finder', [
             'externalAuth' => [
                 'auth_provider' => $authProvider
-            ]
+            ],
         ]);
 
         $externalAuth = parent::_findUser($username, $password);
