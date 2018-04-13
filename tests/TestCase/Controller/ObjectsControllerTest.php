@@ -1157,6 +1157,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::related()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAssociatedAction()
      */
     public function testRelated()
     {
@@ -1310,6 +1311,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::relationships()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociations()
     {
@@ -1418,6 +1420,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociationsNotFound()
     {

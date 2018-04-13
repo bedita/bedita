@@ -28,6 +28,7 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
@@ -283,7 +284,7 @@ abstract class ResourcesController extends AppController
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-        $action = new ListAssociatedAction(compact('association'));
+        $action = $this->getAssociatedAction($association);
         $data = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         if ($data instanceof Query) {
@@ -296,6 +297,33 @@ abstract class ResourcesController extends AppController
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
+    }
+
+    /**
+     * Get the action instance to get list of associated entities.
+     *
+     * @param \Cake\ORM\Association $association The association to use.
+     * @return \BEdita\Core\Model\Action\ListAssociatedAction
+     */
+    protected function getAssociatedAction(Association $association)
+    {
+        return new ListAssociatedAction(compact('association'));
+    }
+
+    /**
+     * Set allowed methods for relationships
+     *
+     * @param \Cake\ORM\Association $association The association.
+     * @return void
+     */
+    protected function setRelationshipsAllowedMethods(Association $association)
+    {
+        $allowedMethods = ['get', 'post', 'patch', 'delete'];
+        if ($association instanceof BelongsTo || $association instanceof HasOne) {
+            // For to-one relationship, POST and DELETE are not implemented.
+            $allowedMethods = ['get', 'patch'];
+        }
+        $this->request->allowMethod($allowedMethods);
     }
 
     /**
@@ -314,13 +342,7 @@ abstract class ResourcesController extends AppController
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
-
-        $allowedMethods = ['get', 'post', 'patch', 'delete'];
-        if ($association instanceof BelongsTo || $association instanceof HasOne) {
-            // For to-one relationship, POST and DELETE are not implemented.
-            $allowedMethods = ['get', 'patch'];
-        }
-        $this->request->allowMethod($allowedMethods);
+        $this->setRelationshipsAllowedMethods($association);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -339,7 +361,7 @@ abstract class ResourcesController extends AppController
             default:
                 $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-                $action = new ListAssociatedAction(compact('association'));
+                $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {

@@ -26,6 +26,7 @@ use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
@@ -234,6 +235,16 @@ class ObjectsController extends ResourcesController
 
     /**
      * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
+     */
+    protected function getAssociatedAction(Association $association)
+    {
+        return new ListRelatedObjectsAction(compact('association'));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function related()
     {
@@ -245,7 +256,7 @@ class ObjectsController extends ResourcesController
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-        $action = new ListRelatedObjectsAction(compact('association'));
+        $action = $this->getAssociatedAction($association);
         $objects = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         if ($objects instanceof Query) {
@@ -269,13 +280,7 @@ class ObjectsController extends ResourcesController
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
-
-        $allowedMethods = ['get', 'post', 'patch', 'delete'];
-        if ($relationship instanceof BelongsTo || $relationship instanceof HasOne) {
-            // For to-one relationship, POST and DELETE are not implemented.
-            $allowedMethods = ['get', 'patch'];
-        }
-        $this->request->allowMethod($allowedMethods);
+        $this->setRelationshipsAllowedMethods($association);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -294,7 +299,7 @@ class ObjectsController extends ResourcesController
             default:
                 $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-                $action = new ListRelatedObjectsAction(compact('association'));
+                $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
@@ -320,7 +325,7 @@ class ObjectsController extends ResourcesController
         }
 
         if (is_array($count)) {
-            $action = new ListRelatedObjectsAction(compact('association'));
+            $action = $this->getAssociatedAction($association);
             $data = $action(['primaryKey' => $id, 'list' => true, 'only' => $count]);
 
             $count = count($count);
