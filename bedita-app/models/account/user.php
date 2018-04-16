@@ -121,7 +121,15 @@ class User extends BEAppModel
 	 */
 	function compact(&$user, $keepGroupsIds = true) {
 		unset($user['Permission']);
-		
+
+		if (!empty($user['ObjectUser'])) {
+			foreach ($user['ObjectUser'] as $objectUser) {
+				if ($objectUser['switch'] === 'card') {
+					$user['User']['card_id'] = $objectUser['object_id'];
+				}
+			}
+		}
+
 		$user['User']['groups'] = array();
 		if (!empty($user['Group'])) {
 			foreach ($user['Group'] as $group) {

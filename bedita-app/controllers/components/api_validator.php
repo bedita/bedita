@@ -374,6 +374,11 @@ class ApiValidatorComponent extends Object {
         if (!$this->enableObjectReachableCheck) {
             return true;
         }
+        // User card always reachable
+        $user = $this->controller->ApiAuth->getUser();
+        if (!empty($user['card_id']) && $user['card_id'] === $objectId) {
+            return true;
+        }
         $tree = ClassRegistry::init('Tree');
         $publication = $this->controller->getPublication();
         $isOnTree = $tree->isOnTree($objectId, $publication['id'], $this->controller->getStatus());
