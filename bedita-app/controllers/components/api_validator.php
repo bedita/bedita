@@ -376,17 +376,8 @@ class ApiValidatorComponent extends Object {
         }
         // User card always reachable
         $user = $this->controller->ApiAuth->getUser();
-        if (!empty($user['id'])) {
-            $card = ClassRegistry::init('ObjectUsers')->find('first', array(
-                'fields' => array('object_id'),
-                'conditions' => array(
-                    'user_id' => $user['id'],
-                    'switch' => 'card',
-                ),
-            ));
-            if (!empty($card) && !empty($card['ObjectUsers']['object_id']) && $card['ObjectUsers']['object_id'] === $objectId) {
-                return true;
-            }
+        if (!empty($user['card_id']) && $user['card_id'] === $objectId) {
+            return true;
         }
         $tree = ClassRegistry::init('Tree');
         $publication = $this->controller->getPublication();
