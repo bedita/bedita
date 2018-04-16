@@ -374,14 +374,19 @@ class ApiValidatorComponent extends Object {
         if (!$this->enableObjectReachableCheck) {
             return true;
         }
-        // Cards always reachable
-        $obj = ClassRegistry::init('BEObject')->find('first', array(
-            'fields' => array('object_type_id'),
-            'conditions' => array('BEObject.id' => $objectId),
-            'contain' => array(),
-        ));
-        if (!empty($obj['BEObject']['object_type_id']) && $obj['BEObject']['object_type_id'] === Configure::read('objectTypes.card.id')) {
-            return true;
+        // User card always reachable
+        $user = $this->controller->ApiAuth->getUser();
+        if (!empty($user['id'])) {
+            $card = ClassRegistry::init('ObjectUsers')->find('first', array(
+                'fields' => array('object_id'),
+                'conditions' => array(
+                    'user_id' => $user['id'],
+                    'switch' => 'card',
+                ),
+            ));
+            if (!empty($card) && !empty($card['ObjectUsers']['object_id']) && $card['ObjectUsers']['object_id'] === $objectId) {
+                return true;
+            }
         }
         $tree = ClassRegistry::init('Tree');
         $publication = $this->controller->getPublication();
