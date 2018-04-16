@@ -30,6 +30,8 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::relationships()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::setRelationshipsAllowedMethods()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociations()
     {
@@ -94,6 +96,8 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociationsNotFound()
     {
@@ -112,6 +116,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociations()
     {
@@ -146,6 +151,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsDuplicateEntry()
     {
@@ -184,6 +190,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsNoContent()
     {
@@ -210,6 +217,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociations()
     {
@@ -285,6 +293,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociationsNoContent()
     {
@@ -312,6 +321,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociations()
     {
@@ -355,6 +365,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsEmpty()
     {
@@ -379,6 +390,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsNoContent()
     {
@@ -405,6 +417,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsMissingId()
     {
@@ -438,6 +451,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testWrongAssociation()
     {
@@ -464,6 +478,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsUnsupportedType()
     {
