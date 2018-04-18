@@ -27,7 +27,7 @@ use Cake\Core\Plugin;
 $plugins = Plugin::loaded();
 foreach ($plugins as $plugin) {
     if (!in_array($plugin, ['BEdita/API', 'BEdita/Core'])) {
-        static::routes($plugin);
+        Plugin::routes($plugin);
     }
 }
 
