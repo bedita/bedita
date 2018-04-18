@@ -403,7 +403,7 @@ abstract class ResourcesController extends AppController
         return Router::url(
             [
                 '_name' => $destinationEntity->routeNamePrefix() . ':index',
-                'controller' => \Cake\Utility\Inflector::camelize($jsonApiData['type']),
+                'controller' => Inflector::camelize($jsonApiData['type']),
             ],
             true
         );
