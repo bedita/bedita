@@ -24,6 +24,7 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
@@ -178,7 +179,7 @@ abstract class ResourcesController extends AppController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data->get($primaryKey))
+                    $this->resourceUrl($data, $primaryKey)
                 );
         } else {
             // List existing entities.
@@ -200,16 +201,22 @@ abstract class ResourcesController extends AppController
     /**
      * Resource URL of a newly created entity
      *
-     * @param int|string $id Saved entity id
+     * @param \Cake\Datasource\EntityInterface $entity Resource entity
+     * @param string $primaryKey Primary key name
      * @return string Requested URL
      */
-    protected function resourceUrl($id)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
+        $prefix = 'api:resources';
+        if ($entity instanceof JsonApiSerializable) {
+            $prefix = $entity->routeNamePrefix();
+        }
+
         return Router::url(
             [
-                '_name' => $this->routeNamePrefix . ':resource',
+                '_name' => $prefix . ':resource',
                 'controller' => $this->name,
-                'id' => $id,
+                'id' => $entity->get($primaryKey),
             ],
             true
         );
@@ -388,15 +395,15 @@ abstract class ResourcesController extends AppController
             return null;
         }
 
-        $destinationEntity = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
-        if (empty($destinationEntity['type'])) {
+        $jsonApiData = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+        if (empty($jsonApiData['type'])) {
             return null;
         }
 
         return Router::url(
             [
-                '_name' => $this->routeNamePrefix . ':index',
-                'controller' => $destinationEntity['type'],
+                '_name' => $destinationEntity->routeNamePrefix() . ':index',
+                'controller' => \Cake\Utility\Inflector::camelize($jsonApiData['type']),
             ],
             true
         );
