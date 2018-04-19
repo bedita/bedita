@@ -32,9 +32,9 @@ class Plugin extends CakePlugin
     protected static $_defaults = [
         'debugOnly' => false,
         'autoload' => false,
-        'bootstrap' => false,
-        'routes' => false,
-        'ignoreMissing' => false
+        'bootstrap' => true,
+        'routes' => true,
+        'ignoreMissing' => true
     ];
 
     /**
@@ -44,13 +44,11 @@ class Plugin extends CakePlugin
      */
     public static function loadFromConfig()
     {
-        $plugins = Configure::read('Plugins');
-        if ($plugins) {
-            foreach ($plugins as $plugin => $options) {
-                $options = array_merge(static::$_defaults, $options);
-                if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
-                    static::load($plugin, $options);
-                }
+        $plugins = (array)Configure::read('Plugins', []);
+        foreach ($plugins as $plugin => $options) {
+            $options = array_merge(static::$_defaults, $options);
+            if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
+                static::load($plugin, $options);
             }
         }
     }

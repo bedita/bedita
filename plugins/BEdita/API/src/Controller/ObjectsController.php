@@ -21,6 +21,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
@@ -154,7 +155,7 @@ class ObjectsController extends ResourcesController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data->id)
+                    $this->resourceUrl($data, 'id')
                 );
         } else {
             // List existing entities.
@@ -176,13 +177,13 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    protected function resourceUrl($id)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
         return Router::url(
             [
                 '_name' => 'api:objects:resource',
                 'object_type' => $this->objectType->name,
-                'id' => $id,
+                'id' => $entity->get($primaryKey),
             ],
             true
         );
