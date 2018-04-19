@@ -67,13 +67,6 @@ abstract class ResourcesController extends AppController
     protected $Table;
 
     /**
-     * Prefix used in `_name` creating route urls
-     *
-     * @var string
-     */
-    protected $routeNamePrefix = 'api:resources';
-
-    /**
      * {@inheritDoc}
      */
     public function initialize()
