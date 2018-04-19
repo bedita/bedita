@@ -513,6 +513,9 @@ class ApiFormatterComponent extends Object {
         if (!$this->controller->getShowUnauthorized() && !$this->controller->getSkipCheck()) {
             $permission = ClassRegistry::init('Permission');
             $user = $this->controller->ApiAuth->getUser();
+            if (!$user) {
+                $user = array();
+            }
             $conditionsForbidden = array('BEObject.status' => $this->controller->getStatus()) + $relationsFilter;
             $countForbidden = $permission->relatedObjectsNotAccessibile(
                 $object['id'],
