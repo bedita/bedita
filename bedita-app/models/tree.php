@@ -474,7 +474,7 @@ class Tree extends BEAppModel
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
 	 */
-    private function removeChildWorker($id, $idParent) {
+    protected function removeChildWorker($id, $idParent) {
 		$ret = $this->deleteAll(array("id" => $id, "parent_id" => $idParent));
 		return (($ret === false)?false:true) ;
 	}
