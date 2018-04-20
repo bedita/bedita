@@ -462,7 +462,7 @@ class Tree extends BEAppModel
 		$res = $this->removeChildWorker($id, $idParent);
 
 		$this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
-		$this->dispatchUpdatedTreeEvent($parentId, static::EVENT_CHILDREN_UPDATED);
+		$this->dispatchUpdatedTreeEvent($idParent, static::EVENT_CHILDREN_UPDATED);
 
 		return $res;
 	}
