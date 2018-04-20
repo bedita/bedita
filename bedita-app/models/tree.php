@@ -25,6 +25,20 @@
 class Tree extends BEAppModel
 {
 
+	/**
+	 * Name of event dispatched when an object's parents are updated.
+	 * 
+	 * @var string
+	 */
+	const EVENT_PARENTS_UPDATED = 'Tree.parentsUpdated';
+
+	/**
+	 * Name of event dispatched when a node's children are updated.
+	 * 
+	 * @var string
+	 */
+	const EVENT_CHILDREN_UPDATED = 'Tree.childrenUpdated';
+
 	public $primaryKey = "object_path";
 	
 	/**
@@ -262,13 +276,17 @@ class Tree extends BEAppModel
         // remove
         $remove = array_diff($currParents, $destination) ;
         foreach ($remove as $parent_id) {
-            $this->removeChild($id, $parent_id) ;
+            $this->removeChildWorker($id, $parent_id);
+			$this->dispatchUpdatedTreeEvent($parent_id, static::EVENT_CHILDREN_UPDATED);
         }
         // insert
         $add = array_diff($destination, $currParents) ;
         foreach ($add as $parent_id) {
-            $this->appendChild($id, $parent_id) ;
-        }
+            $this->appendChildWorker($id, $parent_id);
+			$this->dispatchUpdatedTreeEvent($parent_id, static::EVENT_CHILDREN_UPDATED);
+		}
+		
+		$this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
     }
 
 	/**
@@ -283,6 +301,25 @@ class Tree extends BEAppModel
 	}
 
 	/**
+	 * Append an object to a parent.
+	 * 
+	 * @see Tree::appendChildWorker()
+	 *
+	 * @param int $id Child object's ID.
+	 * @param int|null $idParent Parent object's ID (`null` for roots).
+	 * @param int|null $priority Priority in children's list (`null` to append as last child).
+	 * @return bool
+	 */
+	public function appendChild($id, $idParent = null, $priority = null) {
+		$res = $this->appendChildWorker($id, $idParent, $priority);
+
+		$this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
+		$this->dispatchUpdatedTreeEvent($idParent, static::EVENT_CHILDREN_UPDATED);
+
+		return $res;
+	}
+
+	/**
 	 * append an object to a parent in tree
 	 *
 	 * @param int $id object id
@@ -290,7 +327,8 @@ class Tree extends BEAppModel
      * @param int $priority if not passed append as last child else use passed position
 	 * @return boolean
 	 */
-	public function appendChild($id, $idParent = null, $priority = null) {
+	protected function appendChildWorker($id, $idParent = null, $priority = null)
+	{
 		// avoid to append item to itself
 		if ($id == $idParent) {
 			return false;
@@ -412,13 +450,31 @@ class Tree extends BEAppModel
 	}
 
 	/**
+	 * Remove a leaf node from a tree.
+	 * 
+	 * @see Tree::removeChildWorker()
+	 *
+	 * @param int $id Leaf node ID.
+	 * @param int $idParent Parent node ID.
+	 * @return bool
+	 */
+	public function removeChild($id, $idParent) {
+		$res = $this->removeChildWorker($id, $idParent);
+
+		$this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
+		$this->dispatchUpdatedTreeEvent($parentId, static::EVENT_CHILDREN_UPDATED);
+
+		return $res;
+	}
+
+	/**
 	 * remove a leaf tree from a branch
 	 *
 	 * @param int $id to remove
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
 	 */
-	public function removeChild($id, $idParent) {
+	private function removeChildWorker($id, $idParent) {
 		$ret = $this->deleteAll(array("id" => $id, "parent_id" => $idParent));
 		return (($ret === false)?false:true) ;
 	}
@@ -1006,14 +1062,18 @@ class Tree extends BEAppModel
 		);
 		if (!empty($children["items"])) {
 			foreach ($children["items"] as $item) {
-				if (!$this->appendChild($item["id"], $newBranchId)) {
+				if (!$this->appendChildWorker($item["id"], $newBranchId)) {
 					throw new BeditaException(__("Error cloning tree", true), array("child id" => $item["id"]));
 				}
 				// set priority
 				if (!$this->setPriority($item["id"], $item["priority"], $newBranchId)) {
 					throw new BeditaException(__("Error setting contents priority", true), array("id" => $item["id"], "parent_id" => $newBranchId, "priority" => $s["priority"]));
 				}
+
+				$this->dispatchUpdatedTreeEvent($item['id'], static::EVENT_PARENTS_UPDATED);
 			}
+
+			$this->dispatchUpdatedTreeEvent($newBranchId, static::EVENT_CHILDREN_UPDATED);
 		}
 	}
 
@@ -1088,15 +1148,18 @@ class Tree extends BEAppModel
                 $ok = $this->removeBranch($desc) && $ok;
             } else {
                 // Remove leafs.
-                $ok = $this->removeChild($desc, $id) && $ok;
+                $ok = $this->removeChildWorker($desc, $id) && $ok;
+				$this->dispatchUpdatedTreeEvent($desc, static::EVENT_PARENTS_UPDATED);
             }
         }
 
         // If everything went OK, remove current tree node, which has descendants no more, so it behaves like a leaf.
-        $ok = $ok && ($this->deleteAll(array('id' => $id)) !== false);
+		$ok = $ok && ($this->deleteAll(compact('id')) !== false);
+		
+		$this->dispatchUpdatedTreeEvent($id, static::EVENT_CHILDREN_UPDATED);
 
         return $ok;
-        }
+    }
 
     /**
      * Removes a full tree that originates from the element with passed `$id`.
@@ -1221,4 +1284,15 @@ class Tree extends BEAppModel
         ));
     }
 
+	/**
+	 * Dispatch event to notify that tree has been updated for an object.
+	 * 
+	 * @param int $id ID of object whose position in tree has been updated.
+	 * @param string $eventType Name of event to dispatch. Should be one of `static::EVENT_*` constants.
+	 * @return void
+	 */
+	protected function dispatchUpdatedTreeEvent($id, $eventType)
+	{
+		BeLib::eventManager()->trigger($eventType, compact('id'));
+	}
 }
