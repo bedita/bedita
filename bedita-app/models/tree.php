@@ -325,7 +325,6 @@ class Tree extends BEAppModel
 		$ret = $this->save($data);
 
 		return (($ret === false)?false:true) ;
-
 	}
 
 	/**
@@ -1009,7 +1008,6 @@ class Tree extends BEAppModel
 			foreach ($children["items"] as $item) {
 				if (!$this->appendChild($item["id"], $newBranchId)) {
 					throw new BeditaException(__("Error cloning tree", true), array("child id" => $item["id"]));
-
 				}
 				// set priority
 				if (!$this->setPriority($item["id"], $item["priority"], $newBranchId)) {
@@ -1098,39 +1096,7 @@ class Tree extends BEAppModel
         $ok = $ok && ($this->deleteAll(array('id' => $id)) !== false);
 
         return $ok;
-
-        #####################################
-        ############ OLD VERSION ############
-        #####################################
-
-        $ok = true;
-
-        // Find current object path.
-        $conditions = array(
-            'id' => $id,
-        );
-        if ($parentId !== false) {
-            $conditions['parent_id'] = $parentId;
         }
-        $path = $this->find('list', array(
-            'contain' => array(),
-            'fields' => array('object_path'),
-            'conditions' => $conditions,
-        ));
-
-        // Find descendants.
-        $descendants = $this->find('list', array(
-            'contain' => array(),
-            'fields' => array('id'),
-            'conditions' => array('parent_path' => $path),
-        ));
-        foreach ($descendants as $desc) {
-            // Remove sub-branches and leafs.
-            $ok = $this->removeBranch($desc, $id) && $ok;
-        }
-        // If everything went OK, remove current tree node (for by now it has already become a leaf).
-        return $ok && $this->removeChild($id, $parentId);
-    }
 
     /**
      * Removes a full tree that originates from the element with passed `$id`.
