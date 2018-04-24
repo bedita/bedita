@@ -48,6 +48,7 @@ class ListRelatedFoldersActionTest extends TestCase
      * @return void
      *
      * @covers ::execute()
+     * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction::initialize()
      */
     public function testExecuteParents()
     {
@@ -64,6 +65,7 @@ class ListRelatedFoldersActionTest extends TestCase
      * @return void
      *
      * @covers ::execute()
+     * @covers ::initialize()
      */
     public function testExecuteChildren()
     {
