@@ -527,4 +527,39 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->{$method}('/folders/12/relationships/parent', $data);
         $this->assertResponseCode($expected);
     }
+
+    /**
+     * Test `?include=children` query
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testIncludeChildren()
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/11?include=children');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $includedIds = Hash::extract($result, 'included.{n}.id');
+        static::assertEquals(['12', '2'], $includedIds);
+    }
+
+    /**
+     * Test `?include=parent` query
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testIncludeParent()
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/12?include=parent');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $includedIds = Hash::extract($result, 'included.{n}.id');
+        static::assertEquals(['11'], $includedIds);
+    }
 }
