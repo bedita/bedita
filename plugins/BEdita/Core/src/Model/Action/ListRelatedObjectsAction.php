@@ -44,6 +44,9 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                 $objectType = current($objectTypes);
             }
             $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
+        } elseif ($this->Association->getName() === 'Parents') {
+            $table = $this->Association->getTarget();
+            $this->ListAction = new ListObjectsAction(compact('table'));
         }
     }
 
