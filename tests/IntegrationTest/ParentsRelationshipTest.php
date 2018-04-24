@@ -179,4 +179,28 @@ class ParentsRelationshipTest extends IntegrationTestCase
             ->where(['object_id' => $objectId])
             ->count();
     }
+
+    /**
+     * Test deleted objects as `parent`
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testDeletedParent()
+    {
+        // a deleted folder must not be listed in `parents`
+        $foldersTable = TableRegistry::get('Folders');
+        $folder = $foldersTable->get(12);
+        $folder->deleted = true;
+        $foldersTable->saveOrFail($folder);
+
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/parents');
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $ids = Hash::extract($result, 'data.{n}.id');
+        static::assertEmpty($ids);
+    }
 }
