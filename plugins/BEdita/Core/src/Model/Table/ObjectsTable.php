@@ -23,6 +23,8 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Objects Model
@@ -274,5 +276,68 @@ class ObjectsTable extends Table
             ->firstOrFail();
 
         return $result['id'];
+    }
+
+    /**
+     * Finder for objects having a certain `ancestor` on the tree.
+     *
+     * @param Query $query  Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findAncestor(Query $query, array $options)
+    {
+        return $this->treeDescendants($query, Hash::get($options, '0'), false);
+    }
+
+    /**
+     * Finder for objects having a certain `parent` on the tree.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findParent(Query $query, array $options)
+    {
+        return $this->treeDescendants($query, Hash::get($options, '0'), true);
+    }
+
+    /**
+     * Create query on Trees for `findParent` and `findAncestor`
+     *
+     * @param Query $query Query object instance.
+     * @param int|string $id Parent id or unique name
+     * @param bool $direct Flag to look for direct descendants only, a.k.a. children
+     * @return \Cake\ORM\Query
+     */
+    protected function treeDescendants(Query $query, $id, $direct = true)
+    {
+        $id = $this->getId($id);
+        $condition = ['object_id' => $id];
+        if ($id === 0) {
+            $condition = ['parent_id' => null];
+        }
+
+        $node = TableRegistry::get('Trees')->find()
+            ->where(['object_id' => $id])
+            ->first();
+
+        $subquery = TableRegistry::get('Trees')->find('children', [
+            'for' => $node->id,
+            'direct' => $direct,
+        ]);
+        $subquery->find('list');
+
+        $query->join([
+            'table' => 'trees',
+            'alias' => 'Trees',
+            'type' => 'INNER',
+            'conditions' => 'Trees.object_id = ' . $this->aliasField('id'),
+        ])
+        ->where(function (QueryExpression $exp) use ($node, $subquery) {
+            return $exp->in('Trees.id', $subquery);
+        });
+
+        return $query;
     }
 }
