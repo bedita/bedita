@@ -23,19 +23,6 @@ namespace BEdita\Core\Model\Action;
  */
 class ListRelatedFoldersAction extends ListRelatedObjectsAction
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function initialize(array $config)
-    {
-        parent::initialize($config);
-        if ($this->Association->getName() === 'Children') {
-            $table = $this->Association->getTarget();
-            $this->ListAction = new ListObjectsAction(compact('table'));
-        }
-    }
-
     /**
      * {@inheritDoc}
      */

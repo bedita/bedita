@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Association\RelatedTo;
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 
@@ -44,7 +46,8 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                 $objectType = current($objectTypes);
             }
             $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
-        } elseif ($this->Association->getName() === 'Parents') {
+        } elseif ($this->Association->getTarget() instanceof ObjectsTable
+                || $this->Association->getTarget() instanceof Table) {
             $table = $this->Association->getTarget();
             $this->ListAction = new ListObjectsAction(compact('table'));
         }
