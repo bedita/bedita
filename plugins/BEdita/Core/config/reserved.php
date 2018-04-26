@@ -15,6 +15,7 @@
  * Reserved names for types and properties.
  */
 return [
+    'ancestor',
     'application',
     'applications',
     'async_job',
@@ -27,6 +28,7 @@ return [
     'models',
     'object_type',
     'object_types',
+    'parent',
     'properties',
     'property',
     'property_type',
