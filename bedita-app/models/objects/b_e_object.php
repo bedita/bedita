@@ -371,9 +371,9 @@ class BEObject extends BEAppModel {
         }
         // save relations between objects
         if (!empty($this->data['BEObject']['RelatedObject'])) {
-            $db = &ConnectionManager::getDataSource($this->useDbConfig);
-            $queriesDelete = array();
             $queriesInsert = array();
+            $switches = array();
+            $inverseSwitches = array();
             $lang = (isset($this->data['BEObject']['lang']))? $this->data['BEObject']['lang'] : null;
 
             $allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
@@ -386,7 +386,6 @@ class BEObject extends BEAppModel {
 
             $assoc = $this->hasMany['RelatedObject'] ;
             $ObjectRelation = ClassRegistry::init('ObjectRelation');
-            $fields = $assoc['foreignKey'] . "," . $assoc['associationForeignKey'] . ", switch, priority, params";
 
             foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 
@@ -394,11 +393,6 @@ class BEObject extends BEAppModel {
                     $obj_id	= isset($val['id'])? $val['id'] : false;
                     $priority = isset($val['priority'])? $val['priority'] : null;
                     $params = isset($val['params'])? json_encode($val['params']) : null;
-                    // Delete old associations
-                    $queriesDelete[] = array(
-                        $assoc['foreignKey'] => $this->id,
-                        'switch' => $switch,
-                    );
 
                     $inverseSwitch = $switch;
                     if (!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])) {
@@ -407,10 +401,9 @@ class BEObject extends BEAppModel {
                         $inverseSwitch = $inverseRelations[$switch];
                     }
 
-                    $queriesDelete[] = array(
-                        $assoc['associationForeignKey'] => $this->id,
-                        'switch' => $inverseSwitch,
-                    );
+                    // Add switches to list of switches to be cleaned up for current object.
+                    $switches[] = $switch;
+                    $inverseSwitches[] = $inverseSwitch;
 
                     if (!empty($obj_id)) {
                         $queriesInsert[] = array(
@@ -478,16 +471,28 @@ class BEObject extends BEAppModel {
                 }
             }
 
-            foreach ($queriesDelete as $qDel) {
-                if ($ObjectRelation->deleteAll($qDel) === false) {
-                    throw new BeditaException(__("Error deleting associations", true), $qDel);
-                }
+            // Save tmp data.
+            $tmp_id = $this->id;
+            $tmp_data = $this->data;
+
+            // Delete old relations.
+            $ObjectRelation->deleteAll(array(
+                $assoc['foreignKey'] => $this->id,
+                'switch' => $switches,
+            ));
+            $ObjectRelation->deleteAll(array(
+                $assoc['associationForeignKey'] => $this->id,
+                'switch' => $inverseSwitches,
+            ));
+
+            // Insert updated relations data.
+            if ($ObjectRelation->saveAll($queriesInsert) === false) {
+                throw new BeditaException(__("Error inserting associations", true), $queriesInsert);
             }
-            foreach ($queriesInsert as $qIns) {
-                if ($ObjectRelation->saveAll(array('ObjectRelation' => $qIns))  === false) {
-                    throw new BeditaException(__("Error inserting associations", true), $qIns);
-                }
-            }
+
+            // Restore tmp data.
+            $this->id = $tmp_id;
+            $this->data = $tmp_data;
         }
 
         return true;
