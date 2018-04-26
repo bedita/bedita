@@ -304,11 +304,9 @@ class BEObject extends BEAppModel {
             $model = new $assoc['className']();
 
             // delete previous associations
-            $table = (isset($model->useTable))? $model->useTable : ($db->name($db->fullTableName($assoc->className)));
             $id = (isset($this->data[$this->name]['id']))? $this->data[$this->name]['id'] : $this->getInsertID();
             $foreignK = $assoc['foreignKey'];
-            // #CUSTOM QUERY
-            $db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
+            $model->deleteAll(array($foreignK => $id));
 
             if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) {
                 continue;
@@ -376,7 +374,6 @@ class BEObject extends BEAppModel {
             $db = &ConnectionManager::getDataSource($this->useDbConfig);
             $queriesDelete = array();
             $queriesInsert = array();
-            $queriesModified = array();
             $lang = (isset($this->data['BEObject']['lang']))? $this->data['BEObject']['lang'] : null;
 
             $allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
@@ -388,18 +385,20 @@ class BEObject extends BEAppModel {
             }
 
             $assoc = $this->hasMany['RelatedObject'] ;
-            $table = $db->name($db->fullTableName($assoc['joinTable']));
+            $ObjectRelation = ClassRegistry::init('ObjectRelation');
             $fields = $assoc['foreignKey'] . "," . $assoc['associationForeignKey'] . ", switch, priority, params";
 
             foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 
                 foreach ($values as $key => $val) {
                     $obj_id	= isset($val['id'])? $val['id'] : false;
-                    $priority = isset($val['priority'])? "'{$val['priority']}'" : 'NULL';
-                    $params = isset($val['params'])? "'" . json_encode($val['params']) . "'" : 'NULL';
+                    $priority = isset($val['priority'])? $val['priority'] : null;
+                    $params = isset($val['params'])? json_encode($val['params']) : null;
                     // Delete old associations
-                    // #CUSTOM QUERY
-                    $queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
+                    $queriesDelete[] = array(
+                        $assoc['foreignKey'] => $this->id,
+                        'switch' => $switch,
+                    );
 
                     $inverseSwitch = $switch;
                     if (!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])) {
@@ -408,30 +407,48 @@ class BEObject extends BEAppModel {
                         $inverseSwitch = $inverseRelations[$switch];
                     }
 
-                    $queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
-                                        AND switch = '{$inverseSwitch}' ";
+                    $queriesDelete[] = array(
+                        $assoc['associationForeignKey'] => $this->id,
+                        'switch' => $inverseSwitch,
+                    );
 
                     if (!empty($obj_id)) {
-                        // #CUSTOM QUERY
-                        $queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority}, {$params})" ;
+                        $queriesInsert[] = array(
+                            'id' => $this->id,
+                            'object_id' => $obj_id,
+                            'switch' => $switch,
+                            'priority' => $priority,
+                            'params' => $params,
+                        );
 
                         // find priority of inverse relation
-                        // #CUSTOM QUERY
-                        $inverseRel = $this->query("SELECT priority
-                                                      FROM {$table}
-                                                      WHERE id={$obj_id}
-                                                      AND object_id={$this->id}
-                                                      AND switch='{$inverseSwitch}'");
+                        $inverseRel = $ObjectRelation->find('first', array(
+                            'fields' => array('priority'),
+                            'conditions' => array(
+                                'object_id' => $this->id,
+                                'switch' => $inverseSwitch,
+                            ),
+                        ));
 
-                        if (empty($inverseRel[0]["object_relations"]["priority"])) {
-                            // #CUSTOM QUERY
-                            $inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
-                            $inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+                        if (empty($inverseRel["ObjectRelation"]["priority"])) {
+                            $inverseRel = $ObjectRelation->find('first', array(
+                                'fields' => array('MAX(priority) + 1 AS priority'),
+                                'conditions' => array(
+                                    'id' => $obj_id,
+                                    'switch' => $inverseSwitch,
+                                ),
+                            ));
+                            $inversePriority = (empty($inverseRel[0]["priority"]))? 1 : $inverseRel[0]["priority"];
                         } else {
-                            $inversePriority = $inverseRel[0]["object_relations"]["priority"];
+                            $inversePriority = $inverseRel["ObjectRelation"]["priority"];
                         }
-                        // #CUSTOM QUERY
-                        $queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .", {$params})" ;
+                        $queriesInsert[] = array(
+                            'id' => $obj_id,
+                            'object_id' => $this->id,
+                            'switch' => $inverseSwitch,
+                            'priority' => $inversePriority,
+                            'params' => $params,
+                        );
                     }
 
                     $modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
@@ -461,20 +478,14 @@ class BEObject extends BEAppModel {
                 }
             }
 
-            $queriesDelete = array_unique($queriesDelete);
             foreach ($queriesDelete as $qDel) {
-                if ($db->query($qDel) === false) {
+                if ($ObjectRelation->deleteAll($qDel) === false) {
                     throw new BeditaException(__("Error deleting associations", true), $qDel);
                 }
             }
             foreach ($queriesInsert as $qIns) {
-                if ($db->query($qIns)  === false) {
+                if ($ObjectRelation->saveAll(array('ObjectRelation' => $qIns))  === false) {
                     throw new BeditaException(__("Error inserting associations", true), $qIns);
-                }
-            }
-            foreach ($queriesModified as $qMod) {
-                if ($db->query($qMod)  === false) {
-                    throw new BeditaException(__("Error modifying title and description", true), $qMod);
                 }
             }
         }
