@@ -23,7 +23,6 @@ namespace BEdita\Core\Model\Action;
  */
 class ListRelatedFoldersAction extends ListRelatedObjectsAction
 {
-
     /**
      * {@inheritDoc}
      */

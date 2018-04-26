@@ -529,6 +529,34 @@ class FoldersControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test deleted objects as `children`
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testDeletedChildren()
+    {
+        // add a deleted object to folder and verify it's not listed in `childrens`
+        $treesTable = TableRegistry::get('Trees');
+        $entity = $treesTable->newEntity([
+                'object_id' => 6,
+            ]);
+        $entity->parent_id = 12;
+        $treesTable->saveOrFail($entity);
+
+        $this->configRequestHeaders();
+        $this->get('/folders/12/children');
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $ids = Hash::extract($result, 'data.{n}.id');
+        static::assertSame(['4'], $ids);
+    }
+
+    /**
      * Test `?include=children` query
      *
      * @return void
