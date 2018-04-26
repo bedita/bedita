@@ -28,6 +28,26 @@ App::import('Sanitize');
 class ObjectRelation extends BEAppModel
 {
 
+    /**
+     * Check if a relation exists.
+     *
+     * @return bool
+     */
+    public function exists() {
+        $name = $this->name;
+        if (!isset($this->data[$name]['id']) || !isset($this->data[$name]['object_id']) || !isset($this->data[$name]['switch'])) {
+            return false;
+        }
+
+        $conditions = array(
+            $this->alias . '.id' => $this->data[$name]['id'],
+            $this->alias . '.object_id' => $this->data[$name]['object_id'],
+            $this->alias . '.switch' => $this->data[$name]['switch'],
+        );
+        $query = array('conditions' => $conditions, 'recursive' => -1, 'callbacks' => false);
+        return ($this->find('count', $query) > 0);
+    }
+
     public function afterFind($results) {
         if (!empty($results[0][$this->alias])) {
             foreach ($results as &$r) {
