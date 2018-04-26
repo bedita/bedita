@@ -36,6 +36,7 @@ class FoldersController extends ObjectsController
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'parent' => ['folders'],
+            'children' => ['objects'],
         ],
     ];
 

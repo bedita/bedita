@@ -49,6 +49,7 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.object_relations',
     ];
 
@@ -515,5 +516,25 @@ class ObjectEntityTest extends TestCase
 
         static::assertArrayHasKey('included', $entity);
         static::assertSameSize($entity['relationships']['test']['data'], $entity['included']);
+    }
+
+    /**
+     * Test magic getter for JSON API relations with single entity `included`
+     *
+     * @return void
+     *
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsSingleIncluded()
+    {
+        $entity = TableRegistry::get('Folders')->get(12, ['contain' => ['Parents']]);
+        $entity = $entity->jsonApiSerialize();
+
+        static::assertArrayHasKey('relationships', $entity);
+        static::assertArrayHasKey('parent', $entity['relationships']);
+        static::assertArrayHasKey('data', $entity['relationships']['parent']);
+
+        static::assertArrayHasKey('included', $entity);
+        static::assertEquals(1, count($entity['included']));
     }
 }
