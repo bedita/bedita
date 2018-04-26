@@ -312,21 +312,16 @@ class ObjectsTable extends Table
      */
     protected function treeDescendants(Query $query, $id, $direct = true)
     {
-        $id = $this->getId($id);
-        $condition = ['object_id' => $id];
-        if ($id === 0) {
-            $condition = ['parent_id' => null];
-        }
-
         $node = TableRegistry::get('Trees')->find()
-            ->where(['object_id' => $id])
+            ->where(['object_id' => $this->getId($id)])
             ->first();
 
-        $subquery = TableRegistry::get('Trees')->find('children', [
-            'for' => $node->id,
-            'direct' => $direct,
-        ]);
-        $subquery->find('list');
+        $subquery = TableRegistry::get('Trees')
+            ->find('children', [
+                'for' => $node->id,
+                'direct' => $direct,
+            ])
+            ->find('list');
 
         $query->join([
             'table' => 'trees',
@@ -334,7 +329,7 @@ class ObjectsTable extends Table
             'type' => 'INNER',
             'conditions' => 'Trees.object_id = ' . $this->aliasField('id'),
         ])
-        ->where(function (QueryExpression $exp) use ($node, $subquery) {
+        ->where(function (QueryExpression $exp) use ($subquery) {
             return $exp->in('Trees.id', $subquery);
         });
 
