@@ -203,4 +203,20 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $ids = Hash::extract($result, 'data.{n}.id');
         static::assertEmpty($ids);
     }
+
+    /**
+     * Test `?include=parents` query string
+     *
+     * @return void
+     */
+    public function testIncludeParents()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('/documents/2?include=parents');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $includedIds = Hash::extract($result, 'included.{n}.id');
+        static::assertEquals(['11'], $includedIds);
+    }
 }
