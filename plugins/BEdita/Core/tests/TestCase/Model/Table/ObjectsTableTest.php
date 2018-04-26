@@ -8,6 +8,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
@@ -34,6 +35,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.object_relations',
@@ -446,5 +448,33 @@ class ObjectsTableTest extends TestCase
 
         $id = $this->Objects->getId($uname);
         static::assertEquals($expected, $id);
+    }
+
+    /**
+     * Test `findAncestor()`
+     *
+     * @covers ::findAncestor()
+     * @covers ::treeDescendants()
+     */
+    public function testFindAncestor()
+    {
+        $objects = $this->Objects->find('ancestor', [11])->toArray();
+        static::assertNotEmpty($objects);
+        $ids = Hash::extract($objects, '{n}.id');
+        static::assertEquals([12, 2, 4], $ids);
+    }
+
+    /**
+     * Test `findParent()`
+     *
+     * @covers ::findParent()
+     * @covers ::treeDescendants()
+     */
+    public function testFindParent()
+    {
+        $objects = $this->Objects->find('parent', [12])->toArray();
+        static::assertNotEmpty($objects);
+        $ids = Hash::extract($objects, '{n}.id');
+        static::assertEquals([4], $ids);
     }
 }
