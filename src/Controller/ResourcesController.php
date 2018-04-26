@@ -132,8 +132,9 @@ abstract class ResourcesController extends AppController
                 throw new BadRequestException(__d('bedita', 'Inclusion of nested resources is not yet supported'));
             }
 
-            $association = $this->Table->associations()->getByProperty($relationship);
-            if (!array_key_exists($relationship, $this->getConfig('allowedAssociations')) || $association === null) {
+            try {
+                $association = $this->findAssociation($relationship);
+            } catch (NotFoundException $e) {
                 throw new BadRequestException(
                     __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
                 );
