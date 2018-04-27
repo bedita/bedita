@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,24 +14,17 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
+use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\UnauthorizedException;
-use Cake\ORM\TableRegistry;
-use Cake\Validation\Validation;
 
 /**
- * Anonymously authenticate users by providing a UUID.
- *
- * Users can authenticate to the server by providing an UUID in the request headers:
- *
- * ```
- * Authorization: UUID 485fc381-e790-47a3-9794-1337c0a8fe68
- * ```
+ * Authenticate users via OAuth2 providers.
  *
  * @since 4.0.0
  */
-class UuidAuthenticate extends BaseAuthenticate
+class OAuth2Authenticate extends BaseAuthenticate
 {
 
     /**
@@ -39,8 +32,6 @@ class UuidAuthenticate extends BaseAuthenticate
      *
      * - `authProviders` The AuthProviders entities associated to this authentication component.
      *      Array formatted with `auth_providers.name` as key, from `AuthProvidersTable::findAuthenticate()`
-     * - `header` The header where the token is stored. Defaults to `'Authorization'`.
-     * - `headerPrefix` The prefix to the token in header. Defaults to `'UUID'`.
      * - `fields` The fields to use to identify a user by.
      * - `userModel` The alias for users table, defaults to Users.
      * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
@@ -57,53 +48,46 @@ class UuidAuthenticate extends BaseAuthenticate
      */
     protected $_defaultConfig = [
         'authProviders' => [],
-        'header' => 'Authorization',
-        'headerPrefix' => 'UUID',
+        'userModel' => 'Users',
         'fields' => [
             'username' => 'ExternalAuth.provider_username',
             'password' => null,
         ],
-        'userModel' => 'Users',
         'scope' => [],
-        'finder' => 'all',
-        'contain' => null,
+        'finder' => null,
+        'contain' => ['Roles'],
         'passwordHasher' => 'Default',
     ];
-
-    /**
-     * Find a user by UUID.
-     *
-     * @param string $username UUID.
-     * @param null $password Password.
-     * @return array|bool
-     */
-    protected function _findUser($username, $password = null)
-    {
-        $authProvider = collection($this->_config['authProviders'])->first();
-        $this->setConfig('finder', [
-            'externalAuth' => [
-                'auth_provider' => $authProvider
-            ],
-        ]);
-
-        $externalAuth = parent::_findUser($username, $password);
-        if (!empty($externalAuth)) {
-            return $externalAuth;
-        }
-
-        $Table = TableRegistry::get($this->_config['userModel']);
-        $providerUsername = $username;
-        $Table->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername'));
-
-        return parent::_findUser($username, $password);
-    }
 
     /**
      * {@inheritDoc}
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
-        return $this->getUser($request);
+        $data = $request->getData();
+        if (empty($data['auth_provider']) || empty($data['provider_username']) || empty($data['access_token'])) {
+            return false;
+        }
+
+        /** @var array $authProviders */
+        $authProviders = $this->getConfig('authProviders');
+        if (empty($authProviders[$data['auth_provider']])) {
+            return false;
+        }
+        /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        $authProvider = $authProviders[$data['auth_provider']];
+        $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
+        if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
+            return false;
+        }
+
+        $this->setConfig('finder', [
+            'externalAuth' => [
+                'auth_provider' => $authProvider
+            ]
+        ]);
+
+        return $this->_findUser($data['provider_username']);
     }
 
     /**
@@ -111,38 +95,23 @@ class UuidAuthenticate extends BaseAuthenticate
      */
     public function getUser(ServerRequest $request)
     {
-        $token = $this->getToken($request);
-        if ($token) {
-            return $this->_findUser($token);
-        }
-
         return false;
     }
 
     /**
-     * Obtain the token from request headers.
+     * Get response from an OAuth2 provider
      *
-     * @param \Cake\Http\ServerRequest $request Request object.
-     * @return false|string
+     * @param string $url OAuth2 provider URL
+     * @param string $accessToken Access token to use in request
+     * @return array Response from an OAuth2 provider
+     * @codeCoverageIgnore
      */
-    public function getToken(ServerRequest $request)
+    protected function getOAuth2Response($url, $accessToken)
     {
-        $header = $request->getHeaderLine($this->_config['header']);
-        if (!$header) {
-            return false;
-        }
+        /** @var \Cake\Http\Client\Response $response */
+        $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        $prefix = $this->_config['headerPrefix'] . ' ';
-        if (strpos($header, $prefix) !== 0) {
-            return false;
-        }
-
-        $token = substr($header, strlen($prefix));
-        if (!Validation::uuid($token)) {
-            return false;
-        }
-
-        return $token;
+        return !empty($response->json) ? $response->json : [];
     }
 
     /**

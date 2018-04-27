@@ -55,6 +55,8 @@ class ExternalAuthTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('provider_username');
 
+        $this->addBehavior('Timestamp');
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',

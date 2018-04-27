@@ -18,6 +18,7 @@ use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
+use Cake\Utility\Hash;
 
 /**
  * Profiles Model
@@ -57,6 +58,8 @@ class ProfilesTable extends Table
 
         $this->addBehavior('BEdita/Core.CustomProperties');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
         $this->extensionOf('Objects');
 
         $this->addBehavior('BEdita/Core.UniqueName', [
@@ -94,7 +97,9 @@ class ProfilesTable extends Table
     }
 
     /**
-     * Before save checks: if `email` is empty set it to NULL to avoid unique constraint errors
+     * Before save actions:
+     *  - if `email` is empty set it to NULL to avoid unique constraint errors
+     *  - on empty `title` use `name` `surname` as default
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
@@ -104,6 +109,10 @@ class ProfilesTable extends Table
     {
         if (empty($entity->get('email'))) {
             $entity->set('email', null);
+        }
+        if (!$entity->has('title') && ($entity->has('name') || $entity->has('surname'))) {
+            $title = sprintf('%s %s', (string)Hash::get($entity, 'name', ''), (string)Hash::get($entity, 'surname', ''));
+            $entity->set('title', $title);
         }
     }
 }

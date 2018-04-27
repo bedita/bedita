@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,6 +17,7 @@ use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 
 /**
@@ -24,9 +25,13 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $name
+ * @property string $auth_class
  * @property string $slug
  * @property string $url
  * @property string $params
+ * @property bool $enabled
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  *
  * @since 4.0.0
@@ -61,7 +66,7 @@ class AuthProvider extends Entity
      */
     public function getRoles()
     {
-        $roles = (array)Configure::read(sprintf('Roles.%s', $this->name));
+        $roles = (array)Configure::read(sprintf('Roles.%s', $this->auth_class));
         if (empty($roles)) {
             return [];
         }
@@ -73,5 +78,21 @@ class AuthProvider extends Entity
                 return $exp->in($table->aliasField('name'), $roles);
             })
             ->toArray();
+    }
+
+    /**
+     * Check auth providers credentials.
+     * Provider username MUST match external auth provider response.
+     *
+     * @param array $providerResponse Provider response in array format
+     * @param string $providerUsername Provider username to match
+     * @return bool True on success, false on failure
+     */
+    public function checkAuthorization($providerResponse, $providerUsername)
+    {
+        $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
+        $userName = Hash::get($providerResponse, (string)$fieldPath);
+
+        return ($userName === $providerUsername);
     }
 }

@@ -30,7 +30,7 @@ trait JsonApiAdminTrait
      *
      * @codeCoverageIgnore
      */
-    protected function routeNamePrefix()
+    public function routeNamePrefix()
     {
         return 'api:admin:resources';
     }

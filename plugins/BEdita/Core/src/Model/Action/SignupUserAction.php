@@ -22,9 +22,11 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
+use Cake\Http\Client;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -77,6 +79,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @return \BEdita\Core\Model\Entity\User
      * @throws \Cake\Network\Exception\BadRequestException When validation of URL options fails
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
      */
     public function execute(array $data = [])
     {
@@ -95,10 +98,14 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             // add roles to user, with validity check
             $this->addRoles($user, $data['data']);
 
-            $job = $this->createSignupJob($user);
-            $activationUrl = $this->getActivationUrl($job, $data['data']);
+            if (empty($data['data']['auth_provider'])) {
+                $job = $this->createSignupJob($user);
+                $activationUrl = $this->getActivationUrl($job, $data['data']);
 
-            $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
+                $this->dispatchEvent('Auth.signup', [$user, $job, $activationUrl], $this->Users);
+            } else {
+                $this->dispatchEvent('Auth.signupActivation', [$user], $this->Users);
+            }
         } catch (\Exception $e) {
             // if async job or send mail fail remove user created and re-throw the exception
             $this->Users->delete($user);
@@ -139,8 +146,15 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $validator = new Validator();
         $validator->setProvider('bedita', Validation::class);
 
+        if (empty($data['auth_provider'])) {
+            $validator->requirePresence('activation_url');
+        } else {
+            $validator
+                ->requirePresence('provider_username')
+                ->requirePresence('access_token');
+        }
+
         $validator
-            ->requirePresence('activation_url')
             ->add('activation_url', 'customUrl', [
                 'rule' => 'url',
                 'provider' => 'bedita',
@@ -155,12 +169,16 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
-     * Create a new user with status draft.
+     * Create a new user with status:
+     *  - `on` if an external auth provider is used or no activation
+     *    is required via `Signup.requireActivation` config
+     *  - `draft` in other cases.
      *
      * The user is validated using 'signup' validation.
      *
      * @param array $data The data to save
-     * @return \BEdita\Core\Model\Entity\User
+     * @return \BEdita\Core\Model\Entity\User|bool User created or `false` on error
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
      */
     protected function createUser(array $data)
     {
@@ -174,15 +192,88 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         unset($data['status']);
 
+        if (empty($data['auth_provider'])) {
+            return $this->createUserEntity($data, $status, 'signup');
+        }
+
+        $authProvider = $this->checkExternalAuth($data);
+
+        $user = $this->createUserEntity($data, 'on', 'signupExternal');
+
+        // create `ExternalAuth` entry
+        $this->Users->dispatchEvent('Auth.externalAuth', [
+            'authProvider' => $authProvider,
+            'providerUsername' => $data['provider_username'],
+            'userId' => $user->get('id'),
+            'params' => empty($data['provider_userdata']) ? null : $data['provider_userdata'],
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Create User model entity.
+     *
+     * @param array $data The signup data
+     * @param string $status User `status`, `on` or `draft`
+     * @param string $validate Validation options to use
+     * @return @return \BEdita\Core\Model\Entity\User The User entity created
+     */
+    protected function createUserEntity(array $data, $status, $validate)
+    {
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         return $action([
             'entity' => $this->Users->newEntity()->set('status', $status),
             'data' => $data,
             'entityOptions' => [
-                'validate' => 'signup',
+                'validate' => $validate,
             ],
         ]);
+    }
+
+    /**
+     * Check external auth data validity
+     *
+     * To perform external auth check these fields are mandatory:
+     *  - "auth_provider": provider name like "google", "facebook"... must be in `auth_providers`
+     *  - "provider_username": id or username of the provider
+     *  - "access_token": token returned by provider to use in check
+     *
+     * @param array $data The signup data
+     * @return \BEdita\Core\Model\Entity\AuthProvider AuthProvider entity
+     * @throws \Cake\Network\Exception\UnauthorizedException Upon external authorization check failure.
+     */
+    protected function checkExternalAuth(array $data)
+    {
+        /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        $authProvider = TableRegistry::get('AuthProviders')->find('enabled')
+            ->where(['name' => $data['auth_provider']])
+            ->first();
+        if (empty($authProvider)) {
+            throw new UnauthorizedException(__d('bedita', 'External auth provider not found'));
+        }
+        $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
+        if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
+            throw new UnauthorizedException(__d('bedita', 'External auth failed'));
+        }
+
+        return $authProvider;
+    }
+
+    /**
+     * Get response from an OAuth2 provider
+     *
+     * @param string $url OAuth2 provider URL
+     * @param string $accessToken Access token to use in request
+     * @return array Response from an OAuth2 provider
+     * @codeCoverageIgnore
+     */
+    protected function getOAuth2Response($url, $accessToken)
+    {
+        $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
+
+        return !empty($response->json) ? $response->json : [];
     }
 
     /**
@@ -265,6 +356,22 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
+     * Send welcome email to user to inform of successfully activation
+     * External auth users are already activated
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\User $user The user
+     * @return void
+     */
+    public function sendActivationMail(Event $event, User $user)
+    {
+        $options = [
+            'params' => compact('user'),
+        ];
+        $this->getMailer('BEdita/Core.User')->send('welcome', [$options]);
+    }
+
+    /**
      * Return the signup activation url
      *
      * @param \BEdita\Core\Model\Entity\AsyncJob $job The async job entity
@@ -287,6 +394,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         return [
             'Auth.signup' => 'sendMail',
+            'Auth.signupActivation' => 'sendActivationMail',
         ];
     }
 }
