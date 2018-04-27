@@ -361,6 +361,9 @@ class ObjectsController extends ResourcesController
         }
 
         $types = $this->getAvailableTypes($relationship);
+        if (empty($types)) {
+            return null;
+        }
 
         return Router::url(
             [
