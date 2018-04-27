@@ -12,7 +12,7 @@
  */
 
 /**
- * Reserved names for types and properties.
+ * Reserved names for types, properties and relations.
  */
 return [
     'ancestor',
@@ -40,4 +40,8 @@ return [
     'schema',
     'stream',
     'streams',
+    'tree',
+    'trees',
+    'tree_nodes',
+    'tree_parent_nodes',
 ];
