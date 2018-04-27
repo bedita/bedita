@@ -127,8 +127,8 @@ class Folder extends ObjectEntity
                 'valueField' => 'object_id',
             ])
             ->where([
-                'tree_left <=' => $node->tree_left,
-                'tree_right >=' => $node->tree_right,
+                'tree_left <=' => $node->get('tree_left'),
+                'tree_right >=' => $node->get('tree_right'),
             ])
             ->order(['tree_left' => 'ASC']);
 
