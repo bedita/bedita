@@ -192,6 +192,8 @@ class FolderTest extends TestCase
     /**
      * Test getter for `path`
      *
+     * @param string $expected The expected path
+     * @param int $id The folder id
      * @return void
      *
      * @dataProvider getPathProvider
@@ -199,10 +201,20 @@ class FolderTest extends TestCase
      */
     public function testGetPath($expected, $id)
     {
-        $folder = new Folder();
-        static::assertNull($folder->path);
-
         $folder = $this->Folders->get($id);
         static::assertEquals($expected, $folder->path);
+    }
+
+    /**
+     * Test that `path` virtual property is null folder id is empty.
+     *
+     * @return void
+     *
+     * @covers ::_getPath()
+     */
+    public function testGetPathNull()
+    {
+        $folder = $this->Folders->newEntity();
+        static::assertNull($folder->path);
     }
 }
