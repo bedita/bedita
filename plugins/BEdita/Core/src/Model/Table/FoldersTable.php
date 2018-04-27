@@ -161,17 +161,16 @@ class FoldersTable extends ObjectsTable
      */
     protected function findRoots(Query $query)
     {
-        $subquery = TableRegistry::get('Trees')->find('list')->where(['parent_id IS NULL']);
-
         $query->join([
             'table' => 'trees',
             'alias' => 'Trees',
             'type' => 'INNER',
             'conditions' => 'Trees.object_id = ' . $this->aliasField('id'),
         ])
-        ->where(function (QueryExpression $exp) use ($subquery) {
-            return $exp->in('Trees.id', $subquery);
-        });
+        ->where(function (QueryExpression $exp) {
+            return $exp->isNull('Trees.parent_id');
+        })
+        ->order('Trees.tree_left');
 
         return $query;
     }
