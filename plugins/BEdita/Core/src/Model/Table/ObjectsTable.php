@@ -113,6 +113,11 @@ class ObjectsTable extends Table
             'targetForeignKey' => 'parent_id',
         ]);
 
+        $this->hasMany('TreeNodes', [
+            'className' => 'Trees',
+            'foreignKey' => 'object_id',
+        ]);
+
         $this->addBehavior('BEdita/Core.UniqueName');
 
         $this->addBehavior('BEdita/Core.Searchable', [
@@ -287,7 +292,22 @@ class ObjectsTable extends Table
      */
     protected function findAncestor(Query $query, array $options)
     {
-        return $this->treeDescendants($query, Hash::get($options, '0'), false);
+        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentNode = $this->TreeNodes->find()
+            ->where([
+                $this->TreeNodes->aliasField('object_id') => $parentId,
+            ])
+            ->firstOrFail();
+
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentNode) {
+                return $query->where(function (QueryExpression $exp) use ($parentNode) {
+                    return $exp
+                        ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                        ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+                });
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
     }
 
     /**
@@ -299,39 +319,14 @@ class ObjectsTable extends Table
      */
     protected function findParent(Query $query, array $options)
     {
-        return $this->treeDescendants($query, Hash::get($options, '0'), true);
-    }
+        $parentId = $this->getId((string)Hash::get($options, '0'));
 
-    /**
-     * Create query on Trees for `findParent` and `findAncestor`
-     *
-     * @param Query $query Query object instance.
-     * @param int|string $id Parent id or unique name
-     * @param bool $direct Flag to look for direct descendants only, a.k.a. children
-     * @return \Cake\ORM\Query
-     */
-    protected function treeDescendants(Query $query, $id, $direct = true)
-    {
-        $query = $query->join([
-            'table' => 'trees',
-            'alias' => 'Trees',
-            'type' => 'INNER',
-            'conditions' => 'Trees.object_id = ' . $this->aliasField('id'),
-        ]);
-
-        if ($direct) {
-            return $query->where(['Trees.parent_id' => $this->getId($id)])
-                ->order('Trees.tree_left');
-        }
-
-        $node = TableRegistry::get('Trees')->find()
-            ->where(['Trees.object_id' => $this->getId($id)])
-            ->first();
-
-        return $query->where([
-                'Trees.tree_left >' => $node->tree_left,
-                'Trees.tree_right <' => $node->tree_right,
-            ])
-            ->order('Trees.tree_left');
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
+                return $query->where([
+                    $this->TreeNodes->aliasField('parent_id') => $parentId,
+                ]);
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
     }
 }

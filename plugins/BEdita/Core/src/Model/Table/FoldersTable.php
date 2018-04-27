@@ -62,6 +62,11 @@ class FoldersTable extends ObjectsTable
                 'Trees.tree_left' => 'asc',
             ],
         ]);
+
+        $this->hasMany('TreeParentNodes', [
+            'className' => 'Trees',
+            'foreignKey' => 'parent_id',
+        ]);
     }
 
     /**
@@ -161,17 +166,12 @@ class FoldersTable extends ObjectsTable
      */
     protected function findRoots(Query $query)
     {
-        $query->join([
-            'table' => 'trees',
-            'alias' => 'Trees',
-            'type' => 'INNER',
-            'conditions' => 'Trees.object_id = ' . $this->aliasField('id'),
-        ])
-        ->where(function (QueryExpression $exp) {
-            return $exp->isNull('Trees.parent_id');
-        })
-        ->order('Trees.tree_left');
-
-        return $query;
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) {
+                return $query->where(function (QueryExpression $exp) {
+                    return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
+                });
+            })
+            ->order('TreeNodes.tree_left');
     }
 }
