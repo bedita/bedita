@@ -185,7 +185,6 @@ class UuidAuthenticateTest extends TestCase
      */
     public function testAuthenticate($expected, $newUser, ServerRequest $request)
     {
-        $authProvider = TableRegistry::get('AuthProviders')->get(2);
         $Users = TableRegistry::get('Users');
         $count = $Users->find()->count();
 
@@ -197,14 +196,11 @@ class UuidAuthenticateTest extends TestCase
             static::assertTrue(is_string(func_get_arg(2)));
         });
 
-        $auth = new UuidAuthenticate(new ComponentRegistry(), [
-            'authProvider' => $authProvider,
-            'finder' => [
-                'externalAuth' => [
-                    'auth_provider' => $authProvider,
-                ],
-            ],
-        ]);
+        $authConfig = TableRegistry::get('AuthProviders')
+            ->find('authenticate')
+            ->toArray();
+
+        $auth = new UuidAuthenticate(new ComponentRegistry(), $authConfig['BEdita/API.Uuid']);
 
         $result = $auth->authenticate($request, new Response());
         $countAfter = $Users->find()->count();

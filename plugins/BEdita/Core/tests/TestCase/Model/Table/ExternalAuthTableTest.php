@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\I18n\Time;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -260,6 +261,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
+                        'created' => new Time('2018-04-07 12:51:27'),
+                        'modified' => new Time('2018-04-07 12:51:27'),
                     ],
                 ],
                 'example',
@@ -272,6 +275,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
+                        'created' => new Time('2018-04-07 12:51:27'),
+                        'modified' => new Time('2018-04-07 12:51:27'),
                     ],
                 ],
                 [
@@ -286,6 +291,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
+                        'created' => new Time('2018-04-07 12:51:27'),
+                        'modified' => new Time('2018-04-07 12:51:27'),
                     ],
                 ],
                 1,
@@ -318,6 +325,6 @@ class ExternalAuthTableTest extends TestCase
             ->enableHydration(false)
             ->toArray();
 
-        static::assertSame($expected, $result);
+        static::assertEquals($expected, $result);
     }
 }
