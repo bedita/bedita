@@ -22,6 +22,7 @@ use Cake\Utility\Hash;
  *
  * @property int $parent_id
  * @property \BEdita\Core\Model\Entity\Folder|null $parent
+ * @property string $path
  *
  * @since 4.0.0
  */
@@ -36,6 +37,8 @@ class Folder extends ObjectEntity
 
         $this->setAccess('parents', false);
         $this->setHidden(['parents'], true);
+        $this->setVirtual(['path'], true);
+        $this->setAccess('path', false);
     }
 
     /**
@@ -101,6 +104,35 @@ class Folder extends ObjectEntity
             ->firstOrFail();
 
         return $parentId;
+    }
+
+    /**
+     * Getter for `path` virtual property
+     *
+     * @return string|null
+     */
+    protected function _getPath()
+    {
+        if (!$this->has('id')) {
+            return null;
+        }
+
+        $trees = TableRegistry::get('Trees');
+        $node = $trees->find()
+            ->where(['object_id' => $this->id])
+            ->firstOrFail();
+
+        $path = $trees->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'object_id',
+            ])
+            ->where([
+                'tree_left <=' => $node->tree_left,
+                'tree_right >=' => $node->tree_right,
+            ])
+            ->order(['tree_left' => 'ASC']);
+
+        return sprintf('/%s', implode('/', $path->toArray()));
     }
 
     /**

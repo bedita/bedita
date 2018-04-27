@@ -169,4 +169,40 @@ class FolderTest extends TestCase
         $folder = $folder->jsonApiSerialize();
         static::assertArrayHasKey('parent', $folder['relationships']);
     }
+
+    /**
+     * Data provider for `testGetPath()`
+     *
+     * @return array
+     */
+    public function getPathProvider()
+    {
+        return [
+            'root' => [
+                '/11',
+                11,
+            ],
+            'subfolder' => [
+                '/11/12',
+                12,
+            ]
+        ];
+    }
+
+    /**
+     * Test getter for `path`
+     *
+     * @return void
+     *
+     * @dataProvider getPathProvider
+     * @covers ::_getPath()
+     */
+    public function testGetPath($expected, $id)
+    {
+        $folder = new Folder();
+        static::assertNull($folder->path);
+
+        $folder = $this->Folders->get($id);
+        static::assertEquals($expected, $folder->path);
+    }
 }
