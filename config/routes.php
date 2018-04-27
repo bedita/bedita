@@ -27,6 +27,7 @@ Router::plugin(
             'streams',
             'users',
             'media',
+            'folders',
         ];
         $adminControllers = [
             'applications',
