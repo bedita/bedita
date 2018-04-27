@@ -206,7 +206,7 @@ class FolderTest extends TestCase
     }
 
     /**
-     * Test that `path` virtual property is null folder id is empty.
+     * Test that `path` virtual property is null if folder id is empty.
      *
      * @return void
      *
