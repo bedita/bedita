@@ -1370,24 +1370,82 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testLinksAvailable`
+     *
+     * @return void
+     */
+    public function linksAvailableProvider()
+    {
+        return [
+            'children' => [
+                'http://api.example.com/objects',
+                '/folders/12/children',
+            ],
+            'parents' => [
+                'http://api.example.com/objects?filter[type][0]=folders',
+                '/profiles/4/parents',
+            ],
+            'parent' => [
+                'http://api.example.com/objects?filter[type][0]=folders',
+                '/folders/12/parent',
+            ],
+            'inverse_test' => [
+                'http://api.example.com/objects?filter[type][0]=documents',
+                '/documents/2/inverse_test',
+            ],
+        ];
+    }
+
+    /**
      * Test related method on folder related relationships.
+     *
+     * @return void
+     * @param string $expected Expected result
+     * @param string $url Test URL
+     *
+     * @dataProvider linksAvailableProvider
+     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
+     */
+    public function testLinksAvailable($expected, $url)
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertEquals($expected, urldecode(Hash::get($result, 'links.available')));
+    }
+
+    /**
+     * Test `getAvailableUrl` in case of not available types.
      *
      * @return void
      *
      * @covers ::getAvailableUrl()
-     * @covers ::getAvailableTypes()
      */
-    public function testListFoldersRelated()
+    public function testLinksAvailableEmpty()
     {
-        $this->configRequestHeaders();
-        $this->get('/folders/12/children');
-        $result = json_decode((string)$this->_response->getBody(), true);
+        $environment = ['REQUEST_METHOD' => 'GET'];
+        $params = [
+            'object_type' => 'documents',
+            'relationship' => 'inverse_test',
+            'related_id' => '2',
+        ];
+        $request = new ServerRequest(compact('environment', 'params'));
 
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-        $expected = 'http://api.example.com/objects';
+        $controller = $this->getMockBuilder(ObjectsController::class)
+            ->setConstructorArgs([$request])
+            ->setMethods(['getAvailableTypes'])
+            ->getMock();
 
-        static::assertEquals($expected, Hash::get($result, 'links.available'));
+        $controller
+            ->method('getAvailableTypes')
+            ->willReturn([]);
+
+        $controller->related();
+        static::assertEquals(['available' => null], $controller->viewVars['_links']);
     }
 
     /**
