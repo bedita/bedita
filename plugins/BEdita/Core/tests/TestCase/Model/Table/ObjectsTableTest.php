@@ -454,7 +454,6 @@ class ObjectsTableTest extends TestCase
      * Test `findAncestor()`
      *
      * @covers ::findAncestor()
-     * @covers ::treeDescendants()
      */
     public function testFindAncestor()
     {
@@ -468,7 +467,6 @@ class ObjectsTableTest extends TestCase
      * Test `findParent()`
      *
      * @covers ::findParent()
-     * @covers ::treeDescendants()
      */
     public function testFindParent()
     {
