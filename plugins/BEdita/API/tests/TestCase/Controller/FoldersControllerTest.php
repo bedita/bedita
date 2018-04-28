@@ -77,6 +77,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'path' => '/11',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/11',
@@ -117,6 +118,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'path' => '/11/12',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/12',
@@ -157,6 +159,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'path' => '/13',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/13',
@@ -264,6 +267,7 @@ class FoldersControllerTest extends IntegrationTestCase
                     'published' => null,
                     'created_by' => 1,
                     'modified_by' => 1,
+                    'path' => '/11',
                 ],
                 'relationships' => [
                     'children' => [
