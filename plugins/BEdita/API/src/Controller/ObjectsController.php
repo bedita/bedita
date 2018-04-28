@@ -58,19 +58,11 @@ class ObjectsController extends ResourcesController
 
     /**
      * {@inheritDoc}
-     *
-     *  - 'relationAvailableTypes': available object types for predefined relations like `parent`,
-     *      `parents` and `children`
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'parents' => ['folders'],
         ],
-        'relationAvailableTypes' => [
-            'parent' => ['folders'],
-            'parents' => ['folders'],
-            'children' => ['objects'],
-        ]
     ];
 
     /**
@@ -371,14 +363,15 @@ class ObjectsController extends ResourcesController
             return null;
         }
 
-        return Router::url(
-            [
-                '_name' => 'api:objects:index',
-                'object_type' => 'objects',
-                'filter' => ['type' => $types],
-            ],
-            true
-        );
+        $url = [
+            '_name' => 'api:objects:index',
+            'object_type' => 'objects'
+        ];
+        if (!empty(array_diff($types, ['objects']))) {
+            $url['filter'] = ['type' => $types];
+        }
+
+        return Router::url($url, true);
     }
 
     /**
