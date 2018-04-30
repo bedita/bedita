@@ -23,6 +23,8 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Objects Model
@@ -109,6 +111,11 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+        ]);
+
+        $this->hasMany('TreeNodes', [
+            'className' => 'Trees',
+            'foreignKey' => 'object_id',
         ]);
 
         $this->addBehavior('BEdita/Core.UniqueName');
@@ -274,5 +281,52 @@ class ObjectsTable extends Table
             ->firstOrFail();
 
         return $result['id'];
+    }
+
+    /**
+     * Finder for objects having a certain `ancestor` on the tree.
+     *
+     * @param Query $query  Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findAncestor(Query $query, array $options)
+    {
+        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentNode = $this->TreeNodes->find()
+            ->where([
+                $this->TreeNodes->aliasField('object_id') => $parentId,
+            ])
+            ->firstOrFail();
+
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentNode) {
+                return $query->where(function (QueryExpression $exp) use ($parentNode) {
+                    return $exp
+                        ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                        ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+                });
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
+    }
+
+    /**
+     * Finder for objects having a certain `parent` on the tree.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findParent(Query $query, array $options)
+    {
+        $parentId = $this->getId((string)Hash::get($options, '0'));
+
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
+                return $query->where([
+                    $this->TreeNodes->aliasField('parent_id') => $parentId,
+                ]);
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
     }
 }

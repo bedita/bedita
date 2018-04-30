@@ -17,6 +17,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * BEdita\Core\Model\Table\FoldersTable Test Case
@@ -268,5 +269,18 @@ class FoldersTableTest extends TestCase
             $actual = $trees->childCount($node);
             static::assertEquals($descendants, $actual);
         }
+    }
+
+    /**
+     * Test `findRoots()`
+     *
+     * @covers ::findRoots()
+     */
+    public function testFindRoots()
+    {
+        $folders = $this->Folders->find('roots')->toArray();
+        static::assertNotEmpty($folders);
+        $ids = Hash::extract($folders, '{n}.id');
+        static::assertEquals([11, 13], $ids);
     }
 }

@@ -12,9 +12,10 @@
  */
 
 /**
- * Reserved names for types and properties.
+ * Reserved names for types, properties and relations.
  */
 return [
+    'ancestor',
     'application',
     'applications',
     'async_job',
@@ -27,6 +28,7 @@ return [
     'models',
     'object_type',
     'object_types',
+    'parent',
     'properties',
     'property',
     'property_type',
@@ -38,4 +40,8 @@ return [
     'schema',
     'stream',
     'streams',
+    'tree',
+    'trees',
+    'tree_nodes',
+    'tree_parent_nodes',
 ];

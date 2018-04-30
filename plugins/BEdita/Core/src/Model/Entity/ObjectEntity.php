@@ -93,6 +93,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'object_type',
         'deleted',
         'custom_props',
+        'tree_nodes',
     ];
 
     /**
