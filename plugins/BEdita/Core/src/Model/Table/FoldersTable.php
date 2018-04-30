@@ -14,8 +14,10 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\Folder;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\ValidCount;
 use Cake\ORM\TableRegistry;
@@ -59,6 +61,11 @@ class FoldersTable extends ObjectsTable
             'sort' => [
                 'Trees.tree_left' => 'asc',
             ],
+        ]);
+
+        $this->hasMany('TreeParentNodes', [
+            'className' => 'Trees',
+            'foreignKey' => 'parent_id',
         ]);
     }
 
@@ -149,5 +156,22 @@ class FoldersTable extends ObjectsTable
 
         $node->parent_id = $entity->parent_id;
         $trees->saveOrFail($node);
+    }
+
+    /**
+     * Finder for root folders.
+     *
+     * @param Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findRoots(Query $query)
+    {
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) {
+                return $query->where(function (QueryExpression $exp) {
+                    return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
+                });
+            })
+            ->order('TreeNodes.tree_left');
     }
 }

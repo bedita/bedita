@@ -36,7 +36,7 @@ class Folder extends ObjectEntity
         parent::__construct($properties, $options);
 
         $this->setAccess('parents', false);
-        $this->setHidden(['parents'], true);
+        $this->setHidden(['parents', 'tree_parent_nodes'], true);
         $this->setVirtual(['path'], true);
         $this->setAccess('path', false);
     }
