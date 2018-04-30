@@ -358,29 +358,45 @@ class ObjectsController extends ResourcesController
             return $available;
         }
 
+        $types = $this->getAvailableTypes($relationship);
+        if (empty($types)) {
+            return null;
+        }
+
+        $url = [
+            '_name' => 'api:objects:index',
+            'object_type' => 'objects'
+        ];
+        if (!empty(array_diff($types, ['objects']))) {
+            $url['filter'] = ['type' => $types];
+        }
+
+        return Router::url($url, true);
+    }
+
+    /**
+     * Return available object types for a relationship
+     *
+     * @param string $relationship relation name
+     * @return array List of available types
+     */
+    protected function getAvailableTypes($relationship)
+    {
         foreach ($this->objectType->right_relations as $relation) {
             if ($relation->inverse_name !== $relationship) {
                 continue;
             }
-            $result = Hash::extract($relation->left_object_types, '{n}.name');
+
+            return array_values(Hash::extract($relation->left_object_types, '{n}.name'));
         }
         foreach ($this->objectType->left_relations as $relation) {
             if ($relation->name !== $relationship) {
                 continue;
             }
-            $result = Hash::extract($relation->right_object_types, '{n}.name');
-        }
-        if (empty($result)) {
-            return null;
+
+            return array_values(Hash::extract($relation->right_object_types, '{n}.name'));
         }
 
-        return Router::url(
-            [
-                '_name' => 'api:objects:index',
-                'object_type' => 'objects',
-                'filter' => ['type' => array_values($result)],
-            ],
-            true
-        );
+        return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
     }
 }
