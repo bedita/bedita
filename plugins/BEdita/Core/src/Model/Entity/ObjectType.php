@@ -18,7 +18,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -180,6 +179,36 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
+     * Get all relations, including relations inherited from parent object types, indexed by their name.
+     *
+     * @param string $side Filter relations by side this object type stays on. Either `left`, `right` or `both`.
+     * @return \BEdita\Core\Model\Entity\Relation[]
+     */
+    public function getRelations($side = 'both')
+    {
+        if ($side === 'both') {
+            return $this->getRelations('left') + $this->getRelations('right');
+        }
+
+        $indexBy = 'name';
+        if ($side === 'right') {
+            $indexBy = 'inverse_name';
+        }
+
+        $property = sprintf('%s_relations', $side);
+        $objectType = $this;
+        $relations = (array)$this->get($property);
+        while ($objectType->has('parent_id')) {
+            $objectType = TableRegistry::get($this->getSource())->get($objectType->get('parent_id'));
+            $relations = array_merge($relations, (array)$objectType->get($property));
+        }
+
+        return collection($relations)
+            ->indexBy($indexBy)
+            ->toArray();
+    }
+
+    /**
      * Getter for virtual property `relations`.
      *
      * @return string[]|null
@@ -190,12 +219,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $relations = array_merge(
-            Hash::extract($this->left_relations, '{n}.name'),
-            Hash::extract($this->right_relations, '{n}.inverse_name')
-        );
-
-        return $relations;
+        return array_keys($this->getRelations());
     }
 
     /**

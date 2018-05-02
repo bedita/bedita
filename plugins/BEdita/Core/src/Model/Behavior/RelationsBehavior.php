@@ -105,7 +105,7 @@ class RelationsBehavior extends Behavior
         }
 
         // Add relations to the left side.
-        foreach ($objectType->left_relations as $relation) {
+        foreach ($objectType->getRelations('left') as $relation) {
             if ($this->getTable()->association($relation->alias) !== null) {
                 continue;
             }
@@ -140,7 +140,7 @@ class RelationsBehavior extends Behavior
         }
 
         // Add relations to the right side.
-        foreach ($objectType->right_relations as $relation) {
+        foreach ($objectType->getRelations('right') as $relation) {
             if ($this->getTable()->association($relation->inverse_alias) !== null) {
                 continue;
             }
@@ -179,16 +179,10 @@ class RelationsBehavior extends Behavior
      * Get a list of all available relations indexed by their name with regards of side.
      *
      * @return \BEdita\Core\Model\Entity\Relation[]
+     * @deprecated Use `ObjectType::getRelations()` instead.
      */
     public function getRelations()
     {
-        $relations = collection($this->objectType()->left_relations)
-            ->indexBy('name')
-            ->append(
-                collection($this->objectType()->right_relations)
-                    ->indexBy('inverse_name')
-            );
-
-        return $relations->toArray();
+        return $this->objectType()->getRelations();
     }
 }
