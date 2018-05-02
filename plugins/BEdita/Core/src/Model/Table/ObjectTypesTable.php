@@ -17,6 +17,7 @@ use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Core\App;
+use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
@@ -391,24 +392,52 @@ class ObjectTypesTable extends Table
             $rightField = 'inverse_name';
         }
 
-        return $query
-            ->distinct()
-            ->leftJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
+        $leftSubQuery = $this->find()
+            ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
                     return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
                 });
-            })
-            ->leftJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
+            });
+        $rightSubQuery = $this->find()
+            ->innerJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $rightField) {
                     return $exp->eq($this->RightRelations->aliasField($rightField), $name);
                 });
-            })
-            ->where(function (QueryExpression $exp) use ($leftField, $rightField) {
-                return $exp->or_(function (QueryExpression $exp) use ($leftField, $rightField) {
-                    return $exp
-                        ->isNotNull($this->LeftRelations->aliasField($leftField))
-                        ->isNotNull($this->RightRelations->aliasField($rightField));
-                });
             });
+
+        $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+            return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+                return $exp
+                    ->in($this->aliasField('id'), $leftSubQuery->select(['id']))
+                    ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
+            });
+        };
+        if (!empty($options['descendants'])) {
+            $nsmCounters = $this->find()
+                ->select(['tree_left', 'tree_right'])
+                ->where($conditionsBuilder)
+                ->enableHydration(false);
+            $conditionsBuilder = function (QueryExpression $exp) use ($nsmCounters) {
+                $rows = $nsmCounters->all();
+                if ($rows->count() === 0) {
+                    // Add contradiction to force empty results.
+                    return $exp->add(new Comparison(1, 1, 'integer', '<>'));
+                }
+
+                return $exp->or_(
+                    $nsmCounters
+                        ->map(function (array $row) use ($exp) {
+                            return $exp->and_(function (QueryExpression $exp) use ($row) {
+                                return $exp
+                                    ->gte($this->aliasField('tree_left'), $row['tree_left'])
+                                    ->lte($this->aliasField('tree_right'), $row['tree_right']);
+                            });
+                        })
+                        ->toArray()
+                );
+            };
+        }
+
+        return $query->where($conditionsBuilder);
     }
 }

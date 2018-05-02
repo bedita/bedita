@@ -28,8 +28,6 @@ use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Association;
-use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -74,7 +72,7 @@ class ObjectsController extends ResourcesController
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::get('ObjectTypes')
                 ->find('list')
-                ->find('byRelation', compact('name'))
+                ->find('byRelation', compact('name') + ['descendants' => true])
                 ->toArray();
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
@@ -92,9 +90,10 @@ class ObjectsController extends ResourcesController
         }
 
         $behaviorRegistry = $this->Table->behaviors();
-        if ($behaviorRegistry->hasMethod('getRelations')) {
-            $relations = array_keys($behaviorRegistry->call('getRelations'));
-            $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
+        if ($behaviorRegistry->hasMethod('objectType')) {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
+            $objectType = $behaviorRegistry->call('objectType');
+            $this->setConfig('allowedAssociations', array_fill_keys($objectType->relations, []));
         }
 
         // Requested object type endpoint MUST be `enabled`

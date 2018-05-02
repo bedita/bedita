@@ -490,6 +490,18 @@ class ObjectTypesTableTest extends TestCase
                 ['documents', 'profiles'],
                 ['name' => 'inverse_test', 'side' => 'left'],
             ],
+            'with descendants' => [
+                ['media', 'files'],
+                ['name' => 'test_abstract', 'descendants' => true],
+            ],
+            'relation not found' => [
+                [],
+                ['name' => 'this_relation_does_not_exist'],
+            ],
+            'relation not found, with descendants' => [
+                [],
+                ['name' => 'this_relation_does_not_exist', 'descendants' => true],
+            ],
         ];
     }
 
