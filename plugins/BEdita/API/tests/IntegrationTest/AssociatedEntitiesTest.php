@@ -152,4 +152,26 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
     }
+
+    /**
+     * Test that deleted entities are never returned as related objects.
+     *
+     * @return void
+     */
+    public function testIncludedDeleted()
+    {
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/documents/3');
+        $this->assertResponseCode(204);
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['data']));
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['included']));
+    }
 }
