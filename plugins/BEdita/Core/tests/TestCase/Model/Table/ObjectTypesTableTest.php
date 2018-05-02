@@ -496,7 +496,7 @@ class ObjectTypesTableTest extends TestCase
     /**
      * Test finder by relation name.
      *
-     * @param array\\Exception $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
      *
@@ -563,12 +563,13 @@ class ObjectTypesTableTest extends TestCase
     /**
      * Test default parent, plugin and model.
      *
+     * @param array $data Entity data.
      * @return void
      *
      * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
-    public function testDefaultModelRules($data)
+    public function testDefaultModelRules(array $data)
     {
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
@@ -663,20 +664,19 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Test `parent_name`change with existing objects
+     * Test `parent_name` change with existing objects
      *
      * @return void
      * @covers ::beforeRules()
+     *
+     * @expectedException \Cake\Network\Exception\ForbiddenException
+     * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()
     {
-        $expected = new ForbiddenException('Parent type change forbidden: objects of this type exist');
-        $this->expectException(get_class($expected));
-        $this->expectExceptionMessage($expected->getMessage());
-
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
-        $success = $this->ObjectTypes->save($objectType);
+        $this->ObjectTypes->save($objectType);
     }
 
     /**
