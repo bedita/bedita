@@ -23,7 +23,6 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -33,10 +32,9 @@ use Cake\Utility\Hash;
  * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
  * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
  * @property \Cake\ORM\Association\HasMany $DateRanges
- * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
- * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
  * @property \Cake\ORM\Association\BelongsToMany $Parents
  * @property \Cake\ORM\Association\HasMany $Trees
+ * @property \Cake\ORM\Association\HasMany $TreeNodes
  *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
