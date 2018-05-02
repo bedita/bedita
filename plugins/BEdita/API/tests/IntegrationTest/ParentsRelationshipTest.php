@@ -163,7 +163,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
         $this->assertResponseCode(409);
         $body = json_decode((string)$this->_response->getBody(), true);
-        static::assertEquals('Unsupported resource type', $body['error']['title']);
+        static::assertEquals('Unsupported resource type profiles', $body['error']['title']);
     }
 
     /**

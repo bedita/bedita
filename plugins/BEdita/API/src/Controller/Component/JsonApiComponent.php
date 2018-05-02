@@ -18,6 +18,7 @@ use Cake\Controller\Component;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
@@ -220,9 +221,36 @@ class JsonApiComponent extends Component
             return;
         }
 
-        if (empty($data['type']) || !in_array($data['type'], $types)) {
-            throw new ConflictException('Unsupported resource type');
+        if (empty($data['type']) || !$this->checkAllowedType($data['type'], $types)) {
+            throw new ConflictException(sprintf('Unsupported resource type %s', $data['type']));
         }
+    }
+
+    /**
+     * Check if a given type is part of an allowed types list
+     * or if it is a sub-type of an allowed abstract type.
+     *
+     * @param string $type Type name checked
+     * @param array $allowed Allowed type names
+     * @return bool True if type is allowed, false otherwise
+     */
+    protected function checkAllowedType($type, array $allowed)
+    {
+        if (in_array($type, $allowed)) {
+            return true;
+        }
+
+        // See if `$type` is a sub-type of an `allowed` abstract type
+        $objectTypesTable = TableRegistry::get('ObjectTypes');
+        $abstract = $objectTypesTable->find('list', ['valueField' => 'id'])->where(['is_abstract' => true, 'name IN' => $allowed]);
+        foreach ($abstract as $id) {
+            $found = $objectTypesTable->find('children', ['for' => $id])->where(['name' => $type])->count();
+            if ($found) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
