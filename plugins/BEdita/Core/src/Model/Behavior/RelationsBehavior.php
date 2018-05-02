@@ -131,6 +131,7 @@ class RelationsBehavior extends Behavior
                 'targetForeignKey' => 'right_id',
                 'conditions' => [
                     $through->aliasField('relation_id') => $relation->id,
+                    sprintf('%s.deleted', $relation->alias) => false,
                 ],
                 'sort' => [
                     $through->aliasField('priority') => 'asc',
@@ -165,6 +166,7 @@ class RelationsBehavior extends Behavior
                 'targetForeignKey' => 'left_id',
                 'conditions' => [
                     $through->aliasField('relation_id') => $relation->id,
+                    sprintf('%s.deleted', $relation->inverse_alias) => false,
                 ],
                 'sort' => [
                     $through->aliasField('inv_priority') => 'asc',

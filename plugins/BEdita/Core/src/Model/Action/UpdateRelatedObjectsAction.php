@@ -37,8 +37,18 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
         $sourcePrimaryKey = $entity->extract((array)$this->Association->getSource()->getPrimaryKey());
         $foreignKey = array_map([$jointTable, 'aliasField'], (array)$this->Association->getForeignKey());
 
+        $conditionsPrefix = sprintf('%s.', $jointTable->getAlias());
+        $conditions = array_filter(
+            $this->Association->getConditions(),
+            function ($key) use ($conditionsPrefix) {
+                // Filter only conditions that apply to junction table.
+                return substr($key, 0, strlen($conditionsPrefix)) === $conditionsPrefix;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+
         $existing = $jointTable->find()
-            ->where($this->Association->getConditions())
+            ->where($conditions)
             ->andWhere(array_combine($foreignKey, $sourcePrimaryKey));
 
         return $existing;
