@@ -44,5 +44,13 @@ class RelationsFixture extends TestFixture
             'description' => 'Sample description /2.',
             'params' => '{"type":"object","properties":{"name":{"type":"string"},"age":{"type":"integer","minimum":0}},"required":["name"]}',
         ],
+        [
+            'name' => 'test_abstract',
+            'label' => 'Test relation between abstract types',
+            'inverse_name' => 'inverse_test_abstract',
+            'inverse_label' => 'Inverse test relation between abstract types',
+            'description' => 'Sample description.',
+            'params' => null,
+        ],
     ];
 }

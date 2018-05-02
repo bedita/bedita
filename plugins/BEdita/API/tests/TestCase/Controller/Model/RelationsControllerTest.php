@@ -43,10 +43,10 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 3,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 3,
                     'page_size' => 20,
                 ],
             ],
@@ -121,6 +121,35 @@ class RelationsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '3',
+                    'type' => 'relations',
+                    'attributes' => [
+                        'name' => 'test_abstract',
+                        'label' => 'Test relation between abstract types',
+                        'inverse_name' => 'inverse_test_abstract',
+                        'inverse_label' => 'Inverse test relation between abstract types',
+                        'description' => 'Sample description.',
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/relations/3',
+                    ],
+                    'relationships' => [
+                        'left_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/3/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/3/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/3/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/3/right_object_types',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -130,7 +159,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
