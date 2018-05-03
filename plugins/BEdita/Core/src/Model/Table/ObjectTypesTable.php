@@ -427,13 +427,13 @@ class ObjectTypesTable extends Table
             $nsmCounters = $this->find()
                 ->select(['tree_left', 'tree_right'])
                 ->where($conditionsBuilder)
-                ->enableHydration(false);
+                ->enableHydration(false)
+                ->all();
 
             // Replace `$conditionsBuilder` with a more complex one that returns not only the matching object types,
             // but also their descendants.
             $conditionsBuilder = function (QueryExpression $exp) use ($nsmCounters) {
-                $rows = $nsmCounters->all();
-                if ($rows->count() === 0) {
+                if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
                     return $exp->add(new Comparison(1, 1, 'integer', '<>'));
