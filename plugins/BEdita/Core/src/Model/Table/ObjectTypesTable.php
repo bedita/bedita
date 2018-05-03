@@ -371,6 +371,10 @@ class ObjectTypesTable extends Table
      *     ->find('byRelation', ['name' => 'my_inverse_relation', 'side' => 'left'])
      *     ->find('list')
      *     ->toArray();
+     *
+     * // Include also descendants of the allowed object types (e.g.: return **Images** whereas **Media** are allowed):
+     * TableRegistry::get('ObjectTypes')
+     *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
      * ```
      *
      * @param \Cake\ORM\Query $query Query object.
@@ -392,6 +396,7 @@ class ObjectTypesTable extends Table
             $rightField = 'inverse_name';
         }
 
+        // Build sub-queries to find object-types that lay on the left and right side of searched relationship, respectively.
         $leftSubQuery = $this->find()
             ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
@@ -405,6 +410,9 @@ class ObjectTypesTable extends Table
                 });
             });
 
+        // Conditions builder that filters only object types returned by one of the two sub-queries.
+        // This could be achieved more efficiently using two left joins, but if we need to find also
+        // descendants it's simpler done this way.
         $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
             return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
                 return $exp
@@ -412,18 +420,28 @@ class ObjectTypesTable extends Table
                     ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
             });
         };
-        if (!empty($options['descendants'])) {
+
+        if (!empty($options['descendants'])) { // We don't need only explicitly linked object types, but also their descendants!
+            // Obtain Nested-Set-Model left and right counters for the explicitly-linked object types, that are obtained
+            // using the `$conditionsBuilder` built before.
             $nsmCounters = $this->find()
                 ->select(['tree_left', 'tree_right'])
                 ->where($conditionsBuilder)
                 ->enableHydration(false);
+
+            // Replace `$conditionsBuilder` with a more complex one that returns not only the matching object types,
+            // but also their descendants.
             $conditionsBuilder = function (QueryExpression $exp) use ($nsmCounters) {
                 $rows = $nsmCounters->all();
                 if ($rows->count() === 0) {
+                    // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
                     return $exp->add(new Comparison(1, 1, 'integer', '<>'));
                 }
 
+                // Find descendants for all found nodes using NSM rules.
+                // If the nodes found are [l = 3, r = 8] and [l = 9, r = 10], the conditions will be built as follows:
+                // ... WHERE (tree_left >= 3 AND tree_right <= 8) OR (tree_left >= 9 AND tree_right <= 10)
                 return $exp->or_(
                     $nsmCounters
                         ->map(function (array $row) use ($exp) {
@@ -438,6 +456,7 @@ class ObjectTypesTable extends Table
             };
         }
 
+        // Everything is said and done by now. Fingers crossed!
         return $query->where($conditionsBuilder);
     }
 }
