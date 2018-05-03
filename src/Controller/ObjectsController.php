@@ -368,7 +368,7 @@ class ObjectsController extends ResourcesController
         ];
         if (count(array_diff($types, ['objects'])) > 0) {
             natsort($types);
-            $url['filter'] = ['type' => $types];
+            $url['filter'] = ['type' => array_values($types)];
         }
 
         return Router::url($url, true);
