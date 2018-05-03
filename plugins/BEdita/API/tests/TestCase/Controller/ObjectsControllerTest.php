@@ -431,6 +431,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/files/10/relationships/parents',
                             ],
                         ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/inverse_test_abstract',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -589,6 +601,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/parents',
                                 'self' => 'http://api.example.com/files/14/relationships/parents',
+                            ],
+                        ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
                             ],
                         ],
                     ],
@@ -1372,7 +1396,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testLinksAvailable`
      *
-     * @return void
+     * @return array
      */
     public function linksAvailableProvider()
     {

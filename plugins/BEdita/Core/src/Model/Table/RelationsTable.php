@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
@@ -186,7 +187,7 @@ class RelationsTable extends Table
     protected function findByName(Query $query, array $options = [])
     {
         if (empty($options['name'])) {
-            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
         $name = Inflector::underscore($options['name']);
 

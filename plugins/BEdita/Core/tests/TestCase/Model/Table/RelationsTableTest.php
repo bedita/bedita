@@ -14,6 +14,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -144,7 +145,7 @@ class RelationsTableTest extends TestCase
     {
         return [
             'error' => [
-                new \LogicException('Missing required parameter "name"'),
+                new BadFilterException('Missing required parameter "name"'),
                 [],
             ],
             'name' => [
@@ -165,7 +166,7 @@ class RelationsTableTest extends TestCase
     /**
      * Test finder by relation name.
      *
-     * @param array\\Exception $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
      *
