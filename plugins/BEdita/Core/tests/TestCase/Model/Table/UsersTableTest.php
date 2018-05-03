@@ -457,4 +457,56 @@ class UsersTableTest extends TestCase
 
         $this->assertEquals($expected, (bool)$success);
     }
+
+    /**
+     * Data provider for `testCustomPropsCreate`
+     *
+     * @return array
+     */
+    public function customPropsCreateProvider()
+    {
+        return [
+            'users custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_username' => 'supporto_gustavo',
+                ],
+            ],
+            'profiles custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_surname' => 'aiuto',
+                ],
+            ],
+            'both custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_email' => 'supporto@gusta.vo',
+                    'another_surname' => 'helpus',
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * Test create new user with custom properties
+     *
+     * @param array $data User data
+     *
+     * @return void
+     * @dataProvider customPropsCreateProvider
+     * @coversNothing
+     */
+    public function testCustomPropsCreate(array $data)
+    {
+        $user = $this->Users->newEntity();
+        $user = $this->Users->patchEntity($user, $data);
+        $user->type = 'users';
+        $success = $this->Users->save($user);
+
+        $user = $this->Users->get($success['id']);
+        foreach ($data as $key => $value) {
+            static::assertEquals($value, $user[$key]);
+        }
+    }
 }
