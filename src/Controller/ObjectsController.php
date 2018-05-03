@@ -366,7 +366,8 @@ class ObjectsController extends ResourcesController
             '_name' => 'api:objects:index',
             'object_type' => 'objects'
         ];
-        if (!empty(array_diff($types, ['objects']))) {
+        if (count(array_diff($types, ['objects'])) > 0) {
+            natsort($types);
             $url['filter'] = ['type' => $types];
         }
 
@@ -381,14 +382,14 @@ class ObjectsController extends ResourcesController
      */
     protected function getAvailableTypes($relationship)
     {
-        foreach ($this->objectType->right_relations as $relation) {
+        foreach ($this->objectType->getRelations('right') as $relation) {
             if ($relation->inverse_name !== $relationship) {
                 continue;
             }
 
             return array_values(Hash::extract($relation->left_object_types, '{n}.name'));
         }
-        foreach ($this->objectType->left_relations as $relation) {
+        foreach ($this->objectType->getRelations('left') as $relation) {
             if ($relation->name !== $relationship) {
                 continue;
             }

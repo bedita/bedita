@@ -1396,7 +1396,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testLinksAvailable`
      *
-     * @return void
+     * @return array
      */
     public function linksAvailableProvider()
     {
