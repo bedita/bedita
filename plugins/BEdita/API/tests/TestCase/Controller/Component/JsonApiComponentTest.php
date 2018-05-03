@@ -406,6 +406,22 @@ class JsonApiComponentTest extends TestCase
                     'key' => 'value',
                 ],
             ],
+            'allowedSubType' => [
+                true,
+                ['media'],
+                [
+                    'type' => 'files',
+                    'key' => 'value',
+                ],
+            ],
+            'notAllowedSubType' => [
+                false,
+                ['media'],
+                [
+                    'type' => 'profiles',
+                    'key' => 'value',
+                ],
+            ],
         ];
     }
 
@@ -419,6 +435,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @dataProvider allowedResourceTypesProvider
      * @covers ::allowedResourceTypes()
+     * @covers ::checkAllowedType()
      * @covers ::startup()
      */
     public function testAllowedResourceTypes($expected, $types, array $data)

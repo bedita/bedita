@@ -1974,7 +1974,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'status' => '409',
-            'title' => 'Unsupported resource type',
+            'title' => 'Unsupported resource type myCustomType',
         ];
 
         $data = [
