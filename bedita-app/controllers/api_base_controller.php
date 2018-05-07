@@ -813,7 +813,7 @@ abstract class ApiBaseController extends FrontendController {
                 }
                 // check if id corresponds to object type requested (if any)
                 if (!empty($this->objectsFilter['object_type_id']) && $object['object_type_id'] != $this->objectsFilter['object_type_id']) {
-                    throw new BeditaInternalErrorException('Object type mismatch');
+                    throw new BeditaNotFoundException('Object type mismatch');
                 }
 
                 $object = $this->ApiFormatter->formatObject(
