@@ -70,7 +70,7 @@ class ObjectsFixture extends TestFixture
             'extra' => null,
             'lang' => 'eng',
             'created_by' => 1,
-            'modified_by' => 2,
+            'modified_by' => 5,
             'publish_start' => null,
             'publish_end' => null
         ],
