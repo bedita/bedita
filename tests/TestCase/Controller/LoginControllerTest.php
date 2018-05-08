@@ -26,6 +26,22 @@ use Cake\Utility\Hash;
 class LoginControllerTest extends IntegrationTestCase
 {
     /**
+     * Not successful login expected result
+     *
+     * @var array
+     */
+    public const NOT_SUCCESSFUL_EXPECTED_RESULT = [
+        'error' => [
+            'status' => '401',
+            'title' => 'Login not successful',
+        ],
+        'links' => [
+            'self' => 'http://api.example.com/auth',
+            'home' => 'http://api.example.com/home',
+        ],
+    ];
+
+    /**
      * Test login method.
      *
      * @return string A valid JWT.
@@ -418,25 +434,6 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Not successful login expected result
-     *
-     * @return array
-     */
-    protected function notSuccessfulExpectedResult()
-    {
-        return [
-            'error' => [
-                'status' => '401',
-                'title' => 'Login not successful',
-            ],
-            'links' => [
-                'self' => 'http://api.example.com/auth',
-                'home' => 'http://api.example.com/home',
-            ],
-        ];
-    }
-
-    /**
      * Login with deleted user method.
      *
      * @return void.
@@ -455,7 +452,7 @@ class LoginControllerTest extends IntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);
-        static::assertEquals($this->notSuccessfulExpectedResult(), Hash::remove($result, 'error.meta'));
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
     }
 
     /**
@@ -477,7 +474,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(401);
 
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertEquals($this->notSuccessfulExpectedResult(), Hash::remove($result, 'error.meta'));
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
     }
 
     /**
@@ -528,7 +525,7 @@ class LoginControllerTest extends IntegrationTestCase
         } else {
             $this->assertResponseCode(401);
             $result = json_decode((string)$this->_response->getBody(), true);
-            static::assertEquals($this->notSuccessfulExpectedResult(), Hash::remove($result, 'error.meta'));
+            static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
         }
     }
 }
