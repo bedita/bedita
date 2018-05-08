@@ -25,7 +25,6 @@ use Cake\Event\EventManager;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -169,34 +168,25 @@ class UsersTable extends Table
     }
 
     /**
-     * Perform login check after idnetification.
-     * Update `last_login' timestamp on success.
+     * Update last login.
      *
      * @param \Cake\Event\Event $event Dispatched event.
-     * @return null|bool Null on success or anonymous login, false on failure
+     * @return void
      */
     public function login(Event $event)
     {
         $data = $event->getData();
         if (empty($data[0]['id'])) {
-            return null;
+            return;
         }
 
         $id = $data[0]['id'];
-        // read `deleted` from db, not in $data
-        $deleted = $this->get($id)->deleted;
-        if (Hash::get($data, '0.blocked', false) || $deleted || Hash::get($data, '0.status') === 'off') {
-            return false;
-        }
-
         $this->updateAll(
             [
                 'last_login' => $this->timestamp(),
             ],
             compact('id')
         );
-
-        return null;
     }
 
     /**
@@ -232,6 +222,8 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
+        $query = $query->where($this->loginConditions());
+
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
             if (!empty($options['username'])) {
@@ -255,6 +247,39 @@ class UsersTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
+    }
+
+    /**
+     * Common login conditions for direct and external auth login
+     *
+     * @return array Conditions to use in query
+     */
+    protected function loginConditions()
+    {
+        return [
+            $this->aliasField('deleted') => false,
+            $this->aliasField('blocked') => false,
+            $this->aliasField('status') . ' IN' => ['on', 'draft'],
+        ];
+    }
+
+    /**
+     * Finder for users login with `username`
+     * Valid attributes for `blocked`, `deleted` and `status` are checked
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     */
+    protected function findLogin(Query $query, array $options)
+    {
+        if (empty($options['username'])) {
+            throw new BadRequestException(__d('bedita', 'Missing username'));
+        }
+
+        return $query->where([
+                $this->aliasField('username') => $options['username']
+            ] + $this->loginConditions());
     }
 
     /**
