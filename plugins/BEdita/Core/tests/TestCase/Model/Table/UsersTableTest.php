@@ -145,17 +145,17 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * Test login event.
+     * Test handling of login event.
      *
      * @return void
      *
      * @covers ::login()
      */
-    public function testLoginOk()
+    public function testLogin()
     {
         $data = $this->Users->get(1)->toArray();
         $expected = new Time();
-        $result = $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
+        $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
 
         $lastLogin = $this->Users->get(1)->last_login;
         static::assertNotNull($lastLogin);
