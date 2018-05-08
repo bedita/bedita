@@ -145,21 +145,56 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * Test handling of login event.
+     * Test login event.
      *
      * @return void
      *
      * @covers ::login()
      */
-    public function testLogin()
+    public function testLoginOk()
     {
         $data = $this->Users->get(1)->toArray();
         $expected = new Time();
-        $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
+        $result = $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
 
         $lastLogin = $this->Users->get(1)->last_login;
         static::assertNotNull($lastLogin);
         static::assertLessThanOrEqual(2, $expected->diffInSeconds($lastLogin));
+        static::assertNull($result->getResult());
+    }
+
+    /**
+     * Test login blocked.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testLoginBlocked()
+    {
+        $user = $this->Users->get(5);
+        $user->blocked = true;
+        $this->Users->saveOrFail($user);
+
+        $result = $this->Users->dispatchEvent('Auth.afterIdentify', [$this->Users->get(5)->toArray()]);
+
+        $lastLogin = $this->Users->get(5)->last_login;
+        static::assertEquals($user->last_login, $lastLogin);
+        static::assertFalse($result->getResult());
+    }
+
+    /**
+     * Test login with no data.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testLoginNoData()
+    {
+        $result = $this->Users->dispatchEvent('Auth.afterIdentify', []);
+        static::assertEmpty($result->getData());
+        static::assertNull($result->getResult());
     }
 
     /**
