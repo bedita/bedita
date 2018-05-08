@@ -167,12 +167,12 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
+     * @covers ::findUserLogin()
      * @covers ::findLogin()
-     * @covers ::loginConditions()
      */
     public function testFindLogin()
     {
-        $user = $this->Users->find('login', ['username' => 'second user'])->first();
+        $user = $this->Users->find('userLogin', ['username' => 'second user'])->first();
         static::assertNotEmpty($user);
         static::assertEquals('second user', $user['username']);
     }
@@ -182,8 +182,8 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
+     * @covers ::findUserLogin()
      * @covers ::findLogin()
-     * @covers ::loginConditions()
      */
     public function testFailFindLogin()
     {
@@ -191,7 +191,7 @@ class UsersTableTest extends TestCase
         $user->blocked = true;
         $this->Users->saveOrFail($user);
 
-        $user = $this->Users->find('login', ['username' => 'second user'])->first();
+        $user = $this->Users->find('userLogin', ['username' => 'second user'])->first();
         static::assertNull($user);
     }
 
@@ -203,11 +203,11 @@ class UsersTableTest extends TestCase
      * @expectedException \Cake\Network\Exception\BadRequestException
      * @expectedExceptionMessage Missing username
      *
-     * @covers ::findLogin()
+     * @covers ::findUserLogin()
      */
     public function testFindLoginError()
     {
-        $this->Users->find('login', [])->first();
+        $this->Users->find('userLogin', [])->first();
     }
 
     /**

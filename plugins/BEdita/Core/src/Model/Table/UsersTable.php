@@ -222,7 +222,7 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
-        $query = $query->where($this->loginConditions());
+        $query = $query->find('login');
 
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
@@ -250,36 +250,40 @@ class UsersTable extends Table
     }
 
     /**
-     * Common login conditions for direct and external auth login
-     *
-     * @return array Conditions to use in query
-     */
-    protected function loginConditions()
-    {
-        return [
-            $this->aliasField('deleted') => false,
-            $this->aliasField('blocked') => false,
-            $this->aliasField('status') . ' IN' => ['on', 'draft'],
-        ];
-    }
-
-    /**
-     * Finder for users login with `username`
+     * Finder for valid login users
      * Valid attributes for `blocked`, `deleted` and `status` are checked
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
      */
-    protected function findLogin(Query $query, array $options)
+    protected function findLogin(Query $query)
+    {
+        return $query
+            ->where(function (QueryExpression $exp) {
+                return $exp
+                    ->eq($this->aliasField('deleted'), false)
+                    ->eq($this->aliasField('blocked'), false)
+                    ->in($this->aliasField('status'), ['on', 'draft']);
+            });
+    }
+
+    /**
+     * Check a valid users for login
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Input data with `username`
+     * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     */
+    protected function findUserLogin(Query $query, array $options)
     {
         if (empty($options['username'])) {
             throw new BadRequestException(__d('bedita', 'Missing username'));
         }
 
-        return $query->where([
-                $this->aliasField('username') => $options['username']
-            ] + $this->loginConditions());
+        return $query->find('login')
+            ->andWhere([$this->aliasField('username') => $options['username']]);
     }
 
     /**
