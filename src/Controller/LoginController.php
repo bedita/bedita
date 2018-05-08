@@ -65,8 +65,8 @@ class LoginController extends AppController
                             'Weak' => ['hashType' => 'md5'],
                         ],
                     ],
-                    'finder' => 'userLogin',
-                ],
+                    'finder' => 'login',
+                 ],
                 'BEdita/API.Jwt' => [
                     'queryDatasource' => true,
                 ],
