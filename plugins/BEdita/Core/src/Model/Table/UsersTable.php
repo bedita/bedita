@@ -25,6 +25,7 @@ use Cake\Event\EventManager;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -168,25 +169,34 @@ class UsersTable extends Table
     }
 
     /**
-     * Update last login.
+     * Perform login check after idnetification.
+     * Update `last_login' timestamp on success.
      *
      * @param \Cake\Event\Event $event Dispatched event.
-     * @return void
+     * @return null|bool Null on success or anonymous login, false on failure
      */
     public function login(Event $event)
     {
         $data = $event->getData();
         if (empty($data[0]['id'])) {
-            return;
+            return null;
         }
 
         $id = $data[0]['id'];
+        // read `deleted` from db, not in $data
+        $deleted = $this->get($id)->deleted;
+        if (Hash::get($data, '0.blocked', false) || $deleted || Hash::get($data, '0.status') === 'off') {
+            return false;
+        }
+
         $this->updateAll(
             [
                 'last_login' => $this->timestamp(),
             ],
             compact('id')
         );
+
+        return null;
     }
 
     /**
