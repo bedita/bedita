@@ -30,7 +30,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public const NOT_SUCCESSFUL_EXPECTED_RESULT = [
+    const NOT_SUCCESSFUL_EXPECTED_RESULT = [
         'error' => [
             'status' => '401',
             'title' => 'Login not successful',
