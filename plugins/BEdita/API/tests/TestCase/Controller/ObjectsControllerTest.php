@@ -204,7 +204,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified' => '2016-05-13T08:30:00+00:00',
                         'published' => null,
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 5,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -2214,7 +2214,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified' => '2016-05-13T08:30:00+00:00',
                         'published' => null,
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 5,
                         'relation' => [
                             'priority' => 2,
                             'inv_priority' => 1,
