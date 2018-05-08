@@ -163,54 +163,6 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * Test `login` finder.
-     *
-     * @return void
-     *
-     * @covers ::findUserLogin()
-     * @covers ::findLogin()
-     */
-    public function testFindLogin()
-    {
-        $user = $this->Users->find('userLogin', ['username' => 'second user'])->first();
-        static::assertNotEmpty($user);
-        static::assertEquals('second user', $user['username']);
-    }
-
-    /**
-     * Test `login` finder fail.
-     *
-     * @return void
-     *
-     * @covers ::findUserLogin()
-     * @covers ::findLogin()
-     */
-    public function testFailFindLogin()
-    {
-        $user = $this->Users->get(5);
-        $user->blocked = true;
-        $this->Users->saveOrFail($user);
-
-        $user = $this->Users->find('userLogin', ['username' => 'second user'])->first();
-        static::assertNull($user);
-    }
-
-    /**
-     * Test `login` finder error.
-     *
-     * @return void
-     *
-     * @expectedException \Cake\Network\Exception\BadRequestException
-     * @expectedExceptionMessage Missing username
-     *
-     * @covers ::findUserLogin()
-     */
-    public function testFindLoginError()
-    {
-        $this->Users->find('userLogin', [])->first();
-    }
-
-    /**
      * Test login with no data.
      *
      * @return void
@@ -222,6 +174,37 @@ class UsersTableTest extends TestCase
         $result = $this->Users->dispatchEvent('Auth.afterIdentify', []);
         static::assertEmpty($result->getData());
         static::assertNull($result->getResult());
+    }
+
+    /**
+     * Test `login` finder.
+     *
+     * @return void
+     *
+     * @covers ::findLogin()
+     */
+    public function testFindLogin()
+    {
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertNotEmpty($user);
+        static::assertEquals('second user', $user['username']);
+    }
+
+    /**
+     * Test `login` finder fail.
+     *
+     * @return void
+     *
+     * @covers ::findLogin()
+     */
+    public function testFailFindLogin()
+    {
+        $user = $this->Users->get(5);
+        $user->blocked = true;
+        $this->Users->saveOrFail($user);
+
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertNull($user);
     }
 
     /**

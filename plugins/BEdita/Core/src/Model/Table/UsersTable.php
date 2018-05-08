@@ -269,24 +269,6 @@ class UsersTable extends Table
     }
 
     /**
-     * Check a valid users for login
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Input data with `username`
-     * @return \Cake\ORM\Query
-     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
-     */
-    protected function findUserLogin(Query $query, array $options)
-    {
-        if (empty($options['username'])) {
-            throw new BadRequestException(__d('bedita', 'Missing username'));
-        }
-
-        return $query->find('login')
-            ->andWhere([$this->aliasField('username') => $options['username']]);
-    }
-
-    /**
      * Before delete checks: if record is not deletable, raise a ImmutableResourceException
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
