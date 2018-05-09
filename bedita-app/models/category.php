@@ -163,38 +163,49 @@ class Category extends BEAppModel {
 	/**
 	 * Get all categories of some object type and order them by area
 	 *
-	 * @param int $objectType
+	 * @param int $objectTypeId Object type ID
+	 * @param array $options The options (i.e. ['merge' => true, 'publicationTitle' => <The publication title>])
 	 * @return array(
-	 * 				"area" => array(
-	 * 								nomearea => array(categories in that area)),
-	 * 				 "noarea" => array(categories aren't in any area)
-	 * 				)
+	 * 		'area' => array(<areaname> => array(categories in that area), ...),
+	 *		'noarea' => array(categories not in areas)
+	 * 	)
 	 */
-	public function getCategoriesByArea($objectType) {
-		
-		$categories = $this->find("all", array(
-			"conditions" => array("Category.object_type_id" => $objectType), "order" => "label"
+	public function getCategoriesByArea($objectTypeId, $options = array()) {
+		$categories = $this->find('all', array(
+			'conditions' => array('Category.object_type_id' => $objectTypeId), 'order' => 'label'
 		));
-		
-		$objModel = ClassRegistry::init("BEObject");
+
+		$objModel = ClassRegistry::init('BEObject');
 		$areaList = $objModel->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
-										"fields" => "BEObject.title"
-										)
-									);
-		
+			'conditions' => array('BEObject.object_type_id' => Configure::read('objectTypes.area.id')),
+			'order' => 'title',
+			'fields' => 'BEObject.title',
+		));
+
 		$areaCategory = array();
-		
 		foreach ($categories as $cat) {
-			if (array_key_exists($cat["area_id"],$areaList)) {
-				$areaCategory["area"][$areaList[$cat["area_id"]]][] = $cat; 
+			if (array_key_exists($cat['area_id'], $areaList)) {
+				$areaCategory['area'][$areaList[$cat["area_id"]]][] = $cat; 
 			} else {
-				$areaCategory["noarea"][] = $cat;
+				$areaCategory['noarea'][] = $cat;
 			}
 		}
-		
-		return $areaCategory;
+		if (empty($options['merge'])) {
+			return $areaCategory;
+		}
+
+		$categories = array();
+		if (!empty($areaCategory['noarea'])) {
+			$categories = $areaCategory['noarea'];
+		}
+		if (!empty($options['publicationTitle'])) {
+			$publicationTitle = $options['publicationTitle'];
+			if(!empty($areaCategories['area'][$publicationTitle])) {
+				$categories = array_merge($categories, $areaCategory['area'][$publicationTitle]);
+			}
+		}
+
+		return $categories;
 	}
 	
 	/**
