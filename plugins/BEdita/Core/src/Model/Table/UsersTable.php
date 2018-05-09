@@ -222,6 +222,8 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
+        $query = $query->find('login');
+
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
             if (!empty($options['username'])) {
@@ -245,6 +247,25 @@ class UsersTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
+    }
+
+    /**
+     * Finder for valid login users
+     * Valid attributes for `blocked`, `deleted` and `status` are checked
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     */
+    protected function findLogin(Query $query)
+    {
+        return $query
+            ->where(function (QueryExpression $exp) {
+                return $exp
+                    ->eq($this->aliasField('deleted'), false)
+                    ->eq($this->aliasField('blocked'), false)
+                    ->in($this->aliasField('status'), ['on', 'draft']);
+            });
     }
 
     /**
