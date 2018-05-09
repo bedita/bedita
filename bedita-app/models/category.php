@@ -185,7 +185,7 @@ class Category extends BEAppModel {
 		$areaCategory = array();
 		foreach ($categories as $cat) {
 			if (array_key_exists($cat['area_id'], $areaList)) {
-				$areaCategory['area'][$areaList[$cat["area_id"]]][] = $cat; 
+				$areaCategory['area'][$areaList[$cat['area_id']]][] = $cat; 
 			} else {
 				$areaCategory['noarea'][] = $cat;
 			}
