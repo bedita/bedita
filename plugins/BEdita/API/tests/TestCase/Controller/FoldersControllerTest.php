@@ -188,7 +188,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -229,7 +229,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -300,7 +300,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -328,13 +328,13 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertArrayNotHasKey('data', $result);
-        $this->assertArrayHasKey('links', $result);
-        $this->assertArrayHasKey('error', $result);
-        $this->assertEquals($expected['links'], $result['links']);
-        $this->assertArraySubset($expected['error'], $result['error']);
-        $this->assertArrayHasKey('title', $result['error']);
-        $this->assertNotEmpty($result['error']['title']);
+        static::assertArrayNotHasKey('data', $result);
+        static::assertArrayHasKey('links', $result);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals($expected['links'], $result['links']);
+        static::assertArraySubset($expected['error'], $result['error']);
+        static::assertArrayHasKey('title', $result['error']);
+        static::assertNotEmpty($result['error']['title']);
     }
 
     /**
@@ -407,7 +407,7 @@ class FoldersControllerTest extends IntegrationTestCase
         // TODO: how should we behave on folders delete?
         // a. delete only folders that doesn't have another folder as child
         // b. delete folder anyway
-        $this->markTestIncomplete();
+        static::markTestIncomplete();
     }
 
     /**
@@ -416,7 +416,7 @@ class FoldersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
      */
     public function testRelatedParent()
@@ -437,7 +437,7 @@ class FoldersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
      */
     public function testErrorRelatedParents()
@@ -462,7 +462,7 @@ class FoldersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
      */
     public function testRelatedChildren()
@@ -499,17 +499,42 @@ class FoldersControllerTest extends IntegrationTestCase
     public function setRelationshipsAllowedMethodsProvider()
     {
         return [
-            'get' => [200, 'get'],
+            'get' => [
+                200,
+                'GET',
+            ],
             'patch' => [
                 204,
-                'patch',
+                'PATCH',
                 [
                     'type' => 'folders',
                     'id' => 11,
-                ]
+                ],
             ],
-            'post' => [405, 'post'],
-            'delete' => [405, 'delete'],
+            'patch conflict' => [
+                409,
+                'PATCH',
+                [
+                    'type' => 'documents',
+                    'id' => 2,
+                ],
+            ],
+            'post' => [
+                405,
+                'POST',
+                [
+                    'type' => 'folders',
+                    'id' => 11,
+                ],
+            ],
+            'delete' => [
+                405,
+                'DELETE',
+                [
+                    'type' => 'folders',
+                    'id' => 11,
+                ],
+            ],
         ];
     }
 
@@ -518,18 +543,88 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @param int $expected The expected HTTP status code.
      * @param string $method The http method.
-     * @param array|null $data Payload to use for the request.
+     * @param array $data Payload to use for the request.
      * @return void
      *
      * @dataProvider setRelationshipsAllowedMethodsProvider
      * @covers ::setRelationshipsAllowedMethods()
      */
-    public function testSetRelationshipsAllowedMethods($expected, $method, $data = null)
+    public function testSetRelationshipsAllowedMethods($expected, $method, array $data = [])
     {
         $authHeader = $this->getUserAuthHeader();
         $this->configRequestHeaders($method, $authHeader);
-        $this->{$method}('/folders/12/relationships/parent', $data);
+        if (!empty($data)) {
+            $data = json_encode(compact('data'));
+        }
+        $this->_sendRequest('/folders/12/relationships/parent', $method, $data);
         $this->assertResponseCode($expected);
+    }
+
+    /**
+     * Test set `parent` folder relationship
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSetParent()
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data = [
+            'type' => 'folders',
+            'id' => 13,
+        ];
+        $this->patch('/folders/12/relationships/parent', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/folders/12/relationships/parent',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        static::assertEquals($expected, $result);
+
+        $this->configRequestHeaders();
+        $this->get('/folders/12');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $path = Hash::get($result, 'data.meta.path');
+        static::assertEquals('/13/12', $path);
+    }
+
+    /**
+     * Test set children relationship
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSetChildren()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'type' => 'documents',
+                'id' => 2,
+            ],
+            [
+                'type' => 'users',
+                'id' => 5,
+            ],
+        ];
+        $this->post('/folders/12/relationships/children', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/folders/12/children');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $childrenIds = Hash::extract($result, 'data.{n}.id');
+        static::assertEquals(['4', '2', '5'], $childrenIds);
     }
 
     /**
