@@ -217,4 +217,22 @@ class FolderTest extends TestCase
         $folder = $this->Folders->newEntity();
         static::assertNull($folder->path);
     }
+
+    /**
+     * Test getter for `path` throws RuntimeException if folder is orphan.
+     *
+     * @return void
+     *
+     * @covers ::_getPath()
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Folder "12" is not on the tree.
+     */
+    public function testGetPathOrphanFolder()
+    {
+        $treesTable = TableRegistry::get('Trees');
+        $entity = $treesTable->find()->where(['object_id' => 12])->firstOrFail();
+        $treesTable->delete($entity);
+
+        $this->Folders->get(12);
+    }
 }
