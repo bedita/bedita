@@ -3406,7 +3406,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "633f8a8a-0550-428b-bd0b-2456be067477",
+								"id": "bf726beb-7c8e-4667-965c-2637d93a5b30",
 								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 201\"] = responseCode.code === 201;",
@@ -3414,7 +3414,7 @@
 									"try {",
 									"    var responseJSON = JSON.parse(responseBody);",
 									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
-									"        postman.setEnvironmentVariable(\"folderId\", responseJSON.data.id);        ",
+									"        postman.setEnvironmentVariable(\"rootFolderId\", responseJSON.data.id);        ",
 									"    }",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
@@ -3445,7 +3445,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Test\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
@@ -3542,13 +3542,13 @@
 							"file": {}
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{folderId}}",
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{folderId}}"
+								"{{rootFolderId}}"
 							]
 						}
 					},
@@ -3609,6 +3609,65 @@
 					"response": []
 				},
 				{
+					"name": "Create sub folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb03bfd4-83a5-409c-9079-4dd28c3f8bc4",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"subFolderId\", responseJSON.data.id);        ",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Set parent folder",
 					"event": [
 						{
@@ -3645,16 +3704,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{folderId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}"
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/19/relationships/parent",
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/parent",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"19",
+								"{{subFolderId}}",
 								"relationships",
 								"parent"
 							]
@@ -3698,13 +3757,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{folderId}}/parent",
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/parent",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{folderId}}",
+								"{{subFolderId}}",
 								"parent"
 							]
 						}
@@ -3751,13 +3810,13 @@
 							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{folderId}}/relationships/children",
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{folderId}}",
+								"{{subFolderId}}",
 								"relationships",
 								"children"
 							]
@@ -3801,13 +3860,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{folderId}}/children",
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{folderId}}",
+								"{{subFolderId}}",
 								"children"
 							]
 						}
@@ -3854,13 +3913,13 @@
 							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{folderId}}/relationships/children",
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{folderId}}",
+								"{{subFolderId}}",
 								"relationships",
 								"children"
 							]
@@ -3903,7 +3962,7 @@
 							"file": {}
 						},
 						"url": {
-							"raw": "{{be4Url}}/objects?filter[parent]={{folderId}}",
+							"raw": "{{be4Url}}/objects?filter[parent]={{subFolderId}}",
 							"host": [
 								"{{be4Url}}"
 							],
@@ -3913,7 +3972,7 @@
 							"query": [
 								{
 									"key": "filter[parent]",
-									"value": "{{folderId}}"
+									"value": "{{subFolderId}}"
 								}
 							]
 						}
@@ -3955,7 +4014,7 @@
 							"file": {}
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders?filter[parent]={{folderId}}",
+							"raw": "{{be4Url}}/folders?filter[parent]={{rootFolderId}}",
 							"host": [
 								"{{be4Url}}"
 							],
@@ -3965,10 +4024,108 @@
 							"query": [
 								{
 									"key": "filter[parent]",
-									"value": "{{folderId}}"
+									"value": "{{rootFolderId}}"
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete sub folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/objects/{{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects",
+								"{{subFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete root folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/objects/{{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects",
+								"{{rootFolderId}}"
+							]
+						},
+						"description": "DEL object"
 					},
 					"response": []
 				}
@@ -5298,6 +5455,104 @@
 			"name": "10. Remove All",
 			"description": "Remove all objects and resources created",
 			"item": [
+				{
+					"name": "Remove sub folder permanently",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{subFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove root folder permanently",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{rootFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
 				{
 					"name": "Delete role",
 					"event": [
