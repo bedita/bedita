@@ -594,4 +594,46 @@ class FoldersControllerTest extends IntegrationTestCase
         $includedIds = Hash::extract($result, 'included.{n}.id');
         static::assertEquals(['11'], $includedIds);
     }
+
+    /**
+     * Data provider for `testGetOrphanFolder()`
+     *
+     * @return array
+     */
+    public function getOrhanFolderProvider()
+    {
+        return [
+            'folders/:id' => ['12'],
+            '/folders' => [],
+        ];
+    }
+
+    /**
+     * Test that getting orphan folders return a 500 error.
+     *
+     * @return void
+     *
+     * @dataProvider getOrhanFolderProvider
+     * @coversNothing
+     */
+    public function testGetOrphanFolder($id = null)
+    {
+        $treesTable = TableRegistry::get('Trees');
+        $entity = $treesTable->find()->where(['object_id' => 12])->firstOrFail();
+        $treesTable->delete($entity);
+
+        $endpoint = '/folders';
+        if ($id) {
+            $endpoint .= "/$id";
+        }
+        $this->configRequestHeaders();
+        $this->get($endpoint);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArrayHasKey('title', $result['error']);
+        static::assertEquals('Folder "12" is not on the tree.', $result['error']['title']);
+    }
 }
