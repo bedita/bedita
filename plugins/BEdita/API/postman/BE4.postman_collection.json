@@ -353,7 +353,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"s.rosanelli@channelweb.it\",\n    \"email\": \"s.rosanelli@channelweb.it\",\n    \"name\": \"Stefano\",\n    \"surname\": \"Rosanelli\",\n\t\"auth_provider\": \"linkedin\",\n\t\"provider_username\": \"vuqp-iNIjx\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, ChannelWeb S.r.l.\",\n    \t\"id\": \"vuqp-iNIjx\",\n\t    \"location\": {\n\t      \"name\": \"Bologna Area, Italy\"\n\t    }\n\t},\n\t\"access_token\": \"AQX56C7COIdK3QAfsZ7zJKnYujabsnQBE-ajH8pgfqaLOwURUr5IgrnzPRLCZnTYP4_3BZFjqbGZU7oVwC9621jPwlMjRs11PHFTSJ0Zo0orZtAC5HbSNVbTRGa4eHop5BT3_tKIu-aDJ_aSFzvcocbom2N7SIZI7cEw83rqeCVyPINDanfVCxc2pwTSp4X1AYauWBqVWz63PpYhx0CIP0P1LpqiRN1Mz2AXJ2LyVVKNKbvPEUjeGINbTzDfN-x5tM4PWzBFPSdr-oAopgB0yELoDjZdS0Jkc327B29ByYdXcVAg9s9u_S6zmhnoYcn2UO-E9qPeb6zz3P3dlJsbvZ3nUSvs_g\"\n}"
+							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup",
