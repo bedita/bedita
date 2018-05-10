@@ -406,7 +406,7 @@ abstract class ResourcesController extends AppController
      */
     protected function getAvailableUrl($relationship)
     {
-        $destinationEntity = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity();
         if (!($destinationEntity instanceof JsonApiSerializable)) {
             return null;
         }

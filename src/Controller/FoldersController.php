@@ -35,8 +35,8 @@ class FoldersController extends ObjectsController
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'parents' => ['folders'],
-            'children' => ['objects'],
+            'parent' => ['folders'],
+            'children' => [],
         ],
     ];
 
@@ -62,13 +62,16 @@ class FoldersController extends ObjectsController
     /**
      * {@inheritDoc}
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableTypes($relationship)
     {
         if ($relationship === 'parent') {
-            $relationship = 'parents';
+            return ['folders'];
+        }
+        if ($relationship === 'children') {
+            return ['objects'];
         }
 
-        return parent::getAvailableUrl($relationship);
+        return parent::getAvailableTypes($relationship);
     }
 
     /**
