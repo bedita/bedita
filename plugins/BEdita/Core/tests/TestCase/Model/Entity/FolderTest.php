@@ -233,6 +233,6 @@ class FolderTest extends TestCase
         $entity = $treesTable->find()->where(['object_id' => 12])->firstOrFail();
         $treesTable->delete($entity);
 
-        $folder = $this->Folders->get(12);
+        $this->Folders->get(12);
     }
 }
