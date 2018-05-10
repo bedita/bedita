@@ -110,6 +110,7 @@ class Folder extends ObjectEntity
      * Getter for `path` virtual property
      *
      * @return string|null
+     * @throws \RuntimeException If Folder is not found on tree.
      */
     protected function _getPath()
     {
@@ -120,7 +121,11 @@ class Folder extends ObjectEntity
         $trees = TableRegistry::get('Trees');
         $node = $trees->find()
             ->where(['object_id' => $this->id])
-            ->firstOrFail();
+            ->first();
+
+        if (!$node) {
+            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id));
+        }
 
         $path = $trees->find('list', [
                 'keyField' => 'id',
