@@ -545,7 +545,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param string $method The http method.
      * @param array $data Payload to use for the request.
      * @return void
-     * @throws \Exception
      *
      * @dataProvider setRelationshipsAllowedMethodsProvider
      * @covers ::setRelationshipsAllowedMethods()
