@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -119,12 +120,12 @@ class Folder extends ObjectEntity
         }
 
         $trees = TableRegistry::get('Trees');
-        $node = $trees->find()
-            ->where(['object_id' => $this->id])
-            ->first();
-
-        if (!$node) {
-            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id));
+        try {
+            $node = $trees->find()
+                ->where(['object_id' => $this->id])
+                ->firstOrFail();
+        } catch (RecordNotFoundException $previous) {
+            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }
 
         $path = $trees->find('list', [
