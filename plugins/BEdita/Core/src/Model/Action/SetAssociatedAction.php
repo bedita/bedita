@@ -83,6 +83,10 @@ class SetAssociatedAction extends UpdateAssociatedAction
             return $this->toMany($entity, $relatedEntities);
         }
 
+        if ($relatedEntities === []) {
+            $relatedEntities = null;
+        }
+
         if ($relatedEntities !== null && !($relatedEntities instanceof EntityInterface)) {
             throw new \InvalidArgumentException(__d('bedita', 'Unable to link multiple entities'));
         }
