@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\Folder;
 use Cake\Datasource\EntityInterface;
 
 /**
@@ -52,5 +53,38 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
             ->andWhere(array_combine($foreignKey, $sourcePrimaryKey));
 
         return $existing;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(array $data = [])
+    {
+        $data['entity'] = $this->getEntity($data['entity']);
+
+        return parent::execute($data);
+    }
+
+    /**
+     * Get the right entity for the action.
+     *
+     * @param EntityInterface $entity The starting entity.
+     * @return void
+     */
+    protected function getEntity(EntityInterface $entity)
+    {
+        if (!($entity instanceof Folder) || $this->Association->getName() !== 'Parents') {
+            return $entity;
+        }
+
+        $table = $this->Association->junction();
+        $entity = $table->find()
+            ->where([$table->association('Objects')->getForeignKey() => $entity->id])
+            ->firstOrFail();
+
+        $this->Association = $table->association('ParentObjects');
+        $this->setConfig('association', $this->Association);
+
+        return $entity;
     }
 }

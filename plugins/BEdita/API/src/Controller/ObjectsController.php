@@ -18,7 +18,7 @@ use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
-use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\EntityInterface;
@@ -292,7 +292,7 @@ class ObjectsController extends ResourcesController
                 break;
 
             case 'DELETE':
-                $action = new RemoveAssociatedAction(compact('association'));
+                $action = new RemoveRelatedObjectsAction(compact('association'));
                 break;
 
             case 'GET':
