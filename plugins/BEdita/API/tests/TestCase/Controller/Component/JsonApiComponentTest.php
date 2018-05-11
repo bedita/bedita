@@ -329,6 +329,10 @@ class JsonApiComponentTest extends TestCase
                 [],
                 '',
             ],
+            'dataNull' => [
+                [],
+                '{"data":null}',
+            ],
         ];
     }
 
