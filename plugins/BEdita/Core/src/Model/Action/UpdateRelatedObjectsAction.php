@@ -68,8 +68,12 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
     /**
      * Get the right entity for the action.
      *
-     * @param EntityInterface $entity The starting entity.
-     * @return void
+     * For `Folder` entity with `Parents` association changes the point of view
+     * using `Tree` entity with `ParentObjects` association assuring to
+     * always use a "to one" relation.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The starting entity.
+     * @return \Cake\Datasource\EntityInterface
      */
     protected function getEntity(EntityInterface $entity)
     {
