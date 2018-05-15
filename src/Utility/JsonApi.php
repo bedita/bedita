@@ -30,7 +30,7 @@ class JsonApi
     /**
      * Format single or multiple data items in JSON API format.
      *
-     * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[] $items Items to be formatted.
+     * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[]|null $items Items to be formatted.
      * @param int $options Serializer options.
      * @param array $fields Selected fields to view in `attributes` and `meta`, if empty (default) all fields are serialized
      * @param array $included Array to be populated with included resources.
