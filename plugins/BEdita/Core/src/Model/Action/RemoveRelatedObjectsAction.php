@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -16,7 +16,7 @@ namespace BEdita\Core\Model\Action;
 use Cake\Datasource\EntityInterface;
 
 /**
- * Command to remove links between objects.
+ * Command to remove links between related objects or objects and associated entities.
  *
  * @since 4.0.0
  *
@@ -26,12 +26,11 @@ class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
 {
 
     /**
-     * Remove existing relations.
+     * Remove existing relations using `\BEdita\Core\Model\Action\RemoveAssociatedAction`.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
-     * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
     protected function update(EntityInterface $entity, $relatedEntities)
     {
