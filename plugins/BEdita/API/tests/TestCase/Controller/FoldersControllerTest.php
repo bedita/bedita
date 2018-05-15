@@ -813,7 +813,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         if ($parentId === null) {
-            static::assertSame(null, Hash::get($result, 'data'));
+            static::assertSame(null, $result['data']);
         } else {
             static::assertSame((string)$parentId, Hash::get($result, 'data.id'));
         }
