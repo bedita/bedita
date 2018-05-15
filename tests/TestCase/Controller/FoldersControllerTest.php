@@ -731,4 +731,91 @@ class FoldersControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('title', $result['error']);
         static::assertEquals('Folder "12" is not on the tree.', $result['error']['title']);
     }
+
+    /**
+     * Data provider for `testMoveFolder()`
+     *
+     * @return array
+     */
+    public function moveFolderProvider()
+    {
+        return [
+            'becomeRoot' => [
+                12,
+                null,
+            ],
+            'moveToAnotherPosition' => [
+                12,
+                13,
+            ],
+            'rootBecomeSubfolder' => [
+                11,
+                13,
+            ],
+        ];
+    }
+
+    /**
+     * Test that moving folder all descendants remain at their place.
+     *
+     * @param int $folderId The folder to move
+     * @param int|null $parentId the new parent
+     * @return void
+     *
+     * @dataProvider moveFolderProvider
+     * @coversNothing
+     */
+    public function testMoveFolder($folderId, $parentId)
+    {
+        $foldersTable = TableRegistry::get('Folders');
+
+        $getDescendants = function () use ($folderId, $foldersTable) {
+            return $foldersTable
+                ->find('ancestor', [$folderId])
+                ->find('list')
+                ->toArray();
+        };
+
+        $treesTable = TableRegistry::get('Trees');
+        $folderTreeNode = $treesTable->find()->where(['object_id' => $folderId])->first();
+
+        $getTreeList = function () use ($treesTable, $folderTreeNode) {
+            return $treesTable
+                ->find('children', ['for' => $folderTreeNode->id])
+                ->find('treeList')
+                ->toArray();
+        };
+
+        $expectedDescendants = $getDescendants();
+        $expectedTreeList = $getTreeList();
+
+        $data = null;
+        if ($parentId !== null) {
+            $data = [
+                'type' => 'folders',
+                'id' => (string)$parentId,
+            ];
+        }
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch("/folders/$folderId/relationships/parent", json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $actualDescendants = $getDescendants();
+        $actualTreeList = $getTreeList();
+
+        static::assertSame($expectedDescendants, $actualDescendants);
+        static::assertSame($expectedTreeList, $actualTreeList);
+
+        // get parent
+        $this->configRequestHeaders();
+        $this->get("/folders/$folderId/parent");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        if ($parentId === null) {
+            static::assertSame(null, Hash::get($result, 'data'));
+        } else {
+            static::assertSame((string)$parentId, Hash::get($result, 'data.id'));
+        }
+    }
 }
