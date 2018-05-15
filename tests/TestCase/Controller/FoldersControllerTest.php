@@ -695,7 +695,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function getOrhanFolderProvider()
+    public function getOrphanFolderProvider()
     {
         return [
             'folders/:id' => ['12'],
@@ -708,7 +708,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @dataProvider getOrhanFolderProvider
+     * @dataProvider getOrphanFolderProvider
      * @coversNothing
      */
     public function testGetOrphanFolder($id = null)
