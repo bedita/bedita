@@ -60,7 +60,9 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      */
     public function execute(array $data = [])
     {
-        $data['entity'] = $this->getEntity($data['entity']);
+        if (array_key_exists('entity', $data)) {
+            $data['entity'] = $this->getEntity($data['entity']);
+        }
 
         return parent::execute($data);
     }
