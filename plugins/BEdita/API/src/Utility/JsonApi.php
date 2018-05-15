@@ -44,6 +44,10 @@ class JsonApi
             $items = $items->toList();
         }
 
+        if ($items === null) {
+            return null;
+        }
+
         if (empty($items)) {
             return [];
         }

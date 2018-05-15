@@ -334,6 +334,12 @@ class JsonApiTest extends TestCase
                     return [];
                 },
             ],
+            'nullItem' => [
+                null,
+                function () {
+                    return null;
+                }
+            ],
             'unsupportedType' => [
                 false,
                 function () {
