@@ -38,6 +38,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
