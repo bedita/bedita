@@ -96,7 +96,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception Expected result.
+     * @param bool|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $entity Entity to update relations for.
