@@ -147,6 +147,13 @@ class SetAssociatedActionTest extends TestCase
                 1,
                 null,
             ],
+            'hasOneEmptyArray' => [
+                0,
+                'FakeTags',
+                'FakeLabels',
+                1,
+                [],
+            ],
             'hasOneNothingToDo' => [
                 0,
                 'FakeTags',
@@ -187,15 +194,20 @@ class SetAssociatedActionTest extends TestCase
         $action = new SetAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);
         } elseif (is_array($related)) {
-            $relatedEntities = $association->getTarget()->find()
-                ->where([
-                    $association->getTarget()->getPrimaryKey() . ' IN' => $related,
-                ])
-                ->toArray();
+            if (empty($related)) {
+                $relatedEntities = [];
+            } else {
+                $relatedEntities = $association->getTarget()->find()
+                    ->where([
+                        $association->getTarget()->getPrimaryKey() . ' IN' => $related,
+                    ])
+                    ->toArray();
+            }
         }
 
         $result = $action(compact('entity', 'relatedEntities'));

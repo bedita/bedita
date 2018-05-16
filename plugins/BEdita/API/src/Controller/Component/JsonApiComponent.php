@@ -83,7 +83,7 @@ class JsonApiComponent extends Component
         }
         try {
             $json = json_decode($json, true);
-            if (json_last_error() || !is_array($json) || !isset($json['data'])) {
+            if (json_last_error() || !is_array($json) || !array_key_exists('data', $json)) {
                 throw new BadRequestException(__d('bedita', 'Invalid JSON input'));
             }
 
