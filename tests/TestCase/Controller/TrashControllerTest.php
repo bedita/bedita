@@ -16,6 +16,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
@@ -354,19 +355,22 @@ class TrashControllerTest extends IntegrationTestCase
      * Test that restoring a folder is allowed only if no ancestors are deleted.
      *
      * @return void
+     *
+     * @coversNothing
      */
     public function testRestoreFolder()
     {
+        // GET current children of 11
         $folderId = 11;
         $this->configRequestHeaders();
-        $this->get(sprintf('/folders/%s/children?filter[type]=folders', $folderId));
-        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->get(sprintf('/folders/%s/children', $folderId));
+        $expectedChildren = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertNotEmpty($result['data']);
-        $children = $result['data'];
+        static::assertNotEmpty($expectedChildren['data']);
 
+        // DELETE folder 11
         $authHeader = $this->getUserAuthHeader();
         $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete(sprintf('/folders/%s', $folderId));
@@ -374,35 +378,40 @@ class TrashControllerTest extends IntegrationTestCase
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
-        foreach ($children as $child) {
+        foreach ($expectedChildren['data'] as $child) {
             $id = $child['id'];
+            $type = $child['type'];
 
-            // GET => 404
             $this->configRequestHeaders();
-            $this->get(sprintf('/folders/%s', $id));
-            $this->assertResponseCode(404);
+            $this->get(sprintf('/%s/%s', $type, $id));
+            if ($type === 'folders') {
+                // GET folder => 404 for subfolders
+                $this->assertResponseCode(404);
 
-            $data = [
-                'id' => "$id",
-                'type' => 'folders'
-            ];
+                $data = [
+                    'id' => "$id",
+                    'type' => 'folders'
+                ];
 
-            // PATCH => 400
-            $this->configRequestHeaders('PATCH', $authHeader);
-            $this->patch(sprintf('/trash/%s', $id), json_encode(compact('data')));
-            $this->assertResponseCode(400);
-            $this->assertContentType('application/vnd.api+json');
-            $result = json_decode((string)$this->_response->getBody(), true);
-            static::assertNotEmpty($result['error']['detail']);
-            static::assertStringStartsWith('[deleted.isFolderRestorable]: Folder can be restored only if its ancestors are not deleted.', $result['error']['detail']);
+                // PATCH to restore subfolder => 400
+                $this->configRequestHeaders('PATCH', $authHeader);
+                $this->patch(sprintf('/trash/%s', $id), json_encode(compact('data')));
+                $this->assertResponseCode(400);
+                $this->assertContentType('application/vnd.api+json');
+                $result = json_decode((string)$this->_response->getBody(), true);
+                static::assertNotEmpty($result['error']['detail']);
+                static::assertStringStartsWith('[deleted.isFolderRestorable]: Folder can be restored only if its ancestors are not deleted.', $result['error']['detail']);
+            } else {
+                // GET other object => 200 for other children objects
+                $this->assertResponseCode(200);
+            }
         }
 
-        // restore ok
+        // PATCH restore parent folder => ok
         $data = [
             'id' => "$folderId",
             'type' => 'folders'
         ];
-
         $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch(sprintf('/trash/%s', $folderId), json_encode(compact('data')));
         $this->assertResponseCode(204);
@@ -410,12 +419,11 @@ class TrashControllerTest extends IntegrationTestCase
         $trash = $this->Objects->get($folderId);
         $this->assertFalse($trash['deleted']);
 
-        foreach ($children as $child) {
-            $id = $child['id'];
-            // GET => 200
-            $this->configRequestHeaders();
-            $this->get(sprintf('/folders/%s', $id));
-            $this->assertResponseCode(200);
-        }
+        // check that all children are restored
+        $this->configRequestHeaders();
+        $this->get(sprintf('/folders/%s/children', $folderId));
+        $actualResult = json_decode((string)$this->_response->getBody(), true);
+        static::assertNotEmpty($actualResult['data']);
+        static::assertEquals(Hash::extract($expectedChildren, 'data.{n}.id'), Hash::extract($actualResult, 'data.{n}.id'));
     }
 }
