@@ -61,6 +61,7 @@ class FoldersTable extends ObjectsTable
             'sort' => [
                 'Trees.tree_left' => 'asc',
             ],
+            'cascadeCallbacks' => true,
         ]);
 
         $this->hasMany('TreeParentNodes', [
