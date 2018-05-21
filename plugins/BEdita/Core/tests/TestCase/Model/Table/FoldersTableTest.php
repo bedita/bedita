@@ -239,6 +239,7 @@ class FoldersTableTest extends TestCase
      * @dataProvider saveProvider
      * @covers ::beforeSave()
      * @covers ::afterSave()
+     * @covers ::updateChildrenDeletedField()
      */
     public function testSave($expected, $data)
     {
@@ -282,5 +283,62 @@ class FoldersTableTest extends TestCase
         static::assertNotEmpty($folders);
         $ids = Hash::extract($folders, '{n}.id');
         static::assertEquals([11, 13], $ids);
+    }
+
+    /**
+     * Test that trashing a folder (soft delete)
+     * its subfolders are soft deleted but other object types are not.
+     *
+     * Test also that restoring the folder restores subfolders too.
+     *
+     * @return void
+     *
+     * @covers ::updateChildrenDeletedField()
+     */
+    public function testSoftDeleteAndRestore()
+    {
+        // first move root tree as children of another root
+        // to have a more complex tree structure
+        $folder = $this->Folders->get(11);
+        $folder->parent_id = 13;
+        $this->Folders->save($folder);
+
+        // get root and trashes it
+        $root = $this->Folders->get(13);
+        $startDeletedInfo = $this->Folders
+            ->find('ancestor', [$root->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'deleted',
+            ])
+            ->toArray();
+
+        $root->deleted = true;
+        $this->Folders->save($root);
+
+        $children = $this->Folders->find('ancestor', [$root->id]);
+        foreach ($children as $child) {
+            if ($child->type === 'folders') {
+                // folders should have deleted field set to true
+                static::assertTrue($child->deleted);
+            } else {
+                // other objects should have deleted field unchanged
+                static::assertEquals($startDeletedInfo[$child->id], $child->deleted);
+            }
+        }
+
+        // restore from trash => deleted false
+        $root->deleted = false;
+        $this->Folders->save($root);
+
+        $restoredDeletedInfo = $this->Folders
+            ->find('ancestor', [$root->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'deleted',
+            ])
+            ->toArray();
+
+        static::assertSame($startDeletedInfo, $restoredDeletedInfo);
     }
 }

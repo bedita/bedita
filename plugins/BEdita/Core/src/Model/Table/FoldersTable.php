@@ -128,6 +128,8 @@ class FoldersTable extends ObjectsTable
      */
     public function afterSave(Event $event, EntityInterface $entity)
     {
+        $this->updateChildrenDeletedField($entity);
+
         // no update on the tree
         if (!$entity->isNew() && !$entity->isParentSet()) {
             return;
@@ -173,5 +175,50 @@ class FoldersTable extends ObjectsTable
                 });
             })
             ->order('TreeNodes.tree_left');
+    }
+
+    /**
+     * Update the `deleted` field of children folders to parent value.
+     * The update is executed only if parent folder `deleted` is dirty.
+     *
+     * @param Folder $folder The parent folder.
+     * @return int
+     */
+    protected function updateChildrenDeletedField(Folder $folder)
+    {
+        if (!$folder->isDirty('deleted')) {
+            return;
+        }
+
+        // use Trees table to build subquery and not `static::findAncestor()` custom finder because
+        // the update fails on MySql when "attempts to select from and modify the same table within a single statement."
+        // @see https://dev.mysql.com/doc/refman/5.7/en/error-messages-server.html#error_er_update_table_used
+        $parentNode = $this->TreeNodes
+            ->find()
+            ->where([$this->TreeNodes->aliasField('object_id') => $folder->id])
+            ->firstOrFail();
+
+        $descendantsToUpdate = $this->TreeNodes
+            ->find()
+            ->select(['object_id'])
+            ->where(function (QueryExpression $exp) use ($parentNode) {
+                return $exp
+                    ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                    ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+            });
+
+        // Update deleted field of descendants
+        return $this->updateAll(
+            [
+                'deleted' => $folder->deleted,
+                'modified' => $this->timestamp(null, true),
+                'modified_by' => $this->userId(),
+            ],
+            [
+                'id IN' => $descendantsToUpdate,
+                'object_type_id' => $this->objectType()->id,
+                'deleted IS NOT' => $folder->deleted,
+            ]
+        );
     }
 }
