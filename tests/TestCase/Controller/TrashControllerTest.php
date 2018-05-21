@@ -349,4 +349,73 @@ class TrashControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('title', $result['error']);
         $this->assertNotEmpty($result['error']['title']);
     }
+
+    /**
+     * Test that restoring a folder is allowed only if no ancestors are deleted.
+     *
+     * @return void
+     */
+    public function testRestoreFolder()
+    {
+        $folderId = 11;
+        $this->configRequestHeaders();
+        $this->get(sprintf('/folders/%s/children?filter[type]=folders', $folderId));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertNotEmpty($result['data']);
+        $children = $result['data'];
+
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->delete(sprintf('/folders/%s', $folderId));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+
+        foreach ($children as $child) {
+            $id = $child['id'];
+
+            // GET => 404
+            $this->configRequestHeaders();
+            $this->get(sprintf('/folders/%s', $id));
+            $this->assertResponseCode(404);
+
+            $data = [
+                'id' => "$id",
+                'type' => 'folders'
+            ];
+
+            // PATCH => 400
+            $this->configRequestHeaders('PATCH', $authHeader);
+            $this->patch(sprintf('/trash/%s', $id), json_encode(compact('data')));
+            $this->assertResponseCode(400);
+            $this->assertContentType('application/vnd.api+json');
+            $result = json_decode((string)$this->_response->getBody(), true);
+            static::assertNotEmpty($result['error']['detail']);
+            static::assertStringStartsWith('[deleted.isFolderRestorable]: Folder can be restored only if its ancestors are not deleted.', $result['error']['detail']);
+        }
+
+        // restore ok
+        $data = [
+            'id' => "$folderId",
+            'type' => 'folders'
+        ];
+
+        $this->configRequestHeaders('PATCH', $authHeader);
+        $this->patch(sprintf('/trash/%s', $folderId), json_encode(compact('data')));
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $trash = $this->Objects->get($folderId);
+        $this->assertFalse($trash['deleted']);
+
+        foreach ($children as $child) {
+            $id = $child['id'];
+            // GET => 200
+            $this->configRequestHeaders();
+            $this->get(sprintf('/folders/%s', $id));
+            $this->assertResponseCode(200);
+        }
+    }
 }
