@@ -90,7 +90,7 @@ class FoldersTable extends ObjectsTable
             'isFolderRestorable',
             [
                 'errorField' => 'deleted',
-                'message' => __d('bedita', 'Folder can be restored only if its ancerstors are not deleted.'),
+                'message' => __d('bedita', 'Folder can be restored only if its ancestors are not deleted.'),
             ]
         );
 
