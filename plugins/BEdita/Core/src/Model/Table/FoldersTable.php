@@ -85,6 +85,15 @@ class FoldersTable extends ObjectsTable
             ]
         );
 
+        $rules->add(
+            [$this, 'isFolderRestorable'],
+            'isFolderRestorable',
+            [
+                'errorField' => 'deleted',
+                'message' => __d('bedita', 'Folder can be restored only if its ancerstors are not deleted.'),
+            ]
+        );
+
         return $rules;
     }
 
@@ -104,6 +113,40 @@ class FoldersTable extends ObjectsTable
         $rule = new ValidCount('parents');
 
         return $rule($entity, ['operator' => '==', 'count' => 1]) && !empty($entity->parent->id);
+    }
+
+    /**
+     * Custom rule to check if the folder entity is restorable
+     * i.e. if its parents have not been deleted.
+     *
+     * If entity is new or `deleted` is not dirty (no change) or it is equal to true (delete action) then return true.
+     *
+     * @param Folder $entity The entity to check
+     * @return bool
+     */
+    public function isFolderRestorable(Folder $entity)
+    {
+        if ($entity->isNew() || !$entity->isDirty('deleted') || $entity->deleted === true) {
+            return true;
+        }
+
+        $node = $this->TreeNodes
+            ->find()
+            ->where([$this->TreeNodes->aliasField('object_id') => $entity->id])
+            ->firstOrFail();
+
+        $deletedParents = $this->find()
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($node) {
+                return $query->where(function (QueryExpression $exp) use ($node) {
+                    return $exp
+                        ->lt($this->TreeNodes->aliasField('tree_left'), $node->get('tree_left'))
+                        ->gt($this->TreeNodes->aliasField('tree_right'), $node->get('tree_right'));
+                });
+            })
+            ->where([$this->aliasField('deleted') => true])
+            ->count();
+
+        return $deletedParents === 0;
     }
 
     /**

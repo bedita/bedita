@@ -341,4 +341,77 @@ class FoldersTableTest extends TestCase
 
         static::assertSame($startDeletedInfo, $restoredDeletedInfo);
     }
+
+    /**
+     * Test `isFolderRestorable()` in case of no check on parents.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableNoCheckOnParents()
+    {
+        // new entity
+        $folder = $this->Folders->newEntity();
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+
+        // deleted is not dirty
+        $folder = $this->Folders->get(11);
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+
+        // deleted is dirty but equal to true
+        $folder->deleted = true;
+        $folder->setDirty('deleted', true);
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+    }
+
+    /**
+     * Test that `isFolderRestorable()` is true
+     * trying to resume a folder deleted with parent not deleted.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableOK()
+    {
+        $folder = $this->Folders->get(12, ['contain' => ['Parents']]);
+        static::assertFalse($folder->parent->deleted);
+
+        $folder->deleted = true;
+        $this->Folders->save($folder);
+        $folder = $this->Folders->get($folder->id);
+        static::assertTrue($folder->deleted);
+        $folder->deleted = false;
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+    }
+
+    /**
+     * Test that `isFolderRestorable()` is false
+     * trying to resume a folder deleted with parent deleted.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableKO()
+    {
+        // delete parent (delete also all folder children)
+        $parent = $this->Folders->get(11);
+        $parent->deleted = true;
+        $this->Folders->save($parent);
+
+        $children = $this->Folders
+            ->find('ancestor', [11])
+            ->where(['object_type_id' => $this->Folders->objectType()->id])
+            ->toArray();
+
+        static::assertNotEmpty($children);
+
+        foreach ($children as $child) {
+            static::assertTrue($child->deleted);
+            $child->deleted = false;
+            static::assertFalse($this->Folders->isFolderRestorable($child));
+        }
+    }
 }
