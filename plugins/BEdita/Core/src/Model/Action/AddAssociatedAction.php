@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 
@@ -74,7 +75,19 @@ class AddAssociatedAction extends UpdateAssociatedAction
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 $relatedEntities = $this->diff($entity, $relatedEntities);
 
-                return $this->Association->link($entity, $relatedEntities) ? count($relatedEntities) : false;
+                if (!$this->Association->link($entity, $relatedEntities, ['atomic' => false])) {
+                    return false;
+                }
+                foreach ($relatedEntities as $relatedEntity) {
+                    if ($relatedEntity->_joinData && $relatedEntity->_joinData->getErrors()) {
+                        throw new BadRequestException([
+                            'title' => __d('bedita', 'Error linking entities'),
+                            'detail' => $relatedEntity->_joinData->getErrors(),
+                        ]);
+                    }
+                }
+
+                return count($relatedEntities);
             });
         }
 
