@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Network\Exception\ConflictException;
+use Cake\ORM\TableRegistry;
 
 /**
  * Controller for `/trash` endpoint.
@@ -31,6 +32,29 @@ class TrashController extends AppController
      * {@inheritDoc}
      */
     public $modelClass = 'Objects';
+
+    /**
+     * Table.
+     *
+     * @var \Cake\ORM\Table
+     */
+    protected $Table;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $id = $this->request->getParam('id');
+        if ($id) {
+            $type = TableRegistry::get('ObjectTypes')->find('objectId', compact('id'))
+                ->firstOrFail();
+            $this->modelClass = $type->alias;
+            $this->Table = TableRegistry::get($this->modelClass);
+        }
+    }
 
     /**
      * Paginated objects list.
@@ -57,7 +81,7 @@ class TrashController extends AppController
      */
     public function view($id)
     {
-        $action = new GetObjectAction(['table' => $this->Objects]);
+        $action = new GetObjectAction(['table' => $this->Table]);
         $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
         $this->set(compact('trash'));
@@ -81,11 +105,11 @@ class TrashController extends AppController
             throw new ConflictException('IDs don\'t match');
         }
 
-        $action = new GetObjectAction(['table' => $this->Objects]);
+        $action = new GetObjectAction(['table' => $this->Table]);
         $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
         $trash->deleted = false;
-        $action = new SaveEntityAction(['table' => $this->Objects]);
+        $action = new SaveEntityAction(['table' => $this->Table]);
         $action(['entity' => $trash, 'data' => []]);
 
         return $this->response
@@ -103,10 +127,10 @@ class TrashController extends AppController
     {
         $this->request->allowMethod('delete');
 
-        $action = new GetObjectAction(['table' => $this->Objects]);
+        $action = new GetObjectAction(['table' => $this->Table]);
         $trash = $action(['primaryKey' => $id, 'deleted' => true]);
 
-        $action = new DeleteObjectAction(['table' => $this->Objects]);
+        $action = new DeleteObjectAction(['table' => $this->Table]);
         $action(['entity' => $trash, 'hard' => true]);
 
         return $this->response
