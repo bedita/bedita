@@ -469,7 +469,7 @@ class ObjectTypesTable extends Table
      * @return \Cake\ORM\Query
      * @throws \LogicException When missing required parameters.
      */
-    public function findObjectId(Query $query, array $options = [])
+    protected function findObjectId(Query $query, array $options = [])
     {
         if (empty($options['id'])) {
             throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
