@@ -14,9 +14,10 @@ use Cake\Validation\Validator;
  * Trees Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
- * @property \Cake\ORM\Association\BelongsTo $ParentTrees
+ * @property \Cake\ORM\Association\BelongsTo $ParentObjects
  * @property \Cake\ORM\Association\BelongsTo $RootObjects
- * @property \Cake\ORM\Association\HasMany $ChildTrees
+ * @property \Cake\ORM\Association\BelongsTo $ParentNode
+ * @property \Cake\ORM\Association\HasMany $ChildNodes
  *
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
@@ -127,11 +128,11 @@ class TreesTable extends Table
         );
 
         $rules->add(
-            [$this, 'isFolderPositionUnique'],
-            'isFolderPositionUnique',
+            [$this, 'isPositionUnique'],
+            'isPositionUnique',
             [
                 'errorField' => 'object_id',
-                'message' => __d('bedita', 'Folders cannot be made ubiquitous'),
+                'message' => __d('bedita', 'Folders cannot be made ubiquitous, other objects cannot appear twice in the same folder'),
             ]
         );
 
@@ -155,20 +156,19 @@ class TreesTable extends Table
     }
 
     /**
-     * Check that a folder position is unique.
+     * Check that a folder position is unique, and other objects' position is unique among their parent.
      *
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate.
      * @return bool
      */
-    public function isFolderPositionUnique(Tree $entity)
+    public function isPositionUnique(Tree $entity)
     {
+        $rule = new IsUnique(['parent_id', 'object_id']);
         if ($this->isFolder($entity->object_id)) {
             $rule = new IsUnique(['object_id']);
-
-            return $rule($entity, ['repository' => $this]);
         }
 
-        return true;
+        return $rule($entity, ['repository' => $this]);
     }
 
     /**
