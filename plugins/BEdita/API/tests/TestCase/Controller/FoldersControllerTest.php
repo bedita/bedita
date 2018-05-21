@@ -706,6 +706,7 @@ class FoldersControllerTest extends IntegrationTestCase
     /**
      * Test that getting orphan folders return a 500 error.
      *
+     * @param int|null $id Folder ID to get.
      * @return void
      *
      * @dataProvider getOrphanFolderProvider
@@ -713,9 +714,8 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testGetOrphanFolder($id = null)
     {
-        $treesTable = TableRegistry::get('Trees');
-        $entity = $treesTable->find()->where(['object_id' => 12])->firstOrFail();
-        $treesTable->delete($entity);
+        TableRegistry::get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::get('Trees')->recover();
 
         $endpoint = '/folders';
         if ($id) {
