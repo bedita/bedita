@@ -1,9 +1,10 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\Tree;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -125,6 +126,15 @@ class TreesTable extends Table
             ]
         );
 
+        $rules->add(
+            [$this, 'isFolderPositionUnique'],
+            'isFolderPositionUnique',
+            [
+                'errorField' => 'object_id',
+                'message' => __d('bedita', 'Folders cannot be made ubiquitous'),
+            ]
+        );
+
         return $rules;
     }
 
@@ -136,30 +146,39 @@ class TreesTable extends Table
      */
     public function isParentValid(Tree $entity)
     {
-        $Objects = TableRegistry::get('Objects');
-        $foldersType = $Objects->ObjectTypes->get('folders')->id;
         // if parent_id is null then the object_id must refer to a folder (root)
         if ($entity->parent_id === null) {
-            return $Objects->exists([
-                'id' => $entity->object_id,
-                'object_type_id' => $foldersType,
-            ]);
+            return $this->isFolder($entity->object_id);
         }
 
-        return $Objects->exists([
-            'id' => $entity->parent_id,
-            'object_type_id' => $foldersType,
-        ]);
+        return $this->isFolder($entity->parent_id);
+    }
+
+    /**
+     * Check that a folder position is unique.
+     *
+     * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate.
+     * @return bool
+     */
+    public function isFolderPositionUnique(Tree $entity)
+    {
+        if ($this->isFolder($entity->object_id)) {
+            $rule = new IsUnique(['object_id']);
+
+            return $rule($entity, ['repository' => $this]);
+        }
+
+        return true;
     }
 
     /**
      * Update `root_id` of children if needed.
      *
-     * @param Event $event The event
-     * @param EntityInterface $entity The entity persisted
+     * @param \Cake\Event\Event $event The event
+     * @param \BEdita\Core\Model\Entity\Tree $entity The entity persisted
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity)
+    public function afterSave(Event $event, Tree $entity)
     {
         if ($entity->isNew()) {
             return;
@@ -174,5 +193,44 @@ class TreesTable extends Table
                 'root_id !=' => $entity->root_id,
             ]
         );
+    }
+
+    /**
+     * Throw an exception when trying to remove a row that points to a folder, unless cascading.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Tree $entity Tree entity being deleted.
+     * @param \ArrayObject $options Options.
+     * @return void
+     * @throws \BEdita\Core\Exception\ImmutableResourceException Throws an exception when the delete operation would
+     *  leave an orphaned folder.
+     */
+    public function beforeDelete(Event $event, Tree $entity, \ArrayObject $options)
+    {
+        if (empty($options['_primary'])) {
+            return;
+        }
+
+        // Refuse to delete a row that points to a folder.
+        if ($this->isFolder($entity->object_id)) {
+            throw new ImmutableResourceException(__d('bedita', 'This operation would leave an orphaned folder'));
+        }
+    }
+
+    /**
+     * @param int $id ID of object being checked.
+     * @return bool
+     */
+    protected function isFolder($id)
+    {
+        static $foldersType = null;
+        if ($foldersType === null) {
+            $foldersType = TableRegistry::get('ObjectTypes')->get('folders')->id;
+        }
+
+        return $this->Objects->exists([
+            $this->Objects->aliasField('object_type_id') => $foldersType,
+            $this->Objects->aliasField('id') => $id,
+        ]);
     }
 }
