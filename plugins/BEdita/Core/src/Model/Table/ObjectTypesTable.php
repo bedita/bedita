@@ -381,6 +381,7 @@ class ObjectTypesTable extends Table
      * @param array $options Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
      * @return \Cake\ORM\Query
+     * @throws \LogicException When missing required parameters.
      */
     protected function findByRelation(Query $query, array $options = [])
     {
