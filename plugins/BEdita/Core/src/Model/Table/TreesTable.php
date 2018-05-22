@@ -24,6 +24,8 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TreeBehavior
  */
 class TreesTable extends Table
 {
