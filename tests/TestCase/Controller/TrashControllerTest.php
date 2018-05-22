@@ -16,7 +16,6 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
