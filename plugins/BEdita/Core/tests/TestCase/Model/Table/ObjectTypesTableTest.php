@@ -791,8 +791,8 @@ class ObjectTypesTableTest extends TestCase
                 ['id' => 2],
             ],
             'findByUname' => [
-                'folders',
-                ['id' => 'root-folder'],
+                'users',
+                ['id' => 'first-user'],
             ],
         ];
     }
