@@ -215,6 +215,8 @@ class TrashControllerTest extends IntegrationTestCase
                     'lang' => 'eng',
                     'publish_start' => '2016-10-13T07:09:23+00:00',
                     'publish_end' => '2016-10-13T07:09:23+00:00',
+                    'another_title' => null,
+                    'another_description' => null,
                 ],
                 'meta' => [
                     'locked' => false,
@@ -245,43 +247,61 @@ class TrashControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testRestore()`
+     *
+     * @return array
+     */
+    public function restoreProvider()
+    {
+        return [
+            'not found' => [
+                404,
+                '66666',
+                [
+                    'id' => '6',
+                    'type' => 'objects',
+                ],
+            ],
+            'conflict' => [
+                409,
+                '6',
+                [
+                    'id' => '66',
+                    'type' => 'objects',
+                ],
+            ],
+            'ok' => [
+                204,
+                '6',
+                [
+                    'id' => '6',
+                    'type' => 'objects',
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test delete restore method.
      *
      * @return void
      *
+     * @dataProvider restoreProvider
      * @covers ::restore()
      * @covers ::initialize()
      */
-    public function testRestore()
+    public function testRestore($expected, $id, $data)
     {
-        $data = [
-            'id' => '6',
-            'type' => 'objects'
-        ];
-
-        $authHeader = $this->getUserAuthHeader();
-
-        // failure test
-        $data['id'] = '66666';
-        $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/trash/66666', json_encode(compact('data')));
-        $this->assertResponseCode(404);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch("/trash/$id", json_encode(compact('data')));
+        $this->assertResponseCode($expected);
         $this->assertContentType('application/vnd.api+json');
 
-        // conflict test
-        $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/trash/666', json_encode(compact('data')));
-        $this->assertResponseCode(409);
-        $this->assertContentType('application/vnd.api+json');
-
-        // success test
-        $data['id'] = '6';
-        $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/trash/6', json_encode(compact('data')));
-        $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
-        $trash = $this->Objects->get(6);
-        $this->assertFalse($trash['deleted']);
+        // if restored
+        if ($this->_response->getStatusCode() === 204) {
+            $trash = $this->Objects->get($id);
+            $this->assertFalse($trash['deleted']);
+        }
     }
 
     /**
