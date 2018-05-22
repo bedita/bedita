@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\AddAssociatedAction;
+use Cake\Core\Exception\Exception;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -162,8 +163,55 @@ class AddAssociatedActionTest extends TestCase
                 ->count();
         }
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
         $relCount = is_array($related) ? count($related) : (empty($related) ? 0 : 1);
-        $this->assertEquals($relCount, $count);
+        static::assertEquals($relCount, $count);
+    }
+
+    /**
+     * Test that an exception is raised with details about the validation error.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedExceptionCode 400
+     */
+    public function testInvocationWithLinkErrors()
+    {
+        try {
+            $table = TableRegistry::get('FakeArticles');
+            /** @var \Cake\ORM\Association\BelongsToMany $association */
+            $association = $table->association('FakeTags');
+
+            $association->junction()->rulesChecker()->add(
+                function () {
+                    return false;
+                },
+                'sampleRule',
+                [
+                    'errorField' => 'gustavo',
+                    'message' => 'This is a sample error',
+                ]
+            );
+
+            $entity = $table->get(1);
+            $relatedEntities = $association->find()->toArray();
+
+            $action = new AddAssociatedAction(compact('association'));
+            $action(compact('entity', 'relatedEntities'));
+        } catch (Exception $e) {
+            $expected = [
+                'title' => 'Error linking entities',
+                'detail' => [
+                    'gustavo' => [
+                        'sampleRule' => 'This is a sample error',
+                    ],
+                ],
+            ];
+
+            static::assertSame($expected, $e->getAttributes());
+
+            throw $e;
+        }
     }
 }

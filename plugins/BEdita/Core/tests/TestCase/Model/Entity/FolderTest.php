@@ -229,9 +229,8 @@ class FolderTest extends TestCase
      */
     public function testGetPathOrphanFolder()
     {
-        $treesTable = TableRegistry::get('Trees');
-        $entity = $treesTable->find()->where(['object_id' => 12])->firstOrFail();
-        $treesTable->delete($entity);
+        TableRegistry::get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::get('Trees')->recover();
 
         $this->Folders->get(12);
     }
