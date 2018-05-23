@@ -108,6 +108,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+            'cascadeCallbacks' => true,
         ]);
 
         $this->hasMany('TreeNodes', [
