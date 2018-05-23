@@ -3,6 +3,7 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\CheckTreeTask;
 use Cake\Console\Shell;
+use Cake\Database\Driver\Mysql;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 
@@ -156,8 +157,13 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
     public function testExecutionObjectTwiceInFolder()
     {
         // Worse-than-worst case scenario: drop unique index to simulate a case where the constraint was violated somehow.
-        $this->Trees->getConnection()
-            ->execute('DROP INDEX trees_objectparent_uq ON trees');
+        if (!($this->Trees->getConnection()->getDriver() instanceof Mysql)) {
+            static::markTestSkipped('This test requires dropping a constraint and happens only on MySQL');
+        }
+
+        $this->Trees->getConnection()->execute(
+            sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable())
+        );
         $this->Trees->save(
             $this->Trees->newEntity([
                 'object_id' => 2,
