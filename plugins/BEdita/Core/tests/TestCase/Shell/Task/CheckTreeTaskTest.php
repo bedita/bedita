@@ -86,7 +86,7 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             $this->Trees->find()
                 ->where(['object_id' => 12])
                 ->firstOrFail(),
-            ['checkRules' => false]
+            ['checkRules' => false, '_primary' => false]
         );
 
         $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
