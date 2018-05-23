@@ -404,10 +404,37 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        // TODO: how should we behave on folders delete?
-        // a. delete only folders that doesn't have another folder as child
-        // b. delete folder anyway
-        static::markTestIncomplete();
+        $foldersTable = TableRegistry::get('Folders');
+        $folderId = 11;
+        $children = $foldersTable
+            ->find('ancestor', [$folderId])
+            ->toArray();
+
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $endpoint = sprintf('/folders/%s', $folderId);
+        $this->delete($endpoint);
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->configRequestHeaders();
+        $this->get($endpoint);
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+
+        foreach ($children as $child) {
+            $this->configRequestHeaders();
+            $this->get(sprintf('/%s/%s', $child->type, $child->id));
+            if ($child->type === 'folders') {
+                $this->assertResponseCode(404);
+                $this->assertContentType('application/vnd.api+json');
+            } else {
+                $this->assertResponseCode(200);
+                $this->assertContentType('application/vnd.api+json');
+            }
+        }
     }
 
     /**

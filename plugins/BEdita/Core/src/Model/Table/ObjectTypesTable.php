@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
@@ -381,6 +382,7 @@ class ObjectTypesTable extends Table
      * @param array $options Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
      * @return \Cake\ORM\Query
+     * @throws \LogicException When missing required parameters.
      */
     protected function findByRelation(Query $query, array $options = [])
     {
@@ -458,5 +460,29 @@ class ObjectTypesTable extends Table
 
         // Everything is said and done by now. Fingers crossed!
         return $query->where($conditionsBuilder);
+    }
+
+    /**
+     * Finder to get object type starting from object id or uname.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The `id` key is required.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
+     */
+    protected function findObjectId(Query $query, array $options = [])
+    {
+        if (empty($options['id'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
+        }
+
+        return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
+            return $query->where(function (QueryExpression $exp) use ($options) {
+                return $exp->or_([
+                    $this->Objects->aliasField('id') => $options['id'],
+                    $this->Objects->aliasField('uname') => $options['id'],
+                ]);
+            });
+        });
     }
 }

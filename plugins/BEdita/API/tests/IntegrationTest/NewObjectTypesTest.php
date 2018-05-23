@@ -88,6 +88,7 @@ class NewObjectTypesTest extends IntegrationTestCase
             'attributes' => $attributes,
         ];
 
+        TableRegistry::clear();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $endpoint = '/' . $type;
         $this->post($endpoint, json_encode(compact('data')));
@@ -95,6 +96,7 @@ class NewObjectTypesTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         // VIEW
+        TableRegistry::clear();
         $this->configRequestHeaders();
         $lastId++;
         $this->get("/$type/$lastId");
@@ -107,6 +109,7 @@ class NewObjectTypesTest extends IntegrationTestCase
         static::assertArraySubset($attributes, $result['data']['attributes']);
 
         // VIEW FROM PARENT
+        TableRegistry::clear();
         $this->configRequestHeaders();
         $parentEndoint = empty($typeData['parent_name']) ? 'objects' : $typeData['parent_name'];
         $this->get("/$parentEndoint/$lastId");
@@ -119,18 +122,22 @@ class NewObjectTypesTest extends IntegrationTestCase
         static::assertArraySubset($attributes, $result['data']['attributes']);
 
         // DELETE
+        TableRegistry::clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/$type/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
         // EMPTY TRASH
+        TableRegistry::clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         // REMOVE TYPE
+        TableRegistry::clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/model/object_types/$type");
         $this->assertResponseCode(204);

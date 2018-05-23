@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -768,5 +769,53 @@ class ObjectTypesTableTest extends TestCase
         $this->ObjectTypes->patchEntity($objectType, $data);
         $success = $this->ObjectTypes->save($objectType);
         static::assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Data provider for `testFindObjectId()`
+     *
+     * @return array
+     */
+    public function findObjectIdProvider()
+    {
+        return [
+            'missingId' => [
+                new BadFilterException('Missing required parameter "id"'),
+                [],
+            ],
+            'emptyId' => [
+                new BadFilterException('Missing required parameter "id"'),
+                ['id' => ''],
+            ],
+            'findById' => [
+                'documents',
+                ['id' => 2],
+            ],
+            'findByUname' => [
+                'users',
+                ['id' => 'first-user'],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findObjectId()`
+     *
+     * @param mixed $expected The expected result.
+     * @param array $options The option passed to finder.
+     * @return void
+     *
+     * @covers ::findObjectId
+     * @dataProvider findObjectIdProvider
+     */
+    public function testFindObjectId($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $type = $this->ObjectTypes->find('objectId', $options)->firstOrFail();
+        static::assertEquals($expected, $type->name);
     }
 }
