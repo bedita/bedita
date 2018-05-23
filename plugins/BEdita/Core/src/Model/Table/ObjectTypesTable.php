@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
@@ -467,18 +468,20 @@ class ObjectTypesTable extends Table
      * @param \Cake\ORM\Query $query Query object.
      * @param array $options Additional options. The `id` key is required.
      * @return \Cake\ORM\Query
-     * @throws \LogicException When missing required parameters.
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
     protected function findObjectId(Query $query, array $options = [])
     {
         if (empty($options['id'])) {
-            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
         }
 
         return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
             return $query->where(function (QueryExpression $exp) use ($options) {
-                return $exp->or_([$this->Objects->aliasField('id') => $options['id']])
-                    ->add([$this->Objects->aliasField('uname') => $options['id']]);
+                return $exp->or_([
+                    $this->Objects->aliasField('id') => $options['id'],
+                    $this->Objects->aliasField('uname') => $options['id'],
+                ]);
             });
         });
     }

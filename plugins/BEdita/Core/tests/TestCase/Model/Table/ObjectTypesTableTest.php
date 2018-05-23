@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -779,11 +780,11 @@ class ObjectTypesTableTest extends TestCase
     {
         return [
             'missingId' => [
-                new \LogicException('Missing required parameter "id"'),
+                new BadFilterException('Missing required parameter "id"'),
                 [],
             ],
             'emptyId' => [
-                new \LogicException('Missing required parameter "id"'),
+                new BadFilterException('Missing required parameter "id"'),
                 ['id' => ''],
             ],
             'findById' => [
