@@ -176,12 +176,12 @@ class CheckTreeTask extends Shell
                 $this->Objects->aliasField('uname'),
                 'count' => $query->func()->count('*'),
             ])
-            ->innerJoinWith('TreeNodes')
+            ->matching('TreeNodes')
             ->group([
                 $this->Objects->aliasField($this->Objects->getPrimaryKey()),
             ])
             ->having(function (QueryExpression $exp) {
-                return $exp->gt('count', 1);
+                return $exp->gt('count', 1, 'integer');
             });
     }
 
@@ -225,7 +225,7 @@ class CheckTreeTask extends Shell
                 $this->Objects->Parents->aliasField('id'),
             ])
             ->having(function (QueryExpression $exp) {
-                return $exp->gt('count', 1);
+                return $exp->gt('count', 1, 'integer');
             });
     }
 }
