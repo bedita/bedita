@@ -4,6 +4,7 @@ namespace BEdita\Core\Shell\Task;
 use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query;
 use Cake\Utility\Hash;
 
 /**
@@ -97,6 +98,28 @@ class CheckTreeTask extends Shell
             $this->verbose('=====> <success>There are no ubiquitous folders.</success>');
         }
 
+        // Checks on other objects in root.
+        $results = $this->getObjectsInRoot()
+            ->all();
+        $count = $results->count();
+        if ($count > 0) {
+            $ok = false;
+
+            $this->out(sprintf('=====> <warning>Found %d other objects in root!</warning>', $count));
+            $results->each(function (EntityInterface $entity) {
+                $this->verbose(
+                    sprintf(
+                        '=====>   - %s <info>%s</info> (#<info>%d</info>) is a root',
+                        $this->Objects->ObjectTypes->get($entity['object_type_id'])->get('singular'),
+                        $entity['uname'],
+                        $entity['id']
+                    )
+                );
+            });
+        } else {
+            $this->verbose('=====> <success>There are no other objects in root.</success>');
+        }
+
         // Checks on other objects with children.
         $results = $this->getObjectsWithChildren()
             ->all();
@@ -175,12 +198,32 @@ class CheckTreeTask extends Shell
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
             ])
-            ->matching('TreeNodes')
+            ->innerJoinWith('TreeNodes')
             ->group([
                 $this->Objects->aliasField($this->Objects->getPrimaryKey()),
             ])
             ->having(function (QueryExpression $exp) use ($query) {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
+            });
+    }
+
+    /**
+     * Return query to find all objects that are roots despite not being folders.
+     *
+     * @return \Cake\ORM\Query
+     */
+    protected function getObjectsInRoot()
+    {
+        return $this->Objects->find('type', ['!=' => 'folders'])
+            ->select([
+                $this->Objects->aliasField('id'),
+                $this->Objects->aliasField('uname'),
+                $this->Objects->aliasField('object_type_id'),
+            ])
+            ->innerJoinWith('TreeNodes', function (Query $query) {
+                return $query->where(function (QueryExpression $exp) {
+                    return $exp->isNull($this->Objects->TreeNodes->aliasField('parent_id'));
+                });
             });
     }
 
@@ -197,7 +240,7 @@ class CheckTreeTask extends Shell
                 $this->Objects->aliasField('uname'),
                 $this->Objects->aliasField('object_type_id'),
             ])
-            ->matching('TreeParentNodes');
+            ->innerJoinWith('TreeParentNodes');
     }
 
     /**
@@ -217,7 +260,7 @@ class CheckTreeTask extends Shell
                 $this->Objects->Parents->aliasField('id'),
                 $this->Objects->Parents->aliasField('uname'),
             ])
-            ->matching('Parents')
+            ->innerJoinWith('Parents')
             ->group([
                 $this->Objects->aliasField('id'),
                 $this->Objects->Parents->aliasField('id'),
