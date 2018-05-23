@@ -174,14 +174,13 @@ class CheckTreeTask extends Shell
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
-                'count' => $query->func()->count('*'),
             ])
             ->matching('TreeNodes')
             ->group([
                 $this->Objects->aliasField($this->Objects->getPrimaryKey()),
             ])
-            ->having(function (QueryExpression $exp) {
-                return $exp->gt('count', 1, 'integer');
+            ->having(function (QueryExpression $exp) use ($query) {
+                return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
 
@@ -217,15 +216,14 @@ class CheckTreeTask extends Shell
                 $this->Objects->aliasField('object_type_id'),
                 $this->Objects->Parents->aliasField('id'),
                 $this->Objects->Parents->aliasField('uname'),
-                'count' => $query->func()->count('*'),
             ])
             ->matching('Parents')
             ->group([
                 $this->Objects->aliasField('id'),
                 $this->Objects->Parents->aliasField('id'),
             ])
-            ->having(function (QueryExpression $exp) {
-                return $exp->gt('count', 1, 'integer');
+            ->having(function (QueryExpression $exp) use ($query) {
+                return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
 }
