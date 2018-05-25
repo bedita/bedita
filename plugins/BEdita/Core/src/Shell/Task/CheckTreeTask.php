@@ -154,7 +154,7 @@ class CheckTreeTask extends Shell
             $this->verbose('=====> <success>There are no other objects with children.</success>');
         }
 
-        // Checks on other objects with children.
+        // Checks on other objects twice inside same folder.
         $results = $this->getObjectsTwiceInFolder()
             ->all();
         $count = $results->count();
@@ -169,8 +169,8 @@ class CheckTreeTask extends Shell
                         $this->Objects->ObjectTypes->get($entity['object_type_id'])->get('singular'),
                         $entity['uname'],
                         $entity['id'],
-                        Hash::get($entity, '_matchingData.Parents.uname', '(unknown)'),
-                        Hash::get($entity, '_matchingData.Parents.id', 0)
+                        (string)Hash::get($entity, '_matchingData.Parents.uname', '(unknown)'),
+                        (string)Hash::get($entity, '_matchingData.Parents.id', 0)
                     )
                 );
             });
@@ -212,7 +212,7 @@ class CheckTreeTask extends Shell
             ])
             ->innerJoinWith('TreeNodes')
             ->group([
-                $this->Objects->aliasField($this->Objects->getPrimaryKey()),
+                $this->Objects->aliasField('id'),
             ])
             ->having(function (QueryExpression $exp) use ($query) {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
