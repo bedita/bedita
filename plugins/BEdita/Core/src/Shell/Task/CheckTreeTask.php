@@ -170,7 +170,7 @@ class CheckTreeTask extends Shell
                         $entity['uname'],
                         $entity['id'],
                         (string)Hash::get($entity, '_matchingData.Parents.uname', '(unknown)'),
-                        (string)Hash::get($entity, '_matchingData.Parents.id', 0)
+                        (int)Hash::get($entity, '_matchingData.Parents.id', 0)
                     )
                 );
             });
