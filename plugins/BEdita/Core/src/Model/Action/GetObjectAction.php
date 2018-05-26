@@ -54,6 +54,7 @@ class GetObjectAction extends BaseAction
         $conditions = [
             'deleted' => (int)!empty($data['deleted']),
         ];
+        $conditions += $this->statusCondition();
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
         $options = [];
         if (!empty($this->objectType)) {

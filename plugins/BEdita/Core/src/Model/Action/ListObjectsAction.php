@@ -56,6 +56,7 @@ class ListObjectsAction extends BaseAction
         $filter = [
             'deleted' => (int)!empty($data['deleted']),
         ];
+        $filter += $this->statusCondition();
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
         $type = null;
         if (!empty($this->objectType)) {

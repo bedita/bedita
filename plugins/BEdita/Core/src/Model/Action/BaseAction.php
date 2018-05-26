@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 
 /**
@@ -71,5 +72,24 @@ abstract class BaseAction
     final public function __invoke(array $data = [])
     {
         return $this->execute($data);
+    }
+
+    /**
+     * Allowed object `status` condition
+     *
+     * @return array Empty array if all `status` are allowed otherwise a list of allowed values
+     */
+    protected function statusCondition()
+    {
+        $filter = [
+            'on' => ['on'],
+            'draft' => ['on', 'draft'],
+        ];
+        $level = Configure::read('Status.level');
+        if ($level && isset($filter[$level])) {
+            return ['status IN' => $filter[$level]];
+        }
+
+        return [];
     }
 }

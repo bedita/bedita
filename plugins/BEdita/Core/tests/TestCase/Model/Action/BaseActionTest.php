@@ -14,9 +14,26 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\BaseAction;
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
+ * Test class to test `statusCondition` method
+ */
+class StatusTestAction extends BaseAction
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(array $data = [])
+    {
+        return $this->statusCondition();
+    }
+}
+
+/**
+ * {@see \BEdita\Core\Model\Action\BaseAction} Test Case
+ *
  * @coversDefaultClass \BEdita\Core\Model\Action\BaseAction
  */
 class BaseActionTest extends TestCase
@@ -62,5 +79,26 @@ class BaseActionTest extends TestCase
         $result = $baseAction->__invoke($data);
 
         static::assertEquals($data, $result);
+    }
+
+    /**
+     * Test `statusCondition` method.
+     *
+     * @return void
+     *
+     * @covers ::statusCondition()
+     */
+    public function testStatusCondition()
+    {
+        $action = new StatusTestAction();
+        $result = $action();
+        static::assertEquals([], $result);
+
+        Configure::write('Status.level', 'draft');
+        $result = $action();
+        $expected = [
+            'status IN' => ['on', 'draft'],
+        ];
+        static::assertEquals($expected, $result);
     }
 }
