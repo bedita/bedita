@@ -82,12 +82,12 @@ abstract class BaseAction
     protected function statusCondition()
     {
         $filter = [
-            'on' => ['on'],
-            'draft' => ['on', 'draft'],
+            'on' => ['status' => 'on'],
+            'draft' => ['status IN' => ['on', 'draft']],
         ];
         $level = Configure::read('Status.level');
         if ($level && isset($filter[$level])) {
-            return ['status IN' => $filter[$level]];
+            return $filter[$level];
         }
 
         return [];
