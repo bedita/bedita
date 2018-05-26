@@ -99,7 +99,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      * @covers ::read()
-     * @covers ::valueFromString()
+     * @covers ::__construct()
      */
     public function testReadAppId()
     {
