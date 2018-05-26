@@ -36,8 +36,8 @@ class DatabaseTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.config',
         'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.config',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
@@ -54,7 +54,7 @@ class DatabaseTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
-        $fixtures = ['Config', 'ObjectTypes', 'Roles', 'Applications'];
+        $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
         $this->loadFixtures(...$fixtures);
         $schema = Database::currentSchema();
 
@@ -98,7 +98,7 @@ class DatabaseTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
-        $fixtures1 = ['Config', 'ObjectTypes', 'Applications'];
+        $fixtures1 = ['Applications', 'Config', 'ObjectTypes'];
         $this->loadFixtures(...$fixtures1);
         $schema1 = Database::currentSchema();
 
@@ -222,7 +222,7 @@ class DatabaseTest extends TestCase
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
-        $this->loadFixtures('Config', 'ObjectTypes', 'Roles', 'Applications');
+        $this->loadFixtures('Applications', 'Config', 'ObjectTypes', 'Roles');
 
         $res = Database::executeTransaction($sql, $dbConfig);
         $this->assertNotEmpty($res);

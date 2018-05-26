@@ -29,14 +29,17 @@ class AddConfigApplicationId extends AbstractMigration
                     'name' => 'config_applicationid_idx',
                 ]
             )
+            ->update();
+
+        $this->table('config')
             ->addForeignKey(
                 'application_id',
                 'applications',
                 'id',
                 [
                     'constraint' => 'config_applicationid_fk',
-                    'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'update' => 'NO_ACTION',
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->update();
@@ -49,6 +52,10 @@ class AddConfigApplicationId extends AbstractMigration
     {
         $this->table('config')
             ->dropForeignKey('application_id')
+            ->update();
+
+        $this->table('config')
+            ->removeIndexByName('config_applicationid_idx')
             ->removeColumn('application_id')
             ->update();
     }
