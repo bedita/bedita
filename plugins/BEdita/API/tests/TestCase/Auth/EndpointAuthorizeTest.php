@@ -43,6 +43,7 @@ class EndpointAuthorizeTest extends TestCase
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
+        'plugin.BEdita/Core.config',
     ];
 
     /**

@@ -51,6 +51,7 @@ class ConfigControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'context' => 'group1',
                     'content' => 'data',
+                    'application_id' => null,
                 ],
                 'meta' => [
                     'created' => '2016-06-16T12:34:56+00:00',
@@ -86,6 +87,7 @@ class ConfigControllerTest extends IntegrationTestCase
                 'name' => 'NewConfig',
                 'context' => 'new',
                 'content' => 'new value',
+                'application_id' => null,
             ],
         ];
 
