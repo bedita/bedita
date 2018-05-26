@@ -200,7 +200,7 @@ class DatabaseTest extends TestCase
             ["SELECT id from roles", false, 0, 0, 'zzzzzzzzz'],
             ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
              "UPDATE applications SET name='Gustano' WHERE id = 1;", true, 2, 2],
-            ["SELECT name from config;\n" . "SELECT name from roles;", true, 12, 2],
+            ["SELECT name from config;\n" . "SELECT name from roles;", true, 14, 2],
             ["SELECT something", false, 0, 0],
             [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
         ];
