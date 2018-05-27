@@ -100,7 +100,7 @@ class CurrentApplication
     public function loadConfiguration($context = 'core')
     {
         $id = $this->id();
-        if ($id) {
+        if ($id !== null) {
             Configure::config('application', new DatabaseConfig($id));
             Configure::load($context, 'application');
         }
@@ -131,7 +131,8 @@ class CurrentApplication
     }
 
     /**
-     * Load `core` configuration for current application.
+     * Static wrapper around {@see self::loadConfiguration()}.
+     * Load configuration for current application.
      *
      * @param string $context Configuration context to load
      * @return void
