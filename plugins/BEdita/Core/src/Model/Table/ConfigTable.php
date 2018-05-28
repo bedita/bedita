@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -80,5 +83,27 @@ class ConfigTable extends Table
             ->notEmpty('content');
 
         return $validator;
+    }
+
+    /**
+     * Finder for my config. This only returns configuration for the current application.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findMine(Query $query)
+    {
+        $query->where(function (QueryExpression $exp) {
+            return $exp->isNull($this->aliasField('application_id'));
+        });
+
+        $id = CurrentApplication::getApplicationId();
+        if ($id !== null) {
+            $query->orWhere(function (QueryExpression $exp) use ($id) {
+                return $exp->eq($this->aliasField('application_id'), $id);
+            });
+        };
+
+        return  $query;
     }
 }
