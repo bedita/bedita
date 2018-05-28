@@ -104,6 +104,6 @@ class ConfigTable extends Table
             });
         };
 
-        return  $query;
+        return $query;
     }
 }
