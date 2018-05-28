@@ -39,6 +39,7 @@ class DatabaseConfigTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.config',
+        'plugin.BEdita/Core.applications',
     ];
 
     /**
@@ -74,23 +75,37 @@ class DatabaseConfigTest extends TestCase
     public function testRead()
     {
         $configData = $this->DatabaseConfig->read();
-        $this->assertEquals(true, $configData['Name2']);
-        $this->assertEquals(14, $configData['IntVal']);
+        static::assertEquals(true, $configData['Name2']);
+        static::assertEquals(14, $configData['IntVal']);
 
         $configData = $this->DatabaseConfig->read('group1');
         $expected = [
                 'test1' => 'some data',
                 'test2' => 'other data',
         ];
-        $this->assertEquals($expected, $configData['Key2']);
-        $this->assertArrayNotHasKey('IntVal', $configData);
+        static::assertEquals($expected, $configData['Key2']);
+        static::assertArrayNotHasKey('IntVal', $configData);
 
         foreach (['lowercaseGroup', 'uppercaseGroup'] as $context) {
             $configData = $this->DatabaseConfig->read($context);
-            $this->assertTrue($configData[$context . '.trueVal']);
-            $this->assertFalse($configData[$context . '.falseVal']);
-            $this->assertNull($configData[$context . '.nullVal']);
+            static::assertTrue($configData[$context . '.trueVal']);
+            static::assertFalse($configData[$context . '.falseVal']);
+            static::assertNull($configData[$context . '.nullVal']);
         }
+    }
+
+    /**
+     * Test read method with application id
+     *
+     * @return void
+     * @covers ::read()
+     * @covers ::__construct()
+     */
+    public function testReadAppId()
+    {
+        $dbConfig = new DatabaseConfig(1);
+        $configData = $dbConfig->read('core');
+        static::assertEquals(['val' => 42], $configData['appVal']);
     }
 
     /**
@@ -153,14 +168,14 @@ class DatabaseConfigTest extends TestCase
             $this->expectException('Cake\Database\Exception');
         }
         $check = $this->DatabaseConfig->dump($context, $data);
-        $this->assertEquals((bool)$expected, $check);
+        static::assertEquals((bool)$expected, $check);
 
         $configData = $this->DatabaseConfig->read($context);
 
         $expectedData = !is_array($expected) ? $data : $expected;
         foreach ($expectedData as $key => $value) {
-            $this->assertArrayHasKey($key, $configData);
-            $this->assertEquals($value, $configData[$key]);
+            static::assertArrayHasKey($key, $configData);
+            static::assertEquals($value, $configData[$key]);
         }
     }
 
@@ -176,9 +191,9 @@ class DatabaseConfigTest extends TestCase
         Configure::config('test-database', $this->DatabaseConfig);
         Configure::load('group1', 'test-database');
 
-        $this->assertTrue(Configure::read('Name2'));
-        $this->assertEquals('some data', Configure::read('Key2.test1'));
-        $this->assertEquals('other data', Configure::read('Key2.test2'));
+        static::assertTrue(Configure::read('Name2'));
+        static::assertEquals('some data', Configure::read('Key2.test1'));
+        static::assertEquals('other data', Configure::read('Key2.test2'));
     }
 
     /**
@@ -206,12 +221,12 @@ class DatabaseConfigTest extends TestCase
 
         $result = Configure::dump($context, 'test-database', array_keys($data));
 
-        $this->assertEquals((bool)$expected, $result);
+        static::assertEquals((bool)$expected, $result);
 
         Configure::load($context, 'test-database', false);
         foreach ($data as $key => $value) {
             $cfgVal = Configure::read($key);
-            $this->assertEquals($value, $cfgVal);
+            static::assertEquals($value, $cfgVal);
         }
     }
 }

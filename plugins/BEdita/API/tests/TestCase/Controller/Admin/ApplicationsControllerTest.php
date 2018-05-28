@@ -136,6 +136,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
         ];
 
         TableRegistry::get('EndpointPermissions')->deleteAll([]);
+        TableRegistry::get('Config')->deleteAll(['application_id IS NOT NULL']);
         TableRegistry::get('Applications')->deleteAll([]);
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
