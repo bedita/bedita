@@ -86,24 +86,24 @@ class ConfigTable extends Table
     }
 
     /**
-     * Finder for my config. This only returns configuration for the current application.
+     * Finder for my config.
+     * Common configuration (where `application_id` is NULL)
+     * and configuration of the current application is returned.
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
     protected function findMine(Query $query)
     {
-        $query->where(function (QueryExpression $exp) {
-            return $exp->isNull($this->aliasField('application_id'));
-        });
+        return $query->where(function (QueryExpression $exp) {
+            return $exp->or_(function (QueryExpression $exp) {
+                $id = CurrentApplication::getApplicationId();
+                if ($id !== null) {
+                    $exp->eq($this->aliasField('application_id'), $id);
+                }
 
-        $id = CurrentApplication::getApplicationId();
-        if ($id !== null) {
-            $query->orWhere(function (QueryExpression $exp) use ($id) {
-                return $exp->eq($this->aliasField('application_id'), $id);
+                return $exp->isNull($this->aliasField('application_id'));
             });
-        };
-
-        return $query;
+        });
     }
 }
