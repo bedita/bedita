@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 
 /**
