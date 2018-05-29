@@ -23,6 +23,8 @@ use Cake\Utility\Hash;
 class ListObjectsAction extends BaseAction
 {
 
+    use ObjectConditionsTrait;
+
     /**
      * Table.
      *
