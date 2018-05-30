@@ -51,16 +51,18 @@ class ObjectRelation extends BEAppModel
      *
      * cake->save() doesn't work beacuse of table structure. It should be id primary key, object_id, related_object_id, switch, priority)
      *
-     * @param int $id
-     * @param int $objectId
-     * @param string $switch
-     * @param int $priority
-     * @return unknown, $this->query() output - false on error
+     * @param int $id The left object id
+     * @param int $objectId The right object id
+     * @param string $switch The switch name
+     * @param int $priority The relation priority
+     * @param bool $bidirectional If the relation is bidirectional
+     * @param array|null $params The additional relation params
+     * @return array|false $this->query() output - false on error
      */
     public function createRelation($id, $objectId, $switch, $priority, $bidirectional = true, $params = array()) {
         // #CUSTOM QUERY - TODO: use cake, how??
-        $jParams = json_encode($params);
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
+        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
+        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, {$jParams})";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
@@ -70,7 +72,7 @@ class ObjectRelation extends BEAppModel
             return $res;
         }
 
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$switch}', {$priority}, '{$jParams}')";
+        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$switch}', {$priority}, {$jParams})";
         $res = $this->query($q);
 
         if ($res === false) {
@@ -84,11 +86,14 @@ class ObjectRelation extends BEAppModel
 
     /**
      * Create direct and inverse relation using $switch and $inverseSwitch names
-     * @param int $id, left relation element id
-     * @param int $objectId, right relation element id
-     * @param string $switch, direct name
-     * @param int $priority
+     * @param int $id Left relation element id
+     * @param int $objectId Right relation element id
+     * @param string $switch Direct name
+     * @param $inverseSwitch Inverse name
+     * @param int $priority The relation priority
+     * @param array|null $params The addtional relation params
      * @param string $inverseSwitch, inverse name
+     * @return array|false 
      */
     public function createRelationAndInverse($id, $objectId, $switch, $inverseSwitch = null, $priority = null, $params = array()) {
 
@@ -97,8 +102,8 @@ class ObjectRelation extends BEAppModel
             $priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
         }
         // #CUSTOM QUERY
-        $jParams = json_encode($params);
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
+        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
+        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, {$jParams})";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
@@ -119,7 +124,7 @@ class ObjectRelation extends BEAppModel
             $inversePriority = $inverseRel[0]["object_relations"]["priority"];
         }
         // #CUSTOM QUERY
-        $q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority}, '{$jParams}')" ;
+        $q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority}, {$jParams})" ;
         $res = $this->query($q);
 
         if ($res === false) {
@@ -285,9 +290,9 @@ class ObjectRelation extends BEAppModel
      * @return false on failure
      */
     public function updateRelationParams($id, $objectId, $switch, $params=array()) {
-        $jParams = json_encode($params);
+        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
         $q = "  UPDATE object_relations
-                SET params='{$jParams}'
+                SET params={$jParams}
                 WHERE ((id={$id} AND object_id={$objectId}) OR (id={$objectId} AND object_id={$id})) AND switch='{$switch}'";
         $res = $this->query($q);
         if ($res === false) {
