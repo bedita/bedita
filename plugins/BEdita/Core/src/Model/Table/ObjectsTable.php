@@ -34,7 +34,6 @@ use Cake\Utility\Hash;
  * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
  * @property \Cake\ORM\Association\HasMany $DateRanges
  * @property \Cake\ORM\Association\BelongsToMany $Parents
- * @property \Cake\ORM\Association\HasMany $Trees
  * @property \Cake\ORM\Association\HasMany $TreeNodes
  *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
