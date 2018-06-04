@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Core\Configure;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Utility\Hash;
 
 /**
@@ -22,8 +24,6 @@ use Cake\Utility\Hash;
  */
 class GetObjectAction extends BaseAction
 {
-
-    use ObjectConditionsTrait;
 
     /**
      * Table.
@@ -53,22 +53,44 @@ class GetObjectAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $conditions = [
+        // Prepare primary key.
+        $key = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
+        $primaryKey = (array)$data['primaryKey'];
+        if (count($key) !== count($primaryKey)) {
+            $primaryKey = $primaryKey ?: [null];
+            $primaryKey = array_map(function ($key) {
+                return var_export($key, true);
+            }, $primaryKey);
+
+            throw new InvalidPrimaryKeyException(sprintf(
+                'Record not found in table "%s" with primary key [%s]',
+                $this->Table->getTable(),
+                implode($primaryKey, ', ')
+            ));
+        }
+        $conditions = array_combine($key, $primaryKey);
+
+        // Add conditions and contained associations.
+        $conditions += [
             'deleted' => (int)!empty($data['deleted']),
         ];
-        $conditions += $this->statusCondition();
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
-        $options = [];
-        if (!empty($this->objectType)) {
-            $finder = 'type';
-            $options = (array)$this->objectType->id;
 
+        // Build query and add finders.
+        $query = $this->Table->find()
+            ->contain($contain)
+            ->where($conditions);
+        if (isset($this->objectType)) {
             $assoc = $this->objectType->associations;
             if (!empty($assoc)) {
-                $contain = array_merge($contain, $assoc);
+                $query = $query->contain($assoc);
             }
+            $query = $query->find('type', (array)$this->objectType->id);
+        }
+        if (Configure::check('Status.level')) {
+            $query = $query->find('status', [Configure::read('Status.level')]);
         }
 
-        return $this->Table->get($data['primaryKey'], $options + compact('conditions', 'contain', 'finder'));
+        return $query->firstOrFail();
     }
 }

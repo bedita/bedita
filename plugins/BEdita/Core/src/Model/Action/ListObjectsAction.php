@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Core\Configure;
 use Cake\Utility\Hash;
 
 /**
@@ -22,8 +23,6 @@ use Cake\Utility\Hash;
  */
 class ListObjectsAction extends BaseAction
 {
-
-    use ObjectConditionsTrait;
 
     /**
      * Table.
@@ -58,7 +57,6 @@ class ListObjectsAction extends BaseAction
         $filter = [
             'deleted' => (int)!empty($data['deleted']),
         ];
-        $filter += $this->statusCondition();
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
         $type = null;
         if (!empty($this->objectType)) {
@@ -81,6 +79,9 @@ class ListObjectsAction extends BaseAction
         $query = $action->execute(compact('filter', 'contain'));
         if (isset($type)) {
             $query = $query->find('type', (array)$type);
+        }
+        if (Configure::check('Status.level')) {
+            $query = $query->find('status', [Configure::read('Status.level')]);
         }
 
         return $query;
