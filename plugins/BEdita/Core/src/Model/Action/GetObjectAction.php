@@ -53,24 +53,8 @@ class GetObjectAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        // Prepare primary key.
-        $key = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
-        $primaryKey = (array)$data['primaryKey'];
-        if (count($key) !== count($primaryKey)) {
-            $primaryKey = $primaryKey ?: [null];
-            $primaryKey = array_map(function ($key) {
-                return var_export($key, true);
-            }, $primaryKey);
-
-            throw new InvalidPrimaryKeyException(sprintf(
-                'Record not found in table "%s" with primary key [%s]',
-                $this->Table->getTable(),
-                implode(', ', $primaryKey)
-            ));
-        }
-        $conditions = array_combine($key, $primaryKey);
-
-        // Add conditions and contained associations.
+        // Prepare conditions and contained associations.
+        $conditions = $this->getPrimaryKeyConditions($data);
         $conditions += [
             'deleted' => (int)!empty($data['deleted']),
         ];
@@ -92,5 +76,35 @@ class GetObjectAction extends BaseAction
         }
 
         return $query->firstOrFail();
+    }
+
+    /**
+     * Build conditions for primary key.
+     *
+     * This method performs a basic check on primary key structure, so that the number of values in primary key
+     * matches the number of columns the table's primary key consists of. For objects, this always means one column.
+     *
+     * @param array $data Action data.
+     * @return array
+     */
+    protected function getPrimaryKeyConditions(array $data)
+    {
+        $key = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
+        $primaryKey = (array)$data['primaryKey'];
+        if (count($key) !== count($primaryKey)) {
+            $primaryKey = $primaryKey ?: [null];
+            $primaryKey = array_map(function ($key) {
+                return var_export($key, true);
+            }, $primaryKey);
+
+            throw new InvalidPrimaryKeyException(sprintf(
+                'Record not found in table "%s" with primary key [%s]',
+                $this->Table->getTable(),
+                implode(', ', $primaryKey)
+            ));
+        }
+        $conditions = array_combine($key, $primaryKey);
+
+        return $conditions;
     }
 }
