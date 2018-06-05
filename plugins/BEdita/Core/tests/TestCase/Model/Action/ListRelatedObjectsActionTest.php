@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -176,6 +177,25 @@ class ListRelatedObjectsActionTest extends TestCase
                 'another_test',
                 -1,
             ],
+            [
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
+                    ],
+                ],
+                'Documents',
+                'test',
+                2,
+                true,
+                null,
+                'on',
+            ],
         ];
     }
 
@@ -188,16 +208,19 @@ class ListRelatedObjectsActionTest extends TestCase
      * @param int $id ID.
      * @param bool $list Should results be presented in a list format?
      * @param array|null $only Filter related entities by ID.
+     * @param string|null $statusLevel Status level.
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null)
+    public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null, $statusLevel = null)
     {
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
             static::expectExceptionMessage($expected->getMessage());
         }
+
+        Configure::write('Status.level', $statusLevel);
 
         $alias = Inflector::camelize(Inflector::underscore($relation));
         $association = TableRegistry::get($objectType)->association($alias);
