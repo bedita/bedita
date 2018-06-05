@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListObjectsAction;
+use Cake\Core\Configure;
 use Cake\Database\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -102,5 +103,23 @@ class ListObjectsActionTest extends TestCase
 
         static::assertInstanceOf(Query::class, $result);
         static::assertSame(10, $result->count());
+    }
+
+    /**
+     * Test command execution with constraints on objects status.
+     *
+     * @return void
+     */
+    public function testExecuteStatus()
+    {
+        Configure::write('Status.level', 'on');
+
+        $table = TableRegistry::get('Objects');
+        $action = new ListObjectsAction(compact('table'));
+
+        $result = $action();
+
+        static::assertInstanceOf(Query::class, $result);
+        static::assertSame(11, $result->count());
     }
 }

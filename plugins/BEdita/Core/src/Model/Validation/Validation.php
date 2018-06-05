@@ -17,6 +17,8 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Validation\Validation as CakeValidation;
 use League\JsonGuard\Validator as JsonSchemaValidator;
 use League\JsonReference\Dereferencer as JsonSchemaDereferencer;
+use League\JsonReference\Loader\ArrayLoader;
+use League\JsonReference\Loader\ChainedLoader;
 
 /**
  * Reusable class to check for reserved names.
@@ -104,7 +106,22 @@ class Validation
     public static function jsonSchema($value, $schema)
     {
         if (is_string($schema)) {
-            $schema = JsonSchemaDereferencer::draft6()->dereference($schema);
+            $cacheLoader = new ArrayLoader([
+                'json-schema.org/draft-06/schema' => json_decode(file_get_contents(__DIR__ . DS . 'schemas' . DS . 'draft-06.json')),
+            ]);
+
+            $dereferencer = JsonSchemaDereferencer::draft6();
+            $loaderManager = $dereferencer->getLoaderManager();
+            $loaderManager->registerLoader('http', new ChainedLoader(
+                $cacheLoader,
+                $loaderManager->getLoader('http')
+            ));
+            $loaderManager->registerLoader('https', new ChainedLoader(
+                $cacheLoader,
+                $loaderManager->getLoader('https')
+            ));
+
+            $schema = $dereferencer->dereference($schema);
         }
         if (empty($schema)) {
             return true;

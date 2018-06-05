@@ -47,7 +47,7 @@ class DatabaseConfig implements ConfigEngineInterface
     protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
-     * Setup application id if
+     * Setup application `id` if provided.
      *
      * @param int $applicationId Application id
      */

@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
@@ -453,6 +454,8 @@ class ObjectsTableTest extends TestCase
     /**
      * Test `findAncestor()`
      *
+     * @return void
+     *
      * @covers ::findAncestor()
      */
     public function testFindAncestor()
@@ -466,6 +469,8 @@ class ObjectsTableTest extends TestCase
     /**
      * Test `findParent()`
      *
+     * @return void
+     *
      * @covers ::findParent()
      */
     public function testFindParent()
@@ -474,5 +479,73 @@ class ObjectsTableTest extends TestCase
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
         static::assertEquals([4], $ids);
+    }
+
+    /**
+     * Data provider for `testFindStatus`.
+     *
+     * @return array
+     */
+    public function findStatusProvider()
+    {
+        return [
+            'too many options' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                [1, 2, 3],
+            ],
+            'invalid array' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['gustavo' => 'on'],
+            ],
+            'on' => [
+                ['on'],
+                ['on'],
+            ],
+            'draft' => [
+                ['on', 'draft'],
+                ['draft'],
+            ],
+            'off' => [
+                ['on', 'draft', 'off'],
+                ['off'],
+            ],
+            'all' => [
+                ['on', 'draft', 'off'],
+                ['all'],
+            ],
+            'invalid level' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['invalid level'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findStatus()`.
+     *
+     * @param array|\Exception $expected Expected result.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @dataProvider findStatusProvider()
+     * @covers ::findStatus()
+     */
+    public function testFindStatus($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        } else {
+            $expected = $this->Objects->find('list')
+                ->where(['status IN' => $expected])
+                ->toArray();
+        }
+
+        $actual = $this->Objects->find('list')
+            ->find('status', $options)
+            ->toArray();
+
+        static::assertSame($expected, $actual);
     }
 }

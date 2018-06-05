@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -326,5 +327,41 @@ class ObjectsTable extends Table
                 ]);
             })
             ->order($this->TreeNodes->aliasField('tree_left'));
+    }
+
+    /**
+     * Finder for objects based on status level.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Object status level.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
+     *      the finder.
+     */
+    protected function findStatus(Query $query, array $options)
+    {
+        if (count($options) !== 1 || array_keys($options) !== [0]) {
+            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
+        }
+
+        $level = reset($options);
+        switch ($level) {
+            case 'on':
+                return $query->where([
+                    $this->aliasField('status') => 'on',
+                ]);
+
+            case 'draft':
+                return $query->where(function (QueryExpression $exp) {
+                    return $exp->in($this->aliasField('status'), ['on', 'draft']);
+                });
+
+            case 'off':
+            case 'all':
+                return $query;
+
+            default:
+                throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
+        }
     }
 }
