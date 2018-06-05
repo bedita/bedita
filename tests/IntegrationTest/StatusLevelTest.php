@@ -73,7 +73,7 @@ class StatusLevelTest extends IntegrationTestCase
     }
 
     /**
-     * Provider for testListObjects()
+     * Provider for testSingleObject()
      *
      * @return array
      */
