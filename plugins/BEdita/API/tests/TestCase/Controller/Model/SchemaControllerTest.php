@@ -106,6 +106,24 @@ class SchemaControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `jsonSchema` method on a disabled object type.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testJsonSchemaDisabled()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('model/schema/news');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/schema+json');
+        static::assertFalse($result);
+    }
+
+    /**
      * Test ETag response header and Not Modified response.
      *
      * @return void
