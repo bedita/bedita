@@ -32,6 +32,12 @@ use Cake\ORM\TableRegistry;
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
+    /**
+     * Application id
+     *
+     * @var int
+     */
+    protected $applicationId = null;
 
     /**
      * Reserved keys not storable in database
@@ -39,6 +45,16 @@ class DatabaseConfig implements ConfigEngineInterface
      * @var array
      */
     protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
+
+    /**
+     * Setup application `id` if provided.
+     *
+     * @param int $applicationId Application id
+     */
+    public function __construct($applicationId = null)
+    {
+        $this->applicationId = $applicationId;
+    }
 
     /**
      * Read from DB (or cache) $key group of paramenters (see database `config.context`)
@@ -56,6 +72,11 @@ class DatabaseConfig implements ConfigEngineInterface
         $query->where(function (QueryExpression $exp) {
             return $exp->notIn('name', $this->reservedKeys);
         });
+        if ($this->applicationId) {
+            $query->andWhere(['application_id' => $this->applicationId]);
+        } else {
+            $query->andWhere(['application_id IS' => null]);
+        }
         if ($key) {
             $query->andWhere(['context' => $key]);
         }

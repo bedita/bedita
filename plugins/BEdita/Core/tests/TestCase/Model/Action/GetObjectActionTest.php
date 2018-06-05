@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\GetObjectAction;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -80,5 +81,38 @@ class GetObjectActionTest extends TestCase
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => 2, 'deleted' => true]);
+    }
+
+    /**
+     * Test command execution with conditions on objects status.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
+     */
+    public function testExecuteObjectStatusNotAvailable()
+    {
+        Configure::write('Status.level', 'on');
+
+        $table = TableRegistry::get('Objects');
+        $action = new GetObjectAction(compact('table'));
+
+        $action(['primaryKey' => 3]);
+    }
+
+    /**
+     * Test command execution with an invalid primary key.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Datasource\Exception\InvalidPrimaryKeyException
+     * @expectedExceptionMessage Record not found in table "objects" with primary key [1, 2]
+     */
+    public function testExecuteInvalidPrimaryKey()
+    {
+        $table = TableRegistry::get('Objects');
+        $action = new GetObjectAction(compact('table'));
+
+        $action(['primaryKey' => [1, 2]]);
     }
 }
