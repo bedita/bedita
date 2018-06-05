@@ -283,7 +283,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function _getSchema()
     {
-        if ($this->is_abstract || empty($this->id)) {
+        if ($this->is_abstract || empty($this->id) || $this->enabled === false) {
             return false;
         }
 
@@ -293,9 +293,13 @@ class ObjectType extends Entity implements JsonApiSerializable
             ->toArray();
         $entity = TableRegistry::get($this->name)->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
+        $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
         $properties = $required = [];
         foreach ($allProperties as $property) {
+            if (in_array($property->name, $typeHidden)) {
+                continue;
+            }
             $accessMode = null;
             if (!$entity->isAccessible($property->name)) {
                 $accessMode = 'readOnly';

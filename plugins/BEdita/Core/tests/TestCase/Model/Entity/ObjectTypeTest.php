@@ -648,4 +648,39 @@ class ObjectTypeTest extends TestCase
 
         static::assertFalse($schema);
     }
+
+    /**
+     * Test getter for disabled `schema`.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaDisabled()
+    {
+        $objectType = $this->ObjectTypes->get('news');
+        $schema = $objectType->schema;
+        static::assertFalse($schema);
+    }
+
+    /**
+     * Test getter for `schema` whith hidden properties.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaHiddenProperties()
+    {
+        // enable type `news`
+        $objectType = $this->ObjectTypes->get('news');
+        $objectType->enabled = true;
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertTrue((bool)$success);
+
+        // `body` property is hidden
+        $schema = $objectType->schema;
+        $properties = Hash::extract($schema, 'properties');
+        static::assertArrayNotHasKey('body', $properties);
+    }
 }
