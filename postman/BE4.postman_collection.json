@@ -3807,7 +3807,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
@@ -3910,7 +3910,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
