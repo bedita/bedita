@@ -1,8 +1,7 @@
 {
 	"info": {
+		"_postman_id": "5cc00223-8aad-a8a1-8d05-9e17603366c6",
 		"name": "BE4",
-		"_postman_id": "1b58101b-8775-4f7f-827b-27123fdd8985",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -12,6 +11,68 @@
 			"item": [
 				{
 					"name": "Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "287a92b2-5038-4b17-a486-477e0641dad0",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON.meta) {",
+									"        if (responseJSON.meta.jwt) {",
+									"            postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+									"        }",
+									"        if (responseJSON.meta.renew) {",
+									"            postman.setEnvironmentVariable(\"renew\", responseJSON.meta.renew);",
+									"        }",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/auth",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"auth"
+							]
+						},
+						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth ext auth",
 					"event": [
 						{
 							"listen": "test",
@@ -260,6 +321,54 @@
 					"response": []
 				},
 				{
+					"name": "Signup ext auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b638e67b-4b15-443b-9bba-9589ccf8ae27",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\").startsWith('application/json');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/signup",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"signup"
+							]
+						},
+						"description": "Create new User"
+					},
+					"response": []
+				},
+				{
 					"name": "Signup user activation",
 					"event": [
 						{
@@ -483,8 +592,7 @@
 								"auth",
 								"user"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -537,8 +645,7 @@
 								"auth",
 								"user"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				}
@@ -929,8 +1036,7 @@
 										"model",
 										"property_types"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						}
@@ -999,8 +1105,7 @@
 										"model",
 										"properties"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						},
@@ -1102,8 +1207,7 @@
 										"model",
 										"properties"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						},
@@ -1154,17 +1258,14 @@
 									"query": [
 										{
 											"key": "filter[object_type]",
-											"value": "profiles",
-											"equals": true
+											"value": "profiles"
 										},
 										{
 											"key": "filter[type]",
-											"value": "dynamic",
-											"equals": true
+											"value": "dynamic"
 										}
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						},
@@ -1217,8 +1318,7 @@
 										"properties",
 										"{{propertyId}}"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						}
@@ -1791,8 +1891,7 @@
 										"schema",
 										"{{objectTypeName}}"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						},
@@ -1846,8 +1945,7 @@
 										"schema",
 										"roles"
 									]
-								},
-								"description": null
+								}
 							},
 							"response": []
 						}
@@ -2123,8 +2221,7 @@
 							"query": [
 								{
 									"key": "filter[type]",
-									"value": "documents",
-									"equals": true
+									"value": "documents"
 								}
 							]
 						},
@@ -2156,7 +2253,7 @@
 							},
 							{
 								"key": "Content-Type",
-								"value": "application/vnd.api+json"
+								"value": "application/json"
 							},
 							{
 								"key": "Authorization",
@@ -2182,8 +2279,7 @@
 								"relationships",
 								"{{relationName}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -2232,8 +2328,7 @@
 								"{{objectId}}",
 								"{{inverseRelationName}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				}
@@ -3006,8 +3101,68 @@
 								"upload",
 								"myfile.jpg"
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create remote stream",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "76757be0-41c8-46a6-ac53-5a84da20fa75",
+								"type": "text/javascript",
+								"exec": [
+									"//tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"//tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"streamUuid\", responseJSON.data.id);        ",
+									"    }",
+									"} catch (e) {",
+									"    //tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "image/png"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
 						},
-						"description": null
+						"url": {
+							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"streams",
+								"upload",
+								"myfile.jpg"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3054,8 +3209,7 @@
 								"streams",
 								"{{streamUuid}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3114,8 +3268,7 @@
 							"path": [
 								"images"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3168,8 +3321,7 @@
 								"relationships",
 								"object"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3216,8 +3368,7 @@
 								"images",
 								"{{imageId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				}
@@ -3246,7 +3397,764 @@
 			]
 		},
 		{
-			"name": "7. Trash",
+			"name": "7. Folders",
+			"description": null,
+			"item": [
+				{
+					"name": "Create root folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf726beb-7c8e-4667-965c-2637d93a5b30",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"rootFolderId\", responseJSON.data.id);        ",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all folders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1ad3d96c-af5a-4575-b8ff-42691b6a2a6f",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c017c9fe-8033-4694-bda7-c349db22d321",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{rootFolderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get root folders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b699bc34-124c-4b59-b9fc-85d626e9e87c",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders?filter[roots]",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							],
+							"query": [
+								{
+									"key": "filter[roots]",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create sub folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb03bfd4-83a5-409c-9079-4dd28c3f8bc4",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"subFolderId\", responseJSON.data.id);        ",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set parent folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1bbec4f4-6b38-41fa-95a9-7bbb206400f8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/parent",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{subFolderId}}",
+								"relationships",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get parent folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1bbec4f4-6b38-41fa-95a9-7bbb206400f8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/parent",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{subFolderId}}",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add folder children",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1bbec4f4-6b38-41fa-95a9-7bbb206400f8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{subFolderId}}",
+								"relationships",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get folder children",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1bbec4f4-6b38-41fa-95a9-7bbb206400f8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{subFolderId}}",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove folder children",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2caac345-ea21-4e91-9fd7-ba5ae577ba87",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{subFolderId}}",
+								"relationships",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get objects with parent folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5fe849f0-76e4-4c47-98c1-7688d6655d95",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/objects?filter[parent]={{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects"
+							],
+							"query": [
+								{
+									"key": "filter[parent]",
+									"value": "{{subFolderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get folders with ancestor folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f331eae-5f9c-4078-8399-4b8a6651127b",
+								"type": "text/javascript",
+								"exec": [
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders?filter[parent]={{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders"
+							],
+							"query": [
+								{
+									"key": "filter[parent]",
+									"value": "{{rootFolderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete sub folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/objects/{{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects",
+								"{{subFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete root folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/objects/{{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects",
+								"{{rootFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3b74d485-60f3-4965-9c1a-d444a475ad2b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "97daf065-6db0-434e-a345-64d672730dbe",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Trash",
 			"description": "Trash management",
 			"item": [
 				{
@@ -3479,7 +4387,7 @@
 			]
 		},
 		{
-			"name": "8. Admin",
+			"name": "9. Admin",
 			"description": null,
 			"item": [
 				{
@@ -3539,8 +4447,7 @@
 								"admin",
 								"applications"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3593,8 +4500,7 @@
 								"applications",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3642,8 +4548,7 @@
 								"admin",
 								"applications"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3696,8 +4601,7 @@
 								"applications",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3747,8 +4651,7 @@
 								"applications",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3808,8 +4711,7 @@
 								"admin",
 								"async_jobs"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3862,8 +4764,7 @@
 								"async_jobs",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3911,8 +4812,7 @@
 								"admin",
 								"async_jobs"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -3965,8 +4865,7 @@
 								"async_jobs",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4016,8 +4915,7 @@
 								"async_jobs",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4077,8 +4975,7 @@
 								"admin",
 								"config"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4132,8 +5029,7 @@
 								"config",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4181,8 +5077,7 @@
 								"admin",
 								"config"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4235,8 +5130,7 @@
 								"config",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4286,8 +5180,7 @@
 								"config",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4347,8 +5240,7 @@
 								"admin",
 								"endpoints"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4402,8 +5294,7 @@
 								"endpoints",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4451,8 +5342,7 @@
 								"admin",
 								"endpoints"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4505,8 +5395,7 @@
 								"endpoints",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				},
@@ -4556,17 +5445,114 @@
 								"endpoints",
 								"{{adminResourceId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				}
 			]
 		},
 		{
-			"name": "9. Remove All",
+			"name": "10. Remove All",
 			"description": "Remove all objects and resources created",
 			"item": [
+				{
+					"name": "Remove sub folder permanently",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{subFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove root folder permanently",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3cda904-3b4e-4eff-a0c3-55f9ea334748",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{rootFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{rootFolderId}}"
+							]
+						},
+						"description": "DEL object"
+					},
+					"response": []
+				},
 				{
 					"name": "Delete role",
 					"event": [
@@ -5017,8 +6003,7 @@
 								"trash",
 								"{{userId}}"
 							]
-						},
-						"description": null
+						}
 					},
 					"response": []
 				}
