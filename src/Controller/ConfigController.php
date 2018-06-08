@@ -18,9 +18,9 @@ namespace BEdita\API\Controller;
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\ConfigTable $Table
+ * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
-class ConfigController extends ResourcesController
+class ConfigController extends AppController
 {
     /**
      * {@inheritDoc}
@@ -28,23 +28,18 @@ class ConfigController extends ResourcesController
     public $modelClass = 'Config';
 
     /**
-     * {@inheritDoc}
+     * Display available configurations.
+     *
+     * @return void
      */
     public function index()
     {
-        // Add `mine` filter to load common configuration and
-        // application related configuration
-        // Load only `core` and `app` contexts for now
-        $queryParams = $this->request->getQueryParams();
-        $this->request = $this->request->withQueryParams([
-            'filter' => [
-                'mine' => true,
-                'context' => ['core', 'app']
-            ]
-        ]);
+        $query = $this->Config->find()
+            ->find('mine')
+            ->where(['context IN' => ['core', 'app']]);
+        $data = $this->paginate($query);
 
-        parent::index();
-        // restore original query params for the view
-        $this->request = $this->request->withQueryParams($queryParams);
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
     }
 }
