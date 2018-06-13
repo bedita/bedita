@@ -41,10 +41,12 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                     'name' => $this->Association->getName(),
                     'side' => 'right',
                 ])
+                ->contain(['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'])
                 ->toArray();
             $table = $this->Association->getTarget();
             if (count($objectTypes) === 1) {
                 $objectType = current($objectTypes);
+                $table->setupRelations($objectType);
             }
             $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
         } elseif ($this->Association->getTarget() instanceof ObjectsTable

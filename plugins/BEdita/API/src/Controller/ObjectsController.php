@@ -159,8 +159,7 @@ class ObjectsController extends ResourcesController
         } else {
             // List existing entities.
             $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-            $include = $this->request->getQuery('include');
-            $contain = $include ? $this->prepareInclude($include) : [];
+            $contain = $this->prepareInclude($this->request->getQuery('include'));
 
             $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
             $query = $action(compact('filter', 'contain'));
@@ -196,8 +195,7 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
         $id = TableRegistry::get('Objects')->getId($id);
-        $include = $this->request->getQuery('include');
-        $contain = $include ? $this->prepareInclude($include) : [];
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
@@ -255,9 +253,10 @@ class ObjectsController extends ResourcesController
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = $this->getAssociatedAction($association);
-        $objects = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
