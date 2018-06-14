@@ -113,13 +113,13 @@ abstract class ResourcesController extends AppController
     /**
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
-     * @param string|null $include Association(s) to be included.
+     * @param string|array|null $include Association(s) to be included.
      * @return array
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
      */
     protected function prepareInclude($include)
     {
-        if (empty($include)) {
+        if ($include === null) {
             return [];
         }
         if (!is_string($include)) {
