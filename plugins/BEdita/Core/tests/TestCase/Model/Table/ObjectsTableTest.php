@@ -540,11 +540,13 @@ class ObjectsTableTest extends TestCase
             $expected = $this->Objects->find('list')
                 ->where(['status IN' => $expected])
                 ->toArray();
+            ksort($expected);
         }
 
         $actual = $this->Objects->find('list')
             ->find('status', $options)
             ->toArray();
+        ksort($actual);
 
         static::assertSame($expected, $actual);
     }
