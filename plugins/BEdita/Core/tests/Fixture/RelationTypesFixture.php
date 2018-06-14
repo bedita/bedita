@@ -29,38 +29,38 @@ class RelationTypesFixture extends TestFixture
      */
     public $records = [
         [
-            'relation_id' => 1,
-            'object_type_id' => 2,
+            'relation_id' => 1, // test / inverse_test
+            'object_type_id' => 2, // documents
             'side' => 'left',
         ],
         [
-            'relation_id' => 1,
-            'object_type_id' => 2,
+            'relation_id' => 1, // test / inverse_test
+            'object_type_id' => 2, // documents
             'side' => 'right',
         ],
         [
-            'relation_id' => 1,
-            'object_type_id' => 3,
+            'relation_id' => 1, // test / inverse_test
+            'object_type_id' => 3, // profiles
             'side' => 'right',
         ],
         [
-            'relation_id' => 2,
-            'object_type_id' => 6,
+            'relation_id' => 2, // another_test / inverse_another_test
+            'object_type_id' => 6, // locations
             'side' => 'left',
         ],
         [
-            'relation_id' => 2,
-            'object_type_id' => 6,
+            'relation_id' => 2, // another_test / inverse_another_test
+            'object_type_id' => 6, // locations
             'side' => 'right',
         ],
         [
-            'relation_id' => 3,
-            'object_type_id' => 9,
+            'relation_id' => 3, // test_abstract / inverse_test_abstract
+            'object_type_id' => 9, // files
             'side' => 'left',
         ],
         [
-            'relation_id' => 3,
-            'object_type_id' => 8,
+            'relation_id' => 3, // test_abstract / inverse_test_abstract
+            'object_type_id' => 8, // media
             'side' => 'right',
         ],
     ];

@@ -113,12 +113,15 @@ abstract class ResourcesController extends AppController
     /**
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
-     * @param string $include Association(s) to be included.
+     * @param string|array|null $include Association(s) to be included.
      * @return array
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
      */
     protected function prepareInclude($include)
     {
+        if ($include === null) {
+            return [];
+        }
         if (!is_string($include)) {
             throw new BadRequestException(
                 __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string'))
@@ -179,8 +182,7 @@ abstract class ResourcesController extends AppController
         } else {
             // List existing entities.
             $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-            $include = $this->request->getQuery('include');
-            $contain = $include ? $this->prepareInclude($include) : [];
+            $contain = $this->prepareInclude($this->request->getQuery('include'));
 
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $query = $action(compact('filter', 'contain'));
@@ -231,8 +233,7 @@ abstract class ResourcesController extends AppController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
-        $include = $this->request->getQuery('include');
-        $contain = $include ? $this->prepareInclude($include) : [];
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetEntityAction(['table' => $this->Table]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
@@ -284,9 +285,10 @@ abstract class ResourcesController extends AppController
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = $this->getAssociatedAction($association);
-        $data = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $data = $action->execute(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
         if ($data instanceof Query) {
             $data = $this->paginate($data);

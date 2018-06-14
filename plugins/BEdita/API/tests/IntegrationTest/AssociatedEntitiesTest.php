@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\ORM\TableRegistry;
 
 /**
  * Test CRUD operations on objects with associated entities
@@ -158,20 +159,47 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testIncludedDeleted()
+    public function testRelatedDeleted()
     {
-        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/documents/3');
-        $this->assertResponseCode(204);
+        $table = TableRegistry::get('Documents');
+        $entity = $table->get(3);
+        $entity->set('deleted', true);
+        $table->save($entity);
 
         $this->configRequestHeaders();
         $this->get('/documents/2/test');
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertEquals(1, count($result['data']));
+        static::assertCount(1, $result['data']);
+    }
+
+    /**
+     * Test that deleted entities are never returned as included objects.
+     *
+     * @return void
+     */
+    public function testIncludedDeleted()
+    {
+        $table = TableRegistry::get('Documents');
+        $entity = $table->get(3);
+        $entity->set('deleted', true);
+        $table->save($entity);
 
         $this->configRequestHeaders();
         $this->get('/documents/2?include=test');
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertEquals(1, count($result['included']));
+        static::assertCount(1, $result['included']);
+    }
+
+    /**
+     * Test that `?include` query parameter works for `/:objectType/:id/:relationName` endpoints.
+     *
+     * @return void
+     */
+    public function testIncludedRelated()
+    {
+        $this->configRequestHeaders();
+        $this->get('/locations/8/another_test?include=inverse_another_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(1, $result['included']);
     }
 }

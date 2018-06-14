@@ -690,4 +690,22 @@ class ResourcesControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
     }
+
+    /**
+     * Test that no resources are included unless asked.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testIncludeEmpty()
+    {
+        $this->configRequestHeaders();
+        $this->get('/roles');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayNotHasKey('included', $result);
+    }
 }
