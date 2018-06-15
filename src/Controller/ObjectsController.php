@@ -80,7 +80,7 @@ class ObjectsController extends ResourcesController
 
         $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
         try {
-            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            $this->objectType = TableRegistry::get('ObjectTypes')->get($type, ['denySingular' => true]);
             $this->modelClass = $this->objectType->alias;
             $this->Table = TableRegistry::get($this->modelClass);
         } catch (RecordNotFoundException $e) {
