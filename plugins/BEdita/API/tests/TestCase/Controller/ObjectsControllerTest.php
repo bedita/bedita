@@ -2404,4 +2404,20 @@ class ObjectsControllerTest extends IntegrationTestCase
         sort($resourceTypes);
         static::assertEquals($expected, array_values($resourceTypes));
     }
+
+    /**
+     * Test failure using singular form.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFailSingular()
+    {
+        $this->configRequestHeaders();
+        $this->get('/document');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
 }
