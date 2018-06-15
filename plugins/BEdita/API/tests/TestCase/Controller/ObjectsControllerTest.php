@@ -1039,6 +1039,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::initObjectModel()
      */
     public function testEdit()
     {
