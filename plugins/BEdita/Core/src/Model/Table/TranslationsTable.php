@@ -89,15 +89,15 @@ class TranslationsTable extends Table
             ->notEmpty('object_id');
 
         $validator
-            ->scalar('lang')
+            ->add('lang', 'scalar', ['rule' => 'isScalar', 'last' => true])
             ->maxLength('lang', 64)
             ->requirePresence('lang', 'create')
             ->notEmpty('lang');
 
         $validator
-            ->scalar('status')
-            ->requirePresence('status', 'create')
+            ->add('status', 'scalar', ['rule' => 'isScalar', 'last' => true])
             ->inList('status', ['on', 'off', 'draft'])
+            ->requirePresence('status', 'create')
             ->notEmpty('status');
 
         $validator
