@@ -80,7 +80,7 @@ class AddTranslationsTable extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('fields', 'text', [
+            ->addColumn('translated_fields', 'text', [
                 'comment' => 'translated fields (JSON format)',
                 'default' => null,
                 'limit' => null,

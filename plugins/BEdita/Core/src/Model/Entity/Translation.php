@@ -26,7 +26,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $modified
  * @property int $created_by
  * @property int $modified_by
- * @property array $fields
+ * @property array $translated_fields
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\User $created_by_user
@@ -42,11 +42,6 @@ class Translation extends Entity
         'object_id' => true,
         'lang' => true,
         'status' => true,
-        'created' => true,
-        'modified' => true,
-        'created_by' => true,
-        'modified_by' => true,
-        'fields' => true,
-        'object' => true,
+        'translated_fields' => true,
     ];
 }

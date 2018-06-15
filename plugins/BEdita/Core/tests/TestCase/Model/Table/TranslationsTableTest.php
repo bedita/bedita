@@ -92,7 +92,7 @@ class TranslationsTableTest extends TestCase
                     'object_id' => 2,
                     'lang' => 'fr-FR',
                     'status' => 'draft',
-                    'fields' => [
+                    'translated_fields' => [
                         'title' => 'ma première traduction',
                     ],
                 ],
@@ -102,13 +102,13 @@ class TranslationsTableTest extends TestCase
                     'object_id.integer',
                     'lang.scalar',
                     'status.inList',
-                    'fields.isArray',
+                    'translated_fields.isArray',
                 ],
                 [
                     'object_id' => 'definitely not a number',
                     'lang' => ['definitely', 'not', 'a', 'scalar'],
                     'status' => 'definitely not a valid status',
-                    'fields' => 'definitely not an array',
+                    'translated_fields' => 'definitely not an array',
                 ],
             ],
             'invalid 2' => [
@@ -120,7 +120,7 @@ class TranslationsTableTest extends TestCase
                 [
                     'lang' => str_repeat('too long', 128),
                     'status' => null,
-                    'fields' => [],
+                    'translated_fields' => [],
                 ],
             ],
         ];
