@@ -114,6 +114,7 @@ class ObjectsController extends ResourcesController
     {
         $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
         try {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $this->objectType */
             $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
