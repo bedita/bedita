@@ -27,12 +27,14 @@ use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/objects` endpoint.
@@ -78,16 +80,7 @@ class ObjectsController extends ResourcesController
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
         }
 
-        $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
-        try {
-            $this->objectType = TableRegistry::get('ObjectTypes')->get($type, ['denySingular' => true]);
-            $this->modelClass = $this->objectType->alias;
-            $this->Table = TableRegistry::get($this->modelClass);
-        } catch (RecordNotFoundException $e) {
-            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
-
-            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
-        }
+        $this->initObjectModel();
 
         $behaviorRegistry = $this->Table->behaviors();
         if ($behaviorRegistry->hasMethod('objectType')) {
@@ -105,6 +98,43 @@ class ObjectsController extends ResourcesController
 
         if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
+        }
+    }
+
+    /**
+     * Init model related attributes:
+     *  - $this->objectType
+     *  - $this->modelClass
+     *  - $this->Table
+     *
+     * @return void
+     * @throws \Cake\Routing\Exception\MissingRouteException If `object_type` param is not valid
+     */
+    protected function initObjectModel()
+    {
+        $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
+        try {
+            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            if ($type !== $this->objectType->name) {
+                $this->log(
+                    sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
+                    'warning',
+                    ['request' => $this->request]
+                );
+
+                throw new MissingRouteException(__d(
+                    'bedita',
+                    'A route matching "{0}" could not be found. Did you mean "{1}"?',
+                    $this->request->getRequestTarget(),
+                    $this->objectType->name
+                ));
+            }
+            $this->modelClass = $this->objectType->alias;
+            $this->Table = TableRegistry::get($this->modelClass);
+        } catch (RecordNotFoundException $e) {
+            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
+
+            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
     }
 

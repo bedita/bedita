@@ -2406,18 +2406,47 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test failure using singular form.
+     * Data provider fo `testMissingRoute()`
      *
+     * @return array
+     */
+    public function missingRouteProvider()
+    {
+        return [
+            'document' => [
+                '/document',
+                'A route matching "/document" could not be found. Did you mean "documents"?',
+            ],
+            'id' => [
+                '/2',
+                'A route matching "/2" could not be found. Did you mean "documents"?',
+            ],
+            'badurl' => [
+                '/badurl',
+                'A route matching "/badurl" could not be found.',
+            ],
+        ];
+    }
+
+    /**
+     * Test missing route errors.
+     *
+     * @param string $url The url
+     * @param string $expected The expected error message
      * @return void
      *
-     * @coversNothing
+     * @dataProvider missingRouteProvider
+     * @covers ::initObjectModel()
      */
-    public function testFailSingular()
+    public function testMissingRoute($url, $expected)
     {
         $this->configRequestHeaders();
-        $this->get('/document');
+        $this->get($url);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($expected, $response['error']['title']);
     }
 }

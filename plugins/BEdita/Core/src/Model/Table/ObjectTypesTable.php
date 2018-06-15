@@ -185,9 +185,6 @@ class ObjectTypesTable extends Table
     /**
      * {@inheritDoc}
      *
-     * If `denySingular` => true is set in $options array only canonical plural form
-     * will be retrieved.
-     *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
     public function get($primaryKey, $options = [])
@@ -198,14 +195,11 @@ class ObjectTypesTable extends Table
                     ->cache('map', self::CACHE_CONFIG)
                     ->toArray()
             );
-            if (empty($options['denySingular'])) {
-                $allTypes += array_flip(
-                    $this->find('list', ['valueField' => 'singular'])
-                        ->cache('map_singular', self::CACHE_CONFIG)
-                        ->toArray()
-                );
-            }
-            unset($options['denySingular']);
+            $allTypes += array_flip(
+                $this->find('list', ['valueField' => 'singular'])
+                    ->cache('map_singular', self::CACHE_CONFIG)
+                    ->toArray()
+            );
 
             $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {

@@ -364,11 +364,6 @@ class ObjectTypesTableTest extends TestCase
                 new RecordNotFoundException('Record not found in table "object_types"'),
                 'missing_type',
             ],
-            'denySingular' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
-                'document',
-                ['denySingular' => true],
-            ],
         ];
     }
 
@@ -377,20 +372,19 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param array|false $expected Expected result.
      * @param string|int $primaryKey Primary key.
-     * @param array $options Get options.
      * @return void
      *
      * @dataProvider getProvider
      * @covers ::get()
      */
-    public function testGet($expected, $primaryKey, $options = [])
+    public function testGet($expected, $primaryKey)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             static::expectExceptionMessage($expected->getMessage());
         }
 
-        $entity = $this->ObjectTypes->get($primaryKey, $options);
+        $entity = $this->ObjectTypes->get($primaryKey);
 
         static::assertTrue($entity->has('left_relations'));
         static::assertTrue($entity->has('right_relations'));
