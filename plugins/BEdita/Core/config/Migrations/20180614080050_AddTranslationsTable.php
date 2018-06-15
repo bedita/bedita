@@ -42,7 +42,7 @@ class AddTranslationsTable extends AbstractMigration
             ])
             ->addPrimaryKey(['id'])
             ->addColumn('object_id', 'integer', [
-                'comment' => 'link to annotated object',
+                'comment' => 'link to translated object',
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
@@ -54,7 +54,7 @@ class AddTranslationsTable extends AbstractMigration
                 'null' => false,
             ])
             ->addColumn('status', $enum, [
-                'comment' => 'translation status: on, draft, off, deleted',
+                'comment' => 'translation status: on, draft, off',
                 'default' => 'draft',
                 'limit' => 255,
                 'values' => ['on', 'off', 'draft'],
