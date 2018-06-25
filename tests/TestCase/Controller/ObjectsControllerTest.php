@@ -133,6 +133,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -182,6 +188,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/translations',
+                                'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -228,6 +240,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -266,6 +284,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -308,6 +332,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/parents',
                                 'self' => 'http://api.example.com/users/5/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/translations',
+                                'self' => 'http://api.example.com/users/5/relationships/translations',
                             ],
                         ],
                     ],
@@ -356,6 +386,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/locations/8/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/translations',
+                                'self' => 'http://api.example.com/locations/8/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -388,6 +424,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/events/9/parents',
                                 'self' => 'http://api.example.com/events/9/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/translations',
+                                'self' => 'http://api.example.com/events/9/relationships/translations',
                             ],
                         ],
                     ],
@@ -429,6 +471,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/10/parents',
                                 'self' => 'http://api.example.com/files/10/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/translations',
+                                'self' => 'http://api.example.com/files/10/relationships/translations',
                             ],
                         ],
                         'test_abstract' => [
@@ -477,6 +525,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/11/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/translations',
+                                'self' => 'http://api.example.com/folders/11/relationships/translations',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/11/children',
@@ -517,6 +571,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/12/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/translations',
+                                'self' => 'http://api.example.com/folders/12/relationships/translations',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/12/children',
@@ -555,6 +615,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/folders/13/parent',
                                 'self' => 'http://api.example.com/folders/13/relationships/parent',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/translations',
+                                'self' => 'http://api.example.com/folders/13/relationships/translations',
                             ],
                         ],
                         'children' => [
@@ -601,6 +667,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/parents',
                                 'self' => 'http://api.example.com/files/14/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/translations',
+                                'self' => 'http://api.example.com/files/14/relationships/translations',
                             ],
                         ],
                         'test_abstract' => [
@@ -730,6 +802,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/documents/2/relationships/parents',
                         ],
                     ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/translations',
+                            'self' => 'http://api.example.com/documents/2/relationships/translations',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -806,6 +884,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/parents',
                             'self' => 'http://api.example.com/documents/6/relationships/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/translations',
+                            'self' => 'http://api.example.com/documents/6/relationships/translations',
                         ],
                     ],
                 ],
@@ -1241,6 +1325,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/translations',
+                                'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'locked' => true,
@@ -1330,6 +1420,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1362,6 +1458,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/parents',
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
                             ],
                         ],
                     ],
@@ -1524,6 +1626,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1597,6 +1705,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -1784,6 +1898,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -2147,6 +2267,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/documents/2/parents',
                         ],
                     ],
+                    'translations' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            'related' => 'http://api.example.com/documents/2/translations',
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -2191,6 +2317,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -2242,6 +2374,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/parents',
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
                             ],
                         ],
                     ],

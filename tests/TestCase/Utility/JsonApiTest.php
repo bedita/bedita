@@ -433,6 +433,12 @@ class JsonApiTest extends TestCase
                                 'self' => '/documents/2/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => '/documents/2/translations',
+                                'self' => '/documents/2/relationships/translations',
+                            ],
+                        ],
                     ],
                     '_schema' => [
                         'profiles' => [
@@ -657,6 +663,12 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/parents',
                         'self' => '/documents/2/relationships/parents',
+                    ],
+                ],
+                'translations' => [
+                    'links' => [
+                        'related' => '/documents/2/translations',
+                        'self' => '/documents/2/relationships/translations',
                     ],
                 ],
             ],
