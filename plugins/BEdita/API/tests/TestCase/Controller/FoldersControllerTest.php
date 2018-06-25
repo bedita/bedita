@@ -95,6 +95,12 @@ class FoldersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/11/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/translations',
+                                'self' => 'http://api.example.com/folders/11/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -136,6 +142,12 @@ class FoldersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/12/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/translations',
+                                'self' => 'http://api.example.com/folders/12/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -175,6 +187,12 @@ class FoldersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/folders/13/parent',
                                 'self' => 'http://api.example.com/folders/13/relationships/parent',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/translations',
+                                'self' => 'http://api.example.com/folders/13/relationships/translations',
                             ],
                         ],
                     ],
@@ -280,6 +298,12 @@ class FoldersControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/folders/11/parent',
                             'self' => 'http://api.example.com/folders/11/relationships/parent',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/folders/11/translations',
+                            'self' => 'http://api.example.com/folders/11/relationships/translations',
                         ],
                     ],
                 ],
