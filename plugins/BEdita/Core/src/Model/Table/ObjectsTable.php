@@ -17,10 +17,12 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -151,8 +153,28 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkLangTag($entity);
 
         return true;
+    }
+
+    /**
+     * Check `lang` tag using `I18n` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException If a wrong lang tag is specified
+     */
+    protected function checkLangTag(EntityInterface $entity)
+    {
+        $defaultConf = ['languages' => [], 'default' => null];
+        $i18nConf = array_merge($defaultConf, (array)Configure::read('I18n', []));
+        $lang = $entity->get('lang');
+        if (empty($lang) && !empty($i18nConf['default'])) {
+            $entity->set('lang', $i18nConf['default']);
+        } elseif (!empty($lang) && !empty($i18nConf['languages']) && !in_array($lang, array_keys($i18nConf['languages']))) {
+            throw new BadRequestException(__d('bedita', 'Invalid language tag "{0}"', [$lang]));
+        }
     }
 
     /**
