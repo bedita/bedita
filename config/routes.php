@@ -28,6 +28,7 @@ Router::plugin(
             'users',
             'media',
             'folders',
+            'translations',
         ];
         $adminControllers = [
             'applications',
