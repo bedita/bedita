@@ -224,9 +224,10 @@ class LoginController extends AppController
      *
      * @param \BEdita\Core\Model\Entity\User $entity Logged user entity.
      * @param array $data Request data.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if current password is not correct.
      * @return void
      */
-    public function checkPassword(User $entity, array $data)
+    protected function checkPassword(User $entity, array $data)
     {
         if (!isset($data['password'])) {
             return;
