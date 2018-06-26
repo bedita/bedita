@@ -234,12 +234,12 @@ class LoginController extends AppController
         }
 
         if (empty($data['old_password'])) {
-            throw new BadRequestException(__('Missing current password'));
+            throw new BadRequestException(__d('bedita', 'Missing current password'));
         }
 
         $hasher = PasswordHasherFactory::build(self::PASSWORD_HASHER);
         if (!$hasher->check($data['old_password'], $entity->password_hash)) {
-            throw new BadRequestException(__('Wrong password'));
+            throw new BadRequestException(__d('bedita', 'Wrong password'));
         }
     }
 
