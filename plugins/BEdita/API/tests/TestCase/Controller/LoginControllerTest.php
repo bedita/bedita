@@ -528,7 +528,6 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testPasswordChange`
      *
-     * @depends testLoginOkJson
      * @return void
      */
     public function passwordChangeProvider()
@@ -568,10 +567,9 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test password change.
      *
-     * @param int $expected Expected status code
-     * @param string $jwt Access token
-     * @param array $data Request body
-     * @param string $error Error title in reponse, if $expected false
+     * @param int $expected Expected status code.
+     * @param array $data Request body.
+     * @param string $error Error title in response, if $expected is >= 400.
      *
      * @return void.
      *
@@ -584,7 +582,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->patch('/auth/user', json_encode($data));
 
         $this->assertResponseCode($expected);
-        if ($expected != 200) {
+        if ($expected >= 400) {
             $result = json_decode((string)$this->_response->getBody(), true);
             static::assertEquals($error, $result['error']['title']);
         } elseif (!empty($data['password'])) {
