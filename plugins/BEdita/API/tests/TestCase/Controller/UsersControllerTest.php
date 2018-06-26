@@ -121,6 +121,12 @@ class UsersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -188,6 +194,12 @@ class UsersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/5/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/translations',
+                                'self' => 'http://api.example.com/users/5/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -199,7 +211,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -321,6 +333,12 @@ class UsersControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/users/1/relationships/parents',
                         ],
                     ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/translations',
+                            'self' => 'http://api.example.com/users/1/relationships/translations',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -339,7 +357,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**

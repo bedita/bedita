@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -29,12 +29,13 @@ use Cake\Utility\Hash;
 /**
  * Objects Model
  *
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
- * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
- * @property \Cake\ORM\Association\HasMany $DateRanges
- * @property \Cake\ORM\Association\BelongsToMany $Parents
- * @property \Cake\ORM\Association\HasMany $TreeNodes
+ * @property \BEdita\Core\Model\Table\ObjectTypesTable|\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $ModifiedByUsers
+ * @property \BEdita\Core\Model\Table\DateRangesTable|\Cake\ORM\Association\HasMany $DateRanges
+ * @property \BEdita\Core\Model\Table\FoldersTable|\Cake\ORM\Association\BelongsToMany $Parents
+ * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
+ * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
  *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
@@ -73,37 +74,37 @@ class ObjectsTable extends Table
         $this->setDisplayField('title');
 
         $this->addBehavior('Timestamp');
-
         $this->addBehavior('BEdita/Core.DataCleanup');
-
         $this->addBehavior('BEdita/Core.UserModified');
-
         $this->addBehavior('BEdita/Core.Relations');
-
         $this->addBehavior('BEdita/Core.CustomProperties');
+        $this->addBehavior('BEdita/Core.UniqueName');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+            ],
+        ]);
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.ObjectTypes'
         ]);
-
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
             'saveStrategy' => 'replace',
         ]);
-
-        $this->belongsTo('CreatedByUser', [
+        $this->belongsTo('CreatedByUsers', [
             'foreignKey' => 'created_by',
             'className' => 'BEdita/Core.Users'
         ]);
-
-        $this->belongsTo('ModifiedByUser', [
+        $this->belongsTo('ModifiedByUsers', [
             'foreignKey' => 'modified_by',
             'className' => 'BEdita/Core.Users'
         ]);
-
         $this->belongsToMany('Parents', [
             'className' => 'BEdita/Core.Folders',
             'through' => 'BEdita/Core.Trees',
@@ -111,20 +112,13 @@ class ObjectsTable extends Table
             'targetForeignKey' => 'parent_id',
             'cascadeCallbacks' => true,
         ]);
-
         $this->hasMany('TreeNodes', [
             'className' => 'Trees',
             'foreignKey' => 'object_id',
         ]);
-
-        $this->addBehavior('BEdita/Core.UniqueName');
-
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-            ],
+        $this->hasMany('Translations', [
+            'className' => 'Translations',
+            'foreignKey' => 'object_id',
         ]);
     }
 
@@ -137,8 +131,8 @@ class ObjectsTable extends Table
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
-        $rules->add($rules->existsIn(['created_by'], 'CreatedByUser'));
-        $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUser'));
+        $rules->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
+        $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUsers'));
 
         return $rules;
     }
@@ -254,7 +248,7 @@ class ObjectsTable extends Table
     protected function findMine(Query $query)
     {
         return $query->where(function (QueryExpression $exp) {
-            return $exp->eq($this->aliasField($this->CreatedByUser->getForeignKey()), LoggedUser::id());
+            return $exp->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id());
         });
     }
 

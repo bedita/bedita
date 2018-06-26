@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -26,15 +26,14 @@ use Cake\Routing\Router;
  *
  * @property int $id
  * @property int $object_type_id
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
  * @property bool $deleted
  * @property string $type
  * @property string $status
  * @property string $uname
  * @property bool $locked
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property \Cake\I18n\Time $published
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $modified
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $published
  * @property string $title
  * @property string $description
  * @property string $body
@@ -43,10 +42,16 @@ use Cake\Routing\Router;
  * @property string $lang
  * @property int $created_by
  * @property int $modified_by
- * @property \Cake\I18n\Time $publish_start
- * @property \Cake\I18n\Time $publish_end
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_start
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_end
+ *
+ * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property \BEdita\Core\Model\Entity\User $created_by_user
+ * @property \BEdita\Core\Model\Entity\User $modified_by_user
  * @property \BEdita\Core\Model\Entity\DateRange[] $date_ranges
  * @property \BEdita\Core\Model\Entity\Folder[] $parents
+ * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
+ * @property \BEdita\Core\Model\Entity\Translation[] $translations
  *
  * @since 4.0.0
  */
