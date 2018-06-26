@@ -587,6 +587,11 @@ class LoginControllerTest extends IntegrationTestCase
         if ($expected != 200) {
             $result = json_decode((string)$this->_response->getBody(), true);
             static::assertEquals($error, $result['error']['title']);
+        } elseif (!empty($data['password'])) {
+            // login with new password
+            $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+            $this->post('/auth', json_encode(['username' => 'first user', 'password' => $data['password']]));
+            $this->assertResponseCode(200);
         }
     }
 }
