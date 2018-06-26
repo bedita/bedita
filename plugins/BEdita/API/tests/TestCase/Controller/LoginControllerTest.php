@@ -414,10 +414,8 @@ class LoginControllerTest extends IntegrationTestCase
             'Authorization' => sprintf('Bearer %s', $meta['jwt']),
         ];
 
-        $passwordHash = TableRegistry::get('Users')->get(1)->get('password_hash');
         $data = [
             'username' => 'gustavo',
-            'password' => 'wewantgustavoforpresident',
         ];
 
         $this->configRequest(compact('headers'));
@@ -429,8 +427,6 @@ class LoginControllerTest extends IntegrationTestCase
         static::assertNotEmpty($result['data']);
         static::assertEquals(1, $result['data']['id']);
         static::assertNotEquals($data['username'], $result['data']['attributes']['username']);
-        // check password unchanged
-        static::assertEquals($passwordHash, TableRegistry::get('Users')->get(1)->get('password_hash'));
     }
 
     /**
@@ -526,6 +522,74 @@ class LoginControllerTest extends IntegrationTestCase
             $this->assertResponseCode(401);
             $result = json_decode((string)$this->_response->getBody(), true);
             static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+        }
+    }
+
+    /**
+     * Data provider for `testPasswordChange`
+     *
+     * @return void
+     */
+    public function passwordChangeProvider()
+    {
+        return [
+            'missing' => [
+                400,
+                [
+                    'password' => 'new password',
+                ],
+                'Missing current password',
+            ],
+            'wrong' => [
+                400,
+                [
+                    'password' => 'new password',
+                    'old_password' => 'old password',
+                ],
+                'Wrong password',
+            ],
+            'no pass' => [
+                200,
+                [
+                    'name' => 'Gustavo',
+                ],
+                'Wrong password',
+            ],
+            'ok' => [
+                200,
+                [
+                    'password' => 'password2',
+                    'old_password' => 'password1',
+                ],
+            ],
+        ];
+    }
+    /**
+     * Test password change.
+     *
+     * @param int $expected Expected status code.
+     * @param array $data Request body.
+     * @param string $error Error title in response, if $expected is >= 400.
+     *
+     * @return void.
+     *
+     * @covers ::checkPassword()
+     * @dataProvider passwordChangeProvider
+     */
+    public function testPasswordChange($expected, array $data, $error = null)
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => 'application/json']);
+        $this->patch('/auth/user', json_encode($data));
+
+        $this->assertResponseCode($expected);
+        if ($expected >= 400) {
+            $result = json_decode((string)$this->_response->getBody(), true);
+            static::assertEquals($error, $result['error']['title']);
+        } elseif (!empty($data['password'])) {
+            // login with new password
+            $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+            $this->post('/auth', json_encode(['username' => 'first user', 'password' => $data['password']]));
+            $this->assertResponseCode(200);
         }
     }
 }
