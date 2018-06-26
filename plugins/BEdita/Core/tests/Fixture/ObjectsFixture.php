@@ -68,7 +68,7 @@ class ObjectsFixture extends TestFixture
             'description' => 'description here',
             'body' => 'body here',
             'extra' => null,
-            'lang' => 'eng',
+            'lang' => null,
             'created_by' => 1,
             'modified_by' => 5,
             'publish_start' => null,

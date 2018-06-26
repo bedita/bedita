@@ -5,7 +5,9 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -549,5 +551,72 @@ class ObjectsTableTest extends TestCase
         ksort($actual);
 
         static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for `checkLangTag`.
+     *
+     * @return array
+     */
+    public function checkLangTagProvider()
+    {
+        return [
+            'bad lang' => [
+                new BadRequestException('Invalid language tag "fi"'),
+                [
+                    'languages' => [
+                        'en' => 'English',
+                    ],
+                ],
+                [
+                    'lang' => 'fi',
+                ],
+            ],
+            'any lang' => [
+                'en-US',
+                [
+                    'default' => null,
+                ],
+                [
+                    'lang' => 'en-US',
+                ],
+            ],
+            'use default' => [
+                'en',
+                [
+                    'default' => 'en',
+                ],
+                [
+                    'lang' => null,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkLangTag()`.
+     *
+     * @param string|\Exception $expected Expected result.
+     * @param array $config I18n config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkLangTagProvider()
+     * @covers ::checkLangTag()
+     */
+    public function testCheckLangTag($expected, array $config, array $data)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        Configure::write('I18n', $config);
+
+        $object = $this->Objects->get(3);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('lang'));
     }
 }
