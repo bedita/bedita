@@ -577,6 +577,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         ];
 
         TableRegistry::get('Properties')->deleteAll([]);
+        TableRegistry::get('Translations')->deleteAll([]);
         TableRegistry::get('Objects')->deleteAll([]);
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
