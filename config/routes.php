@@ -197,6 +197,13 @@ Router::plugin(
             ['_name' => 'trash:delete', 'pass' => ['id']]
         );
 
+        // Config.
+        $routes->connect(
+            '/config',
+            ['controller' => 'Config', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'config:index']
+        );
+
         // Objects.
         $routes->connect(
             '/:object_type',
