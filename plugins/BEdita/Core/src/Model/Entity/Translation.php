@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
@@ -32,8 +33,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\User $created_by_user
  * @property \BEdita\Core\Model\Entity\User $modified_by_user
  */
-class Translation extends Entity
+class Translation extends Entity implements JsonApiSerializable
 {
+
+    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
@@ -43,5 +46,13 @@ class Translation extends Entity
         'lang' => true,
         'status' => true,
         'translated_fields' => true,
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'created_by_user',
+        'modified_by_user',
     ];
 }
