@@ -136,7 +136,7 @@ class ListRelatedObjectsActionTest extends TestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'created_by' => 1,
                         'modified_by' => 1,
                         'publish_start' => null,

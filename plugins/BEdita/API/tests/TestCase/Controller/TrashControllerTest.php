@@ -86,7 +86,7 @@ class TrashControllerTest extends IntegrationTestCase
                         'extra' => [
                             'abstract' => 'what?',
                         ],
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => '2016-10-13T07:09:23+00:00',
                         'publish_end' => '2016-10-13T07:09:23+00:00',
                     ],
@@ -114,7 +114,7 @@ class TrashControllerTest extends IntegrationTestCase
                         'extra' => [
                             'abstract' => 'what?',
                         ],
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => '2016-10-13T07:09:23+00:00',
                         'publish_end' => '2016-10-13T07:09:23+00:00',
                     ],
@@ -211,7 +211,7 @@ class TrashControllerTest extends IntegrationTestCase
                     'extra' => [
                         'abstract' => 'what?',
                     ],
-                    'lang' => 'eng',
+                    'lang' => 'en',
                     'publish_start' => '2016-10-13T07:09:23+00:00',
                     'publish_end' => '2016-10-13T07:09:23+00:00',
                     'another_title' => null,

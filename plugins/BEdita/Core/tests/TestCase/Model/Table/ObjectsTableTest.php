@@ -109,7 +109,7 @@ class ObjectsTableTest extends TestCase
                     'description' => 'another description',
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'lang' => 'eng',
+                    'lang' => 'en',
                 ],
             ],
             'titleOnly' => [
