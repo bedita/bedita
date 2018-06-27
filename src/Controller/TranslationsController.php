@@ -12,6 +12,10 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use Cake\ORM\Association;
+use Cake\Routing\Router;
+
 /**
  * Controller for `/translations` endpoint.
  *
@@ -35,4 +39,31 @@ class TranslationsController extends ResourcesController
             'object' => [],
         ],
     ];
+
+    /**
+     * Return link to available objects by relationship
+     *
+     * @param string $relationship relation name
+     * @return string|null
+     */
+    protected function getAvailableUrl($relationship)
+    {
+        return Router::url(
+            [
+                '_name' => 'api:objects:index',
+                'object_type' => 'objects'
+            ],
+            true
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
+     */
+    protected function getAssociatedAction(Association $association)
+    {
+        return new ListRelatedObjectsAction(compact('association'));
+    }
 }
