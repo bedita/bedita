@@ -561,17 +561,6 @@ class ObjectsTableTest extends TestCase
     public function checkLangTagProvider()
     {
         return [
-            'bad lang' => [
-                new BadRequestException('Invalid language tag "fi"'),
-                [
-                    'languages' => [
-                        'en' => 'English',
-                    ],
-                ],
-                [
-                    'lang' => 'fi',
-                ],
-            ],
             'any lang' => [
                 'en-US',
                 [
@@ -587,7 +576,7 @@ class ObjectsTableTest extends TestCase
                     'default' => 'en',
                 ],
                 [
-                    'lang' => null,
+                    'lang' => '',
                 ],
             ],
         ];
