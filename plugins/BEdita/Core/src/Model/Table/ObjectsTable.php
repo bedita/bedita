@@ -167,13 +167,8 @@ class ObjectsTable extends Table
      */
     protected function checkLangTag(EntityInterface $entity)
     {
-        $defaultConf = ['languages' => [], 'default' => null];
-        $i18nConf = array_merge($defaultConf, (array)Configure::read('I18n', []));
-        $lang = $entity->get('lang');
-        if (empty($lang) && !empty($i18nConf['default'])) {
-            $entity->set('lang', $i18nConf['default']);
-        } elseif (!empty($lang) && !empty($i18nConf['languages']) && !in_array($lang, array_keys($i18nConf['languages']))) {
-            throw new BadRequestException(__d('bedita', 'Invalid language tag "{0}"', [$lang]));
+        if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
+            $entity->set('lang', Configure::read('I18n.default'));
         }
     }
 
