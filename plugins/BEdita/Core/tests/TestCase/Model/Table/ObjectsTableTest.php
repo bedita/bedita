@@ -585,7 +585,7 @@ class ObjectsTableTest extends TestCase
     /**
      * Test `checkLangTag()`.
      *
-     * @param string|\Exception $expected Expected result.
+     * @param string $expected Expected result.
      * @param array $config I18n config.
      * @param array $data Save input data.
      * @return void
@@ -595,11 +595,6 @@ class ObjectsTableTest extends TestCase
      */
     public function testCheckLangTag($expected, array $config, array $data)
     {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
         Configure::write('I18n', $config);
 
         $object = $this->Objects->get(3);
