@@ -457,7 +457,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'name' => 'First',
                         'surname' => 'User',
                         'email' => 'first.user@example.com',
