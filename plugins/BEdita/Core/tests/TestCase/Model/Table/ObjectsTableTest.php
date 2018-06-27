@@ -5,7 +5,9 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -107,7 +109,7 @@ class ObjectsTableTest extends TestCase
                     'description' => 'another description',
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'lang' => 'eng',
+                    'lang' => 'en',
                 ],
             ],
             'titleOnly' => [
@@ -549,5 +551,56 @@ class ObjectsTableTest extends TestCase
         ksort($actual);
 
         static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for `checkLangTag`.
+     *
+     * @return array
+     */
+    public function checkLangTagProvider()
+    {
+        return [
+            'any lang' => [
+                'en-US',
+                [
+                    'default' => null,
+                ],
+                [
+                    'lang' => 'en-US',
+                ],
+            ],
+            'use default' => [
+                'en',
+                [
+                    'default' => 'en',
+                ],
+                [
+                    'lang' => '',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkLangTag()`.
+     *
+     * @param string $expected Expected result.
+     * @param array $config I18n config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkLangTagProvider()
+     * @covers ::checkLangTag()
+     */
+    public function testCheckLangTag($expected, array $config, array $data)
+    {
+        Configure::write('I18n', $config);
+
+        $object = $this->Objects->get(3);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('lang'));
     }
 }
