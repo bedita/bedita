@@ -287,7 +287,7 @@ class TranslationsControllerTest extends IntegrationTestCase
                         'abstract' => 'abstract here',
                         'list' => ['one', 'two', 'three'],
                     ],
-                    'lang' => 'eng',
+                    'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
                 ],
