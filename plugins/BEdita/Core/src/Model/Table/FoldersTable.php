@@ -205,6 +205,51 @@ class FoldersTable extends ObjectsTable
     }
 
     /**
+     * Prepare all descendants of type "folders" in `$options` to delete later in `static::afterDelete()`.
+     *
+     * ### Options
+     *
+     * `_isDescendant` default empty. When not empty means that the deletion was cascading from a parent so no other action needed.
+     *
+     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The folder entity to delete
+     * @param \ArrayObject $options Delete options
+     * @return void
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    {
+        if (!empty($options['_isDescendant'])) {
+            return;
+        }
+
+        $options['descendants'] = $this
+            ->find('ancestor', [$entity->get('id')])
+            ->where([
+                $this->aliasField('object_type_id') => $this->objectType()->id,
+            ])
+            ->toArray();
+    }
+
+    /**
+     * Delete all descendants of type "folders" if exist.
+     *
+     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The folder entity to delete
+     * @param \ArrayObject $options Delete options
+     * @return void
+     */
+    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    {
+        if (empty($options['descendants'])) {
+            return;
+        }
+
+        foreach ((array)$options['descendants'] as $subfolder) {
+            $this->delete($subfolder, ['_isDescendant' => true]);
+        }
+    }
+
+    /**
      * Finder for root folders.
      *
      * @param Query $query Query object instance.

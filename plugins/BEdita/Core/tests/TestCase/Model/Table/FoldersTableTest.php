@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -340,6 +341,70 @@ class FoldersTableTest extends TestCase
             ->toArray();
 
         static::assertSame($startDeletedInfo, $restoredDeletedInfo);
+    }
+
+    /**
+     * Test that deleting a folder all its subfolders (descendants) are deleted too.
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete()
+     * @covers ::afterDelete()
+     */
+    public function testDeleteFolder()
+    {
+        $parentFolder = $this->Folders->get(12);
+        $folderIds = [12];
+
+        // add subfolders
+        $subfolder = $this->Folders->newEntity();
+        $subfolder->parent = $parentFolder;
+        $this->Folders->save($subfolder);
+        $folderIds[] = $subfolder->id;
+
+        $anotherSubfolder = $this->Folders->newEntity();
+        $anotherSubfolder->parent = $subfolder;
+        $this->Folders->save($anotherSubfolder);
+        $folderIds[] = $anotherSubfolder->id;
+
+        // get descendants not folders
+        $notFoldersIds = $this->Folders
+            ->find('ancestor', [$parentFolder->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'id',
+            ])
+            ->where(function (QueryExpression $exp) {
+                return $exp->not(['object_type_id' => $this->Folders->objectType()->id]);
+            })
+            ->toArray();
+
+        $Trees = TableRegistry::get('Trees');
+        $Objects = TableRegistry::get('Objects');
+
+        // all descendants exist and are on tree
+        foreach (array_merge($notFoldersIds, $folderIds) as $id) {
+            static::assertTrue($Objects->exists(['id' => $id]));
+            static::assertTrue($Trees->exists(['object_id' => $id]));
+        }
+
+        $this->Folders->delete($parentFolder);
+
+        // parent folder and subfolders not exit anymore and not are on tree
+        foreach ($folderIds as $id) {
+            static::assertFalse($Objects->exists(['id' => $id]));
+            static::assertFalse($Trees->exists(['object_id' => $id]));
+        }
+
+        // other descendants exist yet
+        foreach ($notFoldersIds as $id) {
+            static::assertTrue($Objects->exists(['id' => $id]));
+        }
+
+        $currenTree = $Trees->find()->toArray();
+        // check that after recover the tree is the same.
+        $Trees->recover();
+        static::assertEquals($currenTree, $Trees->find()->toArray());
     }
 
     /**
