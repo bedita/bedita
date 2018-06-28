@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Validation;
 
 use BEdita\Core\Model\Validation\Validation;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 
@@ -227,5 +228,55 @@ class ValidationTest extends TestCase
         } else {
             static::assertContains($expected, $result);
         }
+    }
+
+    /**
+     * Data provider for `testLanguageTag` test case.
+     *
+     * @return array
+     */
+    public function languageTagProvider()
+    {
+        return [
+            'bad lang' => [
+                'Invalid language tag "fi"',
+                [
+                    'languages' => [
+                        'en' => 'English',
+                    ],
+                ],
+                'fi',
+            ],
+            'ok' => [
+                true,
+                [
+                    'languages' => [
+                        'en' => 'English',
+                        'sp' => 'Spanish',
+                    ],
+                ],
+                'sp',
+            ],
+        ];
+    }
+
+    /**
+     * Test lang tag validation.
+     *
+     * @param bool $expected Expected result.
+     * @param array $config I18n config.
+     * @param string $lang Lang tag being validated.
+     * @return void
+     *
+     * @dataProvider languageTagProvider()
+     * @covers ::languageTag()
+     */
+    public function testLanguageTag($expected, $config, $lang)
+    {
+        Configure::write('I18n', $config);
+
+        $result = Validation::languageTag($lang);
+
+        static::assertSame($expected, $result);
     }
 }

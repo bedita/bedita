@@ -113,7 +113,7 @@ class ProfilesTableTest extends TestCase
                     'email' => 'gustavo.supporto@channelweb.it',
                     'object_type_id' => 3,
                     'status' => 'draft',
-                    'lang' => 'eng',
+                    'lang' => 'en',
                 ],
             ],
         ];

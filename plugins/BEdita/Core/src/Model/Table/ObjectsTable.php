@@ -17,10 +17,12 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -151,8 +153,23 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkLangTag($entity);
 
         return true;
+    }
+
+    /**
+     * Check `lang` tag using `I18n` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException If a wrong lang tag is specified
+     */
+    protected function checkLangTag(EntityInterface $entity)
+    {
+        if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
+            $entity->set('lang', Configure::read('I18n.default'));
+        }
     }
 
     /**

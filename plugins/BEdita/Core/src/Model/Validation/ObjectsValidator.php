@@ -64,6 +64,8 @@ class ObjectsValidator extends Validator
 
             ->allowEmpty('extra')
 
+            ->scalar('lang')
+            ->add('lang', 'languageTag', ['rule' => [Validation::class, 'languageTag']])
             ->allowEmpty('lang')
 
             ->dateTime('publish_start')
