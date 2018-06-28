@@ -200,7 +200,7 @@ class TranslationsControllerTest extends IntegrationTestCase
                 'object_id' => 2,
                 'lang' => 'sp',
                 'status' => 'draft',
-                'fields' => [
+                'translated_fields' => [
                     'title' => 'titulo uno',
                 ],
             ],
@@ -229,7 +229,7 @@ class TranslationsControllerTest extends IntegrationTestCase
             'id' => '2',
             'type' => 'translations',
             'attributes' => [
-                'fields' => [
+                'translated_fields' => [
                     'description' => 'la descripcion',
                 ],
             ],
