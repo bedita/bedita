@@ -41,10 +41,7 @@ class TranslationsController extends ResourcesController
     ];
 
     /**
-     * Return link to available objects by relationship
-     *
-     * @param string $relationship relation name
-     * @return string|null
+     * {@inheritDoc}
      */
     protected function getAvailableUrl($relationship)
     {
