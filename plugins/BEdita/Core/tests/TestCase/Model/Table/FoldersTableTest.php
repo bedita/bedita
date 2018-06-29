@@ -401,10 +401,10 @@ class FoldersTableTest extends TestCase
             static::assertTrue($Objects->exists(['id' => $id]));
         }
 
-        $currenTree = $Trees->find()->toArray();
+        $currenTree = $Trees->find()->order(['tree_left' => 'ASC'])->toArray();
         // check that after recover the tree is the same.
         $Trees->recover();
-        static::assertEquals($currenTree, $Trees->find()->toArray());
+        static::assertEquals($currenTree, $Trees->find()->order(['tree_left' => 'ASC'])->toArray());
     }
 
     /**
