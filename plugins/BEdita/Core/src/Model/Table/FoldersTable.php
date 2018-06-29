@@ -245,7 +245,7 @@ class FoldersTable extends ObjectsTable
         }
 
         foreach ((array)$options['descendants'] as $subfolder) {
-            $this->delete($subfolder, ['_isDescendant' => true]);
+            $this->deleteOrFail($subfolder, ['_isDescendant' => true]);
         }
     }
 
