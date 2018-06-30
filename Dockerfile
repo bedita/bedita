@@ -13,10 +13,13 @@ COPY . /var/www/html
 ARG DEBUG
 ENV DEBUG ${DEBUG:-false}
 
-# Install libraries
+# Setup `webroot/_files` for media files
 WORKDIR /var/www/html
+RUN mkdir -p /var/www/html/webroot/_files/thumbs
 RUN chmod a+rwx /var/www/html/webroot/_files
 VOLUME /var/www/html/webroot/_files
+
+# Install dependencies
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
     && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction
 
