@@ -15,8 +15,8 @@ ENV DEBUG ${DEBUG:-false}
 
 # Setup `webroot/_files` for media files
 WORKDIR /var/www/html
-RUN mkdir -p /var/www/html/webroot/_files/thumbs
 RUN chmod a+rwx /var/www/html/webroot/_files
+RUN chown -R www-data:www-data /var/www/html/webroot/_files
 VOLUME /var/www/html/webroot/_files
 
 # Install dependencies
