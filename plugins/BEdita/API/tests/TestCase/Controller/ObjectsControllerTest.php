@@ -732,6 +732,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('Translations')->deleteAll([]);
         TableRegistry::get('Objects')->deleteAll([]);
 
         $this->configRequestHeaders();

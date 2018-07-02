@@ -56,6 +56,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.property_types',
                     'plugin.BEdita/Core.trees',
                     'plugin.BEdita/Core.object_relations',
+                    'plugin.BEdita/Core.translations',
                 ],
                 []
             ],
@@ -82,6 +83,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.property_types',
                     'plugin.BEdita/Core.trees',
                     'plugin.BEdita/Core.object_relations',
+                    'plugin.BEdita/Core.translations',
                 ],
                 [
                     'plugin.BEdita/Core.users',

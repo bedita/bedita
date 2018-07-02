@@ -36,7 +36,7 @@ class TranslationsFixture extends TestFixture
                 'modified' => Time::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
-                'fields' => json_encode([
+                'translated_fields' => json_encode([
                     'title' => 'titolo uno',
                     'description' => 'descrizione qui',
                     'body' => 'contenuto qui',
@@ -54,7 +54,7 @@ class TranslationsFixture extends TestFixture
                 'modified' => Time::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
-                'fields' => json_encode([
+                'translated_fields' => json_encode([
                     'description' => 'description ici',
                     'extra' => [
                         'list' => ['on', 'deux', 'trois'],
