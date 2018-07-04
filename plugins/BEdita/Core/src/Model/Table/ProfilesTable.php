@@ -110,9 +110,9 @@ class ProfilesTable extends Table
         if (empty($entity->get('email'))) {
             $entity->set('email', null);
         }
-        if (!$entity->has('title') && ($entity->has('name') || $entity->has('surname'))) {
+        if (empty($entity->get('title')) && (!empty($entity->get('name')) || !empty($entity->get('surname')))) {
             $title = sprintf('%s %s', (string)Hash::get($entity, 'name', ''), (string)Hash::get($entity, 'surname', ''));
-            $entity->set('title', $title);
+            $entity->set('title', trim($title));
         }
     }
 }
