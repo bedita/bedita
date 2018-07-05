@@ -240,7 +240,7 @@ class ProfilesTableTest extends TestCase
             'missing' => [
                 [
                     'email' => null,
-                    'title' => 'Gustavo Supporto',
+                    'title' => null,
                 ],
                 [
                     'name' => 'Gustavo',
@@ -256,6 +256,23 @@ class ProfilesTableTest extends TestCase
                     'name' => 'Gustavo',
                     'surname' => 'Supporto',
                     'title' => '',
+                ],
+            ],
+            'null title' => [
+                [
+                    'title' => null,
+                ],
+                [
+                    'name' => 'Gustavo',
+                    'title' => null,
+                ],
+            ],
+            'no title' => [
+                [
+                    'title' => null,
+                ],
+                [
+                    'name' => 'Gustavo',
                 ],
             ],
             'title set' => [
