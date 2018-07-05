@@ -9,7 +9,9 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * BEdita\Core\Model\Table\AnnotationsTable Test Case
+ * {@see \BEdita\Core\Model\Table\AnnotationsTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\AnnotationsTable
  */
 class AnnotationsTableTest extends TestCase
 {
@@ -61,7 +63,7 @@ class AnnotationsTableTest extends TestCase
      *
      * @return void
      *
-     * @coversNothing
+     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -130,13 +132,13 @@ class AnnotationsTableTest extends TestCase
     public function beforeSaveProvider()
     {
         return [
-            // 'help' => [
-            //     true,
-            //     [
-            //         'description' => 'Gustavo Supporto Help!',
-            //         'object_id' => 3,
-            //     ],
-            // ],
+            'help' => [
+                true,
+                [
+                    'description' => 'Gustavo Supporto Help!',
+                    'object_id' => 3,
+                ],
+            ],
             'user error' => [
                 new ForbiddenException('Could not change annotation "1" of user "1"'),
                 [
