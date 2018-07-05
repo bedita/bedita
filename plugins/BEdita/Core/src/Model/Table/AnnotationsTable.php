@@ -13,7 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -39,8 +43,6 @@ class AnnotationsTable extends Table
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -51,6 +53,13 @@ class AnnotationsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.UserModified', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'user_id' => 'new',
+                ],
+            ],
+        ]);
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
@@ -74,6 +83,11 @@ class AnnotationsTable extends Table
         $validator
             ->integer('id')
             ->allowEmpty('id', 'create');
+
+        $validator
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmpty('object_id');
 
         $validator
             ->allowEmpty('description');
@@ -107,5 +121,60 @@ class AnnotationsTable extends Table
         $schema->setColumnType('params', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Before save checks:
+     *  - `user_id` must match LoggedUser::id() on entity update
+     *  - `object_id` cannot be modified
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not change annotation "{0}" of user "{1}"',
+                    $entity->get('id'),
+                    $entity->get('user_id')
+                )
+            );
+        }
+        if (!$entity->isNew() && $entity->isDirty('object_id')) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not change object id on annotation "{0}"',
+                    $entity->get('id')
+                )
+            );
+        }
+    }
+
+    /**
+     * Before delete checks: `user_id` must match LoggedUser::id()
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if ($entity->get('user_id') !== LoggedUser::id()) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not delete annotation "{0}" of user "{1}"',
+                    $entity->get('id'),
+                    $entity->get('user_id')
+                )
+            );
+        }
     }
 }

@@ -39,6 +39,7 @@ class Annotation extends Entity implements JsonApiSerializable
      * {@inheritDoc}
      */
     protected $_accessible = [
+        '*' => false,
         'object_id' => true,
         'description' => true,
         'params' => true,
