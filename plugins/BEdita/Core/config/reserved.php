@@ -16,6 +16,8 @@
  */
 return [
     'ancestor',
+    'annotation',
+    'annotations',
     'application',
     'applications',
     'async_job',
@@ -40,6 +42,8 @@ return [
     'schema',
     'stream',
     'streams',
+    'translation',
+    'translations',
     'tree',
     'trees',
     'tree_nodes',
