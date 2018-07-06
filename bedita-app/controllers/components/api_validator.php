@@ -91,6 +91,9 @@ class ApiValidatorComponent extends Object {
         if (!empty($validateConf['allowedUrlParams'])) {
             $this->registerAllowedUrlParams($validateConf['allowedUrlParams']);
         }
+        if (!empty($validateConf['reachableRelations'])) {
+            $this->reachableRelations = $validateConf['reachableRelations'];
+        }
     }
 
     /**
@@ -587,7 +590,6 @@ class ApiValidatorComponent extends Object {
         if (is_numeric($objectType)) {
             $objectType = Configure::read('objectTypes.' . $objectType . '.name');
         }
-        $this->reachableRelations = Configure::read('api.validation.reachableRelations');
         $objectRelation = ClassRegistry::init('ObjectRelation');
         foreach ($relations as $name => $data) {
             if ($objectType) {
