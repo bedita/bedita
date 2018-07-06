@@ -37,6 +37,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Annotation findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class AnnotationsTable extends Table
 {
