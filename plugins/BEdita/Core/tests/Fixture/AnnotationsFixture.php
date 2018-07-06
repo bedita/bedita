@@ -16,7 +16,6 @@ class AnnotationsFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
             'object_id' => 2,
             'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Best regards.',
             'user_id' => 1,
@@ -25,7 +24,6 @@ class AnnotationsFixture extends TestFixture
             'params' => '"something"'
         ],
         [
-            'id' => 2,
             'object_id' => 3,
             'description' => 'Gustavo for President!',
             'user_id' => 5,
