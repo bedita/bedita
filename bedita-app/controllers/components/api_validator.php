@@ -92,7 +92,7 @@ class ApiValidatorComponent extends Object {
             $this->registerAllowedUrlParams($validateConf['allowedUrlParams']);
         }
         if (!empty($validateConf['reachableRelations'])) {
-            $this->reachableRelations = $validateConf['reachableRelations'];
+            $this->reachableRelations = (array)$validateConf['reachableRelations'];
         }
     }
 
@@ -609,10 +609,8 @@ class ApiValidatorComponent extends Object {
                     throw new BeditaBadRequestException('Invalid relation: ' . $name . ' for object type ' . $relatedObjectType);
                 }
 
-                if (empty($this->reachableRelations) || !in_array($name, $this->reachableRelations)) {
-                    if (!$this->isObjectReachable($relData['related_id'])) {
-                        throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
-                    }
+                if (!in_array($name, $this->reachableRelations) && !$this->isObjectReachable($relData['related_id'])) {
+                    throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
                 }
             }
         }
