@@ -29,6 +29,7 @@ Router::plugin(
             'media',
             'folders',
             'translations',
+            'annotations',
         ];
         $adminControllers = [
             'applications',

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -32,14 +37,13 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Annotation findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class AnnotationsTable extends Table
 {
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -50,6 +54,13 @@ class AnnotationsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.UserModified', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'user_id' => 'new',
+                ],
+            ],
+        ]);
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
@@ -75,6 +86,11 @@ class AnnotationsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmpty('object_id');
+
+        $validator
             ->allowEmpty('description');
 
         $validator
@@ -94,5 +110,72 @@ class AnnotationsTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->setColumnType('params', 'json');
+
+        return $schema;
+    }
+
+    /**
+     * Before save checks:
+     *  - `user_id` must match LoggedUser::id() on entity update
+     *  - `object_id` cannot be modified
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not change annotation "{0}" of user "{1}"',
+                    $entity->get('id'),
+                    $entity->get('user_id')
+                )
+            );
+        }
+        if (!$entity->isNew() && $entity->isDirty('object_id')) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not change object id on annotation "{0}"',
+                    $entity->get('id')
+                )
+            );
+        }
+    }
+
+    /**
+     * Before delete checks: `user_id` must match LoggedUser::id()
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        if ($entity->get('user_id') !== LoggedUser::id()) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    'Could not delete annotation "{0}" of user "{1}"',
+                    $entity->get('id'),
+                    $entity->get('user_id')
+                )
+            );
+        }
     }
 }
