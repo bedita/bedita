@@ -58,7 +58,7 @@ class I18nTest extends IntegrationTestCase
             'error' => [
                 'status' => '400',
                 'title' => 'Invalid data',
-                'detail' => '[lang.languageTag]: Invalid language tag "fi" ',
+                'detail' => '[lang.languageTag]: Invalid language tag "fi"',
             ],
         ];
 

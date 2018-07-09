@@ -13,10 +13,8 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\Folder;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * Tree Entity
@@ -87,7 +85,7 @@ class Tree extends Entity
             ->where(['object_id' => $parentId])
             ->firstOrFail();
 
-        $this->root_id = $parentNode->root_id;
+        $this->root_id = $parentNode->get('root_id');
         $this->parent_node_id = $parentNode->id;
 
         return $parentId;

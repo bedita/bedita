@@ -116,9 +116,16 @@ class ExceptionRenderer extends CakeExceptionRenderer
         $res = '';
         if (is_array($d)) {
             $d = Hash::flatten($d);
-            foreach ($d as $item => $errDetail) {
-                $res .= "[$item]: $errDetail ";
-            }
+            $res = implode(
+                ' ',
+                array_map(
+                    function ($key, $val) {
+                        return sprintf('[%s]: %s', $key, $val);
+                    },
+                    array_keys($d),
+                    array_values($d)
+                )
+            );
         }
 
         return $res;

@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\Table;
@@ -220,6 +221,8 @@ class TreesTable extends Table
     }
 
     /**
+     * Check if a given ID is the ID of a Folder.
+     *
      * @param int $id ID of object being checked.
      * @return bool
      */

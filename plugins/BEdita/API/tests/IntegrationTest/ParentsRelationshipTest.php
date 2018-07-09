@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Api\Test\IntegrationTest;
+namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
@@ -52,7 +52,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     }
 
     /**
-     * Undocumented function
+     * Test setting a parent to an object.
      *
      * @return void
      */
@@ -132,7 +132,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         sort($parentIds);
         static::assertEquals(Hash::extract($data, '{n}.id'), $parentIds);
 
-        // DELETE: delete all remining parents relationships
+        // DELETE: delete all remaining parents relationships
         $this->configRequestHeaders('DELETE', $authHeader);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest($relationshipsEndpoint, 'DELETE', json_encode(compact('data')));
