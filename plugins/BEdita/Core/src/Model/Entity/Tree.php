@@ -28,6 +28,7 @@ use Cake\ORM\TableRegistry;
  * @property int $tree_right
  * @property int $depth_level
  * @property bool $menu
+ * @property int|string $position
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $parent_object
@@ -48,6 +49,7 @@ class Tree extends Entity
         'object_id' => true,
         'parent_id' => true,
         'menu' => true,
+        'position' => true,
     ];
 
     /**

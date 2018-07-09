@@ -22,6 +22,34 @@ use Cake\Utility\Hash;
  */
 class FoldersControllerTest extends IntegrationTestCase
 {
+
+    /**
+     * Folders table.
+     *
+     * @var \BEdita\Core\Model\Table\FoldersTable+
+     */
+    public $Folders;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->Folders = TableRegistry::get('Folders');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        unset($this->Folders);
+
+        parent::tearDown();
+    }
+
     /**
      * Test index method.
      *
@@ -869,5 +897,103 @@ class FoldersControllerTest extends IntegrationTestCase
         } else {
             static::assertSame((string)$parentId, Hash::get($result, 'data.id'));
         }
+    }
+
+    /**
+     * Test setting a folder's children with position.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSetChildrenPosition()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+                'meta' => [
+                    'relation' => [
+                        'position' => 3,
+                    ],
+                ],
+            ],
+            [
+                'id' => '5',
+                'type' => 'users',
+                'meta' => [
+                    'relation' => [
+                        'position' => 'first',
+                    ],
+                ],
+            ],
+        ];
+        $this->post('/folders/12/relationships/children', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $folder = $this->Folders->get(12, ['contain' => ['Children']]);
+
+        $childrenIds = Hash::extract($folder->children, '{n}.id');
+        static::assertEquals(['5', '4', '2'], $childrenIds);
+    }
+
+    /**
+     * Data provider for `testSetChildrenPositionInvalid` test case.
+     *
+     * @return array
+     */
+    public function setChildrenPositionInvalidProvider()
+    {
+        return [
+            'zero' => [
+                '[position.notEquals]: The provided value is invalid',
+                0,
+            ],
+            'invalid string' => [
+                '[position.inList]: The provided value is invalid',
+                'gustavo',
+            ],
+            'empty' => [
+                '[position._empty]: This field cannot be left empty',
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * Test setting a folder's children with an invalid position.
+     *
+     * @param string $expected Expected error.
+     * @param int|string $position Desired position.
+     * @return void
+     *
+     * @dataProvider setChildrenPositionInvalidProvider()
+     * @coversNothing
+     */
+    public function testSetChildrenPositionInvalid($expected, $position)
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+                'meta' => [
+                    'relation' => compact('position'),
+                ],
+            ],
+        ];
+        $this->post('/folders/12/relationships/children', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertEquals('Invalid data', $result['error']['title']);
+        static::assertEquals($expected, $result['error']['detail']);
+
+        $folder = $this->Folders->get(12, ['contain' => ['Children']]);
+
+        $childrenIds = Hash::extract($folder->children, '{n}.id');
+        static::assertEquals(['4'], $childrenIds);
     }
 }

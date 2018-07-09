@@ -219,4 +219,97 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $includedIds = Hash::extract($result, 'included.{n}.id');
         static::assertEquals(['11'], $includedIds);
     }
+
+    /**
+     * Test setting an object's parent with position.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSetParentPosition()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '12',
+                'type' => 'folders',
+                'meta' => [
+                    'relation' => [
+                        'position' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+            ->where(['parent_id' => 12])
+            ->order(['tree_left' => 'ASC'])
+            ->toList();
+
+        static::assertEquals([2, 4], $childrenIds);
+    }
+
+    /**
+     * Data provider for `testSetParentPositionInvalid` test case.
+     *
+     * @return array
+     */
+    public function setParentPositionInvalidProvider()
+    {
+        return [
+            'zero' => [
+                '[position.notEquals]: The provided value is invalid',
+                0,
+            ],
+            'invalid string' => [
+                '[position.inList]: The provided value is invalid',
+                'gustavo',
+            ],
+            'empty' => [
+                '[position._empty]: This field cannot be left empty',
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * Test setting an object's parent with an invalid position.
+     *
+     * @param string $expected Expected error.
+     * @param int|string $position Desired position.
+     * @return void
+     *
+     * @dataProvider setParentPositionInvalidProvider()
+     * @coversNothing
+     */
+    public function testSetParentPositionInvalid($expected, $position)
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '12',
+                'type' => 'folders',
+                'meta' => [
+                    'relation' => compact('position'),
+                ],
+            ],
+        ];
+        $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertEquals('Invalid data', $result['error']['title']);
+        static::assertEquals($expected, $result['error']['detail']);
+
+        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+            ->where(['parent_id' => 12])
+            ->order(['tree_left' => 'ASC'])
+            ->toList();
+
+        static::assertEquals([4], $childrenIds);
+    }
 }
