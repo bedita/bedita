@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
@@ -277,7 +278,7 @@ class TreesTableTest extends TestCase
             ->where(['object_id' => $entity->parent->id])
             ->first();
 
-        $parentNode->parent_id = $entity->id;
+        $parentNode->set('parent_id', $entity->id);
 
         $this->Trees->save($parentNode);
     }
@@ -334,5 +335,62 @@ class TreesTableTest extends TestCase
         $result = (bool)$this->Trees->delete($node, ['_primary' => $primary]);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for `testSetPosition` test case.
+     *
+     * @return array
+     */
+    public function setPositionProvider()
+    {
+        return [
+            'first' => [
+                1,
+                2,
+                'first',
+            ],
+            'last' => [
+                2,
+                11,
+                'last',
+            ],
+            'invalid' => [
+                new BadRequestException('Invalid position'),
+                11,
+                'gustavo',
+            ],
+        ];
+    }
+
+    /**
+     * Test that a children's position is updated.
+     *
+     * @param int|\Exception $expected Expected final position.
+     * @param int $objectId Object ID.
+     * @param int|string $position Position.
+     * @return void
+     *
+     * @dataProvider setPositionProvider()
+     * @covers ::afterSave()
+     */
+    public function testSetPosition($expected, $objectId, $position)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $node = $this->Trees->find()
+            ->where(['object_id' => $objectId])
+            ->firstOrFail();
+
+        $node->set('position', $position);
+        $this->Trees->save($node);
+
+        $currentPosition = $this->Trees->getCurrentPosition($node);
+
+        static::assertSame($expected, $currentPosition);
     }
 }

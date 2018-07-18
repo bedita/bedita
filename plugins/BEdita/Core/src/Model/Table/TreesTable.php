@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\Table;
@@ -27,7 +28,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
  *
- * @mixin \Cake\ORM\Behavior\TreeBehavior
+ * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  */
 class TreesTable extends Table
 {
@@ -71,7 +72,7 @@ class TreesTable extends Table
             'foreignKey' => 'parent_node_id'
         ]);
 
-        $this->addBehavior('Tree', [
+        $this->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
             'parent' => 'parent_node_id',
@@ -91,10 +92,20 @@ class TreesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->integer('object_id')
-            ->requirePresence('object_id', 'create');
+            ->scalar('position')
+            ->notEmpty('position')
+            ->notEquals('position', 0, null, function ($context) {
+                return is_numeric($context['data']['position']);
+            })
+            ->integer('position', null, function ($context) {
+                return is_numeric($context['data']['position']);
+            })
+            ->inList('position', ['first', 'last'], null, function ($context) {
+                return !is_numeric($context['data']['position']);
+            });
 
-        $validator->boolean('menu')
+        $validator
+            ->boolean('menu')
             ->notEmpty('menu');
 
         return $validator;
@@ -182,6 +193,12 @@ class TreesTable extends Table
      */
     public function afterSave(Event $event, Tree $entity)
     {
+        if ($entity->has('position')) {
+            if ($this->moveAt($entity, $entity->get('position')) === false) {
+                throw new BadRequestException(__d('bedita', 'Invalid position'));
+            }
+        }
+
         if ($entity->isNew()) {
             return;
         }
@@ -220,6 +237,8 @@ class TreesTable extends Table
     }
 
     /**
+     * Check if a given ID is the ID of a Folder.
+     *
      * @param int $id ID of object being checked.
      * @return bool
      */
