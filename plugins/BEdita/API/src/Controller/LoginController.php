@@ -189,6 +189,7 @@ class LoginController extends AppController
 
         $user = $this->userEntity();
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
     }
