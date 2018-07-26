@@ -230,7 +230,7 @@ class LoginController extends AppController
      */
     protected function checkPassword(User $entity, array $data)
     {
-        if (!isset($data['password'])) {
+        if (empty($data['password'])) {
             return;
         }
 
