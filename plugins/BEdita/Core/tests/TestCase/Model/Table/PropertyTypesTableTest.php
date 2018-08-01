@@ -41,6 +41,7 @@ class PropertyTypesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
@@ -180,7 +181,7 @@ class PropertyTypesTableTest extends TestCase
 
         static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
 
-        $propertyType = $this->PropertyTypes->get(11);
+        $propertyType = $this->PropertyTypes->get(12);
         $this->PropertyTypes->delete($propertyType);
 
         static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
@@ -212,7 +213,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeDeleteOk()
     {
-        $propertyType = $this->PropertyTypes->get(11);
+        $propertyType = $this->PropertyTypes->get(12);
 
         $success = $this->PropertyTypes->delete($propertyType);
 
@@ -247,16 +248,27 @@ class PropertyTypesTableTest extends TestCase
                 'duration',
                 'Streams',
             ],
+            'timestamp' => [
+                'datetime',
+                'expires',
+                'AsyncJobs',
+                'timestamp',
+            ],
             'float' => [
                 'number',
                 'duration',
                 'Streams',
                 'float',
             ],
+            'datetime' => [
+                'datetime',
+                'modified',
+                'Objects',
+            ],
             'date' => [
                 'date',
-                'created',
-                'Streams',
+                'birthdate',
+                'Profiles',
             ],
             'fallback' => [
                 'string',

@@ -51,6 +51,10 @@ class PropertyTypesFixture extends TestFixture
         ],
         [
             'name' => 'date',
+            'params' => '{"type":"string","format":"date"}',
+        ],
+        [
+            'name' => 'datetime',
             'params' => '{"type":"string","format":"date-time"}',
         ],
         [
