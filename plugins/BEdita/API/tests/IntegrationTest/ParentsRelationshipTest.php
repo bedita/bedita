@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Api\Test\IntegrationTest;
+namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
@@ -52,7 +52,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     }
 
     /**
-     * Undocumented function
+     * Test setting a parent to an object.
      *
      * @return void
      */
@@ -132,7 +132,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         sort($parentIds);
         static::assertEquals(Hash::extract($data, '{n}.id'), $parentIds);
 
-        // DELETE: delete all remining parents relationships
+        // DELETE: delete all remaining parents relationships
         $this->configRequestHeaders('DELETE', $authHeader);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest($relationshipsEndpoint, 'DELETE', json_encode(compact('data')));
@@ -178,5 +178,138 @@ class ParentsRelationshipTest extends IntegrationTestCase
             ->find()
             ->where(['object_id' => $objectId])
             ->count();
+    }
+
+    /**
+     * Test deleted objects as `parent`
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testDeletedParent()
+    {
+        // a deleted folder must not be listed in `parents`
+        $foldersTable = TableRegistry::get('Folders');
+        $folder = $foldersTable->get(12);
+        $folder->deleted = true;
+        $foldersTable->saveOrFail($folder);
+
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/parents');
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $ids = Hash::extract($result, 'data.{n}.id');
+        static::assertEmpty($ids);
+    }
+
+    /**
+     * Test `?include=parents` query string
+     *
+     * @return void
+     */
+    public function testIncludeParents()
+    {
+        $this->configRequestHeaders('GET');
+        $this->get('/documents/2?include=parents');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $includedIds = Hash::extract($result, 'included.{n}.id');
+        static::assertEquals(['11'], $includedIds);
+    }
+
+    /**
+     * Test setting an object's parent with position.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSetParentPosition()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '12',
+                'type' => 'folders',
+                'meta' => [
+                    'relation' => [
+                        'position' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+            ->where(['parent_id' => 12])
+            ->order(['tree_left' => 'ASC'])
+            ->toList();
+
+        static::assertEquals([2, 4], $childrenIds);
+    }
+
+    /**
+     * Data provider for `testSetParentPositionInvalid` test case.
+     *
+     * @return array
+     */
+    public function setParentPositionInvalidProvider()
+    {
+        return [
+            'zero' => [
+                '[position.notEquals]: The provided value is invalid',
+                0,
+            ],
+            'invalid string' => [
+                '[position.inList]: The provided value is invalid',
+                'gustavo',
+            ],
+            'empty' => [
+                '[position._empty]: This field cannot be left empty',
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * Test setting an object's parent with an invalid position.
+     *
+     * @param string $expected Expected error.
+     * @param int|string $position Desired position.
+     * @return void
+     *
+     * @dataProvider setParentPositionInvalidProvider()
+     * @coversNothing
+     */
+    public function testSetParentPositionInvalid($expected, $position)
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '12',
+                'type' => 'folders',
+                'meta' => [
+                    'relation' => compact('position'),
+                ],
+            ],
+        ];
+        $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertEquals('Invalid data', $result['error']['title']);
+        static::assertEquals($expected, $result['error']['detail']);
+
+        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+            ->where(['parent_id' => 12])
+            ->order(['tree_left' => 'ASC'])
+            ->toList();
+
+        static::assertEquals([4], $childrenIds);
     }
 }

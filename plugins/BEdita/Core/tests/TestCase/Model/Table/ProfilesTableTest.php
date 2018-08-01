@@ -113,7 +113,7 @@ class ProfilesTableTest extends TestCase
                     'email' => 'gustavo.supporto@channelweb.it',
                     'object_type_id' => 3,
                     'status' => 'draft',
-                    'lang' => 'eng',
+                    'lang' => 'en',
                 ],
             ],
         ];
@@ -230,24 +230,91 @@ class ProfilesTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testBeforeSave` test case.
+     *
+     * @return array
+     */
+    public function beforeSaveProvider()
+    {
+        return [
+            'missing' => [
+                [
+                    'email' => null,
+                    'title' => null,
+                ],
+                [
+                    'name' => 'Gustavo',
+                    'surname' => 'Supporto',
+                    'email' => '',
+                ],
+            ],
+            'empty title' => [
+                [
+                    'title' => 'Gustavo Supporto',
+                ],
+                [
+                    'name' => 'Gustavo',
+                    'surname' => 'Supporto',
+                    'title' => '',
+                ],
+            ],
+            'null title' => [
+                [
+                    'title' => null,
+                ],
+                [
+                    'name' => 'Gustavo',
+                    'title' => null,
+                ],
+            ],
+            'no title' => [
+                [
+                    'title' => null,
+                ],
+                [
+                    'name' => 'Gustavo',
+                ],
+            ],
+            'title set' => [
+                [
+                    'title' => 'Dr. Supporto Matteo',
+                ],
+                [
+                    'title' => 'Dr. Supporto Matteo',
+                    'name' => 'Matteo',
+                    'surname' => 'Supporto',
+                ],
+            ],
+            'surname only' => [
+                [
+                    'title' => 'Supporto',
+                ],
+                [
+                    'title' => '',
+                    'surname' => 'Supporto',
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test `beforeSave` method.
      *
+     * @param array $expected Expected result.
+     * @param array $data Save input data.
      * @return void
+     * @dataProvider beforeSaveProvider
      * @covers ::beforeSave()
      */
-    public function testBeforeSave()
+    public function testBeforeSave(array $expected, array $data)
     {
-        $data = [
-            'name' => 'Gustavo',
-            'surname' => 'Supporto',
-            'email' => '',
-        ];
-
         $profile = $this->Profiles->newEntity($data);
         $profile->type = 'profiles';
-
         $success = $this->Profiles->save($profile);
         static::assertTrue((bool)$success);
-        static::assertNull($success->get('email'));
+
+        foreach ($expected as $key => $value) {
+            static::assertEquals($value, $success->get($key));
+        }
     }
 }

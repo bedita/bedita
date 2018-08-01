@@ -215,6 +215,59 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
+     * Data provider for `testGetRelationsByName` test case.
+     *
+     * @return array
+     */
+    public function getRelationsByNameProvider()
+    {
+        return [
+            'empty' => [
+                [],
+                'objects',
+            ],
+            'both' => [
+                ['test', 'inverse_test'],
+                'documents',
+                'both',
+            ],
+            'left' => [
+                ['test'],
+                'documents',
+                'left',
+            ],
+            'right' => [
+                ['inverse_test'],
+                'documents',
+                'right',
+            ],
+            'inherited' => [
+                ['test_abstract', 'inverse_test_abstract'],
+                'files',
+            ],
+        ];
+    }
+
+    /**
+     * Test `getRelations()` method.
+     *
+     * @param string[] $expected List of expected relations.
+     * @param string $name Object type name to get relations for.
+     * @param string $side Side to get relations for.
+     * @return void
+     *
+     * @dataProvider getRelationsByNameProvider()
+     * @covers ::getRelations()
+     */
+    public function testGetRelationsByName($expected, $name, $side = 'both')
+    {
+        $objectType = $this->ObjectTypes->get($name);
+        $relations = array_keys($objectType->getRelations($side));
+
+        static::assertEquals($expected, $relations, '', 0, 10, true);
+    }
+
+    /**
      * Test getter for relations.
      *
      * @return void
@@ -594,5 +647,40 @@ class ObjectTypeTest extends TestCase
         $schema = $objectType->schema;
 
         static::assertFalse($schema);
+    }
+
+    /**
+     * Test getter for disabled `schema`.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaDisabled()
+    {
+        $objectType = $this->ObjectTypes->get('news');
+        $schema = $objectType->schema;
+        static::assertFalse($schema);
+    }
+
+    /**
+     * Test getter for `schema` whith hidden properties.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaHiddenProperties()
+    {
+        // enable type `news`
+        $objectType = $this->ObjectTypes->get('news');
+        $objectType->enabled = true;
+        $success = $this->ObjectTypes->save($objectType);
+        static::assertTrue((bool)$success);
+
+        // `body` property is hidden
+        $schema = $objectType->schema;
+        $properties = Hash::extract($schema, 'properties');
+        static::assertArrayNotHasKey('body', $properties);
     }
 }

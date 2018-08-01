@@ -66,4 +66,11 @@ interface JsonApiSerializable
      * @return array
      */
     public function jsonApiSerialize($options = 0, $fields = []);
+
+    /**
+     * Get prefix used for `_name` in routing urls creation.
+     *
+     * @return string
+     */
+    public function routeNamePrefix();
 }

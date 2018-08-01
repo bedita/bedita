@@ -21,7 +21,17 @@
 use Cake\Core\Plugin;
 
 /**
- * Load all plugin routes.  See the Plugin documentation on
- * how to customize the loading of plugin routes.
+ * Load plugin routes.
+ * First loaded plugins then 'BEdita/API'
  */
-Plugin::routes();
+$plugins = Plugin::loaded();
+foreach ($plugins as $plugin) {
+    if (!in_array($plugin, ['BEdita/API', 'BEdita/Core'])) {
+        Plugin::routes($plugin);
+    }
+}
+
+// Load 'BEdita/API' as last route
+if (Plugin::loaded('BEdita/API')) {
+    Plugin::routes('BEdita/API');
+}

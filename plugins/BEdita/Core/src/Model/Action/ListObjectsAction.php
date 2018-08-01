@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Core\Configure;
 use Cake\Utility\Hash;
 
 /**
@@ -78,6 +79,9 @@ class ListObjectsAction extends BaseAction
         $query = $action->execute(compact('filter', 'contain'));
         if (isset($type)) {
             $query = $query->find('type', (array)$type);
+        }
+        if (Configure::check('Status.level')) {
+            $query = $query->find('status', [Configure::read('Status.level')]);
         }
 
         return $query;

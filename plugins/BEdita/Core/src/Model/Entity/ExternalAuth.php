@@ -25,6 +25,8 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\AuthProvider $auth_provider
  * @property string $provider_username
  * @property string $params
+ * @property \Cake\I18n\Time $created
+ * @property \Cake\I18n\Time $modified
  *
  * @since 4.0.0
  */

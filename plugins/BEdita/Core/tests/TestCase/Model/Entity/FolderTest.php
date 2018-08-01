@@ -169,4 +169,69 @@ class FolderTest extends TestCase
         $folder = $folder->jsonApiSerialize();
         static::assertArrayHasKey('parent', $folder['relationships']);
     }
+
+    /**
+     * Data provider for `testGetPath()`
+     *
+     * @return array
+     */
+    public function getPathProvider()
+    {
+        return [
+            'root' => [
+                '/11',
+                11,
+            ],
+            'subfolder' => [
+                '/11/12',
+                12,
+            ]
+        ];
+    }
+
+    /**
+     * Test getter for `path`
+     *
+     * @param string $expected The expected path
+     * @param int $id The folder id
+     * @return void
+     *
+     * @dataProvider getPathProvider
+     * @covers ::_getPath()
+     */
+    public function testGetPath($expected, $id)
+    {
+        $folder = $this->Folders->get($id);
+        static::assertEquals($expected, $folder->path);
+    }
+
+    /**
+     * Test that `path` virtual property is null if folder id is empty.
+     *
+     * @return void
+     *
+     * @covers ::_getPath()
+     */
+    public function testGetPathNull()
+    {
+        $folder = $this->Folders->newEntity();
+        static::assertNull($folder->path);
+    }
+
+    /**
+     * Test getter for `path` throws RuntimeException if folder is orphan.
+     *
+     * @return void
+     *
+     * @covers ::_getPath()
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Folder "12" is not on the tree.
+     */
+    public function testGetPathOrphanFolder()
+    {
+        TableRegistry::get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::get('Trees')->recover();
+
+        $this->Folders->get(12);
+    }
 }

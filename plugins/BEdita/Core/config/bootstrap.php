@@ -66,4 +66,4 @@ Configure::load('BEdita/Core.bedita', 'ini');
 /**
  * Load thumbnail generators.
  */
-Thumbnail::setConfig(Configure::read('Thumbnails.generators'));
+Thumbnail::setConfig(Configure::read('Thumbnails.generators') ?: []);

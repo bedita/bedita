@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -44,6 +48,20 @@ class ConfigTable extends Table
                 ]
             ],
         ]);
+
+        $this->belongsTo('Applications');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['application_id'], 'Applications'));
+
+        return $rules;
     }
 
     /**
@@ -65,5 +83,27 @@ class ConfigTable extends Table
             ->notEmpty('content');
 
         return $validator;
+    }
+
+    /**
+     * Finder for my config.
+     * Common configuration (where `application_id` is NULL)
+     * and configuration of the current application is returned.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findMine(Query $query)
+    {
+        return $query->where(function (QueryExpression $exp) {
+            return $exp->or_(function (QueryExpression $exp) {
+                $id = CurrentApplication::getApplicationId();
+                if ($id !== null) {
+                    $exp->eq($this->aliasField('application_id'), $id);
+                }
+
+                return $exp->isNull($this->aliasField('application_id'));
+            });
+        });
     }
 }

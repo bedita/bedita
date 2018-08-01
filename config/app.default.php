@@ -500,4 +500,24 @@ return [
             ],
         ],
     ],
+
+    /**
+     * I18n settings.
+     * Language tags follow IETF RFC5646 https://tools.ietf.org/html/rfc5646
+     * See also https://en.wikipedia.org/wiki/IETF_language_tag
+     *
+     * - 'languages' - array of language tags as keys with names as values; if empty any language tag may be used,
+     *      if not only these language tags are valid
+     * - 'default' - value assumed on empty lang attribute upon creation, can be null (default)
+     */
+    'I18n' => [
+        // list of allowed project language tags
+        'languages' => [
+        //   'en' => 'English',
+        //   'de' => 'German',
+        ],
+
+        // default lang tag - may be null
+        'default' => null,
+    ],
 ];

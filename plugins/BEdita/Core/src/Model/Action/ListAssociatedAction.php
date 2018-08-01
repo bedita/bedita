@@ -250,6 +250,9 @@ class ListAssociatedAction extends BaseAction
         $inverseAssociation = $this->buildInverseAssociation();
         $query = $this->buildQuery($primaryKey, $data, $inverseAssociation);
 
+        // remove temporary alias of inverse association from TableRegistry
+        TableRegistry::remove(static::INVERSE_ASSOCIATION_NAME);
+
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();
         }

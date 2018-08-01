@@ -18,21 +18,23 @@ use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
-use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\HasOne;
+use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/objects` endpoint.
@@ -72,27 +74,19 @@ class ObjectsController extends ResourcesController
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::get('ObjectTypes')
                 ->find('list')
-                ->find('byRelation', compact('name'))
+                ->find('byRelation', compact('name') + ['descendants' => true])
                 ->toArray();
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
         }
 
-        $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
-        try {
-            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
-            $this->modelClass = $this->objectType->alias;
-            $this->Table = TableRegistry::get($this->modelClass);
-        } catch (RecordNotFoundException $e) {
-            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
-
-            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
-        }
+        $this->initObjectModel();
 
         $behaviorRegistry = $this->Table->behaviors();
-        if ($behaviorRegistry->hasMethod('getRelations')) {
-            $relations = array_keys($behaviorRegistry->call('getRelations'));
-            $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
+        if ($behaviorRegistry->hasMethod('objectType')) {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
+            $objectType = $behaviorRegistry->call('objectType');
+            $this->setConfig('allowedAssociations', array_fill_keys($objectType->relations, []));
         }
 
         // Requested object type endpoint MUST be `enabled`
@@ -104,6 +98,44 @@ class ObjectsController extends ResourcesController
 
         if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
+        }
+    }
+
+    /**
+     * Init model related attributes:
+     *  - $this->objectType
+     *  - $this->modelClass
+     *  - $this->Table
+     *
+     * @return void
+     * @throws \Cake\Routing\Exception\MissingRouteException If `object_type` param is not valid
+     */
+    protected function initObjectModel()
+    {
+        $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
+        try {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $this->objectType */
+            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            if ($type !== $this->objectType->name) {
+                $this->log(
+                    sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
+                    'warning',
+                    ['request' => $this->request]
+                );
+
+                throw new MissingRouteException(__d(
+                    'bedita',
+                    'A route matching "{0}" could not be found. Did you mean "{1}"?',
+                    $this->request->getRequestTarget(),
+                    $this->objectType->name
+                ));
+            }
+            $this->modelClass = $this->objectType->alias;
+            $this->Table = TableRegistry::get($this->modelClass);
+        } catch (RecordNotFoundException $e) {
+            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
+
+            throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
     }
 
@@ -153,13 +185,12 @@ class ObjectsController extends ResourcesController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data->id)
+                    $this->resourceUrl($data, 'id')
                 );
         } else {
             // List existing entities.
             $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-            $include = $this->request->getQuery('include');
-            $contain = $include ? $this->prepareInclude($include) : [];
+            $contain = $this->prepareInclude($this->request->getQuery('include'));
 
             $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
             $query = $action(compact('filter', 'contain'));
@@ -175,13 +206,13 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    protected function resourceUrl($id)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
         return Router::url(
             [
                 '_name' => 'api:objects:resource',
                 'object_type' => $this->objectType->name,
-                'id' => $id,
+                'id' => $entity->get($primaryKey),
             ],
             true
         );
@@ -195,8 +226,7 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
         $id = TableRegistry::get('Objects')->getId($id);
-        $include = $this->request->getQuery('include');
-        $contain = $include ? $this->prepareInclude($include) : [];
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
@@ -234,6 +264,16 @@ class ObjectsController extends ResourcesController
 
     /**
      * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
+     */
+    protected function getAssociatedAction(Association $association)
+    {
+        return new ListRelatedObjectsAction(compact('association'));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function related()
     {
@@ -244,9 +284,10 @@ class ObjectsController extends ResourcesController
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
-        $action = new ListRelatedObjectsAction(compact('association'));
-        $objects = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $action = $this->getAssociatedAction($association);
+        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
@@ -269,13 +310,7 @@ class ObjectsController extends ResourcesController
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
-
-        $allowedMethods = ['get', 'post', 'patch', 'delete'];
-        if ($relationship instanceof BelongsTo || $relationship instanceof HasOne) {
-            // For to-one relationship, POST and DELETE are not implemented.
-            $allowedMethods = ['get', 'patch'];
-        }
-        $this->request->allowMethod($allowedMethods);
+        $this->setRelationshipsAllowedMethods($association);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -287,14 +322,14 @@ class ObjectsController extends ResourcesController
                 break;
 
             case 'DELETE':
-                $action = new RemoveAssociatedAction(compact('association'));
+                $action = new RemoveRelatedObjectsAction(compact('association'));
                 break;
 
             case 'GET':
             default:
                 $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-                $action = new ListRelatedObjectsAction(compact('association'));
+                $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
@@ -320,7 +355,7 @@ class ObjectsController extends ResourcesController
         }
 
         if (is_array($count)) {
-            $action = new ListRelatedObjectsAction(compact('association'));
+            $action = $this->getAssociatedAction($association);
             $data = $action(['primaryKey' => $id, 'list' => true, 'only' => $count]);
 
             $count = count($count);
@@ -352,29 +387,46 @@ class ObjectsController extends ResourcesController
             return $available;
         }
 
-        foreach ($this->objectType->right_relations as $relation) {
-            if ($relation->inverse_name !== $relationship) {
-                continue;
-            }
-            $result = Hash::extract($relation->left_object_types, '{n}.name');
-        }
-        foreach ($this->objectType->left_relations as $relation) {
-            if ($relation->name !== $relationship) {
-                continue;
-            }
-            $result = Hash::extract($relation->right_object_types, '{n}.name');
-        }
-        if (empty($result)) {
+        $types = $this->getAvailableTypes($relationship);
+        if (empty($types)) {
             return null;
         }
 
-        return Router::url(
-            [
-                '_name' => 'api:objects:index',
-                'object_type' => 'objects',
-                'filter' => ['type' => array_values($result)],
-            ],
-            true
-        );
+        $url = [
+            '_name' => 'api:objects:index',
+            'object_type' => 'objects'
+        ];
+        if (count(array_diff($types, ['objects'])) > 0) {
+            natsort($types);
+            $url['filter'] = ['type' => array_values($types)];
+        }
+
+        return Router::url($url, true);
+    }
+
+    /**
+     * Return available object types for a relationship
+     *
+     * @param string $relationship relation name
+     * @return array List of available types
+     */
+    protected function getAvailableTypes($relationship)
+    {
+        foreach ($this->objectType->getRelations('right') as $relation) {
+            if ($relation->inverse_name !== $relationship) {
+                continue;
+            }
+
+            return array_values(Hash::extract($relation->left_object_types, '{n}.name'));
+        }
+        foreach ($this->objectType->getRelations('left') as $relation) {
+            if ($relation->name !== $relationship) {
+                continue;
+            }
+
+            return array_values(Hash::extract($relation->right_object_types, '{n}.name'));
+        }
+
+        return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
     }
 }

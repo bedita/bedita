@@ -20,6 +20,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Trait for exposing useful properties required for JSON API response formatting at the entity level.
@@ -221,7 +222,7 @@ trait JsonApiTrait
      *
      * @return string
      */
-    protected function routeNamePrefix()
+    public function routeNamePrefix()
     {
         return 'api:resources';
     }
@@ -236,7 +237,7 @@ trait JsonApiTrait
         $self = Router::url(
             [
                 '_name' => $this->routeNamePrefix() . ':resource',
-                'controller' => $this->getType(),
+                'controller' => Inflector::camelize($this->getType()),
                 'id' => $this->getId(),
             ],
             true
@@ -292,7 +293,7 @@ trait JsonApiTrait
             $self = Router::url(
                 [
                     '_name' => $this->routeNamePrefix() . ':relationships',
-                    'controller' => $this->getType(),
+                    'controller' => Inflector::camelize($this->getType()),
                     'relationship' => $relationship,
                     'id' => $this->getId(),
                 ],
@@ -301,7 +302,7 @@ trait JsonApiTrait
             $related = Router::url(
                 [
                     '_name' => $this->routeNamePrefix() . ':related',
-                    'controller' => $this->getType(),
+                    'controller' => Inflector::camelize($this->getType()),
                     'relationship' => $relationship,
                     'related_id' => $this->getId(),
                 ],

@@ -1,13 +1,17 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
@@ -34,6 +38,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.object_relations',
@@ -104,7 +109,7 @@ class ObjectsTableTest extends TestCase
                     'description' => 'another description',
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'lang' => 'eng',
+                    'lang' => 'en',
                 ],
             ],
             'titleOnly' => [
@@ -446,5 +451,156 @@ class ObjectsTableTest extends TestCase
 
         $id = $this->Objects->getId($uname);
         static::assertEquals($expected, $id);
+    }
+
+    /**
+     * Test `findAncestor()`
+     *
+     * @return void
+     *
+     * @covers ::findAncestor()
+     */
+    public function testFindAncestor()
+    {
+        $objects = $this->Objects->find('ancestor', [11])->toArray();
+        static::assertNotEmpty($objects);
+        $ids = Hash::extract($objects, '{n}.id');
+        static::assertEquals([12, 4, 2], $ids);
+    }
+
+    /**
+     * Test `findParent()`
+     *
+     * @return void
+     *
+     * @covers ::findParent()
+     */
+    public function testFindParent()
+    {
+        $objects = $this->Objects->find('parent', [12])->toArray();
+        static::assertNotEmpty($objects);
+        $ids = Hash::extract($objects, '{n}.id');
+        static::assertEquals([4], $ids);
+    }
+
+    /**
+     * Data provider for `testFindStatus`.
+     *
+     * @return array
+     */
+    public function findStatusProvider()
+    {
+        return [
+            'too many options' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                [1, 2, 3],
+            ],
+            'invalid array' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['gustavo' => 'on'],
+            ],
+            'on' => [
+                ['on'],
+                ['on'],
+            ],
+            'draft' => [
+                ['on', 'draft'],
+                ['draft'],
+            ],
+            'off' => [
+                ['on', 'draft', 'off'],
+                ['off'],
+            ],
+            'all' => [
+                ['on', 'draft', 'off'],
+                ['all'],
+            ],
+            'invalid level' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['invalid level'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findStatus()`.
+     *
+     * @param array|\Exception $expected Expected result.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @dataProvider findStatusProvider()
+     * @covers ::findStatus()
+     */
+    public function testFindStatus($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        } else {
+            $expected = $this->Objects->find('list')
+                ->where(['status IN' => $expected])
+                ->toArray();
+            ksort($expected);
+        }
+
+        $actual = $this->Objects->find('list')
+            ->find('status', $options)
+            ->toArray();
+        ksort($actual);
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for `checkLangTag`.
+     *
+     * @return array
+     */
+    public function checkLangTagProvider()
+    {
+        return [
+            'any lang' => [
+                'en-US',
+                [
+                    'default' => null,
+                ],
+                [
+                    'lang' => 'en-US',
+                ],
+            ],
+            'use default' => [
+                'en',
+                [
+                    'default' => 'en',
+                ],
+                [
+                    'lang' => '',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkLangTag()`.
+     *
+     * @param string $expected Expected result.
+     * @param array $config I18n config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkLangTagProvider()
+     * @covers ::checkLangTag()
+     */
+    public function testCheckLangTag($expected, array $config, array $data)
+    {
+        Configure::write('I18n', $config);
+
+        $object = $this->Objects->get(3);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('lang'));
     }
 }

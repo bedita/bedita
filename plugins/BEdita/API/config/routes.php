@@ -27,6 +27,9 @@ Router::plugin(
             'streams',
             'users',
             'media',
+            'folders',
+            'translations',
+            'annotations',
         ];
         $adminControllers = [
             'applications',
@@ -194,6 +197,13 @@ Router::plugin(
             '/trash/:id',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'trash:delete', 'pass' => ['id']]
+        );
+
+        // Config.
+        $routes->connect(
+            '/config',
+            ['controller' => 'Config', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'config:index']
         );
 
         // Objects.

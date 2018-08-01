@@ -30,6 +30,8 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::relationships()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::setRelationshipsAllowedMethods()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociations()
     {
@@ -63,6 +65,12 @@ class ResourcesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -83,7 +91,7 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -94,6 +102,8 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociationsNotFound()
     {
@@ -112,6 +122,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociations()
     {
@@ -146,6 +157,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsDuplicateEntry()
     {
@@ -184,6 +196,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsNoContent()
     {
@@ -210,6 +223,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociations()
     {
@@ -285,6 +299,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociationsNoContent()
     {
@@ -312,6 +327,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociations()
     {
@@ -355,6 +371,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsEmpty()
     {
@@ -379,6 +396,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsNoContent()
     {
@@ -405,6 +423,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsMissingId()
     {
@@ -438,6 +457,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testWrongAssociation()
     {
@@ -464,6 +484,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsUnsupportedType()
     {
@@ -561,7 +582,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                         'another_username' => null, // custom property
@@ -594,6 +615,12 @@ class ResourcesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/parents',
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
                             ],
                         ],
                     ],
@@ -674,5 +701,23 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test that no resources are included unless asked.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testIncludeEmpty()
+    {
+        $this->configRequestHeaders();
+        $this->get('/roles');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayNotHasKey('included', $result);
     }
 }

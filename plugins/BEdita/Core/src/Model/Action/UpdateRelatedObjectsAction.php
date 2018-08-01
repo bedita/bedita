@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\Folder;
 use Cake\Datasource\EntityInterface;
 
 /**
@@ -37,10 +38,59 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
         $sourcePrimaryKey = $entity->extract((array)$this->Association->getSource()->getPrimaryKey());
         $foreignKey = array_map([$jointTable, 'aliasField'], (array)$this->Association->getForeignKey());
 
+        $conditionsPrefix = sprintf('%s.', $jointTable->getAlias());
+        $conditions = array_filter(
+            $this->Association->getConditions(),
+            function ($key) use ($conditionsPrefix) {
+                // Filter only conditions that apply to junction table.
+                return substr($key, 0, strlen($conditionsPrefix)) === $conditionsPrefix;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+
         $existing = $jointTable->find()
-            ->where($this->Association->getConditions())
+            ->where($conditions)
             ->andWhere(array_combine($foreignKey, $sourcePrimaryKey));
 
         return $existing;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(array $data = [])
+    {
+        if (array_key_exists('entity', $data)) {
+            $data['entity'] = $this->getEntity($data['entity']);
+        }
+
+        return parent::execute($data);
+    }
+
+    /**
+     * Get the right entity for the action.
+     *
+     * For `Folder` entity with `Parents` association changes the point of view
+     * using `Tree` entity with `ParentObjects` association assuring to
+     * always use a "to one" relation.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The starting entity.
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getEntity(EntityInterface $entity)
+    {
+        if (!($entity instanceof Folder) || $this->Association->getName() !== 'Parents') {
+            return $entity;
+        }
+
+        $table = $this->Association->junction();
+        $entity = $table->find()
+            ->where([$table->association('Objects')->getForeignKey() => $entity->id])
+            ->firstOrFail();
+
+        $this->Association = $table->association('ParentObjects');
+        $this->setConfig('association', $this->Association);
+
+        return $entity;
     }
 }

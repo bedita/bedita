@@ -16,8 +16,11 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Entity\User;
+use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -31,6 +34,18 @@ use Firebase\JWT\JWT;
  */
 class LoginController extends AppController
 {
+    /**
+     * Default password hasher settings.
+     *
+     * @var array
+     */
+    const PASSWORD_HASHER = [
+        'className' => 'Fallback',
+        'hashers' => [
+            'Default',
+            'Weak' => ['hashType' => 'md5'],
+        ],
+    ];
 
     /**
      * {@inheritDoc}
@@ -58,14 +73,9 @@ class LoginController extends AppController
                         'username' => 'username',
                         'password' => 'password_hash',
                     ],
-                    'passwordHasher' => [
-                        'className' => 'Fallback',
-                        'hashers' => [
-                            'Default',
-                            'Weak' => ['hashType' => 'md5'],
-                        ],
-                    ],
-                ],
+                    'passwordHasher' => self::PASSWORD_HASHER,
+                    'finder' => 'login',
+                 ],
                 'BEdita/API.Jwt' => [
                     'queryDatasource' => true,
                 ],
@@ -179,6 +189,7 @@ class LoginController extends AppController
 
         $user = $this->userEntity();
 
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
     }
@@ -194,9 +205,11 @@ class LoginController extends AppController
         $this->request->allowMethod('patch');
 
         $entity = $this->userEntity();
-        $entity->setAccess(['username', 'password', 'password_hash', 'email'], false);
+        $entity->setAccess(['username', 'password_hash', 'email'], false);
 
         $data = $this->request->getData();
+        $this->checkPassword($entity, $data);
+
         $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
         $action(compact('entity', 'data'));
 
@@ -207,9 +220,34 @@ class LoginController extends AppController
     }
 
     /**
+     * Check current password if a password change is requested.
+     * If `password` is set in requesta data current valid password must be in `old_password`
+     *
+     * @param \BEdita\Core\Model\Entity\User $entity Logged user entity.
+     * @param array $data Request data.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if current password is not correct.
+     * @return void
+     */
+    protected function checkPassword(User $entity, array $data)
+    {
+        if (!isset($data['password'])) {
+            return;
+        }
+
+        if (empty($data['old_password'])) {
+            throw new BadRequestException(__d('bedita', 'Missing current password'));
+        }
+
+        $hasher = PasswordHasherFactory::build(self::PASSWORD_HASHER);
+        if (!$hasher->check($data['old_password'], $entity->password_hash)) {
+            throw new BadRequestException(__d('bedita', 'Wrong password'));
+        }
+    }
+
+    /**
      * Read logged user entity including roles.
      *
-     * @return \Cake\Datasource\EntityInterface Logged user entity
+     * @return \BEdita\Core\Model\Entity\User Logged user entity
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
      */
     protected function userEntity()

@@ -24,10 +24,12 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
@@ -64,13 +66,6 @@ abstract class ResourcesController extends AppController
      * @var \Cake\ORM\Table
      */
     protected $Table;
-
-    /**
-     * Prefix used in `_name` creating route urls
-     *
-     * @var string
-     */
-    protected $routeNamePrefix = 'api:resources';
 
     /**
      * {@inheritDoc}
@@ -118,12 +113,15 @@ abstract class ResourcesController extends AppController
     /**
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
-     * @param string $include Association(s) to be included.
+     * @param string|array|null $include Association(s) to be included.
      * @return array
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
      */
     protected function prepareInclude($include)
     {
+        if ($include === null) {
+            return [];
+        }
         if (!is_string($include)) {
             throw new BadRequestException(
                 __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string'))
@@ -137,8 +135,9 @@ abstract class ResourcesController extends AppController
                 throw new BadRequestException(__d('bedita', 'Inclusion of nested resources is not yet supported'));
             }
 
-            $association = $this->Table->associations()->getByProperty($relationship);
-            if (!array_key_exists($relationship, $this->getConfig('allowedAssociations')) || $association === null) {
+            try {
+                $association = $this->findAssociation($relationship);
+            } catch (NotFoundException $e) {
                 throw new BadRequestException(
                     __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
                 );
@@ -178,13 +177,12 @@ abstract class ResourcesController extends AppController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data->get($primaryKey))
+                    $this->resourceUrl($data, $primaryKey)
                 );
         } else {
             // List existing entities.
             $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-            $include = $this->request->getQuery('include');
-            $contain = $include ? $this->prepareInclude($include) : [];
+            $contain = $this->prepareInclude($this->request->getQuery('include'));
 
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $query = $action(compact('filter', 'contain'));
@@ -200,16 +198,22 @@ abstract class ResourcesController extends AppController
     /**
      * Resource URL of a newly created entity
      *
-     * @param int|string $id Saved entity id
+     * @param \Cake\Datasource\EntityInterface $entity Resource entity
+     * @param string $primaryKey Primary key name
      * @return string Requested URL
      */
-    protected function resourceUrl($id)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
+        $prefix = 'api:resources';
+        if ($entity instanceof JsonApiSerializable) {
+            $prefix = $entity->routeNamePrefix();
+        }
+
         return Router::url(
             [
-                '_name' => $this->routeNamePrefix . ':resource',
+                '_name' => $prefix . ':resource',
                 'controller' => $this->name,
-                'id' => $id,
+                'id' => $entity->get($primaryKey),
             ],
             true
         );
@@ -229,8 +233,7 @@ abstract class ResourcesController extends AppController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
-        $include = $this->request->getQuery('include');
-        $contain = $include ? $this->prepareInclude($include) : [];
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetEntityAction(['table' => $this->Table]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
@@ -282,9 +285,10 @@ abstract class ResourcesController extends AppController
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
-        $action = new ListAssociatedAction(compact('association'));
-        $data = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
+        $action = $this->getAssociatedAction($association);
+        $data = $action->execute(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
         if ($data instanceof Query) {
             $data = $this->paginate($data);
@@ -296,6 +300,33 @@ abstract class ResourcesController extends AppController
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
+    }
+
+    /**
+     * Get the action instance to get list of associated entities.
+     *
+     * @param \Cake\ORM\Association $association The association to use.
+     * @return \BEdita\Core\Model\Action\ListAssociatedAction
+     */
+    protected function getAssociatedAction(Association $association)
+    {
+        return new ListAssociatedAction(compact('association'));
+    }
+
+    /**
+     * Set allowed methods for relationships
+     *
+     * @param \Cake\ORM\Association $association The association.
+     * @return void
+     */
+    protected function setRelationshipsAllowedMethods(Association $association)
+    {
+        $allowedMethods = ['get', 'post', 'patch', 'delete'];
+        if ($association instanceof BelongsTo || $association instanceof HasOne) {
+            // For to-one relationship, POST and DELETE are not implemented.
+            $allowedMethods = ['get', 'patch'];
+        }
+        $this->request->allowMethod($allowedMethods);
     }
 
     /**
@@ -314,13 +345,7 @@ abstract class ResourcesController extends AppController
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
-
-        $allowedMethods = ['get', 'post', 'patch', 'delete'];
-        if ($association instanceof BelongsTo || $association instanceof HasOne) {
-            // For to-one relationship, POST and DELETE are not implemented.
-            $allowedMethods = ['get', 'patch'];
-        }
-        $this->request->allowMethod($allowedMethods);
+        $this->setRelationshipsAllowedMethods($association);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -339,7 +364,7 @@ abstract class ResourcesController extends AppController
             default:
                 $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
 
-                $action = new ListAssociatedAction(compact('association'));
+                $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
@@ -383,20 +408,20 @@ abstract class ResourcesController extends AppController
      */
     protected function getAvailableUrl($relationship)
     {
-        $destinationEntity = $this->Table->associations()->getByProperty($relationship)->getTarget()->newEntity();
+        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity();
         if (!($destinationEntity instanceof JsonApiSerializable)) {
             return null;
         }
 
-        $destinationEntity = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
-        if (empty($destinationEntity['type'])) {
+        $jsonApiData = $destinationEntity->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_BASIC);
+        if (empty($jsonApiData['type'])) {
             return null;
         }
 
         return Router::url(
             [
-                '_name' => $this->routeNamePrefix . ':index',
-                'controller' => $destinationEntity['type'],
+                '_name' => $destinationEntity->routeNamePrefix() . ':index',
+                'controller' => Inflector::camelize($jsonApiData['type']),
             ],
             true
         );

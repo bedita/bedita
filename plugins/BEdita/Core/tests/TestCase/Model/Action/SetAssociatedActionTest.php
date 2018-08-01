@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use Cake\Core\Exception\Exception;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -147,6 +148,13 @@ class SetAssociatedActionTest extends TestCase
                 1,
                 null,
             ],
+            'hasOneEmptyArray' => [
+                0,
+                'FakeTags',
+                'FakeLabels',
+                1,
+                [],
+            ],
             'hasOneNothingToDo' => [
                 0,
                 'FakeTags',
@@ -187,15 +195,20 @@ class SetAssociatedActionTest extends TestCase
         $action = new SetAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);
         } elseif (is_array($related)) {
-            $relatedEntities = $association->getTarget()->find()
-                ->where([
-                    $association->getTarget()->getPrimaryKey() . ' IN' => $related,
-                ])
-                ->toArray();
+            if (empty($related)) {
+                $relatedEntities = [];
+            } else {
+                $relatedEntities = $association->getTarget()->find()
+                    ->where([
+                        $association->getTarget()->getPrimaryKey() . ' IN' => $related,
+                    ])
+                    ->toArray();
+            }
         }
 
         $result = $action(compact('entity', 'relatedEntities'));
@@ -217,5 +230,52 @@ class SetAssociatedActionTest extends TestCase
         static::assertEquals($expected, $result);
         $relCount = is_array($related) ? count($related) : (empty($related) ? 0 : 1);
         static::assertEquals($relCount, $count);
+    }
+
+    /**
+     * Test that an exception is raised with details about the validation error.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedExceptionCode 400
+     */
+    public function testInvocationWithLinkErrors()
+    {
+        try {
+            $table = TableRegistry::get('FakeArticles');
+            /** @var \Cake\ORM\Association\BelongsToMany $association */
+            $association = $table->association('FakeTags');
+
+            $association->junction()->rulesChecker()->add(
+                function () {
+                    return false;
+                },
+                'sampleRule',
+                [
+                    'errorField' => 'gustavo',
+                    'message' => 'This is a sample error',
+                ]
+            );
+
+            $entity = $table->get(1);
+            $relatedEntities = $association->find()->toArray();
+
+            $action = new SetAssociatedAction(compact('association'));
+            $action(compact('entity', 'relatedEntities'));
+        } catch (Exception $e) {
+            $expected = [
+                'title' => 'Error linking entities',
+                'detail' => [
+                    'gustavo' => [
+                        'sampleRule' => 'This is a sample error',
+                    ],
+                ],
+            ];
+
+            static::assertSame($expected, $e->getAttributes());
+
+            throw $e;
+        }
     }
 }

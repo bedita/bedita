@@ -13,8 +13,10 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ConfigTable} Test Case
@@ -37,6 +39,7 @@ class ConfigTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.config',
     ];
 
@@ -127,5 +130,26 @@ class ConfigTableTest extends TestCase
             $success = $this->Config->save($config);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test `mine` finder
+     *
+     * @return void
+     * @covers ::findMine()
+     */
+    public function testFindMine()
+    {
+        $config = $this->Config->find('mine')->toArray();
+        $names = Hash::extract($config, '{n}.name');
+        // `appVal` must not be present
+        static::assertFalse(in_array('appVal', $names));
+
+        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(1));
+
+        $config = $this->Config->find('mine')->toArray();
+        $names = Hash::extract($config, '{n}.name');
+        // `appVal` must be present
+        static::assertTrue(in_array('appVal', $names));
     }
 }

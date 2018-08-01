@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,28 +13,31 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 
 /**
  * Objects Model
  *
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
- * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
- * @property \Cake\ORM\Association\HasMany $DateRanges
- * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
- * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
- * @property \Cake\ORM\Association\BelongsToMany $Parents
- * @property \Cake\ORM\Association\HasMany $Trees
+ * @property \BEdita\Core\Model\Table\ObjectTypesTable|\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $ModifiedByUsers
+ * @property \BEdita\Core\Model\Table\DateRangesTable|\Cake\ORM\Association\HasMany $DateRanges
+ * @property \BEdita\Core\Model\Table\FoldersTable|\Cake\ORM\Association\BelongsToMany $Parents
+ * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
+ * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
  *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
@@ -73,52 +76,51 @@ class ObjectsTable extends Table
         $this->setDisplayField('title');
 
         $this->addBehavior('Timestamp');
-
         $this->addBehavior('BEdita/Core.DataCleanup');
-
         $this->addBehavior('BEdita/Core.UserModified');
-
         $this->addBehavior('BEdita/Core.Relations');
-
         $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->belongsTo('ObjectTypes', [
-            'foreignKey' => 'object_type_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes'
-        ]);
-
-        $this->hasMany('DateRanges', [
-            'foreignKey' => 'object_id',
-            'className' => 'BEdita/Core.DateRanges',
-            'saveStrategy' => 'replace',
-        ]);
-
-        $this->belongsTo('CreatedByUser', [
-            'foreignKey' => 'created_by',
-            'className' => 'BEdita/Core.Users'
-        ]);
-
-        $this->belongsTo('ModifiedByUser', [
-            'foreignKey' => 'modified_by',
-            'className' => 'BEdita/Core.Users'
-        ]);
-
-        $this->belongsToMany('Parents', [
-            'className' => 'BEdita/Core.Folders',
-            'through' => 'BEdita/Core.Trees',
-            'foreignKey' => 'object_id',
-            'targetForeignKey' => 'parent_id',
-        ]);
-
         $this->addBehavior('BEdita/Core.UniqueName');
-
         $this->addBehavior('BEdita/Core.Searchable', [
             'fields' => [
                 'title' => 10,
                 'description' => 7,
                 'body' => 5,
             ],
+        ]);
+
+        $this->belongsTo('ObjectTypes', [
+            'foreignKey' => 'object_type_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.ObjectTypes'
+        ]);
+        $this->hasMany('DateRanges', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
+        ]);
+        $this->belongsTo('CreatedByUsers', [
+            'foreignKey' => 'created_by',
+            'className' => 'BEdita/Core.Users'
+        ]);
+        $this->belongsTo('ModifiedByUsers', [
+            'foreignKey' => 'modified_by',
+            'className' => 'BEdita/Core.Users'
+        ]);
+        $this->belongsToMany('Parents', [
+            'className' => 'BEdita/Core.Folders',
+            'through' => 'BEdita/Core.Trees',
+            'foreignKey' => 'object_id',
+            'targetForeignKey' => 'parent_id',
+            'cascadeCallbacks' => true,
+        ]);
+        $this->hasMany('TreeNodes', [
+            'className' => 'Trees',
+            'foreignKey' => 'object_id',
+        ]);
+        $this->hasMany('Translations', [
+            'className' => 'Translations',
+            'foreignKey' => 'object_id',
         ]);
     }
 
@@ -131,8 +133,8 @@ class ObjectsTable extends Table
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
-        $rules->add($rules->existsIn(['created_by'], 'CreatedByUser'));
-        $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUser'));
+        $rules->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
+        $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUsers'));
 
         return $rules;
     }
@@ -151,8 +153,23 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkLangTag($entity);
 
         return true;
+    }
+
+    /**
+     * Check `lang` tag using `I18n` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException If a wrong lang tag is specified
+     */
+    protected function checkLangTag(EntityInterface $entity)
+    {
+        if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
+            $entity->set('lang', Configure::read('I18n.default'));
+        }
     }
 
     /**
@@ -248,7 +265,7 @@ class ObjectsTable extends Table
     protected function findMine(Query $query)
     {
         return $query->where(function (QueryExpression $exp) {
-            return $exp->eq($this->aliasField($this->CreatedByUser->getForeignKey()), LoggedUser::id());
+            return $exp->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id());
         });
     }
 
@@ -274,5 +291,88 @@ class ObjectsTable extends Table
             ->firstOrFail();
 
         return $result['id'];
+    }
+
+    /**
+     * Finder for objects having a certain `ancestor` on the tree.
+     *
+     * @param Query $query  Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findAncestor(Query $query, array $options)
+    {
+        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentNode = $this->TreeNodes->find()
+            ->where([
+                $this->TreeNodes->aliasField('object_id') => $parentId,
+            ])
+            ->firstOrFail();
+
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentNode) {
+                return $query->where(function (QueryExpression $exp) use ($parentNode) {
+                    return $exp
+                        ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                        ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+                });
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
+    }
+
+    /**
+     * Finder for objects having a certain `parent` on the tree.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Id or unique name of ancestor
+     * @return \Cake\ORM\Query
+     */
+    protected function findParent(Query $query, array $options)
+    {
+        $parentId = $this->getId((string)Hash::get($options, '0'));
+
+        return $query
+            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
+                return $query->where([
+                    $this->TreeNodes->aliasField('parent_id') => $parentId,
+                ]);
+            })
+            ->order($this->TreeNodes->aliasField('tree_left'));
+    }
+
+    /**
+     * Finder for objects based on status level.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Object status level.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
+     *      the finder.
+     */
+    protected function findStatus(Query $query, array $options)
+    {
+        if (count($options) !== 1 || array_keys($options) !== [0]) {
+            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
+        }
+
+        $level = reset($options);
+        switch ($level) {
+            case 'on':
+                return $query->where([
+                    $this->aliasField('status') => 'on',
+                ]);
+
+            case 'draft':
+                return $query->where(function (QueryExpression $exp) {
+                    return $exp->in($this->aliasField('status'), ['on', 'draft']);
+                });
+
+            case 'off':
+            case 'all':
+                return $query;
+
+            default:
+                throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
+        }
     }
 }

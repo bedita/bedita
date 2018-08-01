@@ -27,6 +27,7 @@ class ObjectTypesFixture extends TestFixture
      * @var array
      */
     public $records = [
+        // 1
         [
             'singular' => 'object',
             'name' => 'objects',
@@ -42,6 +43,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 2
         [
             'singular' => 'document',
             'name' => 'documents',
@@ -57,6 +59,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 3
         [
             'singular' => 'profile',
             'name' => 'profiles',
@@ -72,6 +75,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 4
         [
             'singular' => 'user',
             'name' => 'users',
@@ -87,6 +91,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 5
         [
             'singular' => 'news_item',
             'name' => 'news',
@@ -103,6 +108,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => false,
             'core_type' => false,
         ],
+        // 6
         [
             'singular' => 'location',
             'name' => 'locations',
@@ -118,6 +124,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 7
         [
             'singular' => 'event',
             'name' => 'events',
@@ -134,6 +141,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 8
         [
             'singular' => 'media_item',
             'name' => 'media',
@@ -150,6 +158,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 9
         [
             'singular' => 'file',
             'name' => 'files',
@@ -166,6 +175,7 @@ class ObjectTypesFixture extends TestFixture
             'enabled' => true,
             'core_type' => true,
         ],
+        // 10
         [
             'singular' => 'folder',
             'name' => 'folders',

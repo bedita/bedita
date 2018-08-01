@@ -16,13 +16,20 @@ class AnnotationsFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
-            'object_id' => 1,
-            'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            'object_id' => 2,
+            'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Best regards.',
             'user_id' => 1,
-            'created' => '2017-02-17 10:23:15',
-            'modified' => '2017-02-17 10:23:15',
-            'params' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.'
+            'created' => '2018-02-17 10:23:15',
+            'modified' => '2018-02-17 10:23:15',
+            'params' => '"something"'
+        ],
+        [
+            'object_id' => 3,
+            'description' => 'Gustavo for President!',
+            'user_id' => 5,
+            'created' => '2018-06-17 13:34:25',
+            'modified' => '2018-06-17 13:34:25',
+            'params' => '1'
         ],
     ];
 }

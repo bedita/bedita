@@ -95,9 +95,10 @@ abstract class UpdateAssociatedAction extends BaseAction
         $prefix = sprintf('%s.', $junction->getAlias());
         $extraFields = [];
         foreach ($conditions as $field => $value) {
-            if (substr($field, 0, strlen($prefix)) === $prefix) {
-                $field = substr($field, strlen($prefix));
+            if (substr($field, 0, strlen($prefix)) !== $prefix) {
+                continue;
             }
+            $field = substr($field, strlen($prefix));
 
             $extraFields[$field] = $value;
         }

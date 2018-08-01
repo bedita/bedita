@@ -24,6 +24,9 @@ use Cake\ORM\Entity;
  * @property string $content
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
+ * @property int $application_id
+ *
+ * @property \BEdita\Core\Model\Entity\Application|null $application
  *
  * @since 4.0.0
  */

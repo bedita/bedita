@@ -98,6 +98,22 @@ class ConfigFixture extends TestFixture
             'content' => 'NULL',
             'created' => '2016-06-16 12:34:56',
             'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'appVal',
+            'context' => 'core',
+            'content' => '{"val": 42}',
+            'created' => '2018-05-16 12:34:56',
+            'modified' => '2018-05-16 12:38:02',
+            'application_id' => 1,
+        ],
+        [
+            'name' => 'someVal',
+            'context' => 'somecontext',
+            'content' => 42,
+            'created' => '2018-05-16 12:34:56',
+            'modified' => '2018-05-16 12:38:02',
+            'application_id' => 1,
         ]
     ];
 }

@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\ORM\TableRegistry;
 
 /**
  * Test CRUD operations on objects with associated entities
@@ -151,5 +152,54 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test that deleted entities are never returned as related objects.
+     *
+     * @return void
+     */
+    public function testRelatedDeleted()
+    {
+        $table = TableRegistry::get('Documents');
+        $entity = $table->get(3);
+        $entity->set('deleted', true);
+        $table->save($entity);
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(1, $result['data']);
+    }
+
+    /**
+     * Test that deleted entities are never returned as included objects.
+     *
+     * @return void
+     */
+    public function testIncludedDeleted()
+    {
+        $table = TableRegistry::get('Documents');
+        $entity = $table->get(3);
+        $entity->set('deleted', true);
+        $table->save($entity);
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(1, $result['included']);
+    }
+
+    /**
+     * Test that `?include` query parameter works for `/:objectType/:id/:relationName` endpoints.
+     *
+     * @return void
+     */
+    public function testIncludedRelated()
+    {
+        $this->configRequestHeaders();
+        $this->get('/locations/8/another_test?include=inverse_another_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(1, $result['included']);
     }
 }

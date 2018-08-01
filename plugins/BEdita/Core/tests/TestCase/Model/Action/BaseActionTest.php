@@ -14,9 +14,12 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\BaseAction;
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
+ * {@see \BEdita\Core\Model\Action\BaseAction} Test Case
+ *
  * @coversDefaultClass \BEdita\Core\Model\Action\BaseAction
  */
 class BaseActionTest extends TestCase

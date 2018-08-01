@@ -166,6 +166,51 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test login with no data.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testLoginNoData()
+    {
+        $result = $this->Users->dispatchEvent('Auth.afterIdentify', []);
+        static::assertEmpty($result->getData());
+        static::assertNull($result->getResult());
+    }
+
+    /**
+     * Test `login` finder.
+     *
+     * @return void
+     *
+     * @covers ::findLogin()
+     */
+    public function testFindLogin()
+    {
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertNotEmpty($user);
+        static::assertEquals('second user', $user['username']);
+    }
+
+    /**
+     * Test `login` finder fail.
+     *
+     * @return void
+     *
+     * @covers ::findLogin()
+     */
+    public function testFailFindLogin()
+    {
+        $user = $this->Users->get(5);
+        $user->blocked = true;
+        $this->Users->saveOrFail($user);
+
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertNull($user);
+    }
+
+    /**
      * Test handling of external auth login event.
      *
      * @return void
@@ -174,17 +219,35 @@ class UsersTableTest extends TestCase
      */
     public function testExternalAuthLogin()
     {
+        //1. Add external auth and create new user
         $authProvider = TableRegistry::get('AuthProviders')->get(2);
-        $username = 'gustavo';
+        $providerUsername = 'gustavo';
         $params = ['job' => 'head of technical support'];
+        $userId = null;
 
-        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username', 'params'));
+        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
         $externalAuth = $event->result;
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
+        static::assertEquals(15, $externalAuth->user_id);
+
+        // 2. Add external auth to current user
+        $authProvider = TableRegistry::get('AuthProviders')->get(1);
+        $providerUsername = 'friend of gustavo';
+        $params = ['job' => 'support of technical support'];
+        $userId = 5;
+
+        $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
+
+        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        $externalAuth = $event->result;
+        static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
+        static::assertFalse($externalAuth->isNew());
+        static::assertNotNull($externalAuth->id);
+        static::assertEquals(5, $externalAuth->user_id);
     }
 
     /**
@@ -355,6 +418,7 @@ class UsersTableTest extends TestCase
      * @param array $data Data to be validated.
      *
      * @return void
+     * @covers ::validationSignup()
      * @dataProvider validationSignupProvider
      */
     public function testValidationSignup($expected, array $data)
@@ -370,6 +434,26 @@ class UsersTableTest extends TestCase
             $success = $this->Users->save($user);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test validation signup.
+     *
+     * @return void
+     * @covers ::validationSignupExternal()
+     */
+    public function testValidationSignupExternal()
+    {
+        $data = [
+            'username' => 'test',
+            'email' => 'test@email.com',
+        ];
+
+        $user = $this->Users->newEntity();
+        $this->Users->patchEntity($user, $data, ['validate' => 'signupExternal']);
+
+        $error = (bool)$user->getErrors();
+        static::assertEmpty($error);
     }
 
     /**
@@ -447,5 +531,57 @@ class UsersTableTest extends TestCase
         $success = $this->Users->save($user);
 
         $this->assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Data provider for `testCustomPropsCreate`
+     *
+     * @return array
+     */
+    public function customPropsCreateProvider()
+    {
+        return [
+            'users custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_username' => 'supporto_gustavo',
+                ],
+            ],
+            'profiles custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_surname' => 'aiuto',
+                ],
+            ],
+            'both custom prop' => [
+                [
+                    'username' => 'gustavo_supporto',
+                    'another_email' => 'supporto@gusta.vo',
+                    'another_surname' => 'helpus',
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * Test create new user with custom properties
+     *
+     * @param array $data User data
+     *
+     * @return void
+     * @dataProvider customPropsCreateProvider
+     * @coversNothing
+     */
+    public function testCustomPropsCreate(array $data)
+    {
+        $user = $this->Users->newEntity();
+        $user = $this->Users->patchEntity($user, $data);
+        $user->type = 'users';
+        $success = $this->Users->save($user);
+
+        $user = $this->Users->get($success['id']);
+        foreach ($data as $key => $value) {
+            static::assertEquals($value, $user[$key]);
+        }
     }
 }

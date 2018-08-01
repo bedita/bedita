@@ -334,6 +334,12 @@ class JsonApiTest extends TestCase
                     return [];
                 },
             ],
+            'nullItem' => [
+                null,
+                function () {
+                    return null;
+                }
+            ],
             'unsupportedType' => [
                 false,
                 function () {
@@ -384,7 +390,7 @@ class JsonApiTest extends TestCase
                             'abstract' => 'abstract here',
                             'list' => ['one', 'two', 'three'],
                         ],
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
                         'another_title' => null,
@@ -425,6 +431,12 @@ class JsonApiTest extends TestCase
                             'links' => [
                                 'related' => '/documents/2/parents',
                                 'self' => '/documents/2/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => '/documents/2/translations',
+                                'self' => '/documents/2/relationships/translations',
                             ],
                         ],
                     ],
@@ -620,7 +632,7 @@ class JsonApiTest extends TestCase
                     'abstract' => 'abstract here',
                     'list' => ['one', 'two', 'three'],
                 ],
-                'lang' => 'eng',
+                'lang' => 'en',
                 'publish_start' => '2016-05-13T07:09:23+00:00',
                 'publish_end' => '2016-05-13T07:09:23+00:00',
                 'another_title' => null,
@@ -651,6 +663,12 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/parents',
                         'self' => '/documents/2/relationships/parents',
+                    ],
+                ],
+                'translations' => [
+                    'links' => [
+                        'related' => '/documents/2/translations',
+                        'self' => '/documents/2/relationships/translations',
                     ],
                 ],
             ],

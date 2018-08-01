@@ -121,6 +121,25 @@ class UsersTable extends Table
     }
 
     /**
+     * External auth signup validation
+     *
+     * @param \Cake\Validation\Validator $validator The validator
+     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
+     */
+    public function validationSignupExternal(Validator $validator)
+    {
+        $validator = $this->validationDefault($validator);
+
+        $validator
+            ->email('email')
+            ->requirePresence('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        return $validator;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -175,19 +194,23 @@ class UsersTable extends Table
      *
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $authProvider Auth provider entity.
-     * @param string $username Provider username.
+     * @param string $providerUsername Provider username.
+     * @param int $userId Existing user entity id, if null a new user is created.
      * @return \Cake\Datasource\EntityInterface|bool
      */
-    public function externalAuthLogin(Event $event, EntityInterface $authProvider, $username)
+    public function externalAuthLogin(Event $event, EntityInterface $authProvider, $providerUsername, $userId = null)
     {
         $params = $event->getData('params');
         $externalAuth = $this->ExternalAuth->newEntity([
             'auth_provider_id' => $authProvider->id,
-            'provider_username' => $username,
+            'provider_username' => $providerUsername,
             'params' => $params,
         ]);
+        if (!empty($userId)) {
+            $externalAuth->set('user_id', $userId);
+        }
 
-        return $this->ExternalAuth->save($externalAuth);
+        return $this->ExternalAuth->saveOrFail($externalAuth);
     }
 
     /**
@@ -199,6 +222,8 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
+        $query = $query->find('login');
+
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
             if (!empty($options['username'])) {
@@ -222,6 +247,25 @@ class UsersTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
         });
+    }
+
+    /**
+     * Finder for valid login users
+     * Valid attributes for `blocked`, `deleted` and `status` are checked
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     */
+    protected function findLogin(Query $query)
+    {
+        return $query
+            ->where(function (QueryExpression $exp) {
+                return $exp
+                    ->eq($this->aliasField('deleted'), false)
+                    ->eq($this->aliasField('blocked'), false)
+                    ->in($this->aliasField('status'), ['on', 'draft']);
+            });
     }
 
     /**

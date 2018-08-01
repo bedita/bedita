@@ -13,10 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Core\App;
+use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
@@ -370,12 +372,17 @@ class ObjectTypesTable extends Table
      *     ->find('byRelation', ['name' => 'my_inverse_relation', 'side' => 'left'])
      *     ->find('list')
      *     ->toArray();
+     *
+     * // Include also descendants of the allowed object types (e.g.: return **Images** whereas **Media** are allowed):
+     * TableRegistry::get('ObjectTypes')
+     *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
      * ```
      *
      * @param \Cake\ORM\Query $query Query object.
      * @param array $options Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
      * @return \Cake\ORM\Query
+     * @throws \LogicException When missing required parameters.
      */
     protected function findByRelation(Query $query, array $options = [])
     {
@@ -391,24 +398,91 @@ class ObjectTypesTable extends Table
             $rightField = 'inverse_name';
         }
 
-        return $query
-            ->distinct()
-            ->leftJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
+        // Build sub-queries to find object-types that lay on the left and right side of searched relationship, respectively.
+        $leftSubQuery = $this->find()
+            ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
                     return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
                 });
-            })
-            ->leftJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
+            });
+        $rightSubQuery = $this->find()
+            ->innerJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $rightField) {
                     return $exp->eq($this->RightRelations->aliasField($rightField), $name);
                 });
-            })
-            ->where(function (QueryExpression $exp) use ($leftField, $rightField) {
-                return $exp->or_(function (QueryExpression $exp) use ($leftField, $rightField) {
-                    return $exp
-                        ->isNotNull($this->LeftRelations->aliasField($leftField))
-                        ->isNotNull($this->RightRelations->aliasField($rightField));
-                });
             });
+
+        // Conditions builder that filters only object types returned by one of the two sub-queries.
+        // This could be achieved more efficiently using two left joins, but if we need to find also
+        // descendants it's simpler done this way.
+        $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+            return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+                return $exp
+                    ->in($this->aliasField('id'), $leftSubQuery->select(['id']))
+                    ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
+            });
+        };
+
+        if (!empty($options['descendants'])) { // We don't need only explicitly linked object types, but also their descendants!
+            // Obtain Nested-Set-Model left and right counters for the explicitly-linked object types, that are obtained
+            // using the `$conditionsBuilder` built before.
+            $nsmCounters = $this->find()
+                ->select(['tree_left', 'tree_right'])
+                ->where($conditionsBuilder)
+                ->enableHydration(false)
+                ->all();
+
+            // Replace `$conditionsBuilder` with a more complex one that returns not only the matching object types,
+            // but also their descendants.
+            $conditionsBuilder = function (QueryExpression $exp) use ($nsmCounters) {
+                if ($nsmCounters->count() === 0) {
+                    // No nodes found: relationship apparently does not exist, or has no linked types.
+                    // Add contradiction to force empty results.
+                    return $exp->add(new Comparison(1, 1, 'integer', '<>'));
+                }
+
+                // Find descendants for all found nodes using NSM rules.
+                // If the nodes found are [l = 3, r = 8] and [l = 9, r = 10], the conditions will be built as follows:
+                // ... WHERE (tree_left >= 3 AND tree_right <= 8) OR (tree_left >= 9 AND tree_right <= 10)
+                return $exp->or_(
+                    $nsmCounters
+                        ->map(function (array $row) use ($exp) {
+                            return $exp->and_(function (QueryExpression $exp) use ($row) {
+                                return $exp
+                                    ->gte($this->aliasField('tree_left'), $row['tree_left'])
+                                    ->lte($this->aliasField('tree_right'), $row['tree_right']);
+                            });
+                        })
+                        ->toArray()
+                );
+            };
+        }
+
+        // Everything is said and done by now. Fingers crossed!
+        return $query->where($conditionsBuilder);
+    }
+
+    /**
+     * Finder to get object type starting from object id or uname.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The `id` key is required.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
+     */
+    protected function findObjectId(Query $query, array $options = [])
+    {
+        if (empty($options['id'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
+        }
+
+        return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
+            return $query->where(function (QueryExpression $exp) use ($options) {
+                return $exp->or_([
+                    $this->Objects->aliasField('id') => $options['id'],
+                    $this->Objects->aliasField('uname') => $options['id'],
+                ]);
+            });
+        });
     }
 }

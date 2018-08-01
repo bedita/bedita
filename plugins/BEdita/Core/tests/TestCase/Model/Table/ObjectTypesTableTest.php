@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -490,13 +491,25 @@ class ObjectTypesTableTest extends TestCase
                 ['documents', 'profiles'],
                 ['name' => 'inverse_test', 'side' => 'left'],
             ],
+            'with descendants' => [
+                ['media', 'files'],
+                ['name' => 'test_abstract', 'descendants' => true],
+            ],
+            'relation not found' => [
+                [],
+                ['name' => 'this_relation_does_not_exist'],
+            ],
+            'relation not found, with descendants' => [
+                [],
+                ['name' => 'this_relation_does_not_exist', 'descendants' => true],
+            ],
         ];
     }
 
     /**
      * Test finder by relation name.
      *
-     * @param array\\Exception $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
      *
@@ -563,12 +576,13 @@ class ObjectTypesTableTest extends TestCase
     /**
      * Test default parent, plugin and model.
      *
+     * @param array $data Entity data.
      * @return void
      *
      * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
-    public function testDefaultModelRules($data)
+    public function testDefaultModelRules(array $data)
     {
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
@@ -663,20 +677,19 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Test `parent_name`change with existing objects
+     * Test `parent_name` change with existing objects
      *
      * @return void
      * @covers ::beforeRules()
+     *
+     * @expectedException \Cake\Network\Exception\ForbiddenException
+     * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()
     {
-        $expected = new ForbiddenException('Parent type change forbidden: objects of this type exist');
-        $this->expectException(get_class($expected));
-        $this->expectExceptionMessage($expected->getMessage());
-
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
-        $success = $this->ObjectTypes->save($objectType);
+        $this->ObjectTypes->save($objectType);
     }
 
     /**
@@ -756,5 +769,53 @@ class ObjectTypesTableTest extends TestCase
         $this->ObjectTypes->patchEntity($objectType, $data);
         $success = $this->ObjectTypes->save($objectType);
         static::assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Data provider for `testFindObjectId()`
+     *
+     * @return array
+     */
+    public function findObjectIdProvider()
+    {
+        return [
+            'missingId' => [
+                new BadFilterException('Missing required parameter "id"'),
+                [],
+            ],
+            'emptyId' => [
+                new BadFilterException('Missing required parameter "id"'),
+                ['id' => ''],
+            ],
+            'findById' => [
+                'documents',
+                ['id' => 2],
+            ],
+            'findByUname' => [
+                'users',
+                ['id' => 'first-user'],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findObjectId()`
+     *
+     * @param mixed $expected The expected result.
+     * @param array $options The option passed to finder.
+     * @return void
+     *
+     * @covers ::findObjectId
+     * @dataProvider findObjectIdProvider
+     */
+    public function testFindObjectId($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $type = $this->ObjectTypes->find('objectId', $options)->firstOrFail();
+        static::assertEquals($expected, $type->name);
     }
 }

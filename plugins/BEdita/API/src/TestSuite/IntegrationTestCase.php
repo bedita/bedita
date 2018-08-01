@@ -44,6 +44,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      * @var array
      */
     protected $authFixtures = [
+        'plugin.BEdita/Core.config',
         'plugin.BEdita/Core.async_jobs',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.external_auth',
@@ -63,6 +64,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.trees',
+        'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.translations',
     ];
 
     /**

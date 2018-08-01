@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
@@ -87,12 +89,12 @@ class TreesTableTest extends TestCase
     {
         $this->Trees->initialize([]);
 
-        $this->assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
-        $this->assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
-        $this->assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
-        $this->assertInstanceOf(BelongsTo::class, $this->Trees->ParentNode);
-        $this->assertInstanceOf(HasMany::class, $this->Trees->ChildNodes);
-        $this->assertInstanceOf(TreeBehavior::class, $this->Trees->behaviors()->get('Tree'));
+        static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
+        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
+        static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
+        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentNode);
+        static::assertInstanceOf(HasMany::class, $this->Trees->ChildNodes);
+        static::assertInstanceOf(TreeBehavior::class, $this->Trees->behaviors()->get('Tree'));
     }
 
     /**
@@ -103,16 +105,16 @@ class TreesTableTest extends TestCase
     public function isParentValidProvider()
     {
         return [
-            'nullWithoutObjectId' => [
+            'null, no object ID' => [
                 false,
                 null,
             ],
-            'nullAndFolder' => [
+            'null, folder' => [
                 true,
                 null,
                 12,
             ],
-            'nullNotFolder' => [
+            'null, not a folder' => [
                 false,
                 null,
                 4,
@@ -121,7 +123,7 @@ class TreesTableTest extends TestCase
                 true,
                 12,
             ],
-            'notAFolder' => [
+            'not a folder' => [
                 false,
                 4,
             ],
@@ -138,6 +140,7 @@ class TreesTableTest extends TestCase
      *
      * @dataProvider isParentValidProvider
      * @covers ::isParentValid()
+     * @covers ::isFolder()
      */
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
@@ -147,6 +150,60 @@ class TreesTableTest extends TestCase
         }
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isParentValid($entity));
+    }
+
+    /**
+     * Data provider for `testIsPositionUnique()`
+     *
+     * @return array
+     */
+    public function isPositionUniqueProvider()
+    {
+        return [
+            'folder, not unique' => [
+                false,
+                12,
+                null,
+            ],
+            'folder, unique' => [
+                true,
+                13,
+                null,
+            ],
+            'not a folder, appears twice inside parent' => [
+                false,
+                4,
+                12,
+            ],
+            'not a folder, appears once inside parent' => [
+                true,
+                4,
+                11,
+            ],
+        ];
+    }
+
+    /**
+     * Test for `isFolderPositionUnique()`
+     *
+     * @param bool $expected Expected result.
+     * @param int|null $objectId Object ID.
+     * @param int|null $parentId Parent ID.
+     * @return void
+     *
+     * @dataProvider isPositionUniqueProvider
+     * @covers ::isPositionUnique()
+     * @covers ::isFolder()
+     */
+    public function testIsPositionUnique($expected, $objectId, $parentId)
+    {
+        $this->Trees->deleteAll(['object_id' => 13]);
+        $this->Trees->recover();
+
+        $entity = $this->Trees->newEntity();
+        $entity->object_id = $objectId;
+        $entity->parent_id = $parentId;
+        static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
     }
 
     /**
@@ -172,6 +229,8 @@ class TreesTableTest extends TestCase
      * Test that moving a node under another `root_id`
      * all children will be migrated to the same `root_id`
      *
+     * @param int $rootExpected Expected root ID.
+     * @param int|null $parentId Parent ID.
      * @return void
      *
      * @dataProvider changeRootProvider
@@ -239,8 +298,119 @@ class TreesTableTest extends TestCase
             ->where(['object_id' => $entity->parent->id])
             ->first();
 
-        $parentNode->parent_id = $entity->id;
+        $parentNode->set('parent_id', $entity->id);
 
         $this->Trees->save($parentNode);
+    }
+
+    /**
+     * Data provider for `testDeleteOrphaned` test case.
+     *
+     * @return array
+     */
+    public function deleteOrphanedProvider()
+    {
+        return [
+            'not a folder' => [
+                true,
+                2,
+            ],
+            'not primary' => [
+                true,
+                12,
+                false,
+            ],
+            'primary' => [
+                new ImmutableResourceException('This operation would leave an orphaned folder'),
+                12,
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test that no folder is ever left out of the tree.
+     *
+     * @param bool|\Exception $expected Expected result.
+     * @param int $objectId Object ID.
+     * @param bool $primary Is this a "primary" delete operation?
+     * @return void
+     *
+     * @dataProvider deleteOrphanedProvider()
+     * @covers ::beforeDelete()
+     * @covers ::isFolder()
+     */
+    public function testDeleteOrphaned($expected, $objectId, $primary = true)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $node = $this->Trees->find()
+            ->where(['object_id' => $objectId])
+            ->firstOrFail();
+
+        $result = (bool)$this->Trees->delete($node, ['_primary' => $primary]);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for `testSetPosition` test case.
+     *
+     * @return array
+     */
+    public function setPositionProvider()
+    {
+        return [
+            'first' => [
+                1,
+                2,
+                'first',
+            ],
+            'last' => [
+                2,
+                11,
+                'last',
+            ],
+            'invalid' => [
+                new BadRequestException('Invalid position'),
+                11,
+                'gustavo',
+            ],
+        ];
+    }
+
+    /**
+     * Test that a children's position is updated.
+     *
+     * @param int|\Exception $expected Expected final position.
+     * @param int $objectId Object ID.
+     * @param int|string $position Position.
+     * @return void
+     *
+     * @dataProvider setPositionProvider()
+     * @covers ::afterSave()
+     */
+    public function testSetPosition($expected, $objectId, $position)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $node = $this->Trees->find()
+            ->where(['object_id' => $objectId])
+            ->firstOrFail();
+
+        $node->set('position', $position);
+        $this->Trees->save($node);
+
+        $currentPosition = $this->Trees->getCurrentPosition($node);
+
+        static::assertSame($expected, $currentPosition);
     }
 }

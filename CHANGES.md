@@ -1,5 +1,62 @@
 # ChangeLog
 
+## Version 4.0.0.RC - Cactus
+
+### API changes (4.0.0.RC)
+
+* [#1506](https://github.com/bedita/bedita/pull/1506) #1495 permanent remove folder
+* [#1484](https://github.com/bedita/bedita/issues/1484) Folder children ordering
+* [#1509](https://github.com/bedita/bedita/pull/1509) Annotations endpoint
+* [#1505](https://github.com/bedita/bedita/pull/1505) Translations endpoint #1493
+* [#1503](https://github.com/bedita/bedita/pull/1503) Password change in `/auth/user` #1501
+* [#1514](https://github.com/bedita/bedita/pull/1514) chore: enable `fields` filter in `GET /auth/user`
+* [#1497](https://github.com/bedita/bedita/pull/1497) Only canonical plural form as object endpoint
+* [#1446](https://github.com/bedita/bedita/pull/1446) Allow the use of uname instead of id for objects API
+* [#1431](https://github.com/bedita/bedita/issues/1431) Folder API write operations
+* [#1451](https://github.com/bedita/bedita/pull/1451) #1431 GET /folders/:id/parent is here
+* [#1459](https://github.com/bedita/bedita/pull/1459) Fix `?include=children,parent` query string
+* [#1488](https://github.com/bedita/bedita/pull/1488) Application configuration #1486
+* [#1450](https://github.com/bedita/bedita/pull/1450) Avilable types for folders relationships #1449
+* [#1496](https://github.com/bedita/bedita/pull/1496) Include related entities in related endpoint
+* [#1463](https://github.com/bedita/bedita/pull/1463) `parent`, `ancestor` and `roots` folder filters
+* [#1464](https://github.com/bedita/bedita/pull/1464) path in meta for folders #1461
+* [#1458](https://github.com/bedita/bedita/pull/1458) Don't list deleted objects in `children` and `parents`
+* [#1468](https://github.com/bedita/bedita/pull/1468) Included deleted objects #1466
+
+### Core changes (4.0.0.RC)
+
+* [#1448](https://github.com/bedita/bedita/pull/1448) Add default `title` for profiles and users
+* [#1504](https://github.com/bedita/bedita/pull/1504) I18n configuration and lang check #1502
+* [#1492](https://github.com/bedita/bedita/issues/1492) I18n [1/3] - data model `translations`
+* [#1495](https://github.com/bedita/bedita/issues/1495) Permanent remove folder -> children folders
+* [#1508](https://github.com/bedita/bedita/pull/1508) Update profiles title also if blank
+* [#1498](https://github.com/bedita/bedita/pull/1498) Translations model
+* [#1512](https://github.com/bedita/bedita/pull/1512) Remove useLocalParser() from bootstrap
+* [#1513](https://github.com/bedita/bedita/pull/1513) #1484 Sort contents in folder
+* [#1456](https://github.com/bedita/bedita/pull/1456) Routing rules change
+* [#1487](https://github.com/bedita/bedita/pull/1487) Object status filter on applications #1485
+* [#1482](https://github.com/bedita/bedita/pull/1482) #1453 Soft delete and restore of folders
+* [#1481](https://github.com/bedita/bedita/pull/1481) Prevent ghost folders #1479
+* [#1480](https://github.com/bedita/bedita/pull/1480) #1454 Move folders action
+* [#1477](https://github.com/bedita/bedita/pull/1477) Fix multiple issues with Folders' relationships #1471
+* [#1473](https://github.com/bedita/bedita/pull/1473) Prevent login from blocked, deleted and off users
+* [#1472](https://github.com/bedita/bedita/pull/1472) Fix foreign key `cascade` on delete for `objects`
+* [#1491](https://github.com/bedita/bedita/pull/1491) Schema on disabled types and hidden properties
+* [#1483](https://github.com/bedita/bedita/pull/1483) Tree maintenance shell #1476
+* [#1475](https://github.com/bedita/bedita/pull/1475) fix: 500 error getting path of orphan folder
+* [#1445](https://github.com/bedita/bedita/pull/1445) #1431 feat: write operations on parents relationships for objects
+* [#1490](https://github.com/bedita/bedita/pull/1490) Add local cache of JSON Schema Draft-06 meta schema
+* [#1469](https://github.com/bedita/bedita/pull/1469) Relations inheritance #1349
+* [#1470](https://github.com/bedita/bedita/pull/1470) Avoid `setDirty` false on CTI
+* [minor] fix: avoid cryptic fatal error if thumbnails config is missing
+
+### Integration changes (4.0.0.RC)
+
+* [#1429](https://github.com/bedita/bedita/issues/1429) External authentication providers integration (OAuth2 & C)
+* [#1447](https://github.com/bedita/bedita/pull/1447) OAuth2 client signup & auth #1429
+* [#1478](https://github.com/bedita/bedita/pull/1478) Postman update with folders and external auth/signup
+* [minor] chore: docker - create default thumbs dir
+
 ## Version 4.0.0.beta2 - Cactus
 
 ### API changes (4.0.0.beta2)

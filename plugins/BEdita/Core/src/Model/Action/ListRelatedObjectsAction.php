@@ -13,7 +13,10 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Association\RelatedTo;
+use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Core\Configure;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 
@@ -38,12 +41,18 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                     'name' => $this->Association->getName(),
                     'side' => 'right',
                 ])
+                ->contain(['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'])
                 ->toArray();
             $table = $this->Association->getTarget();
             if (count($objectTypes) === 1) {
                 $objectType = current($objectTypes);
+                $table->setupRelations($objectType);
             }
             $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
+        } elseif ($this->Association->getTarget() instanceof ObjectsTable
+                || $this->Association->getTarget() instanceof Table) {
+            $table = $this->Association->getTarget();
+            $this->ListAction = new ListObjectsAction(compact('table'));
         }
     }
 
@@ -60,6 +69,9 @@ class ListRelatedObjectsAction extends ListAssociatedAction
             $query = $query->select([
                 $this->Association->getTarget()->aliasField('object_type_id'),
             ]);
+        }
+        if (Configure::check('Status.level')) {
+            $query = $query->find('status', [Configure::read('Status.level')]);
         }
 
         return $query;

@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
@@ -80,7 +81,21 @@ class SetAssociatedAction extends UpdateAssociatedAction
 
             $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
 
-            return $this->toMany($entity, $relatedEntities);
+            $res = $this->toMany($entity, $relatedEntities);
+            foreach ($relatedEntities as $relatedEntity) {
+                if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
+                    throw new BadRequestException([
+                        'title' => __d('bedita', 'Error linking entities'),
+                        'detail' => $relatedEntity->_joinData->getErrors(),
+                    ]);
+                }
+            }
+
+            return $res;
+        }
+
+        if ($relatedEntities === []) {
+            $relatedEntities = null;
         }
 
         if ($relatedEntities !== null && !($relatedEntities instanceof EntityInterface)) {
@@ -114,11 +129,11 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $count = $this->diff($entity, $relatedEntities); // This doesn't need to be in a transaction.
 
         if ($this->Association instanceof HasMany) {
-            return $this->Association->replace($entity, $relatedEntities) ? $count : false;
+            return $this->Association->replace($entity, $relatedEntities, ['atomic' => false]) ? $count : false;
         }
 
         if ($this->Association instanceof BelongsToMany) {
-            return $this->Association->replaceLinks($entity, $relatedEntities) ? $count : false;
+            return $this->Association->replaceLinks($entity, $relatedEntities, ['atomic' => false]) ? $count : false;
         }
 
         return false;

@@ -35,6 +35,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         return [
             'default' => [
                 [
+                    'plugin.BEdita/Core.config',
                     'plugin.BEdita/Core.async_jobs',
                     'plugin.BEdita/Core.auth_providers',
                     'plugin.BEdita/Core.external_auth',
@@ -54,11 +55,14 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.properties',
                     'plugin.BEdita/Core.property_types',
                     'plugin.BEdita/Core.trees',
+                    'plugin.BEdita/Core.object_relations',
+                    'plugin.BEdita/Core.translations',
                 ],
                 []
             ],
             'fixturesPresent' => [
                 [
+                    'plugin.BEdita/Core.config',
                     'plugin.BEdita/Core.async_jobs',
                     'plugin.BEdita/Core.auth_providers',
                     'plugin.BEdita/Core.external_auth',
@@ -78,6 +82,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.properties',
                     'plugin.BEdita/Core.property_types',
                     'plugin.BEdita/Core.trees',
+                    'plugin.BEdita/Core.object_relations',
+                    'plugin.BEdita/Core.translations',
                 ],
                 [
                     'plugin.BEdita/Core.users',

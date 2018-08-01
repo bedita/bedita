@@ -14,9 +14,11 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * BEdita\Core\Model\Table\FoldersTable Test Case
@@ -238,6 +240,7 @@ class FoldersTableTest extends TestCase
      * @dataProvider saveProvider
      * @covers ::beforeSave()
      * @covers ::afterSave()
+     * @covers ::updateChildrenDeletedField()
      */
     public function testSave($expected, $data)
     {
@@ -267,6 +270,213 @@ class FoldersTableTest extends TestCase
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $actual = $trees->childCount($node);
             static::assertEquals($descendants, $actual);
+        }
+    }
+
+    /**
+     * Test `findRoots()`
+     *
+     * @covers ::findRoots()
+     */
+    public function testFindRoots()
+    {
+        $folders = $this->Folders->find('roots')->toArray();
+        static::assertNotEmpty($folders);
+        $ids = Hash::extract($folders, '{n}.id');
+        static::assertEquals([11, 13], $ids);
+    }
+
+    /**
+     * Test that trashing a folder (soft delete)
+     * its subfolders are soft deleted but other object types are not.
+     *
+     * Test also that restoring the folder restores subfolders too.
+     *
+     * @return void
+     *
+     * @covers ::updateChildrenDeletedField()
+     */
+    public function testSoftDeleteAndRestore()
+    {
+        // first move root tree as children of another root
+        // to have a more complex tree structure
+        $folder = $this->Folders->get(11);
+        $folder->parent_id = 13;
+        $this->Folders->save($folder);
+
+        // get root and trashes it
+        $root = $this->Folders->get(13);
+        $startDeletedInfo = $this->Folders
+            ->find('ancestor', [$root->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'deleted',
+            ])
+            ->toArray();
+
+        $root->deleted = true;
+        $this->Folders->save($root);
+
+        $children = $this->Folders->find('ancestor', [$root->id]);
+        foreach ($children as $child) {
+            if ($child->type === 'folders') {
+                // folders should have deleted field set to true
+                static::assertTrue($child->deleted);
+            } else {
+                // other objects should have deleted field unchanged
+                static::assertEquals($startDeletedInfo[$child->id], $child->deleted);
+            }
+        }
+
+        // restore from trash => deleted false
+        $root->deleted = false;
+        $this->Folders->save($root);
+
+        $restoredDeletedInfo = $this->Folders
+            ->find('ancestor', [$root->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'deleted',
+            ])
+            ->toArray();
+
+        static::assertSame($startDeletedInfo, $restoredDeletedInfo);
+    }
+
+    /**
+     * Test that deleting a folder all its subfolders (descendants) are deleted too.
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete()
+     * @covers ::afterDelete()
+     */
+    public function testDeleteFolder()
+    {
+        $parentFolder = $this->Folders->get(12);
+        $folderIds = [12];
+
+        // add subfolders
+        $subfolder = $this->Folders->newEntity();
+        $subfolder->parent = $parentFolder;
+        $this->Folders->save($subfolder);
+        $folderIds[] = $subfolder->id;
+
+        $anotherSubfolder = $this->Folders->newEntity();
+        $anotherSubfolder->parent = $subfolder;
+        $this->Folders->save($anotherSubfolder);
+        $folderIds[] = $anotherSubfolder->id;
+
+        // get descendants not folders
+        $notFoldersIds = $this->Folders
+            ->find('ancestor', [$parentFolder->id])
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'id',
+            ])
+            ->where(function (QueryExpression $exp) {
+                return $exp->not(['object_type_id' => $this->Folders->objectType()->id]);
+            })
+            ->toArray();
+
+        $Trees = TableRegistry::get('Trees');
+        $Objects = TableRegistry::get('Objects');
+
+        // all descendants exist and are on tree
+        foreach (array_merge($notFoldersIds, $folderIds) as $id) {
+            static::assertTrue($Objects->exists(['id' => $id]));
+            static::assertTrue($Trees->exists(['object_id' => $id]));
+        }
+
+        $this->Folders->delete($parentFolder);
+
+        // parent folder and subfolders not exit anymore and not are on tree
+        foreach ($folderIds as $id) {
+            static::assertFalse($Objects->exists(['id' => $id]));
+            static::assertFalse($Trees->exists(['object_id' => $id]));
+        }
+
+        // other descendants exist yet
+        foreach ($notFoldersIds as $id) {
+            static::assertTrue($Objects->exists(['id' => $id]));
+        }
+
+        $currenTree = $Trees->find()->order(['tree_left' => 'ASC'])->toArray();
+        // check that after recover the tree is the same.
+        $Trees->recover();
+        static::assertEquals($currenTree, $Trees->find()->order(['tree_left' => 'ASC'])->toArray());
+    }
+
+    /**
+     * Test `isFolderRestorable()` in case of no check on parents.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableNoCheckOnParents()
+    {
+        // new entity
+        $folder = $this->Folders->newEntity();
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+
+        // deleted is not dirty
+        $folder = $this->Folders->get(11);
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+
+        // deleted is dirty but equal to true
+        $folder->deleted = true;
+        $folder->setDirty('deleted', true);
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+    }
+
+    /**
+     * Test that `isFolderRestorable()` is true
+     * trying to resume a folder deleted with parent not deleted.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableOK()
+    {
+        $folder = $this->Folders->get(12, ['contain' => ['Parents']]);
+        static::assertFalse($folder->parent->deleted);
+
+        $folder->deleted = true;
+        $this->Folders->save($folder);
+        $folder = $this->Folders->get($folder->id);
+        static::assertTrue($folder->deleted);
+        $folder->deleted = false;
+        static::assertTrue($this->Folders->isFolderRestorable($folder));
+    }
+
+    /**
+     * Test that `isFolderRestorable()` is false
+     * trying to resume a folder deleted with parent deleted.
+     *
+     * @return void
+     *
+     * @covers ::isFolderRestorable()
+     */
+    public function testIsFolderRestorableKO()
+    {
+        // delete parent (delete also all folder children)
+        $parent = $this->Folders->get(11);
+        $parent->deleted = true;
+        $this->Folders->save($parent);
+
+        $children = $this->Folders
+            ->find('ancestor', [11])
+            ->where(['object_type_id' => $this->Folders->objectType()->id])
+            ->toArray();
+
+        static::assertNotEmpty($children);
+
+        foreach ($children as $child) {
+            static::assertTrue($child->deleted);
+            $child->deleted = false;
+            static::assertFalse($this->Folders->isFolderRestorable($child));
         }
     }
 }

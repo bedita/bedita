@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\State;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -39,6 +40,7 @@ class CurrentApplicationTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.config',
     ];
 
     /**
@@ -128,6 +130,44 @@ class CurrentApplicationTest extends TestCase
         $application = CurrentApplication::getApplication();
         static::assertNotNull($application);
         static::assertEquals(1, $application->id);
+    }
+
+    /**
+     * Test `loadConfiguration` method.
+     *
+     * @return void
+     *
+     * @covers ::loadConfiguration()
+     */
+    public function testLoadConfiguration()
+    {
+        static::assertNull(Configure::read('appVal'));
+
+        $application = $this->Applications->get(1);
+        CurrentApplication::setApplication($application);
+
+        $result = Configure::read('appVal');
+        $expected = ['val' => 42];
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `loadApplicationConfiguration` method.
+     *
+     * @return void
+     *
+     * @covers ::loadApplicationConfiguration()
+     */
+    public function testLoadApplicationConfiguration()
+    {
+        $application = $this->Applications->get(1);
+        CurrentApplication::setApplication($application);
+
+        static::assertNull(Configure::read('someVal'));
+
+        CurrentApplication::loadApplicationConfiguration('somecontext');
+
+        static::assertEquals(42, Configure::read('someVal'));
     }
 
     /**

@@ -49,6 +49,7 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.trees',
         'plugin.BEdita/Core.object_relations',
     ];
 
@@ -383,9 +384,10 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationships()
     {
         $expected = [
-            'test',
             'inverse_test',
             'parents',
+            'test',
+            'translations',
         ];
 
         $entity = TableRegistry::get('Documents')->newEntity();
@@ -393,6 +395,7 @@ class ObjectEntityTest extends TestCase
         $entity = $entity->jsonApiSerialize();
 
         $relations = array_keys($entity['relationships']);
+        sort($relations);
 
         static::assertSame($expected, $relations);
     }
@@ -408,16 +411,22 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsUsersRoles()
     {
         $expected = [
+            'parents' => [
+                'links' => [
+                    'related' => '/users/1/parents',
+                    'self' => '/users/1/relationships/parents',
+                ],
+            ],
             'roles' => [
                 'links' => [
                     'related' => '/users/1/roles',
                     'self' => '/users/1/relationships/roles',
                 ],
             ],
-            'parents' => [
+            'translations' => [
                 'links' => [
-                    'related' => '/users/1/parents',
-                    'self' => '/users/1/relationships/parents',
+                    'related' => '/users/1/translations',
+                    'self' => '/users/1/relationships/translations',
                 ],
             ],
         ];
@@ -426,6 +435,8 @@ class ObjectEntityTest extends TestCase
         $entity->set('id', 1);
         $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
+
+        ksort($entity['relationships']);
 
         static::assertSame($expected, $entity['relationships']);
     }
@@ -443,6 +454,7 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'inverse_test',
             'parents',
+            'translations',
         ];
 
         $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
@@ -450,6 +462,7 @@ class ObjectEntityTest extends TestCase
         $entity = $entity->jsonApiSerialize();
 
         $relations = array_keys($entity['relationships']);
+        sort($relations);
 
         static::assertSame($expected, $relations);
     }
@@ -468,6 +481,7 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'children',
             'parent',
+            'translations',
         ];
 
         $entity = TableRegistry::get('Objects')->newEntity();
@@ -475,6 +489,7 @@ class ObjectEntityTest extends TestCase
         $entity = $entity->jsonApiSerialize();
 
         $relations = array_keys($entity['relationships']);
+        sort($relations);
 
         static::assertSame($expected, $relations);
     }
@@ -515,5 +530,25 @@ class ObjectEntityTest extends TestCase
 
         static::assertArrayHasKey('included', $entity);
         static::assertSameSize($entity['relationships']['test']['data'], $entity['included']);
+    }
+
+    /**
+     * Test magic getter for JSON API relations with single entity `included`
+     *
+     * @return void
+     *
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsSingleIncluded()
+    {
+        $entity = TableRegistry::get('Folders')->get(12, ['contain' => ['Parents']]);
+        $entity = $entity->jsonApiSerialize();
+
+        static::assertArrayHasKey('relationships', $entity);
+        static::assertArrayHasKey('parent', $entity['relationships']);
+        static::assertArrayHasKey('data', $entity['relationships']['parent']);
+
+        static::assertArrayHasKey('included', $entity);
+        static::assertEquals(1, count($entity['included']));
     }
 }

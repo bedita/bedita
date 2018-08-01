@@ -139,4 +139,42 @@ class AuthProvidersTableTest extends TestCase
             $this->assertTrue((bool)$success);
         }
     }
+
+    /**
+     * Test `findAuthenticate` method.
+     *
+     * @return void
+
+     * @covers ::findAuthenticate()
+     */
+    public function testFindAuthenticate()
+    {
+        $result = $this->AuthProviders->find('authenticate')->toArray();
+
+        static::assertNotEmpty($result);
+        static::assertEquals(['BEdita/API.OAuth2', 'BEdita/API.Uuid'], array_keys($result));
+        static::assertEquals(['uuid'], array_keys($result['BEdita/API.Uuid']['authProviders']));
+        static::assertEquals(['example'], array_keys($result['BEdita/API.OAuth2']['authProviders']));
+    }
+
+    /**
+     * Test `findEnabled` method.
+     *
+     * @return void
+
+     * @covers ::findEnabled()
+     */
+    public function testFindEnabled()
+    {
+        $result = $this->AuthProviders->find('enabled')->toArray();
+        static::assertNotEmpty($result);
+        static::assertEquals(3, count($result));
+
+        $result = $this->AuthProviders->find('enabled')->where(['name' => 'example'])->toArray();
+        static::assertNotEmpty($result);
+        static::assertEquals(1, count($result));
+
+        $result = $this->AuthProviders->find('enabled')->where(['name' => 'linkedout'])->toArray();
+        static::assertEmpty($result);
+    }
 }

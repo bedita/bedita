@@ -17,6 +17,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
@@ -104,7 +105,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -132,6 +133,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -147,7 +154,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'abstract' => 'abstract here',
                             'list' => ['one', 'two', 'three'],
                         ],
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
@@ -181,6 +188,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/translations',
+                                'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -193,7 +206,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -203,7 +216,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified' => '2016-05-13T08:30:00+00:00',
                         'published' => null,
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 5,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -227,6 +240,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -237,7 +256,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'uname' => 'gustavo-supporto',
                         'title' => 'Gustavo Supporto profile',
                         'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'body' => null,
                         'extra' => null,
                         'publish_start' => null,
@@ -267,6 +286,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -279,7 +304,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                         'another_username' => 'synapse', // custom property
@@ -309,6 +334,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/5/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/translations',
+                                'self' => 'http://api.example.com/users/5/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -321,7 +352,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -355,6 +386,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/locations/8/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/translations',
+                                'self' => 'http://api.example.com/locations/8/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -367,7 +404,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'event description goes here',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -389,6 +426,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/events/9/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/translations',
+                                'self' => 'http://api.example.com/events/9/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -401,7 +444,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'media description goes here',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                         'media_property' => 'synapse', // inherited custom property
@@ -430,6 +473,24 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/files/10/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/translations',
+                                'self' => 'http://api.example.com/files/10/relationships/translations',
+                            ],
+                        ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/inverse_test_abstract',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -442,7 +503,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'first root folder',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -464,6 +525,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/11/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/translations',
+                                'self' => 'http://api.example.com/folders/11/relationships/translations',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/11/children',
@@ -482,7 +549,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'sub folder of root folder',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -504,6 +571,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/12/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/translations',
+                                'self' => 'http://api.example.com/folders/12/relationships/translations',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/12/children',
@@ -522,7 +595,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'second root folder',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -544,6 +617,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/13/relationships/parent',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/translations',
+                                'self' => 'http://api.example.com/folders/13/relationships/translations',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/13/children',
@@ -562,7 +641,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'another media description goes here',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -588,6 +667,24 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/parents',
                                 'self' => 'http://api.example.com/files/14/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/translations',
+                                'self' => 'http://api.example.com/files/14/relationships/translations',
+                            ],
+                        ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
                             ],
                         ],
                     ],
@@ -635,6 +732,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('Translations')->deleteAll([]);
         TableRegistry::get('Objects')->deleteAll([]);
 
         $this->configRequestHeaders();
@@ -674,7 +772,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'abstract here',
                         'list' => ['one', 'two', 'three'],
                     ],
-                    'lang' => 'eng',
+                    'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
                 ],
@@ -703,6 +801,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/parents',
                             'self' => 'http://api.example.com/documents/2/relationships/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/translations',
+                            'self' => 'http://api.example.com/documents/2/relationships/translations',
                         ],
                     ],
                 ],
@@ -753,7 +857,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'extra' => [
                         'abstract' => 'what?',
                     ],
-                    'lang' => 'eng',
+                    'lang' => 'en',
                     'publish_start' => '2016-10-13T07:09:23+00:00',
                     'publish_end' => '2016-10-13T07:09:23+00:00',
                 ],
@@ -781,6 +885,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/parents',
                             'self' => 'http://api.example.com/documents/6/relationships/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/translations',
+                            'self' => 'http://api.example.com/documents/6/relationships/translations',
                         ],
                     ],
                 ],
@@ -1014,6 +1124,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::initObjectModel()
      */
     public function testEdit()
     {
@@ -1157,112 +1268,78 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::related()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
+     * @covers ::getAssociatedAction()
      */
     public function testRelated()
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/documents/2/test',
+                'self' => 'http://api.example.com/documents/3/inverse_test',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/documents/2/test',
-                'last' => 'http://api.example.com/documents/2/test',
+                'first' => 'http://api.example.com/documents/3/inverse_test',
+                'last' => 'http://api.example.com/documents/3/inverse_test',
                 'prev' => null,
                 'next' => null,
                 'available' => sprintf(
                     'http://api.example.com/objects?%s',
-                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                    http_build_query(['filter' => ['type' => ['documents']]])
                 ),
             ],
             'data' => [
                 [
-                    'id' => '4',
-                    'type' => 'profiles',
-                    'attributes' => [
-                        'status' => 'on',
-                        'uname' => 'gustavo-supporto',
-                        'title' => 'Gustavo Supporto profile',
-                        'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
-                        'body' => null,
-                        'extra' => null,
-                        'publish_start' => null,
-                        'publish_end' => null,
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/profiles/4',
-                    ],
-                    'relationships' => [
-                        'inverse_test' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/profiles/4/inverse_test',
-                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
-                            ],
-                        ],
-                        'parents' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/profiles/4/parents',
-                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
-                            ],
-                        ],
-                    ],
-                    'meta' => [
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
-                        'created_by' => 1,
-                        'modified_by' => 1,
-                        'relation' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
-                            'params' => null,
-                        ],
-                    ],
-                ],
-                [
-                    'id' => '3',
+                    'id' => '2',
                     'type' => 'documents',
                     'attributes' => [
-                        'status' => 'draft',
-                        'uname' => 'title-two',
-                        'title' => 'title two',
+                        'status' => 'on',
+                        'uname' => 'title-one',
+                        'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
-                        'extra' => null,
-                        'lang' => 'eng',
-                        'publish_start' => null,
-                        'publish_end' => null,
+                        'extra' => [
+                            'abstract' => 'abstract here',
+                            'list' => ['one', 'two', 'three'],
+                        ],
+                        'lang' => 'en',
+                        'publish_start' => '2016-05-13T07:09:23+00:00',
+                        'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/documents/3',
+                        'self' => 'http://api.example.com/documents/2',
                     ],
                     'relationships' => [
                         'test' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/test',
-                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                                'related' => 'http://api.example.com/documents/2/test',
+                                'self' => 'http://api.example.com/documents/2/relationships/test',
                             ],
                         ],
                         'inverse_test' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/inverse_test',
-                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                                'related' => 'http://api.example.com/documents/2/inverse_test',
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                             ],
                         ],
                         'parents' => [
                             'links' => [
-                                'related' => 'http://api.example.com/documents/3/parents',
-                                'self' => 'http://api.example.com/documents/3/relationships/parents',
+                                'related' => 'http://api.example.com/documents/2/parents',
+                                'self' => 'http://api.example.com/documents/2/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/translations',
+                                'self' => 'http://api.example.com/documents/2/relationships/translations',
                             ],
                         ],
                     ],
                     'meta' => [
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 1,
                         'relation' => [
                             'priority' => 2,
                             'inv_priority' => 1,
@@ -1273,10 +1350,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 1,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 1,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -1284,16 +1361,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/documents',
                         'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
                     ],
-                    'profiles' => [
-                        '$id' => 'http://api.example.com/model/schema/profiles',
-                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
-                    ],
                 ],
             ],
         ];
 
         $this->configRequestHeaders();
-        $this->get('/documents/2/test');
+        $this->get('/documents/3/inverse_test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -1310,6 +1383,8 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::relationships()
      * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociations()
     {
@@ -1346,6 +1421,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1380,6 +1461,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1411,6 +1498,85 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testLinksAvailable`
+     *
+     * @return array
+     */
+    public function linksAvailableProvider()
+    {
+        return [
+            'children' => [
+                'http://api.example.com/objects',
+                '/folders/12/children',
+            ],
+            'parents' => [
+                'http://api.example.com/objects?filter[type][0]=folders',
+                '/profiles/4/parents',
+            ],
+            'parent' => [
+                'http://api.example.com/objects?filter[type][0]=folders',
+                '/folders/12/parent',
+            ],
+            'inverse_test' => [
+                'http://api.example.com/objects?filter[type][0]=documents',
+                '/documents/2/inverse_test',
+            ],
+        ];
+    }
+
+    /**
+     * Test related method on folder related relationships.
+     *
+     * @return void
+     * @param string $expected Expected result
+     * @param string $url Test URL
+     *
+     * @dataProvider linksAvailableProvider
+     * @covers ::getAvailableUrl()
+     * @covers ::getAvailableTypes()
+     */
+    public function testLinksAvailable($expected, $url)
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertEquals($expected, urldecode(Hash::get($result, 'links.available')));
+    }
+
+    /**
+     * Test `getAvailableUrl` in case of not available types.
+     *
+     * @return void
+     *
+     * @covers ::getAvailableUrl()
+     */
+    public function testLinksAvailableEmpty()
+    {
+        $environment = ['REQUEST_METHOD' => 'GET'];
+        $params = [
+            'object_type' => 'documents',
+            'relationship' => 'inverse_test',
+            'related_id' => '2',
+        ];
+        $request = new ServerRequest(compact('environment', 'params'));
+
+        $controller = $this->getMockBuilder(ObjectsController::class)
+            ->setConstructorArgs([$request])
+            ->setMethods(['getAvailableTypes'])
+            ->getMock();
+
+        $controller
+            ->method('getAvailableTypes')
+            ->willReturn([]);
+
+        $controller->related();
+        static::assertEquals(['available' => null], $controller->viewVars['_links']);
+    }
+
+    /**
      * Test relationships method to list existing relationships.
      *
      * @return void
@@ -1418,6 +1584,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
+     * @covers ::getAssociatedAction()
      */
     public function testListAssociationsNotFound()
     {
@@ -1458,6 +1625,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -1533,6 +1706,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -1720,6 +1899,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/parents',
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
                     ],
@@ -2039,7 +2224,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'abstract here',
                         'list' => ['one', 'two', 'three'],
                     ],
-                    'lang' => 'eng',
+                    'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
                     'another_title' => null,
@@ -2083,6 +2268,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/documents/2/parents',
                         ],
                     ],
+                    'translations' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            'related' => 'http://api.example.com/documents/2/translations',
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -2096,7 +2287,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'Some description about Gustavo',
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -2129,6 +2320,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -2141,7 +2338,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => null,
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
@@ -2151,7 +2348,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified' => '2016-05-13T08:30:00+00:00',
                         'published' => null,
                         'created_by' => 1,
-                        'modified_by' => 2,
+                        'modified_by' => 5,
                         'relation' => [
                             'priority' => 2,
                             'inv_priority' => 1,
@@ -2178,6 +2375,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/parents',
                                 'self' => 'http://api.example.com/documents/3/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
                             ],
                         ],
                     ],
@@ -2340,5 +2543,50 @@ class ObjectsControllerTest extends IntegrationTestCase
         sort($expected);
         sort($resourceTypes);
         static::assertEquals($expected, array_values($resourceTypes));
+    }
+
+    /**
+     * Data provider fo `testMissingRoute()`
+     *
+     * @return array
+     */
+    public function missingRouteProvider()
+    {
+        return [
+            'document' => [
+                '/document',
+                'A route matching "/document" could not be found. Did you mean "documents"?',
+            ],
+            'id' => [
+                '/2',
+                'A route matching "/2" could not be found. Did you mean "documents"?',
+            ],
+            'badurl' => [
+                '/badurl',
+                'A route matching "/badurl" could not be found.',
+            ],
+        ];
+    }
+
+    /**
+     * Test missing route errors.
+     *
+     * @param string $url The url
+     * @param string $expected The expected error message
+     * @return void
+     *
+     * @dataProvider missingRouteProvider
+     * @covers ::initObjectModel()
+     */
+    public function testMissingRoute($url, $expected)
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals($expected, $response['error']['title']);
     }
 }

@@ -457,7 +457,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'body' => null,
                         'extra' => null,
-                        'lang' => 'eng',
+                        'lang' => 'en',
                         'name' => 'First',
                         'surname' => 'User',
                         'email' => 'first.user@example.com',
@@ -512,6 +512,12 @@ class RolesControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/parents',
                             ],
                         ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/translations',
+                                'self' => 'http://api.example.com/users/1/relationships/translations',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -523,6 +529,6 @@ class RolesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 }

@@ -492,4 +492,88 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
     }
+
+    /**
+     * Data provider for `testParentAncestorFilter` test case.
+     *
+     * @return array
+     */
+    public function parentAncestorFilterProvider()
+    {
+        return [
+            'root parent' => [
+                '/objects',
+                'filter[parent]=root-folder',
+                [
+                    '12',
+                    '2',
+                ],
+            ],
+            'root ancestor' => [
+                '/objects',
+                'filter[ancestor]=root-folder',
+                [
+                    '12',
+                    '4',
+                    '2',
+                ],
+            ],
+            'documents' => [
+                '/documents',
+                'filter[ancestor]=11',
+                [
+                    '2',
+                ],
+            ],
+            'folders' => [
+                '/folders',
+                'filter[parent]=11',
+                [
+                    '12',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test filters on /trash endpoint.
+     *
+     * @param string $endpoint Endpoint.
+     * @param string $query Query string.
+     * @param array $expected Expected result.
+     * @return void
+     *
+     * @dataProvider parentAncestorFilterProvider
+     * @coversNothing
+     */
+    public function testParentAncestorFilter($endpoint, $query, $expected)
+    {
+        $this->configRequestHeaders();
+        $this->get("$endpoint?$query");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
+     * Test `/folders?filter[roots]`.
+     *
+     * @coversNothing
+     */
+    public function testRootsFilter()
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders?filter[roots]');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([11, 13], Hash::extract($result['data'], '{n}.id'));
+    }
 }

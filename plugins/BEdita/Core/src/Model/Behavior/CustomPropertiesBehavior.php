@@ -194,8 +194,9 @@ class CustomPropertiesBehavior extends Behavior
             $value[$propertyName] = $entity->get($propertyName);
         }
 
-        $entity->set($field, $value);
-        $entity->setDirty($field, $dirty);
+        if ($dirty) {
+            $entity->set($field, $value);
+        }
     }
 
     /**

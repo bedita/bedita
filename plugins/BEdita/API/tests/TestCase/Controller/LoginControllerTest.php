@@ -18,12 +18,29 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\LoginController
  */
 class LoginControllerTest extends IntegrationTestCase
 {
+    /**
+     * Not successful login expected result
+     *
+     * @var array
+     */
+    const NOT_SUCCESSFUL_EXPECTED_RESULT = [
+        'error' => [
+            'status' => '401',
+            'title' => 'Login not successful',
+        ],
+        'links' => [
+            'self' => 'http://api.example.com/auth',
+            'home' => 'http://api.example.com/home',
+        ],
+    ];
+
     /**
      * Test login method.
      *
@@ -397,10 +414,8 @@ class LoginControllerTest extends IntegrationTestCase
             'Authorization' => sprintf('Bearer %s', $meta['jwt']),
         ];
 
-        $passwordHash = TableRegistry::get('Users')->get(1)->get('password_hash');
         $data = [
             'username' => 'gustavo',
-            'password' => 'wewantgustavoforpresident',
         ];
 
         $this->configRequest(compact('headers'));
@@ -412,7 +427,169 @@ class LoginControllerTest extends IntegrationTestCase
         static::assertNotEmpty($result['data']);
         static::assertEquals(1, $result['data']['id']);
         static::assertNotEquals($data['username'], $result['data']['attributes']['username']);
-        // check password unchanged
-        static::assertEquals($passwordHash, TableRegistry::get('Users')->get(1)->get('password_hash'));
+    }
+
+    /**
+     * Login with deleted user method.
+     *
+     * @return void.
+     *
+     * @coversNothing
+     */
+    public function testDeletedLogin()
+    {
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/users/5');
+
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/json',
+        ]);
+        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+    }
+
+    /**
+     * Login with blocked user method.
+     *
+     * @return void.
+     *
+     * @coversNothing
+     */
+    public function testBlockedLogin()
+    {
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(5);
+        $user->blocked = true;
+        $result = $usersTable->saveOrFail($user);
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $this->assertResponseCode(401);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+    }
+
+    /**
+     * Data provider for `testStatus`
+     *
+     * @return void
+     */
+    public function statusProvider()
+    {
+        return [
+            'draft' => [
+                true,
+                'draft',
+            ],
+            'off' => [
+                false,
+                'off',
+            ],
+            'on' => [
+                true,
+                'on',
+            ]
+        ];
+    }
+    /**
+     * Test login with some user `status` .
+     *
+     * @param bool $expected Is login successful?
+     * @param string $status User `status`
+     *
+     * @return void.
+     *
+     * @coversNothing
+     * @dataProvider statusProvider
+     */
+    public function testStatus($expected, $status)
+    {
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(5);
+        $user->set('status', $status);
+        $usersTable->saveOrFail($user);
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+
+        if ($expected) {
+            $this->assertResponseCode(200);
+        } else {
+            $this->assertResponseCode(401);
+            $result = json_decode((string)$this->_response->getBody(), true);
+            static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+        }
+    }
+
+    /**
+     * Data provider for `testPasswordChange`
+     *
+     * @return void
+     */
+    public function passwordChangeProvider()
+    {
+        return [
+            'missing' => [
+                400,
+                [
+                    'password' => 'new password',
+                ],
+                'Missing current password',
+            ],
+            'wrong' => [
+                400,
+                [
+                    'password' => 'new password',
+                    'old_password' => 'old password',
+                ],
+                'Wrong password',
+            ],
+            'no pass' => [
+                200,
+                [
+                    'name' => 'Gustavo',
+                ],
+                'Wrong password',
+            ],
+            'ok' => [
+                200,
+                [
+                    'password' => 'password2',
+                    'old_password' => 'password1',
+                ],
+            ],
+        ];
+    }
+    /**
+     * Test password change.
+     *
+     * @param int $expected Expected status code.
+     * @param array $data Request body.
+     * @param string $error Error title in response, if $expected is >= 400.
+     *
+     * @return void.
+     *
+     * @covers ::checkPassword()
+     * @dataProvider passwordChangeProvider
+     */
+    public function testPasswordChange($expected, array $data, $error = null)
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => 'application/json']);
+        $this->patch('/auth/user', json_encode($data));
+
+        $this->assertResponseCode($expected);
+        if ($expected >= 400) {
+            $result = json_decode((string)$this->_response->getBody(), true);
+            static::assertEquals($error, $result['error']['title']);
+        } elseif (!empty($data['password'])) {
+            // login with new password
+            $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+            $this->post('/auth', json_encode(['username' => 'first user', 'password' => $data['password']]));
+            $this->assertResponseCode(200);
+        }
     }
 }
