@@ -201,7 +201,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.locked' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 9,
+                    'property_type_id' => 10,
                     'name' => 'locked',
                 ],
                 [
@@ -212,7 +212,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.created' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 6,
+                    'property_type_id' => 7,
                     'name' => 'created',
                 ],
                 [
@@ -223,7 +223,7 @@ class StaticPropertiesTableTest extends TestCase
             'objects.extra' => [
                 [
                     'object_type_id' => 1,
-                    'property_type_id' => 10,
+                    'property_type_id' => 11,
                     'name' => 'extra',
                 ],
                 [
