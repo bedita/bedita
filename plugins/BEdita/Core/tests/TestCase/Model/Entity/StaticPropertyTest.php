@@ -124,7 +124,7 @@ class StaticPropertyTest extends TestCase
             'created' => [
                 [
                     'name' => 'created',
-                    'property_type_name' => 'date',
+                    'property_type_name' => 'datetime',
                     'is_nullable' => false,
                 ],
                 'created',

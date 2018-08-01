@@ -52,10 +52,10 @@ class PropertyTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 20,
                 ],
             ],
@@ -176,7 +176,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                         'name' => 'date',
                         'params' => [
                             'type' => 'string',
-                            'format' => 'date-time',
+                            'format' => 'date',
                         ],
                     ],
                     'links' => [
@@ -195,9 +195,10 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'id' => '7',
                     'type' => 'property_types',
                     'attributes' => [
-                        'name' => 'number',
+                        'name' => 'datetime',
                         'params' => [
-                            'type' => 'number',
+                            'type' => 'string',
+                            'format' => 'date-time',
                         ],
                     ],
                     'links' => [
@@ -216,9 +217,9 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'id' => '8',
                     'type' => 'property_types',
                     'attributes' => [
-                        'name' => 'integer',
+                        'name' => 'number',
                         'params' => [
-                            'type' => 'integer',
+                            'type' => 'number',
                         ],
                     ],
                     'links' => [
@@ -237,9 +238,9 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'id' => '9',
                     'type' => 'property_types',
                     'attributes' => [
-                        'name' => 'boolean',
+                        'name' => 'integer',
                         'params' => [
-                            'type' => 'boolean',
+                            'type' => 'integer',
                         ],
                     ],
                     'links' => [
@@ -258,9 +259,9 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'id' => '10',
                     'type' => 'property_types',
                     'attributes' => [
-                        'name' => 'json',
+                        'name' => 'boolean',
                         'params' => [
-                            'type' => 'object',
+                            'type' => 'boolean',
                         ],
                     ],
                     'links' => [
@@ -279,6 +280,27 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'id' => '11',
                     'type' => 'property_types',
                     'attributes' => [
+                        'name' => 'json',
+                        'params' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/property_types/11',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/model/property_types/11/properties',
+                                'self' => 'http://api.example.com/model/property_types/11/relationships/properties',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '12',
+                    'type' => 'property_types',
+                    'attributes' => [
                         'name' => 'unused property type',
                         'params' => [
                             'type' => 'object',
@@ -291,13 +313,13 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/model/property_types/11',
+                        'self' => 'http://api.example.com/model/property_types/12',
                     ],
                     'relationships' => [
                         'properties' => [
                             'links' => [
-                                'related' => 'http://api.example.com/model/property_types/11/properties',
-                                'self' => 'http://api.example.com/model/property_types/11/relationships/properties',
+                                'related' => 'http://api.example.com/model/property_types/12/properties',
+                                'self' => 'http://api.example.com/model/property_types/12/relationships/properties',
                             ],
                         ],
                     ],
@@ -458,7 +480,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/property_types/12');
+        $this->assertHeader('Location', 'http://api.example.com/model/property_types/13');
         static::assertTrue(TableRegistry::get('PropertyTypes')->exists(['name' => 'gustavo']));
     }
 
@@ -557,10 +579,10 @@ class PropertyTypesControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/model/property_types/11');
+        $this->delete('/model/property_types/12');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('PropertyTypes')->exists(['id' => 11]));
+        static::assertFalse(TableRegistry::get('PropertyTypes')->exists(['id' => 12]));
     }
 }
