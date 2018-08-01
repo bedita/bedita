@@ -164,11 +164,6 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testLoginAuthorizationDenied()
     {
-        // Add role id 2 to user id 5
-        $table = TableRegistry::get('RolesUsers');
-        $entity = $table->newEntity(['user_id' => 5, 'role_id' => 2]);
-        $table->saveOrFail($entity);
-
         // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
         // POST /auth with role id 2 on application id 2 MUST fail
         CurrentApplication::setApplication(TableRegistry::get('Applications')->get(2));
