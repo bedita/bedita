@@ -296,5 +296,4 @@ class StreamsTableTest extends TestCase
 
         static::assertSame($expected, $result);
     }
-
 }
