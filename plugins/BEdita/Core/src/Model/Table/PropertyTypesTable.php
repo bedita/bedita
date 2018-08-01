@@ -181,9 +181,8 @@ class PropertyTypesTable extends Table
             case 'float':
                 $type = 'number';
                 break;
-            case 'datetime':
             case 'timestamp':
-                $type = 'date';
+                $type = 'datetime';
                 break;
         }
         if (isset($propertyTypes[$type])) {
