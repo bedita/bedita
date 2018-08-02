@@ -40,6 +40,7 @@ class UserTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.properties',
