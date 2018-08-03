@@ -34,7 +34,7 @@ class ProfilesFixture extends TestFixture
             'email' => 'first.user@example.com',
             'person_title' => 'Mr.',
             'gender' => null,
-            'birthdate' => null,
+            'birthdate' => '1945-04-25',
             'deathdate' => null,
         ],
         [
