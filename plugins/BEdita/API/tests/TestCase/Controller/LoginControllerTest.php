@@ -555,6 +555,15 @@ class LoginControllerTest extends IntegrationTestCase
                 ],
                 'Wrong password',
             ],
+            'empty pass' => [
+                200,
+                [
+                    'password' => '',
+                    'old_password' => '',
+                    'name' => 'Gustavo',
+                ],
+                'Wrong password',
+            ],
             'ok' => [
                 200,
                 [
