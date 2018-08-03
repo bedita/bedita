@@ -463,7 +463,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'email' => 'first.user@example.com',
                         'person_title' => 'Mr.',
                         'gender' => null,
-                        'birthdate' => null,
+                        'birthdate' => '1945-04-25',
                         'deathdate' => null,
                         'company' => false,
                         'company_name' => null,
