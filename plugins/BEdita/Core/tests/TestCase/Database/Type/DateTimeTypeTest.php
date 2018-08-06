@@ -73,6 +73,10 @@ class DateTimeTypeTest extends TestCase
                 '2017-01-01T19:20:30.45+01:00',
                 '2017-01-01T19:20:30.45+01:00',
             ],
+            [
+                '2018-08-01 10:00:00+00:00',
+                1533117600,
+            ],
             'datetime' => [
                 new DateTime('2000-01-01 00:00:00'),
                 new DateTime('2000-01-01 00:00:00'),
@@ -94,7 +98,7 @@ class DateTimeTypeTest extends TestCase
      * @return void
      *
      * @dataProvider marshalSuccessProvider
-     * @covers ::marshal
+     * @covers ::marshalDateTime
      */
     public function testMarshalSuccess($expected, $input, $useImmutable = false)
     {
@@ -120,9 +124,6 @@ class DateTimeTypeTest extends TestCase
     {
         return [
             [
-                '20170301121212',
-            ],
-            [
                 '2017 1 1',
             ],
             [
@@ -144,7 +145,7 @@ class DateTimeTypeTest extends TestCase
      * @return void
      *
      * @dataProvider marshalFailureProvider
-     * @covers ::marshal
+     * @covers ::marshalDateTime
      */
     public function testMarshalFailure($input)
     {
@@ -160,6 +161,7 @@ class DateTimeTypeTest extends TestCase
      * @return void
      *
      * @covers ::marshal
+     * @covers ::marshalDateTime
      */
     public function testMarshalEmpty()
     {
