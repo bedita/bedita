@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
@@ -89,11 +90,11 @@ class AsyncJobsTable extends Table
             ->allowEmpty('payload');
 
         $validator
-            ->dateTime('scheduled_from')
+            ->add('scheduled_from', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('scheduled_from');
 
         $validator
-            ->dateTime('expires')
+            ->add('expires', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('expires');
 
         $validator
@@ -101,11 +102,11 @@ class AsyncJobsTable extends Table
             ->notEmpty('max_attempts');
 
         $validator
-            ->dateTime('locked_until')
+            ->add('locked_until', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('locked_until');
 
         $validator
-            ->dateTime('completed')
+            ->add('completed', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('completed');
 
         return $validator;

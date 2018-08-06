@@ -47,10 +47,10 @@ class ProfilesValidator extends ObjectsValidator
 
             ->allowEmpty('gender')
 
-            ->date('birthdate')
+            ->add('birthdate', 'date', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('birthdate')
 
-            ->date('deathdate')
+            ->add('deathdate', 'date', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('deathdate')
 
             ->boolean('company')

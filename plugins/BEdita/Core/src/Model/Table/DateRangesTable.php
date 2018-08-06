@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -73,9 +74,11 @@ class DateRangesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
+            ->add('start_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('start_date');
 
         $validator
+            ->add('end_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmpty('end_date');
 
         $validator
