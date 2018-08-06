@@ -17,13 +17,14 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Utility\Hash;
 use Cake\Validation\Validation as CakeValidation;
+use DateTimeInterface;
 use League\JsonGuard\Validator as JsonSchemaValidator;
 use League\JsonReference\Dereferencer as JsonSchemaDereferencer;
 use League\JsonReference\Loader\ArrayLoader;
 use League\JsonReference\Loader\ChainedLoader;
 
 /**
- * Reusable class to check for reserved names.
+ * Class to provide reusable validation rules.
  * Used for object types and properties.
  *
  * @since 4.0.0
@@ -159,5 +160,45 @@ class Validation
         }
 
         return true;
+    }
+
+    /**
+     * Validate input date and datetime.
+     * Accepetd input formats:
+     *  - string date format
+     *  - integer timestamps
+     *  - DateTime objects
+     *
+     * Accepted date time string formats are
+     *  - 2017-01-01                    YYYY-MM-DD
+     *  - 2017-01-01 11:22              YYYY-MM-DD hh:mm
+     *  - 2017-01-01T11:22:33           YYYY-MM-DDThh:mm:ss
+     *  - 2017-01-01T11:22:33Z          YYYY-MM-DDThh:mm:ssZ
+     *  - 2017-01-01T19:20+01:00        YYYY-MM-DDThh:mmTZD
+     *  - 2017-01-01T11:22:33+01:00     YYYY-MM-DDThh:mm:ssTZD
+     *  - 2017-01-01T19:20:30.45+01:00  YYYY-MM-DDThh:mm:ss.sTZD
+     *
+     * See ISO 8601 subset as defined here https://www.w3.org/TR/NOTE-datetime:
+     *
+     * Also timestamp as integer are accepted.
+     *
+     * @param mixed $value Date or datetime value
+     * @return true|string
+     */
+    public static function dateTime($value)
+    {
+        if ($value instanceof DateTimeInterface) {
+            return true;
+        }
+
+        if (is_string($value) && preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
+            return true;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_INT)) {
+            return true;
+        }
+
+        return __d('bedita', 'Invalid date or datetime "{0}"', $value);
     }
 }

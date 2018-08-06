@@ -17,6 +17,7 @@ use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
+use DateTime;
 
 /**
  * {@see \BEdita\Core\Model\Validation\Validation} Test Case
@@ -276,6 +277,58 @@ class ValidationTest extends TestCase
         Configure::write('I18n', $config);
 
         $result = Validation::languageTag($lang);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for `testDateTime` test case.
+     *
+     * @return array
+     */
+    public function dateTimeProvider()
+    {
+        return [
+            'bad date' => [
+                'Invalid date or datetime "July, 1"',
+                'July, 1',
+            ],
+            'ok date' => [
+                true,
+                '2018-08-02',
+            ],
+            'date time object' => [
+                true,
+                new DateTime('2018-08-02'),
+            ],
+            'ok date time' => [
+                true,
+                '2018-08-02 14:23',
+            ],
+            'ok iso date time' => [
+                true,
+                '2018-08-02T09:00:00+20:00',
+            ],
+            'ok timestamp' => [
+                true,
+                '1533117600',
+            ],
+        ];
+    }
+
+    /**
+     * Test `dateTime` validation.
+     *
+     * @param bool|string $expected Expected result.
+     * @param string|int $value Datetime validated.
+     * @return void
+     *
+     * @dataProvider dateTimeProvider()
+     * @covers ::dateTime()
+     */
+    public function testDateTime($expected, $value)
+    {
+        $result = Validation::dateTime($value);
 
         static::assertSame($expected, $result);
     }
