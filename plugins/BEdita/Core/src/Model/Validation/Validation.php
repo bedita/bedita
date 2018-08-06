@@ -199,6 +199,6 @@ class Validation
             return true;
         }
 
-        return __d('bedita', 'Invalid date or datetime "{0}"', $value);
+        return __d('bedita', 'Invalid date or datetime "{0}"', print_r($value, true));
     }
 }
