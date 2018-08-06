@@ -256,6 +256,26 @@ class TreesTableTest extends TestCase
     }
 
     /**
+     * Test `afterSave` on new item
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testAfterSaveNew()
+    {
+        $entity = $this->Trees->newEntity(
+            [
+                'object_id' => 2,
+                'parent_id' => 12,
+                'root_id' => 11,
+                'parent_node_id' => 2,
+            ]
+        );
+        static::assertTrue((bool)$this->Trees->save($entity));
+    }
+
+    /**
      * Test that moving a parent as child fails.
      *
      * @return void

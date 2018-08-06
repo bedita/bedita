@@ -46,12 +46,16 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.external_auth',
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.trees',
     ];
 
     /**
@@ -282,6 +286,20 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test soft delete second user
+     *
+     * @return void
+     *
+     * @covers ::beforeSave
+     */
+    public function testSoftDeleteSecondUser()
+    {
+        $user = $this->Users->get(5);
+        $user->deleted = true;
+        static::assertTrue((bool)$this->Users->save($user));
+    }
+
+    /**
      * Test delete admin user
      *
      * @return void
@@ -295,6 +313,19 @@ class UsersTableTest extends TestCase
     {
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         $this->Users->delete($user);
+    }
+
+    /**
+     * Test hard delete second user
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete
+     */
+    public function testHardDeleteSecondUser()
+    {
+        $user = $this->Users->get(5);
+        static::assertTrue((bool)$this->Users->delete($user));
     }
 
     /**

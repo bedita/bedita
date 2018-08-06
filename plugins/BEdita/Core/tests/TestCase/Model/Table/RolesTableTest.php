@@ -42,6 +42,9 @@ class RolesTableTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -169,5 +172,17 @@ class RolesTableTest extends TestCase
     {
         $role = $this->Roles->get(RolesTable::ADMIN_ROLE);
         $this->Roles->delete($role);
+    }
+
+    /**
+     * Test delete second role
+     *
+     * @covers ::beforeDelete
+     */
+    public function testDeleteSecondRole()
+    {
+        $role = $this->Roles->get(2);
+        $success = $this->Roles->delete($role);
+        static::assertNotEmpty($success);
     }
 }

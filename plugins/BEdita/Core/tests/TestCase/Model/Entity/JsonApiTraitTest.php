@@ -50,10 +50,12 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.trees',
     ];
 
     /**
@@ -319,6 +321,9 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetRelationshipsIncludedEmpty()
     {
+        $usersTable = TableRegistry::get('Users');
+        $usersTable->delete($usersTable->get(5));
+
         $expected = [
             'users' => [
                 'data' => [],

@@ -35,6 +35,12 @@ class ListEntitiesActionTest extends TestCase
         'plugin.BEdita/Core.fake_animals',
         'plugin.BEdita/Core.fake_articles',
         'plugin.BEdita/Core.fake_mammals',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -193,6 +199,22 @@ class ListEntitiesActionTest extends TestCase
                     'name' => 'cat',
                 ],
                 'FakeMammals',
+            ],
+            'finder1' => [
+                [
+                ],
+                [
+                    'byName' => ['name' => 'not_found_relation'],
+                ],
+                'Relations',
+            ],
+            'find mine' => [
+                [
+                ],
+                [
+                    'mine' => true,
+                ],
+                'Users',
             ],
         ];
     }

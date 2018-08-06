@@ -320,6 +320,26 @@ class ResourcesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Utility method to add new role
+     *
+     * @return void
+     */
+    protected function addRole()
+    {
+        $data = [
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'support',
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/roles', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(201);
+    }
+
+    /**
      * Test relationships method to replace existing relationships.
      *
      * @return void
@@ -331,21 +351,12 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociations()
     {
-        // 403 <-- PATCH /roles/1/relationships/users
-        $data = [
-            [
-                'id' => '5',
-                'type' => 'users',
-            ],
-        ];
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $this->assertResponseCode(403);
-        $this->assertContentType('application/vnd.api+json');
-        // 200 <-- PATCH /roles/2/relationships/users
+        // add role id 3
+        $this->addRole();
+        // 200 <-- PATCH /roles/3/relationships/users
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/2/relationships/users',
+                'self' => 'http://api.example.com/roles/3/relationships/users',
                 'home' => 'http://api.example.com/home',
             ],
         ];
@@ -356,7 +367,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ];
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
+        $this->patch('/roles/3/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -373,18 +384,60 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @covers ::findAssociation()
      * @covers ::setRelationshipsAllowedMethods()
      */
+    public function testSetAssociationsFailure()
+    {
+        // 403 <-- PATCH /roles/1/relationships/users
+        $data = [
+            [
+                'id' => '5',
+                'type' => 'users',
+            ],
+        ];
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
+     */
     public function testSetAssociationsEmpty()
+    {
+        // add role id 3
+        $this->addRole();
+        $data = [];
+        // 204 <-- PATCH /roles/3/relationships/users
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/roles/3/relationships/users', json_encode(compact('data')));
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     * @covers ::setRelationshipsAllowedMethods()
+     */
+    public function testSetAssociationsEmptyFailure()
     {
         $data = [];
         // 403 <-- PATCH /roles/1/relationships/users
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $this->assertResponseCode(403);
-        $this->assertContentType('application/vnd.api+json');
-        // 204 <-- PATCH /roles/2/relationships/users
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/roles/2/relationships/users', json_encode(compact('data')));
-        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
     }
 

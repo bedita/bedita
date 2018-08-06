@@ -110,4 +110,30 @@ class RolesUsersTableTest extends TestCase
         $success = $this->RolesUsers->save($objectType);
         static::assertEquals($expected, (bool)$success);
     }
+
+    /**
+     * Test delete admin role association
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE
+     * @covers ::beforeDelete
+     */
+    public function testDeleteAdminRole()
+    {
+        $entity = $this->RolesUsers->get(1);
+        $this->RolesUsers->delete($entity);
+    }
+
+    /**
+     * Test delete second role association
+     *
+     * @covers ::beforeDelete
+     */
+    public function testDeleteSecondRole()
+    {
+        $entity = $this->RolesUsers->get(2);
+        $success = $this->RolesUsers->delete($entity);
+        static::assertNotEmpty($success);
+    }
 }

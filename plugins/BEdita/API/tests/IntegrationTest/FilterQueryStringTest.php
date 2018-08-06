@@ -239,6 +239,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                 '/users?filter[roles][]=1&filter[roles][]=2',
                 [
                     '1',
+                    '5',
                 ],
             ],
             'here2' => [
