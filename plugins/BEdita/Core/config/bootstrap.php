@@ -3,6 +3,7 @@
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
+use BEdita\Core\Database\Type\DateType;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
@@ -57,8 +58,9 @@ FrozenDate::setJsonEncodeFormat('yyyy-MM-dd');
 Date::setJsonEncodeFormat('yyyy-MM-dd');
 
 /**
- * Use custom DateTimeType
+ * Use custom DateType & DateTimeType
  */
+Type::set('date', new DateType());
 Type::set('datetime', new DateTimeType());
 Type::set('timestamp', new DateTimeType());
 
