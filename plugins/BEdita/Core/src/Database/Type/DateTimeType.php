@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Database\Type;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Type\DateTimeType as CakeDateTimeType;
 
 /**
@@ -22,7 +23,13 @@ class DateTimeType extends CakeDateTimeType
 {
     /**
      * {@inheritDoc}
-     *
+     */
+    public function marshal($value)
+    {
+        return static::marshalDateTime($value, $this->getDateTimeClassName());
+    }
+
+    /**
      * Accepted date time formats are
      *  - 2017-01-01                    YYYY-MM-DD
      *  - 2017-01-01 11:22              YYYY-MM-DD hh:mm
@@ -33,16 +40,21 @@ class DateTimeType extends CakeDateTimeType
      *  - 2017-01-01T19:20:30.45+01:00  YYYY-MM-DDThh:mm:ss.sTZD
      *
      * See ISO 8601 subset as defined here https://www.w3.org/TR/NOTE-datetime:
+     *
+     * @param mixed $value DateTime input
+     * @param string $dateTimeClassName DateTime class name to use to parse string
+     *
+     * @return \DateTimeInterface|null|mixed
      */
-    public function marshal($value)
+    public static function marshalDateTime($value, $dateTimeClassName)
     {
         if ($value instanceof \DateTimeInterface) {
             return $value;
         }
 
-        if (is_string($value) && preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
+        if (Validation::dateTime($value) === true) {
             /* @var \Cake\I18n\Time|\Cake\I18n\FrozenTime $value */
-            $value = call_user_func([$this->getDateTimeClassName(), 'parse'], $value);
+            $value = call_user_func([$dateTimeClassName, 'parse'], $value);
             if ($value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');
             }
