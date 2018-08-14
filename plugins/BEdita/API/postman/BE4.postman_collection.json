@@ -4540,7 +4540,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{be4Url}}/annotation/{{annotationId}}",
+							"raw": "{{be4Url}}/annotations/{{annotationId}}",
 							"host": [
 								"{{be4Url}}"
 							],
