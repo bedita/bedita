@@ -4554,7 +4554,7 @@
 					"response": []
 				},
 				{
-					"name": "Create a annotation",
+					"name": "Create an annotation",
 					"event": [
 						{
 							"listen": "test",
@@ -4615,7 +4615,7 @@
 					"response": []
 				},
 				{
-					"name": "Modify a annotation",
+					"name": "Modify an annotation",
 					"event": [
 						{
 							"listen": "test",
@@ -4667,7 +4667,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete a annotation",
+					"name": "Delete an annotation",
 					"event": [
 						{
 							"listen": "test",
@@ -4715,7 +4715,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete a annotation permanently",
+					"name": "Delete an annotation permanently",
 					"event": [
 						{
 							"listen": "test",
