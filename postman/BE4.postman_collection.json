@@ -1952,13 +1952,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{be4Url}}/objects/",
+							"raw": "{{be4Url}}/objects",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
-								"objects",
-								""
+								"objects"
 							]
 						},
 						"description": "Get objects list"
@@ -4330,7 +4329,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
@@ -4446,7 +4445,328 @@
 			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
 		},
 		{
-			"name": "9. Trash",
+			"name": "9. Annotations",
+			"item": [
+				{
+					"name": "GET annotations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d50451a-464c-4ba1-81b2-894a5b04c3e6",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"annotationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/annotations/",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"annotations",
+								""
+							]
+						},
+						"description": "Get annotations list"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single annotation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/annotation/{{annotationId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"annotation",
+								"{{annotationId}}"
+							]
+						},
+						"description": "Get a single annotation by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a annotation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2f046b58-ab60-44f1-abb7-21983b64455a",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"annotationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"annotations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"description\": \"a note\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/annotations",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"annotations"
+							]
+						},
+						"description": "Create an annotation for an object."
+					},
+					"response": []
+				},
+				{
+					"name": "Modify a annotation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{annotationId}}\",\n        \"type\": \"annotations\",\n        \"attributes\": {\n            \"description\": \"another note\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/annotations/{{annotationId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"annotations",
+								"{{annotationId}}"
+							]
+						},
+						"description": "PATCH annotation"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a annotation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/annotations/{{annotationId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"annotations",
+								"{{annotationId}}"
+							]
+						},
+						"description": "DEL annotation"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a annotation permanently",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{annotationId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{annotationId}}"
+							]
+						},
+						"description": "DEL annotation"
+					},
+					"response": []
+				}
+			],
+			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
+		},
+		{
+			"name": "10. Trash",
 			"item": [
 				{
 					"name": "GET objects",
@@ -4653,7 +4973,7 @@
 			"description": "Trash management"
 		},
 		{
-			"name": "10. Admin",
+			"name": "11. Admin",
 			"item": [
 				{
 					"name": "Create application",
@@ -5697,7 +6017,7 @@
 			]
 		},
 		{
-			"name": "11. Remove All",
+			"name": "12. Remove All",
 			"item": [
 				{
 					"name": "Remove sub folder permanently",
