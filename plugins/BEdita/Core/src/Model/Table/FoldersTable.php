@@ -160,7 +160,7 @@ class FoldersTable extends ObjectsTable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        $entity->dirty('parents', false);
+        $entity->setDirty('parents', false);
     }
 
     /**
