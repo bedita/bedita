@@ -26,7 +26,7 @@ class FoldersControllerTest extends IntegrationTestCase
     /**
      * Folders table.
      *
-     * @var \BEdita\Core\Model\Table\FoldersTable+
+     * @var \BEdita\Core\Model\Table\FoldersTable
      */
     public $Folders;
 
@@ -995,5 +995,35 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $childrenIds = Hash::extract($folder->children, '{n}.id');
         static::assertEquals(['4'], $childrenIds);
+    }
+
+    /**
+     * Test updating an object's position within its parent using `POST`.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testUpdateChildPosition()
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+                'meta' => [
+                    'relation' => [
+                        'position' => 'first',
+                    ],
+                ],
+            ],
+        ];
+        $this->post('/folders/11/relationships/children', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $childrenIds = Hash::extract($folder->children, '{n}.id');
+
+        static::assertEquals([2, 12], $childrenIds);
     }
 }
