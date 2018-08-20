@@ -44,7 +44,20 @@ class AddAssociatedAction extends UpdateAssociatedAction
         foreach ($relatedEntities as $relatedEntity) {
             $primaryKey = $relatedEntity->extract($bindingKey);
             if (in_array($primaryKey, $existing)) {
-                continue;
+                if (!($this->Association instanceof BelongsToMany) || !$relatedEntity->has('_joinData')) {
+                    continue;
+                }
+
+                $relatedEntity->_joinData = $this->Association->junction()->patchEntity(
+                    $this->Association->junction()->find()
+                        ->where([
+                            $this->Association->getForeignKey() => $entity->get($this->Association->getSource()->getPrimaryKey()),
+                            $this->Association->getTargetForeignKey() => $relatedEntity->get($this->Association->getBindingKey()),
+                        ])
+                        ->firstOrFail(),
+                    $relatedEntity->_joinData->toArray()
+                );
+                $relatedEntity->setDirty('_joinData', true);
             }
 
             $diff[] = $relatedEntity;
