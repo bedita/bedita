@@ -176,7 +176,7 @@ class ValidationTest extends TestCase
                 null,
             ],
             'unknown property' => [
-                'The object must not contain additional properties',
+                'Additional properties not allowed: wtf',
                 [
                     'name' => 'Gustavo Supporto',
                     'age' => 42,
@@ -185,7 +185,7 @@ class ValidationTest extends TestCase
                 $schema,
             ],
             'invalid value' => [
-                'The number must be at least 0',
+                'Value more than 0 expected, -42 received',
                 [
                     'name' => 'Gustavo Supporto',
                     'age' => -42,
@@ -193,14 +193,14 @@ class ValidationTest extends TestCase
                 $schema,
             ],
             'missing required property' => [
-                'The object must contain the properties',
+                'Required property missing: name',
                 [
                     'age' => 42,
                 ],
                 $schema,
             ],
             'wrong type' => [
-                'The data must be a(n) string',
+                'String expected, true received',
                 [
                     'name' => true,
                 ],
