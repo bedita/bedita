@@ -109,7 +109,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
         $endpoint = sprintf('/locations/%d/relationships/%s', $firstLocation->id, $relation->get('name'));
         $this->_sendRequest($endpoint, 'POST', json_encode(compact('data')));
 
-        debug((string)$this->_response->getBody());
         $this->assertResponseCode(200);
 
         $existing = $this->ObjectRelations->exists([
