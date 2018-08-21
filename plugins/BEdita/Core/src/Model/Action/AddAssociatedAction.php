@@ -50,7 +50,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
     }
 
     /**
-     * Filter entities to be actually updated.
+     * Patch join data on existing associations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface[] $diff Related entities.
@@ -142,7 +142,6 @@ class AddAssociatedAction extends UpdateAssociatedAction
         $bindingKey = (array)$this->Association->getBindingKey();
         $existing = $this->existing($entity);
 
-        /** @var \Cake\Datasource\EntityInterface[] $diff */
         $diff = [];
         foreach ($relatedEntities as $relatedEntity) {
             $primaryKey = $relatedEntity->extract($bindingKey);
