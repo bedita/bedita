@@ -18,10 +18,7 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Utility\Hash;
 use Cake\Validation\Validation as CakeValidation;
 use DateTimeInterface;
-use League\JsonGuard\Validator as JsonSchemaValidator;
-use League\JsonReference\Dereferencer as JsonSchemaDereferencer;
-use League\JsonReference\Loader\ArrayLoader;
-use League\JsonReference\Loader\ChainedLoader;
+use Swaggest\JsonSchema\Schema;
 
 /**
  * Class to provide reusable validation rules.
@@ -108,40 +105,18 @@ class Validation
      */
     public static function jsonSchema($value, $schema)
     {
-        if (is_string($schema)) {
-            $cacheLoader = new ArrayLoader([
-                'json-schema.org/draft-06/schema' => json_decode(file_get_contents(__DIR__ . DS . 'schemas' . DS . 'draft-06.json')),
-            ]);
-
-            $dereferencer = JsonSchemaDereferencer::draft6();
-            $loaderManager = $dereferencer->getLoaderManager();
-            $loaderManager->registerLoader('http', new ChainedLoader(
-                $cacheLoader,
-                $loaderManager->getLoader('http')
-            ));
-            $loaderManager->registerLoader('https', new ChainedLoader(
-                $cacheLoader,
-                $loaderManager->getLoader('https')
-            ));
-
-            $schema = $dereferencer->dereference($schema);
-        }
         if (empty($schema)) {
             return true;
         }
 
-        $value = json_decode(json_encode($value));
-        $schema = json_decode(json_encode($schema));
-        $validator = new JsonSchemaValidator($value, $schema);
+        $schema = Schema::import(json_decode(json_encode($schema)));
+        try {
+            $schema->in(json_decode(json_encode($value)));
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            $error = reset($errors);
-
-            return sprintf('%s (in: %s)', $error->getMessage(), $error->getDataPath());
+            return true;
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-
-        return true;
     }
 
     /**

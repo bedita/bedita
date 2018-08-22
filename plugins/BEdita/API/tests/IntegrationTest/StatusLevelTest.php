@@ -39,7 +39,7 @@ class StatusLevelTest extends IntegrationTestCase
                 'draft',
                 '/documents',
             ],
-            'all docs' => [
+            'all docs 2' => [
                 ['2', '3'],
                 null,
                 '/documents',

@@ -21,7 +21,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use League\JsonReference\ScopeResolver\JsonSchemaScopeResolver;
 
 /**
  * Property Entity.
@@ -240,7 +239,7 @@ class Property extends Entity implements JsonApiSerializable
         }
 
         // Additional metadata.
-        $schema[JsonSchemaScopeResolver::KEYWORD_DRAFT_6] = sprintf('/properties/%s', $this->name);
+        $schema['$id'] = sprintf('/properties/%s', $this->name);
         $schema['title'] = Inflector::humanize($this->name);
         $schema['description'] = $this->description;
         if (in_array($accessMode, ['readOnly', 'writeOnly'])) {
