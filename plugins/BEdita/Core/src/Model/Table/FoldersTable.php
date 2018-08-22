@@ -20,13 +20,12 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\ValidCount;
-use Cake\ORM\TableRegistry;
 
 /**
  * Folders Model
  *
- * @property \Cake\ORM\Association\HasOne $Trees
- * @property \Cake\ORM\Association\BelongsToMany $Children
+ * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasOne $TreeParentNodes
+ * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsToMany $Children
  *
  * @method \BEdita\Core\Model\Entity\Folder get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Folder newEntity($data = null, array $options = [])
@@ -102,7 +101,7 @@ class FoldersTable extends ObjectsTable
      * Custom rule for checking that entity has at most one parent.
      * The check is done on `parents` property
      *
-     * @param Folder $entity The folder entity to check
+     * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity to check
      * @return bool
      */
     public function hasAtMostOneParent(Folder $entity)
@@ -122,7 +121,7 @@ class FoldersTable extends ObjectsTable
      *
      * If entity is new or `deleted` is not dirty (no change) or it is equal to true (delete action) then return true.
      *
-     * @param Folder $entity The entity to check
+     * @param \BEdita\Core\Model\Entity\Folder $entity The entity to check
      * @return bool
      */
     public function isFolderRestorable(Folder $entity)
@@ -154,23 +153,23 @@ class FoldersTable extends ObjectsTable
      * Set `parents` as not dirty to prevent automatic save that could breaks the tree.
      * The tree is saved later in `afterSave()`
      *
-     * @param Event $event The event
-     * @param EntityInterface $entity The entity to save
+     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        $entity->dirty('parents', false);
+        $entity->setDirty('parents', false);
     }
 
     /**
      * Update the tree setting the right parent.
      *
-     * @param Event $event The event
-     * @param EntityInterface $entity The folder entity persisted
+     * @param \Cake\Event\Event $event The event
+     * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity persisted
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity)
+    public function afterSave(Event $event, Folder $entity)
     {
         $this->updateChildrenDeletedField($entity);
 
@@ -179,19 +178,18 @@ class FoldersTable extends ObjectsTable
             return;
         }
 
-        $trees = TableRegistry::get('Trees');
-
         if ($entity->isNew()) {
-            $node = $trees->newEntity([
+            $node = $this->TreeNodes->newEntity([
                 'object_id' => $entity->id,
                 'parent_id' => $entity->parent_id,
             ]);
-            $trees->saveOrFail($node);
+            $this->TreeNodes->saveOrFail($node);
 
             return;
         }
 
-        $node = $trees->find()
+        /** @var \BEdita\Core\Model\Entity\Tree $node */
+        $node = $this->TreeNodes->find()
             ->where(['object_id' => $entity->id])
             ->firstOrFail();
 
@@ -201,7 +199,7 @@ class FoldersTable extends ObjectsTable
         }
 
         $node->parent_id = $entity->parent_id;
-        $trees->saveOrFail($node);
+        $this->TreeNodes->saveOrFail($node);
     }
 
     /**
@@ -252,7 +250,7 @@ class FoldersTable extends ObjectsTable
     /**
      * Finder for root folders.
      *
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
     protected function findRoots(Query $query)
@@ -270,8 +268,8 @@ class FoldersTable extends ObjectsTable
      * Update the `deleted` field of children folders to parent value.
      * The update is executed only if parent folder `deleted` is dirty.
      *
-     * @param Folder $folder The parent folder.
-     * @return int
+     * @param \BEdita\Core\Model\Entity\Folder $folder The parent folder.
+     * @return void
      */
     protected function updateChildrenDeletedField(Folder $folder)
     {
@@ -297,7 +295,7 @@ class FoldersTable extends ObjectsTable
             });
 
         // Update deleted field of descendants
-        return $this->updateAll(
+        $this->updateAll(
             [
                 'deleted' => $folder->deleted,
                 'modified' => $this->timestamp(null, true),

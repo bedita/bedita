@@ -27,7 +27,6 @@ use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;

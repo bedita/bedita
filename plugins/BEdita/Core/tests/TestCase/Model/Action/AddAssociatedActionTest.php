@@ -214,4 +214,46 @@ class AddAssociatedActionTest extends TestCase
             throw $e;
         }
     }
+
+    /**
+     * Test that join data are correctly updated when needed.
+     *
+     * @return void
+     */
+    public function testInvocationWithJoinData()
+    {
+        $expected = [
+            1 => '1',
+            2 => '2',
+        ];
+
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
+        $association = TableRegistry::get('FakeArticles')->association('FakeTags');
+        $action = new AddAssociatedAction(compact('association'));
+
+        $entity = $association->getSource()->get(1, ['contain' => [$association->getName()]]);
+        $relatedEntities = array_map(
+            function ($id) use ($association) {
+                $relatedEntity = $association->getTarget()->get($id);
+                $relatedEntity->_joinData = $association->junction()->newEntity([
+                    'fake_params' => (string)$id,
+                ]);
+
+                return $relatedEntity;
+            },
+            [1, 2]
+        );
+
+        $result = $action(compact('entity', 'relatedEntities'));
+
+        $actual = $association->junction()
+            ->find('list', [
+                'keyField' => $association->getTargetForeignKey(),
+                'valueField' => 'fake_params',
+            ])
+            ->toArray();
+
+        static::assertEquals(count($expected), $result);
+        static::assertEquals($expected, $actual);
+    }
 }

@@ -22,7 +22,6 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -49,6 +48,7 @@ use Cake\Utility\Hash;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
  *
  * @since 4.0.0
