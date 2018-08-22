@@ -39,7 +39,7 @@ class UsersValidator extends ProfilesValidator
             ->requirePresence('username', 'create')
             ->notEmpty('username')
 
-            ->allowEmpty('password_hash')
+            ->notEmpty('password')
 
             ->boolean('blocked')
             ->allowEmpty('blocked');
