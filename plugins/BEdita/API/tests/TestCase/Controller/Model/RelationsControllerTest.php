@@ -331,7 +331,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->assertHeader('Location', 'http://api.example.com/model/relations/' . $relation->id);
 
         $expected = array_merge(['id' => $relation->id], $data['attributes']);
-        static::assertEquals($expected, $relation->toArray());
+        static::assertJsonStringEqualsJsonString(json_encode($expected), json_encode($relation->toArray()));
     }
 
     /**
