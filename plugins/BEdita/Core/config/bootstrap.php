@@ -4,6 +4,7 @@ use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\Database\Type\DateType;
+use BEdita\Core\Database\Type\JsonObjectType;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
@@ -68,6 +69,11 @@ Type::set('timestamp', new DateTimeType());
  * Use custom BoolType
  */
 Type::set('boolean', new BoolType());
+
+/**
+ * Register custom JSON Object type.
+ */
+Type::map('jsonobject', JsonObjectType::class);
 
 /**
  * Set loader for translation domain "bedita".

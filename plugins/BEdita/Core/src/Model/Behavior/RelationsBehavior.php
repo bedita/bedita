@@ -121,7 +121,7 @@ class RelationsBehavior extends Behavior
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(json_decode(json_encode($relation->has('params') ? $relation->params : true)))
+                Schema::import($relation->has('params') ? $relation->params : true)
             );
 
             $this->relatedTo($relation->alias, [
@@ -156,7 +156,7 @@ class RelationsBehavior extends Behavior
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(json_decode(json_encode($relation->has('params') ? $relation->params : true)))
+                Schema::import($relation->has('params') ? $relation->params : true)
             );
 
             $this->relatedTo($relation->inverse_alias, [
