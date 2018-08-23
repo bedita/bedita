@@ -85,7 +85,7 @@ class PropertyTypesTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->setColumnType('params', 'jsonobject');
+        $schema->setColumnType('params', 'json');
 
         return $schema;
     }

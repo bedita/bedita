@@ -73,7 +73,7 @@ Type::set('boolean', new BoolType());
 /**
  * Register custom JSON Object type.
  */
-Type::set('jsonobject', new JsonObjectType());
+Type::map('jsonobject', JsonObjectType::class);
 
 /**
  * Set loader for translation domain "bedita".
