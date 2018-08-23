@@ -458,7 +458,7 @@ class LoginControllerTest extends IntegrationTestCase
         $usersTable = TableRegistry::get('Users');
         $user = $usersTable->get(5);
         $user->blocked = true;
-        $result = $usersTable->saveOrFail($user);
+        $usersTable->saveOrFail($user);
 
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
         $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
@@ -471,7 +471,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testStatus`
      *
-     * @return void
+     * @return array
      */
     public function statusProvider()
     {
@@ -490,6 +490,7 @@ class LoginControllerTest extends IntegrationTestCase
             ]
         ];
     }
+
     /**
      * Test login with some user `status` .
      *
@@ -523,7 +524,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Data provider for `testPasswordChange`
      *
-     * @return void
+     * @return array
      */
     public function passwordChangeProvider()
     {
@@ -568,6 +569,7 @@ class LoginControllerTest extends IntegrationTestCase
             ],
         ];
     }
+
     /**
      * Test password change.
      *
