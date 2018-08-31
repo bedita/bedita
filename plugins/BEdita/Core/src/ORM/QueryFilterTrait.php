@@ -101,7 +101,7 @@ trait QueryFilterTrait
      * @param string $operator Filter operator
      * @param string $field Filter field
      * @param string $value Filter value
-     * @return QueryExpression|null
+     * @return QueryExpression Operator query expression
      */
     protected function operatorExpression(QueryExpression $exp, $operator, $field, $value)
     {
