@@ -60,7 +60,7 @@ trait QueryFilterTrait
     {
         return $query->where(function (QueryExpression $exp) use ($options) {
             foreach ($options as $field => $conditions) {
-                if ($conditions === null) {
+                if ($conditions === null || $conditions === 'null') {
                     $exp = $exp->isNull($field);
 
                     continue;
@@ -82,41 +82,7 @@ trait QueryFilterTrait
                         $in[] = $value;
                         continue;
                     }
-
-                    switch ($operator) {
-                        case 'eq':
-                        case '=':
-                            $exp = $exp->eq($field, $value);
-                            break;
-
-                        case 'neq':
-                        case 'ne':
-                        case '!=':
-                        case '<>':
-                            $exp = $exp->notEq($field, $value);
-                            break;
-
-                        case 'lt':
-                        case '<':
-                            $exp = $exp->lt($field, $value);
-                            break;
-
-                        case 'lte':
-                        case 'le':
-                        case '<=':
-                            $exp = $exp->lte($field, $value);
-                            break;
-
-                        case 'gt':
-                        case '>':
-                            $exp = $exp->gt($field, $value);
-                            break;
-
-                        case 'gte':
-                        case 'ge':
-                        case '>=':
-                            $exp = $exp->gte($field, $value);
-                    }
+                    $exp = $this->operatorExpression($exp, $operator, $field, $value);
                 }
                 if (!empty($in)) {
                     $exp = $exp->in($field, $in);
@@ -125,5 +91,58 @@ trait QueryFilterTrait
 
             return $exp;
         });
+    }
+
+    /**
+     * Get query expression for an operator on a field with a value.
+     * Unrecognized operators are ignored and have no effect.
+     *
+     * @param QueryExpression $exp Current query expression
+     * @param string $operator Filter operator
+     * @param string $field Filter field
+     * @param string $value Filter value
+     * @return QueryExpression|null
+     */
+    protected function operatorExpression(QueryExpression $exp, $operator, $field, $value)
+    {
+        switch ($operator) {
+            case 'eq':
+            case '=':
+                if ($value === null || $value === 'null') {
+                    return $exp->isNull($field);
+                }
+
+                return $exp->eq($field, $value);
+
+            case 'neq':
+            case 'ne':
+            case '!=':
+            case '<>':
+                if ($value === null || $value === 'null') {
+                    return $exp->isNotNull($field);
+                }
+
+                return $exp->notEq($field, $value);
+
+            case 'lt':
+            case '<':
+                return $exp->lt($field, $value);
+
+            case 'lte':
+            case 'le':
+            case '<=':
+                return $exp->lte($field, $value);
+
+            case 'gt':
+            case '>':
+                return $exp->gt($field, $value);
+
+            case 'gte':
+            case 'ge':
+            case '>=':
+                return $exp->gte($field, $value);
+        }
+
+        return $exp;
     }
 }
