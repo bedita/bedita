@@ -79,6 +79,24 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 0,
             ],
+            'nameNullStr' => [
+                [
+                    'name' => 'null',
+                ],
+                0,
+            ],
+            'nameNotNull' => [
+                [
+                    'name' => ['ne' => null],
+                ],
+                3,
+            ],
+            'nameNotNullStr' => [
+                [
+                    'name' => ['ne' => 'null'],
+                ],
+                3,
+            ],
             'nameEagle' => [
                 [
                     'name' => 'eagle',
@@ -154,6 +172,7 @@ class QueryFilterTraitTest extends TestCase
      *
      * @dataProvider fieldsFilterProvider
      * @covers ::fieldsFilter()
+     * @covers ::operatorExpression()
      */
     public function testFieldsFilter($options, $numExpected)
     {
