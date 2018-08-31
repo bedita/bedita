@@ -50,7 +50,12 @@ trait QueryFilterTrait
      *
      * // field1 greater or equal 5, field2 less or equal 4
      * ['field1' => ['>=' => 10], 'field2' => ['<=' => 4]];
+     *
+     * // field1 is null, field2 is not null
+     * ['field1' => ['null' => 1], 'field2' => ['null' => 0]];
      * ```
+     *
+     * //
 
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable fields and conditions.
@@ -108,39 +113,45 @@ trait QueryFilterTrait
         switch ($operator) {
             case 'eq':
             case '=':
-                if ($value === null || $value === 'null') {
-                    return $exp->isNull($field);
-                }
-
-                return $exp->eq($field, $value);
+                $exp = $exp->eq($field, $value);
+                break;
 
             case 'neq':
             case 'ne':
             case '!=':
             case '<>':
-                if ($value === null || $value === 'null') {
-                    return $exp->isNotNull($field);
-                }
-
-                return $exp->notEq($field, $value);
+                $exp = $exp->notEq($field, $value);
+                break;
 
             case 'lt':
             case '<':
-                return $exp->lt($field, $value);
+                $exp = $exp->lt($field, $value);
+                break;
 
             case 'lte':
             case 'le':
             case '<=':
-                return $exp->lte($field, $value);
+                $exp = $exp->lte($field, $value);
+                break;
 
             case 'gt':
             case '>':
-                return $exp->gt($field, $value);
+                $exp = $exp->gt($field, $value);
+                break;
 
             case 'gte':
             case 'ge':
             case '>=':
-                return $exp->gte($field, $value);
+                $exp = $exp->gte($field, $value);
+                break;
+
+            case 'null':
+                if (empty($value) || $value === '0') {
+                    $exp = $exp->isNotNull($field);
+                } else {
+                    $exp = $exp->isNull($field);
+                }
+                break;
         }
 
         return $exp;
