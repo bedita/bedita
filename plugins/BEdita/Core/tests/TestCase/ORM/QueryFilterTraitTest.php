@@ -75,37 +75,19 @@ class QueryFilterTraitTest extends TestCase
             ],
             'nameNull' => [
                 [
-                    'name' => null,
-                ],
-                0,
-            ],
-            'nameNullStr' => [
-                [
-                    'name' => 'null',
+                    'name' => ['null' => true],
                 ],
                 0,
             ],
             'nameNotNull' => [
                 [
-                    'name' => ['ne' => null],
+                    'name' => ['null' => false],
                 ],
                 3,
             ],
             'nameNotNullStr' => [
                 [
-                    'name' => ['ne' => 'null'],
-                ],
-                3,
-            ],
-            'nameEqNull' => [
-                [
-                    'name' => ['eq' => null],
-                ],
-                0,
-            ],
-            'nameBadOp' => [
-                [
-                    'name' => ['!=' => null, '<<<<' => 'zz'],
+                    'name' => ['null' => '0'],
                 ],
                 3,
             ],
