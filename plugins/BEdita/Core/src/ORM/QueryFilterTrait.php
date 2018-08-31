@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -51,8 +51,8 @@ trait QueryFilterTrait
      * // field1 greater or equal 5, field2 less or equal 4
      * ['field1' => ['>=' => 10], 'field2' => ['<=' => 4]];
      *
-     * // field1 is null, field2 is not null
-     * ['field1' => ['null' => 1], 'field2' => ['null' => 0]];
+     * // field1 is null, field2 is not null, field3 is null
+     * ['field1' => ['null' => 1], 'field2' => ['null' => 0], 'field3' => null];
      * ```
      *
      * //
@@ -65,7 +65,7 @@ trait QueryFilterTrait
     {
         return $query->where(function (QueryExpression $exp) use ($options) {
             foreach ($options as $field => $conditions) {
-                if ($conditions === null || $conditions === 'null') {
+                if ($conditions === null) {
                     $exp = $exp->isNull($field);
 
                     continue;
