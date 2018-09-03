@@ -407,6 +407,19 @@ class FilterQueryStringTest extends IntegrationTestCase
                 [
                 ],
             ],
+            'profileNameNull' => [
+                '/profiles',
+                'filter[name][null]=1',
+                [
+                ],
+            ],
+            'profileNameNotNull' => [
+                '/profiles',
+                'filter[name][null]=0',
+                [
+                    '4',
+                 ],
+            ],
         ];
     }
 

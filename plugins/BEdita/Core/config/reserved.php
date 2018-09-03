@@ -28,6 +28,7 @@ return [
     'folders',
     'model',
     'models',
+    'null',
     'object_type',
     'object_types',
     'parent',
