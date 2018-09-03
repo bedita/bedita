@@ -97,7 +97,7 @@ trait QueryFilterTrait
 
             // return the current expression if not empty
             // otherwise a trivial comparison to avoid SQL errors
-            return $exp->count() > 0 ? $exp: new Comparison('1', '1', 'integer', '=');
+            return $exp->count() > 0 ? $exp : new Comparison('1', '1', 'integer', '=');
         });
     }
 
