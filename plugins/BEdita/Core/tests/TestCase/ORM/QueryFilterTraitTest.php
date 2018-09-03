@@ -97,6 +97,12 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 3,
             ],
+            'nameNullIgnore' => [
+                [
+                    'name' => ['null' => 'gustavo'],
+                ],
+                3,
+            ],
             'nameEagle' => [
                 [
                     'name' => 'eagle',

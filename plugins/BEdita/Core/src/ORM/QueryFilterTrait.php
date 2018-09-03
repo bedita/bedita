@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM;
 
+use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 
@@ -94,7 +95,9 @@ trait QueryFilterTrait
                 }
             }
 
-            return $exp;
+            // return the current expression if not empty
+            // otherwise a trivial comparison to avoid SQL errors
+            return $exp->count() > 0 ? $exp: new Comparison('1', '1', 'integer', '=');
         });
     }
 
@@ -146,9 +149,10 @@ trait QueryFilterTrait
                 break;
 
             case 'null':
-                if (empty($value) || $value === '0') {
+                $op = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                if ($op === false) {
                     $exp = $exp->isNotNull($field);
-                } else {
+                } elseif ($op === true) {
                     $exp = $exp->isNull($field);
                 }
                 break;
