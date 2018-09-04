@@ -233,9 +233,6 @@ class ObjectRelation extends BEAppModel
      * @return bool
      */
     public function deleteObjectRelation($id, $switch, $inverseSwitch = null) {
-        $BEObject = ClassRegistry::init('BEObject');
-        $objectsToClean = $BEObject->setObjectsToClean($objectId);
-
         // #CUSTOM QUERY - TODO: use cake, how??
         $q = "DELETE FROM object_relations WHERE id={$id} AND switch='{$switch}'";
         $res = $this->query($q);
@@ -253,7 +250,8 @@ class ObjectRelation extends BEAppModel
             return $res;
         }
 
-        $BEObject->clearCache();
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id));
+
         return $res;
     }
 
