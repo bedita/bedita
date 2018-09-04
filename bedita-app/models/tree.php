@@ -690,11 +690,12 @@ class Tree extends BEAppModel
 	 * @return boolean
 	 */
 	public function isParent($idParent, $id) {
-		$c = $this->find("count", array(
-			"conditions" => array(
-				"object_path LIKE" => "%/" . $idParent . "/%",
-				"id" => $id
-			)
+		$c = $this->find('count', array(
+			'conditions' => array(
+				'object_path LIKE' => '%/' . $idParent . '/%',
+				'id' => $id
+			),
+			'contain' => array(),
 		));
 
 		if ($c === 0) {
