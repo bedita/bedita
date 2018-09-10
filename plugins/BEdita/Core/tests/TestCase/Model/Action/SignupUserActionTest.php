@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Core\Configure;
+use Cake\Core\Exception\Exception as CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\Email;
@@ -119,8 +120,26 @@ class SignupUserActionTest extends TestCase
                 ]
             ],
 
+            'existing user' => [
+                new BadRequestException([
+                    'title' => 'User "second user" already registered',
+                    'code' => 'be_user_exists',
+                ]),
+                [
+                    'data' => [
+                        'username' => 'second user',
+                        'password' => 'somepassword',
+                        'email' => 'test.signup@example.com',
+                        'activation_url' => 'myapp://activate',
+                    ],
+                ]
+            ],
+
             'missing activation_url' => [
-                new BadRequestException(),
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => ['activation_url' => ['_required' => 'This field is required']],
+                ]),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -130,7 +149,10 @@ class SignupUserActionTest extends TestCase
                 ]
             ],
             'activation url invalid' => [
-                new BadRequestException(),
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
+                ]),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -141,7 +163,10 @@ class SignupUserActionTest extends TestCase
                 ]
             ],
             'activation url invalid 2' => [
-                new BadRequestException(),
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
+                ]),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -165,10 +190,6 @@ class SignupUserActionTest extends TestCase
      */
     public function testExecute($expected, array $data)
     {
-        if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-        }
-
         $eventDispatched = 0;
         EventManager::instance()->on('Auth.signup', function (...$arguments) use (&$eventDispatched) {
             $eventDispatched++;
@@ -180,13 +201,22 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
-        $action = new SignupUserAction();
-        $result = $action($data);
+        try {
+            $action = new SignupUserAction();
+            $result = $action($data);
+            $success = true;
+        } catch (CakeException $e) {
+            $success = $e;
+            static::assertEquals($expected->getAttributes(), $e->getAttributes());
+            static::assertEquals($expected->getCode(), $e->getCode());
+        }
 
-        static::assertTrue((bool)$result);
-        static::assertInstanceOf(User::class, $result);
-        static::assertSame('draft', $result->status);
-        static::assertSame(1, $eventDispatched, 'Event not dispatched');
+        static::assertEquals($expected, $success);
+        if ($success === true) {
+            static::assertInstanceOf(User::class, $result);
+            static::assertSame('draft', $result->status);
+            static::assertSame(1, $eventDispatched, 'Event not dispatched');
+        }
     }
 
     /**
