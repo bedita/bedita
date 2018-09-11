@@ -1,6 +1,9 @@
 <?php
 use Migrations\AbstractMigration;
 
+/**
+ * Add `user_tokens` table
+ */
 class AddUserTokensTable extends AbstractMigration
 {
     /**
@@ -11,7 +14,7 @@ class AddUserTokensTable extends AbstractMigration
     /**
      * {@inheritDoc}
      */
-    public function change()
+    public function up()
     {
         $columnTypes = $this->getAdapter()->getColumnTypes();
         $enum = in_array('enum', $columnTypes) ? 'enum' : 'string';
@@ -129,5 +132,19 @@ class AddUserTokensTable extends AbstractMigration
                 ]
             )
             ->create();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function down()
+    {
+        $this->table('user_tokens')
+            ->dropForeignKey('user_id')
+            ->dropForeignKey('application_id')
+            ->update();
+
+        $this->table('user_tokens')
+            ->drop();
     }
 }
