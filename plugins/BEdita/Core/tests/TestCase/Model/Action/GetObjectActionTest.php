@@ -37,6 +37,8 @@ class GetObjectActionTest extends TestCase
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.translations',
     ];
 

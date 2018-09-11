@@ -38,6 +38,8 @@ class ListObjectsActionTest extends TestCase
         'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.translations',
     ];
 
@@ -143,6 +145,7 @@ class ListObjectsActionTest extends TestCase
 
         static::assertInstanceOf(Query::class, $result);
         static::assertSame(2, $result->count());
+        $result->order(['Objects.id' => 'ASC']);
         $result = $result->toArray();
 
         static::assertNotEmpty($result[0]['translations']);
