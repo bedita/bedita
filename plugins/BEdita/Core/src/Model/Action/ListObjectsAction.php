@@ -84,6 +84,12 @@ class ListObjectsAction extends BaseAction
             $query = $query->find('status', [Configure::read('Status.level')]);
         }
 
+        if (!empty($data['lang'])) {
+            $query->contain('Translations', function ($q) use ($data) {
+                return $q->where(['Translations.lang' => $data['lang']]);
+            });
+        }
+
         return $query;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -33,8 +33,11 @@ class GetObjectActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.translations',
     ];
 
     /**
@@ -114,5 +117,24 @@ class GetObjectActionTest extends TestCase
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => [1, 2]]);
+    }
+
+    /**
+     * Test command execution with lang query string.
+     *
+     * @return void
+     */
+    public function testLang()
+    {
+        $objectType = TableRegistry::get('ObjectTypes')->get('Documents');
+        $table = TableRegistry::get('Objects');
+        $action = new GetObjectAction(compact('table', 'objectType'));
+
+        $result = $action(['primaryKey' => 2, 'lang' => 'fr']);
+
+        static::assertNotEmpty($result);
+        static::assertNotEmpty($result['translations']);
+        static::assertEquals(1, count($result['translations']));
+        static::assertEquals(2, $result['translations'][0]['id']);
     }
 }
