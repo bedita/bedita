@@ -109,6 +109,7 @@ class UserTokensTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {

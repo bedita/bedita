@@ -8,7 +8,7 @@ use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
- * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
+ * @covers BEdita\Core\Model\Table\UserTokensTable
  */
 class UserTokensTableTest extends TestCase
 {
