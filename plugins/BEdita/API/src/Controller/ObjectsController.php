@@ -289,9 +289,10 @@ class ObjectsController extends ResourcesController
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
         $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $lang = $this->request->getQuery('lang');
 
         $action = $this->getAssociatedAction($association);
-        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain'));
+        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain', 'lang'));
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);

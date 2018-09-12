@@ -15,6 +15,7 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use Cake\Utility\Hash;
 
 /**
  * Test internationalization related cases.
@@ -65,5 +66,51 @@ class I18nTest extends IntegrationTestCase
         unset($body['error']['meta']);
         unset($body['links']);
         static::assertEquals($body, $expected);
+    }
+
+    /**
+     * Data provider for `testLang` test case.
+     *
+     * @return array
+     */
+    public function langProvider()
+    {
+        return [
+            'document 2 fr' => [
+                '/documents/2?lang=fr',
+                [
+                    '2',
+                ],
+            ],
+            'profiles 4 related' => [
+                '/profiles/4/inverse_test?lang=fr',
+                [
+                    '2',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test lang query string
+     *
+     * @return void
+     * @param string $url Url string.
+     * @param array $expected Expected result.
+     *
+     * @dataProvider langProvider
+     * @coversNothing
+     */
+    public function testLang($url, $expected)
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result, 'included.{n}.id'));
     }
 }
