@@ -94,9 +94,9 @@ class I18nTest extends IntegrationTestCase
     /**
      * Test lang query string
      *
-     * @return void
      * @param string $url Url string.
      * @param array $expected Expected result.
+     * @return void
      *
      * @dataProvider langProvider
      * @coversNothing
