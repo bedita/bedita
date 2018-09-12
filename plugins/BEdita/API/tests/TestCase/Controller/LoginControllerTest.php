@@ -33,7 +33,7 @@ class LoginControllerTest extends IntegrationTestCase
     const NOT_SUCCESSFUL_EXPECTED_RESULT = [
         'error' => [
             'status' => '401',
-            'title' => 'Login not successful',
+            'title' => 'Login request not successful',
         ],
         'links' => [
             'self' => 'http://api.example.com/auth',
