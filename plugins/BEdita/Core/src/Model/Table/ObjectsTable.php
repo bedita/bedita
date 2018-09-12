@@ -375,4 +375,18 @@ class ObjectsTable extends Table
                 throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
     }
+
+    /**
+     * Retrieve object translation for a language.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Lang options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findTranslations(Query $query, array $options)
+    {
+        return $query->contain('Translations', function (Query $query) use ($options) {
+            return $query->where(['Translations.lang' => $options['lang']]);
+        });
+    }
 }
