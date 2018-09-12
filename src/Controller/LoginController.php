@@ -94,7 +94,11 @@ class LoginController extends AppController
     }
 
     /**
-     * Login with username and password.
+     * Login action use cases:
+     *
+     *  - classic username and password
+     *  - only with username, first step of OTP login
+     *  - with username, authorization code and secret token as OTP login or 2FA access
      *
      * @return void
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user credentials are invalid.
@@ -109,20 +113,25 @@ class LoginController extends AppController
                 ->withData('password', null);
         }
 
-        $user = $this->Auth->identify();
-        if (!$user) {
-            throw new UnauthorizedException(__('Login not successful'));
-        }
-        // Check endpoint permission on `/auth`
-        if (!$this->Auth->isAuthorized($user)) {
-            throw new UnauthorizedException(__('Login not authorized'));
+        $result = $this->Auth->identify();
+        if (!$result) {
+            throw new UnauthorizedException(__('Login request not successful'));
         }
 
-        $user = $this->reducedUserData($user);
-        $jwtMeta = $this->jwtTokens($user);
+        // check if response has only an authorization code (OTP & 2FA use cases)
+        if (!empty($result['authorization_code']) && count($result) === 1) {
+            $meta = ['authorization_code' => $result['authorization_code']];
+        } else {
+            // Check endpoint permission on `/auth`
+            if (!$this->Auth->isAuthorized($result)) {
+                throw new UnauthorizedException(__('Login not authorized'));
+            }
+            $result = $this->reducedUserData($result);
+            $meta = $this->jwtTokens($result);
+        }
 
         $this->set('_serialize', []);
-        $this->set('_meta', $jwtMeta);
+        $this->set('_meta', $meta);
     }
 
     /**
