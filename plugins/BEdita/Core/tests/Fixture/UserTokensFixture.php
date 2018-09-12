@@ -25,14 +25,14 @@ class UserTokensFixture extends TestFixture
      */
     public $records = [
         [
-            'user_id' => 2,
-            'application_id' => 2,
+            'user_id' => 5,
+            'application_id' => 1,
             'client_token' => 'toktoktoktoktok',
             'secret_token' => 'secretsecretsecret',
             'token_type' => 'otp',
         ],
         [
-            'user_id' => 2,
+            'user_id' => 1,
             'application_id' => null,
             'client_token' => 'abcdefghilkmnop',
             'secret_token' => null,
