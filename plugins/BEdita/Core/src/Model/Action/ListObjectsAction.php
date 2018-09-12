@@ -85,9 +85,7 @@ class ListObjectsAction extends BaseAction
         }
 
         if (!empty($data['lang'])) {
-            $query->contain('Translations', function ($q) use ($data) {
-                return $q->where(['Translations.lang' => $data['lang']]);
-            });
+            $query = $query->find('translations', ['lang' => $data['lang']]);
         }
 
         return $query;

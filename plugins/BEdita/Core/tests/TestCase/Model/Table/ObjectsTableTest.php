@@ -45,6 +45,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.date_ranges',
+        'plugin.BEdita/Core.translations',
     ];
 
     /**
@@ -602,5 +603,23 @@ class ObjectsTableTest extends TestCase
         $object = $this->Objects->save($object);
 
         static::assertSame($expected, $object->get('lang'));
+    }
+
+    /**
+     * Test `findTranslations()`.
+     *
+     * @return void
+     *
+     * @covers ::findTranslations()
+     */
+    public function testFindTranslations()
+    {
+        $result = $this->Objects->find('translations', ['lang' => 'fr'])
+            ->where(['Objects.id' => 2])
+            ->toArray();
+
+        static::assertNotEmpty($result);
+        static::assertSame(1, count($result));
+        static::assertSame(2, $result[0]['id']);
     }
 }
