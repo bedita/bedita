@@ -159,10 +159,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             $validator
                 ->requirePresence('username')
                 ->notEmpty('username');
-
-            $validator
-                ->requirePresence('password')
-                ->notEmpty('password');
         } else {
             $validator
                 ->requirePresence('provider_username')
