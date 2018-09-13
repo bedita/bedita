@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -118,11 +118,11 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login request not successful'));
         }
 
-        // check if response has only an authorization code (OTP & 2FA use cases)
+        // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
             $meta = ['authorization_code' => $result['authorization_code']];
         } else {
-            // Check endpoint permission on `/auth`
+            // Result is a user; check endpoint permission on `/auth`
             if (!$this->Auth->isAuthorized($result)) {
                 throw new UnauthorizedException(__('Login not authorized'));
             }
