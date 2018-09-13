@@ -75,7 +75,7 @@ class OTPAuthenticate extends BaseAuthenticate
         // override configuration with `otp` auth provider params ('generator', 'expiry'...)
         $authProvider = $this->getConfig('authProviders.otp');
         if ($authProvider && $authProvider instanceof AuthProvider) {
-            $this->setConfig($authProvider->get('params', []), true);
+            $this->setConfig((array)$authProvider->get('params'), true);
         }
     }
 
@@ -85,7 +85,7 @@ class OTPAuthenticate extends BaseAuthenticate
     public function authenticate(ServerRequest $request, Response $response)
     {
         $username = $request->getData('username');
-        if (empty($username)) {
+        if (empty($username) || !is_string($username)) {
             return false;
         }
 
@@ -93,7 +93,7 @@ class OTPAuthenticate extends BaseAuthenticate
         if ($grant === 'otp') {
             return $this->otpAccess($username, $request);
         } elseif ($grant === 'otp_request') {
-            return $this->otpRequest($username, $request);
+            return $this->otpRequest($username);
         }
 
         return false;
@@ -140,10 +140,9 @@ class OTPAuthenticate extends BaseAuthenticate
      * Generate a new client and secret token upon `otp_request`
      *
      * @param string $username User name
-     * @param ServerRequest $request Request object
      * @return array|bool Authorization code array on success, false on failure
      */
-    protected function otpRequest($username, ServerRequest $request)
+    protected function otpRequest($username)
     {
         $result = $this->_findUser($username);
         if (empty($result)) {
@@ -185,8 +184,8 @@ class OTPAuthenticate extends BaseAuthenticate
      */
     public function generateSecretToken()
     {
-        $generator = $this->config('generator');
-        if (is_callable($generator)) {
+        $generator = $this->getConfig('generator');
+        if (!empty($generator) && is_callable($generator)) {
             return call_user_func($generator);
         }
 
