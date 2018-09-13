@@ -99,4 +99,17 @@ class UserTokensTableTest extends TestCase
 
         static::assertEquals($expected, $errors);
     }
+
+    /**
+     * Test 'valid' finder.
+     *
+     * @return void
+     */
+    public function testValidFinder()
+    {
+        $entity = $this->UserTokens->find('valid')->first();
+
+        static::assertNotEmpty($entity);
+        static::assertEquals(1, $entity->get('id'));
+    }
 }
