@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -117,5 +118,30 @@ class UserTokensTable extends Table
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
 
         return $rules;
+    }
+
+    /**
+     * Finder for valid tokens: tokens not expired and not used
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findValid(Query $query)
+    {
+        $now = $query->func()->now();
+
+        return $query
+            ->where(function (QueryExpression $exp) use ($now) {
+                return $exp->and_([
+                    $exp->isNull($this->aliasField('used')),
+                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                        $field = $this->aliasField('expires');
+
+                        return $exp
+                            ->isNull($field)
+                            ->gte($field, $now);
+                    }),
+                ]);
+            });
     }
 }

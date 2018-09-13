@@ -13,15 +13,16 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthenticate;
+use Cake\Controller\ComponentRegistry;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
-use Cake\Validation\Validation;
 
 /**
  * Authenticate users via One Time Password.
@@ -30,6 +31,8 @@ use Cake\Validation\Validation;
  */
 class OTPAuthenticate extends BaseAuthenticate
 {
+    use EventDispatcherTrait;
+
     /**
      * Default config for this object.
      *
@@ -41,6 +44,11 @@ class OTPAuthenticate extends BaseAuthenticate
      *   You can set finder name as string or an array where key is finder name and value
      *   is an array passed to `Table::find()` options.
      *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
+     *  - `passwordHasher` Password hasher class. Can be a string specifying class name
+     *    or an array containing `className` key, any other keys will be passed as
+     *    config to the class. Defaults to 'Default'.
+     * - 'expiry' Expiry time of a user token, expressed as string expression like `+1 hour`, `+10 minutes`
+     * - 'generator' Secret token generator, if a valid callable is used instead of default one.
      *
      * @var array
      */
@@ -52,8 +60,24 @@ class OTPAuthenticate extends BaseAuthenticate
         ],
         'userModel' => 'Users',
         'finder' => 'all',
+        'contain' => null,
+        'passwordHasher' => 'Default',
         'expiry' => '+15 minutes',
+        'generator' => null,
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(ComponentRegistry $registry, array $config = [])
+    {
+        parent::__construct($registry, $config);
+        // override configuration with `otp` auth provider params ('generator', 'expiry'...)
+        $authProvider = $this->getConfig('authProviders.otp');
+        if ($authProvider && $authProvider instanceof AuthProvider) {
+            $this->setConfig($authProvider->get('params', []), true);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -102,7 +126,7 @@ class OTPAuthenticate extends BaseAuthenticate
         ];
 
         $UserTokens = TableRegistry::get('UserTokens');
-        $userToken = $UserTokens->find()->where($data)->first();
+        $userToken = $UserTokens->find('valid')->where($data)->first();
         if (!empty($userToken)) {
             $UserTokens->deleteOrFail($userToken);
 
@@ -138,16 +162,18 @@ class OTPAuthenticate extends BaseAuthenticate
         $UserTokens = TableRegistry::get('UserTokens');
         $entity = $UserTokens->newEntity($data);
         $UserTokens->saveOrFail($entity);
+        $this->dispatchEvent('Auth.userToken', [$entity]);
 
         return ['authorization_code' => $data['client_token']];
     }
 
     /**
-     * Generate authorization code, aka client token
+     * Generate authorization code, aka client token.
      *
      * @return string The generated token
+     * @codeCoverageIgnore
      */
-    protected function generateClientToken()
+    public function generateClientToken()
     {
         return Text::uuid();
     }
@@ -157,8 +183,28 @@ class OTPAuthenticate extends BaseAuthenticate
      *
      * @return string The generated secure token
      */
-    protected function generateSecretToken()
+    public function generateSecretToken()
     {
-        return '0123456';
+        $generator = $this->config('generator');
+        if (is_callable($generator)) {
+            return call_user_func($generator);
+        }
+
+        return $this->defaultSecretGenerator();
+    }
+
+    /**
+     * Super-simple default secret generator: string of 6 random digits
+     *
+     * @return string The generated secure token
+     */
+    public static function defaultSecretGenerator()
+    {
+        $res = '';
+        for ($i = 0; $i < 6; $i++) {
+            $res .= mt_rand(0, 9);
+        }
+
+        return $res;
     }
 }
