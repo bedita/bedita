@@ -139,6 +139,7 @@ class FileEngine extends CacheEngine {
 		$expires = time() + $duration;
 		$contents = $expires . $lineBreak . $data . $lineBreak;
 		$old = umask(0);
+		$this->_File = new File($this->_File->path, true);
 		$handle = fopen($this->_File->path, 'a');
 		umask($old);
 
@@ -204,6 +205,19 @@ class FileEngine extends CacheEngine {
 		if ($this->_setKey($key) === false || !$this->_init) {
 			return false;
 		}
+		if (strpos($key, '*') !== false) {
+			$keys = glob($this->_File->path);
+			$ok = true;
+			foreach ($keys as $key) {
+				$this->_File = new File($key);
+
+				$ok = $this->_File->delete() && $ok;
+			}
+
+			return $ok;
+		}
+
+
 		return $this->_File->delete();
 	}
 
@@ -282,5 +296,20 @@ class FileEngine extends CacheEngine {
 			return false;
 		}
 		return true;
+	}
+
+/**
+ * Generates a safe key for use with cache engine storage engines.
+ *
+ * @param string $key the key passed over
+ * @return mixed string $key or false
+ * @access public
+ */
+	function key($key) {
+		if (empty($key)) {
+			return false;
+		}
+		$key = Inflector::underscore(str_replace(array('/', '.'), array(DS, '_'), strval($key)));
+		return $key;
 	}
 }

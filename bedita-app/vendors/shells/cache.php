@@ -79,8 +79,7 @@ class CacheShell extends BeditaBaseShell {
      */
     private function cleanupObjectIdCache($id) {
         $BEObject = ClassRegistry::init('BEObject');
-        $objectsToClean = $BEObject->setObjectsToClean($id);
-        $BEObject->clearCache();
+        $BEObject->clearCache($id);
     }
 
     function help() {

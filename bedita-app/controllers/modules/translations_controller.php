@@ -109,8 +109,7 @@ class TranslationsController extends ModulesController {
 		// invalidate cache for object master
 		$BEObject = ClassRegistry::init('BEObject');
 		if ($BEObject->isCacheableOn()) {
-	        $BEObject->setObjectsToClean($this->data['master_id']);
-	        $BEObject->clearCache();
+	        $BEObject->clearCache($this->data['master_id']);
     	}
 		$this->userInfoMessage(__("Translation saved", true));
 		$this->eventInfo("translation saved");
@@ -129,8 +128,7 @@ class TranslationsController extends ModulesController {
 		// invalidate cache for object master
 		$BEObject = ClassRegistry::init('BEObject');
 		if ($BEObject->isCacheableOn()) {
-	        $BEObject->setObjectsToClean($id);
-	        $BEObject->clearCache();
+	        $BEObject->clearCache($id);
     	}
 		$this->userInfoMessage(__("Translation deleted", true) . " - $lang,$id ");
 		$this->eventInfo("translation $lang for object $id deleted");
