@@ -100,7 +100,7 @@ class AddUserTokensTable extends AbstractMigration
                     'client_token',
                 ],
                 [
-                    'name' => 'clienttoken_applicationid_idx',
+                    'name' => 'usertokens_clienttoken_idx',
                 ]
             )
             ->addIndex(
@@ -108,7 +108,7 @@ class AddUserTokensTable extends AbstractMigration
                     'secret_token',
                 ],
                 [
-                    'name' => 'secrettoken_applicationid_idx',
+                    'name' => 'usertokens_secrettoken_idx',
                 ]
             )
             ->addForeignKey(
