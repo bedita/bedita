@@ -201,7 +201,6 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
-        // Restore this part:
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
         }
