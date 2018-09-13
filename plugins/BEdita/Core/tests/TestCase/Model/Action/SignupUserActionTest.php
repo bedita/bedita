@@ -182,7 +182,7 @@ class SignupUserActionTest extends TestCase
     /**
      * Test command execution.
      *
-     * @param array|\Exception $expected Expected result.
+     * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
      *
@@ -201,22 +201,26 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
+        // Restore this part:
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+        }
+
         try {
             $action = new SignupUserAction();
             $result = $action($data);
-            $success = true;
         } catch (CakeException $e) {
-            $success = $e;
+            static::assertInstanceOf(CakeException::class, $expected); // Ensure we're expecting an exception of the same kind.
             static::assertEquals($expected->getAttributes(), $e->getAttributes());
             static::assertEquals($expected->getCode(), $e->getCode());
+
+            throw $e; // Re-throw exception.
         }
 
-        static::assertEquals($expected, $success);
-        if ($success === true) {
-            static::assertInstanceOf(User::class, $result);
-            static::assertSame('draft', $result->status);
-            static::assertSame(1, $eventDispatched, 'Event not dispatched');
-        }
+        static::assertTrue((bool)$result);
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('draft', $result->status);
+        static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
     /**
