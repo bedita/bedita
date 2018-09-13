@@ -114,7 +114,7 @@ class LoginController extends AppController
         }
 
         $result = $this->Auth->identify();
-        if (!$result) {
+        if (!$result || is_array($result)) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
 
