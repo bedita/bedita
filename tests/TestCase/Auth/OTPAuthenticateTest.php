@@ -26,7 +26,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Auth\OTPdAuthenticate
+ * @coversDefaultClass \BEdita\API\Auth\OTPAuthenticate
  */
 class OTPAuthenticateTest extends TestCase
 {
@@ -158,7 +158,7 @@ class OTPAuthenticateTest extends TestCase
      * @dataProvider authenticateProvider
      * @covers ::authenticate()
      * @covers ::otpAccess()
-     * @covers ::otpARequest()
+     * @covers ::otpRequest()
      */
     public function testAuthenticate($expected, ServerRequest $request)
     {
