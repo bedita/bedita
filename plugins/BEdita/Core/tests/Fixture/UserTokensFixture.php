@@ -23,20 +23,31 @@ class UserTokensFixture extends TestFixture
     /**
      * {@inheritDoc}
      */
-    public $records = [
-        [
-            'user_id' => 5,
-            'application_id' => 1,
-            'client_token' => 'toktoktoktoktok',
-            'secret_token' => 'secretsecretsecret',
-            'token_type' => 'otp',
-        ],
-        [
-            'user_id' => 1,
-            'application_id' => null,
-            'client_token' => 'abcdefghilkmnop',
-            'secret_token' => null,
-            'token_type' => 'refresh',
-        ],
-    ];
+    public function init()
+    {
+        $this->records = [
+            [
+                'user_id' => 5,
+                'application_id' => 1,
+                'client_token' => 'toktoktoktoktok',
+                'secret_token' => 'secretsecretsecret',
+                'token_type' => 'otp',
+                'created' => date('Y-m-d H:i:s'),
+                'expires' => date('Y-m-d H:i:s', time() + 300),
+                'used' => null,
+            ],
+            [
+                'user_id' => 1,
+                'application_id' => null,
+                'client_token' => 'abcdefghilkmnop',
+                'secret_token' => null,
+                'token_type' => 'refresh',
+                'created' => date('Y-m-d H:i:s'),
+                'expires' => null,
+                'used' => null,
+            ],
+        ];
+
+        parent::init();
+    }
 }

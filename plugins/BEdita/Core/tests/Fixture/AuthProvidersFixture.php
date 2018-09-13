@@ -56,7 +56,7 @@ class AuthProvidersFixture extends TestFixture
             'name' => 'otp',
             'auth_class' => 'BEdita/API.OTP',
             'url' => null,
-            'params' => '{"generator":"BEdita/API.ConstGenerator"}',
+            'params' => '{"expiry":"+5 minutes"}',
             'enabled' => true,
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
