@@ -107,7 +107,7 @@ class UserTokensTableTest extends TestCase
      */
     public function testValidFinder()
     {
-        $entity = $this->UserTokens->find('valid')->first();
+        $entity = $this->UserTokens->find('valid')->order(['id' => 'ASC'])->first();
 
         static::assertNotEmpty($entity);
         static::assertEquals(1, $entity->get('id'));
