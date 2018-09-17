@@ -33,7 +33,7 @@ class UserTokensFixture extends TestFixture
                 'secret_token' => 'secretsecretsecret',
                 'token_type' => 'otp',
                 'created' => date('Y-m-d H:i:s'),
-                'expires' => date('Y-m-d H:i:s', time() + 300),
+                'expires' => date('Y-m-d H:i:s', time() + 9000),
                 'used' => null,
             ],
             [
