@@ -70,9 +70,15 @@ class BeObjectCache {
         }
     }
 
+    /**
+     * Get prefix for all cache keys relative to an object.
+     *
+     * @param int $id Object ID.
+     * @return string
+     */
     private function cachePrefix($id) {
         if ($this->hasFileEngine()) {
-            return sprintf('%02d/%d-', $id % 1000, $id);
+            return sprintf('%03d/%d-', $id % 1000, $id);
         }
 
         return sprintf('%d/', $id);
