@@ -191,9 +191,14 @@ class CacheableBehavior extends ModelBehavior {
      * @param bool $reset
      */
     public function clearCache(&$model, $objectId, $reset = true) {
-        if ($objectId && $reset) {
-            $this->setObjectsToClean($model, $objectId);
+        if ($objectId) {
+            if ($reset) {
+                $this->resetObjectsToClean($model);
+            }
+
+            $this->addObjectsToClean($model, $this->getObjectsToCleanById($model, $objectId));
         }
+
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
