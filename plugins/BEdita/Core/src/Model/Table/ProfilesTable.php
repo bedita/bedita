@@ -85,18 +85,6 @@ class ProfilesTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->isUnique(['email']));
-
-        return $rules;
-    }
-
-    /**
      * Before save actions:
      *  - if `email` is empty set it to NULL to avoid unique constraint errors
      *  - if `title` is blank use `name` `surname` as default
