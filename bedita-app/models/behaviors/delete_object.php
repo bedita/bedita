@@ -124,7 +124,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 
         // clear cache
         if ($model->BEObject->isCacheableOn()) {
-            $model->BEObject->clearCache();
+            $model->BEObject->clearCache($model->id, false);
         }
     }
 

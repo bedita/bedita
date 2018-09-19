@@ -63,6 +63,8 @@ class BeObjectCache {
         if (empty($cacheConf)) {
             // default cache path if not configured
             $this->cacheConfig['path'] = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
+            Cache::config('objects', $this->cacheConfig);
+            Cache::config('default');
         }
         $this->cacheConfig = $cacheConf + $this->cacheConfig;
         if (!empty($this->cacheConfig['path'])) {
@@ -71,34 +73,17 @@ class BeObjectCache {
     }
 
     /**
-     * Get cached path by object ID.
+     * Get prefix for all cache keys relative to an object.
      *
      * @param int $id Object ID.
      * @return string
      */
-    public function getPathById($id) {
-        $id = $id % 1000;
-        $id = str_pad($id, 3, '0', STR_PAD_LEFT);
-
-        return $this->baseCachePath . DS . $id;
-    }
-
-    /**
-     * Prepare cached config for an object to be cached.
-     *
-     * @param int $id Object ID.
-     * @return void
-     */
-    private function setCacheOptions($id) {
-        if (!empty($this->cacheConfig['path'])) {
-            $path = $this->getPathById($id);
-            if (!file_exists($path)) {
-                mkdir($path);
-                chmod($path, 0775);
-            }
-            $this->cacheConfig['path'] = $path;
+    private function cachePrefix($id) {
+        if ($this->hasFileEngine()) {
+            return sprintf('%03d/%d-', $id % 1000, $id);
         }
-        Cache::set($this->cacheConfig);
+
+        return sprintf('%d/', $id);
     }
 
     /**
@@ -111,13 +96,21 @@ class BeObjectCache {
      */
     private function cacheName($id, array $options, $label = null) {
         if (!empty($options['bindings_list'])) {
-            $strOpt = implode('', $options['bindings_list']);
-        } elseif (!empty($options)) {
-            $strOpt = print_r($options, true);
+            $options = $options['bindings_list'];
         }
-        $label = empty($label) ? '' : '-' . $label;
-        $strOpt = (!empty($strOpt)) ? '-' . md5($strOpt) : '';
-        return $id . $label . $strOpt;
+        $options = sha1(serialize($options));
+
+        return sprintf('%s%s-%s', $this->cachePrefix($id), $label ?: 'nolabel', $options);
+    }
+
+    /**
+     * Get cache name for a nickname.
+     *
+     * @param string $nickname Nickname.
+     * @return string
+     */
+    private function cacheNickname($nickname) {
+        return sprintf('nickname-%s', $nickname);
     }
 
     /**
@@ -139,8 +132,8 @@ class BeObjectCache {
         if ($this->hasFileEngine()) {
             return null;
         }
-        $cacheName = 'nickname-' . $nickname;
-        return Cache::read($cacheName, 'objects');
+
+        return Cache::read($this->cacheNickname($nickname), 'objects');
     }
 
     /**
@@ -154,8 +147,22 @@ class BeObjectCache {
         if ($this->hasFileEngine()) {
             return false;
         }
-        $cacheName = 'nickname-' . $nickname;
-        return $this->writeIndexedCache($id, $cacheName, $id);
+
+        return Cache::write($this->cacheNickname($nickname), $id, 'objects');
+    }
+
+    /**
+     * Deletes cache for a nickname.
+     *
+     * @param string $nickname Nickname.
+     * @return bool
+     */
+    public function deleteNicknameCache($nickname) {
+        if ($this->hasFileEngine()) {
+            return true;
+        }
+
+        return Cache::delete($this->cacheNickname($nickname), 'objects');
     }
 
     /**
@@ -206,54 +213,9 @@ class BeObjectCache {
             return false;
         }
 
-        $res = false;
         $cacheName = $this->cacheName($id, $options, $label);
-        // use cache config if not using 'File' engine
-        if ($this->cacheConfig['engine'] !== 'File') {
-            $res = Cache::read($cacheName, 'objects');
-        } else {
-            $this->setCacheOptions($id);
-            $res = Cache::read($cacheName);
-        }
-        return $res;
-    }
 
-    /**
-     * Write related indexes to cache
-     *
-     * @param int $id Object ID.
-     * @param string $cacheName Cache key.
-     * @param mixed $data Cache value to be stored.
-     * @return bool
-     */
-    private function writeIndexedCache($id, $cacheName, $data) {
-        $cacheIdxKey = $id . '_index';
-        $cacheIdx = Cache::read($cacheIdxKey, 'objects');
-        if (empty($cacheIdx)) {
-            $cacheIdx = array();
-        }
-        if (!is_array($cacheIdx)) {
-            CakeLog::write('error', sprintf('Invalid value for cache key %s: array expected, got %s', $cacheIdxKey, var_export($cacheIdx, true)));
-            $cacheIdx = array();
-        }
-        if (!in_array($cacheName, $cacheIdx)) {
-            $cacheIdx[] = $cacheName;
-            $res = Cache::write($cacheIdxKey, $cacheIdx, 'objects');
-            if ($res !== true) {
-                CakeLog::write(
-                    'error',
-                    sprintf(
-                        'Error writing index cache %s for object %s. Cache key %s not persisted.',
-                        $cacheIdxKey,
-                        $id,
-                        $cacheName
-                    )
-                );
-                return false;
-            }
-        }
-        $res = Cache::write($cacheName, $data, 'objects');
-        return $res;
+        return Cache::read($cacheName, 'objects');
     }
 
     /**
@@ -271,15 +233,8 @@ class BeObjectCache {
         }
 
         $cacheName = $this->cacheName($id, $options, $label);
-        $res = false;
-        // store index cache
-        if (!$this->hasFileEngine()) {
-            $res = $this->writeIndexedCache($id, $cacheName, $data);
-        } else {
-            $this->setCacheOptions($id);
-            $res = Cache::write($cacheName, $data);
-        }
-        return $res;
+
+        return Cache::write($cacheName, $data, 'objects');
     }
 
     /**
@@ -287,24 +242,8 @@ class BeObjectCache {
      *
      * @param  integer $id objectId
      */
-    public function delete($id, array $options = null) {
-        if ($this->hasFileEngine()) {
-            $cachePath = $this->getPathById($id);
-            $wildCard = $cachePath . DS . $this->cacheConfig['prefix'] . $id . '-*';
-            $toDelete = glob($wildCard);
-            if (!empty($toDelete)) {
-                array_map('unlink', $toDelete);
-            }
-        } else {
-            $cacheIdxKey = $id . '_index';
-            $cacheIdx = Cache::read($cacheIdxKey, 'objects');
-            if (!empty($cacheIdx)) {
-                foreach ($cacheIdx as $cacheName) {
-                    Cache::delete($cacheName, 'objects');
-                }
-            }
-            Cache::delete($cacheIdxKey, 'objects');
-        }
+    public function delete($id) {
+        return Cache::delete(sprintf('%s*', $this->cachePrefix($id)), 'objects');
     }
 
     /**
@@ -330,7 +269,7 @@ class BeObjectCache {
 
         $publicationId = ($publicationId === null) ? '' : (string)$publicationId;
 
-        return Cache::read(sprintf('path-%d-%s-%s', (int)$id, $status, $publicationId), 'objects');
+        return Cache::read(sprintf('%spath-%s-%s', $this->cachePrefix($id), $status, $publicationId), 'objects');
     }
 
     /**
@@ -357,7 +296,7 @@ class BeObjectCache {
 
         $publicationId = ($publicationId === null) ? '' : (string)$publicationId;
 
-        return $this->writeIndexedCache($id, sprintf('path-%d-%s-%s', (int)$id, $status, $publicationId), $path);
+        return Cache::write(sprintf('%spath-%s-%s', $this->cachePrefix($id), $status, $publicationId), $path, 'objects');
     }
 
     /**
@@ -375,9 +314,7 @@ class BeObjectCache {
         $success = true;
         $descendants = array_merge(array($id), $descendants);
         foreach ($descendants as $descId) {
-            foreach (array('on', 'draft', 'off') as $status) {
-                $success = Cache::delete(sprintf('path-%d-%s', (int)$descId, $status)) && $success;
-            }
+            $success = $this->delete($descId) && $success;
         }
 
         return $success;
