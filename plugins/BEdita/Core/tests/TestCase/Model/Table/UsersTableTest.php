@@ -594,6 +594,7 @@ class UsersTableTest extends TestCase
      */
     public function testValidateUniqueEmail()
     {
+        // with a user email in use -> save is not allowed
         $user = $this->Users->newEntity([
             'username' => 'gustavosupporto',
             'email' => 'first.user@example.com',
@@ -601,9 +602,10 @@ class UsersTableTest extends TestCase
         $result = $this->Users->save($user);
         static::assertFalse($result);
 
+        // with a profile email in use -> save is allowed
         $user = $this->Users->newEntity([
             'username' => 'gustavosupporto',
-            'email' => 'another.user@example.com',
+            'email' => 'gustavo.supporto@channelweb.it',
         ]);
         $result = $this->Users->save($user);
         static::assertNotEmpty($result);
