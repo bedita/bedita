@@ -63,6 +63,8 @@ class BeObjectCache {
         if (empty($cacheConf)) {
             // default cache path if not configured
             $this->cacheConfig['path'] = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
+            Cache::config('objects', $this->cacheConfig);
+            Cache::config('default');
         }
         $this->cacheConfig = $cacheConf + $this->cacheConfig;
         if (!empty($this->cacheConfig['path'])) {
