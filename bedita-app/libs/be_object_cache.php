@@ -96,12 +96,11 @@ class BeObjectCache {
      */
     private function cacheName($id, array $options, $label = null) {
         if (!empty($options['bindings_list'])) {
-            $options = implode('', $options['bindings_list']);
-        } else {
-            $options = sha1(serialize($options));
+            $options = $options['bindings_list'];
         }
+        $options = sha1(serialize($options));
 
-        return sprintf('%s%s-%s', $this->cachePrefix($id), $label ?: 'NOLABEL', $options);
+        return sprintf('%s%s-%s', $this->cachePrefix($id), $label ?: 'nolabel', $options);
     }
 
     /**
