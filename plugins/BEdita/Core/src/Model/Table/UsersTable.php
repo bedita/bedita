@@ -315,4 +315,15 @@ class UsersTable extends Table
             }
         }
     }
+
+    /**
+     * Check for users email uniqueness
+     *
+     * @param mixed $value The value of column to be checked for uniqueness
+     * @return bool true if the value is unique
+     */
+    public function validateUniqueEmail($value)
+    {
+        return !$this->exists(['email' => $value]);
+    }
 }
