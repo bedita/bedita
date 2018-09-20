@@ -32,8 +32,6 @@ class ProfilesValidator extends ObjectsValidator
     {
         parent::__construct();
 
-        $this->setProvider('profilesTable', TableRegistry::get('Profiles'));
-
         $this
             ->allowEmpty('name')
 
@@ -41,7 +39,6 @@ class ProfilesValidator extends ObjectsValidator
 
             ->email('email')
             ->allowEmpty('email')
-            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'profilesTable'])
 
             ->allowEmpty('person_title')
 
