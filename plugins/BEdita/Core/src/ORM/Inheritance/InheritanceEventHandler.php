@@ -40,7 +40,49 @@ class InheritanceEventHandler implements EventListenerInterface
                 'callable' => 'afterDelete',
                 'priority' => 1,
             ],
+            'Model.afterRules' => [
+                'callable' => 'afterRules',
+                'priority' => 1,
+            ],
         ];
+    }
+
+    /**
+     * If application rules fail it collects all errors in inherited tables.
+     *
+     * In case of errors it checks rules of inherited table via `checkRules()` method
+     * that dispatch `Model.afterRules` event ensuring to check all rules along the whole inheritance.
+     *
+     * A special key `_inheritanceRulesErrors` is set in `$options` to guarantee
+     * that the collection of errors is not interrupted if a table
+     * in the middle of the inheritance has no errors.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity The entity.
+     * @param \ArrayObject $options Options.
+     * @param bool $result The result of checked rules.
+     * @param string $operation The operation being run. Either 'create', 'update' or 'delete'.
+     * @return void
+     */
+    public function afterRules(Event $event, EntityInterface $entity, \ArrayObject $options, $result, $operation)
+    {
+        if ($result === true && empty($options['_inheritanceRulesErrors'])) {
+            return;
+        }
+
+        $table = $event->getSubject();
+        $inheritedTable = $table->inheritedTable();
+        if ($inheritedTable === null) {
+            return;
+        }
+
+        // Prepare parent entity.
+        $parentEntity = $inheritedTable->newEntity();
+        $parentEntity->isNew($entity->isNew());
+        $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
+        $options['_inheritanceRulesErrors'] = true;
+        $inheritedTable->checkRules($parentEntity, $operation, $options);
+        $entity->setErrors($parentEntity->getErrors());
     }
 
     /**
@@ -76,8 +118,10 @@ class InheritanceEventHandler implements EventListenerInterface
             $options['associated'],
             array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys()))
         );
-        $parentEntity = $inheritedTable->save($parentEntity, $options);
-        if ($parentEntity === false) {
+
+        if ($inheritedTable->save($parentEntity, $options) === false) {
+            $entity->setErrors($parentEntity->getErrors());
+
             return false;
         }
 
