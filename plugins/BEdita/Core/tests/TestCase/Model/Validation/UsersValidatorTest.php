@@ -114,6 +114,15 @@ class UsersValidatorTest extends TestCase
                     'username' => 'first user',
                 ],
             ],
+            'not unique username' => [
+                [
+                    'username.unique',
+                ],
+                [
+                    'email' => 'gustavo.supporto@channelweb.it',
+                    'username' => 'first user',
+                ],
+            ],
         ];
     }
 

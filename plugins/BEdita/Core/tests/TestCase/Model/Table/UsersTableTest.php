@@ -585,30 +585,4 @@ class UsersTableTest extends TestCase
             static::assertEquals($value, $user[$key]);
         }
     }
-
-    /**
-     * Test users unique email validation method
-     *
-     * @return void
-     * @covers ::validateUniqueEmail()
-     */
-    public function testValidateUniqueEmail()
-    {
-        // with a user email in use -> save is not allowed
-        $user = $this->Users->newEntity([
-            'username' => 'gustavosupporto',
-            'email' => 'first.user@example.com',
-        ]);
-        $result = $this->Users->save($user);
-        static::assertFalse($result);
-
-        // with a profile email in use -> save is allowed
-        $user = $this->Users->newEntity([
-            'username' => 'gustavosupporto',
-            'email' => 'gustavo.supporto@channelweb.it',
-        ]);
-        $result = $this->Users->save($user);
-        static::assertNotEmpty($result);
-        static::assertEquals(15, $result->get('id'));
-    }
 }
