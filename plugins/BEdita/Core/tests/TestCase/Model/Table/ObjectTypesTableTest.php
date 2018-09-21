@@ -833,11 +833,11 @@ class ObjectTypesTableTest extends TestCase
             ],
             'find id' => [
                 'documents',
-                ['id' => 1],
+                [1],
             ],
             'find by name' => [
                 'files',
-                ['id' => 'media'],
+                ['media'],
             ],
         ];
     }
