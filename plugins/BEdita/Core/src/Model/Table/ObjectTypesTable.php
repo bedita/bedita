@@ -349,6 +349,24 @@ class ObjectTypesTable extends Table
     }
 
     /**
+     * Find object types having a parent by `name` or `id`
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The first element containing `id` or `name` is required.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
+     */
+    public function findParent(Query $query, array $options)
+    {
+        if (empty($options[0])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'parent'));
+        }
+        $parentId = $this->get($options[0])->get('id');
+
+        return $query->where([$this->aliasField('parent_id') => $parentId]);
+    }
+
+    /**
      * Find allowed object types by relation name and side.
      *
      * This finder returns a list of object types that are allowed for the
