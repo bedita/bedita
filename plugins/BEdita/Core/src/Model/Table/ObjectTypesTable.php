@@ -361,7 +361,10 @@ class ObjectTypesTable extends Table
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'parent'));
         }
-        $parentId = $this->get($options[0])->get('id');
+        $parentId = $options[0];
+        if (!is_numeric($parentId)) {
+            $parentId = $this->get($parentId)->id;
+        }
 
         return $query->where([$this->aliasField('parent_id') => $parentId]);
     }
