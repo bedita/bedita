@@ -18,6 +18,8 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\ORM\RulesChecker;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -51,7 +53,7 @@ class InheritanceEventHandlerTest extends TestCase
      */
     public function testImplementedEvents()
     {
-        $expected = ['Model.beforeSave', 'Model.afterDelete'];
+        $expected = ['Model.beforeSave', 'Model.afterDelete', 'Model.afterRules'];
 
         $handler = new InheritanceEventHandler();
         $implementedEvents = array_keys($handler->implementedEvents());
@@ -272,6 +274,118 @@ class InheritanceEventHandlerTest extends TestCase
         static::assertSame($expectedFelines, $this->fakeFelines->find()->count());
         static::assertSame($expectedMammals, $this->fakeMammals->find()->count());
         static::assertSame($expectedAnimals, $this->fakeAnimals->find()->count());
+    }
+
+    /**
+     * Data provider for `testApplicationRulesErrorsPropagation`.
+     *
+     * @return array
+     */
+    public function applicationRulesErrorsPropagationProvider()
+    {
+        $fakeFelinesError = [
+            'family' => ['FakeFelinesFailure' => 'Invalid family.'],
+        ];
+        $fakeFelinesRule = [
+            'table' => 'FakeFelines',
+            'options' => [
+                'errorField' => 'family',
+                'message' => 'Invalid family.',
+            ],
+        ];
+
+        $fakeMammalsError = [
+            'subclass' => ['FakeMammalsFailure' => 'Invalid subclass.'],
+        ];
+        $fakeMammalsRule = [
+            'table' => 'FakeMammals',
+            'options' => [
+                'errorField' => 'subclass',
+                'message' => 'Invalid subclass.',
+            ],
+        ];
+
+        $fakeAnimalsError = [
+            'name' => ['FakeAnimalsFailure' => 'Invalid name.'],
+        ];
+        $fakeAnimalsRule = [
+            'table' => 'FakeAnimals',
+            'options' => [
+                'errorField' => 'name',
+                'message' => 'Invalid name.',
+            ],
+        ];
+
+        return [
+            'descendantError' => [
+                $fakeFelinesError, // expected
+                [$fakeFelinesRule], // rule config
+            ],
+            'middleError' => [
+                $fakeMammalsError,
+                [$fakeMammalsRule],
+            ],
+            'ancestorError' => [
+                $fakeAnimalsError,
+                [$fakeAnimalsRule],
+            ],
+            'ancestorsErrors' => [
+                array_merge($fakeMammalsError, $fakeAnimalsError),
+                [$fakeMammalsRule, $fakeAnimalsRule],
+            ],
+            'allInheritanceErrors' => [
+                array_merge($fakeFelinesError, $fakeMammalsError, $fakeAnimalsError),
+                [$fakeFelinesRule, $fakeMammalsRule, $fakeAnimalsRule],
+            ],
+            'firstAndLastInheritanceErrors' => [
+                array_merge($fakeFelinesError, $fakeAnimalsError),
+                [$fakeFelinesRule, $fakeAnimalsRule],
+            ],
+        ];
+    }
+
+    /**
+     * Test that when some application rule fails
+     * the errors are propagated to last descendant.
+     *
+     * @param array $expected The expected rule errors.
+     * @param array $rulesConfig The rules configuration.
+     * @return void
+     *
+     * @dataProvider applicationRulesErrorsPropagationProvider
+     * @covers ::beforeSave()
+     * @covers ::afterRules()
+     */
+    public function testApplicationRulesErrorsPropagation($expected, $rulesConfig)
+    {
+        foreach ($rulesConfig as $rule) {
+            $table = TableRegistry::get($rule['table']);
+            $options = $rule['options'];
+            $table->getEventManager()->on(
+                'Model.buildRules',
+                function (Event $event, RulesChecker $rules) use ($table, $options) {
+                    $rules->add(
+                        function () {
+                            return false;
+                        },
+                        sprintf('%sFailure', $table->getAlias()),
+                        $options
+                    );
+                }
+            );
+        }
+
+        $data = [
+            'name' => 'Gustavo',
+            'legs' => 2,
+            'subclass' => 'Unknown',
+            'family' => 'Supporters',
+        ];
+
+        $feline = $this->fakeFelines->newEntity($data);
+        $result = $this->fakeFelines->save($feline);
+        static::assertFalse($result);
+        static::assertEquals($expected, $feline->getErrors());
     }
 
     /**
