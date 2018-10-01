@@ -818,4 +818,48 @@ class ObjectTypesTableTest extends TestCase
         $type = $this->ObjectTypes->find('objectId', $options)->firstOrFail();
         static::assertEquals($expected, $type->name);
     }
+
+    /**
+     * Data provider for `findParent()`
+     *
+     * @return array
+     */
+    public function findParentProvider()
+    {
+        return [
+            'missing' => [
+                new BadFilterException('Missing required parameter "parent"'),
+                [],
+            ],
+            'find id' => [
+                'documents',
+                [1],
+            ],
+            'find by name' => [
+                'files',
+                ['media'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findParent()` finder method
+     *
+     * @param mixed $expected The expected result.
+     * @param array $options The option passed to finder.
+     * @return void
+     *
+     * @covers ::findParent()
+     * @dataProvider findParentProvider
+     */
+    public function testFindParent($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $type = $this->ObjectTypes->find('parent', $options)->order(['name' => 'ASC'])->firstOrFail();
+        static::assertEquals($expected, $type->name);
+    }
 }
