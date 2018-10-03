@@ -200,6 +200,27 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
+     * Test finder of object types by parent name.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFindParent()
+    {
+        $this->configRequestHeaders();
+
+        $this->get('/model/object_types?filter[parent]=media');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertCount(1, $result['data']);
+    }
+
+    /**
      * Data provider for `testSearchFilter` test case.
      *
      * @return array

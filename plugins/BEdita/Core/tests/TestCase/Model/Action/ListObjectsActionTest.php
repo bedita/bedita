@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -34,8 +34,13 @@ class ListObjectsActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.translations',
     ];
 
     /**
@@ -121,5 +126,30 @@ class ListObjectsActionTest extends TestCase
 
         static::assertInstanceOf(Query::class, $result);
         static::assertSame(11, $result->count());
+    }
+
+    /**
+     * Test command execution with a `lang` query string.
+     *
+     * @return void
+     */
+    public function testLang()
+    {
+        $objectType = TableRegistry::get('ObjectTypes')->get('Documents');
+        $table = TableRegistry::get('Objects');
+        $action = new ListObjectsAction(compact('table', 'objectType'));
+
+        $result = $action([
+            'lang' => 'fr',
+        ]);
+
+        static::assertInstanceOf(Query::class, $result);
+        static::assertSame(2, $result->count());
+        $result->order(['Objects.id' => 'ASC']);
+        $result = $result->toArray();
+
+        static::assertNotEmpty($result[0]['translations']);
+        static::assertEquals(1, count($result[0]['translations']));
+        static::assertEquals(2, $result[0]['translations'][0]['id']);
     }
 }

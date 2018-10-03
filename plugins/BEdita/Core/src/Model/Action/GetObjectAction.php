@@ -74,6 +74,9 @@ class GetObjectAction extends BaseAction
         if (Configure::check('Status.level')) {
             $query = $query->find('status', [Configure::read('Status.level')]);
         }
+        if (!empty($data['lang'])) {
+            $query = $query->find('translations', ['lang' => $data['lang']]);
+        }
 
         return $query->firstOrFail();
     }

@@ -107,12 +107,12 @@ class ProfilesTableTest extends TestCase
                     'company' => true,
                 ],
             ],
-            'notUniqueEmail' => [
+            'invalidBirthdate' => [
                 false,
                 [
-                    'email' => 'gustavo.supporto@channelweb.it',
-                    'object_type_id' => 3,
-                    'status' => 'draft',
+                    'name' => 'Gustavo',
+                    'surname' => 'Supporto',
+                    'birthdate' => 'do not remember',
                     'lang' => 'en',
                 ],
             ],

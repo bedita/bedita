@@ -190,9 +190,10 @@ class ObjectsController extends ResourcesController
             // List existing entities.
             $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
             $contain = $this->prepareInclude($this->request->getQuery('include'));
+            $lang = $this->request->getQuery('lang');
 
             $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-            $query = $action(compact('filter', 'contain'));
+            $query = $action(compact('filter', 'contain', 'lang'));
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
@@ -228,7 +229,11 @@ class ObjectsController extends ResourcesController
         $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
+        $entity = $action([
+            'primaryKey' => $id,
+            'contain' => $contain,
+            'lang' => $this->request->getQuery('lang'),
+        ]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -284,9 +289,10 @@ class ObjectsController extends ResourcesController
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
         $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $lang = $this->request->getQuery('lang');
 
         $action = $this->getAssociatedAction($association);
-        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain'));
+        $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain', 'lang'));
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);

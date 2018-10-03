@@ -2589,4 +2589,59 @@ class ObjectsControllerTest extends IntegrationTestCase
         $response = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($expected, $response['error']['title']);
     }
+
+    /**
+     * Test 'lang' filter.
+     *
+     * @return void
+     *
+     * @covers ::resource()
+     */
+    public function testLang()
+    {
+        $expected = [
+            [
+                'id' => '2',
+                'type' => 'translations',
+                'attributes' => [
+                    'status' => 'on',
+                    'lang' => 'fr',
+                    'object_id' => 2,
+                    'translated_fields' => [
+                        'description' => 'description ici',
+                        'extra' => [
+                            'list' => ['on', 'deux', 'trois'],
+                        ],
+                    ],
+                ],
+                'meta' => [
+                    'created' => '2018-01-01T00:00:00+00:00',
+                    'modified' => '2018-01-01T00:00:00+00:00',
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/translations/2',
+                ],
+                'relationships' => [
+                    'object' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/translations/2/object',
+                            'self' => 'http://api.example.com/translations/2/relationships/object',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?lang=fr');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertNotEmpty($result['included']);
+        static::assertEquals($expected, $result['included']);
+    }
 }

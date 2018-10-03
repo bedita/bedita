@@ -98,7 +98,6 @@ class ProfilesValidatorTest extends TestCase
             'not unique' => [
                 [
                     'uname.unique',
-                    'email.unique',
                 ],
                 [
                     'uname' => 'title-one',

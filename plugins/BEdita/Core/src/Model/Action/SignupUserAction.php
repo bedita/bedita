@@ -42,6 +42,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     use MailerAwareTrait;
 
     /**
+     * 400 Username already registered
+     *
+     * @var string
+     */
+    const BE_USER_EXISTS = 'be_user_exists';
+
+    /**
      * The UsersTable table
      *
      * @var \BEdita\Core\Model\Table\UsersTable
@@ -148,6 +155,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         if (empty($data['auth_provider'])) {
             $validator->requirePresence('activation_url');
+
+            $validator
+                ->requirePresence('username')
+                ->notEmpty('username');
         } else {
             $validator
                 ->requirePresence('provider_username')
@@ -221,6 +232,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function createUserEntity(array $data, $status, $validate)
     {
+        if ($this->Users->exists(['username' => $data['username']])) {
+            $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
+            throw new BadRequestException([
+                'title' => __d('bedita', 'User "{0}" already registered', $data['username']),
+                'code' => self::BE_USER_EXISTS,
+            ]);
+        }
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         return $action([
