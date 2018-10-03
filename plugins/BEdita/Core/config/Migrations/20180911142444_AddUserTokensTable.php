@@ -16,9 +16,6 @@ class AddUserTokensTable extends AbstractMigration
      */
     public function up()
     {
-        $columnTypes = $this->getAdapter()->getColumnTypes();
-        $enum = in_array('enum', $columnTypes) ? 'enum' : 'string';
-
         $this->table('user_tokens')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -54,11 +51,10 @@ class AddUserTokensTable extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('token_type', $enum, [
+            ->addColumn('token_type', 'string', [
                 'comment' => 'type of token: otp, refresh, recovery, 2fa, access',
                 'default' => 'refresh',
                 'limit' => 255,
-                'values' => ['otp', 'refresh', 'recovery', '2fa', 'access'],
                 'null' => false,
             ])
             ->addColumn('expires', 'timestamp', [
@@ -109,6 +105,22 @@ class AddUserTokensTable extends AbstractMigration
                 ],
                 [
                     'name' => 'usertokens_secrettoken_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'expires',
+                ],
+                [
+                    'name' => 'usertokens_expires_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'used',
+                ],
+                [
+                    'name' => 'usertokens_used_idx',
                 ]
             )
             ->addForeignKey(
