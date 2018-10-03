@@ -22,6 +22,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Security;
 use Cake\Utility\Text;
 
 /**
@@ -199,11 +200,6 @@ class OTPAuthenticate extends BaseAuthenticate
      */
     public static function defaultSecretGenerator()
     {
-        $res = '';
-        for ($i = 0; $i < 6; $i++) {
-            $res .= mt_rand(0, 9);
-        }
-
-        return $res;
+        return sprintf('%06d', hexdec(bin2hex(Security::randomBytes(2))));
     }
 }
