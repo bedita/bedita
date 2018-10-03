@@ -37,6 +37,12 @@ use Cake\Validation\Validator;
  */
 class UserTokensTable extends Table
 {
+    /**
+     * List of allowed token types
+     *
+     * @var array
+     */
+    const TOKEN_TPYES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
 
     /**
      * Initialize method
@@ -90,6 +96,7 @@ class UserTokensTable extends Table
 
         $validator
             ->scalar('token_type')
+            ->inList('token_type', self::TOKEN_TPYES)
             ->requirePresence('token_type', 'create')
             ->notEmpty('token_type');
 
