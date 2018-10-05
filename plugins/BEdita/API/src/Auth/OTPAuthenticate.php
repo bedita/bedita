@@ -109,12 +109,12 @@ class OTPAuthenticate extends BaseAuthenticate
      */
     protected function otpAccess($username, ServerRequest $request)
     {
-        $result = $this->_findUser($username);
-        if (empty($result)) {
+        if (empty($request->getData('authorization_code')) || empty($request->getData('token'))) {
             return false;
         }
 
-        if (empty($request->getData('authorization_code')) || empty($request->getData('token'))) {
+        $result = $this->_findUser($username);
+        if (empty($result)) {
             return false;
         }
 
