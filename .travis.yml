@@ -31,13 +31,20 @@ jobs:
   fast_finish: true
 
   include:
-    # Minimal tests set: SQLite on PHP 7.2, MySQL 5.7 on PHP 7.1 and code sniffer.
+    # Minimal tests set:
+    #    SQLite on PHP 7.2
+    #    MySQL 5.7 on PHP 7.1
+    #    PostgreSQL 9.6 + PostGIS on PHP 7.1
+    #    code sniffer.
     - stage: minimal
       php: 7.2
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
       php: 7.1
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
+    - stage: minimal
+      php: 7.1
+      env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - stage: minimal
       php: 7.1
       services: []
@@ -49,7 +56,10 @@ jobs:
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
 
-    # Reference tests set with coverage: PHP 7.1 with MySQL 5.7, SQlite and PostgreSQL 9.6 + PostGIS
+    # Reference tests set with coverage:
+    #    MySQL 5.7 on PHP 7.1
+    #    SQlite on PHP 7.1
+    #    PostgreSQL 9.6 + PostGIS on PHP 7.1
     - stage: reference
       php: 7.1
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
