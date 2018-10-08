@@ -33,7 +33,7 @@ class LoginControllerTest extends IntegrationTestCase
     const NOT_SUCCESSFUL_EXPECTED_RESULT = [
         'error' => [
             'status' => '401',
-            'title' => 'Login not successful',
+            'title' => 'Login request not successful',
         ],
         'links' => [
             'self' => 'http://api.example.com/auth',
@@ -597,5 +597,62 @@ class LoginControllerTest extends IntegrationTestCase
             $this->post('/auth', json_encode(['username' => 'first user', 'password' => $data['password']]));
             $this->assertResponseCode(200);
         }
+    }
+
+    /**
+     * Test `otp_request` grant.
+     *
+     * @return void
+     * @covers ::login()
+     */
+    public function testOTPRequestLogin()
+    {
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+
+        $this->post('/auth', json_encode([
+            'username' => 'first user',
+            'grant_type' => 'otp_request',
+        ]));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        static::assertNotEmpty($result);
+
+        static::assertNotEmpty($result['meta']['authorization_code']);
+        $code = $result['meta']['authorization_code'];
+
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/auth',
+                'home' => 'http://api.example.com/home',
+            ],
+            'meta' => [
+                'authorization_code' => $code,
+            ],
+        ];
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test actual `otp` (One Time Password) login.
+     *
+     * @return void
+     * @covers ::login()
+     */
+    public function testOTPLogin()
+    {
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+
+        $this->post('/auth', json_encode([
+            'username' => 'second user',
+            'authorization_code' => 'toktoktoktoktok',
+            'token' => 'secretsecretsecret',
+            'grant_type' => 'otp',
+        ]));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        static::assertNotEmpty($result['meta']['jwt']);
+        static::assertNotEmpty($result['meta']['renew']);
     }
 }
