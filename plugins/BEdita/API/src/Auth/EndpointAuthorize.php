@@ -17,9 +17,7 @@ use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -41,10 +39,7 @@ class EndpointAuthorize extends BaseAuthorize
      * unless a specific permission is set.
      */
     protected $_defaultConfig = [
-        'blockAnonymousApps' => false,
         'blockAnonymousUsers' => true,
-        'apiKeyQueryString' => 'api_key',
-        'apiKeyHeaderName' => 'X-Api-Key',
         'defaultAuthorized' => false,
     ];
 
@@ -54,13 +49,6 @@ class EndpointAuthorize extends BaseAuthorize
      * @var \BEdita\Core\Model\Entity\Endpoint|null
      */
     protected $endpoint = null;
-
-    /**
-     * Current application entity.
-     *
-     * @var \BEdita\Core\Model\Entity\Application|null
-     */
-    protected $application = null;
 
     /**
      * Request object instance.
@@ -97,8 +85,6 @@ class EndpointAuthorize extends BaseAuthorize
 
         // For anonymous users performing write operations, use strict mode.
         $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
-
-        $this->getApplication();
 
         if (empty($this->endpoint)) {
             $this->getEndpoint();
@@ -161,40 +147,6 @@ class EndpointAuthorize extends BaseAuthorize
     }
 
     /**
-     * Get application for request.
-     * This is done primarily with an API_KEY header like 'X-Api-Key',
-     * alternatively `api_key` query string is used (not recommended)
-     *
-     * @return \BEdita\Core\Model\Entity\Application|null
-     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
-     */
-    protected function getApplication()
-    {
-        $this->application = CurrentApplication::getApplication();
-        if ($this->application === null) {
-            $apiKey = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
-            if (empty($apiKey) && $this->_config['apiKeyQueryString'] !== null) {
-                $apiKey = (string)$this->request->getQuery($this->_config['apiKeyQueryString']);
-            }
-            if (empty($apiKey) && empty($this->_config['blockAnonymousApps'])) {
-                return null;
-            }
-
-            try {
-                CurrentApplication::setFromApiKey($apiKey);
-            } catch (\BadMethodCallException $e) {
-                throw new ForbiddenException(__d('bedita', 'Missing API key'));
-            } catch (RecordNotFoundException $e) {
-                throw new ForbiddenException(__d('bedita', 'Invalid API key'));
-            }
-
-            $this->application = CurrentApplication::getApplication();
-        }
-
-        return $this->application;
-    }
-
-    /**
      * Get endpoint for request.
      *
      * @return \BEdita\Core\Model\Entity\Endpoint
@@ -241,7 +193,7 @@ class EndpointAuthorize extends BaseAuthorize
      */
     protected function getPermissions($user, $strict = false)
     {
-        $applicationId = $this->application ? $this->application->id : null;
+        $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = $this->endpoint && !$this->endpoint->isNew() ? [$this->endpoint->id] : [];
 
         $query = TableRegistry::get('EndpointPermissions')
