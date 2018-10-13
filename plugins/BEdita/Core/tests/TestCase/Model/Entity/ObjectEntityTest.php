@@ -411,6 +411,12 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsUsersRoles()
     {
         $expected = [
+            'another_test' => [
+                'links' => [
+                    'related' => '/users/1/another_test',
+                    'self' => '/users/1/relationships/another_test',
+                ],
+            ],
             'parents' => [
                 'links' => [
                     'related' => '/users/1/parents',

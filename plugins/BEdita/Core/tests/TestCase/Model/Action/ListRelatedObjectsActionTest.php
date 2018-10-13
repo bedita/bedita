@@ -39,6 +39,7 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -148,9 +149,9 @@ class ListRelatedObjectsActionTest extends TestCase
                         ],
                     ],
                 ],
-                'Locations',
+                'Users',
                 'another_test',
-                8,
+                1,
                 false,
             ],
             [
@@ -174,7 +175,7 @@ class ListRelatedObjectsActionTest extends TestCase
             [
                 new RecordNotFoundException('Record not found in table "locations"'),
                 'Locations',
-                'another_test',
+                'inverse_another_test',
                 -1,
             ],
             [

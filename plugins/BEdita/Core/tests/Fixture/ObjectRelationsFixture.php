@@ -40,7 +40,7 @@ class ObjectRelationsFixture extends TestFixture
             'params' => '',
         ],
         [
-            'left_id' => 8,
+            'left_id' => 1,
             'relation_id' => 2,
             'right_id' => 8,
             'priority' => 1,
