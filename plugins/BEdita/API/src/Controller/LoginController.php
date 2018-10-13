@@ -267,7 +267,8 @@ class LoginController extends AppController
         if (!$userId) {
             $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
         }
-        $contain = ['Roles'] + $this->prepareInclude($this->request->getQuery('include'));
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $contain = array_unique(array_merge($contain, ['Roles']));
 
         return TableRegistry::get('Users')->get($userId, compact('contain'));
     }
