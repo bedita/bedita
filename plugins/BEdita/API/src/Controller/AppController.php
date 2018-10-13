@@ -19,8 +19,11 @@ use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
+use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 
 /**
@@ -131,5 +134,56 @@ class AppController extends Controller
                 throw new ForbiddenException(__d('bedita', 'Invalid API key'));
             }
         }
+    }
+
+    /**
+     * Prepare a list of associations to be contained from `?include` query parameter.
+     *
+     * @param string|array|null $include Association(s) to be included.
+     * @return array
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
+     */
+    protected function prepareInclude($include)
+    {
+        if ($include === null) {
+            return [];
+        }
+        if (!is_string($include)) {
+            throw new BadRequestException(
+                __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string'))
+            );
+        }
+
+        $contain = [];
+        $include = array_filter(array_map('trim', explode(',', $include)));
+        foreach ($include as $relationship) {
+            if (strpos($relationship, '.') !== false) {
+                throw new BadRequestException(__d('bedita', 'Inclusion of nested resources is not yet supported'));
+            }
+
+            try {
+                $association = $this->findAssociation($relationship);
+            } catch (NotFoundException $e) {
+                throw new BadRequestException(
+                    __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
+                );
+            }
+
+            $contain[] = $association->getName();
+        }
+
+        return $contain;
+    }
+
+    /**
+     * Find the association corresponding to the relationship name.
+     * Subclasses need to override this method.
+     *
+     * @param string $relationship Relationship name.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if no suitable association could be found.
+     */
+    protected function findAssociation($relationship)
+    {
+        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }
 }
