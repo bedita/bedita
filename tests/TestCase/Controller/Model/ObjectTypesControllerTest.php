@@ -217,7 +217,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'alias' => 'Users',
-                        'relations' => [],
+                        'relations' => [
+                            'another_test',
+                        ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
@@ -308,7 +310,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Locations',
                         'relations' => [
-                            'another_test',
                             'inverse_another_test',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',

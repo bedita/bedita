@@ -277,6 +277,12 @@ class AppControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
                             ],
                         ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/another_test',
+                                'self' => 'http://api.example.com/users/1/relationships/another_test',
+                            ],
+                        ],
                         'parents' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/parents',

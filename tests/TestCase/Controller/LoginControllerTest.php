@@ -236,6 +236,67 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `findAssociations` with `include` query string.
+     *
+     * @param array $meta Login metadata.
+     * @return void
+     *
+     * @depends testLoginOkJson
+     * @covers ::findAssociation()
+     */
+    public function testFindAssociation(array $meta)
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+            ],
+        ]);
+
+        $this->get('/auth/user?include=another_test');
+        $this->assertResponseCode(200);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertNotEmpty($result);
+        static::assertNotEmpty($result['included']);
+        $related = Hash::combine($result, 'included.{n}.type', 'included.{n}.id');
+        static::assertEquals($related['locations'], '8');
+    }
+
+    /**
+     * Test `findAssociation()` error with `include` query string.
+     *
+     * @param array $meta Login metadata.
+     * @return void
+     *
+     * @depends testLoginOkJson
+     * @covers ::findAssociation()
+     */
+    public function testFindAssociationError(array $meta)
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+            ],
+        ]);
+
+        $this->get('/auth/user?include=gustavo');
+        $this->assertResponseCode(400);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        unset($result['error']['meta'], $result['links']);
+        $error = [
+            'status' => '400',
+            'title' => 'Invalid "include" query parameter (Relationship "gustavo" does not exist)',
+        ];
+
+        static::assertEquals(compact('error'), $result);
+    }
+
+    /**
      * Remove perms on /auth
      *
      * @return void
