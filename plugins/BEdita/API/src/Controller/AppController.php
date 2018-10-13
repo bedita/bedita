@@ -180,7 +180,9 @@ class AppController extends Controller
      * Subclasses need to override this method.
      *
      * @param string $relationship Relationship name.
+     * @return \Cake\ORM\Association|void
      * @throws \Cake\Network\Exception\NotFoundException Throws an exception if no suitable association could be found.
+     * @codeCoverageIgnore
      */
     protected function findAssociation($relationship)
     {
