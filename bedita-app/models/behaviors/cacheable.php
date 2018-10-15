@@ -190,7 +190,7 @@ class CacheableBehavior extends ModelBehavior {
      * @param integer $objectId
      * @param bool $reset
      */
-    public function clearCache(&$model, $objectId, $reset = true) {
+    public function clearCache(&$model, $objectId, $reset = true, $descendants = true) {
         if ($objectId) {
             if ($reset) {
                 $this->resetObjectsToClean($model);
@@ -205,7 +205,7 @@ class CacheableBehavior extends ModelBehavior {
 
         $notLeafs = array(Configure::read('objectTypes.area.id'), Configure::read('objectTypes.section.id'));
         if (empty($model->data['BEObject']['object_type_id']) || in_array($model->data['BEObject']['object_type_id'], $notLeafs)) {
-            $this->BeObjectCache->deletePathCache($objectId, $this->getDescendantSections($objectId));
+            $this->BeObjectCache->deletePathCache($objectId, $descendants ? $this->getDescendantSections($objectId) : array());
         }
 
         if (!empty($this->objectsToClean)) {
