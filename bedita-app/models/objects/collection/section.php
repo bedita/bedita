@@ -95,6 +95,8 @@ class Section extends BeditaCollectionModel
     public $objectTypesGroups = array('related');
 
 	function afterSave($created) {
+        $this->BEObject->clearCache($this->id);
+
 	    if (!empty($this->data[$this->name]['parent_id'])) {
 	       $this->BEObject->clearCache($this->data[$this->name]['parent_id'], true, false);
 	    }
