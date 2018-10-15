@@ -23,7 +23,6 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
 use Cake\Network\Exception\NotFoundException;
-use Cake\ORM\Table;
 use Cake\Routing\Router;
 
 /**
