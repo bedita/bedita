@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -125,6 +125,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
                                 'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/another_test',
+                                'self' => 'http://api.example.com/users/1/relationships/another_test',
                             ],
                         ],
                         'parents' => [
@@ -328,6 +334,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/5/relationships/roles',
                             ],
                         ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/another_test',
+                                'self' => 'http://api.example.com/users/5/relationships/another_test',
+                            ],
+                        ],
                         'parents' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/parents',
@@ -368,12 +380,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/locations/8',
                     ],
                     'relationships' => [
-                        'another_test' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/locations/8/another_test',
-                                'self' => 'http://api.example.com/locations/8/relationships/another_test',
-                            ],
-                        ],
                         'inverse_another_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/inverse_another_test',

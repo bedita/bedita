@@ -21,9 +21,11 @@ use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
 use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -254,7 +256,7 @@ class LoginController extends AppController
     }
 
     /**
-     * Read logged user entity including roles.
+     * Read logged user entity including roles and other related objects via `include` query string.
      *
      * @return \BEdita\Core\Model\Entity\User Logged user entity
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
@@ -265,8 +267,24 @@ class LoginController extends AppController
         if (!$userId) {
             $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
         }
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $contain = array_unique(array_merge($contain, ['Roles']));
 
-        return TableRegistry::get('Users')->get($userId, ['contain' => ['Roles']]);
+        return TableRegistry::get('Users')->get($userId, compact('contain'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function findAssociation($relationship)
+    {
+        $relationship = Inflector::underscore($relationship);
+        $association = TableRegistry::get('Users')->associations()->getByProperty($relationship);
+        if (empty($association)) {
+            throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+        }
+
+        return $association;
     }
 
     /**

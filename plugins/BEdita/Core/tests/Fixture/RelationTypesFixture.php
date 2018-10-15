@@ -45,7 +45,7 @@ class RelationTypesFixture extends TestFixture
         ],
         [
             'relation_id' => 2, // another_test / inverse_another_test
-            'object_type_id' => 6, // locations
+            'object_type_id' => 4, // users
             'side' => 'left',
         ],
         [

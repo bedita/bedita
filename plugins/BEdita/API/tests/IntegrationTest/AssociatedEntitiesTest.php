@@ -198,8 +198,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
     public function testIncludedRelated()
     {
         $this->configRequestHeaders();
-        $this->get('/locations/8/another_test?include=inverse_another_test');
+        $this->get('/documents/3/inverse_test?include=test');
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertCount(1, $result['included']);
+        static::assertCount(2, $result['included']);
     }
 }
