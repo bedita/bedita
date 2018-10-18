@@ -90,6 +90,11 @@ class StatusLevelTest extends IntegrationTestCase
                 'draft',
                 '/documents/3',
             ],
+            'related with lang' => [
+                200,
+                'on',
+                '/documents/3/test?lang=fr',
+            ],
         ];
     }
 
