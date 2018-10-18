@@ -351,7 +351,7 @@ class ObjectsTable extends Table
      */
     protected function findStatus(Query $query, array $options)
     {
-        if (count($options) !== 1 || array_keys($options) !== [0]) {
+        if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
