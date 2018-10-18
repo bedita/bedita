@@ -65,7 +65,11 @@ class ListRelatedObjectsAction extends ListAssociatedAction
 
         $query = parent::buildQuery($primaryKey, $data, $inverseAssociation);
 
-        if (!empty($data['list']) && $this->Association->getTarget()->hasField('object_type_id')) {
+        if (!$this->Association->getTarget()->hasField('object_type_id')) {
+            return $query;
+        }
+
+        if (!empty($data['list'])) {
             $query = $query->select([
                 $this->Association->getTarget()->aliasField('object_type_id'),
             ]);
