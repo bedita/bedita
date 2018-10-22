@@ -2,6 +2,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\UserTokensTable;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -113,5 +114,25 @@ class UserTokensTableTest extends TestCase
 
         static::assertNotEmpty($entity);
         static::assertEquals(1, $entity->get('id'));
+    }
+
+    /**
+     * Test for getTokenTypes()
+     *
+     * @return void
+     * @covers ::getTokenTypes()
+     */
+    public function testGetTokenTypes()
+    {
+        $expected = UserTokensTable::DEFAULT_TOKEN_TPYES;
+        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
+
+        $conf = ['token_one', 'token_two'];
+        Configure::write('UserTokens', $conf);
+        $expected = array_merge($expected, $conf);
+        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
+
+        Configure::write('UserTokens', ['token_one', 'token_two', 'access']);
+        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
     }
 }

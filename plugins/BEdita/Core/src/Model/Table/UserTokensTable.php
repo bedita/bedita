@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -38,11 +39,11 @@ use Cake\Validation\Validator;
 class UserTokensTable extends Table
 {
     /**
-     * List of allowed token types
+     * List of default allowed token types
      *
      * @var array
      */
-    const TOKEN_TPYES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
+    const DEFAULT_TOKEN_TPYES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
 
     /**
      * Initialize method
@@ -96,7 +97,7 @@ class UserTokensTable extends Table
 
         $validator
             ->scalar('token_type')
-            ->inList('token_type', self::TOKEN_TPYES)
+            ->inList('token_type', $this->getTokenTypes())
             ->requirePresence('token_type', 'create')
             ->notEmpty('token_type');
 
@@ -125,6 +126,18 @@ class UserTokensTable extends Table
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
 
         return $rules;
+    }
+
+    /**
+     * Return the list of allowed token types merging default with configured.
+     *
+     * @return array
+     */
+    public function getTokenTypes()
+    {
+        $confTypes = (array)Configure::read('UserTokens');
+
+        return array_unique(array_merge(static::DEFAULT_TOKEN_TPYES, $confTypes));
     }
 
     /**
