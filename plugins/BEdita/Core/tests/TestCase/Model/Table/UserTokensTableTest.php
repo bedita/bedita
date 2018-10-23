@@ -2,13 +2,15 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\UserTokensTable;
+use Cake\Core\Configure;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
- * @covers BEdita\Core\Model\Table\UserTokensTable
+ * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
  */
 class UserTokensTableTest extends TestCase
 {
@@ -56,6 +58,24 @@ class UserTokensTableTest extends TestCase
     }
 
     /**
+     * Test initialization.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testInitialization()
+    {
+        $this->UserTokens->associations()->removeAll();
+        $this->UserTokens->initialize([]);
+        $this->assertEquals('user_tokens', $this->UserTokens->getTable());
+        $this->assertEquals('id', $this->UserTokens->getPrimaryKey());
+        $this->assertEquals('id', $this->UserTokens->getDisplayField());
+
+        $this->assertInstanceOf(BelongsTo::class, $this->UserTokens->Users);
+        $this->assertInstanceOf(BelongsTo::class, $this->UserTokens->Applications);
+    }
+
+    /**
      * Data provider for `testValidation` test case.
      *
      * @return array
@@ -91,7 +111,8 @@ class UserTokensTableTest extends TestCase
      * @param array $data Data.
      * @return void
      *
-     * @dataProvider validationProvider()
+     * @dataProvider validationProvider
+     * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
@@ -106,6 +127,7 @@ class UserTokensTableTest extends TestCase
      * Test 'valid' finder.
      *
      * @return void
+     * @covers ::findValid()
      */
     public function testValidFinder()
     {
@@ -113,5 +135,41 @@ class UserTokensTableTest extends TestCase
 
         static::assertNotEmpty($entity);
         static::assertEquals(1, $entity->get('id'));
+    }
+
+    /**
+     * Data provider for `testGetTokenTypes()`
+     *
+     * @return array
+     */
+    public function getTokenTypesProvider()
+    {
+        return [
+            'default' => [
+                UserTokensTable::DEFAULT_TOKEN_TYPES,
+                null,
+            ],
+            'conf' => [
+                array_merge(UserTokensTable::DEFAULT_TOKEN_TYPES, ['token_one', 'token_two']),
+                ['token_one', 'token_two'],
+            ],
+            'confWithDuplicates' => [
+                array_merge(UserTokensTable::DEFAULT_TOKEN_TYPES, ['token_one', 'token_two']),
+                ['token_one', 'token_two', 'access', 'otp', 'token_one'],
+            ],
+        ];
+    }
+
+    /**
+     * Test for getTokenTypes()
+     *
+     * @return void
+     * @dataProvider getTokenTypesProvider
+     * @covers ::getTokenTypes()
+     */
+    public function testGetTokenTypes($expected, $conf)
+    {
+        Configure::write('UserTokens.types', $conf);
+        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
     }
 }
