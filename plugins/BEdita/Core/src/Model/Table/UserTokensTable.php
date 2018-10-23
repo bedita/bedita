@@ -43,7 +43,7 @@ class UserTokensTable extends Table
      *
      * @var array
      */
-    const DEFAULT_TOKEN_TPYES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
+    const DEFAULT_TOKEN_TYPES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
 
     /**
      * Initialize method
@@ -135,9 +135,9 @@ class UserTokensTable extends Table
      */
     public function getTokenTypes()
     {
-        $confTypes = (array)Configure::read('UserTokens');
+        $confTypes = (array)Configure::read('UserTokens.types');
 
-        return array_unique(array_merge(static::DEFAULT_TOKEN_TPYES, $confTypes));
+        return array_unique(array_merge(static::DEFAULT_TOKEN_TYPES, $confTypes));
     }
 
     /**
