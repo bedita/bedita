@@ -50,6 +50,7 @@ class UserTokensTable extends Table
      *
      * @param array $config The configuration for the Table.
      * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {

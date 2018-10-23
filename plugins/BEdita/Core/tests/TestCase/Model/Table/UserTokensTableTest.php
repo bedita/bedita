@@ -3,13 +3,14 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\UserTokensTable;
 use Cake\Core\Configure;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
- * @covers BEdita\Core\Model\Table\UserTokensTable
+ * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
  */
 class UserTokensTableTest extends TestCase
 {
@@ -57,6 +58,24 @@ class UserTokensTableTest extends TestCase
     }
 
     /**
+     * Test initialization.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testInitialization()
+    {
+        $this->UserTokens->associations()->removeAll();
+        $this->UserTokens->initialize([]);
+        $this->assertEquals('user_tokens', $this->UserTokens->getTable());
+        $this->assertEquals('id', $this->UserTokens->getPrimaryKey());
+        $this->assertEquals('id', $this->UserTokens->getDisplayField());
+
+        $this->assertInstanceOf(BelongsTo::class, $this->UserTokens->Users);
+        $this->assertInstanceOf(BelongsTo::class, $this->UserTokens->Applications);
+    }
+
+    /**
      * Data provider for `testValidation` test case.
      *
      * @return array
@@ -92,7 +111,8 @@ class UserTokensTableTest extends TestCase
      * @param array $data Data.
      * @return void
      *
-     * @dataProvider validationProvider()
+     * @dataProvider validationProvider
+     * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
@@ -107,6 +127,7 @@ class UserTokensTableTest extends TestCase
      * Test 'valid' finder.
      *
      * @return void
+     * @covers ::findValid()
      */
     public function testValidFinder()
     {
