@@ -39,6 +39,8 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.streams',
         'plugin.BEdita/Core.users',
     ];
 
@@ -193,6 +195,20 @@ class ListRelatedObjectsActionTest extends TestCase
                 'Documents',
                 'test',
                 2,
+                true,
+                null,
+                'on',
+            ],
+            [
+                [
+                    [
+                        'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                        'url' => null
+                    ],
+                ],
+                'Files',
+                'streams',
+                14,
                 true,
                 null,
                 'on',
