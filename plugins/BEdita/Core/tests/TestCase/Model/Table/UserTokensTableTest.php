@@ -117,22 +117,38 @@ class UserTokensTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testGetTokenTypes()`
+     *
+     * @return array
+     */
+    public function getTokenTypesProvider()
+    {
+        return [
+            'default' => [
+                UserTokensTable::DEFAULT_TOKEN_TYPES,
+                null,
+            ],
+            'conf' => [
+                array_merge(UserTokensTable::DEFAULT_TOKEN_TYPES, ['token_one', 'token_two']),
+                ['token_one', 'token_two'],
+            ],
+            'confWithDuplicates' => [
+                array_merge(UserTokensTable::DEFAULT_TOKEN_TYPES, ['token_one', 'token_two']),
+                ['token_one', 'token_two', 'access', 'otp', 'token_one'],
+            ],
+        ];
+    }
+
+    /**
      * Test for getTokenTypes()
      *
      * @return void
+     * @dataProvider getTokenTypesProvider
      * @covers ::getTokenTypes()
      */
-    public function testGetTokenTypes()
+    public function testGetTokenTypes($expected, $conf)
     {
-        $expected = UserTokensTable::DEFAULT_TOKEN_TPYES;
-        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
-
-        $conf = ['token_one', 'token_two'];
-        Configure::write('UserTokens', $conf);
-        $expected = array_merge($expected, $conf);
-        static::assertEquals($expected, $this->UserTokens->getTokenTypes());
-
-        Configure::write('UserTokens', ['token_one', 'token_two', 'access']);
+        Configure::write('UserTokens.types', $conf);
         static::assertEquals($expected, $this->UserTokens->getTokenTypes());
     }
 }
