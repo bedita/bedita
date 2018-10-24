@@ -76,7 +76,7 @@ class ObjectsTable extends Table
         $this->setDisplayField('title');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        $this->addBehavior('BEdita/Core.DataDefaults');
         $this->addBehavior('BEdita/Core.UserModified');
         $this->addBehavior('BEdita/Core.Relations');
         $this->addBehavior('BEdita/Core.CustomProperties');

@@ -74,7 +74,7 @@ class UsersTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        $this->addBehavior('BEdita/Core.DataDefaults');
 
         $this->addBehavior('BEdita/Core.CustomProperties');
 

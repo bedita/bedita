@@ -520,4 +520,16 @@ return [
         // default lang tag - may be null
         'default' => null,
     ],
+
+    /**
+     * Default values per object type
+     */
+    'DefaultValues' => [
+        'documents' => [
+            'status' => 'draft',
+        ],
+        'images' => [
+            'status' => 'on',
+        ],
+    ],
 ];
