@@ -18,7 +18,7 @@
 			
 	{$view->element('form_categories')}
 
-    {$view->element('form_notes')}
+    {if $conf->notesForDocuments|default:false}{$view->element('form_notes')}{/if}
 
 	{$view->element('form_tags')}
 	

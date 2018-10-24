@@ -692,6 +692,13 @@ $config["geoTagOptions"] = array(
 $config['useDatePicker'] = true;
 
 /**
+ * Display `note` field for documents in edit mode.
+ * 
+ * @var bool
+ */
+$config['notesForDocuments'] = false;
+
+/**
  ** ******************************************
  **  System locales available
  **  use arrays of locale strings
