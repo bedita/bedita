@@ -20,7 +20,8 @@ use Cake\ORM\Behavior;
 /**
  * DataDefaults behavior
  *
- * Data cleanup operations on object creations to allow operations with `dirty` input data
+ * Data defaults operations on object creations to allow operations with `dirty` input data
+ * and setting basic values per fields, per object type (from configuration 'DefaultValues')
  *
  * This Behavoir acts only on Model.beforeMarshal event
  *
