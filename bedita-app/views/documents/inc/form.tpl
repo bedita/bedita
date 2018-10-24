@@ -17,7 +17,9 @@
 	{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.document.id}])}
 			
 	{$view->element('form_categories')}
-	
+
+    {$view->element('form_notes')}
+
 	{$view->element('form_tags')}
 	
 	{$view->element('form_links')}
