@@ -523,13 +523,14 @@ return [
 
     /**
      * Default values per object type
+     * object type names as keys (lower case), default property names and values as value
      */
-    'DefaultValues' => [
-        'documents' => [
-            'status' => 'draft',
-        ],
-        'images' => [
-            'status' => 'on',
-        ],
-    ],
+    // 'DefaultValues' => [
+    //     'cats' => [
+    //         'status' => 'off',
+    //     ],
+    //     'dogs' => [
+    //         'status' => 'on', // GO dogs!
+    //     ],
+    // ],
 ];
