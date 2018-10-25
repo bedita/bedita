@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\Utility\Inflector;
 
 /**
  * DataDefaults behavior
@@ -53,11 +54,9 @@ class DataDefaultsBehavior extends Behavior
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         $config = $this->getConfig();
-        $objectType = strtolower($this->_table->getAlias());
+        $objectType = Inflector::underscore($this->_table->getAlias());
         $defaults = Configure::read(sprintf('DefaultValues.%s', $objectType), []);
-        if (!empty($defaults)) {
-            $config['fields'] = array_merge($config['fields'], $defaults);
-        }
+        $config['fields'] = array_merge($config['fields'], $defaults);
         foreach ($data as $key => $value) {
             if (($value === null || $value === '') && isset($config['fields'][$key])) {
                 $data[$key] = $config['fields'][$key];
