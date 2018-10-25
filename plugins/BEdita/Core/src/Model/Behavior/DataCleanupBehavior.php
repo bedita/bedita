@@ -19,16 +19,16 @@ use Cake\ORM\Behavior;
 use Cake\Utility\Inflector;
 
 /**
- * DataDefaults behavior
+ * DataCleanup behavior
  *
- * Data defaults operations on object creations to allow operations with `dirty` input data
+ * Data cleanup operations on object creations to allow operations with `dirty` input data
  * and setting basic values per fields, per object type (from configuration 'DefaultValues')
  *
  * This Behavoir acts only on Model.beforeMarshal event
  *
  * @since 4.0.0
  */
-class DataDefaultsBehavior extends Behavior
+class DataCleanupBehavior extends Behavior
 {
 
     /**

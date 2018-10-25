@@ -18,11 +18,11 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Behavior\DataDefaultsBehavior} Test Case
+ * {@see \BEdita\Core\Model\Behavior\DataCleanupBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\DataDefaultsBehavior
+ * @coversDefaultClass \BEdita\Core\Model\Behavior\DataCleanupBehavior
  */
-class DataDefaultsBehaviorTest extends TestCase
+class DataCleanupBehaviorTest extends TestCase
 {
 
     /**
@@ -40,7 +40,7 @@ class DataDefaultsBehaviorTest extends TestCase
     ];
 
     /**
-     * Data provider for `testDataDefaults` test case.
+     * Data provider for `testDataCleanup` test case.
      *
      * @return array
      */
@@ -99,7 +99,7 @@ class DataDefaultsBehaviorTest extends TestCase
     }
 
     /**
-     * testDataDefaults method
+     * testDataCleanup method
      *
      * @param array $inputData Input data.
      * @param array $expected Expected result.
@@ -109,7 +109,7 @@ class DataDefaultsBehaviorTest extends TestCase
      * @dataProvider cleanupProvider
      * @covers ::beforeMarshal()
      */
-    public function testDataDefaults(array $inputData, array $expected, array $defaultValues)
+    public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
         Configure::write('DefaultValues', $defaultValues);
         $Users = TableRegistry::get('Users');
