@@ -199,6 +199,10 @@ class CacheableBehavior extends ModelBehavior {
             $this->addObjectsToClean($model, $this->getObjectsToCleanById($model, $objectId));
         }
 
+        if (!$this->on) {
+            return;
+        }
+
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
