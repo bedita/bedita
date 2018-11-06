@@ -75,6 +75,7 @@ class Video extends BeditaStreamModel
         $found = $CaptionModel->find('all', array(
             'conditions' => array(
                 'object_id' => $videoId,
+                'object_type_id' => Configure::read('objectTypes.caption.id'),
             ),
             'contain' => array('BEObject'),
         ));
@@ -113,6 +114,7 @@ class Video extends BeditaStreamModel
 
         $conditions = array(
             'object_id' => $videoId,
+            'object_type_id' => Configure::read('objectTypes.caption.id'),
         );
         if (!empty($kept)) {
             $conditions['NOT'] = array(
