@@ -8,7 +8,7 @@
 			<tr>
 				<th>{t}status{/t}</th>
 				<th>{t}language{/t}</th>
-				<th>IGHI</th>
+				<th>{t}contents{/t}</th>
 			</tr>
 		</thead>
         <tbody>
