@@ -1,7 +1,7 @@
 
 {if $object.object_type_id == $conf->objectTypes['video']['id']}
 <div class="tab"><h2>{t}Captions{/t}</h2></div>
-<div id="captions" data-start-idx="">
+<div id="captions">
 
     <table class="indexlist">
 		<thead>
@@ -12,31 +12,50 @@
 			</tr>
 		</thead>
         <tbody>
-            {$i = 0}
-            {foreach $object.captions as $lang => $caption}
+            {foreach $object.captions as $caption}
             <tr>
                 <td>
+                    <input type="hidden" name="data[captions][{$caption@index}][id]" value="{$caption.id|default:''}" />
                     {foreach ['on', 'draft', 'off'] as $status}
                         <label>
-                            <input type="radio" name="data[captions][{$i}][status]" value="{$status}" {if $caption.status == $status}checked{/if} />
+                            <input type="radio" name="data[captions][{$caption@index}][status]" value="{$status}" {if $status == $caption.status}checked{/if} />
                             {t}{$status}{/t}
                         </label>
                     {/foreach}
                 </td>
                 <td>
-                    <input type="hidden" name="data[captions][{$i}][id]" value="{$caption.id|default:''}" />
-                    <select name="data[captions][{$i}][lang]">
+                    <select name="data[captions][{$caption@index}][lang]">
                         {foreach $conf->langOptions as $code => $name}
-                            <option value="{$code}" {if $lang == $code}selected{/if}>{$name}</option>
+                            <option value="{$code}" {if $code == $caption.lang}selected{/if}>{$name}</option>
                         {/foreach}
                     </select>
                 </td>
                 <td>
-                    <textarea name="data[captions][{$i}][description]">{$caption.description|default:''}</textarea>
+                    <textarea name="data[captions][{$caption@index}][description]">{$caption.description|default:''}</textarea>
                 </td>
             </tr>
-            {$i = $i + 1}
             {/foreach}
+
+            <tr>
+                <td>
+                    {foreach ['on', 'draft', 'off'] as $status}
+                        <label>
+                            <input type="radio" name="data[captions][{$caption@total}][status]" value="{$status}" {if $status == $object.status|default:$conf->defaultStatus}checked{/if} />
+                            {t}{$status}{/t}
+                        </label>
+                    {/foreach}
+                </td>
+                <td>
+                    <select name="data[captions][{$caption@total}][lang]">
+                        {foreach $conf->langOptions as $code => $name}
+                            <option value="{$code}" {if $code == $conf->defaultLang}selected{/if}>{$name}</option>
+                        {/foreach}
+                    </select>
+                </td>
+                <td>
+                    <textarea name="data[captions][{$caption@total}][description]"></textarea>
+                </td>
+            </tr>
         </tbody>
 	</table>
 </div>
