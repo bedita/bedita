@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -24,8 +24,101 @@
  */
 class Video extends BeditaStreamModel
 {
-	var $useTable = "videos";
-	var $actsAs = array();
-	public $objectTypesGroups = array("multimedia", "leafs", "related");
+    public $useTable = 'videos';
+
+    public $actsAs = array();
+
+    public $objectTypesGroups = array('multimedia', 'leafs', 'related');
+
+    /**
+     * Load captions in video data.
+     *
+     * @param array $results Fetched videos.
+     * @return array
+     */
+    public function afterFind(array $results)
+    {
+        $results = parent::afterFind($results);
+
+        foreach ($results as &$result) {
+            $result['captions'] = $this->getCaptions($result['id']);
+        }
+        unset($result);
+
+        return $results;
+    }
+
+    /**
+     * Save captions after video has been saved.
+     *
+     * @param bool $created Is this a freshly created entity?
+     * @return void
+     */
+    public function afterSave($created)
+    {
+        parent::afterSave($created);
+
+        if (isset($this->data[$this->alias]['captions'])) {
+            $this->saveCaptions($this->id, $this->data[$this->alias]['captions']);
+        }
+    }
+
+    /**
+     * Return map of captions indexed by their language.
+     *
+     * @param int $videoId Video ID.
+     * @return array
+     */
+    protected function getCaptions($videoId)
+    {
+        $CaptionModel = ClassRegistry::init('Caption');
+        $found = $CaptionModel->find('all', array(
+            'conditions' => array(
+                'object_id' => $videoId,
+            ),
+            'contain' => array('BEObject'),
+        ));
+
+        return Set::combine($found, '{n}.lang', '{n}');
+    }
+
+    /**
+     * Save captions for a video.
+     *
+     * @param int $videoId Video ID.
+     * @param array $data Map of lang to VTT contents.
+     * @return void
+     */
+    protected function saveCaptions($videoId, array $data)
+    {
+        $data = array_filter(
+            $data,
+            function ($datum) {
+                return !empty($datum['description']);
+            }
+        );
+
+        $CaptionModel = ClassRegistry::init('Caption');
+
+        foreach ($data as $datum) {
+            $datum['object_id'] = $videoId;
+            $CaptionModel->save($datum);
+        }
+
+        $toBeDeleted = $CaptionModel->find('all', array(
+            'fields' => array('BEObject.id'),
+            'conditions' => array(
+                'object_id' => $videoId,
+                'NOT' => array(
+                    'lang' => Set::classicExtract($data, '{n}.lang'),
+                ),
+            ),
+            'contain' => array('BEObject'),
+        ));
+        $toBeDeleted = Set::classicExtract($toBeDeleted, '{n}.BEObject.id');
+
+        foreach ($toBeDeleted as $id) {
+            $CaptionModel->delete($id);
+        }
+    }
 }
-?>

@@ -58,6 +58,8 @@
 
 {$view->element('form_notes')}
 
+{include file = './form_captions.tpl'}
+
 </form>
 	{$view->element('form_versions')}
 	{$view->element('form_print')}
