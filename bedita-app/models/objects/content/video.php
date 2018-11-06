@@ -130,4 +130,17 @@ class Video extends BeditaStreamModel
             $CaptionModel->delete($id);
         }
     }
+
+    /**
+     * Transform captions
+     *
+     * @param array $options The transform options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $transformer = parent::apiTransformer($options);
+        $transformer['captions'] = ClassRegistry::init('Caption')->apiTransformer($options);
+
+        return $transformer;
+    }
 }
