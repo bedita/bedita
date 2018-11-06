@@ -64,7 +64,7 @@ class Video extends BeditaStreamModel
     }
 
     /**
-     * Return map of captions indexed by their language.
+     * Return list of captions for a video.
      *
      * @param int $videoId Video ID.
      * @return array
@@ -79,40 +79,49 @@ class Video extends BeditaStreamModel
             'contain' => array('BEObject'),
         ));
 
-        return Set::combine($found, '{n}.lang', '{n}');
+        return $found;
     }
 
     /**
      * Save captions for a video.
      *
      * @param int $videoId Video ID.
-     * @param array $data Map of lang to VTT contents.
+     * @param array $data List of captions data.
      * @return void
      */
     protected function saveCaptions($videoId, array $data)
     {
+        $CaptionModel = ClassRegistry::init('Caption');
+
+        $kept = array();
         $data = array_filter(
             $data,
             function ($datum) {
                 return !empty($datum['description']);
             }
         );
-
-        $CaptionModel = ClassRegistry::init('Caption');
-
         foreach ($data as $datum) {
+            if (empty($datum['id'])) {
+                $CaptionModel->create();
+            }
+
             $datum['object_id'] = $videoId;
             $CaptionModel->save($datum);
+
+            $kept[] = $CaptionModel->id;
         }
 
+        $conditions = array(
+            'object_id' => $videoId,
+        );
+        if (!empty($kept)) {
+            $conditions['NOT'] = array(
+                'BEObject.id' => $kept,
+            );
+        }
         $toBeDeleted = $CaptionModel->find('all', array(
             'fields' => array('BEObject.id'),
-            'conditions' => array(
-                'object_id' => $videoId,
-                'NOT' => array(
-                    'lang' => Set::classicExtract($data, '{n}.lang'),
-                ),
-            ),
+            'conditions' => $conditions,
             'contain' => array('BEObject'),
         ));
         $toBeDeleted = Set::classicExtract($toBeDeleted, '{n}.BEObject.id');
