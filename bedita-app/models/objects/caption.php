@@ -46,7 +46,18 @@ class Caption extends BeditaAnnotationModel
     {
         parent::beforeValidate();
 
+        if (empty($this->data[$this->alias]['title'])) {
+            // Use language label as default title.
+            $lang = Configure::read('defaultLang');
+            if (!empty($this->data[$this->alias]['lang'])) {
+                $lang = $this->data[$this->alias]['lang'];
+            }
+
+            $this->data[$this->alias]['title'] = Configure::read(sprintf('langOptions.%s', $lang)) ?: '';
+        }
+
         if (!empty($this->data[$this->alias]['description'])) {
+            // Convert SRT to VTT.
             $this->data[$this->alias]['description'] = static::srtToVtt($this->data[$this->alias]['description']);
         }
     }
