@@ -75,13 +75,14 @@ class Caption extends BeditaAnnotationModel
             return null;
         }
 
+        $contents = preg_replace('/(\n\r|\r\n|\n|\r)/', "\n", $contents);
         if (preg_match('/^WEBVTT\n\n/', $contents) != false) {
             // Already a VTT.
             return $contents;
         }
 
         // Add header.
-        $contents = 'WEBVTT' . PHP_EOL . PHP_EOL . $contents;
+        $contents = 'WEBVTT' . "\n\n" . $contents;
 
         // Replace commas with dots in timings.
         $contents = preg_replace_callback(
