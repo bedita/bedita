@@ -192,9 +192,15 @@ class BeEmbedHtml5Helper extends AppHelper {
         $output .= $this->Html->css($beditaUrl . '/js/libs/video-js/video-js.min.css', null, array('inline' => false));
         $output .= $this->Html->script($beditaUrl . '/js/libs/video-js/video.js', false);
 
-        $output .= '<video ' . $attr . ' controls data-setup=' . json_encode($params) . '>';
+        $output .= '<video crossorigin="anonymous" ' . $attr . ' controls data-setup=' . json_encode($params) . '>';
         if (isset($type)) {
             $output .= '<source src="' . $data['uri'] . '"' . $type . '/>';
+            if (!empty($data['captions'])) {
+                foreach ($data['captions'] as $caption) {
+                    $captionSrc = 'data:text/vtt;base64,' . base64_encode($caption['description']);
+                    $output .= '<track srclang="' . $caption['lang'] . '" label="' . $caption['title'] . '" src="' . $captionSrc . '" />';
+                }
+            }
         }
         $output .= '<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
                 </video>';
