@@ -11,9 +11,6 @@ checks:
 filter:
   paths:
     - 'bedita-app/'
-  dependency_paths:
-    - 'vendor/'
-    - 'bedita-app/vendor/'
   excluded_paths:
     - 'vendor/'
     - 'bedita-app/tmp/'
