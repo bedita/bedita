@@ -6,14 +6,15 @@ build:
                     - php-scrutinizer-run
 
 checks:
-  php:
-    excluded_dependencies:
-      - 'vendor/*'
-      - 'bedita-app/vendor/*'
+  php: true
 
 filter:
   paths:
-    - 'bedita-app/*'
+    - 'bedita-app/'
   dependency_paths:
-    - 'vendor/*'
-    - 'bedita-app/vendor/*'
+    - 'vendor/'
+    - 'bedita-app/vendor/'
+  excluded_paths:
+    - 'vendor/'
+    - 'bedita-app/tmp/'
+    - 'bedita-app/vendor/'
