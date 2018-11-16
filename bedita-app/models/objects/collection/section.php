@@ -96,7 +96,7 @@ class Section extends BeditaCollectionModel
 
 	function afterSave($created) {
 	    if (!empty($this->data[$this->name]['parent_id'])) {
-	       $this->BEObject->clearCacheByIds(array($this->data[$this->name]['parent_id']));
+	       $this->BEObject->clearCache($this->data[$this->name]['parent_id'], true, false);
 	    }
 		if (!$created) {
 			return;

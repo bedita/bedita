@@ -1419,6 +1419,8 @@ abstract class ApiBaseController extends FrontendController {
      * If 'priority' is not passed then a 400 is thrown
      * $childId must already be a child of $objectId
      *
+     * If `move_siblings` is set to `true`, all siblings with a priority greater than or
+     * equal to the `priority` passed will have their priority increased by one.
      *
      * @param int $objectId the parent object id
      * @param int $childId the child object id
@@ -1435,23 +1437,51 @@ abstract class ApiBaseController extends FrontendController {
         $this->data['child_id'] = (int) $childId;
         $this->ApiValidator->checkChildren(array($this->data), $objectId);
 
+        $this->Transaction->begin();
         $tree = ClassRegistry::init('Tree');
         $row = $tree->find('first', array(
             'conditions' => array(
                 'parent_id' => $objectId,
-                'id' => $childId
-            )
+                'id' => $childId,
+            ),
         ));
         // if $objectId is not a parent of $childId throw 400
         if (empty($row)) {
             throw new BeditaBadRequestException($childId . ' must be a child of ' . $objectId);
         }
+        $oldPriority = $row['Tree']['priority'];
         $row['Tree']['priority'] = $this->data['priority'];
         if (!$tree->save($row)) {
             throw new BeditaInternalErrorException('Error updating priority');
         }
+        $cacheIdsToBeCleared = array($objectId, $childId);
 
-        $this->BEObject->clearCacheByIds(array($objectId, $childId));
+        // Increase or decrease priority for any sibling that is between the former and current position.
+        if (!empty($this->data['move_siblings']) && $this->data['priority'] != $oldPriority) {
+            $siblingsToMove = $tree->find('all', array(
+                'conditions' => array(
+                    'parent_id' => $objectId,
+                    'priority >=' => min($oldPriority, $this->data['priority']),
+                    'priority <=' => max($oldPriority, $this->data['priority']),
+                    'id <>' => $childId, // We need to exclude the target children, as it has already been updated.
+                ),
+            ));
+
+            $sign = 1;
+            if ($this->data['priority'] > $oldPriority) {
+                $sign = -1;
+            }
+            foreach ($siblingsToMove as $child) {
+                $child['Tree']['priority'] += $sign;
+                if (!$tree->save($child)) {
+                    throw new BeditaInternalErrorException('Error updating priority');
+                }
+                $cacheIdsToBeCleared[] = $child['Tree']['id'];
+            }
+        }
+        $this->Transaction->commit();
+
+        $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
         $this->getObjectsChildren($objectId, $childId);
     }
 

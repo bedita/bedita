@@ -188,18 +188,28 @@ class CacheableBehavior extends ModelBehavior {
      *
      * @param Model $model
      * @param integer $objectId
+     * @param bool $reset
      */
-    public function clearCache(&$model, $objectId = null) {
-        if ($objectId) {
-            $this->setObjectsToClean($model, $objectId);
+    public function clearCache(&$model, $objectId, $reset = true, $descendants = true) {
+        if (!$this->on) {
+            return;
         }
+
+        if ($objectId) {
+            if ($reset) {
+                $this->resetObjectsToClean($model);
+            }
+
+            $this->addObjectsToClean($model, $this->getObjectsToCleanById($model, $objectId));
+        }
+
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
 
         $notLeafs = array(Configure::read('objectTypes.area.id'), Configure::read('objectTypes.section.id'));
         if (empty($model->data['BEObject']['object_type_id']) || in_array($model->data['BEObject']['object_type_id'], $notLeafs)) {
-            $this->BeObjectCache->deletePathCache($model->id, $this->getDescendantSections($model->id));
+            $this->BeObjectCache->deletePathCache($objectId, $descendants ? $this->getDescendantSections($objectId) : array());
         }
 
         if (!empty($this->objectsToClean)) {
@@ -224,7 +234,9 @@ class CacheableBehavior extends ModelBehavior {
             $allObjectsToClean = array_merge($allObjectsToClean, $this->getObjectsToCleanById($model, $objectId));
         }
         $this->addObjectsToClean($model, $allObjectsToClean);
-        $this->clearCache($model);
+        foreach ($objectIds as $objectId) {
+            $this->clearCache($model, $objectId, false);
+        }
     }
 
     /**
@@ -238,6 +250,10 @@ class CacheableBehavior extends ModelBehavior {
     public function beforeSave(&$model) {
         if ($this->on) {
             $data = $model->data[$model->name];
+
+            if (!empty($data['id'])) {
+                $this->BeObjectCache->deleteNicknameCache($model->getNicknameFromId($data['id']));
+            }
 
             $relatedIds = array();
             if (!empty($data['RelatedObject'])) {
@@ -272,7 +288,7 @@ class CacheableBehavior extends ModelBehavior {
         // if it's an update remove cache
         if ($this->on) {
             $this->addObjectsToClean($model, $model->id);
-            $this->clearCache($model);
+            $this->clearCache($model, $model->id, false);
         }
     }
 
@@ -287,6 +303,7 @@ class CacheableBehavior extends ModelBehavior {
      */
     public function beforeDelete(&$model, $cascade) {
         if ($this->on) {
+            $this->BeObjectCache->deleteNicknameCache($model->getNicknameFromId($model->id));
             $this->setObjectsToClean($model, $model->id);
         }
         return true;
@@ -301,7 +318,7 @@ class CacheableBehavior extends ModelBehavior {
      */
     public function afterDelete(&$model) {
         if ($this->on) {
-            $this->clearCache($model);
+            $this->clearCache($model, $model->id, false);
         }
     }
 

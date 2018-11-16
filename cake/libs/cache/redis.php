@@ -113,6 +113,18 @@ class RedisEngine extends CacheEngine {
 		if (!is_int($value)) {
 			$value = serialize($value);
 		}
+		if (strpos($key, '/') !== false) {
+			// Handle keys with "/" as hashes.
+			list($hash, $key) = explode('/', $key, 2);
+
+			$res = $this->_Redis->hSet($hash, $key, $value);
+			if ($duration !== 0) {
+				$res = $res && $this->_Redis->expire($hash, $duration);
+			}
+
+			return $res;
+		}
+
 		if ($duration === 0) {
 			return $this->_Redis->set($key, $value);
 		}
@@ -127,7 +139,13 @@ class RedisEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  */
 	public function read($key) {
-		$value = $this->_Redis->get($key);
+		$value = false;
+		if (strpos($key, '/') !== false) {
+			list($hash, $key) = explode('/', $key, 2);
+			$value = $this->_Redis->hGet($hash, $key);
+		} else {
+			$value = $this->_Redis->get($key);
+		}
 		if (ctype_digit($value)) {
 			$value = (int)$value;
 		}
@@ -168,6 +186,16 @@ class RedisEngine extends CacheEngine {
  * @return bool True if the value was successfully deleted, false if it didn't exist or couldn't be removed
  */
 	public function delete($key) {
+		if (strpos($key, '/') !== false) {
+			list($hash, $key) = explode('/', $key, 2);
+
+			if ($key === '*') {
+				return $this->_Redis->delete($hash) > 0;
+			}
+
+			return $this->_Redis->hDel($hash, $key) > 0;
+		}
+
 		return $this->_Redis->delete($key) > 0;
 	}
 
@@ -226,5 +254,15 @@ class RedisEngine extends CacheEngine {
 		if (!$this->settings['persistent']) {
 			$this->_Redis->close();
 		}
+	}
+
+/**
+ * Identity function.
+ * 
+ * @param string $key Key.
+ * @return string
+ */
+	public function key($key) {
+		return $key;
 	}
 }

@@ -48,6 +48,14 @@ class ApiValidatorComponent extends Object {
      */
     protected $enableObjectReachableCheck = true;
 
+
+    /**
+     * List of relations considered reachable (used to skip object reachable check)
+     *
+     * @var array
+     */
+    protected $reachableRelations = array();
+
     /**
      * The supported query string parameters names for every endpoint.
      *
@@ -82,6 +90,9 @@ class ApiValidatorComponent extends Object {
         }
         if (!empty($validateConf['allowedUrlParams'])) {
             $this->registerAllowedUrlParams($validateConf['allowedUrlParams']);
+        }
+        if (!empty($validateConf['reachableRelations'])) {
+            $this->reachableRelations = (array)$validateConf['reachableRelations'];
         }
     }
 
@@ -597,7 +608,8 @@ class ApiValidatorComponent extends Object {
                 if (!$this->isRelationValid($inverseName, $relatedObjectType)) {
                     throw new BeditaBadRequestException('Invalid relation: ' . $name . ' for object type ' . $relatedObjectType);
                 }
-                if (!$this->isObjectReachable($relData['related_id'])) {
+
+                if (!in_array($name, $this->reachableRelations) && !$this->isObjectReachable($relData['related_id'])) {
                     throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
                 }
             }
