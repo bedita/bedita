@@ -19,6 +19,7 @@ INSERT INTO object_types (id, name, module_name) VALUES (34, 'card', 'addressboo
 INSERT INTO object_types (id, name, module_name) VALUES (35, 'mail_message', 'newsletter');
 INSERT INTO object_types (id, name, module_name) VALUES (36, 'mail_template', 'newsletter');
 INSERT INTO object_types (id, name, module_name) VALUES (39, 'editor_note', NULL);
+INSERT INTO object_types (id, name, module_name) VALUES (51, 'caption', 'multimedia');
 
 -- ----------------------------------
 -- default user and groups

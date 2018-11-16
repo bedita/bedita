@@ -35,6 +35,8 @@
 
 {$view->element('form_file')}
 
+{include file = './form_captions.tpl'}
+
 {if !empty($object)}
     {$view->element('form_assoc_objects', ['object_type_id' => $object.object_type_id])}
 {/if}
