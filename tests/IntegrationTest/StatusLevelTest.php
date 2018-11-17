@@ -44,6 +44,16 @@ class StatusLevelTest extends IntegrationTestCase
                 null,
                 '/documents',
             ],
+            'status filter off' => [
+                [],
+                'on',
+                '/documents?filter[status]=off',
+            ],
+            'status filter draft' => [
+                ['3'],
+                'draft',
+                '/documents?filter[status]=draft',
+            ],
         ];
     }
 
