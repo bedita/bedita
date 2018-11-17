@@ -75,7 +75,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
             ]);
         }
         if (Configure::check('Status.level')) {
-            $query = $query->find('status', [Configure::read('Status.level')]);
+            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
 
         return $query;

@@ -349,7 +349,7 @@ class ObjectsTable extends Table
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
      *      the finder.
      */
-    protected function findStatus(Query $query, array $options)
+    protected function findStatusLevel(Query $query, array $options)
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));

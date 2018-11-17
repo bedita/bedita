@@ -489,7 +489,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findStatusProvider()
+    public function findStatusLevelProvider()
     {
         return [
             'too many options' => [
@@ -524,14 +524,14 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
-     * Test `findStatus()`.
+     * Test `findStatusLevel()`.
      *
      * @param array|\Exception $expected Expected result.
      * @param array $options Finder options.
      * @return void
      *
-     * @dataProvider findStatusProvider()
-     * @covers ::findStatus()
+     * @dataProvider findStatusLevelProvider()
+     * @covers ::findStatusLevel()
      */
     public function testFindStatus($expected, array $options)
     {
@@ -547,7 +547,7 @@ class ObjectsTableTest extends TestCase
         }
 
         $actual = $this->Objects->find('list')
-            ->find('status', $options)
+            ->find('statusLevel', $options)
             ->toArray();
         ksort($actual);
 
