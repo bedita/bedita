@@ -180,7 +180,7 @@ class SearchableBehaviorTest extends TestCase
             'short words' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
-                    'detail' => 'query filter requires a non-empty query string',
+                    'detail' => 'query strings must be at least 3 characters long',
                 ]),
                 'I am me',
             ],
