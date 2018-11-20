@@ -148,7 +148,7 @@ class SearchableBehavior extends Behavior
             // Query contained only short words.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'query filter requires a non-empty query string',
+                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength)
             ]);
         }
         if ($maxWords > 0 && count($words) > $maxWords) {
