@@ -18,6 +18,8 @@ if [ ! -z "${DATABASE_URL}" ]; then
         bin/cake migrations seed -p BEdita/Core --seed AdminFromEnvSeed
     fi
 
+    chmod a+rwx /var/www/html/webroot/_files
+    chown -R www-data:www-data /var/www/html/webroot/_files
     chmod -R a+rwX tmp
     chmod -R a+rwX logs
 
