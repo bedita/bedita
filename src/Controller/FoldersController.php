@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Association;
+use Cake\Utility\Hash;
 
 /**
  * Controller for `/folders` endpoint.
@@ -97,5 +98,82 @@ class FoldersController extends ObjectsController
             $allowedMethods = ['get', 'patch'];
             $this->request->allowMethod($allowedMethods);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function relationships()
+    {
+        if ($this->request->getParam('relationship') === 'children' && in_array($this->request->getMethod(), ['POST', 'PATCH'])) {
+            $this->request = $this->request->withParsedBody($this->getDataSortedByPosition());
+        }
+
+        return parent::relationships();
+    }
+
+    /**
+     * Sort request data using `meta.relation.position`.
+     *
+     *  The order will be:
+     * - null as first
+     * - positive desc (i.e. 5, 3, 1)
+     * - negative desc (i.e. -1, -3, -5)
+     *
+     * @return null|string|array
+     */
+    protected function getDataSortedByPosition()
+    {
+        $data = $this->request->getData();
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        usort($data, function ($a, $b) {
+            $positionA = Hash::get($a, '_meta.relation.position');
+            $positionB = Hash::get($b, '_meta.relation.position');
+            if ($positionA === null) {
+                return -1;
+            }
+
+            if ($positionB === null) {
+                return 1;
+            }
+
+            $positionA = $this->positionToInt($positionA);
+            $positionB = $this->positionToInt($positionB);
+
+            // if they have the same sign then sort desc
+            if ($positionA * $positionB > 0) {
+                return $positionB - $positionA;
+            }
+
+            if ($positionA > 0) {
+                return -1;
+            }
+
+            return 1;
+        });
+
+        return $data;
+    }
+
+    /**
+     * Given a position as string return its int value.
+     *
+     * @param string $position The position to parse as integer.
+     * @return int
+     */
+    protected function positionToInt($position)
+    {
+        if ($position === 'first') {
+            return 1;
+        }
+
+        if ($position === 'last') {
+            return -1;
+        }
+
+        return (int)$position;
     }
 }
