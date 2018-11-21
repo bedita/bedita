@@ -120,14 +120,11 @@ class FoldersController extends ObjectsController
      * - positive desc (i.e. 5, 3, 1)
      * - negative desc (i.e. -1, -3, -5)
      *
-     * @return null|string|array
+     * @return array
      */
     protected function getDataSortedByPosition()
     {
         $data = $this->request->getData();
-        if (!is_array($data)) {
-            return $data;
-        }
 
         usort($data, function ($a, $b) {
             $positionA = Hash::get($a, '_meta.relation.position');
