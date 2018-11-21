@@ -82,6 +82,11 @@ class TreeBehavior extends CakeTreeBehavior
                 return false;
             }
 
+            // ensure to use actual left and right fields
+            $node->unsetProperty($this->getConfig('left'));
+            $node->unsetProperty($this->getConfig('right'));
+            $this->_ensureFields($node);
+
             $currentPosition = $this->getCurrentPosition($node);
             if ($position === $currentPosition) {
                 // Do not perform extra queries. Position must still be normalized, so we'll need to re-check later.
