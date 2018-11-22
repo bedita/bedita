@@ -4,7 +4,6 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Behavior\TreeBehavior
