@@ -1145,7 +1145,7 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param array $objData The data for object to create as child and move.
      * @param array $orphansToAdd The data for object to add as new children.
      * @return void
-     * @return void
+     *
      * @dataProvider moveChildrenProvider
      * @covers ::relationships()
      * @covers ::getDataSortedByPosition()
