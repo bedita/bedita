@@ -206,4 +206,47 @@ class TreeBehaviorTest extends TestCase
             }
         }
     }
+
+    /**
+     * Test that when a node is moved in another position
+     * the actual node position is used.
+     *
+     * To test it:
+     * 1. first get all children of a parent node
+     * 2. reverse the position of the children in a loop of prevoius results.
+     *
+     * When a child is moved to another position its siblings are moved too.
+     * So the next child in the loop will have '`left_idx` and `right_idx` not updated.
+     * The test assures that `left_idx` and `right_idx` are the actual values and not those stored in the entities.
+     *
+     * @return void
+     * @covers ::moveAt()
+     */
+    public function testMoveAtUseActualNodePosition()
+    {
+        $parentNode = $this->Table->find()
+            ->where(['name' => 'Mathematics'])
+            ->firstOrFail();
+
+        $children = $this->Table
+            ->find('children', ['for' => $parentNode->id])
+            ->all();
+
+        $currentPositions = $children->extract('id')->toList();
+
+        $count = count($currentPositions);
+        $expected = array_reverse($currentPositions);
+
+        foreach ($children as $child) {
+            $this->Table->moveAt($child, $count--);
+        }
+
+        $actual = $this->Table
+            ->find('children', ['for' => $parentNode->id])
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertEquals($expected, $actual);
+    }
 }

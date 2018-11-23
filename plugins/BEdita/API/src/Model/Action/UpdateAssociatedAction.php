@@ -105,6 +105,14 @@ class UpdateAssociatedAction extends BaseAction
 
         $targetEntities = $targetEntities->indexBy($primaryKeyField)->toArray();
 
+        // sort following the original order
+        uksort(
+            $targetEntities,
+            function ($a, $b) use ($targetPrimaryKeys) {
+                return array_search($a, $targetPrimaryKeys) - array_search($b, $targetPrimaryKeys);
+            }
+        );
+
         foreach ($data as $datum) {
             $id = Hash::get($datum, 'id');
             $type = Hash::get($datum, 'type');
