@@ -55,7 +55,7 @@ class DataCleanupBehavior extends Behavior
     {
         $config = $this->getConfig();
         $key = Inflector::underscore($this->_table->getAlias());
-        if ($this->_table->behaviors()->has('ObjectType')) {
+        if ($this->_table->behaviors()->has('ObjectType') && $this->_table->objectType()) {
              $key = $this->_table->objectType()->get('name');
         }
         $defaults = Configure::read(sprintf('DefaultValues.%s', $key), []);
