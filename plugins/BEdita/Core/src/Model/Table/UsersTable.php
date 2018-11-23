@@ -94,6 +94,17 @@ class UsersTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.Relations');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'username' => 10,
+                'title' => 10,
+                'name' => 10,
+                'surname' => 10,
+                'email' => 7,
+                'description' => 7,
+                'body' => 5,
+            ],
+        ]);
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
