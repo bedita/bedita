@@ -14,6 +14,8 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Collection\Collection;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -680,7 +682,8 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @coversNothing
+     * @covers ::relationships()
+     * @covers ::getDataSortedByPosition()
      */
     public function testSetChildren()
     {
@@ -1025,5 +1028,204 @@ class FoldersControllerTest extends IntegrationTestCase
         $childrenIds = Hash::extract($folder->children, '{n}.id');
 
         static::assertEquals([2, 12], $childrenIds);
+    }
+
+    /**
+     * Data provider for `testMoveChildren()`
+     *
+     * @return array
+     */
+    public function moveChildrenProvider()
+    {
+        return [
+            'noMove' => [
+                [
+                    'doc one',
+                    'doc two',
+                    'doc three',
+                ],
+                [
+                    // object title => move to position (null to not set a position)
+                    'doc one' => '1',
+                    'doc two' => '2',
+                    'doc three' => '3',
+                ],
+            ],
+            'moveOne' => [
+                [
+                    'doc two',
+                    'doc one',
+                    'doc three',
+                ],
+                [
+                    'doc one' => '2',
+                    'doc two' => null,
+                    'doc three' => null,
+                ],
+            ],
+            'moveTwo' => [
+                [
+                    'doc three',
+                    'doc one',
+                    'doc two',
+                ],
+                [
+                    'doc one' => '2',
+                    'doc two' => '3',
+                    'doc three' => null,
+                ],
+            ],
+            'swicthFirstAndLast' => [
+                [
+                    'doc three',
+                    'doc two',
+                    'doc one',
+                ],
+                [
+                    'doc one' => '3',
+                    'doc two' => '2',
+                    'doc three' => '1',
+                ],
+            ],
+            'changeAll' => [
+                [
+                    'doc three',
+                    'doc one',
+                    'doc two',
+                ],
+                [
+                    'doc one' => '2',
+                    'doc two' => '3',
+                    'doc three' => '1',
+                ],
+            ],
+            'changeAll2' => [
+                [
+                    'doc five',
+                    'doc three',
+                    'doc one',
+                    'doc four',
+                    'doc two',
+                ],
+                [
+                    'doc one' => '-3',
+                    'doc two' => '-1',
+                    'doc three' => '2',
+                    'doc four' => '-2',
+                    'doc five' => '1',
+                ],
+            ],
+            'moveAndAddNew' => [
+                [
+                    'doc four',
+                    'orphan doc two',
+                    'doc two',
+                    'orphan doc one',
+                    'doc one',
+                    'doc three',
+                ],
+                [
+                    'doc one' => '-2',
+                    'doc two' => null,
+                    'doc three' => 'last',
+                    'doc four' => 'first',
+                ],
+                [
+                    'orphan doc one' => null,
+                    'orphan doc two' => '2',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * Test moving children position.
+     *
+     * @param array $expected The expected children order.
+     * @param array $objData The data for object to create as child and move.
+     * @param array $orphansToAdd The data for object to add as new children.
+     * @return void
+     *
+     * @dataProvider moveChildrenProvider
+     * @covers ::relationships()
+     * @covers ::getDataSortedByPosition()
+     * @covers ::positionToInt()
+     */
+    public function testMoveChildren(array $expected, array $objData, array $orphansToAdd = [])
+    {
+        $folder = $this->Folders->get(13);
+        $data = [];
+
+        // create children doc and prepare data for API call
+        foreach ($objData as $title => $position) {
+            $docData = [
+                'title' => $title,
+                'parents' => ['_ids' => [$folder->id]],
+            ];
+            $document = $this->createDocument($docData);
+
+            $relData = [
+                'type' => 'documents',
+                'id' => (string)$document->id,
+            ];
+
+            if ($position !== null) {
+                $relData['meta'] = [
+                    'relation' => ['position' => $position],
+                ];
+            }
+
+            $data[] = $relData;
+        }
+
+        // create orphan doc and prepare data for API call
+        foreach ($orphansToAdd as $title => $position) {
+            $docData = ['title' => $title];
+            $document = $this->createDocument($docData);
+
+            $relData = [
+                'type' => 'documents',
+                'id' => (string)$document->id,
+            ];
+
+            if ($position !== null) {
+                $relData['meta'] = [
+                    'relation' => ['position' => $position],
+                ];
+            }
+
+            $data[] = $relData;
+        }
+
+        $authHeader = $this->getUserAuthHeader();
+        $endpoint = sprintf('/folders/%s/relationships/children', $folder->id);
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post($endpoint, json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->Folders->loadInto($folder, ['Children']);
+        $children = new Collection($folder->children);
+        $actual = $children->extract('title')->toList();
+
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Create a new document with passed data
+     *
+     * @param array $data The document data
+     * @return \BEdita\Core\Model\Entity\ObjectEntity
+     */
+    protected function createDocument(array $data)
+    {
+        if (LoggedUser::id() === null) {
+            LoggedUser::setUser(['id' => 1]);
+        }
+
+        $documentsTable = TableRegistry::get('Documents');
+        $document = $documentsTable->newEntity($data);
+
+        return $documentsTable->saveOrFail($document);
     }
 }
