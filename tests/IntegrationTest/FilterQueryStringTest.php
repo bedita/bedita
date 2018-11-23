@@ -329,6 +329,35 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
+     * Test search users by username.
+     *
+     * @coversNothing
+     */
+    public function testSearchUsername()
+    {
+        // add new user
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'gustavo',
+            ]
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/users', json_encode(compact('data')));
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->configRequestHeaders();
+        $this->get('/users?filter[query]=gustavo');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([(string)$this->lastObjectId()], Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
+
+    /**
      * Data provider for `testTypeFilter` test case.
      *
      * @return array
