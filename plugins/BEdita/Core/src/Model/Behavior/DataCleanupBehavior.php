@@ -54,8 +54,11 @@ class DataCleanupBehavior extends Behavior
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         $config = $this->getConfig();
-        $objectType = Inflector::underscore($this->_table->getAlias());
-        $defaults = Configure::read(sprintf('DefaultValues.%s', $objectType), []);
+        $key = Inflector::underscore($this->_table->getAlias());
+        if ($this->_table->behaviors()->has('ObjectType')) {
+             $key = $this->_table->objectType()->get('name');
+        }
+        $defaults = Configure::read(sprintf('DefaultValues.%s', $key), []);
         $config['fields'] = array_merge($config['fields'], $defaults);
         foreach ($data as $key => $value) {
             if (($value === null || $value === '') && isset($config['fields'][$key])) {
