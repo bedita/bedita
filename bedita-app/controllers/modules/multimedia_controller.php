@@ -59,6 +59,13 @@ class MultimediaController extends ModulesController {
     protected $object_types = array('application', 'audio', 'b_e_file', 'image', 'video');
 
     /**
+     * The allowed models for module. They depends on 'multimedia.types', if set
+     *
+     * @var array
+     */
+    protected $allowed = array('Application', 'Audio', 'BEFile', 'Image', 'Video');
+
+    /**
      * Module name
      * 
      * @var string
@@ -79,12 +86,12 @@ class MultimediaController extends ModulesController {
             $this->object_types = $objectTypes;
         }
         foreach ($this->object_types as $type) {
-            $models[] = Inflector::camelize($type);
+            $this->allowed[] = Inflector::camelize($type);
         }
         $mime = Configure::read('validate_resource.mime');
-        foreach ($mime as $modelMime => $data) {
-            if (!in_array($modelMime, $models)) {
-                unset($mime[$modelMime]);
+        foreach ($mime as $model => $data) {
+            if (!in_array($model, $this->allowed)) {
+                unset($mime[$model]);
             }
         }
         Configure::write('validate_resource.mime', $mime);
@@ -174,7 +181,7 @@ class MultimediaController extends ModulesController {
         $obj = null ;
         $parents_id = array();
         $name = '';
-        if($id) {
+        if ($id) {
             // check if object is forbidden for user
             $user = $this->Session->read('BEAuthUser');
             $permission = ClassRegistry::init('Permission');
@@ -187,6 +194,9 @@ class MultimediaController extends ModulesController {
             $name = Inflector::underscore($model->name);
             if (!in_array('multimedia', $model->objectTypesGroups)) {
                 throw new BeditaException(__('Error loading object', true));
+            }
+            if (!in_array($name, $this->allowed)) {
+                throw new BeditaException(__('Object of a type not allowed for module', true));
             }
             $model->containLevel('detailed');
             if(!($obj = $model->findById($id))) {
