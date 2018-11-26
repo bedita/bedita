@@ -82,9 +82,9 @@ class MultimediaController extends ModulesController {
             $models[] = Inflector::camelize($type);
         }
         $mime = Configure::read('validate_resource.mime');
-        foreach ($mime as $modelMyme => $data) {
-            if (!in_array($modelMyme, $models)) {
-                unset($mime[$modelMyme]);
+        foreach ($mime as $modelMime => $data) {
+            if (!in_array($modelMime, $models)) {
+                unset($mime[$modelMime]);
             }
         }
         Configure::write('validate_resource.mime', $mime);
