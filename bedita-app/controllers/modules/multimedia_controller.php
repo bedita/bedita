@@ -63,7 +63,7 @@ class MultimediaController extends ModulesController {
      *
      * @var array
      */
-    protected $allowed = array('Application', 'Audio', 'BEFile', 'Image', 'Video');
+    protected $allowed = array();
 
     /**
      * Module name
