@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008-2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,84 +20,77 @@
  */
 
 /**
- * Module Multimedia: management of Image, Audio, Video objects
- * 
+ * Module Multimedia: management of Application, File, Image, Audio, Video objects
  */
 class MultimediaController extends ModulesController {
+    /**
+     * Module label
+     * 
+     * @var string
+     */
     var $name = 'Multimedia';
 
-    var $helpers    = array('BeTree', 'BeToolbar', 'ImageInfo');
+    /**
+     * Module helpers
+     * 
+     * @var array
+     */
+    var $helpers = array('BeTree', 'BeToolbar', 'ImageInfo');
+
+    /**
+     * Module components
+     * 
+     * @var array
+     */
     var $components = array('BeFileHandler', 'BeUploadToObj', 'BeSecurity');
 
-    // This controller does not use a single model
-    var $uses = array('BEObject', 'Application','Stream', 'Image', 'Audio', 'Video', 'Tree', 'User', 'Group','Category','BEFile') ;
+    /**
+     * Modules models. This controller does not use a single model
+     * 
+     * @var array
+     */
+    var $uses = array('BEObject', 'Application', 'Stream', 'Image', 'Audio', 'Video', 'Tree', 'User', 'Group', 'Category', 'BEFile');
+
+    /**
+     * Module name
+     * 
+     * @var string
+     */
     protected $moduleName = 'multimedia';
 
-    function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 50) {
-        $conf  = Configure::getInstance() ;
+    /**
+     * Index for multimedia module
+     *
+     * @param string|int $id The multimedia ID
+     * @param string|null $order The field for the order by
+     * @param integer|null $dir The directory depth
+     * @param integer|null $page The page number for pagination
+     * @param integer|null $dim The dimension of results, for pagination
+     * @return void
+     */
+    public function index($id = null, $order = 'id', $dir = 0, $page = 1, $dim = 50)
+    {
+        // setup arguments for get children
         $this->setup_args(
-            array("id", "integer", &$id),
-            array("page", "integer", &$page),
-            array("dim", "integer", &$dim),
-            array("order", "string", &$order),
-            array("dir", "boolean", &$dir)
-        ) ;
-        $filter["object_type_id"] = array(
-            $conf->objectTypes['b_e_file']["id"],
-            $conf->objectTypes['image']["id"],
-            $conf->objectTypes['audio']["id"],
-            $conf->objectTypes['video']["id"],
-            $conf->objectTypes['application']["id"]
-        );
-        
-        $filter["count_annotation"] = array("Comment","EditorNote");
-        $filter["count_permission"] = true;
-
-        $filter['afterFilter'] = array(
-            array(
-                'className' => 'ObjectProperty',
-                'methodName' => 'objectsCustomProperties'
-            ),
-            array(
-                'className' => 'Stream',
-                'methodName' => 'appendStreamFields'
-            ),
-            array(
-                'className' => 'ObjectRelation',
-                'methodName' => 'countRelations',
-                'options' => array(
-                    'relations' => array('attach', 'seealso', 'download')
-                )
-            ),
-            array(
-                'className' => 'Tree',
-                'methodName' => 'countUbiquity'
-            )
+            array('id', 'integer', &$id),
+            array('page', 'integer', &$page),
+            array('dim', 'integer', &$dim),
+            array('order', 'string', &$order),
+            array('dir', 'boolean', &$dir)
         );
 
-        if ($order == 'mediatype') {
-            $filter['mediatype'] = 1;
-        } else {
-            $filter['afterFilter'][] = array(
-                'className' => 'Category',
-                'methodName' => 'appendMediatype'
-            );
-        }
+        // prepare filter for BeTree->getChildren
+        $filter = $this->prepareFilter($order);
 
-        $sessionFilter = $this->SessionFilter->setFromUrl();
-        $filter = array_merge($filter, $sessionFilter);
-        
-        $bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
+        // get multimedia items
+        $multimedia = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
+        $this->params['toolbar'] = &$multimedia['toolbar'];
 
-        $objectRelation = ClassRegistry::init('ObjectRelation');
-        $treeModel = ClassRegistry::init("Tree");
-
-        $properties = ClassRegistry::init('Property')->find("all", array(
-            "conditions" => array("object_type_id" => $filter["object_type_id"]),
-            "contain" => array()
+        // get properties
+        $properties = ClassRegistry::init('Property')->find('all', array(
+            'conditions' => array('object_type_id' => $filter['object_type_id']),
+            'contain' => array(),
         ));
-
-        $this->params['toolbar'] = &$bedita_items['toolbar'] ;
 
         // get publications
         $user = $this->BeAuth->getUserSession();
@@ -107,81 +100,91 @@ class MultimediaController extends ModulesController {
         } elseif (!empty($id)) {
             $expandBranch[] = $id;
         }
+        $treeModel = ClassRegistry::init('Tree');
         $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
         // get available relations
         $availableRelations = array();
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        $conf = Configure::getInstance();
         foreach ($conf->objectTypes['multimedia']['id'] as $mediaId) {
             $r = $objectRelation->availableRelations($mediaId);
             $availableRelations = array_merge($availableRelations, $r);
         }
+
         // exclude some kind of relations from view
-        $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
+        $relationsToExclude = array('attach' => 'attach', 'download' => 'download', 'seealso' => 'seealso');
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
         // get Tags
-        $listTags = ClassRegistry::init("Category")->getTags(array("cloud" => false));
+        $listTags = ClassRegistry::init('Category')->getTags(array('cloud' => false));
 
         // template data
         $this->set('tree', $tree);
-        $this->set('objects', $bedita_items['items']);
+        $this->set('objects', $multimedia['items']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
         $this->set('listTags', $listTags);
-        $this->setSessionForObjectDetail($bedita_items['items']);
+        $this->setSessionForObjectDetail($multimedia['items']);
+    }
 
-     }
-
-    function view($id = null) {
-        $conf  = Configure::getInstance() ;
-        $this->setup_args(array("id", "integer", &$id)) ;
+    /**
+     * View for module multimedia
+     *
+     * @param string|int|null $id The multimedia ID
+     * @return void
+     */
+    public function view($id = null)
+    {
+        $conf  = Configure::getInstance();
+        $this->setup_args(array('id', 'integer', &$id));
         // Get object by $id
         $obj = null ;
         $parents_id = array();
         $name = '';
         if($id) {
             // check if object is forbidden for user
-            $user = $this->Session->read("BEAuthUser");
-            $permission = ClassRegistry::init("Permission");
+            $user = $this->Session->read('BEAuthUser');
+            $permission = ClassRegistry::init('Permission');
             if ($permission->isForbidden($id, $user)) {
-                throw new BeditaException(__("Access forbidden to object", true) . " $id");
+                throw new BeditaException(__('Access forbidden to object', true) . ' ' . $id);
             }
-            $objEditor = ClassRegistry::init("ObjectEditor");
+            $objEditor = ClassRegistry::init('ObjectEditor');
             $objEditor->cleanup($id);
             $model = ClassRegistry::init($this->BEObject->getType($id));
             $name = Inflector::underscore($model->name);
-            if (!in_array("multimedia", $model->objectTypesGroups)) {
-                throw new BeditaException(__("Error loading object", true));
+            if (!in_array('multimedia', $model->objectTypesGroups)) {
+                throw new BeditaException(__('Error loading object', true));
             }
-            $model->containLevel("detailed");
+            $model->containLevel('detailed');
             if(!($obj = $model->findById($id))) {
-                 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
+                 throw new BeditaException(sprintf(__('Error loading object: %d', true), $id));
             }
-            if (isset($obj["Category"])) {
+            if (isset($obj['Category'])) {
                 $objCat = array();
-                foreach ($obj["Category"] as $oc) {
-                    $objCat = $oc["name"];
+                foreach ($obj['Category'] as $oc) {
+                    $objCat = $oc['name'];
                 }
-                $obj["Category"] = $objCat;
+                $obj['Category'] = $objCat;
             }
 
             if (!empty($obj['RelatedObject'])) {
-                $obj["relations"] = $this->objectRelationArray($obj['RelatedObject']);
+                $obj['relations'] = $this->objectRelationArray($obj['RelatedObject']);
             }
             if (!empty($obj['Annotation'])) {
                 $this->setupAnnotations($obj);
             }
             unset($obj['Annotation']);
 
-            $imagePath  = $this->BeFileHandler->path($id) ;
-            $imageURL   = $this->BeFileHandler->url($id) ;
+            $imagePath  = $this->BeFileHandler->path($id);
+            $imageURL   = $this->BeFileHandler->url($id);
 
-            $treeModel = ClassRegistry::init("Tree");
-            $parents_id = $treeModel->getParents($id) ;
+            $treeModel = ClassRegistry::init('Tree');
+            $parents_id = $treeModel->getParents($id);
 
             $previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 
-            $this->historyItem["object_id"] = $id;
+            $this->historyItem['object_id'] = $id;
 
             //check if hash is present elsewhere
             if (!empty($obj['hash_file'])) {
@@ -200,7 +203,7 @@ class MultimediaController extends ModulesController {
                 if (!file_exists($path)) {
                     $url = Configure::read('mediaUrl') . $obj['uri'];
                     $this->userErrorMessage(__('Media file is missing', true) . ' -  ' . $url);
-                    $this->eventError("multimedia missing file: " . $url);
+                    $this->eventError('multimedia missing file: ' . $url);
                 }
             }
 
@@ -210,9 +213,9 @@ class MultimediaController extends ModulesController {
                 $this->userWarnMessage(__('Image file is too big, unable to create thumbnails', true));
             }
 
-            $this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
+            $this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read('objectTypes.' . $model->name . '.id')));
         } else {
-            Configure::write("defaultStatus", "on"); // set default ON for new objects
+            Configure::write('defaultStatus', 'on'); // set default ON for new objects
         }
 
         $availableRelations = ClassRegistry::init('ObjectRelation')->availableRelations($name);
@@ -223,27 +226,33 @@ class MultimediaController extends ModulesController {
         $this->set('imageUrl',  @$imageURL);
 
         // exclude some kind of relations from view
-        $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
+        $relationsToExclude = array('attach' => 'attach','download' => 'download','seealso' => 'seealso');
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
         $this->set('availabeRelations', $availableRelations);
 
-        if(!empty($obj["relations"])) {
-            $this->set('relObjects', $obj["relations"]);
+        if(!empty($obj['relations'])) {
+            $this->set('relObjects', $obj['relations']);
         }
 
         // get publications
         $user = $this->BeAuth->getUserSession();
-        $treeModel = ClassRegistry::init("Tree");
+        $treeModel = ClassRegistry::init('Tree');
         $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $parents_id);
 
         $this->set('tree', $tree);
         $this->set('parents', $parents_id);
         $this->setSessionForObjectDetail();
-     }
+    }
 
-    function saveAjax() {
-        $this->layout = "ajax";
+    /**
+     * Save data via ajax
+     *
+     * @return void
+     */
+    public function saveAjax()
+    {
+        $this->layout = 'ajax';
         try {
             if (!empty($this->params['form']['upload_choice'])) {
                 $streamData = $this->Stream->find('first', array(
@@ -272,15 +281,15 @@ class MultimediaController extends ModulesController {
                 $this->save();
             }
 
-            $this->set("redirUrl","/multimedia/view/".$this->Stream->id);
+            $this->set('redirUrl','/multimedia/view/'.$this->Stream->id);
 
         } catch (BEditaFileExistException $ex) {
-            $errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
+            $errTrace = get_class($ex) . ' - ' . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
             $this->setResult(self::ERROR);
-            $this->set("errorFileExist", true);
-            $this->set("errorMsg", $ex->getMessage());
-            $this->set("objectId", $ex->getObjectId());
-            $this->set("objectTitle", $this->BEObject->field("title", array("id" => $ex->getObjectId())));
+            $this->set('errorFileExist', true);
+            $this->set('errorMsg', $ex->getMessage());
+            $this->set('objectId', $ex->getObjectId());
+            $this->set('objectTitle', $this->BEObject->field('title', array('id' => $ex->getObjectId())));
         } catch(BeditaException $ex) {
             // force header text/plain to haven't javascript error (jQuery undefined) when a file was uploaded
             throw new BeditaAjaxException(
@@ -293,10 +302,17 @@ class MultimediaController extends ModulesController {
         }
     }
 
-    function save($cloneMedia = false) {
+    /**
+     * Save data
+     *
+     * @param boolean $cloneMedia The clone media flag
+     * @return void
+     */
+    public function save($cloneMedia = false)
+    {
         $this->checkWriteModulePermission();
         if(empty($this->data)) {
-            throw new BeditaException( __("No data", true));
+            throw new BeditaException( __('No data', true));
         }
 
         $new = (empty($this->data['id'])) ? true : false ;
@@ -310,10 +326,10 @@ class MultimediaController extends ModulesController {
         // Format custom properties
         $this->BeCustomProperty->setupForSave();
 
-        $this->Transaction->begin() ;
+        $this->Transaction->begin();
         // save data
-        if (!empty($this->params["form"]["tags"])) {
-            $this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
+        if (!empty($this->params['form']['tags'])) {
+            $this->data['Category'] = $this->Category->saveTagList($this->params['form']['tags']);
         }
 
         if (!empty($this->params['form']['Filedata']['name'])) {
@@ -332,13 +348,13 @@ class MultimediaController extends ModulesController {
             if(!empty($this->data['url'])) {
                 unset($this->data['url']);
             }
-            $model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
+            $model = (!empty($this->data['id']))? $this->BEObject->getType($this->data['id']) : 'BEFile';
 
-            if ($model == "Video") {
-                $this->data["thumbnail"] = $this->BeUploadToObj->getThumbnail($this->data);
+            if ($model == 'Video') {
+                $this->data['thumbnail'] = $this->BeUploadToObj->getThumbnail($this->data);
             }
             if (!empty($this->params['form']['mediatype'])) {
-                $object_type_id = Configure::read("objectTypes." . Inflector::underscore($model) . ".id");
+                $object_type_id = Configure::read('objectTypes.' . Inflector::underscore($model) . '.id');
                 if (empty($this->data['Category'])) {
                     $this->data['Category'] = array();
                 }
@@ -350,7 +366,7 @@ class MultimediaController extends ModulesController {
             }
 
             if (!$this->{$model}->save($this->data)) {
-                throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
+                throw new BeditaException(__('Error saving multimedia', true), $this->{$model}->validationErrors);
             }
             $this->Stream->id = $this->{$model}->id;
         }
@@ -363,12 +379,18 @@ class MultimediaController extends ModulesController {
             }
             ClassRegistry::init('Tree')->updateTree($this->Stream->id, $this->data['destination']);
         }
-        $this->Transaction->commit() ;
-        $this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
-        $this->eventInfo("multimedia object [". $this->data["title"]."] saved");
+        $this->Transaction->commit();
+        $this->userInfoMessage(__('Multimedia object saved', true).' - '.$this->data['title']);
+        $this->eventInfo('multimedia object ['. $this->data['title'].'] saved');
     }
-    
-    public function cloneObject() {
+
+    /**
+     * Clone data
+     *
+     * @return void
+     */
+    public function cloneObject()
+    {
         unset($this->data['id']);
         unset($this->data['nickname']);
         $this->data['status'] = 'draft';
@@ -376,29 +398,52 @@ class MultimediaController extends ModulesController {
         $this->save(true);
     }
 
-    function delete() {
+    /**
+     * Delete data
+     *
+     * @return void
+     */
+    public function delete()
+    {
         $this->checkWriteModulePermission();
-        $objectsListDeleted = $this->deleteObjects("Stream");
-        $this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
-        $this->eventInfo("multimedia $objectsListDeleted deleted");
+        $objectsListDeleted = $this->deleteObjects('Stream');
+        $this->userInfoMessage(__('Multimedia deleted', true) . ' -  ' . $objectsListDeleted);
+        $this->eventInfo(sprintf('multimedia %s deleted', $objectsListDeleted));
     }
 
-    function deleteSelected() {
+    /**
+     * Delete selected multimedia
+     *
+     * @return void
+     */
+    public function deleteSelected()
+    {
         $this->checkWriteModulePermission();
-        $objectsListDeleted = $this->deleteObjects("Stream");
-        $this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
-        $this->eventInfo("multimedia $objectsListDeleted deleted");
+        $objectsListDeleted = $this->deleteObjects('Stream');
+        $this->userInfoMessage(__('Multimedia deleted', true) . ' -  ' . $objectsListDeleted);
+        $this->eventInfo(sprintf('multimedia %s deleted', $objectsListDeleted));
     }
 
     /**
      * Load multiupload in modal
      * called via ajax
+     * 
+     * @return void
      */
-    public function multipleUpload() {
+    public function multipleUpload()
+    {
         $this->layout = 'ajax';
     }
 
-    protected function forward($action, $result) {
+    /**
+     * Forward action
+     *
+     * @param string $action The action
+     * @param string $result The result
+     * @return void
+     */
+    protected function forward($action, $result)
+    {
         $moduleRedirect = array(
             'saveAjax'	=> 	array(
                 'OK'	=> self::VIEW_FWD.'upload_ajax_response',
@@ -408,4 +453,59 @@ class MultimediaController extends ModulesController {
         return $this->moduleForward($action, $result, $moduleRedirect);
     }
 
+    /**
+     * Prepare filter for get children call
+     *
+     * @param string|null $order The order field, if any
+     * @return array The filter
+     */
+    private function prepareFilter($order)
+    {
+        $filter = array(
+            'object_type_id' => array(),
+            'count_annotation' => array('Comment', 'EditorNote'),
+            'count_permission' => true,
+            'afterFilter' => array(
+                array(
+                    'className' => 'ObjectProperty',
+                    'methodName' => 'objectsCustomProperties'
+                ),
+                array(
+                    'className' => 'Stream',
+                    'methodName' => 'appendStreamFields'
+                ),
+                array(
+                    'className' => 'ObjectRelation',
+                    'methodName' => 'countRelations',
+                    'options' => array(
+                        'relations' => array('attach', 'seealso', 'download')
+                    )
+                ),
+                array(
+                    'className' => 'Tree',
+                    'methodName' => 'countUbiquity'
+                ),
+            ),
+        );
+        $objectTypes = Configure::read('multimedia.types');
+        if (!$objectTypes) { // default types for multimedia module
+            $objectTypes = array('b_e_file', 'image', 'audio', 'video', 'application');
+        }
+        $conf = Configure::getInstance();
+        foreach ($objectTypes as $type) {
+            $filter['object_type_id'][] = $conf->objectTypes[$type]['id'];
+        }
+        if ($order === 'mediatype') {
+            $filter['mediatype'] = 1;
+        } else {
+            $filter['afterFilter'][] = array(
+                'className' => 'Category',
+                'methodName' => 'appendMediatype'
+            );
+        }
+        $sessionFilter = $this->SessionFilter->setFromUrl();
+        $filter = array_merge($filter, $sessionFilter);
+
+        return $filter;
+    }
 }
