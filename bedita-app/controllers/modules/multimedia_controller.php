@@ -194,7 +194,7 @@ class MultimediaController extends ModulesController {
                     $this->eventError('multimedia file expected for hash: ' . $obj['hash_file']);
                 }
                 $results = $this->Image->query("SELECT * FROM streams INNER JOIN objects ON objects.id = streams.id WHERE hash_file='".$obj['hash_file']."'  AND streams.id != ".$obj['id']."");
-                $this->set('elsewhere_hash',$results);
+                $this->set('elsewhere_hash', $results);
             }
 
             // #536 check local file existence
@@ -285,7 +285,7 @@ class MultimediaController extends ModulesController {
                 $this->save();
             }
 
-            $this->set('redirUrl','/multimedia/view/'.$this->Stream->id);
+            $this->set('redirUrl', '/multimedia/view/'.$this->Stream->id);
 
         } catch (BEditaFileExistException $ex) {
             $errTrace = get_class($ex) . ' - ' . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
