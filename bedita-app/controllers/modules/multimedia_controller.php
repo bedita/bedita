@@ -226,7 +226,11 @@ class MultimediaController extends ModulesController {
         $this->set('imageUrl',  @$imageURL);
 
         // exclude some kind of relations from view
-        $relationsToExclude = array('attach' => 'attach','download' => 'download','seealso' => 'seealso');
+        $relationsToExclude = array(
+            'attach' => 'attach',
+            'download' => 'download',
+            'seealso' => 'seealso',
+        );
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
         $this->set('availabeRelations', $availableRelations);
@@ -445,10 +449,10 @@ class MultimediaController extends ModulesController {
     protected function forward($action, $result)
     {
         $moduleRedirect = array(
-            'saveAjax'	=> 	array(
-                'OK'	=> self::VIEW_FWD.'upload_ajax_response',
-                'ERROR'	=> self::VIEW_FWD.'upload_ajax_response'
-            )
+            'saveAjax' => array(
+                'OK' => self::VIEW_FWD.'upload_ajax_response',
+                'ERROR' => self::VIEW_FWD.'upload_ajax_response',
+            ),
         );
         return $this->moduleForward($action, $result, $moduleRedirect);
     }
@@ -479,17 +483,23 @@ class MultimediaController extends ModulesController {
                     'methodName' => 'countRelations',
                     'options' => array(
                         'relations' => array('attach', 'seealso', 'download')
-                    )
+                    ),
                 ),
                 array(
                     'className' => 'Tree',
-                    'methodName' => 'countUbiquity'
+                    'methodName' => 'countUbiquity',
                 ),
             ),
         );
         $objectTypes = Configure::read('multimedia.types');
         if (!$objectTypes) { // default types for multimedia module
-            $objectTypes = array('b_e_file', 'image', 'audio', 'video', 'application');
+            $objectTypes = array(
+                'application',
+                'audio',
+                'b_e_file',
+                'image',
+                'video'
+            );
         }
         $conf = Configure::getInstance();
         foreach ($objectTypes as $type) {
