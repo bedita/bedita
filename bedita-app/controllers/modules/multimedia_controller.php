@@ -52,11 +52,43 @@ class MultimediaController extends ModulesController {
     var $uses = array('BEObject', 'Application', 'Stream', 'Image', 'Audio', 'Video', 'Tree', 'User', 'Group', 'Category', 'BEFile');
 
     /**
+     * The object types for module multimedia. Can be customized in configure 'multimedia.types'
+     * 
+     * @var array
+     */
+    protected $object_types = array('application', 'audio', 'b_e_file', 'image', 'video');
+
+    /**
      * Module name
      * 
      * @var string
      */
     protected $moduleName = 'multimedia';
+
+    /**
+     * Set types for multimedia module.
+     * Remove from 'validate_resource.mime' entries for types not allowed.
+     * 
+     * @return void
+     */
+    protected function beditaBeforeFilter()
+    {
+        parent::beditaBeforeFilter();
+        $objectTypes = Configure::read('multimedia.types');
+        if ($objectTypes) {
+            $this->object_types = $objectTypes;
+        }
+        foreach ($this->object_types as $type) {
+            $models[] = Inflector::camelize($type);
+        }
+        $mime = Configure::read('validate_resource.mime');
+        foreach ($mime as $modelMyme => $data) {
+            if (!in_array($modelMyme, $models)) {
+                unset($mime[$modelMyme]);
+            }
+        }
+        Configure::write('validate_resource.mime', $mime);
+    }
 
     /**
      * Index for multimedia module
@@ -491,18 +523,8 @@ class MultimediaController extends ModulesController {
                 ),
             ),
         );
-        $objectTypes = Configure::read('multimedia.types');
-        if (!$objectTypes) { // default types for multimedia module
-            $objectTypes = array(
-                'application',
-                'audio',
-                'b_e_file',
-                'image',
-                'video'
-            );
-        }
         $conf = Configure::getInstance();
-        foreach ($objectTypes as $type) {
+        foreach ($this->object_types as $type) {
             $filter['object_type_id'][] = $conf->objectTypes[$type]['id'];
         }
         if ($order === 'mediatype') {
