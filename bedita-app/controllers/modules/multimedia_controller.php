@@ -199,7 +199,7 @@ class MultimediaController extends ModulesController {
             if(!($obj = $model->findById($id))) {
                  throw new BeditaException(sprintf(__('Error loading object: %d', true), $id));
             }
-            if (!in_array($name, $this->allowed)) {
+            if (!in_array($model->name, $this->allowed)) {
                 $module = $obj['ObjectType']['module_name'];
                 if ($module === 'multimedia') {
                     throw new BeditaException(__('Object of a type not allowed for module', true));
