@@ -360,7 +360,6 @@ $config['objectCakeCache'] = true;
 //     'options' => array('plugin' => 'timelines'),
 // );
 
-// default: 
 /**
  * Custom types for module multimedia.
  * If not set, default types are 'application', 'audio', 'b_e_file', 'image', 'video'
