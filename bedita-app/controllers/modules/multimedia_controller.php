@@ -195,12 +195,17 @@ class MultimediaController extends ModulesController {
             if (!in_array('multimedia', $model->objectTypesGroups)) {
                 throw new BeditaException(__('Error loading object', true));
             }
-            if (!in_array($name, $this->allowed)) {
-                throw new BeditaException(__('Object of a type not allowed for module', true));
-            }
             $model->containLevel('detailed');
             if(!($obj = $model->findById($id))) {
                  throw new BeditaException(sprintf(__('Error loading object: %d', true), $id));
+            }
+            if (!in_array($name, $this->allowed)) {
+                $module = $obj['ObjectType']['module_name'];
+                if ($module === 'multimedia') {
+                    throw new BeditaException(__('Object of a type not allowed for module', true));
+                }
+                $this->set('redirUrl', sprintf('/%s/view/%s', $module, $id));
+                return;
             }
             if (isset($obj['Category'])) {
                 $objCat = array();
