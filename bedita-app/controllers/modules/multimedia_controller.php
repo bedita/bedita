@@ -204,7 +204,7 @@ class MultimediaController extends ModulesController {
                 if ($module === 'multimedia') {
                     throw new BeditaException(__('Object of a type not allowed for module', true));
                 }
-                $this->set('redirUrl', sprintf('/%s/view/%s', $module, $id));
+                $this->redirect(sprintf('/%s/view/%s', $module, $id));
                 return;
             }
             if (isset($obj['Category'])) {
