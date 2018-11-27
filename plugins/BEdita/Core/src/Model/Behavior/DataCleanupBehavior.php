@@ -13,13 +13,16 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\Utility\Inflector;
 
 /**
  * DataCleanup behavior
  *
  * Data cleanup operations on object creations to allow operations with `dirty` input data
+ * and setting basic values per fields, per object type (from configuration 'DefaultValues')
  *
  * This Behavoir acts only on Model.beforeMarshal event
  *
@@ -51,6 +54,12 @@ class DataCleanupBehavior extends Behavior
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         $config = $this->getConfig();
+        $key = Inflector::underscore($this->_table->getAlias());
+        if ($this->_table->behaviors()->has('ObjectType') && $this->_table->objectType()) {
+             $key = $this->_table->objectType()->get('name');
+        }
+        $defaults = Configure::read(sprintf('DefaultValues.%s', $key), []);
+        $config['fields'] = array_merge($config['fields'], $defaults);
         foreach ($data as $key => $value) {
             if (($value === null || $value === '') && isset($config['fields'][$key])) {
                 $data[$key] = $config['fields'][$key];

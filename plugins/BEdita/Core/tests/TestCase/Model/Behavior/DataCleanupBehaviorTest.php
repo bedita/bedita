@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -54,7 +55,8 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [
                     'status' => 'draft'
-                ]
+                ],
+                [],
             ],
             'status2' => [
                 [
@@ -64,7 +66,23 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [
                     'status' => 'draft'
-                ]
+                ],
+                [],
+            ],
+            'status from config' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                    'status' => '',
+                ],
+                [
+                    'status' => 'on'
+                ],
+                [
+                    'users' => [
+                        'status' => 'on',
+                    ],
+                ],
             ],
             'deleted' => [
                 [
@@ -74,7 +92,8 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [
                     'deleted' => 0
-                ]
+                ],
+                [],
             ],
         ];
     }
@@ -84,13 +103,15 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @param array $inputData Input data.
      * @param array $expected Expected result.
+     * @param array $defaultValues Defaults values per type
      * @return void
      *
      * @dataProvider cleanupProvider
      * @covers ::beforeMarshal()
      */
-    public function testDataCleanup(array $inputData, array $expected)
+    public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
+        Configure::write('DefaultValues', $defaultValues);
         $Users = TableRegistry::get('Users');
 
         $user = $Users->newEntity($inputData);
