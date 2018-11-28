@@ -56,7 +56,7 @@ class MultimediaController extends ModulesController {
      * 
      * @var array
      */
-    protected $object_types = array('application', 'audio', 'b_e_file', 'image', 'video');
+    protected $objectTypes = array('application', 'audio', 'b_e_file', 'image', 'video');
 
     /**
      * The allowed models for module. They depends on 'multimedia.types', if set
@@ -83,9 +83,9 @@ class MultimediaController extends ModulesController {
         parent::beditaBeforeFilter();
         $objectTypes = Configure::read('multimedia.types');
         if ($objectTypes) {
-            $this->object_types = $objectTypes;
+            $this->objectTypes = $objectTypes;
         }
-        foreach ($this->object_types as $type) {
+        foreach ($this->objectTypes as $type) {
             $this->allowed[] = Inflector::camelize($type);
         }
         $mime = Configure::read('validate_resource.mime');
@@ -539,7 +539,7 @@ class MultimediaController extends ModulesController {
             ),
         );
         $conf = Configure::getInstance();
-        foreach ($this->object_types as $type) {
+        foreach ($this->objectTypes as $type) {
             $filter['object_type_id'][] = $conf->objectTypes[$type]['id'];
         }
         if ($order === 'mediatype') {
