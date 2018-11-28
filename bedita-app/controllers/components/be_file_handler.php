@@ -311,7 +311,7 @@ class BeFileHandlerComponent extends Object {
             if (!empty($data['object_type_id'])) {
                 $modelType['name'] = Configure::read('objectTypes.' . $data['object_type_id'] . '.model');
             } else {
-                throw new BEditaMIMEException(__('MIME type not found',true) . ': ' . $data['mime_type']);
+                throw new BEditaMIMEException(__('MIME type not found or not allowed',true) . ': ' . $data['mime_type']);
             }
         }
         if (!empty($data['id'])) {

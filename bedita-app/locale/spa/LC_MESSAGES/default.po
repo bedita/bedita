@@ -1018,8 +1018,8 @@ msgstr "Locales"
 msgid "Login"
 msgstr "Acceso"
 
-msgid "MIME type not found"
-msgstr "Tipo MIME no encontrado"
+msgid "MIME type not found or not allowed"
+msgstr "Tipo MIME no encontrado o no permitido"
 
 msgid "Mail Group deleted"
 msgstr "Grupo de Correo borrado"

@@ -1027,8 +1027,8 @@ msgstr "Impostazioni locali"
 msgid "Login"
 msgstr "Accesso"
 
-msgid "MIME type not found"
-msgstr "Tipo MIME non trovato"
+msgid "MIME type not found or not allowed"
+msgstr "Tipo MIME non trovato o non consentito"
 
 msgid "Mail Group deleted"
 msgstr "Gruppo di Posta eliminato"

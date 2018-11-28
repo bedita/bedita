@@ -359,3 +359,11 @@ $config['objectCakeCache'] = true;
 //     'name' => 'form_event_calendar_dates',
 //     'options' => array('plugin' => 'timelines'),
 // );
+
+/**
+ * Custom types for module multimedia.
+ * If not set, default types are 'application', 'audio', 'b_e_file', 'image', 'video'
+ */
+// $config['multimedia'] = array(
+//    'types' => array('audio', 'image', 'video'),
+//);

@@ -1029,8 +1029,8 @@ msgstr ""
 msgid "Login"
 msgstr "Anmelden"
 
-msgid "MIME type not found"
-msgstr "MIME Typ nicht gefunden"
+msgid "MIME type not found or not allowed"
+msgstr "MIME Typ nicht gefunden oder verboten"
 
 msgid "Mail Group deleted"
 msgstr "Mailgruppe gelöscht"
