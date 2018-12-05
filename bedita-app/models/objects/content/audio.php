@@ -24,7 +24,7 @@
  */
 class Audio extends BeditaSimpleStreamModel
 {
-	public $useTable = 'streams';
+    public $useTable = 'streams';
 
     public $actsAs = array(
         'Captions',
