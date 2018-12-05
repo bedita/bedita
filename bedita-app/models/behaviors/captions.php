@@ -20,16 +20,13 @@
  */
 
 /**
- * Compact find result
- * 
- * in model var actAs = array("CompactResult" => array('model to esclude'));
- *
+ * Captions behavior
  */
 class CaptionsBehavior extends ModelBehavior {
 
-    var $config = array();
+    protected $config = array();
 
-    function setup(&$model, $config = array()) {
+    function setup($model, $config = array()) {
     }
 
     /**
@@ -40,7 +37,7 @@ class CaptionsBehavior extends ModelBehavior {
      * @param bool $primary Is primary
      * @return array
      */
-    public function afterFind(&$model, $results, $primary)
+    public function afterFind($model, $results, $primary)
     {
         foreach ($results as &$result) {
             $result['captions'] = $this->getCaptions($result['id']);
@@ -57,7 +54,7 @@ class CaptionsBehavior extends ModelBehavior {
      * @param bool $created Is this a freshly created entity?
      * @return void
      */
-    public function afterSave(&$model, $created)
+    public function afterSave($model, $created)
     {
         if (isset($model->data[$model->alias]['captions'])) {
             $this->saveCaptions($model->id, $model->data[$model->alias]['captions']);
