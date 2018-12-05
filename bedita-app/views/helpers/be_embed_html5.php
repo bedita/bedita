@@ -238,8 +238,15 @@ class BeEmbedHtml5Helper extends AppHelper {
         $output .= '<audio ' . $attr . ' controls data-setup=' .json_encode($params) .'>';
         if (isset($type)) {
             $output .= '<source src="' . $data['uri'] . '"' . $type . '/>';
+            if (!empty($data['captions'])) {
+                foreach ($data['captions'] as $caption) {
+                    $captionSrc = 'data:text/vtt;base64,' . base64_encode($caption['description']);
+                    $output .= '<track srclang="' . $caption['lang'] . '" label="' . $caption['title'] . '" src="' . $captionSrc . '" />';
+                }
+            }
         }
-        $output .= '</audio>';
+        $output .= '<p class="vjs-no-js">To open this audio please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+            </audio>';
         return $output;
     }
 
