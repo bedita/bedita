@@ -28,13 +28,6 @@ class Audio extends BeditaSimpleStreamModel
 
     public $actsAs = array(
         'Captions',
-        'Callback',
-        'CompactResult' => array(),
-        'SearchTextSave',
-        'RevisionObject',
-        'ForeignDependenceSave' => array('BEObject'),
-        'DeleteObject' => 'objects',
-        'Notify',
     );
 
     public $objectTypesGroups = array('multimedia', 'leafs', 'related');
