@@ -51,6 +51,10 @@ available options:
 {strip}
 	<div class="filters" style="width:100%">
 
+		{if !empty($filters.append.before) }
+			{$filters.append.before}
+		{/if}
+
 		{if !empty($filters.word)}
 			<div class="cell word">
 				<label>{t}search word{/t}:</label>
@@ -247,6 +251,10 @@ available options:
 					<option value="false" {if $view->SessionFilter->read('editorial') === 'false'}selected="selected"{/if}>{t}user contents{/t}</option>
 				</select>
 			</div>
+		{/if}
+
+		{if !empty($filters.append.after) }
+			{$filters.append.after}
 		{/if}
 
 		<div class="formbuttons">
