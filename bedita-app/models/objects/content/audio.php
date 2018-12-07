@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -21,17 +21,14 @@
 
 /**
  * Audio stream
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Audio extends BeditaSimpleStreamModel
 {
-	var $useTable	= "streams" ;
-	var $actsAs = array();	
-	public $objectTypesGroups = array("multimedia", "leafs", "related");
+    public $useTable = 'streams';
+
+    public $actsAs = array(
+        'Captions',
+    );
+
+    public $objectTypesGroups = array('multimedia', 'leafs', 'related');
 }
-?>

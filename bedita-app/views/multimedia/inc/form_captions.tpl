@@ -1,4 +1,4 @@
-{if $object.object_type_id == $conf->objectTypes['video']['id']}
+{if in_array($object.object_type_id, [$conf->objectTypes['audio']['id'], $conf->objectTypes['video']['id']])}
 <div class="tab"><h2>{t}Captions{/t}</h2></div>
 <div id="captions">
     {foreach $object.captions as $caption}
