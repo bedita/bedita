@@ -29,7 +29,10 @@
     'customProp' => ['showObjectTypes' => false],
     'categories' => true,
     'mediaTypes' => false,
-    'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action,
+    'url' => $html->url([
+        'controller' => $view->params.controller,
+        'action' => $view->params.action
+    ]),
     'tags' => true,
     'status' => false,
     'append' => [
