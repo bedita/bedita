@@ -442,9 +442,20 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/model/properties/1', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
+
+        unset($result['data']['meta']);
+        $data['attributes'] += [
+            'label' => null,
+            'is_nullable' => true,
+            'property_type_name' => 'string',
+            'object_type_name' => 'documents',
+        ];
+        static::assertEquals($data, $result['data']);
+
         static::assertEquals('nice description', TableRegistry::get('Properties')->get(1)->get('description'));
     }
 
