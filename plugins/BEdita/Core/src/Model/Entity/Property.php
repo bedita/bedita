@@ -63,6 +63,7 @@ class Property extends Entity implements JsonApiSerializable
         'modified' => false,
         'default' => false,
         'required' => false,
+        'type' => false,
     ];
 
     /**
