@@ -535,9 +535,12 @@ class PropertyTypesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/model/property_types/1', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
+        unset($result['data']['relationships']);
+        static::assertEquals($data, $result['data']);
         static::assertEquals($data['attributes']['params'], TableRegistry::get('PropertyTypes')->get(1)->get('params'));
     }
 
