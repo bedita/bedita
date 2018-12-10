@@ -26,6 +26,14 @@ use Cake\ORM\Entity;
  */
 class PropertyType extends Entity implements JsonApiSerializable
 {
-
     use JsonApiModelTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_accessible = [
+        '*' => false,
+        'name' => true,
+        'params' => true,
+    ];
 }

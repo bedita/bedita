@@ -49,4 +49,6 @@ return [
     'trees',
     'tree_nodes',
     'tree_parent_nodes',
+    'type',
+    'types',
 ];
