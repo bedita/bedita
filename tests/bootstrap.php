@@ -21,6 +21,9 @@ use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\Log\Log;
+use Cake\ORM\TableRegistry;
+
+TableRegistry::clear();
 
 if (getenv('db_dsn')) {
     ConnectionManager::drop('test');

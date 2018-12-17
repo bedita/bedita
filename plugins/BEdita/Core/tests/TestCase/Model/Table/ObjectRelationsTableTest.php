@@ -123,6 +123,12 @@ class ObjectRelationsTableTest extends TestCase
                 ],
                 $schema,
             ],
+            'required params for existing entities' => [
+                [],
+                [],
+                $schema,
+                false,
+            ],
         ];
     }
 
@@ -132,16 +138,19 @@ class ObjectRelationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @param object|null $jsonSchema JSON Schema.
+     * @param bool $isNew Should entity be treated as new?
      * @return void
      *
      * @dataProvider validationProvider()
      * @coversNothing
      */
-    public function testValidation($expected, array $data, $jsonSchema = null)
+    public function testValidation($expected, array $data, $jsonSchema = null, $isNew = true)
     {
         $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
 
-        $objectRelation = $this->ObjectRelations->newEntity($data);
+        $objectRelation = $this->ObjectRelations->newEntity();
+        $objectRelation->isNew($isNew);
+        $this->ObjectRelations->patchEntity($objectRelation, $data);
         $objectRelation->left_id = 1;
         $objectRelation->relation_id = 1;
         $objectRelation->right_id = 1;
