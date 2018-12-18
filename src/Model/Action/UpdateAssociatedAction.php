@@ -16,9 +16,10 @@ namespace BEdita\API\Model\Action;
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Association\HasOne;
 use Cake\Utility\Hash;
 
 /**
@@ -73,7 +74,7 @@ class UpdateAssociatedAction extends BaseAction
         $count = count($relatedEntities);
         if ($count === 0) {
             $relatedEntities = [];
-        } elseif ($count === 1) {
+        } elseif ($count === 1 && ($association instanceof BelongsTo || $association instanceof HasOne)) {
             $relatedEntities = reset($relatedEntities);
         }
 
@@ -102,8 +103,8 @@ class UpdateAssociatedAction extends BaseAction
             ->where(function (QueryExpression $exp) use ($targetPKField, $targetPrimaryKeys) {
                 return $exp->in($targetPKField, $targetPrimaryKeys);
             });
-
         $targetEntities = $targetEntities->indexBy($primaryKeyField)->toArray();
+        /** @var \Cake\Datasource\EntityInterface[] $targetEntities */
 
         // sort following the original order
         uksort(
@@ -125,15 +126,7 @@ class UpdateAssociatedAction extends BaseAction
 
             $meta = Hash::get($datum, '_meta.relation');
             if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
-                $targetEntities[$id]->_joinData = $association->junction()->newEntity($meta);
-
-                $errors = $targetEntities[$id]->_joinData->getErrors();
-                if (!empty($errors)) {
-                    throw new BadRequestException([
-                        'title' => __d('bedita', 'Invalid data'),
-                        'detail' => $errors,
-                    ]);
-                }
+                $targetEntities[$id]->_joinData = $meta;
             }
         }
 
