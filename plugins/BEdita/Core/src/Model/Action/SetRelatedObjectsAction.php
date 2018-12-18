@@ -24,63 +24,7 @@ use Cake\Datasource\EntityInterface;
 class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
 {
 
-    /**
-     * Count entities to be actually updated.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
-     * @return array
-     */
-    protected function diff(EntityInterface $entity, $relatedEntities)
-    {
-        $bindingKey = $this->Association->getBindingKey();
-        $existing = $this->existing($entity)->indexBy($this->Association->getTargetForeignKey())->toArray();
-
-        $junctionEntityClass = $this->Association->junction()->getEntityClass();
-        $ignoredKeys = array_flip(
-            [$this->Association->getForeignKey(), $this->Association->getTargetForeignKey()]
-        );
-
-        $diff = $new = [];
-        foreach ($relatedEntities as $relatedEntity) {
-            $primaryKey = $relatedEntity->get($bindingKey);
-            $new[] = $primaryKey;
-            if (!array_key_exists($primaryKey, $existing)) {
-                // Relation was missing.
-                $diff[] = $primaryKey;
-
-                continue;
-            }
-
-            // Obtain new join data.
-            $joinData = $this->Association->junction()->newEntity();
-            if (!empty($relatedEntity->_joinData) && $relatedEntity->_joinData instanceof $junctionEntityClass) {
-                $joinData = $relatedEntity->_joinData;
-            }
-
-            // Extract meaningful values from both new and existing.
-            $joinData = array_diff_key($joinData->getOriginalValues(), $ignoredKeys);
-            $existingJoinData = array_diff_key($existing[$primaryKey]->getOriginalValues(), $ignoredKeys);
-
-            // Compare existing and new join data.
-            ksort($joinData);
-            ksort($existingJoinData);
-            if ($joinData !== $existingJoinData) {
-                $diff[] = $primaryKey;
-            }
-        }
-
-        $existing = array_keys($existing);
-        foreach ($existing as $primaryKey) {
-            if (in_array($primaryKey, $new)) {
-                continue;
-            }
-
-            $diff[] = $primaryKey;
-        }
-
-        return $diff;
-    }
+    use AssociatedTrait;
 
     /**
      * {@inheritDoc}
@@ -95,10 +39,14 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
             return $action->execute(compact('entity', 'relatedEntities'));
         }
 
-        $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
+        $relatedEntities = $this->diff($entity, $relatedEntities, true, $affectedEntities);
 
-        $diff = $this->diff($entity, $relatedEntities);
+        if (!$this->Association->replaceLinks($entity, $relatedEntities)) {
+            return false;
+        }
 
-        return $this->Association->replaceLinks($entity, $relatedEntities) ? $diff : false;
+        return collection($affectedEntities)
+            ->extract($this->Association->getBindingKey())
+            ->toList();
     }
 }

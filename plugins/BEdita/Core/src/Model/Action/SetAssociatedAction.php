@@ -28,39 +28,7 @@ use Cake\ORM\Association\HasOne;
 class SetAssociatedAction extends UpdateAssociatedAction
 {
 
-    /**
-     * Count entities to be actually updated.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
-     * @return int
-     */
-    protected function diff(EntityInterface $entity, $relatedEntities)
-    {
-        $bindingKey = (array)$this->Association->getBindingKey();
-        $existing = $this->existing($entity);
-
-        $diff = 0;
-        $new = [];
-        foreach ($relatedEntities as $relatedEntity) {
-            $primaryKey = $relatedEntity->extract($bindingKey);
-            $new[] = $primaryKey;
-            if (in_array($primaryKey, $existing)) {
-                continue;
-            }
-
-            $diff++;
-        }
-        foreach ($existing as $primaryKey) {
-            if (in_array($primaryKey, $new)) {
-                continue;
-            }
-
-            $diff++;
-        }
-
-        return $diff;
-    }
+    use AssociatedTrait;
 
     /**
      * Replace existing relations.
@@ -79,14 +47,12 @@ class SetAssociatedAction extends UpdateAssociatedAction
                 $relatedEntities = [$relatedEntities];
             }
 
-            $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
-
             $res = $this->toMany($entity, $relatedEntities);
             foreach ($relatedEntities as $relatedEntity) {
                 if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
                     throw new BadRequestException([
                         'title' => __d('bedita', 'Error linking entities'),
-                        'detail' => $relatedEntity->_joinData->getErrors(),
+                        'detail' => $relatedEntity->get('_joinData')->getErrors(),
                     ]);
                 }
             }
@@ -126,7 +92,9 @@ class SetAssociatedAction extends UpdateAssociatedAction
      */
     protected function toMany(EntityInterface $entity, array $relatedEntities)
     {
-        $count = $this->diff($entity, $relatedEntities); // This doesn't need to be in a transaction.
+        // This doesn't need to be in a transaction.
+        $relatedEntities = $this->diff($entity, $relatedEntities, true, $affectedEntities);
+        $count = count($affectedEntities);
 
         if ($this->Association instanceof HasMany) {
             return $this->Association->replace($entity, $relatedEntities, ['atomic' => false]) ? $count : false;
@@ -153,9 +121,9 @@ class SetAssociatedAction extends UpdateAssociatedAction
         if ($existing === null && $relatedEntity === null) {
             return 0;
         } elseif ($relatedEntity !== null) {
-            $bindingKey = $relatedEntity->extract((array)$this->Association->getBindingKey());
+            $bindingKey = (array)$this->Association->getBindingKey();
 
-            if ($bindingKey == $existing) {
+            if ($existing !== null && $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey)) {
                 return 0;
             }
         }
@@ -183,9 +151,9 @@ class SetAssociatedAction extends UpdateAssociatedAction
         }
 
         if ($relatedEntity !== null) {
-            $primaryKey = $relatedEntity->extract((array)$this->Association->getPrimaryKey());
+            $primaryKey = (array)$this->Association->getPrimaryKey();
 
-            if ($primaryKey == $existing) {
+            if ($relatedEntity->extract($primaryKey) == $existing->extract($primaryKey)) {
                 return 0;
             }
         }

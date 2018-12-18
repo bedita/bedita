@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\Folder;
-use Cake\Datasource\EntityInterface;
 
 /**
  * Abstract class for updating relations between BEdita objects.
@@ -28,41 +27,10 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 
     /**
      * {@inheritDoc}
-     *
-     * @return \Cake\ORM\Query
-     */
-    protected function existing(EntityInterface $entity)
-    {
-        $jointTable = $this->Association->junction();
-
-        $sourcePrimaryKey = $entity->extract((array)$this->Association->getSource()->getPrimaryKey());
-        $foreignKey = array_map([$jointTable, 'aliasField'], (array)$this->Association->getForeignKey());
-
-        $conditionsPrefix = sprintf('%s.', $jointTable->getAlias());
-        $conditions = array_filter(
-            $this->Association->getConditions(),
-            function ($key) use ($conditionsPrefix) {
-                // Filter only conditions that apply to junction table.
-                return substr($key, 0, strlen($conditionsPrefix)) === $conditionsPrefix;
-            },
-            ARRAY_FILTER_USE_KEY
-        );
-
-        $existing = $jointTable->find()
-            ->where($conditions)
-            ->andWhere(array_combine($foreignKey, $sourcePrimaryKey));
-
-        return $existing;
-    }
-
-    /**
-     * {@inheritDoc}
      */
     public function execute(array $data = [])
     {
-        if (array_key_exists('entity', $data)) {
-            $data['entity'] = $this->getEntity($data['entity']);
-        }
+        $data = $this->prepareData($data);
 
         return parent::execute($data);
     }
@@ -74,23 +42,27 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      * using `Tree` entity with `ParentObjects` association assuring to
      * always use a "to one" relation.
      *
-     * @param \Cake\Datasource\EntityInterface $entity The starting entity.
-     * @return \Cake\Datasource\EntityInterface
+     * @param array $data Action data.
+     * @return array
      */
-    protected function getEntity(EntityInterface $entity)
+    protected function prepareData(array $data)
     {
-        if (!($entity instanceof Folder) || $this->Association->getName() !== 'Parents') {
-            return $entity;
+        if (empty($data['entity']) || !($data['entity'] instanceof Folder) || $this->Association->getName() !== 'Parents') {
+            return $data;
         }
 
         $table = $this->Association->junction();
         $entity = $table->find()
-            ->where([$table->association('Objects')->getForeignKey() => $entity->id])
+            ->where([$table->association('Objects')->getForeignKey() => $data['entity']->id])
             ->firstOrFail();
+        $relatedEntities = $data['relatedEntities'];
+        if (is_array($relatedEntities) && count($relatedEntities) === 1) {
+            $relatedEntities = reset($relatedEntities);
+        }
 
         $this->Association = $table->association('ParentObjects');
         $this->setConfig('association', $this->Association);
 
-        return $entity;
+        return compact('entity', 'relatedEntities') + $data;
     }
 }
