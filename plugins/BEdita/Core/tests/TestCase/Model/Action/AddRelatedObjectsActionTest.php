@@ -24,6 +24,7 @@ use Cake\Utility\Inflector;
 /**
  * @covers \BEdita\Core\Model\Action\AddRelatedObjectsAction
  * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class AddRelatedObjectsActionTest extends TestCase
 {
@@ -170,7 +171,6 @@ class AddRelatedObjectsActionTest extends TestCase
      * Test invocation of command with fallback to default action.
      *
      * @return void
-     *
      */
     public function testInvocationFallback()
     {

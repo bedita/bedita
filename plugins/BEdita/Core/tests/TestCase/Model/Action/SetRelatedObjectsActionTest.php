@@ -25,6 +25,7 @@ use Cake\Utility\Inflector;
 /**
  * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
  * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class SetRelatedObjectsActionTest extends TestCase
 {

@@ -22,6 +22,7 @@ use Cake\Utility\Inflector;
 /**
  * @covers \BEdita\Core\Model\Action\RemoveAssociatedAction
  * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class RemoveAssociatedActionTest extends TestCase
 {

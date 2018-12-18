@@ -20,7 +20,8 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class RemoveRelatedObjectsActionTest extends TestCase
 {
