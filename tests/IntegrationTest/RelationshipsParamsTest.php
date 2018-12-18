@@ -305,6 +305,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
             ->firstOrFail();
 
         static::assertSame($currentPriority + 1, $objectRelation->get('priority'));
-        static::assertSame(['name' => 'Gustavo'], $objectRelation->get('priority'));
+        static::assertSame(['name' => 'Gustavo'], $objectRelation->get('params'));
     }
 }
