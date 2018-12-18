@@ -104,9 +104,6 @@ class RemoveRelatedObjectsActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationProvider()
-     * @covers ::update()
-     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::execute()
-     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::getEntity()
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
