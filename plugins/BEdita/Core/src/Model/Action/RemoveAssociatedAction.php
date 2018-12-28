@@ -47,7 +47,7 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
             }
 
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
-                $relatedEntities = $this->intersection($this->existing($entity), $relatedEntities);
+                $relatedEntities = $this->intersection((array)$this->existing($entity), $relatedEntities);
 
                 $this->Association->unlink($entity, $relatedEntities);
 

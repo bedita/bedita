@@ -266,7 +266,7 @@ trait AssociatedTrait
      */
     protected function diff(EntityInterface $source, array $targetEntities, $replace, &$affected = [])
     {
-        $existing = $this->existing($source);
+        $existing = (array)$this->existing($source);
         $kept = $this->intersection($existing, $targetEntities);
 
         $added = array_map(
