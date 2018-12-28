@@ -14,8 +14,6 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\BadRequestException;
-use Cake\ORM\Association\BelongsToMany;
 
 /**
  * Abstract class for updating associations between entities.
@@ -44,6 +42,8 @@ abstract class UpdateAssociatedAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     *
+     * @return array|int|false
      */
     public function execute(array $data = [])
     {
@@ -55,7 +55,7 @@ abstract class UpdateAssociatedAction extends BaseAction
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @return int|false
+     * @return array|int|false
      */
     abstract protected function update(EntityInterface $entity, $relatedEntities);
 }
