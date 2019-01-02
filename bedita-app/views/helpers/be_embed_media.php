@@ -424,8 +424,8 @@ class BeEmbedMediaHelper extends AppHelper {
         $helper = $this->getProviderHelper($obj);
         if ($helper) {
             $source = $helper->source($obj);
-            if (!empty($source)) {
-                $obj['uri'] = $source;
+            if (!empty($source['url'])) {
+                $obj['uri'] = $source['url'];
             }
         }
         $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl') . $obj['uri'];
