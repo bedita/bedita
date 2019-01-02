@@ -451,6 +451,11 @@ class BeditaShell extends BeditaBaseShell {
 		$this->hr();
     	$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
+        if (!file_exists($mediaRoot) || !is_dir($mediaRoot) || !is_readable($mediaRoot)) {
+            $this->out('Error reading media root: media root does not exist or is not readable by this user');
+            return;
+        }
+
 		$maxDepthLevel = 2;
 		if (isset($this->params["level"])) {
 			$maxDepthLevel = $this->params["level"];
