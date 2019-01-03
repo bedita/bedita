@@ -1099,6 +1099,8 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
 
+        $objectType = Configure::read('objectTypes.' . $this->data['object_type_id'] . '.name');
+
         $this->data['status'] = 'on';
         if (empty($this->data['id'])) {
             $this->data['user_created'] = $user['id'];
@@ -1110,7 +1112,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
 
         // #883 skip tree update when saving section
-        if ($this->data['object_type'] == 'section') {
+        if ($objectType == 'section') {
             $this->data['skipTreeUpdate'] = true;
         }
 
@@ -1128,7 +1130,7 @@ abstract class ApiBaseController extends FrontendController {
                 )
             );
 
-            if ($this->data['object_type'] == 'section') {
+            if ($objectType == 'section') {
                 $menu = (isset($this->data[$this->name]['menu']) && $this->data[$this->name]['menu'] == 0) ? 0 : 1;
                 $tree->saveMenuVisibility($beModel->id, $this->data['parents'][0], $menu);
             }

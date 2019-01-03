@@ -242,39 +242,70 @@ class Tree extends BEAppModel
      *
      * Possible values are:
      * - `area_id` to limit parents to some publication.
-     * - `status` to limit parents with specific status
+     * - `status` to limit parents with specific status.
+     * - `mantain_hidden_branch` if hidden branches are to mantain. Default true.
      *
-     * @param integer $id
-     * @param array $options
-     * @param array $destination
+     * @param int $id The object id
+     * @param array|int $destination An array of parents or a parent.
+     * @param array $options Options.
+     * @return void
+     * @throws BeditaException If $id is an area or a section with too much destination.
+     * @throws BeditaBadRequestException If errors happen moving a section.
      */
     public function updateTree($id, $destination, array $options = array()) {
         $options += array(
             'area_id' => null,
             'status' => array(),
-			'mantain_hidden_branch' => true
+            'mantain_hidden_branch' => true
         );
         if (!is_array($destination)) {
             $destination = (empty($destination))? array() : array($destination);
         }
-		$excludeFromTreeIds = Configure::read('excludeFromTreeIds');
-		if ($options['mantain_hidden_branch'] === true && !empty($excludeFromTreeIds)) {
-			foreach ($excludeFromTreeIds as $excludeFromTreeId) {
-				$result = $this->find('list', array(
-					'fields' => array('parent_id'),
-					'conditions' => array(
-						'id' => $id,
-						'object_path LIKE' => '%/' . $excludeFromTreeId . '/%'
-					)
-				));
-				if (!empty($result)) {
-					$destination = array_merge($destination, $result);
-				}
-			}
-		}
+
+        $objectTypeId = ClassRegistry::init('BEObject')->field('object_type_id', array('BEObject.id' => $id));
+        if ($objectTypeId === Configure::read('objectTypes.area.id')) {
+            throw new BeditaBadRequestException(__('Publication cannot be moved to destination', true));
+        }
+
+        $isSection = $objectTypeId === Configure::read('objectTypes.section.id');
+        
+        $excludeFromTreeIds = Configure::read('excludeFromTreeIds');
+        if ($options['mantain_hidden_branch'] === true && !empty($excludeFromTreeIds)) {
+            foreach ($excludeFromTreeIds as $excludeFromTreeId) {
+                $result = $this->find('list', array(
+                    'fields' => array('parent_id'),
+                    'conditions' => array(
+                        'id' => $id,
+                        'object_path LIKE' => '%/' . $excludeFromTreeId . '/%'
+                    )
+                ));
+                if (!empty($result)) {
+                    $destination = array_merge($destination, $result);
+                }
+            }
+        }
+
+        // if section with none or too much destination
+        if ($isSection && count($destination) !== 1) {
+            throw new BeditaBadRequestException(__('Section can have just one parent.', true));
+        }
+
         $currParents = $this->getParents($id, $options['area_id'], $options['status'], false);
+
         // remove
-        $remove = array_diff($currParents, $destination) ;
+        $remove = array_diff($currParents, $destination);
+
+        // section to move
+        if ($isSection && !empty($remove)) {
+            $newParent = current($destination);
+            $oldParent = current($currParents);
+            if (!$this->move($newParent, $oldParent, $id)) {
+                throw new BeditaException(__('Failing to move section', true));
+            }
+
+            return;
+        }
+
         foreach ($remove as $parent_id) {
             $this->removeChildWorker($id, $parent_id);
             $this->dispatchUpdatedTreeEvent($parent_id, static::EVENT_CHILDREN_UPDATED);
@@ -285,7 +316,7 @@ class Tree extends BEAppModel
             $this->appendChildWorker($id, $parent_id);
             $this->dispatchUpdatedTreeEvent($parent_id, static::EVENT_CHILDREN_UPDATED);
         }
-        
+
         $this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
     }
 
@@ -516,12 +547,12 @@ class Tree extends BEAppModel
 	
 	
 	/**
-	 * move branch to another parent
+	 * Move branch to another parent
 	 *
-	 * @param int $idNewParent
-	 * @param int $idOldParent
-	 * @param int $id
-	 * @return boolean
+	 * @param int $idNewParent The new parent id.
+	 * @param int $idOldParent The old parent id.
+	 * @param int $id The object id to move.
+	 * @return bool
 	 */
 	public function move($idNewParent, $idOldParent, $id) {
 		// avoid recursive move (item inside itself)
@@ -582,8 +613,12 @@ class Tree extends BEAppModel
 			$this->create();
 			if (!$this->save($child)) {
 				return false;
-			}
-		}
+            }
+            
+            $this->dispatchUpdatedTreeEvent($child['Tree']['parent_id'], static::EVENT_CHILDREN_UPDATED);
+        }
+        
+        $this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
 
 		return true;
 	}
