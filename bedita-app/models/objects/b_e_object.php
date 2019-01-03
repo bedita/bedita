@@ -315,18 +315,16 @@ class BEObject extends BEAppModel {
             }
 
             // save associations
-            $size = count($this->data[$this->name][$name]);
-            for ($i = 0; $i < $size; $i++) {
+            foreach ($this->data[$this->name][$name] as &$datum) {
                 $modelTmp = new $assoc['className']();
-                $data = &$this->data[$this->name][$name][$i];
-                $data[$foreignK] = $id;
-                if (!$modelTmp->save($data)) {
+                $datum[$foreignK] = $id;
+                if (!$modelTmp->save($datum)) {
                     throw new BeditaException(__("Error saving object", true), "Error saving hasMany relation in BEObject for model " . $assoc['className']);
                 }
 
                 unset($modelTmp);
             }
-
+            unset($datum);
         }
 
         // build ObjectUser Relation
