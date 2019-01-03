@@ -84,7 +84,7 @@ class ObjectRelationsTable extends Table
                 return static::jsonSchema(null, $context) === true;
             })
             ->requirePresence('params', function ($context) {
-                return static::jsonSchema(null, $context) !== true;
+                return $context['newRecord'] && static::jsonSchema(null, $context) !== true;
             })
             ->add('params', 'valid', [
                 'rule' => 'jsonSchema',

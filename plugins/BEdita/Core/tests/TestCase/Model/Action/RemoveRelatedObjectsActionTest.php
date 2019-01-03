@@ -20,7 +20,8 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class RemoveRelatedObjectsActionTest extends TestCase
 {
@@ -104,9 +105,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationProvider()
-     * @covers ::update()
-     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::execute()
-     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::getEntity()
+     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::prepareData()
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {

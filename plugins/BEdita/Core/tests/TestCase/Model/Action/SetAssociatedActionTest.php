@@ -23,6 +23,7 @@ use Cake\Utility\Inflector;
 /**
  * @covers \BEdita\Core\Model\Action\SetAssociatedAction
  * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
+ * @covers \BEdita\Core\Model\Action\AssociatedTrait
  */
 class SetAssociatedActionTest extends TestCase
 {
@@ -269,6 +270,67 @@ class SetAssociatedActionTest extends TestCase
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
+                    ],
+                ],
+            ];
+
+            static::assertSame($expected, $e->getAttributes());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Data provider for `testInvocationWithValidationErrors` test case.
+     *
+     * @return array
+     */
+    public function invocationWithValidationErrorsProvider()
+    {
+        return [
+            'new link' => [1, 2],
+            'existing link' => [1, 1],
+        ];
+    }
+
+    /**
+     * Test that an exception is raised with details about the validation error.
+     *
+     * @param int $source Source entity ID.
+     * @param int $target Target entity ID.
+     * @return void
+     *
+     * @dataProvider invocationWithValidationErrorsProvider()
+     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedExceptionCode 400
+     */
+    public function testInvocationWithValidationErrors($source, $target)
+    {
+        $field = 'some_field';
+        $validationErrorMessage = 'Invalid email';
+
+        try {
+            $table = TableRegistry::get('FakeArticles');
+            /** @var \Cake\ORM\Association\BelongsToMany $association */
+            $association = $table->association('FakeTags');
+
+            $association->junction()->getValidator()
+                ->email($field, false, $validationErrorMessage);
+
+            $entity = $table->get($source);
+            $relatedEntities = [
+                $association->getTarget()->get($target)
+                    ->set('_joinData', [$field => 'not-an-email']),
+            ];
+
+            $action = new SetAssociatedAction(compact('association'));
+            $action(compact('entity', 'relatedEntities'));
+        } catch (Exception $e) {
+            $expected = [
+                'title' => 'Invalid data',
+                'detail' => [
+                    $field => [
+                        'email' => $validationErrorMessage,
                     ],
                 ],
             ];

@@ -27,30 +27,7 @@ use Cake\ORM\Association\HasMany;
 class RemoveAssociatedAction extends UpdateAssociatedAction
 {
 
-    /**
-     * Filter entities to be actually updated.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
-     * @return \Cake\Datasource\EntityInterface[]
-     */
-    protected function diff(EntityInterface $entity, array $relatedEntities)
-    {
-        $bindingKey = (array)$this->Association->getBindingKey();
-        $existing = $this->existing($entity);
-
-        $diff = [];
-        foreach ($relatedEntities as $relatedEntity) {
-            $primaryKey = $relatedEntity->extract($bindingKey);
-            if (!in_array($primaryKey, $existing)) {
-                continue;
-            }
-
-            $diff[] = $relatedEntity;
-        }
-
-        return $diff;
-    }
+    use AssociatedTrait;
 
     /**
      * Remove existing relations.
@@ -70,7 +47,7 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
             }
 
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
-                $relatedEntities = $this->diff($entity, $relatedEntities);
+                $relatedEntities = $this->intersection((array)$this->existing($entity), $relatedEntities);
 
                 $this->Association->unlink($entity, $relatedEntities);
 

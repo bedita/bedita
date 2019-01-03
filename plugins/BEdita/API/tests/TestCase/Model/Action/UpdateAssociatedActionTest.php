@@ -244,4 +244,57 @@ class UpdateAssociatedActionTest extends TestCase
         static::assertEquals($expected, $result);
         static::assertEquals(count(array_unique($data, SORT_REGULAR)), $count);
     }
+
+    /**
+     * Test that invocation of command does not remove previously existing junction data.
+     *
+     * @return void
+     */
+    public function testKeepJunctionData()
+    {
+        // Prepare link with junction data.
+        $junction = TableRegistry::get('FakeArticlesTags');
+        $junctionEntity = $junction->newEntity();
+        $junction->patchEntity($junctionEntity, [
+            'fake_article_id' => 2,
+            'fake_tag_id' => 1,
+            'fake_params' => 'previous@example.com',
+        ]);
+        $junction->saveOrFail($junctionEntity);
+
+        $request = new ServerRequest();
+        $request = $request->withParsedBody([
+            [
+                'id' => 1,
+            ],
+            [
+                'id' => 2,
+            ],
+        ]);
+        $association = TableRegistry::get('FakeArticles')->association('FakeTags');
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+
+        $action(['primaryKey' => 2]);
+
+        $junctionEntities = $junction->find('all')
+            ->select(['fake_article_id', 'fake_tag_id', 'fake_params'])
+            ->where(['fake_article_id' => 2])
+            ->enableHydration(false)
+            ->toList();
+
+        $expected = [
+            [
+                'fake_article_id' => 2,
+                'fake_tag_id' => 2,
+                'fake_params' => null,
+            ],
+            [
+                'fake_article_id' => 2,
+                'fake_tag_id' => 1,
+                'fake_params' => 'previous@example.com',
+            ],
+        ];
+        static::assertSame($expected, $junctionEntities);
+    }
 }

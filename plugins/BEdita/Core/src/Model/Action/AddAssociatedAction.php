@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
@@ -29,133 +28,7 @@ use Cake\ORM\Association\HasMany;
 class AddAssociatedAction extends UpdateAssociatedAction
 {
 
-    /**
-     * Find existing join data relative to an entity.
-     *
-     * @param \Cake\Datasource\EntityInterface $relatedEntity Related entity to find join data for.
-     * @param \Cake\Datasource\EntityInterface[] $joinData Loaded join data.
-     * @return \Cake\Datasource\EntityInterface|null
-     */
-    protected function findJoinData(EntityInterface $relatedEntity, array $joinData)
-    {
-        $primaryKey = array_values($relatedEntity->extract((array)$this->Association->getBindingKey()));
-        foreach ($joinData as $joinDatum) {
-            $foreignKey = array_values($joinDatum->extract((array)$this->Association->getTargetForeignKey()));
-            if ($primaryKey === $foreignKey) {
-                return $joinDatum;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Patch join data on existing associations.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $diff Related entities.
-     * @return \Cake\Datasource\EntityInterface[]
-     */
-    protected function patchJoinData(EntityInterface $entity, array $diff)
-    {
-        if (!($this->Association instanceof BelongsToMany) || empty($diff)) {
-            return $diff;
-        }
-
-        // Load existing join data.
-        $junctionTablePrefix = sprintf('%s.', $this->Association->junction()->getAlias());
-        $sourcePrimaryKey = (array)$this->Association->getSource()->getPrimaryKey();
-        $bindingKey = (array)$this->Association->getBindingKey();
-        $joinData = $this->Association->junction()->find()
-
-            // Apply association-defined conditions.
-            ->where(array_filter(
-                $this->Association->getConditions(),
-                function ($key) use ($junctionTablePrefix) {
-                    // Filter only conditions that apply to junction table.
-                    return substr($key, 0, strlen($junctionTablePrefix)) === $junctionTablePrefix;
-                },
-                ARRAY_FILTER_USE_KEY
-            ))
-
-            // Build conditions on source entity primary key (can be composite).
-            ->where(array_combine(
-                (array)$this->Association->getForeignKey(),
-                $entity->extract($sourcePrimaryKey)
-            ))
-
-            // Build conditions on target entities primary key (can be composite).
-            ->where(function (QueryExpression $exp) use ($bindingKey, $diff) {
-                $conditions = array_map(
-                    function (EntityInterface $relatedEntity) use ($bindingKey) {
-                        return function (QueryExpression $exp) use ($bindingKey, $relatedEntity) {
-                            $conditions = array_combine(
-                                (array)$this->Association->getTargetForeignKey(),
-                                $relatedEntity->extract($bindingKey)
-                            );
-                            foreach ($conditions as $field => $value) {
-                                $exp = $exp->eq($field, $value);
-                            }
-
-                            return $exp;
-                        };
-                    },
-                    $diff
-                );
-
-                return $exp->or_($conditions);
-            })
-
-            ->toArray();
-
-        // Patch existing join data with new values.
-        foreach ($diff as $relatedEntity) {
-            if (!$relatedEntity->has('_joinData')) {
-                continue;
-            }
-
-            $existing = $this->findJoinData($relatedEntity, $joinData);
-            if ($existing === null) {
-                continue;
-            }
-
-            $new = $relatedEntity->get('_joinData');
-            if ($new instanceof EntityInterface) {
-                $new = $new->toArray();
-            }
-
-            $relatedEntity->set('_joinData', $this->Association->junction()->patchEntity($existing, $new));
-        }
-
-        return $diff;
-    }
-
-    /**
-     * Filter entities to be actually updated.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
-     * @return \Cake\Datasource\EntityInterface[]
-     */
-    protected function diff(EntityInterface $entity, array $relatedEntities)
-    {
-        $bindingKey = (array)$this->Association->getBindingKey();
-        $existing = $this->existing($entity);
-
-        $diff = [];
-        foreach ($relatedEntities as $relatedEntity) {
-            $primaryKey = $relatedEntity->extract($bindingKey);
-            if (in_array($primaryKey, $existing) && (!($this->Association instanceof BelongsToMany) || !$relatedEntity->has('_joinData'))) {
-                continue;
-            }
-
-            $diff[] = $relatedEntity;
-        }
-
-        $diff = $this->patchJoinData($entity, $diff);
-
-        return $diff;
-    }
+    use AssociatedTrait;
 
     /**
      * Add new relations.
@@ -174,10 +47,8 @@ class AddAssociatedAction extends UpdateAssociatedAction
                 $relatedEntities = [$relatedEntities];
             }
 
-            $relatedEntities = $this->prepareRelatedEntities($relatedEntities, $entity);
-
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
-                $relatedEntities = $this->diff($entity, $relatedEntities);
+                $relatedEntities = $this->diff($entity, $relatedEntities, false);
 
                 if (!$this->Association->link($entity, $relatedEntities, ['atomic' => false])) {
                     return false;

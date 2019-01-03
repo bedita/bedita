@@ -245,4 +245,66 @@ class RelationshipsParamsTest extends IntegrationTestCase
         static::assertArrayHasKey('detail', $body['error']);
         static::assertContains($expected, $body['error']['detail']);
     }
+
+    /**
+     * Test that updating an existing relation between two objects does not enforce presence of required
+     * parameters that were previously set.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testUpdateParamsNotRequired()
+    {
+        $relation = $this->Relations->find()
+            ->where(['params IS NOT' => null])
+            ->firstOrFail();
+
+        $objectRelation = $this->ObjectRelations->find()
+            ->where(['relation_id' => $relation->id])
+            ->firstOrFail();
+        $objectRelation->set('params', ['name' => 'Gustavo']);
+        $this->ObjectRelations->saveOrFail($objectRelation);
+
+        $currentPriority = $objectRelation->get('priority');
+
+        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $leftType = $ObjectTypes->find('all')
+            ->where([
+                'id' => $this->ObjectRelations->LeftObjects->get($objectRelation->get('left_id'))->get('object_type_id'),
+            ])
+            ->firstOrFail()
+            ->get('name');
+        $rightType = $ObjectTypes->find('all')
+            ->where([
+                'id' => $this->ObjectRelations->RightObjects->get($objectRelation->get('right_id'))->get('object_type_id'),
+            ])
+            ->firstOrFail()
+            ->get('name');
+
+        $data = [
+            [
+                'id' => $objectRelation->get('right_id'),
+                'type' => $rightType,
+                'meta' => [
+                    'relation' => [
+                        'priority' => $currentPriority + 1,
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $endpoint = sprintf('/%s/%d/relationships/%s', $leftType, $objectRelation->get('left_id'), $relation->get('name'));
+        $this->_sendRequest($endpoint, 'POST', json_encode(compact('data')));
+
+        $this->assertResponseSuccess();
+
+        $objectRelation = $this->ObjectRelations->find()
+            ->where($objectRelation->extract(['left_id', 'relation_id', 'right_id']))
+            ->firstOrFail();
+
+        static::assertSame($currentPriority + 1, $objectRelation->get('priority'));
+        static::assertSame(['name' => 'Gustavo'], $objectRelation->get('params'));
+    }
 }
