@@ -546,73 +546,73 @@ class Tree extends BEAppModel
 	}
 	
 	
-	/**
-	 * Move branch to another parent
-	 *
-	 * @param int $idNewParent The new parent id.
-	 * @param int $idOldParent The old parent id.
-	 * @param int $id The object id to move.
-	 * @return bool
-	 */
-	public function move($idNewParent, $idOldParent, $id) {
-		// avoid recursive move (item inside itself)
-		if ($id == $idNewParent) {
-			return false;
-		}
-		// Verify that new parent is not a descendant on the tree to move
-		if ($this->isParent($id, $idNewParent)) {
-			return false;
-		}
+    /**
+     * Move branch to another parent.
+     *
+     * @param int $idNewParent The new parent id.
+     * @param int $idOldParent The old parent id.
+     * @param int $id The object id to move.
+     * @return bool
+     */
+    public function move($idNewParent, $idOldParent, $id) {
+        // avoid recursive move (item inside itself)
+        if ($id == $idNewParent) {
+            return false;
+        }
+        // Verify that new parent is not a descendant on the tree to move
+        if ($this->isParent($id, $idNewParent)) {
+            return false;
+        }
 
-		$rowToMove = $this->find("first", array(
-			"conditions" => array(
-				"id" => $id,
-				"parent_id" => $idOldParent
-			)
-		));
+        $rowToMove = $this->find('first', array(
+            'conditions' => array(
+                'id' => $id,
+                'parent_id' => $idOldParent
+            )
+        ));
 
-		$newParentRow = $this->find("first", array(
-			"conditions" => array(
-				"id" => $idNewParent
-			)
-		));
+        $newParentRow = $this->find('first', array(
+            'conditions' => array(
+                'id' => $idNewParent
+            )
+        ));
 
-		$newParentPath = $newParentRow["Tree"]["object_path"];
-		$newPath = $newParentPath . "/" . $rowToMove["Tree"]["id"];
-		$oldPath = $rowToMove["Tree"]["object_path"];
+        $newParentPath = $newParentRow['Tree']['object_path'];
+        $newPath = $newParentPath . '/' . $rowToMove['Tree']['id'];
+        $oldPath = $rowToMove['Tree']['object_path'];
 
-		$children = $this->find("all", array(
-			"conditions" => array("object_path LIKE" => $oldPath."/%")
-		));
+        $children = $this->find('all', array(
+            'conditions' => array('object_path LIKE' => $oldPath.'/%')
+        ));
 
-		if (!$this->delete($rowToMove["Tree"]["object_path"])) {
-			return false;
-		}
+        if (!$this->delete($rowToMove['Tree']['object_path'])) {
+            return false;
+        }
 
-		$area_id = $this->getAreaIdByPath($newPath);
-		$rowToMove["Tree"]["parent_path"] = $newParentPath;
-		$rowToMove["Tree"]["object_path"] = $newPath;
-		$rowToMove["Tree"]["parent_id"] = $idNewParent;
-		$rowToMove["Tree"]["area_id"] = $area_id;
+        $area_id = $this->getAreaIdByPath($newPath);
+        $rowToMove['Tree']['parent_path'] = $newParentPath;
+        $rowToMove['Tree']['object_path'] = $newPath;
+        $rowToMove['Tree']['parent_id'] = $idNewParent;
+        $rowToMove['Tree']['area_id'] = $area_id;
 
-		$maxBranchPriority = $this->field("priority", array("parent_id" => $idNewParent), "priority DESC");
-		$rowToMove["Tree"]["priority"] = (empty($maxBranchPriority))? 1 : $maxBranchPriority + 1;
+        $maxBranchPriority = $this->field('priority', array('parent_id' => $idNewParent), 'priority DESC');
+        $rowToMove['Tree']['priority'] = empty($maxBranchPriority) ? 1 : $maxBranchPriority + 1;
 
-		$this->create();
-		if (!$this->save($rowToMove)) {
-			return false;
-		}
+        $this->create();
+        if (!$this->save($rowToMove)) {
+            return false;
+        }
 
-		foreach ($children as $child) {
-			if (!$this->delete($child["Tree"]["object_path"])) {
-				return false;
-			}
-			$child["Tree"]["parent_path"] = str_replace($oldPath, $newPath, $child["Tree"]["parent_path"]);
-			$child["Tree"]["object_path"] = str_replace($oldPath."/", $newPath."/", $child["Tree"]["object_path"]);
-			$child["Tree"]["area_id"] = $area_id;
-			$this->create();
-			if (!$this->save($child)) {
-				return false;
+        foreach ($children as $child) {
+            if (!$this->delete($child['Tree']['object_path'])) {
+                return false;
+            }
+            $child['Tree']['parent_path'] = str_replace($oldPath, $newPath, $child['Tree']['parent_path']);
+            $child['Tree']['object_path'] = str_replace($oldPath . '/', $newPath . '/', $child['Tree']['object_path']);
+            $child['Tree']['area_id'] = $area_id;
+            $this->create();
+            if (!$this->save($child)) {
+                return false;
             }
             
             $this->dispatchUpdatedTreeEvent($child['Tree']['parent_id'], static::EVENT_CHILDREN_UPDATED);
@@ -620,8 +620,8 @@ class Tree extends BEAppModel
         
         $this->dispatchUpdatedTreeEvent($id, static::EVENT_PARENTS_UPDATED);
 
-		return true;
-	}
+        return true;
+    }
 
 	/**
 	 * get all tree roots objects (publications)
