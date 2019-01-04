@@ -1,5 +1,47 @@
 # ChangeLog
 
+## Version 4.0.0.RC2 - Cactus
+
+### API changes (4.0.0.RC2)
+
+* [#1520](https://github.com/bedita/bedita/pull/1520) Ignore empty `password` on /auth/user update
+* [#1525](https://github.com/bedita/bedita/pull/1525) Update child position with `POST` action as well
+* [#1530](https://github.com/bedita/bedita/pull/1530) Query string filter fields with `null` or `not null`
+* [#1534](https://github.com/bedita/bedita/pull/1534) Introduce `lang` query string #1494
+* [#1536](https://github.com/bedita/bedita/pull/1536) feat: translations in `included` list with `lang` query string
+* [#1533](https://github.com/bedita/bedita/pull/1533) Existing user signup custom error code
+* [#1537](https://github.com/bedita/bedita/pull/1537) One Time Password (OTP) auth flow #1535
+* [#1545](https://github.com/bedita/bedita/pull/1545) Add `include` filter in `/auth/user`
+* [#1541](https://github.com/bedita/bedita/pull/1541) `parent` filter using type name on `object_types`
+* [#1547](https://github.com/bedita/bedita/pull/1547) Avoid errors on `status` check with relations and `lang` filter
+* [#1563](https://github.com/bedita/bedita/pull/1563) Modifiy error message searching with 1 or 2 letters
+* [#1566](https://github.com/bedita/bedita/pull/1566) #1531 Fix update children position on folders
+* [#1568](https://github.com/bedita/bedita/issues/1568) Fix weird response on `PATCH /model/property_types`
+* [#1572](https://github.com/bedita/bedita/pull/1572) Make `params` optional when updating relations
+
+### Core changes (4.0.0.RC2)
+
+* [#1518](https://github.com/bedita/bedita/pull/1518) Introduce JSON Schema `date` and `datetime` property type
+* [#1521](https://github.com/bedita/bedita/pull/1521) Setup json format for date object
+* [#1522](https://github.com/bedita/bedita/pull/1522) Fix date & datetime input with ISO and other standard formats
+* [#1465](https://github.com/bedita/bedita/pull/1465) Fix users validation: empty password not allowed
+* [#1507](https://github.com/bedita/bedita/issues/1507) JSON Schema `params` validation on relations
+* [#1499](https://github.com/bedita/bedita/issues/1499) Replace JSON Schema validation libraries
+* [#1527](https://github.com/bedita/bedita/pull/1527) Decode JSON Schemas as objects instead of associative
+* [#1539](https://github.com/bedita/bedita/pull/1539) `profiles.email` is now a non unique index
+* [#1540](https://github.com/bedita/bedita/pull/1540) #1422 collect application rules errors inherited in main entity
+* [#1422](https://github.com/bedita/bedita/issues/1422) Fix error saving user with duplicated `email`
+* [#1549](https://github.com/bedita/bedita/pull/1549) Make user tokens types configurable
+* [#1544](https://github.com/bedita/bedita/pull/1544) Read current application first to avoid errors in `/auth` or elsewhere
+* [#1558](https://github.com/bedita/bedita/pull/1558) Make `username` searchable
+* [#1552](https://github.com/bedita/bedita/issues/1552) Default `status` for new objects via configuration
+* [#1548](https://github.com/bedita/bedita/pull/1548) Avoid `status` filter on resources
+
+### Integration changes (4.0.0.RC2)
+
+* [#1519](https://github.com/bedita/bedita/pull/1519) Coverage and unit test improvements
+* [#1543](https://github.com/bedita/bedita/pull/1543) feat: php 7.1 as minimum version
+
 ## Version 4.0.0.RC - Cactus
 
 ### API changes (4.0.0.RC)
