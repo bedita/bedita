@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/bedita/bedita.svg?branch=4-cactus)](https://travis-ci.org/bedita/bedita)
 [![Code Coverage](https://codecov.io/gh/bedita/bedita/branch/4-cactus/graph/badge.svg)](https://codecov.io/gh/bedita/bedita/branch/4-cactus)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=4-cactus)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=4-cactus)
-[![Dependency Status](https://gemnasium.com/badges/github.com/bedita/bedita.svg)](https://gemnasium.com/github.com/bedita/bedita)
 
 BEdita 4 is a ready to use back-end API to handle the data of your mobile, IoT, web and desktop applications.
 It's also an extensible framework to build your custom back-end API via plugins.
