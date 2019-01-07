@@ -143,16 +143,9 @@ package: clean dist/bedita-$(DASH_VERSION).zip
 
 publish: guard-VERSION guard-GITHUB_USER dist/bedita-$(DASH_VERSION).zip
 	@echo "Creating draft release for $(VERSION). prerelease=$(PRERELEASE)"
-	curl $(AUTH) -XPOST $(API_HOST)/repos/$(OWNER)/bedita/releases -d '{ \
-		"tag_name": "$(VERSION)", \
-		"name": "BEdita $(VERSION) released", \
-		"draft": true, \
-		"prerelease": $(PRERELEASE) \
-	}' > release.json
+	curl $(AUTH) -XPOST $(API_HOST)/repos/$(OWNER)/bedita/releases -d '{"tag_name": "$(VERSION)", "name": "BEdita $(VERSION) released", "draft": true, "prerelease": $(PRERELEASE)}' > release.json
 	# Extract id out of response json.
-	php -r '$$f = file_get_contents("./release.json"); \
-		$$d = json_decode($$f, true); \
-		file_put_contents("./id.txt", $$d["id"]);'
+	php -r '$$f = file_get_contents("./release.json"); $$d = json_decode($$f, true); file_put_contents("./id.txt", $$d["id"]);'
 	@echo "Uploading zip file to github."
 	curl $(AUTH) -XPOST \
 		$(UPLOAD_HOST)/repos/$(OWNER)/bedita/releases/`cat ./id.txt`/assets?name=bedita-$(DASH_VERSION).zip \
