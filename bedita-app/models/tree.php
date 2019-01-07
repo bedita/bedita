@@ -263,11 +263,11 @@ class Tree extends BEAppModel
         }
 
         $objectTypeId = ClassRegistry::init('BEObject')->field('object_type_id', array('BEObject.id' => $id));
-        if ($objectTypeId === Configure::read('objectTypes.area.id')) {
+        if ($objectTypeId == Configure::read('objectTypes.area.id')) {
             throw new BeditaBadRequestException(__('Publication cannot be moved to destination', true));
         }
 
-        $isSection = $objectTypeId === Configure::read('objectTypes.section.id');
+        $isSection = $objectTypeId == Configure::read('objectTypes.section.id');
         
         $excludeFromTreeIds = Configure::read('excludeFromTreeIds');
         if ($options['mantain_hidden_branch'] === true && !empty($excludeFromTreeIds)) {
