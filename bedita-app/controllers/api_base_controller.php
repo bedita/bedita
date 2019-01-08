@@ -1549,13 +1549,18 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Get list of parent children with access restricted to $user
+     * Get list of children with access restricted to $user.
+     * If it's set to skip permissions or to show unauthorized objects it returns empty array.
      *
      * @param int $parentId the parent id
      * @param array $user array with user data, empty if no user is logged
      * @return array list of forbidden object ids, may be empty
      */
     protected function forbiddenChildren($parentId, array $user = array()) {
+        if ($this->showUnauthorized || $this->skipCheck) {
+            return array();
+        }
+        
         // add conditions on not accessible objects (frontend_access_with_block)
         // @todo move to FrontendController::loadSectionObjects()?
         $objectsForbidden = array();
