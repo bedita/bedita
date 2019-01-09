@@ -457,6 +457,10 @@ class ApiValidatorComponent extends Object {
      * @return boolean
      */
     public function isObjectAccessible($objectId, $parentsCheck = true) {
+        if ($this->controller->getShowUnauthorized() || $this->controller->getSkipCheck()) {
+            return true;
+        }
+
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
         // if object itself is forbidden to user return false without any other check
@@ -478,6 +482,10 @@ class ApiValidatorComponent extends Object {
      * @return boolean
      */
     public function areObjectParentsAccessible($objectId) {
+        if ($this->controller->getShowUnauthorized() || $this->controller->getSkipCheck()) {
+            return true;
+        }
+        
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
         $userGroups = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
