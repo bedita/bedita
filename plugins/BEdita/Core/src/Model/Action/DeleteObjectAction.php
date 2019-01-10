@@ -50,6 +50,7 @@ class DeleteObjectAction extends BaseAction
         }
 
         $entity->set('deleted', true);
+        $entity->set('locked', false);
 
         return (bool)$this->Table->save($entity);
     }
