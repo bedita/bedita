@@ -330,7 +330,7 @@ class UsersTable extends Table
     /**
      * Retrieve not nullable columns for a table
      *
-     * @param Cake\ORM\Table $table Table class
+     * @param \Cake\ORM\Table $table Table class
      * @return array
      */
     protected function notNullableColumns($table)
