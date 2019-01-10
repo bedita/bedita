@@ -370,4 +370,50 @@ class TrashControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('title', $result['error']);
         $this->assertNotEmpty($result['error']['title']);
     }
+
+    /**
+     * Test trash view on locked & deleted object.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testLockedView()
+    {
+        $this->configRequestHeaders();
+        $this->get('/trash/15');
+        $this->assertResponseCode(404);
+    }
+
+    /**
+     * Test trash restore on locked & deleted object.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testLockedRestore()
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data = [
+            'id' => '15',
+            'type' => 'documents',
+        ];
+        $this->patch('/trash/15', json_encode(compact('data')));
+        $this->assertResponseCode(404);
+    }
+
+    /**
+     * Test trash delete on locked & deleted object.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testLockedDelete()
+    {
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/trash/15');
+        $this->assertResponseCode(404);
+    }
 }

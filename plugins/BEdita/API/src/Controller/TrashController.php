@@ -65,6 +65,7 @@ class TrashController extends AppController
     public function index()
     {
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $filter['locked'] = false;
         $action = new ListObjectsAction(['table' => $this->Objects]);
         $deleted = true;
         $query = $action(compact('filter', 'contain', 'deleted'));
@@ -83,7 +84,7 @@ class TrashController extends AppController
     public function view($id)
     {
         $action = new GetObjectAction(['table' => $this->Table]);
-        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true, 'locked' => false]);
 
         $this->set(compact('trash'));
         $this->set('_serialize', ['trash']);
@@ -107,7 +108,7 @@ class TrashController extends AppController
         }
 
         $action = new GetObjectAction(['table' => $this->Table]);
-        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true, 'locked' => false]);
 
         $trash->deleted = false;
         $action = new SaveEntityAction(['table' => $this->Table]);
@@ -129,7 +130,7 @@ class TrashController extends AppController
         $this->request->allowMethod('delete');
 
         $action = new GetObjectAction(['table' => $this->Table]);
-        $trash = $action(['primaryKey' => $id, 'deleted' => true]);
+        $trash = $action(['primaryKey' => $id, 'deleted' => true, 'locked' => false]);
 
         $action = new DeleteObjectAction(['table' => $this->Table]);
         $action(['entity' => $trash, 'hard' => true]);
