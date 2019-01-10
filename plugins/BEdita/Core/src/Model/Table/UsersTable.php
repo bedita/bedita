@@ -363,6 +363,7 @@ class UsersTable extends Table
             return parent::delete($entity, $options);
         }
 
+        $this->beforeDelete(new Event('Model.beforeDelete'), $entity);
         $this->anonymizeUser($entity);
 
         return true;
