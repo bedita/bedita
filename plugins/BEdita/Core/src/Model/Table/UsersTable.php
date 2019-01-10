@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -53,6 +53,13 @@ class UsersTable extends Table
      * @var int
      */
     const ADMIN_USER = 1;
+
+    /**
+     * Deleted user prefix
+     *
+     * @var string
+     */
+    const DELETED_USER_PREFIX = '__deleted-';
 
     /**
      * {@inheritDoc}
@@ -293,6 +300,72 @@ class UsersTable extends Table
         if (static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
+    }
+
+    /**
+     * Modify user entity to become anonymous and hidden
+     *
+     * @param \Cake\Datasource\EntityInterface $entity the entity to anonimize
+     * @return void
+     */
+    protected function anonymizeUser(EntityInterface $entity)
+    {
+        $notNull = $this->notNullableColumns($this);
+        foreach ($this->inheritedTables() as $table) {
+            $notNull = array_merge($notNull, $this->notNullableColumns($table));
+        }
+        $properties = array_diff((array)$entity->visibleProperties(), $notNull, ['type']);
+        foreach ($properties as $name) {
+            $entity->set($name, null);
+        }
+        $deletedValue = self::DELETED_USER_PREFIX . $entity->get('id');
+        $entity->set('username', $deletedValue);
+        $entity->set('uname', $deletedValue);
+        $entity->set('password', null);
+        $entity->set('deleted', true);
+        $entity->set('locked', true);
+        $this->saveOrFail($entity);
+    }
+
+    /**
+     * Retrieve not nullable columns for a table
+     *
+     * @param Cake\ORM\Table $table Table class
+     * @return array
+     */
+    protected function notNullableColumns($table)
+    {
+        $res = [];
+        $schema = $table->getSchema();
+        $columns = $schema->columns();
+        foreach ($columns as $col) {
+            if (!$schema->isNullable($col)) {
+                $res[] = $col;
+            }
+        }
+
+        return $res;
+    }
+
+    /**
+     * Override Table delete: in case of constraints avoid delete and anonymize user data
+     *
+     * @param \Cake\Datasource\EntityInterface $entity the entity to delete
+     * @param array $options Additional options.
+     * @return bool
+     */
+    public function delete(EntityInterface $entity, $options = [])
+    {
+        $exists = $this->exists([
+            'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],
+        ]);
+        if (!$exists) {
+            return parent::delete($entity, $options);
+        }
+
+        $this->anonymizeUser($entity);
+
+        return true;
     }
 
     /**
