@@ -321,8 +321,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'created' => '2016-05-13T07:09:23+00:00',
                         'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
-                        'created_by' => 1,
-                        'modified_by' => 1,
+                        'created_by' => 5,
+                        'modified_by' => 5,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -991,6 +991,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
+        $newId = $this->lastObjectId() + 1;
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -1000,7 +1001,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
-        $this->assertHeader('Location', 'http://api.example.com/documents/15');
+        $this->assertHeader('Location', 'http://api.example.com/documents/' . $newId);
         static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
     }
 

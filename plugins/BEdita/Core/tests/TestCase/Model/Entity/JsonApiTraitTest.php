@@ -322,6 +322,12 @@ class JsonApiTraitTest extends TestCase
     public function testGetRelationshipsIncludedEmpty()
     {
         $usersTable = TableRegistry::get('Users');
+        // This is needed in order to permanently remove user with id 5
+        $user = $usersTable->get(5);
+        $user->created_by = 1;
+        $user->modified_by = 1;
+        $user = $usersTable->saveOrFail($user);
+
         $usersTable->delete($usersTable->get(5));
 
         $expected = [

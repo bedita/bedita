@@ -105,8 +105,8 @@ class ObjectsFixture extends TestFixture
             'body' => null,
             'extra' => null,
             'lang' => 'en',
-            'created_by' => 1,
-            'modified_by' => 1,
+            'created_by' => 5,
+            'modified_by' => 5,
             'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
         ],
         // 6
@@ -289,6 +289,26 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
+        ],
+        // 15 (ghost object)
+        [
+            'object_type_id' => 2,
+            'status' => 'draft',
+            'uname' => '__deleted-15',
+            'locked' => 1,
+            'deleted' => 1,
+            'created' => '2018-07-13 07:09:23',
+            'modified' => '2018-07-15 08:30:00',
+            'published' => null,
+            'title' => null,
+            'description' => null,
+            'body' => null,
+            'extra' => null,
+            'lang' => null,
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null
         ],
     ];
 

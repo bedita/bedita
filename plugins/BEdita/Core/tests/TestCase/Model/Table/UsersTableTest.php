@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -233,7 +233,7 @@ class UsersTableTest extends TestCase
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
-        static::assertEquals(15, $externalAuth->user_id);
+        static::assertEquals(16, $externalAuth->user_id);
 
         // 2. Add external auth to current user
         $authProvider = TableRegistry::get('AuthProviders')->get(1);
@@ -609,6 +609,45 @@ class UsersTableTest extends TestCase
         $user->email = 'gustavo.supporto@channelweb.it';
         $result = $this->Users->save($user);
         static::assertNotEmpty($result);
-        static::assertEquals(15, $result->get('id'));
+        static::assertEquals(16, $result->get('id'));
+    }
+
+    /**
+     * Test delete method with anonymization
+     *
+     * @return void
+     * @covers ::delete()
+     * @covers ::anonymizeUser()
+     * @covers ::notNullableColumns()
+     */
+    public function testAnonymousDelete()
+    {
+        $user = $this->Users->get(5);
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
+        // verify user entity is anonymized
+        $result = $this->Users->get(5);
+        static::assertEquals('__deleted-5', $result->get('username'));
+        static::assertEquals('__deleted-5', $result->get('uname'));
+        static::assertEquals(true, $result->get('locked'));
+        static::assertNull($result->get('last_login'));
+    }
+
+    /**
+     * Test delete method without anonymization
+     *
+     * @return void
+     * @covers ::delete()
+     */
+    public function testDelete()
+    {
+        $user = $this->Users->get(5);
+        $user->created_by = 1;
+        $user->modified_by = 1;
+        $user = $this->Users->saveOrFail($user);
+
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
+        static::assertFalse($this->Users->exists(['id' => 5]));
     }
 }

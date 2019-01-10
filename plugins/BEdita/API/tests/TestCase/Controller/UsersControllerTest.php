@@ -176,8 +176,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'created' => '2016-05-13T07:09:23+00:00',
                         'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
-                        'created_by' => 1,
-                        'modified_by' => 1,
+                        'created_by' => 5,
+                        'modified_by' => 5,
                         'blocked' => false,
                         'last_login' => '2016-03-15T09:57:38+00:00',
                         'last_login_err' => '2016-03-15T09:57:38+00:00',
@@ -432,12 +432,13 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
+        $newId = $this->lastObjectId() + 1;
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/users', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/15');
+        $this->assertHeader('Location', 'http://api.example.com/users/' . $newId);
         static::assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
