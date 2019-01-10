@@ -89,6 +89,21 @@ class GetObjectActionTest extends TestCase
     }
 
     /**
+     * Test command execution filter with deleted and locked filter.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
+     */
+    public function testExecuteObjectDeletedLocked()
+    {
+        $table = TableRegistry::get('Objects');
+        $action = new GetObjectAction(compact('table'));
+
+        $action(['primaryKey' => 15, 'deleted' => true, 'locked' => false]);
+    }
+
+    /**
      * Test command execution with conditions on objects status.
      *
      * @return void
