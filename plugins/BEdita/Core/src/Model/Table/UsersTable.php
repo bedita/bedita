@@ -306,7 +306,7 @@ class UsersTable extends Table
      * Modify user entity to become anonymous and hidden
      *
      * @param \Cake\Datasource\EntityInterface $entity the entity to anonimize
-     * @return void
+     * @return \Cake\Datasource\EntityInterface|false
      */
     protected function anonymizeUser(EntityInterface $entity)
     {
@@ -324,7 +324,8 @@ class UsersTable extends Table
         $entity->set('password', null);
         $entity->set('deleted', true);
         $entity->set('locked', true);
-        $this->saveOrFail($entity);
+
+        return $this->save($entity);
     }
 
     /**
@@ -348,11 +349,9 @@ class UsersTable extends Table
     }
 
     /**
-     * Override Table delete: in case of constraints avoid delete and anonymize user data
+     * {@inheritDoc}
      *
-     * @param \Cake\Datasource\EntityInterface $entity the entity to delete
-     * @param array $options Additional options.
-     * @return bool
+     * Override Table delete: in case of constraints avoid delete and anonymize user data
      */
     public function delete(EntityInterface $entity, $options = [])
     {
@@ -364,9 +363,8 @@ class UsersTable extends Table
         }
 
         $this->beforeDelete(new Event('Model.beforeDelete'), $entity);
-        $this->anonymizeUser($entity);
 
-        return true;
+        return (bool)$this->anonymizeUser($entity);
     }
 
     /**
