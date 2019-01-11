@@ -650,4 +650,60 @@ class UsersTableTest extends TestCase
         static::assertTrue($result);
         static::assertFalse($this->Users->exists(['id' => 5]));
     }
+
+    /**
+     * Data provider for `testPrefix` test case.
+     *
+     * @return array
+     */
+    public function prefixProvider()
+    {
+        return [
+            'valid' => [
+                true,
+                [
+                    'username' => 'some_unique_value',
+                ],
+            ],
+            'bad username' => [
+                new BadRequestException('"username" cannot start with reserved word "__deleted-"'),
+                [
+                    'username' => '__deleted-something',
+                    'uname' => 'a-valid-uname',
+                ],
+            ],
+            'bad uname' => [
+                new BadRequestException('"uname" cannot start with reserved word "__deleted-"'),
+                [
+                    'username' => 'validusername',
+                    'uname' => '__deleted-uname',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test avoid reserved `__deleted-` prefix
+     *
+     * @param bool|\Exception $expected Expected result.
+     * @param array $data Data to be validated.
+     *
+     * @return void
+     * @dataProvider prefixProvider
+     * @covers ::beforeSave()
+     */
+    public function testPrefix($expected, array $data)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $user = $this->Users->newEntity();
+        $this->Users->patchEntity($user, $data);
+
+        $success = $this->Users->save($user);
+        static::assertEquals($expected, (bool)$success);
+    }
 }
