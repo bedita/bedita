@@ -306,7 +306,7 @@ class UsersTable extends Table
      * Modify user entity to become anonymous and hidden
      *
      * @param \Cake\Datasource\EntityInterface $entity the entity to anonimize
-     * @return \Cake\Datasource\EntityInterface|false
+     * @return \Cake\Datasource\EntityInterface|bool
      */
     protected function anonymizeUser(EntityInterface $entity)
     {
