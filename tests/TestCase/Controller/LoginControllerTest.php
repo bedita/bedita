@@ -427,6 +427,12 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testUpdate(array $meta)
     {
+        // set email to NULL to be able to change it
+        $table = TableRegistry::get('Users');
+        $user = $table->get(1);
+        $user->set('email', null);
+        $table->saveOrFail($user);
+
         $headers = [
             'Host' => 'api.example.com',
             'Accept' => 'application/vnd.api+json',
@@ -437,6 +443,7 @@ class LoginControllerTest extends IntegrationTestCase
         $data = [
             'name' => 'Gustavo',
             'surname' => 'Trump',
+            'email' => 'gustavo@trump.com'
         ];
         $this->configRequest(compact('headers'));
         $this->patch('/auth/user', json_encode($data));
@@ -448,6 +455,7 @@ class LoginControllerTest extends IntegrationTestCase
         static::assertEquals(1, $result['data']['id']);
         static::assertEquals($data['name'], $result['data']['attributes']['name']);
         static::assertEquals($data['surname'], $result['data']['attributes']['surname']);
+        static::assertEquals($data['email'], $result['data']['attributes']['email']);
     }
 
     /**
@@ -472,6 +480,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $data = [
             'username' => 'gustavo',
+            'email' => 'another@email.com',
         ];
 
         $this->configRequest(compact('headers'));
@@ -483,6 +492,7 @@ class LoginControllerTest extends IntegrationTestCase
         static::assertNotEmpty($result['data']);
         static::assertEquals(1, $result['data']['id']);
         static::assertNotEquals($data['username'], $result['data']['attributes']['username']);
+        static::assertNotEquals($data['email'], $result['data']['attributes']['email']);
     }
 
     /**
