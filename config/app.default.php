@@ -424,13 +424,20 @@ return [
      * Signup settings.
      *
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
-     *      before being "activated"?
+     *      before being "activated"? If true upon creation user will have a `draft` status, otherwise `on`
      * - 'roles' - allowed role names on user signup (this config should be set normally at application level),
      *      requested user roles MUST be included in this array
+     * - 'requireEmail' - require email upon signup (default: true)
+     * - 'requirePassword' - require password upon signup (default: true), can be false in some AUTH schemas like One Time Password
+     * - 'defaultRoles` - roles to add upon signup as default if no roles are passed; they MUST be in allowed `roles` in order to be set
      */
     'Signup' => [
         // 'requireActivation' => true,
-        'roles' => [],
+        // 'roles' => [],
+        // 'requireEmail' => true,
+        // 'requirePassword' => true,
+        // 'activationUrl' => 'https://myapp.com/verify',
+        // 'defaultRoles' => [],
     ],
 
     /**
