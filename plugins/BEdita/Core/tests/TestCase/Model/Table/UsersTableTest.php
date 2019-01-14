@@ -404,9 +404,24 @@ class UsersTableTest extends TestCase
                 false,
                 [
                     'username' => 'some_unique_value',
-                    'password_hash' => null,
                     'email' => 'my@email.com',
-                    'status' => 'draft',
+                ],
+            ],
+            'missing email' => [
+                false,
+                [
+                    'username' => 'some_unique_value',
+                    'password_hash' => 'a great password',
+                ],
+            ],
+            'username only' => [
+                true,
+                [
+                    'username' => 'some_unique_value',
+                ],
+                [
+                    'requireEmail' => false,
+                    'requirePassword' => false,
                 ],
             ],
         ];
@@ -422,8 +437,12 @@ class UsersTableTest extends TestCase
      * @covers ::validationSignup()
      * @dataProvider validationSignupProvider
      */
-    public function testValidationSignup($expected, array $data)
+    public function testValidationSignup($expected, array $data, array $config = [])
     {
+        Configure::write('Signup', []);
+        if ($config) {
+            Configure::write('Signup', $config);
+        }
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';
