@@ -89,7 +89,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action(['deleted' => true]);
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(2, $result->count());
+        static::assertSame(3, $result->count());
     }
 
     /**

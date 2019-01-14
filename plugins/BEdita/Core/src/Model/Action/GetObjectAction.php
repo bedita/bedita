@@ -58,6 +58,11 @@ class GetObjectAction extends BaseAction
         $conditions += [
             'deleted' => (int)!empty($data['deleted']),
         ];
+        if (isset($data['locked'])) {
+            $conditions += [
+                'locked' => (int)!empty($data['locked']),
+            ];
+        }
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
 
         // Build query and add finders.
