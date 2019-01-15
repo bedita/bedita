@@ -432,6 +432,7 @@ class UsersTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
+     * @param array $config Signup configuration.
      *
      * @return void
      * @covers ::validationSignup()
@@ -439,10 +440,8 @@ class UsersTableTest extends TestCase
      */
     public function testValidationSignup($expected, array $data, array $config = [])
     {
-        Configure::write('Signup', []);
-        if ($config) {
-            Configure::write('Signup', $config);
-        }
+        Configure::write('Signup', $config);
+
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';

@@ -443,7 +443,7 @@ class LoginControllerTest extends IntegrationTestCase
         $data = [
             'name' => 'Gustavo',
             'surname' => 'Trump',
-            'email' => 'gustavo@trump.com'
+            'email' => 'gustavotrump@example.com',
         ];
         $this->configRequest(compact('headers'));
         $this->patch('/auth/user', json_encode($data));

@@ -138,7 +138,7 @@ class SignupUserActionTest extends TestCase
             'missing activation_url' => [
                 new BadRequestException([
                     'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['_empty' => 'This field cannot be left empty']],
+                    'detail' => ['activation_url' => ['_required' => 'This field is required']],
                 ]),
                 [
                     'data' => [
@@ -414,7 +414,9 @@ class SignupUserActionTest extends TestCase
             ],
         ];
 
-        EventManager::instance()->on('Auth.signup', function (...$arguments) {
+        $invoked = 0;
+        EventManager::instance()->on('Auth.signup', function (...$arguments) use (&$invoked) {
+            $invoked++;
             static::assertCount(4, $arguments);
             $job = $arguments[2];
             $url = sprintf('%s?uuid=%s', Configure::read('Signup.activationUrl'), $job->get('uuid'));
@@ -424,6 +426,7 @@ class SignupUserActionTest extends TestCase
         $action = new SignupUserAction();
         $action($data);
 
+        static::assertSame(1, $invoked);
         $user = TableRegistry::get('Users')->find()->where(['username' => 'testsignup'])->first();
         static::assertEquals('test.signup@example.com', $user->get('email'));
     }
