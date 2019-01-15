@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -28,6 +28,8 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -91,6 +93,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     public function execute(array $data = [])
     {
         $data = $this->normalizeInput($data);
+        // add activation url from config if not set
+        if (Configure::check('Signup.activationUrl') && empty($data['data']['activation_url'])) {
+            $data['data']['activation_url'] = Router::url(Configure::read('Signup.activationUrl'));
+        }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
             throw new BadRequestException([
@@ -303,10 +309,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function addRoles(User $entity, array $data)
     {
-        if (empty($data['roles'])) {
+        $signupRoles = Hash::get($data, 'roles', Configure::read('Signup.defaultRoles'));
+        if (empty($signupRoles)) {
             return;
         }
-        $roles = $this->loadRoles($data['roles']);
+        $roles = $this->loadRoles($signupRoles);
         $association = $this->Users->associations()->getByProperty('roles');
         $association->link($entity, $roles);
     }
@@ -367,6 +374,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     public function sendMail(Event $event, User $user, AsyncJob $job, $activationUrl)
     {
+        if (empty($user->get('email'))) {
+            return;
+        }
         $options = [
             'params' => compact('activationUrl', 'user'),
         ];

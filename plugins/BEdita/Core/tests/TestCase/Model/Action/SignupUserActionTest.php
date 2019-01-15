@@ -398,6 +398,66 @@ class SignupUserActionTest extends TestCase
     }
 
     /**
+     * Test `Signup.activationUrl` config
+     *
+     * @return void
+     */
+    public function testActivationUrl()
+    {
+        Configure::write('Signup.activationUrl', 'https://my.activation.url');
+
+        $data = [
+            'data' => [
+                'username' => 'testsignup',
+                'password' => 'testsignup',
+                'email' => 'test.signup@example.com',
+            ],
+        ];
+
+        $invoked = 0;
+        EventManager::instance()->on('Auth.signup', function (...$arguments) use (&$invoked) {
+            $invoked++;
+            static::assertCount(4, $arguments);
+            $job = $arguments[2];
+            $url = sprintf('%s?uuid=%s', Configure::read('Signup.activationUrl'), $job->get('uuid'));
+            static::assertEquals($url, $arguments[3]);
+        });
+
+        $action = new SignupUserAction();
+        $action($data);
+
+        static::assertSame(1, $invoked);
+        $user = TableRegistry::get('Users')->find()->where(['username' => 'testsignup'])->first();
+        static::assertEquals('test.signup@example.com', $user->get('email'));
+    }
+
+    /**
+     * Test signup with empty email and password case
+     *
+     * @return void
+     */
+    public function testEmptyPasswordEmail()
+    {
+        Configure::write('Signup', [
+            'requireEmail' => false,
+            'requirePassword' => false,
+        ]);
+
+        $data = [
+            'data' => [
+                'username' => 'testsignup',
+                'activation_url' => 'http://sample.com?confirm=true',
+            ],
+        ];
+
+        $action = new SignupUserAction();
+        $action($data);
+
+        $user = TableRegistry::get('Users')->find()->where(['username' => 'testsignup'])->first();
+        static::assertNull($user->get('email'));
+    }
+
+    /**
      * Data provider for `testRoles()`
      *
      * @return array
@@ -417,7 +477,9 @@ class SignupUserActionTest extends TestCase
                         'redirect_url' => 'http://sample.com/ok',
                     ],
                 ],
-                ['second role'],
+                [
+                    'roles' => ['second role'],
+                ],
             ],
             'failNoRoles' => [
                 new BadRequestException('Role "second role" not allowed on signup'),
@@ -433,6 +495,7 @@ class SignupUserActionTest extends TestCase
                 ],
                 [],
             ],
+            // fail beacause admin role not allowed in signup
             'failAdminRole' => [
                 new BadRequestException('Role "first role" not allowed on signup'),
                 [
@@ -445,7 +508,24 @@ class SignupUserActionTest extends TestCase
                         'redirect_url' => 'http://sample.com/ok',
                     ],
                 ],
-                ['first role'],
+                [
+                    'roles' => ['first role'],
+                ],
+            ],
+            'default role' => [
+                true,
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'activation_url' => 'http://sample.com?confirm=true',
+                    ],
+                ],
+                [
+                    'roles' => ['first role', 'second role'],
+                    'defaultRoles' => ['second role'],
+                ],
             ],
         ];
     }
@@ -455,23 +535,25 @@ class SignupUserActionTest extends TestCase
      *
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
-     * @param array $allowed Allowe roles to set in configuration.
+     * @param array $config Signup configuration.
      *
      * @dataProvider rolesProvider
      * @return void
      */
-    public function testRoles($expected, array $data, array $allowed)
+    public function testRoles($expected, array $data, array $config = [])
     {
-        Configure::write('Signup.roles', $allowed);
+        Configure::write('Signup', $config);
         if ($expected instanceof \Exception) {
             static::expectException(get_class($expected));
             static::expectExceptionMessage($expected->getMessage());
+            static::expectExceptionCode($expected->getCode());
         }
 
         $action = new SignupUserAction();
         $result = $action($data);
 
         static::assertTrue((bool)$result);
-        static::assertSame($data['data']['roles'], Hash::extract($result->get('roles'), '{n}.name'));
+        $roles = Hash::get($data, 'data.roles', Configure::read('Signup.defaultRoles'));
+        static::assertSame($roles, Hash::extract($result->get('roles'), '{n}.name'));
     }
 }

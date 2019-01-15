@@ -129,11 +129,16 @@ class UsersTable extends Table
 
         $validator
             ->email('email')
-            ->requirePresence('email')
-            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
-            ->requirePresence('password_hash')
-            ->notEmpty('password_hash');
+        $validator->requirePresence('password_hash', function () {
+            return Configure::read('Signup.requirePassword', true);
+        });
+        $validator->notEmpty('password_hash');
+
+        $validator->requirePresence('email', function () {
+            return Configure::read('Signup.requireEmail', true);
+        });
 
         return $validator;
     }

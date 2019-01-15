@@ -216,7 +216,10 @@ class LoginController extends AppController
         $this->request->allowMethod('patch');
 
         $entity = $this->userEntity();
-        $entity->setAccess(['username', 'password_hash', 'email'], false);
+        $entity->setAccess(['username', 'password_hash'], false);
+        if (!empty($entity->get('email'))) {
+            $entity->setAccess('email', false);
+        }
 
         $data = $this->request->getData();
         $this->checkPassword($entity, $data);
