@@ -28,6 +28,7 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -93,8 +94,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         $data = $this->normalizeInput($data);
         // add activation url from config if not set
-        if (empty($data['data']['activation_url'])) {
-            $data['data']['activation_url'] = Configure::read('Signup.activationUrl');
+        if (Configure::check('Signup.activationUrl') && empty($data['data']['activation_url'])) {
+            $data['data']['activation_url'] = Router::url(Configure::read('Signup.activationUrl'));
         }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
@@ -166,7 +167,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 ->notEmpty('username');
         } else {
             $validator
-                ->allowEmpty('activation_url')
                 ->requirePresence('provider_username')
                 ->requirePresence('access_token');
         }
