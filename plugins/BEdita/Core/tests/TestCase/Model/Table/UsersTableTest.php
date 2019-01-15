@@ -652,6 +652,31 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test delete method with anonymization when
+     * created_by/modified_by fk is set on other objects
+     *
+     * @return void
+     * @covers ::delete()
+     * @covers ::anonymizeUser()
+     * @covers ::notNullableColumns()
+     */
+    public function testAnonymousDeleteOther()
+    {
+        $user = $this->Users->get(5);
+        $user->created_by = 1;
+        $user->modified_by = 1;
+        $user = $this->Users->saveOrFail($user);
+
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
+        $result = $this->Users->get(5);
+        static::assertEquals('__deleted-5', $result->get('username'));
+        static::assertEquals('__deleted-5', $result->get('uname'));
+        static::assertEquals(true, $result->get('locked'));
+        static::assertNull($result->get('last_login'));
+    }
+
+    /**
      * Test delete method without anonymization
      *
      * @return void
@@ -663,6 +688,11 @@ class UsersTableTest extends TestCase
         $user->created_by = 1;
         $user->modified_by = 1;
         $user = $this->Users->saveOrFail($user);
+
+        $table = TableRegistry::get('Objects');
+        $doc = $table->get(3);
+        $doc->modified_by = 1;
+        $doc = $table->saveOrFail($doc);
 
         $result = $this->Users->delete($user);
         static::assertTrue($result);

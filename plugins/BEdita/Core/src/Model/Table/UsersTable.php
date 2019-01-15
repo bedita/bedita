@@ -25,6 +25,7 @@ use Cake\Event\EventManager;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -360,7 +361,7 @@ class UsersTable extends Table
      */
     public function delete(EntityInterface $entity, $options = [])
     {
-        $exists = $this->exists([
+        $exists = TableRegistry::get('Objects')->exists([
             'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],
         ]);
         if (!$exists) {
