@@ -28,6 +28,7 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -308,10 +309,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function addRoles(User $entity, array $data)
     {
-        $signupRoles = (array)Configure::read('Signup.defaultRoles');
-        if (!empty($data['roles'])) {
-            $signupRoles = $data['roles'];
-        }
+        $signupRoles = Hash::get($data, 'roles', Configure::read('Signup.defaultRoles'));
         if (empty($signupRoles)) {
             return;
         }
