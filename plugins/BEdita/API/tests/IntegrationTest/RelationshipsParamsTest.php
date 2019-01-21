@@ -307,4 +307,61 @@ class RelationshipsParamsTest extends IntegrationTestCase
         static::assertSame($currentPriority + 1, $objectRelation->get('priority'));
         static::assertSame(['name' => 'Gustavo'], $objectRelation->get('params'));
     }
+
+    /**
+     * Test that creating a new relation does not enforce presence of parameters if they are allowed to be empty.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testOkNoParams()
+    {
+        // Update Relation settings and force-reload tables.
+        $relation = $this->Relations->find()
+            ->where(['name' => 'another_test'])
+            ->firstOrFail();
+        $relation->set('params', [
+            'type' => 'object',
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                ],
+                'age' => [
+                    'type' => 'integer',
+                    'minimum' => 0,
+                ],
+            ],
+        ]);
+        $this->Relations->saveOrFail($relation);
+        TableRegistry::getTableLocator()->clear();
+        $this->Locations = TableRegistry::getTableLocator()->get('Locations');
+
+        // Create new location.
+        $firstUser = $this->Users->find()->first();
+        $secondLocation = $this->Locations->newEntity(['title' => 'Another location']);
+        $secondLocation->created_by = 1;
+        $secondLocation->modified_by = 1;
+        $secondLocation = $this->Locations->saveOrFail($secondLocation);
+
+        $data = [
+            [
+                'id' => $secondLocation->id,
+                'type' => 'locations',
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $endpoint = sprintf('/users/%d/relationships/%s', $firstUser->id, $relation->get('name'));
+        $this->_sendRequest($endpoint, 'POST', json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+
+        $existing = $this->ObjectRelations->exists([
+            'left_id' => $firstUser->id,
+            'right_id' => $secondLocation->id,
+            'relation_id' => $relation->id,
+        ]);
+        static::assertTrue($existing);
+    }
 }

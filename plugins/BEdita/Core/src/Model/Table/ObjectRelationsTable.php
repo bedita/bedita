@@ -107,7 +107,13 @@ class ObjectRelationsTable extends Table
             return true;
         }
 
-        return Validation::jsonSchema($value, $context['providers']['jsonSchema']);
+        $success = Validation::jsonSchema($value, $context['providers']['jsonSchema']);
+        if ($success !== true && $value === null && Validation::jsonSchema(new \stdClass(), $context['providers']['jsonSchema']) === true) {
+            // For the sake of validation, `null` is equivalent to empty object.
+            $success = true;
+        }
+
+        return $success;
     }
 
     /**
