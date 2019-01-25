@@ -1,7 +1,7 @@
+{assign var=googleMapsApi value=$conf->googleMapsApi|default:false}
+
 <!-- Google Maps API key API 3.3 -->
-<script type="text/javascript"
-    src="https://maps.google.com/maps/api/js?sensor=false">
-</script>
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false{if $googleMapsApi}&key={$googleMapsApi.key}{/if}"></script>
 
 <script>
 $(document).ready(function(){
@@ -25,7 +25,7 @@ $(document).ready(function(){
 		}
 		window.open("https://maps.google.com/maps?" + q + "&output=classic");
 	});	
-	
+{if $geocodepi}
     try {
         geocoder = new google.maps.Geocoder();
         $('.geocodeme').click(function() {
@@ -33,7 +33,7 @@ $(document).ready(function(){
             if (address == '') {
                 alert('devi prima inserire un indirizzo'); return;
             }
-            geocoder.geocode( { 'address': address}, function(results, status) {
+            geocoder.geocode( { 'address': address }, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     var latlng = '' + results[0].geometry.location + '';
                     var latlng = latlng.replace('(', '').replace(')', '');
@@ -50,6 +50,7 @@ $(document).ready(function(){
         $('.geocodeme, .googlemaptest').attr('disabled', 'disabled');
         console.warn('Google CDN unreachable. Some functionalities have been disabled.');
     }
+{/if}
 });
 </script>
 
@@ -98,15 +99,14 @@ $(document).ready(function(){
 		</select>
 	</td>
 </tr>
-{*
-<tr>
-	<th>{t}Gmaps LookaT{/t}:</th>
-	<td colspan=3><textarea name="data[GeoTag][0][gmaps_lookat]" class="autogrowarea" style="height:16px; width:300px;">{if !empty($d.gmaps_lookat)}{$d.gmaps_lookat}{/if}</textarea></td>
-</tr>
-*}
 <tr>
 	<td></td>
-	<td colspan="3"><input type="button" class="geocodeme" value="{t}Find and fill latlong coords{/t}" /> <input type="button" class="googlemaptest" value="{t}Test on GoogleMaps{/t}" /></td>
+	<td colspan="3">
+		{if $googleMapsApi}
+			<input type="button" class="geocodeme" value="{t}Find and fill latlong coords{/t}" />
+		{/if}
+		<input type="button" class="googlemaptest" value="{t}Test on GoogleMaps{/t}" />
+	</td>
 </tr>
 
 </table>
