@@ -25,7 +25,7 @@ $(document).ready(function(){
 		}
 		window.open("https://maps.google.com/maps?" + q + "&output=classic");
 	});	
-{if $geocodepi}
+{if $googleMapsApi}
     try {
         geocoder = new google.maps.Geocoder();
         $('.geocodeme').click(function() {
