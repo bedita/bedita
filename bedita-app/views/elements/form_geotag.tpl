@@ -1,7 +1,10 @@
-{assign var=googleMapsApi value=$conf->googleMapsApi|default:false}
+{assign var=googleMapsApi value=$conf->googleMapsApi|default:['url' => 'https://maps.googleapis.com/maps/api/']}
+{assign var=googleMapsApiKey value=$googleMapsApi.key|default:''}
 
 <!-- Google Maps API key API 3.3 -->
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false{if $googleMapsApi}&key={$googleMapsApi.key}{/if}"></script>
+<script type="text/javascript"
+	src="{$googleMapsApi.url}js{if $googleMapsApiKey}?key={$googleMapsApiKey}{/if}">
+</script>
 
 <script>
 $(document).ready(function(){
@@ -25,7 +28,7 @@ $(document).ready(function(){
 		}
 		window.open("https://maps.google.com/maps?" + q + "&output=classic");
 	});	
-{if $googleMapsApi}
+
     try {
         geocoder = new google.maps.Geocoder();
         $('.geocodeme').click(function() {
@@ -50,7 +53,6 @@ $(document).ready(function(){
         $('.geocodeme, .googlemaptest').attr('disabled', 'disabled');
         console.warn('Google CDN unreachable. Some functionalities have been disabled.');
     }
-{/if}
 });
 </script>
 

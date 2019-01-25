@@ -372,5 +372,6 @@ $config['objectCakeCache'] = true;
  * Google maps api settings
  */
 // $config['googleMapsApi'] = array(
+//    'url' => 'https://maps.googleapis.com/maps/api/',
 //    'key' => 'my-api-key',
 //);
