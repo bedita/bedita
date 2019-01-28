@@ -1164,46 +1164,6 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Update tree position of object in $data with $data['parents'] as new parent
-     *
-     *
-     *
-     */
-    protected function updateObjectTree($data, $model = null) {
-        if (empty($data['parents'])) {
-            return;
-        }
-
-        if (!$model) {
-            // get object model
-            $confType = $this->BEObject->findObjectTypeId($data['id']);
-
-            $objectTypeConf = Configure::read('objectTypes.' . $confType);
-            if (empty($objectTypeConf)) {
-                throw new BeditaBadRequestException('Invalid object type');
-            }
-            $model = $this->loadModelByType($objectTypeConf['model']);
-        }
-
-        $tree = ClassRegistry::init('Tree');
-        $tree->updateTree(
-            $data['id'],
-            $data['parents'],
-            array(
-                'area_id' => $this->publication['id'],
-                'status' => $this->getStatus(),
-            )
-        );
-
-        if ($objectTypeConf['model'] == 'section') {
-            $menu = (isset($data[$this->name]['menu']) && $data[$this->name]['menu'] == 0) ? 0 : 1;
-            $tree->saveMenuVisibility($model->id, $data['parents'][0], $menu);
-        }
-
-        $this->BEObject->clearCacheByIds($data['parents']);
-    }
-
-    /**
      * Save relations $relationName between $objectId and related objects in $this->data
      *
      * If you want to save only one relation $this->data should be
@@ -1481,7 +1441,12 @@ abstract class ApiBaseController extends FrontendController {
         $this->ApiValidator->checkChildren(array($this->data), $objectId);
 
         $moveSiblings = !empty($this->data['move_siblings']);
+
+        $this->Transaction->begin();
+
         $this->updateSiblingsPriority($objectId, $childId, $this->data['priority'], $moveSiblings);
+
+        $this->Transaction->commit();
 
         $this->getObjectsChildren($objectId, $childId);
     }
@@ -2125,16 +2090,18 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * set child priority and update siblings priority
+     * set child priority and update siblings priority.
      *
-     * @param {String} $objectId
-     * @param {String} $childId
-     * @param {Number} $priority
-
+     * caller's method must handle Transactions
+     *
+     * @param string $objectId
+     * @param string $childId
+     * @param int $priority
+     * @param bool $moveSiblings
+     * @return void
      */
     protected function updateSiblingsPriority($objectId, $childId, $priority, $moveSiblings = false) {
         // Increase or decrease priority for any sibling that is between the former and current position.
-        $this->Transaction->begin();
         $tree = ClassRegistry::init('Tree');
         $row = $tree->find('first', array(
             'conditions' => array(
@@ -2176,8 +2143,6 @@ abstract class ApiBaseController extends FrontendController {
                 $cacheIdsToBeCleared[] = $child['Tree']['id'];
             }
         }
-
-        $this->Transaction->commit();
 
         $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
     }
