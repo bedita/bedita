@@ -2094,10 +2094,10 @@ abstract class ApiBaseController extends FrontendController {
      *
      * caller's method must handle Transactions
      *
-     * @param string $objectId
-     * @param string $childId
-     * @param int $priority
-     * @param bool $moveSiblings
+     * @param string $objectId section id that contains $childId
+     * @param string $childId object id that will change priority
+     * @param int $priority new priority position
+     * @param bool $moveSiblings if true it updates siblings priority
      * @return void
      */
     protected function updateSiblingsPriority($objectId, $childId, $priority, $moveSiblings = false) {
