@@ -165,7 +165,8 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
         }
 
         if ($authorized === false) {
-            $this->log('User login not authorized: ' . $username);
+            // avoid userid in logs / use ID instead
+            $this->log(sprintf('User login not authorized: %s', $u['id']));
             return false;
         }
 
