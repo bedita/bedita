@@ -356,12 +356,12 @@ class BeAuthComponent extends Object {
         if($u["User"]["num_login_err"] >= $policy['maxLoginAttempts']) {
             $this->isValid = false;
             // avoid userid in logs / use ID instead
-            $this->log(sprintf('Max login attempts error, user: %s', $u['User']['id']));
+            $this->log(sprintf('Max login attempts error, user "%s"', $u['User']['id']));
 
         } else if($daysFromLastLogin > $policy['maxNumDaysInactivity']) {
             $this->isValid = false;
             // avoid userid in logs / use ID instead
-            $this->log(sprintf('Max num days inactivity: user: %s days: %n', $u['User']['id'], $daysFromLastLogin));
+            $this->log(sprintf('Max num days inactivity: user "%s", days "%n"', $u['User']['id'], $daysFromLastLogin));
             
         } else if($daysFromLastLogin > $policy['maxNumDaysValidity']) {
             $this->changePasswd = true;
@@ -379,7 +379,7 @@ class BeAuthComponent extends Object {
 
         if ($authorized === false) {
             // avoid userid in logs / use ID instead
-            $this->log(sprintf('User login not authorized: %s', $u['User']['id']));
+            $this->log(sprintf('User login not authorized: "%s"', $u['User']['id']));
             if ($this->userAuth != 'bedita') {
                 $this->startSession();
                 $this->Session->write('externalLoginRequestFailed', $userid);

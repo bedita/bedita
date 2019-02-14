@@ -143,15 +143,11 @@ class AppController extends Controller {
      * @return void
      */
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
-        $url = self::usedUrl();
-        $log = $eventMsg;
 
         // avoid userid in logs / use ID instead
         $id = Set::extract('/id', $this->BeAuth->getUser());
-        if (empty($id)) {
-            $id = 'none';
-        }
-        $this->log(sprintf('%s - user: %s - url: %s', $eventMsg, $id, $url));
+        $id = (!empty($id)) ? $id[0] : '-';
+        $this->log(sprintf('%s user "%s" %s', trim($eventMsg), $id, trim(self::usedUrl())));
 
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
