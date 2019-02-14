@@ -246,9 +246,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
+        $data['status'] = $status;
 
         return $action([
-            'entity' => $this->Users->newEntity()->set('status', $status),
+            'entity' => $this->Users->newEntity(),
             'data' => $data,
             'entityOptions' => [
                 'validate' => $validate,
