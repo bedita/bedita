@@ -63,6 +63,7 @@ class SignupUserActionTest extends TestCase
     {
         parent::setUp();
 
+        Configure::write('Signup', []);
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
             'className' => 'Debug',
