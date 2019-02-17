@@ -443,7 +443,7 @@ class MediaControllerTest extends IntegrationTestCase
                             'data' => [
                                 [
                                     'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
-                                    'type' => 'streams',    
+                                    'type' => 'streams',
                                 ]
                             ]
                         ],
