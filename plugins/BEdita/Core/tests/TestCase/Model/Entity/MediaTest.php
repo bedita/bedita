@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Entity\Media;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use BEdita\Core\Model\Entity\Media;
-use BEdita\Core\Filesystem\FilesystemRegistry;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Media} Test Case
