@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
 use Cake\Core\Configure;
@@ -292,5 +293,395 @@ class MediaControllerTest extends IntegrationTestCase
         $body = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(400);
         static::assertSame('Missing IDs to generate thumbnails for', Hash::get($body, 'error.title'));
+    }
+
+    /**
+     * Test index method.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testIndex()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/media',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/media',
+                'last' => 'http://api.example.com/media',
+                'prev' => null,
+                'next' => null,
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
+                'schema' => [
+                    'files' => [
+                        '$id' => 'http://api.example.com/model/schema/files',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['files'],
+                    ],
+                ]
+            ],
+            'data' => [
+                [
+                    'id' => '10',
+                    'type' => 'files',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-one',
+                        'title' => 'first media',
+                        'description' => 'media description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => 'synapse', // inherited custom property
+                        'name' => 'My media name',
+                        'provider' => null,
+                        'provider_uid' => null,
+                        'provider_url' => null,
+                        'provider_thumbnail' => null,
+                        'provider_extra' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2017-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'media_url' => 'https://static.example.org/files/9e58fa47-db64-4479-a0ab-88a706180d59.txt',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/10',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/streams',
+                                'self' => 'http://api.example.com/files/10/relationships/streams',
+                            ],
+                            'data' => [
+                               [
+                                    'id' => '9e58fa47-db64-4479-a0ab-88a706180d59',
+                                    'type' => 'streams',
+                               ]
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/parents',
+                                'self' => 'http://api.example.com/files/10/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/translations',
+                                'self' => 'http://api.example.com/files/10/relationships/translations',
+                            ],
+                        ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/10/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '14',
+                    'type' => 'files',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-two',
+                        'title' => 'second media',
+                        'description' => 'another media description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => null,
+                        'name' => 'My other media name',
+                        'provider' => null,
+                        'provider_uid' => null,
+                        'provider_url' => null,
+                        'provider_thumbnail' => null,
+                        'provider_extra' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2018-03-22T16:42:31+00:00',
+                        'modified' => '2018-03-22T16:42:31+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'media_url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/14',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/streams',
+                                'self' => 'http://api.example.com/files/14/relationships/streams',
+                            ],
+                            'data' => [
+                                [
+                                    'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                                    'type' => 'streams',
+                                ]
+                            ]
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/parents',
+                                'self' => 'http://api.example.com/files/14/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/translations',
+                                'self' => 'http://api.example.com/files/14/relationships/translations',
+                            ],
+                        ],
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/test_abstract',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '9e58fa47-db64-4479-a0ab-88a706180d59',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'sample.txt',
+                        'mime_type' => 'text/plain',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 22,
+                        'hash_md5' => '4803449f89ea5eeb42efa1b2889dd770',
+                        'hash_sha1' => '283b1edb6f051ef1d1770cd9bb08e75066b437e6',
+                        'width' => null,
+                        'height' => null,
+                        'duration' => null,
+                        'created' => '2017-06-22T12:37:41+00:00',
+                        'modified' => '2017-06-22T12:37:41+00:00',
+                        'url' => 'https://static.example.org/files/9e58fa47-db64-4479-a0ab-88a706180d59.txt',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/object',
+                                'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'bedita-logo-gray.gif',
+                        'mime_type' => 'image/gif',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 927,
+                        'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
+                        'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
+                        'width' => null,
+                        'height' => null,
+                        'duration' => null,
+                        'created' => '2018-03-22T15:58:47+00:00',
+                        'modified' => '2018-03-22T15:58:47+00:00',
+                        'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/object',
+                                'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/media');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test single view method.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSingleView()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/files/14',
+                'home' => 'http://api.example.com/home',
+            ],
+            'meta' => [
+                'schema' => [
+                    'files' => [
+                        '$id' => 'http://api.example.com/model/schema/files',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['files'],
+                    ],
+                ]
+            ],
+            'data' => [
+                'id' => '14',
+                'type' => 'files',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'media-two',
+                    'title' => 'second media',
+                    'description' => 'another media description goes here',
+                    'body' => null,
+                    'extra' => null,
+                    'files_property' => null,
+                    'lang' => 'en',
+                    'publish_start' => null,
+                    'publish_end' => null,
+                    'media_property' => null,
+                    'name' => 'My other media name',
+                    'provider' => null,
+                    'provider_uid' => null,
+                    'provider_url' => null,
+                    'provider_thumbnail' => null,
+                    'provider_extra' => null,
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2018-03-22T16:42:31+00:00',
+                    'modified' => '2018-03-22T16:42:31+00:00',
+                    'published' => null,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'media_url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                ],
+                'relationships' => [
+                    'streams' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/streams',
+                            'self' => 'http://api.example.com/files/14/relationships/streams',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                                'type' => 'streams',
+                            ]
+                        ]
+                    ],
+                    'parents' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/parents',
+                            'self' => 'http://api.example.com/files/14/relationships/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/translations',
+                            'self' => 'http://api.example.com/files/14/relationships/translations',
+                        ],
+                    ],
+                    'test_abstract' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/test_abstract',
+                            'self' => 'http://api.example.com/files/14/relationships/test_abstract',
+                        ],
+                    ],
+                    'inverse_test_abstract' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/inverse_test_abstract',
+                            'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'bedita-logo-gray.gif',
+                        'mime_type' => 'image/gif',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 927,
+                        'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
+                        'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
+                        'width' => null,
+                        'height' => null,
+                        'duration' => null,
+                        'created' => '2018-03-22T15:58:47+00:00',
+                        'modified' => '2018-03-22T15:58:47+00:00',
+                        'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/object',
+                                'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/files/14');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
     }
 }

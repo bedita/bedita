@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use Cake\Utility\Hash;
+
 /**
  * Media Entity
  *
@@ -27,4 +29,30 @@ namespace BEdita\Core\Model\Entity;
  */
 class Media extends ObjectEntity
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $properties = [], array $options = [])
+    {
+        parent::__construct($properties, $options);
+
+        // Virtual properties.
+        $this->setVirtual(['media_url'], true);
+        $this->setAccess('media_url', false);
+    }
+
+    /**
+     * Getter for media url.
+     *
+     * @return string|null
+     */
+    protected function _getMediaUrl()
+    {
+        $stream = Hash::get((array)$this->get('streams'), '0');
+        if (empty($stream)) {
+            return null;
+        }
+
+        return $stream->get('url');
+    }
 }
