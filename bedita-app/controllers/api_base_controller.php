@@ -2145,9 +2145,7 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
 
-        if (!empty($cacheIdsToBeCleared)) {
-            $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
-        }
+        $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
     }
 
     /**
