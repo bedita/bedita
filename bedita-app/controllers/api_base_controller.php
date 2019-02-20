@@ -2120,6 +2120,7 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaInternalErrorException('Error updating priority');
         }
 
+        $cacheIdsToBeCleared = array();
         if ($moveSiblings && $priority != $oldPriority) {
             $siblingsToMove = $tree->find('all', array(
                 'conditions' => array(
@@ -2144,7 +2145,9 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
 
-        $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
+        if (!empty($cacheIdsToBeCleared)) {
+            $this->BEObject->clearCacheByIds($cacheIdsToBeCleared);
+        }
     }
 
     /**
