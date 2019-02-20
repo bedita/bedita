@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -38,6 +39,8 @@ class SignupUserActivationActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -76,6 +79,7 @@ class SignupUserActivationActionTest extends TestCase
         $this->AsyncJobs = TableRegistry::get('AsyncJobs');
         $this->Users = TableRegistry::get('Users');
 
+        Configure::write('Signup', []);
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
             'className' => 'Debug'

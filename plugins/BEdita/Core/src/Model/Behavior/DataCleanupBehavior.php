@@ -60,9 +60,9 @@ class DataCleanupBehavior extends Behavior
         }
         $defaults = Configure::read(sprintf('DefaultValues.%s', $key), []);
         $config['fields'] = array_merge($config['fields'], $defaults);
-        foreach ($data as $key => $value) {
-            if (($value === null || $value === '') && isset($config['fields'][$key])) {
-                $data[$key] = $config['fields'][$key];
+        foreach ($config['fields'] as $key => $value) {
+            if (!isset($data[$key]) || $data[$key] === null || $data[$key] === '') {
+                $data[$key] = $value;
             }
         }
     }

@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
@@ -39,6 +40,7 @@ class SignupControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        Configure::write('Signup', []);
         Email::dropTransport('default');
         Email::setConfigTransport('default', [
             'className' => 'Debug'

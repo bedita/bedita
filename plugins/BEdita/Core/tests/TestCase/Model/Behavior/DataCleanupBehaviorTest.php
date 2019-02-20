@@ -84,6 +84,20 @@ class DataCleanupBehaviorTest extends TestCase
                     ],
                 ],
             ],
+            'only in config' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                ],
+                [
+                    'status' => 'on'
+                ],
+                [
+                    'users' => [
+                        'status' => 'on',
+                    ],
+                ],
+            ],
             'deleted' => [
                 [
                     'username' => 'lorem',
