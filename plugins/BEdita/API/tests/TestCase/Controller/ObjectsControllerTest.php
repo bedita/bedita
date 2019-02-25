@@ -1152,7 +1152,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $document = TableRegistry::get('Documents')->get('2');
         static::assertEquals($newTitle, $document->get('title'));
         static::assertEquals('documents', $document->get('type'));
-        static::assertEquals('on', $document->get('status'));;
+        static::assertEquals('on', $document->get('status'));
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($data['id'], $result['data']['id']);
