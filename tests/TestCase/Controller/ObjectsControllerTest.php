@@ -1149,9 +1149,10 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $Documents = TableRegistry::get('Documents');
-        static::assertEquals($newTitle, $Documents->get(2)->get('title'));
-        static::assertEquals('documents', $Documents->get(2)->get('type'));
+        $document = TableRegistry::get('Documents')->get('2');
+        static::assertEquals($newTitle, $document->get('title'));
+        static::assertEquals('documents', $document->get('type'));
+        static::assertEquals('on', $document->get('status'));;
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($data['id'], $result['data']['id']);
