@@ -54,7 +54,7 @@ class DataCleanupBehavior extends Behavior
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         // fill defaults only on new objects
-        if (isset($data['id'])) {
+        if (!empty($data['id'])) {
             return;
         }
         $config = $this->getConfig();
