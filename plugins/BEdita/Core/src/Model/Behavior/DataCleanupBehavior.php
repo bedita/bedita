@@ -53,6 +53,10 @@ class DataCleanupBehavior extends Behavior
      */
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
+        // fill defaults only on new objects
+        if (isset($data['id'])) {
+            return;
+        }
         $config = $this->getConfig();
         $key = Inflector::underscore($this->_table->getAlias());
         if ($this->_table->behaviors()->has('ObjectType') && $this->_table->objectType()) {

@@ -109,6 +109,17 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [],
             ],
+            'status, only new objects' => [
+                [
+                    'id' => 999,
+                    'status' => null,
+                ],
+                [
+                    'status' => null,
+                ],
+                [],
+            ],
+
         ];
     }
 
