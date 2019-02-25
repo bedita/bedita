@@ -117,7 +117,11 @@ class DataCleanupBehaviorTest extends TestCase
                 [
                     'status' => null,
                 ],
-                [],
+                [
+                    'users' => [
+                        'status' => 'on',
+                    ],
+                ],
             ],
 
         ];
