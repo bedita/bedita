@@ -367,3 +367,11 @@ $config['objectCakeCache'] = true;
 // $config['multimedia'] = array(
 //    'types' => array('audio', 'image', 'video'),
 //);
+
+/**
+ * Google maps api settings
+ */
+// $config['googleMapsApi'] = array(
+//    'url' => 'https://maps.googleapis.com/maps/api/',
+//    'key' => 'my-api-key',
+//);
