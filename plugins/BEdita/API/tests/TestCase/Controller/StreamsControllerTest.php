@@ -16,6 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
+use Cake\Utility\Hash;
 use Cake\Validation\Validation;
 
 /**
@@ -139,18 +140,52 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Upload data provider for testUpload()
+     *
+     * @return array
+     */
+    public function uploadProvider()
+    {
+        return [
+            'javascript' => [
+                [
+                    'fileName' => 'synapse.js',
+                    'contents' => 'exports.synapse = Promise.resolve();',
+                    'contentType' => 'text/javascript',
+                ],
+            ],
+            'xml' => [
+                [
+                    'fileName' => 'gustavo.xml',
+                    'contents' => '<?xml version="1.0" encoding="utf-8"?><items><item>one</item><item>two</item></items>',
+                    'contentType' => 'text/xml',
+                ],
+            ],
+            'json' => [
+                [
+                    'fileName' => 'gustavo.json',
+                    'contents' => '{"name":"Gustavo","surname":"Supporto"}',
+                    'contentType' => 'application/json',
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test upload method.
      *
+     * @param array $data The file data.
      * @return void
      *
+     * @dataProvider uploadProvider
      * @covers ::upload()
      * @covers ::beforeFilter()
      */
-    public function testUpload()
+    public function testUpload($data)
     {
-        $fileName = 'synapse.js';
-        $contents = 'exports.synapse = Promise.resolve();';
-        $contentType = 'text/javascript';
+        $fileName = Hash::get($data, 'fileName');
+        $contents = Hash::get($data, 'contents');
+        $contentType = Hash::get($data, 'contentType');
 
         $attributes = [
             'file_name' => $fileName,
@@ -181,7 +216,7 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $id = $response['data']['id'];
         $url = sprintf('http://api.example.com/streams/%s', $id);
-        $meta['url'] = sprintf('https://static.example.org/files/%s-synapse.js', $id);
+        $meta['url'] = sprintf('https://static.example.org/files/%s-%s', $id, $fileName);
         static::assertTrue(Validation::uuid($id));
         static::assertSame('streams', $response['data']['type']);
         static::assertEquals($attributes, $response['data']['attributes']);
