@@ -95,7 +95,7 @@ class AppError extends ErrorHandler {
 			Configure::write('debug', 1);
 			if (!empty($exception)) {
 				App::import('Core', 'Sanitize');
-				$options = array('escape' => false);;
+				$options = array('escape' => false);
 				$this->error['message'] = Sanitize::clean($exception->getMessage(), $options);
 				if ($exception instanceof BeditaException) {
 					$this->error['status'] = $exception->getHttpCode();
@@ -265,8 +265,8 @@ class AppError extends ErrorHandler {
 		if (isset($current)) {
 			$this->controller = $current;
 			$this->checkController();
-			$this->controller->handleError($this->error['details'], $this->error['message'], $this->errorTrace);
 			$this->controller->setResult($messages['result']);
+			$this->controller->handleError($this->error['details'], $this->error['message'], $this->errorTrace);
 			$this->setError();
 			if (BACKEND_APP) {
 				$this->controller->render($this->controller->action);

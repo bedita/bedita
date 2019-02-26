@@ -147,7 +147,11 @@ class AppController extends Controller {
         // avoid userid in logs / use ID instead
         $id = Set::extract('/id', $this->BeAuth->getUser());
         $id = (!empty($id)) ? $id[0] : '-';
-        $this->log(sprintf('%s user "%s" %s', trim($eventMsg), $id, trim(self::usedUrl())));
+        $logFile = 'error';
+        if ($this->result != static::ERROR) {
+            $logFile = strtolower($this->result);
+        }
+        $this->log(sprintf('%s user "%s" %s', trim($eventMsg), $id, trim(self::usedUrl())), $logFile);
 
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
