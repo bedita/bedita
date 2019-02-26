@@ -65,8 +65,15 @@ class StreamsController extends ResourcesController
      */
     public function beforeFilter(Event $event)
     {
+        if ($this->request->getParam('action') !== 'upload') {
+            return parent::beforeFilter($event);
+        }
+
+        // avoid that RequestHandler tries to parse body
+        $this->RequestHandler->setConfig('inputTypeMap', [], false);
+
         // Decode base64-encoded body.
-        if ($this->request->getParam('action') === 'upload' && $this->request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
+        if ($this->request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
             // Append filter to stream.
             $body = $this->request->getBody();
 
@@ -99,8 +106,8 @@ class StreamsController extends ResourcesController
             'mime_type' => $this->request->contentType(),
             'contents' => $this->request->getBody(),
         ];
-        $data = $action(compact('entity', 'data'));
 
+        $data = $action(compact('entity', 'data'));
         $action = new GetEntityAction(['table' => $this->Table]);
         $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
 
