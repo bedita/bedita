@@ -106,8 +106,8 @@ class StreamsController extends ResourcesController
             'mime_type' => $this->request->contentType(),
             'contents' => $this->request->getBody(),
         ];
-
         $data = $action(compact('entity', 'data'));
+
         $action = new GetEntityAction(['table' => $this->Table]);
         $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
 
