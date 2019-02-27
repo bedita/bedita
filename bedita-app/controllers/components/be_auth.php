@@ -355,11 +355,13 @@ class BeAuthComponent extends Object {
 
         if($u["User"]["num_login_err"] >= $policy['maxLoginAttempts']) {
             $this->isValid = false;
-            $this->log("Max login attempts error, user: ".$userid);
+            // avoid userid in logs / use ID instead
+            $this->log(sprintf('Max login attempts error, user "%s"', $u['User']['id']));
 
         } else if($daysFromLastLogin > $policy['maxNumDaysInactivity']) {
             $this->isValid = false;
-            $this->log("Max num days inactivity: user: ".$userid." days: ".$daysFromLastLogin);
+            // avoid userid in logs / use ID instead
+            $this->log(sprintf('Max num days inactivity: user "%s", days "%n"', $u['User']['id'], $daysFromLastLogin));
             
         } else if($daysFromLastLogin > $policy['maxNumDaysValidity']) {
             $this->changePasswd = true;
@@ -376,7 +378,8 @@ class BeAuthComponent extends Object {
         }
 
         if ($authorized === false) {
-            $this->log("User login not authorized: ".$userid);
+            // avoid userid in logs / use ID instead
+            $this->log(sprintf('User login not authorized: "%s"', $u['User']['id']));
             if ($this->userAuth != 'bedita') {
                 $this->startSession();
                 $this->Session->write('externalLoginRequestFailed', $userid);
@@ -564,9 +567,11 @@ class BeAuthComponent extends Object {
         }
 
         $u = $user->findByUserid($userData['User']['userid']);
-        if(!empty($u["User"])) {
-            $this->log("User ".$userData['User']['userid']." already created");
-            throw new BeditaException(__("User already created",true));
+        if (!empty($u['User'])) {
+            // avoid userid in logs / use ID instead or partially hide userid
+            $this->log(sprintf('User %s****** already created', substr($userData['User']['userid'], 0, -3)));
+
+            throw new BeditaException(__('User already created', true));
         }
         
         $this->userGroupModel($userData, $groups);

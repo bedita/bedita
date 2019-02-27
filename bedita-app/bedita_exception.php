@@ -45,7 +45,9 @@ class BeditaException extends Exception {
      */
     protected $cause = null;
 
-	const ERROR = 'ERROR';
+    const ERROR = 'ERROR';
+    
+    const WARN = 'WARN';
 
     /**
      * The instance of the error code thrown
@@ -200,7 +202,7 @@ class BeditaBadRequestException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 400
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 400) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 400) {
         if (empty($message)) {
             $message = 'Bad Request';
         }
@@ -222,7 +224,7 @@ class BeditaUnauthorizedException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 401
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 401) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 401) {
         if (empty($message)) {
             $message = 'Unauthorized';
         }
@@ -244,7 +246,7 @@ class BeditaForbiddenException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 403
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 403) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 403) {
         if (empty($message)) {
             $message = 'Forbidden';
         }
@@ -266,7 +268,7 @@ class BeditaNotFoundException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 404
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 404) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 404) {
         if (empty($message)) {
             $message = 'Not Found';
         }
@@ -288,7 +290,7 @@ class BeditaMethodNotAllowedException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 405
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 405) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 405) {
         if (empty($message)) {
             $message = 'Method Not Allowed';
         }
@@ -310,7 +312,7 @@ class BeditaConflictException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 409
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 409) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 409) {
         if (empty($message)) {
             $message = 'Conflict';
         }
@@ -332,7 +334,7 @@ class BeditaLengthRequiredException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 411
      */
-    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 411) {
+    public function __construct($message = null, $details = null, $res = self::WARN, $code = 411) {
         if (empty($message)) {
             $message = 'Length Required';
         }

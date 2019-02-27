@@ -133,14 +133,26 @@ class AppController extends Controller {
         return $url;
     }
 
+    /**
+     * Handle error utility
+     *
+     * @param string $eventMsg The event message
+     * @param string $userMsg The user message
+     * @param string|null $errTrace The error trace
+     * @param array|null $usrMsgParams The user message parameters
+     * @return void
+     */
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
-        $url = self::usedUrl();
-        $log = $eventMsg;
-        $userid = $this->BeAuth->userid();
-        if (!empty($userid)) {
-            $log .= ' - ' . $userid;
+
+        // avoid userid in logs / use ID instead
+        $id = Set::extract('/id', $this->BeAuth->getUser());
+        $id = (!empty($id)) ? $id[0] : '-';
+        $logFile = 'error';
+        if ($this->result != static::ERROR) {
+            $logFile = strtolower($this->result);
         }
-        $this->log($log . $url);
+        $this->log(sprintf('%s user "%s" %s', trim($eventMsg), $id, trim(self::usedUrl())), $logFile);
+
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
         }
@@ -381,13 +393,26 @@ class AppController extends Controller {
     protected function beditaAfterFilter() {
     }
 
+    /**
+     * Event log creation
+     *
+     * @param string $level The log level
+     * @param string $msg The message
+     * @return void
+     */
     protected function eventLog($level, $msg) {
-        $u = $this->BeAuth->userid();
-        if (empty($u)) {
-            $u = '-';
+        $userid = $this->BeAuth->userid();
+        if (empty($userid)) {
+            $userid = '-';
         }
-        $event = array('EventLog'=>array('log_level'=>$level,
-            'userid'=>$u, 'msg'=>$msg, 'context'=>strtolower($this->name)));
+        $event = array(
+            'EventLog' => array(
+                'log_level' => $level,
+                'userid' => $userid,
+                'msg' => $msg,
+                'context' => strtolower($this->name)
+            )
+        );
         $this->EventLog->create();
         $this->EventLog->save($event);
     }
@@ -469,7 +494,8 @@ class AppController extends Controller {
                 if ($extUserId != true) {
                     $msg .= ': ' . $extUserId;
                 }
-                $this->eventWarn($msg);
+                // avoid userid in logs / use ID instead or partially hide userid
+                $this->eventWarn(sprintf('external login failed: %s******', substr($userid, 0, -3)));
                 $this->userWarnMessage($msg);
                 $this->Session->delete('externalLoginRequestFailed');
             };
