@@ -19,6 +19,8 @@ use Cake\Console\Shell;
  * Stream shell commands: removeOrphans
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
 class StreamsShell extends Shell
 {
