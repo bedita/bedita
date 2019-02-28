@@ -14,8 +14,6 @@ namespace BEdita\Core\Shell;
 
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Console\Shell;
-use Cake\I18n\Date;
-use Cake\ORM\TableRegistry;
 
 /**
  * Stream shell commands: removeOrphans
