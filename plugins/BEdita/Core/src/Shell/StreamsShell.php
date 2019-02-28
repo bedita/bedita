@@ -56,7 +56,7 @@ class StreamsShell extends Shell
     }
 
     /**
-     * Create a new Stream
+     * Remove orphans older than specified days (default: older than 1 day)
      *
      * @return void
      */
