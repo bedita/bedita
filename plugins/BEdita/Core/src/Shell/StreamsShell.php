@@ -27,6 +27,11 @@ class StreamsShell extends Shell
 
     /**
      * {@inheritDoc}
+     */
+    public $modelClass = 'Streams';
+
+    /**
+     * {@inheritDoc}
      *
      * @codeCoverageIgnore
      */
@@ -41,7 +46,7 @@ class StreamsShell extends Shell
                 ],
                 'options' => [
                     'days' => [
-                        'help' => 'Days to consider for stream research for orphans',
+                        'help' => 'Days to consider for stream research for orphans (remove data older than specified days)',
                         'required' => false,
                         'default' => 1,
                     ],
@@ -60,23 +65,17 @@ class StreamsShell extends Shell
     public function removeOrphans()
     {
         $days = (int)$this->param('days');
-        $streamsTable = TableRegistry::get('Streams');
-        $query = $streamsTable
-            ->find()
+        $query = $this->Streams->find()
             ->where([
                 'object_id IS NULL',
-                'created >=' => new \DateTime(sprintf('-%d days', $days)),
+                'created <' => \Cake\I18n\Time::now()->subDays($days),
             ]);
-        $n = $query->count();
-        if ($n > 0) {
-            $query = $streamsTable->query();
-            $query->delete()
-                ->where([
-                    'object_id IS NULL',
-                    'created >=' => new \DateTime(sprintf('-%d days', $days)),
-                ])
-                ->execute();
+        $count = 0;
+        foreach ($query as $stream) {
+            $this->verbose(sprintf('Deleting stream %s...', $stream->id));
+            $this->Streams->deleteOrFail($stream);
+            $count++;
         }
-        $this->out(sprintf('%d stream(s) deleted', $n));
+        $this->out(sprintf('%d stream(s) deleted', $count));
     }
 }
