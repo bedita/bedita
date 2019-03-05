@@ -943,7 +943,7 @@ abstract class ApiBaseController extends FrontendController {
                 continue;
             }
 
-            $item['meta']['relation_params'] = json_decode($params[$item['id']]) ?: new stdClass();
+            $item['meta']['relation_params'] = $params[$item['id']] ?: new stdClass();
         }
     }
 
