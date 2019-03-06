@@ -6,8 +6,8 @@ use BEdita\Core\Model\Entity\EndpointPermission;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Utility\Inflector;
 
 /**
  * \BEdita\Core\Shell\StreamsShell Test Case
