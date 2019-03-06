@@ -98,7 +98,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     {
         return [
             'basic test' => [
-                2,
+                1,
                 10,
             ],
         ];
@@ -107,7 +107,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     /**
      * Test `removeOrphans` method
      *
-     * @param int $expected Expected number of remaining streams
+     * @param int $expected Expected number of removed streams
      * @param int $days The days.
      * @return void
      *
@@ -116,12 +116,13 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      */
     public function testRemoveOrphans($expected, $days)
     {
+        $count = TableRegistry::get('Streams')->find()->count();
         $this->exec(sprintf('streams removeOrphans --days %d', $days));
 
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
-        $count = TableRegistry::get('Streams')->find()->count();
+        $count -= TableRegistry::get('Streams')->find()->count();
         static::assertEquals($expected, $count);
     }
 }
