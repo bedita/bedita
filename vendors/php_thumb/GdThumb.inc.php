@@ -742,17 +742,17 @@ class GdThumb extends ThumbBase
 		switch ($format) 
 		{
 			case 'GIF':
-				imagegif($this->oldImage, $fileName);
+				return imagegif($this->oldImage, $fileName);
 				break;
 			case 'JPG':
-				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+				return imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
 				break;
 			case 'PNG':
-				imagepng($this->oldImage, $fileName);
+				return imagepng($this->oldImage, $fileName);
 				break;
 		}
 		
-		return $this;
+		return false;
 	}
 	
 	#################################
