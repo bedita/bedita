@@ -132,7 +132,7 @@ class PhpThumbFactory
 		$pt->loadPlugins(self::$pluginPath);
 		
 		$toReturn = null;
-		
+		$imageMagickValid = false;
 		if ($options['preferImagemagick']){
 			$implementation = 'imagick';
 			$imageMagickValid =  (bool)exec('which convert 2>&1');

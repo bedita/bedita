@@ -801,30 +801,30 @@ class BeThumb {
                 $thumbnail->interlace(true);
             }
 
-            if ($thumbnail->save($targetThumbPath, $this->imageTarget['type'])) {
-                if (!empty($this->imageTarget['localThumbFilepath'])) {
-                    if (!copy($targetThumbPath, $this->imageTarget['filepath'])) {
-                        $this->triggerError('Error copying local thumbnail ' . $targetThumbPath 
-                            . ' to ' . $this->imageTarget['filepath']);
-                        return false;
-                    }
-                    $this->imageTarget['filesize'] = filesize($targetThumbPath);
-                    if (!unlink($targetThumbPath)) {
-                        $this->triggerError('Error removing local thumbnail ' . $targetThumbPath);
-                        return false;
-                    }
+            $thumbnail->save($targetThumbPath, $this->imageTarget['type']);
+
+            if (!empty($this->imageTarget['localThumbFilepath'])) {
+                if (!copy($targetThumbPath, $this->imageTarget['filepath'])) {
+                    $this->triggerError('Error copying local thumbnail ' . $targetThumbPath . ' to ' . $this->imageTarget['filepath']);
+
+                    return false;
                 }
-                return true;
-            } else {
-                $this->triggerError('Error saving thumbnail: ' . $targetThumbPath);
-                return false;
+
+                $this->imageTarget['filesize'] = filesize($targetThumbPath);
+                if (!unlink($targetThumbPath)) {
+                    $this->triggerError('Error removing local thumbnail ' . $targetThumbPath);
+
+                    return false;
+                }
             }
-		} catch (Exception $e) {
-		    $this->triggerError($e->getMessage());
-		    return false;
-		}
-	}
-	// end _resample
+        } catch (Exception $e) {
+            $this->triggerError(sprintf('Error saving thumbnail: %s with message %s', $targetThumbPath, $e->getMessage()));
+
+            return false;
+        }
+        
+        return true;
+    }
 
 	/**
 	 * Check source file existence/correctness
