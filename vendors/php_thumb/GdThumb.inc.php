@@ -738,21 +738,27 @@ class GdThumb extends ThumbBase
 				throw new RuntimeException ('File not writeable: ' . $fileName);
 			}
 		}
-		
+	
+		$result = true;
+
 		switch ($format) 
 		{
 			case 'GIF':
-				return imagegif($this->oldImage, $fileName);
+				$result = imagegif($this->oldImage, $fileName);
 				break;
 			case 'JPG':
-				return imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+				$result = imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
 				break;
 			case 'PNG':
-				return imagepng($this->oldImage, $fileName);
+				$result = imagepng($this->oldImage, $fileName);
 				break;
 		}
+
+		if (!$result) {
+			$this->triggerError(sprintf('Error writing thumbnail file %s from original image %s', $fileName, $this->fileName));
+		}
 		
-		return false;
+		return $this;
 	}
 	
 	#################################
