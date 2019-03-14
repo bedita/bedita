@@ -906,6 +906,7 @@ abstract class ApiBaseController extends FrontendController {
                     'filter' => $this->relatedObjectsFilter()
                 ));
                 if (!empty($relObj['items'])) {
+                    $this->loadRelationParams($relObj['items'], $object['id'], $relName);
                     $relObjs = $this->ApiFormatter->formatObjects(
                         $relObj['items'],
                         array('countRelations' => true, 'countChildren' => true)
@@ -915,6 +916,35 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
         return $object;
+    }
+
+    /**
+     * Load available relation params for a list of related objects.
+     * 
+     * @param array $items List of related objects.
+     * @param int $objectId ID of object to consider as starting point for relation.
+     * @param string $relName Relation name.
+     * @return void
+     */
+    protected function loadRelationParams(array &$items, $objectId, $relName)
+    {
+        $ids = Set::classicExtract($items, '{n}.id');
+        $params = ClassRegistry::init('ObjectRelation')->find('list', array(
+            'fields' => array('ObjectRelation.object_id', 'ObjectRelation.params'),
+            'conditions' => array(
+                'ObjectRelation.id' => $objectId,
+                'ObjectRelation.switch' => $relName,
+                'ObjectRelation.object_id' => $ids,
+            ),
+        ));
+
+        foreach ($items as &$item) {
+            if (!array_key_exists($item['id'], $params)) {
+                continue;
+            }
+
+            $item['meta']['relation_params'] = $params[$item['id']] ?: new stdClass();
+        }
     }
 
     /**
@@ -1779,6 +1809,7 @@ abstract class ApiBaseController extends FrontendController {
                 if (empty($result['items'])) {
                     $this->setData();
                 } else {
+                    $this->loadRelationParams($result['items'], $id, $relation);
                     $objects = $this->ApiFormatter->formatObjects(
                         $result['items'],
                         array('countRelations' => true)
