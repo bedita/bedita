@@ -315,7 +315,6 @@ class BeThumb {
      * Setup internal imageInfo data array
      * On error $data['error'] is populated with:
      *    - 'notFund' if image is missing or unreachable
-     *    - 'fileSys' on a local filesystem related error
      *    - 'unsupported' if image format is not supported 
      * 
      * @param array $data
@@ -354,14 +353,6 @@ class BeThumb {
 
         // #769 - avoid file access / read from cache
         $cacheData = $this->readCacheImageInfo();
-        if (empty($cacheData)) {
-            // check directory and create if not found
-            if (!$this->checkCacheDirectory()) {
-                $this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
-                $data['error'] = 'fileSys';
-                return false;
-            }
-        }
         $data = array_merge($data, $cacheData);
 
         // check mime type
@@ -727,6 +718,11 @@ class BeThumb {
 	 * @return boolean
 	 */
 	private function resample() {
+        if (!$this->checkCacheDirectory()) {
+            $this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
+
+            return false;
+        }
 
 	    $imageFilePath = $this->imageInfo['filepath'];
 	    if($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
