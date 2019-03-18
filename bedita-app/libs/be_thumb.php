@@ -91,7 +91,14 @@ class BeThumb {
 	 * All known mime types
 	 * internal use (if needed), read from config/mime.types.php
 	 */
-	private $knownMimeTypes = array();
+    private $knownMimeTypes = array();
+    
+    /**
+     * It says if cache dir for thumbnail has been already checked and eventually created.
+     *
+     * @var boolean
+     */
+    private $cacheDirChecked = false;
 	
 	function __construct() {
 		$this->imgMissingFile = Configure::read('imgMissingFile');
@@ -157,6 +164,8 @@ class BeThumb {
 
         $this->mediaRoot = Configure::read('mediaRoot');
         $this->localThumbRoot = Configure::read('localThumbRoot');
+
+        $this->cacheDirChecked = false;
     }
 
 	/**
@@ -515,7 +524,7 @@ class BeThumb {
             }
         } else {
             $imgInfoFile = $this->cacheImageInfoFilePath();
-            if (!file_exists($imgInfoFile)) {
+            if ($this->checkCacheDirectory() && !file_exists($imgInfoFile)) {
                 file_put_contents($imgInfoFile, serialize($imgData));
             }
         }
@@ -719,8 +728,6 @@ class BeThumb {
 	 */
 	private function resample() {
         if (!$this->checkCacheDirectory()) {
-            $this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
-
             return false;
         }
 
@@ -883,18 +890,28 @@ class BeThumb {
      * @return boolean
      */
     private function checkCacheDirectory() {
-        // #769 - avoid file access
-	    if (!file_exists($this->imageInfo['cacheDirectory'])) {
-			if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
-				$this->triggerError("Error creating cache directory: " . $this->imageInfo['cacheDirectory']);
-				return false;
-			}
-		} elseif (!is_dir($this->imageInfo['cacheDirectory'])) {
-			$this->triggerError("Not a direcotory: " . $this->imageInfo['cacheDirectory']);
-			return false;
-		}
-		return true;
-	}
+        if ($this->cacheDirChecked === true) {
+            return true;
+        }
+
+        if (file_exists($this->imageInfo['cacheDirectory'])) {
+            if (!is_dir($this->imageInfo['cacheDirectory'])) {
+                $this->triggerError($this->imageInfo['cacheDirectory'] . ' is not a directory');
+            
+                return $this->cacheDirChecked = false;
+            }
+            
+            return $this->cacheDirChecked = true;
+        }
+
+        if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
+            $this->triggerError("Error creating cache directory: " . $this->imageInfo['cacheDirectory']);
+            
+            return $this->cacheDirChecked = false;
+        }
+
+        return $this->cacheDirChecked = true;
+    }
 
     /**
      * Check local thumb target cache directory existence and create it if missing
