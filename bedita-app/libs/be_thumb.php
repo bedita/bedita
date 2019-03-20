@@ -94,11 +94,12 @@ class BeThumb {
     private $knownMimeTypes = array();
     
     /**
-     * It says if cache dir for thumbnail has been already checked and eventually created.
+     * It says if cache dir for thumbnail has been already checked and created.
+     * Its value is `null` when it hasn't evaluated yet.
      *
-     * @var boolean
+     * @var bool|null
      */
-    private $cacheDirChecked = false;
+    private $cacheDirChecked = null;
 	
 	function __construct() {
 		$this->imgMissingFile = Configure::read('imgMissingFile');
@@ -165,7 +166,7 @@ class BeThumb {
         $this->mediaRoot = Configure::read('mediaRoot');
         $this->localThumbRoot = Configure::read('localThumbRoot');
 
-        $this->cacheDirChecked = false;
+        $this->cacheDirChecked = null;
     }
 
 	/**
@@ -890,8 +891,8 @@ class BeThumb {
      * @return boolean
      */
     private function checkCacheDirectory() {
-        if ($this->cacheDirChecked === true) {
-            return true;
+        if ($this->cacheDirChecked !== null) {
+            return $this->cacheDirChecked;
         }
 
         if (file_exists($this->imageInfo['cacheDirectory'])) {
