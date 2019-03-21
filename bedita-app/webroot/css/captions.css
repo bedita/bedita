@@ -1,0 +1,57 @@
+/**** captions box for video and audio ***/
+
+#captions button {
+    margin: 1em 0;
+}
+
+#captions .caption-item {
+    width: 100%;
+    padding: 1em 0;
+    vertical-align: top;
+}
+
+#captions .caption-item:not(:last-child) {
+    border-bottom: solid 1px #666;
+}
+
+#captions .caption-item input[type='text'],
+#captions .caption-item textarea {
+    width: 100%;
+}
+
+#captions .caption-item textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 8em;
+    max-height: 20em;
+    overflow: auto;
+    resize: vertical;
+}
+
+#captions .caption-item output {
+    display: block;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+#captions .caption-item output:empty {
+    display: none;
+}
+
+#captions .caption-item output.invalid {
+    color: #e00000;
+}
+
+#captions .caption-item output.valid {
+    color: green;
+}
+
+#captions .caption-meta {
+    margin: 1em 0;
+}
+
+#captions .caption-meta label {
+    display: inline-block;
+    margin-left: 1.5em;
+}

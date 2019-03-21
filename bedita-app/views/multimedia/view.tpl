@@ -3,6 +3,7 @@
 *}
 {$html->script("libs/jquery/plugins/jquery.form", false)}
 {$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
+{$html->css("captions", null, ['inline' => false])}
 {if $currLang != "eng"}
     {$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
 {/if}
@@ -42,7 +43,7 @@
 
 <div class="main">
 
-	{include file = './inc/form.tpl'}	
+	{include file = './inc/form.tpl'}
 
 </div>
 
