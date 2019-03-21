@@ -322,9 +322,9 @@ Multimedia custom css
 };
 .pointLine::before {
 }
-.pointLine::before { 
+.pointLine::before {
     content: '';
-    background-color: black; 
+    background-color: black;
     position: absolute;
     top: -3px; /* - 1/2 larghezza + 1/2 (altezza linea + spessore bordo)*/
     left: -3px;
@@ -334,7 +334,7 @@ Multimedia custom css
 }
 .pointLine::after {
     content: '';
-    background-color: black; 
+    background-color: black;
     position: absolute;
     top: -2px;
     right: -3px;
@@ -481,7 +481,7 @@ Multimedia custom css
     height: 20px;
     padding: 2px 10px;
     cursor: pointer;
-    
+
 }
 .toolbarMenu li.menuItem.selected {
     background-color: #fff;
@@ -632,7 +632,7 @@ Multimedia custom css
     min-width: 100%;
     min-height: 100%;
     border-top: 3px solid #666;
-    -webkit-border-radius: 0 0 15px 0; 
+    -webkit-border-radius: 0 0 15px 0;
     border-radius: 0 0 10px 0;
     background-color: #F0F1D3;
 }
@@ -680,9 +680,9 @@ Multimedia custom css
 }
 .captionLine::before {
 }
-.captionLine::before { 
+.captionLine::before {
     content: '';
-    background-color: black; 
+    background-color: black;
     position: absolute;
     top: -3px; /* - 1/2 larghezza + 1/2 (altezza linea + spessore bordo)*/
     left: -3px;
@@ -692,7 +692,7 @@ Multimedia custom css
 }
 .captionLine::after {
     content: '';
-    background-color: black; 
+    background-color: black;
     position: absolute;
     top: -2px;
     right: -3px;
