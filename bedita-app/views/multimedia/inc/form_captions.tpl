@@ -66,12 +66,14 @@
                 .html(INVALID_LABEL + '<ul>' + info.errors.map(function(error) {
                     return '<li>' + error.message + ' (line ' + error.line + ')</li>';
                 }).join('\n') + '</ul>');
+            $('#saveBEObject').prop("disabled",true);
             return;
         }
         $(this).next('output')
             .removeClass('invalid')
             .addClass('valid')
             .html(VALID_LABEL);
+        $('#saveBEObject').prop("disabled",false);
     }
 
     $('.caption-item textarea').on('input', validate).on('change', validate);
