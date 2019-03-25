@@ -91,7 +91,15 @@ class BeThumb {
 	 * All known mime types
 	 * internal use (if needed), read from config/mime.types.php
 	 */
-	private $knownMimeTypes = array();
+    private $knownMimeTypes = array();
+    
+    /**
+     * It says if cache dir for thumbnail has been already checked and created.
+     * Its value is `null` when it hasn't evaluated yet.
+     *
+     * @var bool|null
+     */
+    private $cacheDirChecked = null;
 	
 	function __construct() {
 		$this->imgMissingFile = Configure::read('imgMissingFile');
@@ -157,6 +165,8 @@ class BeThumb {
 
         $this->mediaRoot = Configure::read('mediaRoot');
         $this->localThumbRoot = Configure::read('localThumbRoot');
+
+        $this->cacheDirChecked = null;
     }
 
 	/**
@@ -315,7 +325,6 @@ class BeThumb {
      * Setup internal imageInfo data array
      * On error $data['error'] is populated with:
      *    - 'notFund' if image is missing or unreachable
-     *    - 'fileSys' on a local filesystem related error
      *    - 'unsupported' if image format is not supported 
      * 
      * @param array $data
@@ -354,14 +363,6 @@ class BeThumb {
 
         // #769 - avoid file access / read from cache
         $cacheData = $this->readCacheImageInfo();
-        if (empty($cacheData)) {
-            // check directory and create if not found
-            if (!$this->checkCacheDirectory()) {
-                $this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
-                $data['error'] = 'fileSys';
-                return false;
-            }
-        }
         $data = array_merge($data, $cacheData);
 
         // check mime type
@@ -524,7 +525,7 @@ class BeThumb {
             }
         } else {
             $imgInfoFile = $this->cacheImageInfoFilePath();
-            if (!file_exists($imgInfoFile)) {
+            if ($this->checkCacheDirectory() && !file_exists($imgInfoFile)) {
                 file_put_contents($imgInfoFile, serialize($imgData));
             }
         }
@@ -727,6 +728,9 @@ class BeThumb {
 	 * @return boolean
 	 */
 	private function resample() {
+        if (!$this->checkCacheDirectory()) {
+            return false;
+        }
 
 	    $imageFilePath = $this->imageInfo['filepath'];
 	    if($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
@@ -887,18 +891,28 @@ class BeThumb {
      * @return boolean
      */
     private function checkCacheDirectory() {
-        // #769 - avoid file access
-	    if (!file_exists($this->imageInfo['cacheDirectory'])) {
-			if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
-				$this->triggerError("Error creating cache directory: " . $this->imageInfo['cacheDirectory']);
-				return false;
-			}
-		} elseif (!is_dir($this->imageInfo['cacheDirectory'])) {
-			$this->triggerError("Not a direcotory: " . $this->imageInfo['cacheDirectory']);
-			return false;
-		}
-		return true;
-	}
+        if ($this->cacheDirChecked !== null) {
+            return $this->cacheDirChecked;
+        }
+
+        if (file_exists($this->imageInfo['cacheDirectory'])) {
+            if (!is_dir($this->imageInfo['cacheDirectory'])) {
+                $this->triggerError($this->imageInfo['cacheDirectory'] . ' is not a directory');
+            
+                return $this->cacheDirChecked = false;
+            }
+            
+            return $this->cacheDirChecked = true;
+        }
+
+        if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
+            $this->triggerError("Error creating cache directory: " . $this->imageInfo['cacheDirectory']);
+            
+            return $this->cacheDirChecked = false;
+        }
+
+        return $this->cacheDirChecked = true;
+    }
 
     /**
      * Check local thumb target cache directory existence and create it if missing
