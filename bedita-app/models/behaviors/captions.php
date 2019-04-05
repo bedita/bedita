@@ -40,7 +40,9 @@ class CaptionsBehavior extends ModelBehavior {
     public function afterFind($model, $results, $primary)
     {
         foreach ($results as &$result) {
-            $result['captions'] = $this->getCaptions($result['id']);
+            if (!empty($result['id'])) {
+                $result['captions'] = $this->getCaptions($result['id']);
+            }
         }
         unset($result);
 
