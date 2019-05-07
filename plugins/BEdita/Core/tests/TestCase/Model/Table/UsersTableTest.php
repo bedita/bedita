@@ -290,9 +290,9 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedException \Cake\Network\Exception\BadRequestException
      * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not self-delete logged user, "User" 5
+     * @expectedExceptionMessage Logged users cannot delete their own account
      * @covers ::beforeSave
      */
     public function testSoftDeleteLoggedUser()
