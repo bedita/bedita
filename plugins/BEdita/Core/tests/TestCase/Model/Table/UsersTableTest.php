@@ -286,6 +286,24 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test soft delete logged user
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not self-delete logged user, "User" 5
+     * @covers ::beforeSave
+     */
+    public function testSoftDeleteLoggedUser()
+    {
+        LoggedUser::setUser(['id' => 5]);
+        $user = $this->Users->get(5);
+        $user->deleted = true;
+        $this->Users->save($user);
+    }
+
+    /**
      * Test soft delete second user
      *
      * @return void

@@ -386,6 +386,9 @@ class UsersTable extends Table
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
+        if ($entity->deleted === true && LoggedUser::id() === $entity->id) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not self-delete logged user, "User" {0}', $entity->id));
+        }
         foreach (['username', 'uname'] as $prop) {
             if (!($entity->get('deleted') && $entity->get('locked')) &&
                 strpos((string)$entity->get($prop), self::DELETED_USER_PREFIX) === 0) {
