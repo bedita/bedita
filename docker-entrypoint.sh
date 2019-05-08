@@ -18,18 +18,15 @@ if [ ! -z "${DATABASE_URL}" ]; then
         bin/cake migrations seed -p BEdita/Core --seed AdminFromEnvSeed
     fi
 
-    chmod -R a+rwX webroot/_files
-    chown -R www-data:www-data webroot/_files
-    chmod -R a+rwX tmp
-    chmod -R a+rwX logs
-
     DATABASE_VENDOR=$(php -r "echo explode('://', getenv('DATABASE_URL'))[0];")
     echo "=====> Vendor: ${DATABASE_VENDOR}"
     if [ "$DATABASE_VENDOR" = "sqlite" ]; then
         DATABASE_PATH=$(php -r "echo substr(parse_url(preg_replace('/^([\\w\\\\\\]+)/', 'file', getenv('DATABASE_URL')), PHP_URL_PATH), 1);")
         echo "=====> Path: ${DATABASE_PATH}"
-        chmod a+rwx logs ${DATABASE_PATH}
+        chmod a+rwx ${DATABASE_PATH}
     fi
+
+    bin/cake cache clearAll
 fi
 
 exec "$@"
