@@ -291,7 +291,7 @@ class UsersTableTest extends TestCase
      * @return void
      *
      * @expectedException \Cake\Network\Exception\BadRequestException
-     * @expectedExceptionCode 403
+     * @expectedExceptionCode 400
      * @expectedExceptionMessage Logged users cannot delete their own account
      * @covers ::beforeSave
      */
