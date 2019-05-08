@@ -1,8 +1,9 @@
-.idea
-.git
-.vagrant
-.vscode
-config/app.php
-logs
-tmp
-vendor
+/.idea
+/.git
+/.vagrant
+/.vscode
+/config/app.php
+/logs
+/tmp
+/vendor
+/webroot/_files/*
