@@ -456,6 +456,7 @@ class LoginControllerTest extends IntegrationTestCase
         static::assertEquals($data['name'], $result['data']['attributes']['name']);
         static::assertEquals($data['surname'], $result['data']['attributes']['surname']);
         static::assertEquals($data['email'], $result['data']['attributes']['email']);
+        static::assertEquals('on', $result['data']['attributes']['status']);
     }
 
     /**
