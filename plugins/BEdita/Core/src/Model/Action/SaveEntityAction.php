@@ -50,7 +50,12 @@ class SaveEntityAction extends BaseAction
     {
         $entityOptions = (array)Hash::get($data, 'entityOptions');
         $saveOptions = (array)Hash::get($data, 'saveOptions');
-        $entity = $this->Table->patchEntity($data['entity'], $data['data'], $entityOptions);
+        $entity = $data['entity'];
+        // object `id` added to data to avoid bad side effects on DataCleanup behavior
+        if (!$entity->isNew()) {
+            $data['data']['id'] = $entity->get('id');
+        }
+        $entity = $this->Table->patchEntity($entity, $data['data'], $entityOptions);
         $success = $this->Table->save($entity, $saveOptions);
 
         if ($success === false) {

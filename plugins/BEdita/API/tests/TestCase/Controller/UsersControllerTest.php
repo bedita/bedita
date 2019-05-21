@@ -499,6 +499,7 @@ class UsersControllerTest extends IntegrationTestCase
         static::assertEquals($data['id'], $result['data']['id']);
         static::assertEquals($data['type'], $result['data']['type']);
         static::assertEquals($data['attributes']['username'], $result['data']['attributes']['username']);
+        static::assertEquals('on', $result['data']['attributes']['status']);
     }
 
     /**
