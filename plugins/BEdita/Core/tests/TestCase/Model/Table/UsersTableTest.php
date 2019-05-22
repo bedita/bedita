@@ -286,6 +286,24 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test soft delete logged user
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedExceptionCode 400
+     * @expectedExceptionMessage Logged users cannot delete their own account
+     * @covers ::beforeSave
+     */
+    public function testSoftDeleteLoggedUser()
+    {
+        LoggedUser::setUser(['id' => 5]);
+        $user = $this->Users->get(5);
+        $user->deleted = true;
+        $this->Users->save($user);
+    }
+
+    /**
      * Test soft delete second user
      *
      * @return void
