@@ -62,7 +62,7 @@ class ObjectRelation extends BEAppModel
             if (!is_scalar($val)) {
                 $val = json_encode($val);
             }
-            $val = sprintf('%s', Sanitize::escape($val));
+            $val = sprintf('\'%s\'', Sanitize::escape($val));
         }
         unset($val);
 
