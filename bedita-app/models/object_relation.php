@@ -45,6 +45,31 @@ class ObjectRelation extends BEAppModel
     }
 
     /**
+     * Escape all arguments that have been passed to this function.
+     * 
+     * @param any[] ...$values Values to be prepared.
+     * @return string[]
+     */
+    private static function prepareAll()
+    {
+        $values = func_get_args();
+        foreach ($values as &$val) {
+            if ($val === null) {
+                $val = 'NULL';
+                continue;
+            }
+            
+            if (!is_scalar($val)) {
+                $val = json_encode($val);
+            }
+            $val = sprintf('%s', Sanitize::escape($val));
+        }
+        unset($val);
+
+        return $values;
+    }
+
+    /**
      * Create relation between objects
      *
      * TODO: sql query, not working with cake ->save() .. why??
@@ -59,24 +84,22 @@ class ObjectRelation extends BEAppModel
      * @param array|null $params The additional relation params
      * @return array|false $this->query() output - false on error
      */
-    public function createRelation($id, $objectId, $switch, $priority, $bidirectional = true, $params = array()) {
+    public function createRelation($id, $objectId, $switch, $priority, $bidirectional = true, $params = array())
+    {
         // #CUSTOM QUERY - TODO: use cake, how??
-        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, {$jParams})";
+        list($qId, $qObjectId, $qSwitch, $qPriority, $qParams) = static::prepareAll($id, $objectId, $switch, $priority, $params);
+        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$qId}, {$qObjectId}, {$qSwitch}, {$qPriority}, {$qParams})";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
         }
-        if (!$bidirectional) {
-            ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
-            return $res;
-        }
-
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$switch}', {$priority}, {$jParams})";
-        $res = $this->query($q);
-
-        if ($res === false) {
-            return $res;
+        if ($bidirectional) {
+            $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$qObjectId}, {$qId}, {$qSwitch}, {$qPriority}, {$qParams})";
+            $res = $this->query($q);
+    
+            if ($res === false) {
+                return $res;
+            }
         }
 
         ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
@@ -95,36 +118,37 @@ class ObjectRelation extends BEAppModel
      * @param string $inverseSwitch, inverse name
      * @return array|false 
      */
-    public function createRelationAndInverse($id, $objectId, $switch, $inverseSwitch = null, $priority = null, $params = array()) {
-
-        if ($priority == null) {
-            $rel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$id} AND switch='{$switch}'");
-            $priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
+    public function createRelationAndInverse($id, $objectId, $switch, $inverseSwitch = null, $priority = null, $params = array())
+    {
+        if ($inverseSwitch == null) {
+            $inverseSwitch = $switch;
         }
+
+        list($qId, $qObjectId, $qSwitch, $qInverseSwitch, $qPriority, $qParams) = static::prepareAll($id, $objectId, $switch, $inverseSwitch, $priority, $params);
+        if ($priority == null) {
+            $rel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$qId} AND switch={$qSwitch}");
+            $qPriority = $priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
+        }
+
         // #CUSTOM QUERY
-        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
-        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, {$jParams})";
+        $q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$qId}, {$qObjectId}, {$qSwitch}, {$qPriority}, {$qParams})";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
         }
 
-        if ($inverseSwitch == null) {
-            $inverseSwitch = $switch;
-        }
-
-        $inverseRel = $this->query("SELECT priority FROM object_relations WHERE id={$objectId}
-                                    AND object_id={$id} AND switch='{$inverseSwitch}'");
-
+        $inverseRel = $this->query("SELECT priority FROM object_relations WHERE id={$qObjectId}
+                                    AND object_id={$qId} AND switch={$qInverseSwitch}");
         if (empty($inverseRel[0]["object_relations"]["priority"])) {
             // #CUSTOM QUERY
-            $inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$objectId} AND switch='{$inverseSwitch}'");
-            $inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+            $inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$qObjectId} AND switch={$qInverseSwitch}");
+            $qInversePriority = (empty($inverseRel[0][0]["priority"])) ? 1 : $inverseRel[0][0]["priority"];
         } else {
-            $inversePriority = $inverseRel[0]["object_relations"]["priority"];
+            $qInversePriority = $inverseRel[0]["object_relations"]["priority"];
         }
+
         // #CUSTOM QUERY
-        $q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority}, {$jParams})" ;
+        $q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$qObjectId}, {$qId}, {$qInverseSwitch}, {$qInversePriority}, {$qParams})" ;
         $res = $this->query($q);
 
         if ($res === false) {
@@ -147,17 +171,18 @@ class ObjectRelation extends BEAppModel
      */
     public function deleteRelation($id, $objectId=null, $switch=null, $bidirectional = true) {
         // #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
         $clearObjects = array($id);
-        $q = "DELETE FROM object_relations WHERE id={$id}";
-        $qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
+        $q = "DELETE FROM object_relations WHERE id={$qId}";
+        $qReverse = "DELETE FROM object_relations WHERE object_id={$qId}";
         if ($objectId !== null) {
-            $q .= " AND object_id={$objectId}";
-            $qReverse .= " AND id={$objectId}";
+            $q .= " AND object_id={$qObjectId}";
+            $qReverse .= " AND id={$qObjectId}";
             $clearObjects[] = $objectId;
         }
         if ($switch !== null) {
-            $q .= " AND switch='{$switch}'";
-            $qReverse .= " AND switch='{$switch}'";
+            $q .= " AND switch={$qSwitch}";
+            $qReverse .= " AND switch={$qSwitch}";
         }
         $res = $this->query($q);
         if ($res === false) {
@@ -190,24 +215,23 @@ class ObjectRelation extends BEAppModel
      */
     public function deleteRelationAndInverse($id, $objectId = null, $switch = null) {
         // #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
-        $id = Sanitize::escape($id);
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
         $clearObjects = array($id);
-        $q = "DELETE FROM object_relations WHERE id={$id}";
-        $qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
+        $q = "DELETE FROM object_relations WHERE id={$qId}";
+        $qReverse = "DELETE FROM object_relations WHERE object_id={$qId}";
         if ($objectId !== null) {
-            $objectId = Sanitize::escape($objectId);
-            $q .= " AND object_id={$objectId}";
-            $qReverse .= " AND id={$objectId}";
+            $q .= " AND object_id={$qObjectId}";
+            $qReverse .= " AND id={$qObjectId}";
             $clearObjects[] = $objectId;
         }
         if ($switch !== null) {
-            $switch = Sanitize::escape($switch);
             $inverseSwitch = $this->inverseOf($switch);
             if (empty($inverseSwitch)) {
                 return false;
             }
-            $q .= " AND switch='{$switch}'";
-            $qReverse .= " AND switch='{$inverseSwitch}'";
+            list($qInverseSwitch) = static::prepareAll($inverseSwitch);
+            $q .= " AND switch={$qSwitch}";
+            $qReverse .= " AND switch={$qInverseSwitch}";
         }
         $res = $this->query($q);
         if ($res === false) {
@@ -232,18 +256,20 @@ class ObjectRelation extends BEAppModel
      * @param string $inverseSwitch - relation inverse name, null if name ids the same
      * @return bool
      */
-    public function deleteObjectRelation($id, $switch, $inverseSwitch = null) {
+    public function deleteObjectRelation($id, $switch, $inverseSwitch = null)
+    {
+        if (empty($inverseSwitch)) {
+            $inverseSwitch = $switch;
+        }
         // #CUSTOM QUERY - TODO: use cake, how??
-        $q = "DELETE FROM object_relations WHERE id={$id} AND switch='{$switch}'";
+        list($qId, $qSwitch, $qInverseSwitch) = static::prepareAll($id, $switch, $inverseSwitch);
+        $q = "DELETE FROM object_relations WHERE id={$qId} AND switch={$qSwitch}";
         $res = $this->query($q);
         if ($res === false) {
             $this->log('Error executing query: ' . $q, 'error');
             return $res;
         }
-        if (empty($inverseSwitch)) {
-            $inverseSwitch = $switch;
-        }
-        $qReverse = "DELETE FROM object_relations WHERE object_id={$id} AND switch='{$inverseSwitch}'";
+        $qReverse = "DELETE FROM object_relations WHERE object_id={$qId} AND switch={$qInverseSwitch}";
         $res = $this->query($qReverse);
         if ($res === false) {
             $this->log('Error executing query: ' . $qReverse, 'error');
@@ -264,10 +290,12 @@ class ObjectRelation extends BEAppModel
      * @param int $priority
      * @return false on failure
      */
-    public function updateRelationPriority($id, $objectId, $switch, $priority){
+    public function updateRelationPriority($id, $objectId, $switch, $priority)
+    {
+        list($qId, $qObjectId, $qSwitch, $qPriority) = static::prepareAll($id, $objectId, $switch, $priority);
         $q = "  UPDATE object_relations
-                SET priority={$priority}
-                WHERE id={$id} AND object_id={$objectId} AND switch='{$switch}'";
+                SET priority={$qPriority}
+                WHERE id={$qId} AND object_id={$qObjectId} AND switch={$qSwitch}";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
@@ -287,11 +315,12 @@ class ObjectRelation extends BEAppModel
      * @param array $params
      * @return false on failure
      */
-    public function updateRelationParams($id, $objectId, $switch, $params=array()) {
-        $jParams = $params === null ? 'NULL' : sprintf("'%s'", json_encode($params));
+    public function updateRelationParams($id, $objectId, $switch, $params=array())
+    {
+        list($qId, $qObjectId, $qSwitch, $qParams) = static::prepareAll($id, $objectId, $switch, $params);
         $q = "  UPDATE object_relations
-                SET params={$jParams}
-                WHERE ((id={$id} AND object_id={$objectId}) OR (id={$objectId} AND object_id={$id})) AND switch='{$switch}'";
+                SET params={$qParams}
+                WHERE ((id={$qId} AND object_id={$qObjectId}) OR (id={$qObjectId} AND object_id={$qId})) AND switch={$qSwitch}";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
@@ -319,42 +348,34 @@ class ObjectRelation extends BEAppModel
         }
         $updateData = array();
         if (array_key_exists('params', $set)) {
-            if ($set['params'] === null) {
-                $updateData[] = "params=NULL";
-            } else {
-                if (!is_array($set['params'])) {
-                    return false;
-                }
-                $set['params'] = json_encode($set['params']);
-                $updateData[] = "params='{$set['params']}'";
-            }
+            list($qParams) = static::prepareAll($set['params']);
+            $updateData[] = sprintf('params=%s', $qParams);
         }
         if (array_key_exists('priority', $set)) {
-            if ($set['priority'] === null) {
-                $updateData[] = "priority=NULL";
-            } else {
-                $set['priority'] = Sanitize::escape($set['priority']);
-                $updateData[] = "priority='{$set['priority']}'";
-            }
+            list($qPriority) = static::prepareAll($set['priority']);
+            $updateData[] = sprintf('priority=%s', $qPriority);
         }
 
         if (empty($updateData)) {
             return false;
         }
 
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
+
         $q = 'UPDATE object_relations SET ';
         foreach ($updateData as $key => $value) {
             $q .= ($key == 0) ? $value : ', ' . $value;
         }
-        $q .= " WHERE id={$id} AND object_id={$objectId} AND switch='{$switch}'";
+        $q .= " WHERE id={$qId} AND object_id={$qObjectId} AND switch={$qSwitch}";
         $result = $this->query($q);
 
         // update params in inverse relation
         if ($result !== false && array_key_exists('params', $set)) {
             $switchInverse = $this->inverseOf($switch);
+            list($qSwitchInverse, $qParams) = static::prepareAll($switchInverse, $set['params']);
             $q = "UPDATE object_relations
-                SET params='{$set['params']}'
-                WHERE id={$objectId} AND object_id={$id} AND switch='{$switchInverse}'";
+                SET params={$qParams}
+                WHERE id={$qObjectId} AND object_id={$qId} AND switch={$qSwitchInverse}";
             $result = $this->query($q);
         }
 
@@ -374,9 +395,11 @@ class ObjectRelation extends BEAppModel
      * @param string $switch
      * @return true if relation exists, false otherwise
      */
-    public function relationExists($id, $objectId, $switch) {
-        $actualId = $this->query("SELECT id FROM object_relations WHERE id={$id}
-            AND object_id={$objectId} AND switch='{$switch}'");
+    public function relationExists($id, $objectId, $switch)
+    {
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
+        $actualId = $this->query("SELECT id FROM object_relations WHERE id={$qId}
+            AND object_id={$qObjectId} AND switch={$qSwitch}");
         if (empty($actualId[0]['object_relations']['id'])) {
             return false;
         }
@@ -390,9 +413,11 @@ class ObjectRelation extends BEAppModel
      * @param string $switch
      * @return priority value or false if field is NULL or relation missing
      */
-    public function relationPriority($id, $objectId, $switch) {
-        $pri = $this->query("SELECT priority FROM object_relations WHERE id={$id}
-                                    AND object_id={$objectId} AND switch='{$switch}'");
+    public function relationPriority($id, $objectId, $switch)
+    {
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
+        $pri = $this->query("SELECT priority FROM object_relations WHERE id={$qId}
+                                    AND object_id={$qObjectId} AND switch={$qSwitch}");
         if(empty($pri[0]["object_relations"]["priority"])) {
             return false;
         }
@@ -407,9 +432,11 @@ class ObjectRelation extends BEAppModel
      * @param bool $assoc true to return an associative array, false to return an object (default: true)
      * @return parameters as an associative array or object, or false if field is NULL or relation missing
      */
-    public function relationParams($id, $objectId, $switch, $assoc=true) {
-        $pri = $this->query("SELECT params FROM object_relations WHERE id={$id}
-                                    AND object_id={$objectId} AND switch='{$switch}'");
+    public function relationParams($id, $objectId, $switch, $assoc=true)
+    {
+        list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
+        $pri = $this->query("SELECT params FROM object_relations WHERE id={$qId}
+                                    AND object_id={$qObjectId} AND switch={$qSwitch}");
         if(empty($pri[0]["object_relations"]["params"])) {
             return false;
         }
