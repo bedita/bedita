@@ -292,18 +292,7 @@ class ObjectRelation extends BEAppModel
      */
     public function updateRelationPriority($id, $objectId, $switch, $priority)
     {
-        list($qId, $qObjectId, $qSwitch, $qPriority) = static::prepareAll($id, $objectId, $switch, $priority);
-        $q = "  UPDATE object_relations
-                SET priority={$qPriority}
-                WHERE id={$qId} AND object_id={$qObjectId} AND switch={$qSwitch}";
-        $res = $this->query($q);
-        if ($res === false) {
-            return $res;
-        }
-
-        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
-
-        return $res;
+        return $this->updateRelation($id, $objectId, $switch, compact('priority'));
     }
 
     /**
@@ -317,18 +306,7 @@ class ObjectRelation extends BEAppModel
      */
     public function updateRelationParams($id, $objectId, $switch, $params=array())
     {
-        list($qId, $qObjectId, $qSwitch, $qParams) = static::prepareAll($id, $objectId, $switch, $params);
-        $q = "  UPDATE object_relations
-                SET params={$qParams}
-                WHERE ((id={$qId} AND object_id={$qObjectId}) OR (id={$qObjectId} AND object_id={$qId})) AND switch={$qSwitch}";
-        $res = $this->query($q);
-        if ($res === false) {
-            return $res;
-        }
-
-        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
-
-        return $res;
+        return $this->updateRelation($id, $objectId, $switch, compact('params'));
     }
 
     /**
