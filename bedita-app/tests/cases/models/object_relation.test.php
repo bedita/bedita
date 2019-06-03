@@ -22,6 +22,8 @@
 /**
  * Object Relations test
  *
+ * @property-read Document $Document
+ * @property-read ObjectRelation $Document
  */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
@@ -98,6 +100,151 @@ class ObjectRelationTestCase extends BeditaTestCase {
         $this->assertEqual($result, true);		
         $result = $this->Document->delete($idDoc2);
         $this->assertEqual($result, true);		
+    }
+
+    public function testRelationWithSingleQuotes()
+    {
+        // Create test documents.
+        $docIds = array();
+        for ($i = 1; $i <= 2; $i++) {
+            $this->Document->create();
+            $res = $this->Document->save(array(
+                'title' => sprintf('Test document %d', $i),
+            ));
+            $this->assertNotEqual($res, false);
+            $docIds[$i] = $this->Document->id;
+        }
+
+        $switch = 'test\'relation';
+        $priority = 123;
+        $params = array('Hello, World!' => 'I\'m Gustavo.');
+        
+        // Create relation.
+        $res = $this->ObjectRelation->createRelation($docIds[1], $docIds[2], $switch, $priority, true, $params);
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation exists.
+        $exists = $this->ObjectRelation->relationExists($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($exists, true);
+        $exists = $this->ObjectRelation->relationExists($docIds[2], $docIds[1], $switch);
+        $this->assertEqual($exists, true);
+
+        // Ensure relation priority and params are correct.
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualPriority, $priority);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualParams, $params);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[2], $docIds[1], $switch);
+        $this->assertEqual($actualParams, $params);
+
+        // Update relation.
+        $newPriority = 456;
+        $newParams = null;
+        $res = $this->ObjectRelation->updateRelation($docIds[1], $docIds[2], $switch, array(
+            'priority' => $newPriority,
+            'params' => $newParams,
+        ));
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation priority and params are correct.
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualPriority, $newPriority);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualParams, $newParams);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[2], $docIds[1], $switch);
+        $this->assertEqual($actualParams, $newParams);
+
+        // Delete relation
+        $res = $this->ObjectRelation->deleteRelation($docIds[1], $docIds[2], $switch, true);
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation does not exist.
+        $exists = $this->ObjectRelation->relationExists($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($exists, false);
+        $exists = $this->ObjectRelation->relationExists($docIds[2], $docIds[1], $switch);
+        $this->assertEqual($exists, false);
+    }
+
+    public function testRelationWithSingleQuotesAndInverse()
+    {
+        // Create test documents.
+        $docIds = array();
+        for ($i = 1; $i <= 2; $i++) {
+            $this->Document->create();
+            $res = $this->Document->save(array(
+                'title' => sprintf('Test document %d', $i),
+            ));
+            $this->assertNotEqual($res, false);
+            $docIds[$i] = $this->Document->id;
+        }
+
+        // Prepare relation data and ensure config is loaded.
+        $switch = 'test\'relation';
+        $inverseSwitch = 'relation\'test';
+        Configure::write(
+            sprintf('objRelationType.%s', $switch),
+            array('inverse' => $inverseSwitch, 'left' => array(), 'right' => array())
+        );
+        BeLib::getObject('BeConfigure')->mergeAllRelations(true);
+
+        // Create relation.
+        $priority = 123;
+        $params = array('Hello, World!' => 'I\'m Gustavo.');
+        $res = $this->ObjectRelation->createRelationAndInverse($docIds[1], $docIds[2], $switch, $inverseSwitch, $priority, $params);
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation exists.
+        $exists = $this->ObjectRelation->relationExists($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($exists, true);
+        $exists = $this->ObjectRelation->relationExists($docIds[1], $docIds[2], $inverseSwitch);
+        $this->assertEqual($exists, false);
+        $exists = $this->ObjectRelation->relationExists($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($exists, true);
+        $exists = $this->ObjectRelation->relationExists($docIds[2], $docIds[1], $switch);
+        $this->assertEqual($exists, false);
+
+        // Ensure relation priority and params are correct.
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualPriority, $priority);
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($actualPriority, 1);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualParams, $params);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($actualParams, $params);
+
+        // Update relation.
+        $newPriority = 456;
+        $newParams = null;
+        $res = $this->ObjectRelation->updateRelation($docIds[1], $docIds[2], $switch, array(
+            'priority' => $newPriority,
+            'params' => $newParams,
+        ));
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation priority and params are correct.
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualPriority, $newPriority);
+        $actualPriority = $this->ObjectRelation->relationPriority($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($actualPriority, 1);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($actualParams, $newParams);
+        $actualParams = $this->ObjectRelation->relationParams($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($actualParams, $newParams);
+
+        // Delete relation
+        $res = $this->ObjectRelation->deleteRelationAndInverse($docIds[1], $docIds[2], $switch);
+        $this->assertNotEqual($res, false);
+
+        // Ensure relation does not exist.
+        $exists = $this->ObjectRelation->relationExists($docIds[1], $docIds[2], $switch);
+        $this->assertEqual($exists, false);
+        $exists = $this->ObjectRelation->relationExists($docIds[2], $docIds[1], $inverseSwitch);
+        $this->assertEqual($exists, false);
+
+        // Cleanup.
+        Configure::delete(sprintf('objRelationType.%s', $switch));
+        BeLib::getObject('BeConfigure')->mergeAllRelations(true);
     }
 
     public function testIsValid() {
