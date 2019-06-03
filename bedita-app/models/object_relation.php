@@ -339,12 +339,9 @@ class ObjectRelation extends BEAppModel
         }
 
         list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
+        $updateData = implode(', ', $updateData);
 
-        $q = 'UPDATE object_relations SET ';
-        foreach ($updateData as $key => $value) {
-            $q .= ($key == 0) ? $value : ', ' . $value;
-        }
-        $q .= " WHERE id={$qId} AND object_id={$qObjectId} AND switch={$qSwitch}";
+        $q = "UPDATE object_relations SET {$updateData} WHERE id={$qId} AND object_id={$qObjectId} AND switch={$qSwitch}";
         $result = $this->query($q);
 
         // update params in inverse relation
