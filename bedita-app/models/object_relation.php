@@ -374,7 +374,7 @@ class ObjectRelation extends BEAppModel
     {
         list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
         $actualId = $this->query("SELECT id FROM object_relations WHERE id={$qId}
-            AND object_id={$qObjectId} AND switch={$qSwitch}");
+            AND object_id={$qObjectId} AND switch={$qSwitch}", false);
         if (empty($actualId[0]['object_relations']['id'])) {
             return false;
         }
@@ -391,8 +391,8 @@ class ObjectRelation extends BEAppModel
     public function relationPriority($id, $objectId, $switch)
     {
         list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
-        $pri = $this->query("SELECT priority FROM object_relations WHERE id={$qId}
-                                    AND object_id={$qObjectId} AND switch={$qSwitch}");
+        $pri = $this->query("SELECT * FROM object_relations WHERE id={$qId}
+                                    AND object_id={$qObjectId} AND switch={$qSwitch}", false);
         if(empty($pri[0]["object_relations"]["priority"])) {
             return false;
         }
@@ -411,7 +411,7 @@ class ObjectRelation extends BEAppModel
     {
         list($qId, $qObjectId, $qSwitch) = static::prepareAll($id, $objectId, $switch);
         $pri = $this->query("SELECT params FROM object_relations WHERE id={$qId}
-                                    AND object_id={$qObjectId} AND switch={$qSwitch}");
+                                    AND object_id={$qObjectId} AND switch={$qSwitch}", false);
         if(empty($pri[0]["object_relations"]["params"])) {
             return false;
         }
