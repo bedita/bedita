@@ -392,12 +392,9 @@ class BEObject extends BEAppModel {
             foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 
                 foreach ($values as $key => $val) {
-                    $obj_id	= isset($val['id'])? $val['id'] : false;
-                    $priority = isset($val['priority'])? "'{$val['priority']}'" : 'NULL';
-                    $params = isset($val['params'])? "'" . json_encode($val['params']) . "'" : 'NULL';
-                    // Delete old associations
-                    // #CUSTOM QUERY
-                    $queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
+                    $obj_id	= isset($val['id'])? Sanitize::escape($val['id']) : false;
+                    $priority = isset($val['priority'])? Sanitize::escape($val['priority']) : 'NULL';
+                    $params = isset($val['params'])? "'" . Sanitize::escape(json_encode($val['params'])) . "'" : 'NULL';
 
                     $inverseSwitch = $switch;
                     if (!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])) {
@@ -405,7 +402,12 @@ class BEObject extends BEAppModel {
                     } elseif (!empty($inverseRelations[$switch])) {
                         $inverseSwitch = $inverseRelations[$switch];
                     }
+                    $switch = Sanitize::escape($switch);
+                    $inverseSwitch = Sanitize::escape($inverseSwitch);
 
+                    // Delete old associations
+                    // #CUSTOM QUERY
+                    $queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
                     $queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
                                         AND switch = '{$inverseSwitch}' ";
 
