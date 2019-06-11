@@ -1944,7 +1944,7 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Returns thumbnail configuration array from URL and general configuration (used in /posters)
-     * @return thumb conf array
+     * @return array thumb conf array
      */
     private function posterThumbConf() {
         $thumbConf = array();
@@ -1971,7 +1971,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @param int $id
      * @param array $thumbConf
-     * @return poster data array
+     * @return array poster data array
      */
     protected function posterData($id, array $thumbConf = array()) {
         $objectType = $this->BEObject->getType($id);
