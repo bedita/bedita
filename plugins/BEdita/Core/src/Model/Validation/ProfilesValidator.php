@@ -66,7 +66,10 @@ class ProfilesValidator extends ObjectsValidator
 
             ->allowEmptyString('phone')
 
-            ->url('website')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('website', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmptyString('website')
 
             ->allowEmptyString('national_id_number')
