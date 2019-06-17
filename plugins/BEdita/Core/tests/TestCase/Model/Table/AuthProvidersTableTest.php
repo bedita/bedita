@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\AuthProvidersTable} Test Case
@@ -88,7 +89,7 @@ class AuthProvidersTableTest extends TestCase
     {
         return [
             'valid' => [
-                true,
+                [],
                 [
                     'name' => 'some_unique_value',
                     'url' => 'https://example.com/oauth2',
@@ -96,7 +97,9 @@ class AuthProvidersTableTest extends TestCase
                 ],
             ],
             'notUnique' => [
-                false,
+                [
+                    'name.unique',
+                ],
                 [
                     'name' => 'example',
                     'url' => 'https://example.com/oauth2',
@@ -106,10 +109,21 @@ class AuthProvidersTableTest extends TestCase
                 ],
             ],
             'invalidUrl' => [
-                false,
+                [
+                    'url.url',
+                ],
                 [
                     'name' => 'some_unique_value',
                     'url' => 'this is not a URL',
+                ],
+            ],
+            'URL without protocol' => [
+                [
+                    'url.url',
+                ],
+                [
+                    'name' => 'some_unique_value',
+                    'url' => 'www.example.com/without/protocol.json?shouldBeValid=no',
                 ],
             ],
         ];
@@ -118,23 +132,24 @@ class AuthProvidersTableTest extends TestCase
     /**
      * Test validation.
      *
-     * @param bool $expected Expected result.
+     * @param string[] $expected Expected validation errors.
      * @param array $data Data to be validated.
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
      */
-    public function testValidation($expected, array $data)
+    public function testValidation(array $expected, array $data)
     {
         $authProvider = $this->AuthProviders->newEntity([]);
         $this->AuthProviders->patchEntity($authProvider, $data);
 
-        $error = (bool)$authProvider->getErrors();
-        $this->assertEquals($expected, !$error);
+        $errors = $authProvider->getErrors();
+        $errors = Hash::flatten($errors);
+        static::assertEquals($expected, array_keys($errors));
 
-        if ($expected) {
+        if (empty($expected)) {
             $success = $this->AuthProviders->save($authProvider);
-            $this->assertTrue((bool)$success);
+            static::assertTrue((bool)$success);
         }
     }
 
