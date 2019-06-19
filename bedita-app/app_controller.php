@@ -495,7 +495,7 @@ class AppController extends Controller {
                     $msg .= ': ' . $extUserId;
                 }
                 // avoid userid in logs / use ID instead or partially hide userid
-                $this->eventWarn(sprintf('external login failed: %s******', substr($userid, 0, -3)));
+                $this->eventWarn(sprintf('external login failed: %s', Mask::email($extUserId)));
                 $this->userWarnMessage($msg);
                 $this->Session->delete('externalLoginRequestFailed');
             };
