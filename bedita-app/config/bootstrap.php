@@ -222,3 +222,5 @@ if (!$isCli) {
 
     set_exception_handler($exceptionHandler);
 }
+
+App::import('Lib', 'Mask');

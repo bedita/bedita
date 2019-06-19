@@ -569,7 +569,7 @@ class BeAuthComponent extends Object {
         $u = $user->findByUserid($userData['User']['userid']);
         if (!empty($u['User'])) {
             // avoid userid in logs / use ID instead or partially hide userid
-            $this->log(sprintf('User %s****** already created', substr($userData['User']['userid'], 0, -3)));
+            $this->log(sprintf('User %s already created', Mask::email($userData['User']['userid'])));
 
             throw new BeditaException(__('User already created', true));
         }
