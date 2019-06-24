@@ -50,6 +50,8 @@ class MediaTable extends Table
 
         $this->addBehavior('BEdita/Core.CustomProperties');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.Streams',
