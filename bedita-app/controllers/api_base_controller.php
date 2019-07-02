@@ -909,7 +909,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function addRelatedObjects(array $object, array $relations) {
         foreach ($relations as $relName => $dim) {
-            if ($this->ApiValidator->isRelationValid($relName, $object['object_type'])) {
+            if (!empty($object['object_type']) && $this->ApiValidator->isRelationValid($relName, $object['object_type'])) {
                 $relObj = $this->loadRelatedObjects($object['id'], $relName, array(
                     'dim' => $dim,
                     'filter' => $this->relatedObjectsFilter()
