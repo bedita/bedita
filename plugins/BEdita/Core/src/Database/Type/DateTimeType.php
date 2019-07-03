@@ -36,10 +36,11 @@ class DateTimeType extends CakeDateTimeType
      *  - 2017-01-01T11:22:33           YYYY-MM-DDThh:mm:ss
      *  - 2017-01-01T11:22:33Z          YYYY-MM-DDThh:mm:ssZ
      *  - 2017-01-01T19:20+01:00        YYYY-MM-DDThh:mmTZD
-     *  - 2017-01-01T11:22:33+01:00     YYYY-MM-DDThh:mm:ssTZD
-     *  - 2017-01-01T19:20:30.45+01:00  YYYY-MM-DDThh:mm:ss.sTZD
+     *  - 2017-01-01T11:22:33+0100      YYYY-MM-DDThh:mm:ssTZD
+     *  - 2017-01-01T19:20:30.45+01     YYYY-MM-DDThh:mm:ss.sTZD
      *
      * See ISO 8601 subset as defined here https://www.w3.org/TR/NOTE-datetime:
+     * Valid TZD formats are: ±hh:mm, ±hhmm and ±hh, e.g. +01:00, +0100 and +01
      *
      * @param mixed $value DateTime input
      * @param string $dateTimeClassName DateTime class name to use to parse string
