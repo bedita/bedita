@@ -166,7 +166,7 @@ class Validation
             return true;
         }
 
-        if (is_string($value) && preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
+        if (is_string($value) && preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d(:)?(\d\d)?)|Z)?)?)?)?$/i', $value)) {
             return true;
         }
 

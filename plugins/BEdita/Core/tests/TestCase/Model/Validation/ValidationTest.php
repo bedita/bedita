@@ -307,7 +307,15 @@ class ValidationTest extends TestCase
             ],
             'ok iso date time' => [
                 true,
-                '2018-08-02T09:00:00+20:00',
+                '2018-08-02T09:00:00-05:00',
+            ],
+            'iso date tz reduced' => [
+                true,
+                '2018-08-02T09:00:00+02',
+            ],
+            'iso date tz reduced2' => [
+                true,
+                '2018-08-02T09:00:00+0200',
             ],
             'ok timestamp' => [
                 true,
