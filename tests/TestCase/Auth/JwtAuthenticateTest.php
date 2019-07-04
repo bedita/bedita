@@ -183,6 +183,7 @@ class JwtAuthenticateTest extends TestCase
                 ],
                 [
                     'userModel' => 'BEdita/API.Users',
+                    'finder' => 'all',
                     'queryDatasource' => true,
                 ],
                 new ServerRequest([
@@ -257,6 +258,7 @@ class JwtAuthenticateTest extends TestCase
             $result = $auth->authenticate($request, new Response());
         } catch (\Exception $e) {
             $result = $e;
+            static::assertInstanceOf('Exception', $expected);
             static::assertEquals($expected->getAttributes(), $e->getAttributes());
             static::assertEquals($expected->getCode(), $e->getCode());
         }
