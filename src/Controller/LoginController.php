@@ -275,7 +275,7 @@ class LoginController extends AppController
         $conditions = ['id' => $userId];
 
         $result = TableRegistry::get('Users')->find('login', compact('conditions', 'contain'));
-        if (empty($result) || empty($result->first())) {
+        if (empty($result) || $result->count() !== 1) {
             throw new UnauthorizedException(__('Request not authorized'));
         }
 
