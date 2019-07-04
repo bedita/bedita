@@ -60,7 +60,7 @@ class OTPAuthenticate extends BaseAuthenticate
             'password' => null,
         ],
         'userModel' => 'Users',
-        'finder' => 'all',
+        'finder' => 'login',
         'contain' => null,
         'passwordHasher' => 'Default',
         'expiry' => '+15 minutes',
