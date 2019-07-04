@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -123,6 +123,43 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test renew token failure.
+     *
+     * @param array $meta Login metadata.
+     * @return void
+     *
+     * @depends testLoginOkJson
+     * @covers ::login()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
+     */
+    public function testFailedRenew(array $meta)
+    {
+        sleep(1);
+
+        // block user
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(1);
+        $user->blocked = true;
+        $usersTable->saveOrFail($user);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $meta['renew']),
+            ],
+        ]);
+
+        $this->post('/auth', []);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals('Login request not successful', $result['error']['title']);
+        static::assertEquals('401', $result['error']['status']);
+    }
+
+    /**
      * Test login method with invalid credentials
      *
      * @return void
@@ -217,6 +254,41 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $result2 = json_decode((string)$this->_response->getBody(), true);
         $this->assertEquals($result['data']['attributes'], $result2['data']['attributes']);
+    }
+
+    /**
+     * Test read logged user blocked failure.
+     *
+     * @return void
+     *
+     * @depends testLoginOkJson
+     * @covers ::whoami()
+     * @covers ::userEntity()
+     */
+    public function testLoggedUserBlocked(array $meta)
+    {
+        sleep(1);
+
+        // block user
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(1);
+        $user->blocked = true;
+        $usersTable->saveOrFail($user);
+
+        $headers = [
+            'Host' => 'api.example.com',
+            'Accept' => 'application/vnd.api+json',
+            'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+        ];
+
+        $this->configRequest(compact('headers'));
+        $this->get('/auth/user');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        $expected = self::NOT_SUCCESSFUL_EXPECTED_RESULT;
+        $expected['error']['title'] = 'Request not authorized';
+        static::assertEquals($expected, Hash::remove($result, 'error.meta'));
     }
 
     /**
@@ -706,6 +778,31 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `otp_request` failure.
+     *
+     * @return void
+     * @covers ::login()
+     */
+    public function testOTPRequestFail()
+    {
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(5);
+        $user->deleted = true;
+        $usersTable->saveOrFail($user);
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', json_encode([
+            'username' => 'second user',
+            'grant_type' => 'otp_request',
+        ]));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        static::assertNotEmpty($result);
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+    }
+
+    /**
      * Test actual `otp` (One Time Password) login.
      *
      * @return void
@@ -726,5 +823,32 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         static::assertNotEmpty($result['meta']['jwt']);
         static::assertNotEmpty($result['meta']['renew']);
+    }
+
+    /**
+     * Test `otp` login failure.
+     *
+     * @return void
+     * @covers ::login()
+     */
+    public function testOTPFail()
+    {
+        $usersTable = TableRegistry::get('Users');
+        $user = $usersTable->get(5);
+        $user->status = 'off';
+        $usersTable->saveOrFail($user);
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', json_encode([
+            'username' => 'second user',
+            'authorization_code' => 'toktoktoktoktok',
+            'token' => 'secretsecretsecret',
+            'grant_type' => 'otp',
+        ]));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(401);
+        static::assertNotEmpty($result);
+        static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
     }
 }
