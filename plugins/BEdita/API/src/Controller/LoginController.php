@@ -262,7 +262,7 @@ class LoginController extends AppController
      * Read logged user entity including roles and other related objects via `include` query string.
      *
      * @return \BEdita\Core\Model\Entity\User Logged user entity
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
+     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
      */
     protected function userEntity()
     {
@@ -272,8 +272,16 @@ class LoginController extends AppController
         }
         $contain = $this->prepareInclude($this->request->getQuery('include'));
         $contain = array_unique(array_merge($contain, ['Roles']));
+        $conditions = ['id' => $userId];
 
-        return TableRegistry::get('Users')->get($userId, compact('contain'));
+        $user = TableRegistry::get('Users')
+            ->find('login', compact('conditions', 'contain'))
+            ->first();
+        if (empty($user)) {
+            throw new UnauthorizedException(__('Request not authorized'));
+        }
+
+        return $user;
     }
 
     /**

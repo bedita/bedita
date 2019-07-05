@@ -81,7 +81,7 @@ class JwtAuthenticate extends BaseAuthenticate
         ],
         'userModel' => 'Users',
         'scope' => [],
-        'finder' => 'all',
+        'finder' => 'login',
         'contain' => null,
         'passwordHasher' => 'Default',
         'queryDatasource' => false,
