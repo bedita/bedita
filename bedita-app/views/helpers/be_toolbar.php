@@ -353,10 +353,15 @@ class BeToolbarHelper extends AppHelper {
 	 * @return array
 	 */
 	public function getPassedArgs($otherParams=array()) {
-		if (empty($otherParams))
-			return array_merge($this->params["pass"], $this->params["named"]);
-		else
-			return array_merge($this->params["pass"], $this->params["named"], $otherParams);
+        $query = $this->params['url'];
+        unset($query['url']);
+
+        return array_merge(
+            $this->params['pass'],
+            $this->params['named'],
+            array('?' => $query),
+            $otherParams ?: array()
+        );
 	}
 	
 	/**
