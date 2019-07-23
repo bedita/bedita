@@ -1,6 +1,6 @@
 language: php
 
-dist: trusty
+dist: bionic
 sudo: required
 
 services:
@@ -81,6 +81,7 @@ jobs:
     #    PostgreSQL 9.5 on PHP 7.1
     #    static code analyzer on PHP 7.1
     - stage: complete
+      dist: trusty
       php: 7.2
       env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: complete
@@ -141,16 +142,6 @@ before_script:
   - set +H
 
   # Set up and configure databases.
-  - | # Install MySQL 5.7.
-    if [ "$DB" = 'mysql' ] && [ "$DB_VERSION" = '5.7' ]; then
-      echo mysql-apt-config mysql-apt-config/select-server select mysql-5.7 | sudo debconf-set-selections
-      wget https://dev.mysql.com/get/mysql-apt-config_0.6.0-1_all.deb
-      sudo dpkg --install mysql-apt-config_0.6.0-1_all.deb
-      sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 15866BAFD9BCC4F3C1E0DFC7D69548E1C17EAB57
-      sudo apt-get update -q
-      sudo apt-get install -q -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mysql-server
-      sudo mysql_upgrade
-    fi
   - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
