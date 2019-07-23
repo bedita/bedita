@@ -33,6 +33,7 @@ jobs:
         - mysql
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
+      sudo: true
       php: 7.1
       services: postgresql
       addons:
@@ -67,6 +68,7 @@ jobs:
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: reference
+      sudo: true
       php: 7.1
       services:
         - postgresql
