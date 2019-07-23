@@ -43,13 +43,9 @@ jobs:
       php: 7.1
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
+      dist: trusty
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
-      addons:
-        postgresql: "9.6"
-        apt:
-          packages:
-            - "postgresql-9.6-postgis-2.4"
     - stage: minimal
       php: 7.1
       services: []
@@ -76,13 +72,9 @@ jobs:
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: reference
+      dist: trusty
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
-      addons:
-        postgresql: "9.6"
-        apt:
-          packages:
-            - "postgresql-9.6-postgis-2.4"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
 
