@@ -3,18 +3,6 @@ language: php
 dist: bionic
 sudo: false
 
-services:
-  - memcached
-  - mysql
-  - postgresql
-  - redis-server
-
-addons:
-  postgresql: "9.6"
-  apt:
-    packages:
-      - postgresql-9.6-postgis-2.4 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
-
 cache:
   directories:
     - vendor
@@ -41,15 +29,20 @@ jobs:
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - stage: minimal
       php: 7.1
+      services:
+        - mysql
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: minimal
-      dist: trusty
       php: 7.1
+      services: postgresql
+      addons:
+        postgresql: "9.6"
+        apt:
+          packages:
+            - postgresql-9.6-postgis-2.4 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - stage: minimal
       php: 7.1
-      services: []
-      addons: {}
       env: "RUN=phpcs"
       before_script: skip
       script: |
@@ -63,6 +56,8 @@ jobs:
     #    PostgreSQL 9.6 + PostGIS on PHP 7.1
     - stage: reference
       php: 7.1
+      services:
+        - mysql
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
@@ -72,8 +67,14 @@ jobs:
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
     - stage: reference
-      dist: trusty
       php: 7.1
+      services:
+        - postgresql
+      addons:
+        postgresql: "9.6"
+        apt:
+          packages:
+            - postgresql-9.6-postgis-2.4 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
@@ -85,16 +86,18 @@ jobs:
     - stage: complete
       dist: trusty
       php: 7.2
+      services:
+        - mysql
       env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@localhost/bedita_test'"
     - stage: complete
       php: 7.1
-      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      services:
+        - postgresql
       addons:
         postgresql: "9.5"
+      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - stage: complete
       php: 7.1
-      services: []
-      addons: {}
       env: "RUN=phpstan"
       install:
         - composer install --prefer-dist --no-interaction
@@ -105,8 +108,6 @@ jobs:
     # Deployment on Heroku demo app.
     - stage: deploy
       php: 7.1
-      services: []
-      addons: {}
       before_script: skip
       script: skip
       deploy:
