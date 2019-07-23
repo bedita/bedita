@@ -13,7 +13,7 @@ addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-9.6-postgis-2.3 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
+      - postgresql-9.6-postgis-2.4 # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
 
 cache:
   directories:
@@ -45,6 +45,11 @@ jobs:
     - stage: minimal
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      addons:
+        postgresql: "9.6"
+        apt:
+          packages:
+            - "postgresql-9.6-postgis-2.4"
     - stage: minimal
       php: 7.1
       services: []
@@ -73,6 +78,11 @@ jobs:
     - stage: reference
       php: 7.1
       env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      addons:
+        postgresql: "9.6"
+        apt:
+          packages:
+            - "postgresql-9.6-postgis-2.4"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
 
@@ -129,15 +139,11 @@ before_install:
 install:
   # Install Composer dependencies.
   - composer install --prefer-dist --no-interaction
-  - if [ "$TRAVIS_PHP_VERSION" = 'hhvm' ]; then composer require lorenzo/multiple-iterator=~1.0; fi
 
 before_script:
   # Enable required PHP Extensions.
-  - |
-    if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
-      echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-      echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    fi
+  - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv rehash
   - set +H
 
