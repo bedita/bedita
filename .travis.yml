@@ -30,7 +30,7 @@ jobs:
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 9.6 + PostGIS on PHP 7.1"
       stage: minimal
-      dist: trusty
+      dist: xenial
       sudo: true
       php: 7.1
       services:
@@ -69,7 +69,7 @@ jobs:
       after_success: bash <(curl -s https://codecov.io/bash)
     - name: "PostgreSQL 9.6 + PostGIS on PHP 7.1"
       stage: reference
-      dist: trusty
+      dist: xenial
       sudo: true
       php: 7.1
       services:
