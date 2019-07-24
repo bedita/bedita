@@ -146,10 +146,10 @@ class BeToolbarHelper extends AppHelper {
 
 		// Define script for page change
 		$data = $this->getPassedArgs();
-		unset($data["page"]);
-		unset($data["dim"]);
+		$data['dim'] = '__DIM__';
+		$data['page'] = 1;
 		$url = $this->getUrl($data);
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/" . $this->paramName('dim') . ":'+ this[this.selectedIndex].value +'/page:1'" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)" ;
 
 		$tmp = array() ;
 		foreach ($options as $k) $tmp[$k] = $k ;
@@ -172,12 +172,9 @@ class BeToolbarHelper extends AppHelper {
 		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
-		unset($data["dim"]);
+		$data['dim'] = '__DIM__';
 		$url = $this->getUrl($data);
-		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url )) {
-			$url .= "/".$this->params["action"];
-		}
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/" . $this->paramName('dim') . ":'+ this[this.selectedIndex].value" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)" ;
 
 		return $this->Form->select($selectId, $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
 	}
@@ -194,10 +191,10 @@ class BeToolbarHelper extends AppHelper {
 
 		// Define script for page change
 		$data = $this->getPassedArgs();
-		unset($data["page"]);
+		$data['page'] = '__PAGE__';
 		$url = $this->getUrl($data);
 		
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
 
 		// Define the number of pages available
 		$pages = array() ;
@@ -231,12 +228,9 @@ class BeToolbarHelper extends AppHelper {
 
 		// Define script for page change
 		$data = $this->getPassedArgs();
-		unset($data["page"]);
+		$data['page'] = '__PAGE__';
 		$url = $this->getUrl($data);
-		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url)) {
-			$url .= "/".$this->params["action"];
-		}
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
 
 		// Define the number of pages available
 		$pages = array() ;
@@ -353,8 +347,8 @@ class BeToolbarHelper extends AppHelper {
 	 * @return array
 	 */
 	public function getPassedArgs($otherParams=array()) {
-        $query = $this->params['url'];
-        unset($query['url']);
+		$query = array_diff_assoc($this->params['url'], $this->params['named'], $this->params['toolbar']);
+		unset($query['url']);
 
         return array_merge(
             $this->params['pass'],
