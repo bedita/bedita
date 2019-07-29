@@ -328,6 +328,7 @@ class BeUsersToolbarHelper extends AppHelper
         $data['page'] = '__PAGE__';
         $url = $this->Paginator->url($data);
         $options = array(
+            'type' => 'text',
             'div' => false,
             'label' => false,
             'placeholder' => $current,
