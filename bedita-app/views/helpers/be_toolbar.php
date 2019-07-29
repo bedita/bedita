@@ -529,7 +529,7 @@ class BeToolbarHelper extends AppHelper {
             return sprintf('<div class="toolbar">%s</div>', $content);
         }
 
-        $content = sprintf('<h2>%s &nbsp; %s</h2>', $this->pageHeader(), $this->pageQuery());
+        $content = sprintf('<h2>%s %s</h2>', $this->pageHeader(), $this->pageQuery());
         $content.= $this->pagePagination();
 
         return sprintf('<div class="toolbar">%s</div>', $content);
