@@ -364,6 +364,7 @@ class BeToolbarHelper extends AppHelper {
         $data['page'] = '__PAGE__';
         $url = $this->getUrl($data);
         $options = array(
+            'type' => 'text',
             'div' => false,
             'label' => false,
             'placeholder' => $current,
