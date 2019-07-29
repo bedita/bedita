@@ -302,6 +302,10 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 .toolbar {
 	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
 }
+div.toolbar {
+	white-space: nowrap;
+	display: inline-block;
+}
 
 .graced, .serif {font-family: "Georgia", "Times New Roman", Times, serif;}
 
@@ -1874,6 +1878,12 @@ INPUT.objectCheck {
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
 	border:1px solid silver;
+}
+
+INPUT.paginationPage {
+	line-height: 1em;
+	text-align: center;
+	font-weight: bold;
 }
 
 #pwd, #pwdagain, INPUT[type=password] {

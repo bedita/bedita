@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-11-17 11:29:27\n"
+"POT-Creation-Date: 2019-07-26 09:14:55\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -253,6 +253,9 @@ msgstr "Annulla"
 
 msgid "Captcha image and text don't match"
 msgstr "Immagine captcha e testo non corrispondono"
+
+msgid "Captions"
+msgstr ""
 
 msgid "Card"
 msgstr "Scheda"
@@ -858,9 +861,6 @@ msgstr "GeoTag"
 
 msgid "Get contents"
 msgstr "Prendi i contenuti"
-
-msgid "Gmaps LookaT"
-msgstr "Gmaps LookaT"
 
 msgid "Go to"
 msgstr "Vai a"
@@ -1474,6 +1474,9 @@ msgstr "Numero di oggetti"
 
 msgid "Object id not found: %d"
 msgstr "L'oggetto con id %d non è stato trovato"
+
+msgid "Object of a type not allowed for module"
+msgstr ""
 
 msgid "Object type"
 msgstr "Tipo oggetto"
@@ -2216,6 +2219,9 @@ msgstr "amministrazione"
 msgid "all"
 msgstr "tutti"
 
+msgid "all areas"
+msgstr "tutte le pubblicazioni"
+
 msgid "all bibliographies"
 msgstr "tutte le bibliografie"
 
@@ -2227,6 +2233,12 @@ msgstr "tutte le schede"
 
 msgid "all comments"
 msgstr "tutti i commenti"
+
+msgid "all documents"
+msgstr "tutti i documenti"
+
+msgid "all events"
+msgstr "tutti gli eventi"
 
 msgid "all galleries"
 msgstr "tutte le gallerie"
@@ -2663,6 +2675,9 @@ msgstr "inerisci un nuovo parametro"
 msgid "inserted on"
 msgstr "inserito il"
 
+msgid "invalid"
+msgstr ""
+
 msgid "inventory"
 msgstr "inventario"
 
@@ -2782,9 +2797,6 @@ msgstr "lingua principale"
 
 msgid "master title"
 msgstr "titolo principale"
-
-msgid "matching the query"
-msgstr "corrisponde a ricerca"
 
 msgid "matching the query containing"
 msgstr "corrispondenti alla query che contiene"
@@ -3570,6 +3582,18 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+msgid "{t}matching the query containing{/t}"
+msgstr ""
+
+msgid "{t}matching the query{/t}"
+msgstr ""
+
+#~ msgid "Gmaps LookaT"
+#~ msgstr "Gmaps LookaT"
+
+#~ msgid "matching the query"
+#~ msgstr "corrisponde a ricerca"
 
 #~ msgid "Calendar start date after end date"
 #~ msgstr "Nel calendario la data d'inizio è dopo la data di fine"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-11-17 11:29:27\n"
+"POT-Creation-Date: 2019-07-26 09:14:55\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -256,6 +256,9 @@ msgstr ""
 
 msgid "Captcha image and text don't match"
 msgstr "Captcha Bild und Text stimmen nicht überein"
+
+msgid "Captions"
+msgstr ""
 
 msgid "Card"
 msgstr "Karte"
@@ -860,9 +863,6 @@ msgstr ""
 
 msgid "Get contents"
 msgstr "Inhalte holen"
-
-msgid "Gmaps LookaT"
-msgstr "Gmaps LookaT"
 
 msgid "Go to"
 msgstr ""
@@ -1478,6 +1478,9 @@ msgid "Number of objects"
 msgstr "Zahl von Objekten"
 
 msgid "Object id not found: %d"
+msgstr ""
+
+msgid "Object of a type not allowed for module"
 msgstr ""
 
 msgid "Object type"
@@ -2224,6 +2227,9 @@ msgstr "Einstellungen"
 msgid "all"
 msgstr "alle"
 
+msgid "all areas"
+msgstr ""
+
 msgid "all bibliographies"
 msgstr "alle Bibliographien"
 
@@ -2235,6 +2241,12 @@ msgstr "alle Karten"
 
 msgid "all comments"
 msgstr "alle Kommentare"
+
+msgid "all documents"
+msgstr ""
+
+msgid "all events"
+msgstr ""
 
 msgid "all galleries"
 msgstr "alle Gallerien"
@@ -2674,6 +2686,9 @@ msgstr ""
 msgid "inserted on"
 msgstr "eingefügt am"
 
+msgid "invalid"
+msgstr ""
+
 msgid "inventory"
 msgstr ""
 
@@ -2793,9 +2808,6 @@ msgstr "Vorlagensprache"
 
 msgid "master title"
 msgstr "Vorlagentitel"
-
-msgid "matching the query"
-msgstr ""
 
 msgid "matching the query containing"
 msgstr ""
@@ -3572,6 +3584,18 @@ msgstr "deine 5 letzten Elemente"
 
 msgid "your message"
 msgstr "deine Nachricht"
+
+msgid "{t}matching the query containing{/t}"
+msgstr ""
+
+msgid "{t}matching the query{/t}"
+msgstr ""
+
+#~ msgid "all %s"
+#~ msgstr "alle %s"
+
+#~ msgid "Gmaps LookaT"
+#~ msgstr "Gmaps LookaT"
 
 #~ msgid "Add event date"
 #~ msgstr "Ereignis hinzufügen"

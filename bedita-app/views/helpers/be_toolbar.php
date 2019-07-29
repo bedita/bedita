@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -21,334 +21,460 @@
 
 /**
  * Table toolbar for pagination and search helper
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class BeToolbarHelper extends AppHelper {
-	/**
-	 * Included helpers.
-	 *
-	 * @var array
-	 */
-	var $helpers = array('Form', 'Html');
+    /**
+     * Included helpers.
+     *
+     * @var array
+     */
+    public $helpers = array('Form', 'Html', 'SessionFilter');
 
-	var $tags = array(
-		'with_text' => '<span %s >%s</span>',
-		'without_text' => '<span %s />'
-	) ;
+    /**
+     * View publication data, if any
+     *
+     * @var array
+     */
+    private $_publication;
 
-	/**
-	 * initialize toolbar in params['toolbar']
-	 * 
-	 * @param array $toolbar
-	 */
-	public function init(&$toolbar, $prefix = '') {
-		$this->params['toolbar'] = $toolbar;
-		$this->params['prefix'] = $prefix;
-	}
+    /**
+     * View section data, if any
+     *
+     * @var array
+     */
+    private $_section;
 
-	/**
-	 * Return the link (html anchor tag) for the next page
-	 *
-	 * @param string $title			Label link
-	 * @param array $option			HTML attributes for link
-	 * @param string $disabledTitle		Label link disabled
-	 * @param array  $disabledOption	HTML attributes for link disabled
-	 * 									(if present, insert a tag SPAN)
-	 * @return string
-	 */
-	public function next($title = ' > ', $options = array(), $disabledTitle = ' > ', $disabledOption = array()) {
-		return $this->_scroll('next', $title, $options, $disabledTitle, $disabledOption) ;
-	}
+    /**
+     * View current content data, if any
+     *
+     * @var array
+     */
+    private $_currentContent;
 
-	/**
-	 * Return the link (html anchor tag) for the previous page
-	 *
-	 * @param string $title			Label link
-	 * @param array $option			HTML attributes for link
-	 * @param string $disabledTitle		Label link disabled
-	 * @param array  $disabledOption	HTML attributes for link disabled
-	 * 									(if present, insert a tag SPAN)
-	 * @return string
-	 */
-	public function prev($title = ' < ', $options = array(), $disabledTitle = ' < ', $disabledOption = array()) {
-		return $this->_scroll('prev', $title, $options, $disabledTitle, $disabledOption) ;
-	}
+    /**
+     * Template itemName string parameter
+     *
+     * @var string
+     */
+    private $_itemName;
 
-	/**
-	 * Return the link (html anchor tag) for the first page
-	 *
-	 * @param string $title			Label link
-	 * @param array $option			HTML attributes for link
-	 * @param string $disabledTitle		Label link disabled
-	 * @param array  $disabledOption	HTML attributes for link disabled
-	 * 									(if present, insert a tag SPAN)
-	 * @return string
-	 */
-	public function first($title = ' |< ', $options = array(), $disabledTitle = ' |< ', $disabledOption = array()) {
-		return $this->_scroll('first', $title, $options, $disabledTitle, $disabledOption) ;
-	}
+    /**
+     * Template noitem string parameter
+     *
+     * @var string
+     */
+    private $_noitem;
 
-	/**
-	 * Return the link (html anchor tag) for the last page
-	 *
-	 * @param string $title			Label link
-	 * @param array $option			HTML attributes for link
-	 * @param string $disabledTitle		Label link disabled
-	 * @param array  $disabledOption	HTML attributes for link disabled
-	 * 									(if present, insert a tag SPAN)
-	 * @return string
-	 */
-	public function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
-		return $this->_scroll('last', $title, $options, $disabledTitle, $disabledOption) ;
-	}
+    /**
+     * View moduleName string, if any
+     *
+     * @var string
+     */
+    private $_moduleName;
 
-	/**
-	 * Return number of records found
-	 *
-	 * @return mixed int|string
-	 */
-	public function size() {
-		return (isset($this->params['toolbar']['size'])?$this->params['toolbar']['size']:"" ) ;
-	}
+    /**
+     * View current module array
+     *
+     * @var array
+     */
+    private $_currentModule;
 
-	/**
-	 * Return current page
-	 *
-	 * @return mixed int|string
-	 */
-	public function current() {
-		return (isset($this->params['toolbar']['page'])?$this->params['toolbar']['page']:"" ) ;
-	}
+    /**
+     * Name used in toolbar, can be itemName or moduleName value
+     *
+     * @var string
+     */
+    private $_name;
 
-	/**
-	 * Return total number of pages
-	 *
-	 * @return mixed int|string
-	 */
-	public function pages() {
-		return (isset($this->params['toolbar']['pages'])?$this->params['toolbar']['pages']:"" ) ;
-	}
+    /**
+     * Configuration instance
+     *
+     * @var Configure
+     */
+    private $_conf;
 
-	/**
-	 * View page size html select tag
-	 *
-	 * @param array $htmlAttributes		associative Array with HTML attributes
-	 * @param array $options				Array. Default: 1, 5, 10,20, 50, 100
-	 * @return string
-	 */
-	public function changeDim($htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
-		if(!isset($this->params['toolbar']['dim'])) return "" ;
+    /**
+     * @inheritDoc
+     */
+    public function __construct() {
+        $this->_view = ClassRegistry::getObject('view');
+        $this->_publication = Set::classicExtract($this->_view->viewVars, 'publication', null);
+        $this->_section =  Set::classicExtract($this->_view->viewVars, 'section', null);
+        $this->_currentContent = Set::classicExtract($this->_view->viewVars, 'section.currentContent', null);
+        $this->_moduleName = Set::classicExtract($this->_view->viewVars, 'moduleName', null);
+        $this->_currentModule = Set::classicExtract($this->_view->viewVars, 'currentModule', null);
+        $this->_conf = Configure::getInstance();
+    }
 
-		// Define script for page change
-		$data = $this->getPassedArgs();
-		$data['dim'] = '__DIM__';
-		$data['page'] = 1;
-		$url = $this->getUrl($data);
-		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)" ;
+    /**
+     * Tags types of enclosuers (with or without text)
+     *
+     * @var array
+     */
+    public $tags = array(
+        'with_text' => '<span %s >%s</span>',
+        'without_text' => '<span %s />',
+    );
 
-		$tmp = array() ;
-		foreach ($options as $k) $tmp[$k] = $k ;
-		$options = $tmp ;
+    /**
+     * Default options for change page combo
+     *
+     * @var array
+     */
+    protected $changePageDefaultOptions = array(1, 5, 10, 20, 50, 100);
 
-		return $this->Form->select("", $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
-	}
+    /**
+     * Initialize toolbar parameters
+     *
+     * @param array $toolbar The toolbar
+     * @param string $prefix The prefix
+     *
+     * @return void
+     */
+    public function init(&$toolbar, $prefix = '') {
+        $this->params['toolbar'] = $toolbar;
+        $this->params['prefix'] = $prefix;
+    }
 
-	/**
-	 * return dropdown list with changed dimension
-	 * 
-	 * @param string $selectId
-	 * @param array $htmlAttributes
-	 * @param array $options
-	 * @return string
-	 */
-	public function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1 => 1, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100)) {
-		if(!isset($this->params['toolbar']['dim'])) return "" ;
+    /**
+     * Return the link (html anchor tag) for the next page
+     *
+     * @param string $title Label link
+     * @param array $option  attributes for link
+     * @param string $disabledTitle Label link disabled
+     * @param array $disabledOption HTML attributes for link disabled (if present, insert a tag SPAN)
+     *
+     * @return string
+     */
+    public function next($title = ' > ', $options = array(), $disabledTitle = ' > ', $disabledOption = array()) {
+        return $this->_scroll('next', $title, $options, $disabledTitle, $disabledOption);
+    }
 
-		// Define script for page change
-		$data = $this->getPassedArgs();
-		unset($data["page"]);
-		$data['dim'] = '__DIM__';
-		$url = $this->getUrl($data);
-		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)" ;
+    /**
+     * Return the link (html anchor tag) for the previous page
+     *
+     * @param string $title Label link
+     * @param array $option HTML attributes for link
+     * @param string $disabledTitle Label link disabled
+     * @param array $disabledOption HTML attributes for link disabled (if present, insert a tag SPAN)
+     *
+     * @return string
+     */
+    public function prev($title = ' < ', $options = array(), $disabledTitle = ' < ', $disabledOption = array()) {
+        return $this->_scroll('prev', $title, $options, $disabledTitle, $disabledOption);
+    }
 
-		return $this->Form->select($selectId, $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
-	}
+    /**
+     * Return the link (html anchor tag) for the first page
+     *
+     * @param string $title Label link
+     * @param array $option HTML attributes for link
+     * @param string $disabledTitle Label link disabled
+     * @param array $disabledOption HTML attributes for link disabled (if present, insert a tag SPAN)
+     * @return string
+     */
+    public function first($title = ' |< ', $options = array(), $disabledTitle = ' |< ', $disabledOption = array()) {
+        return $this->_scroll('first', $title, $options, $disabledTitle, $disabledOption);
+    }
 
-	/**
-	 * Change selected page
-	 *
-	 * @param array $htmlAttributes		associative Array with HTML attributes
-	 * @param array $items				number of available pages, before and after current. Default: 5
-	 * @return string
-	 */
-	public function changePage($htmlAttributes = array(),	$items = 5) {
-		if(!isset($this->params['toolbar']['page'])) return "" ;
+    /**
+     * Return the link (html anchor tag) for the last page
+     *
+     * @param string $title Label link
+     * @param array $option HTML attributes for link
+     * @param string $disabledTitle Label link disabled
+     * @param array $disabledOption HTML attributes for link disabled (if present, insert a tag SPAN)
+     *
+     * @return string
+     */
+    public function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
+        return $this->_scroll('last', $title, $options, $disabledTitle, $disabledOption);
+    }
 
-		// Define script for page change
-		$data = $this->getPassedArgs();
-		$data['page'] = '__PAGE__';
-		$url = $this->getUrl($data);
-		
-		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
+    /**
+     * Return number of records found
+     *
+     * @return mixed int|string
+     */
+    public function size() {
+        return Set::classicExtract($this->params, 'toolbar.size', '');
+    }
 
-		// Define the number of pages available
-		$pages = array() ;
-		for($i = $this->params['toolbar']['page']; $i >= 1 ; $i--) {
-			$pages[] =  $i ;
-		}
+    /**
+     * Return current page
+     *
+     * @return mixed int|string
+     */
+    public function current() {
+        return Set::classicExtract($this->params, 'toolbar.page', '');
+    }
 
-		for($i = $this->params['toolbar']['page']; $i <= $this->params['toolbar']['pages'] ; $i++) {
-			$pages[] =  $i ;
-		}
-		sort($pages) ;
+    /**
+     * Return total number of pages
+     *
+     * @return mixed int|string
+     */
+    public function pages() {
+        return Set::classicExtract($this->params, 'toolbar.pages', '');
+    }
 
-		// View select
-		$tmp = array() ;
-		foreach ($pages as $k) $tmp[$k] = $k ;
-		$pages = $tmp ;
+    /**
+     * View page size html select tag
+     *
+     * @param array $htmlAttributes Associative Array with HTML attributes
+     * @param array $options The options
+     * @return string
+     */
+    public function changeDim($htmlAttributes = array(), $options = array()) {
+        if (!isset($this->params['toolbar']['dim'])) {
+            return '';
+        }
+        if (empty($options)) {
+            $options = $this->changePageDefaultOptions;
+        }
 
-		return $this->Form->select("", $pages, $this->params['toolbar']['page'], $htmlAttributes, false) ;
-	}
+        // Define script for page change
+        $data = $this->getPassedArgs();
+        $data['dim'] = '__DIM__';
+        $data['page'] = 1;
+        $url = $this->getUrl($data);
+        $htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)";
 
-	/**
-	 * Change page in a dropdown list of results
-	 * 
-	 * @param string $selectId
-	 * @param array $htmlAttributes
-	 * @param array $items
-	 * @return string
-	 */
-	public function changePageSelect($selectId, $htmlAttributes = array(),	$items = 5) {
-		if(!isset($this->params['toolbar']['page'])) return "" ;
+        $tmp = array();
+        foreach ($options as $k) $tmp[$k] = $k;
+        $options = $tmp;
 
-		// Define script for page change
-		$data = $this->getPassedArgs();
-		$data['page'] = '__PAGE__';
-		$url = $this->getUrl($data);
-		$htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
+        return $this->Form->select('', $options, $this->params['toolbar']['dim'], $htmlAttributes, false);
+    }
 
-		// Define the number of pages available
-		$pages = array() ;
-		for($i = $this->params['toolbar']['page']; $i >= 1 ; $i--) {
-			$pages[] =  $i ;
-		}
+    /**
+     * Return dropdown list with changed dimension
+     * 
+     * @param string $selectId The combo|select ID
+     * @param array $htmlAttributes Associative Array with HTML attributes
+     * @param array $options The options
+     *
+     * @return string
+     */
+    public function changeDimSelect($selectId, $htmlAttributes = array(), $options = array()) {
+        if (!isset($this->params['toolbar']['dim'])) {
+            return '';
+        }
+        if (empty($options)) {
+            $options = array_combine($this->changePageDefaultOptions, $this->changePageDefaultOptions);
+        }
 
-		for($i = $this->params['toolbar']['page']; $i <= $this->params['toolbar']['pages'] ; $i++) {
-			$pages[] =  $i ;
-		}
-		sort($pages) ;
+        // Define script for page change
+        $data = $this->getPassedArgs();
+        unset($data["page"]);
+        $data['dim'] = '__DIM__';
+        $url = $this->getUrl($data);
+        $htmlAttributes['onchange'] = "if ($('#loading')) { $('#loading').show(); } document.location = '{$url}'.replace('__DIM__', this[this.selectedIndex].value)";
 
-		// View select
-		$tmp = array() ;
-		foreach ($pages as $k) $tmp[$k] = $k ;
-		$pages = $tmp ;
+        return $this->Form->select($selectId, $options, $this->params['toolbar']['dim'], $htmlAttributes, false);
+    }
 
-		return $this->Form->select($selectId, $pages, $this->params['toolbar']['page'], $htmlAttributes, false) ;
-	}
+    /**
+     * Change selected page
+     *
+     * @param array $htmlAttributes Associative Array with HTML attributes
+     * @param array $items Number of available pages, before and after current. Default: 5
+     *
+     * @return string
+     */
+    public function changePage($htmlAttributes = array(), $items = 5) {
+        if (!isset($this->params['toolbar']['page'])) {
+            return '';
+        }
 
-	/**
-	 * Change list order
-	 *
-	 * @param string $field				Field for the "order by"
-	 * @param string $title				Title for the link. Default: field name
-	 * @param array $htmlAttributes			associative Array with HTML attributes
-	 * @param boolean $dir				Se presente impone la direzione. 1: ascending, 0: descending
-	 * 									otherwise, !(<current value>)
-	 * @return string
-	 */
-	public function order($field, $title="", $image="", $htmlAttributes = array(), $dir=null) {
-		
-		if(!isset($this->params['toolbar'])) return "" ;
-		
-		$data = $this->getPassedArgs();
-		
-		if(isset($data['order']) && $data['order'] == $field) {
-			if(!isset($dir)) $dir = (isset($data['dir']))  ? (!$data['dir']) : true  ;
-			if ($dir == 1) {
-				$class = "SortUp desc";	
-			}
-			else {
-				$class = "SortUp asc";
-			}
-		}  else {
-			if(!isset($dir)) $dir = true ;
-			$class = "";
-		}
-		
-		// Crea l'url
-		$data['order'] 	= $field ;
-		$data['dir'] 	= (integer)$dir ;
+        // Define script for page change
+        $data = $this->getPassedArgs();
+        $data['page'] = '__PAGE__';
+        $url = $this->getUrl($data);
 
-		$url = $this->getUrl($data);
-		
-		if (!empty($image)) {
-			$htmlAttributes["alt"] = __($htmlAttributes["alt"], true);
-			$title = $this->Html->image($image, $htmlAttributes);
-		} else {
-			$title = __($title, true);
-		}
-		
-		return '<a class="'.$class.'" href="' . htmlentities($url) . '">' . $title . '</a>';
-		
-	}
+        $htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
 
-	/**
-	 * Return the link (html anchor tag) for the page $where
-	 *
-	 * @param string $where			page target (next, prev, first, last)
-	 * @param string $title			Label link
-	 * @param array $option			HTML attributes for link
-	 * @param string $disabledTitle		Label link disabled
-	 * @param array  $disabledOption	HTML attributes for link disabled
-	 * 									(if present, insert a tag SPAN)
-	 * @return string
-	 */
-	private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
-		$page = (isset($this->params['toolbar'][$where]))? $this->params['toolbar'][$where] : false ;
+        // Define the number of pages available
+        $pages = array();
+        for ($i = $this->params['toolbar']['page']; $i >= 1; $i--) {
+            $pages[] =  $i;
+        }
+        for ($i = $this->params['toolbar']['page']; $i <= $this->params['toolbar']['pages']; $i++) {
+            $pages[] =  $i;
+        }
+        sort($pages);
 
-		// Next page not found or toolbar not found, link disabled
-		if(!$page) {
-			return $this->_output($disabledTitle, $disabledOption) ;
-		}
+        // View select
+        $tmp = array();
+        foreach ($pages as $k) $tmp[$k] = $k;
+        $pages = $tmp;
 
-		// Create url
-		$data = $this->getPassedArgs();
-		$data['page'] = $page ;
+        return $this->Form->select('', $pages, $this->params['toolbar']['page'], $htmlAttributes, false);
+    }
 
-		$url = $this->getUrl($data);
-		return '<a title="go to '.$where.' page" href="' . $url . '">' . __($title, true) . '</a>';
-	}
+    /**
+     * Change page in a dropdown list of results
+     * 
+     * @param string $selectId The combo|select ID
+     * @param array $htmlAttributes Associative Array with HTML attributes
+     * @param array $items Number of available pages, before and after current. Default: 5
+     *
+     * @return string
+     */
+    public function changePageSelect($selectId, $htmlAttributes = array(), $items = 5) {
+        if (!isset($this->params['toolbar']['page'])) return '';
 
-	/**
-	 * return output for text
-	 * 
-	 * @param string $text
-	 * @param array $options
-	 * @return string
-	 */
-	private function _output($text, $options) {
-		return $this->output(
-			sprintf(
-					(($text)?$this->tags['with_text']:$this->tags['without_text']),
-					$this->_parseAttributes($options, null, ' ', ''), __($text,true)
-			)
-		);
-	}
+        // Define script for page change
+        $data = $this->getPassedArgs();
+        $data['page'] = '__PAGE__';
+        $url = $this->getUrl($data);
+        $htmlAttributes['onchange'] = "document.location = '{$url}'.replace('__PAGE__', this[this.selectedIndex].value)";
 
-	/**
-	 * get array arguments
-	 * 
-	 * @param array $otherParams
-	 * @return array
-	 */
-	public function getPassedArgs($otherParams=array()) {
-		$query = array_diff_assoc($this->params['url'], $this->params['named'], $this->params['toolbar']);
-		unset($query['url']);
+        // Define the number of pages available
+        $pages = array();
+        for ($i = $this->params['toolbar']['page']; $i >= 1; $i--) {
+            $pages[] =  $i;
+        }
+
+        for ($i = $this->params['toolbar']['page']; $i <= $this->params['toolbar']['pages']; $i++) {
+            $pages[] =  $i;
+        }
+        sort($pages);
+
+        // View select
+        $tmp = array();
+        foreach ($pages as $k) $tmp[$k] = $k;
+        $pages = $tmp;
+
+        return $this->Form->select($selectId, $pages, $this->params['toolbar']['page'], $htmlAttributes, false);
+    }
+
+    /**
+     * Change page as input text.
+     * Onchange, reload page to specified page number
+     * 
+     * @return string
+     */
+    public function changePageInput() {
+        $current = $this->current();
+        $data = $this->getPassedArgs();
+        $data['page'] = '__PAGE__';
+        $url = $this->getUrl($data);
+        $options = array(
+            'div' => false,
+            'label' => false,
+            'placeholder' => $current,
+            'value' => $current,
+            'class' => 'paginationPage',
+            'size' => 2,
+            'onchange' => "if (this.value.length > 0) { if ($('#loading')) { $('#loading').show(); } document.location = '{$url}'.replace('__PAGE__', this.value); }",
+            'onkeyup' => 'this.value = this.value.replace(/\D/g,\'\')',
+            'onkeypress' => 'if (event.keyCode === 13) { event.preventDefault(); event.stopPropagation(); this.blur(); }',
+        );
+
+        return $this->Form->input('', $options);
+    }
+
+    /**
+     * Change list order
+     *
+     * @param string $field Field for the "order by"
+     * @param string $title Title for the link. Default: field name
+     * @param array $htmlAttributes Associative Array with HTML attributes
+     * @param boolean $dir If any, specify direction. 1: ascending, 0: descending; otherwise, !(<current value>)
+     *
+     * @return string
+     */
+    public function order($field, $title = '', $image = '', $htmlAttributes = array(), $dir = null) {
+        if (!isset($this->params['toolbar'])) {
+            return '';
+        }
+
+        $data = $this->getPassedArgs();
+        if (isset($data['order']) && $data['order'] == $field) {
+            if (!isset($dir)) {
+                $dir = (isset($data['dir'])) ? (!$data['dir']) : true;
+            }
+            if ($dir == 1) {
+                $class = "SortUp desc";
+            } else {
+                $class = "SortUp asc";
+            }
+        }  else {
+            if (!isset($dir)) {
+                $dir = true;
+            }
+            $class = '';
+        }
+
+        // Crea l'url
+        $data['order'] = $field;
+        $data['dir'] = (integer)$dir;
+        $url = $this->getUrl($data);
+        
+        if (!empty($image)) {
+            $htmlAttributes["alt"] = __($htmlAttributes["alt"], true);
+            $title = $this->Html->image($image, $htmlAttributes);
+        } else {
+            $title = __($title, true);
+        }
+
+        return sprintf('<a class="%s" href="%s">%s</a>', $class, htmlentities($url), $title);
+    }
+
+    /**
+     * Return the link (html anchor tag) for the page $where
+     *
+     * @param string $where Page target (next, prev, first, last)
+     * @param string $title Label link
+     * @param array $option HTML attributes for link
+     * @param string $disabledTitle Label link disabled
+     * @param array  $disabledOption HTML attributes for link disabled (if present, insert a tag SPAN)
+     *
+     * @return string
+     */
+    private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
+        $page = (isset($this->params['toolbar'][$where]))? $this->params['toolbar'][$where] : false;
+
+        // Next page not found or toolbar not found, link disabled
+        if (!$page) {
+            return $this->_output($disabledTitle, $disabledOption);
+        }
+
+        // Create url
+        $data = $this->getPassedArgs();
+        $data['page'] = $page;
+        $url = $this->getUrl($data);
+
+        return sprintf('<a title="go to %s page" href="%s">%s</a>', $where, $url, __($title, true));
+    }
+
+    /**
+     * Return output for text
+     * 
+     * @param string $text The output text
+     * @param array $options The options
+     *
+     * @return string
+     */
+    private function _output($text, $options) {
+        return $this->output(
+            sprintf(
+                    (($text)?$this->tags['with_text']:$this->tags['without_text']),
+                    $this->_parseAttributes($options, null, ' ', ''), __($text,true)
+            )
+        );
+    }
+
+    /**
+     * Get array arguments
+     * 
+     * @param array $otherParams Other parameters
+     * @return array
+     */
+    public function getPassedArgs($otherParams=array()) {
+        $query = array_diff_assoc($this->params['url'], $this->params['named'], $this->params['toolbar']);
+        unset($query['url']);
 
         return array_merge(
             $this->params['pass'],
@@ -356,32 +482,205 @@ class BeToolbarHelper extends AppHelper {
             array('?' => $query),
             $otherParams ?: array()
         );
-	}
-	
-	/**
-	 * 
-	 * Fix the parameter $data to correct work with plugin modules. 
-	 * It must be manually removed from the data array 
-	 * 
-	 * Enter description here ...
-	 * @param unknown_type $data
-	 */
-	
-	private function getUrl ($data) {
-		$data['plugin'] = "";
-		if (!empty($this->params['prefix']) && !empty($data['page'])) {
-			$data[$this->params['prefix'] . 'page'] = $data['page'];
-			unset($data['page']);
-		}
-		return Router::url($data) ;
-	}
+    }
+    
+    /**
+     * Fix the parameter $data to correct work with plugin modules. 
+     * It must be manually removed from the data array.
+     *
+     * @param array $data The data to parse
+     *
+     * @return string
+     */
+    
+    private function getUrl($data) {
+        $data['plugin'] = '';
+        if (!empty($this->params['prefix']) && !empty($data['page'])) {
+            $data[$this->params['prefix'] . 'page'] = $data['page'];
+            unset($data['page']);
+        }
 
-	private function paramName($name) {
-		if (!empty($this->params['prefix'])) {
-			return $this->params['prefix'] . $name;
-		}
-		return $name;
-	}
+        return Router::url($data);
+    }
+
+    /**
+     * Return toolbar by type.
+     *
+     * @param string $type The view type, can be 'compact' or default
+     * @param array $params The parameters, can be 'itemName' and 'noitem'
+     * @return string
+     */
+    public function show($type = 'default', $params = array()) {
+        $this->_itemName = Set::classicExtract($params, 'itemName', null);
+        $this->_noitem = Set::classicExtract($params, 'noitem', null);
+        $this->_name = (!empty($this->_itemName)) ? Inflector::pluralize($this->_itemName) : $this->_moduleName;
+        if ($type === 'compact') {
+            $content = $this->pageCount(); // i.e. '12823 documents'
+            $separator = ' | ';
+            $this->separator($content, $separator);
+            $content.= $this->pageNav(); // i.e. '(1) ... (61) 62 (63) ... (100)'
+            $this->separator($content, $separator);
+            $content.= $this->pageSize(); // i.e. 'Size <20>'
+            $this->separator($content, $separator);
+            $content.= $this->pagePrev(); // i.e. 'Prev'
+            $this->separator($content, $separator);
+            $content.= $this->pageNext(); // i.e. 'Next'
+
+            return sprintf('<div class="toolbar">%s</div>', $content);
+        }
+
+        $content = sprintf('<h2>%s%s</h2>', $this->pageHeader(), $this->pageQuery());
+        $content.= $this->pagePagination();
+
+        return sprintf('<div class="toolbar">%s</div>', $content);
+    }
+
+    /**
+     * Apply separator to specified html, if not empty
+     *
+     * @param string $html The html string
+     * @param string $separator The separator
+     * @return void
+     */
+    private function separator(&$html, $separator) {
+        if (!empty($html)) {
+            $html.= $separator;
+        }
+    }
+    
+    /**
+     * Page title, combining publication|section|content title
+     *
+     * @return string
+     */
+    public function pageHeader() {
+        $title = Set::classicExtract($this->_view->viewVars, 'title', null);
+        if (!empty($title)) {
+            return $title;
+        }
+        $section = Set::classicExtract($this->_view->viewVars, 'sectionSel', null);
+        $publication = Set::classicExtract($this->_view->viewVars, 'pubSel', null);
+        if (!empty($section)) {
+            $title = Sanitize::escape($section['title']);
+
+            return sprintf('%s in “ <span style="color:white" class="evidence">%s</span> ”', $this->_name, $title);
+        }
+        if (!empty($publication)) {
+            $title = Sanitize::escape($publication['title']);
+
+            return sprintf('%s in “ <span style="color:white" class="evidence">%s</span> ”', $this->_name, $title);
+        }
+
+        return __(sprintf('all %s', $this->_name), true); // default
+    }
+
+    /**
+     * Page query data, info about matching query, if any
+     *
+     * @return string
+     */
+    public function pageQuery() {
+        if ($this->SessionFilter->check('query')) {
+            $html = __('{t}matching the query{/t}', true);
+            if ($this->SessionFilter->check('substring')) {
+                $html = __('{t}matching the query containing{/t}', true);
+            }
+
+            return sprintf('%s: “ <span style="color:white" class="evidence">%s</span> ”', $html, $this->SessionFilter->read('query'));
+        }
+
+        return '';
+    }
+
+    /**
+     * Page pagination data, info about page(s), links, etc.
+     *
+     * @return string
+     */
+    public function pagePagination() {
+        $cells = '';
+        $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
+        if ($moduleModify === "1" && empty($_noitem)) {
+            $title = __('Create new', true) . ' &nbsp;';
+            if (!empty($this->_itemName)) {
+                $title.= __($this->_itemName, true);
+            } else {
+                $objectTypes = Set::classicExtract($this->_conf, 'objectTypes');
+                $leafs = Set::classicExtract($this->_conf, 'objectTypes.leafs');
+                $isFirst = true;
+                foreach ($objectTypes as $key => $type) {
+                    if (in_array($type['id'], $leafs['id']) && is_numeric($key) && $type['module_name'] == $this->_currentModule['name']) {
+                        if (!$isFirst) {
+                            $title.= '&nbsp;/&nbsp;';
+                        }
+                        $title.= __(strtolower($type['model']), true);
+                        $isFirst = false;
+                    }
+                }
+            }
+            $anchor = sprintf('<a href="%s">%s</a>', $this->Html->url(sprintf('/%s/view', $this->_currentModule['url'])), $title);
+            $cells = sprintf('<td>%s</td>', $anchor);
+        }
+        $cells.= sprintf('<td>%s</td>', $this->pageCount());
+        $cells.= sprintf('<td>%s</td>', $this->pageNav());
+        $cells.= sprintf('<td>%s</td>', $this->pageSize());
+        $cells.= sprintf('<td>%s</td>', $this->pagePrev());
+        $cells.= sprintf('<td>%s</td>', $this->pageNext());
+        $rows = sprintf('<tr>%s</tr>', $cells);
+
+        return sprintf('<table>%s</table>', $rows);
+    }
+
+    /**
+     * Return number of items per object type
+     *
+     * @return string
+     */
+    public function pageCount() {
+        return sprintf('<span class="evidence">%d &nbsp;</span> %s', $this->size(), __($this->_name, true));
+    }
+
+    /**
+     * Page nav data for page.
+     * Shows 'page <i> of <n>', where <i> is an input field
+     *
+     * @return string
+     */
+    public function pageNav() {
+        $pages = $this->pages();
+        $last = ($pages > 0) ? $this->last($pages, '', $pages) : '1';
+        $label = sprintf('<span>%s</span>', __('page', true));
+        $input = sprintf('<span class="evidence">%s</span>', $this->changePageInput());
+        $of = __('of', true);
+        $total = sprintf('<span class="evidence">%s</span>', $last);
+
+        return sprintf('%s&nbsp;%s&nbsp;%s&nbsp;%s', $label, $input, $of, $total);
+    }
+
+    /**
+     * Link to previous page
+     *
+     * @return string
+     */
+    public function pagePrev() {
+        return sprintf('%s <span class="evidence">&nbsp;</span>', $this->prev('prev', '', 'prev'));
+    }
+
+    /**
+     * Link to next page
+     *
+     * @return string
+     */
+    public function pageNext() {
+        return sprintf('%s <span class="evidence">&nbsp;</span>', $this->next('next', '', 'next'));
+    }
+
+    /**
+     * Page size data for page
+     *
+     * @return string
+     */
+    public function pageSize() {
+        return sprintf('%s: %s', __('size', true), $this->changeDimSelect('selectTop'));
+    }
 }
-
-?>
