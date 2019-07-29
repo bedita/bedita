@@ -121,9 +121,10 @@ class BeUsersToolbarHelper extends AppHelper
      * @return string
      */
     public function show($type = 'default') {
-        $this->_itemName = ($this->_view->action === 'index') ? __('User', true) : __('Group', true);
+        $itemNameEng = ($this->_view->action === 'index') ? 'User' : 'Group';
+        $this->_itemName = __($itemNameEng, true);
         $this->_noitem = null;
-        $this->_name = Inflector::pluralize($this->_itemName);
+        $this->_name = Inflector::pluralize($itemNameEng);
         if ($type === 'compact') {
             $content = $this->pageCount(); // i.e. '12823 documents'
             $separator = ' | ';
