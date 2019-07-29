@@ -215,7 +215,7 @@ class BeToolbarHelper extends AppHelper {
      * @return mixed int|string
      */
     public function pages() {
-        return Set::classicExtract($this->params, 'toolbar.pages', '');
+        return Set::classicExtract($this->params, 'toolbar.pages', '1');
     }
 
     /**
