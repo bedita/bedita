@@ -356,6 +356,9 @@ class BeToolbarHelper extends AppHelper {
      * @return string
      */
     public function changePageInput() {
+        if ($this->pages() === 0) {
+            return "1";
+        }
         $current = $this->current();
         $data = $this->getPassedArgs();
         $data['page'] = '__PAGE__';
