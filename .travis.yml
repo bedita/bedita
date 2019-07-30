@@ -1,7 +1,7 @@
 language: php
 
 dist: bionic
-sudo: false
+sudo: required
 
 cache:
   directories:
@@ -10,28 +10,27 @@ cache:
 
 stages:
   - name: minimal
-  - name: reference
   - name: complete
+    if: type = pull_request OR branch = 4-cactus
   - name: deploy
-    if: repo = bedita/bedita AND branch = 4-cactus AND type IN (push, api)
+    if: NOT fork AND branch = 4-cactus AND type IN (push, api)
 
 jobs:
   include:
     # Minimal tests set
-    - name: "SQLite on PHP 7.2"
+    - name: "SQLite on PHP 7.1"
       stage: minimal
-      php: 7.2
+      php: 7.1
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - name: "MySQL 5.7 on PHP 7.1"
       stage: minimal
       php: 7.1
       services:
         - mysql
-      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
+      env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 9.6 + PostGIS on PHP 7.1"
       stage: minimal
       dist: xenial
-      sudo: true
       php: 7.1
       services:
         - postgresql
@@ -41,10 +40,10 @@ jobs:
           update: true
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
-      env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - name: "Code Sniffer"
       stage: minimal
-      php: 7.1
+      php: 7.2
       env: "RUN=phpcs"
       before_script: skip
       script: |
@@ -52,26 +51,25 @@ jobs:
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
 
-    # Reference tests set with coverage
-    - name: "MySQL 5.7 on PHP 7.1"
-      stage: reference
-      php: 7.1
-      services:
-        - mysql
-      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
-      script: vendor/bin/phpunit --coverage-clover=clover.xml
-      after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "SQlite on PHP 7.1"
-      stage: reference
-      php: 7.1
+    # Complete tests suite
+    - name: "SQlite on PHP 7.2 with coverage"
+      stage: complete
+      php: 7.2
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.1"
-      stage: reference
+    - name: "MySQL 5.7 on PHP 7.2 with coverage"
+      stage: complete
+      php: 7.2
+      services:
+        - mysql
+      env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
+      script: vendor/bin/phpunit --coverage-clover=clover.xml
+      after_success: bash <(curl -s https://codecov.io/bash)
+    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2 with coverage"
+      stage: complete
       dist: xenial
-      sudo: true
-      php: 7.1
+      php: 7.2
       services:
         - postgresql
       addons:
@@ -80,29 +78,27 @@ jobs:
           update: true
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
-      env: "DB=pgsql DB_VERSION=9.6 DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-
-    # Complete tests suite
     - name: "MySQL 5.6 on PHP 7.2"
       stage: complete
       dist: trusty
       php: 7.2
       services:
         - mysql
-      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@localhost/bedita_test'"
+      env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 9.5 on PHP 7.1"
       stage: complete
-      php: 7.1
+      php: 7.2
       services:
         - postgresql
       addons:
         postgresql: "9.5"
-      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - name: "Static Code Analysis"
       stage: complete
-      php: 7.1
+      php: 7.2
       env: "RUN=phpstan"
       install:
         - composer install --prefer-dist --no-interaction
@@ -113,7 +109,7 @@ jobs:
     # Deployment on Heroku demo app.
     - name: "Heroku"
       stage: deploy
-      php: 7.1
+      php: 7.2
       before_script: skip
       script: skip
       deploy:
