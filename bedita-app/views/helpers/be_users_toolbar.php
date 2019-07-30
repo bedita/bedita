@@ -127,7 +127,7 @@ class BeUsersToolbarHelper extends AppHelper
         $this->_name = Inflector::pluralize($itemNameEng);
         if ($type === 'compact') {
             $content = $this->pageCount(); // i.e. '12823 documents'
-            $separator = ' | ';
+            $separator = ' <span class="separator"></span> ';
             $this->separator($content, $separator);
             $content.= $this->pageNav(); // i.e. '(1) ... (61) 62 (63) ... (100)'
             $this->separator($content, $separator);
@@ -202,7 +202,7 @@ class BeUsersToolbarHelper extends AppHelper
         $cells = '';
         $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
         if ($moduleModify === "1" && empty($_noitem)) {
-            $title = __('Create new', true) . ' &nbsp;' . $this->_itemName;
+            $title = __('Create new', true) . '&nbsp;' . $this->_itemName;
             $anchor = sprintf('<a href="%s">%s</a>', $this->Html->url(sprintf('/users/view%s', $this->_itemName)), $title);
             $cells = sprintf('<td>%s</td>', $anchor);
         }
@@ -236,7 +236,7 @@ class BeUsersToolbarHelper extends AppHelper
         $label = sprintf('<span>%s</span>', __('page', true));
         $input = sprintf('<span class="evidence">%s</span>', $this->changePageInput());
         $of = __('of', true);
-        $total = sprintf('<span class="evidence">%s</span>', $last);
+        $total = sprintf('<span class="evidence">&nbsp;%s</span>', $last);
 
         return sprintf('%s&nbsp;%s&nbsp;%s&nbsp;%s', $label, $input, $of, $total);
     }

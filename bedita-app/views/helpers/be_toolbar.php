@@ -519,8 +519,8 @@ class BeToolbarHelper extends AppHelper {
         $this->_noitem = Set::classicExtract($params, 'noitem', null);
         $this->_name = (!empty($this->_itemName)) ? Inflector::pluralize($this->_itemName) : $this->_moduleName;
         if ($type === 'compact') {
-            $content = $this->pageCount(); // i.e. '12823 documents'
-            $separator = ' | ';
+            $content = $separator = ' <span class="separator"></span> ';
+            $content.= $this->pageCount(); // i.e. '12823 documents'
             $this->separator($content, $separator);
             $content.= $this->pageNav(); // i.e. '(1) ... (61) 62 (63) ... (100)'
             $this->separator($content, $separator);
@@ -605,7 +605,7 @@ class BeToolbarHelper extends AppHelper {
         $cells = '';
         $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
         if ($moduleModify === "1" && empty($_noitem)) {
-            $title = __('Create new', true) . ' &nbsp;';
+            $title = __('Create new', true) . '&nbsp;';
             if (!empty($this->_itemName)) {
                 $title.= __($this->_itemName, true);
             } else {
@@ -656,7 +656,7 @@ class BeToolbarHelper extends AppHelper {
         $label = sprintf('<span>%s</span>', __('page', true));
         $input = sprintf('<span class="evidence">%s</span>', $this->changePageInput());
         $of = __('of', true);
-        $total = sprintf('<span class="evidence">%s</span>', $last);
+        $total = sprintf('<span class="evidence">&nbsp;%s</span>', $last);
 
         return sprintf('%s&nbsp;%s&nbsp;%s&nbsp;%s', $label, $input, $of, $total);
     }
