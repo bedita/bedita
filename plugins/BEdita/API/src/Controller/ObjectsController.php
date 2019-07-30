@@ -25,7 +25,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Association;
 use Cake\ORM\Query;

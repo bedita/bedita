@@ -22,7 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -280,7 +280,7 @@ class UsersTable extends Table
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
-     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     * @throws \Cake\Http\Exception\BadRequestException if `username` is missing
      */
     protected function findLogin(Query $query)
     {
@@ -405,7 +405,7 @@ class UsersTable extends Table
      * @param \Cake\Event\Event $event The event dispatched
      * @param \ArrayObject $data The input data to save
      * @return void
-     * @throws \Cake\Network\Exception\BadRequestException if password is not valid
+     * @throws \Cake\Http\Exception\BadRequestException if password is not valid
      */
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {

@@ -4,7 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Event\Event;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\Table;

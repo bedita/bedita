@@ -17,7 +17,7 @@ use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\I18n\Time;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -290,7 +290,7 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      * @expectedExceptionMessage Logged users cannot delete their own account
      * @covers ::beforeSave

@@ -238,7 +238,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      */
     public function testInvocationWithLinkErrors()
@@ -301,7 +301,7 @@ class SetAssociatedActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationWithValidationErrorsProvider()
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      */
     public function testInvocationWithValidationErrors($source, $target)

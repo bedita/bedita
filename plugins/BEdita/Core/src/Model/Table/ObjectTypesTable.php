@@ -24,8 +24,8 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -235,7 +235,7 @@ class ObjectTypesTable extends Table
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException if operation on entity is not allowed
+     * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
     public function beforeRules(Event $event, EntityInterface $entity)
     {
@@ -281,7 +281,7 @@ class ObjectTypesTable extends Table
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException|\Cake\Network\Exception\BadRequestException if entity is not saveable
+     * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
@@ -321,7 +321,7 @@ class ObjectTypesTable extends Table
      * @param \Cake\Event\Event $event The beforeDelete event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be deleted
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException if entity is not deletable
+     * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {

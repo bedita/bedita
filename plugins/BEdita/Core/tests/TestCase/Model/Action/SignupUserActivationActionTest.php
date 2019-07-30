@@ -23,7 +23,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;

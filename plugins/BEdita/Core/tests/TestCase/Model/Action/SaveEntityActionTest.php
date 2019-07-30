@@ -66,7 +66,7 @@ class SaveEntityActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @covers ::initialize()
      * @covers ::execute()
      */

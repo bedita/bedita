@@ -16,7 +16,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 
 /**
  * Controller for media.

@@ -17,8 +17,8 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -682,7 +682,7 @@ class ObjectTypesTableTest extends TestCase
      * @return void
      * @covers ::beforeRules()
      *
-     * @expectedException \Cake\Network\Exception\ForbiddenException
+     * @expectedException \Cake\Http\Exception\ForbiddenException
      * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()

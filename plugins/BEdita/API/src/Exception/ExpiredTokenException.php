@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Exception;
 
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 
 /**
  * Exception raised on an expired JWT token

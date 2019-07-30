@@ -18,7 +18,7 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -77,7 +77,7 @@ class JsonSchema
      *
      * @param string $type Resource or object type name
      * @return mixed
-     * @throws \Cake\Network\Exception\NotFoundException if no type is found
+     * @throws \Cake\Http\Exception\NotFoundException if no type is found
      */
     public static function typeSchema($type)
     {
@@ -121,7 +121,7 @@ class JsonSchema
      *
      * @param string $type Resource or object type name
      * @return string|bool Schema revision or `false` if no schema is found
-     * @throws \Cake\Network\Exception\NotFoundException if no type is found
+     * @throws \Cake\Http\Exception\NotFoundException if no type is found
      */
     public static function schemaRevision($type)
     {

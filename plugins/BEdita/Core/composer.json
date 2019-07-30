@@ -22,17 +22,17 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "cakephp/cakephp": "~3.5.3",
-        "cakephp/migrations": "~1.7",
-        "league/flysystem": "^1.0.40",
-        "league/glide": "^1.2.2",
+        "cakephp/cakephp": "~3.8.1",
+        "cakephp/migrations": "~2.2.0",
+        "league/flysystem": "^1.0.53",
+        "league/glide": "^1.5",
         "swaggest/json-schema": "~0.12"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7|^6.0",
-        "cakephp/cakephp-codesniffer": "~3.0",
+        "cakephp/cakephp-codesniffer": "^3.1",
         "fzaninotto/faker": "^1.5",
-        "phpmd/phpmd": "*"
+        "phpmd/phpmd": "*",
+        "phpunit/phpunit": "^6.0"
     },
     "autoload": {
         "psr-4": {

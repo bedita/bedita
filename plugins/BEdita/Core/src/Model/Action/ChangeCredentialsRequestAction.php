@@ -22,7 +22,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 

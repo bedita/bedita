@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Cache\Cache;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 

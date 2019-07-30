@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
 
 /**

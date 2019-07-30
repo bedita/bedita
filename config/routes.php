@@ -24,14 +24,14 @@ use Cake\Core\Plugin;
  * Load plugin routes.
  * First loaded plugins then 'BEdita/API'
  */
-$plugins = Plugin::loaded();
-foreach ($plugins as $plugin) {
-    if (!in_array($plugin, ['BEdita/API', 'BEdita/Core'])) {
-        Plugin::routes($plugin);
-    }
-}
+// $plugins = Plugin::loaded();
+// foreach ($plugins as $plugin) {
+//     if (!in_array($plugin, ['BEdita/API', 'BEdita/Core'])) {
+//         Plugin::routes($plugin);
+//     }
+// }
 
-// Load 'BEdita/API' as last route
-if (Plugin::loaded('BEdita/API')) {
-    Plugin::routes('BEdita/API');
-}
+// // Load 'BEdita/API' as last route
+// if (Plugin::loaded('BEdita/API')) {
+//     Plugin::routes('BEdita/API');
+// }

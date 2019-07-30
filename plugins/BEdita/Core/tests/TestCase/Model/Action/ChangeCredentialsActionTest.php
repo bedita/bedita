@@ -126,7 +126,7 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      */
     public function testValidationFail()
     {

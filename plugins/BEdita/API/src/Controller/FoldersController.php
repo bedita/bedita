@@ -13,7 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
 use Cake\Utility\Hash;
 

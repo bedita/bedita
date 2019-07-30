@@ -18,7 +18,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\Response;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\TestSuite\TestCase;
 
 /**

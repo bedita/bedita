@@ -77,7 +77,7 @@ class CommonEventHandler implements EventListenerInterface
      * @param \Cake\Event\Event $event The event object
      * @param array $user The user data
      * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException
+     * @throws \Cake\Http\Exception\UnauthorizedException
      */
     public function afterIdentify(Event $event, array $user)
     {

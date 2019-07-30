@@ -193,7 +193,7 @@ class PropertyTypesTableTest extends TestCase
      * @return void
      *
      * @covers ::beforeDelete()
-     * @expectedException \Cake\Network\Exception\ForbiddenException
+     * @expectedException \Cake\Http\Exception\ForbiddenException
      * @expectedExceptionCode 403
      * @expectedExceptionMessage Property type with existing properties
      */

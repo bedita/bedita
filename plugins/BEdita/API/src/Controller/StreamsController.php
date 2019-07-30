@@ -16,7 +16,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Event\Event;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Zend\Diactoros\Stream;
@@ -132,7 +132,7 @@ class StreamsController extends ResourcesController
     /**
      * {@inheritDoc}
      *
-     * @throws \Cake\Network\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
+     * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
      */
     public function resource($id)
     {

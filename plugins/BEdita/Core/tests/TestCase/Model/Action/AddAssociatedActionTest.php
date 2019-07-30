@@ -174,7 +174,7 @@ class AddAssociatedActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      */
     public function testInvocationWithLinkErrors()

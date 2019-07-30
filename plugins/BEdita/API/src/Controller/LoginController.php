@@ -20,9 +20,9 @@ use BEdita\Core\Model\Entity\User;
 use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\NotFoundException;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -103,7 +103,7 @@ class LoginController extends AppController
      *  - with username, authorization code and secret token as OTP login or 2FA access
      *
      * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user credentials are invalid.
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid.
      */
     public function login()
     {
@@ -209,7 +209,7 @@ class LoginController extends AppController
      * Update user profile data.
      *
      * @return void
-     * @throws \Cake\Network\Exception\BadRequestException On invalid input data
+     * @throws \Cake\Http\Exception\BadRequestException On invalid input data
      */
     public function update()
     {
@@ -239,7 +239,7 @@ class LoginController extends AppController
      *
      * @param \BEdita\Core\Model\Entity\User $entity Logged user entity.
      * @param array $data Request data.
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if current password is not correct.
+     * @throws \Cake\Http\Exception\BadRequestException Throws an exception if current password is not correct.
      * @return void
      */
     protected function checkPassword(User $entity, array $data)
@@ -262,7 +262,7 @@ class LoginController extends AppController
      * Read logged user entity including roles and other related objects via `include` query string.
      *
      * @return \BEdita\Core\Model\Entity\User Logged user entity
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
      */
     protected function userEntity()
     {

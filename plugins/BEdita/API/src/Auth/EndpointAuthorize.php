@@ -18,7 +18,7 @@ use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -150,7 +150,7 @@ class EndpointAuthorize extends BaseAuthorize
      * Get endpoint for request.
      *
      * @return \BEdita\Core\Model\Entity\Endpoint
-     * @throws \Cake\Network\Exception\NotFoundException If endpoint is disabled
+     * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
      */
     protected function getEndpoint()
     {
