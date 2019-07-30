@@ -17,7 +17,7 @@ use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -224,7 +224,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * @param \Cake\Http\ServerRequest $request A request object.
      * @param \Cake\Http\Response $response A response object.
      * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception.
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception.
      */
     public function unauthenticated(ServerRequest $request, Response $response)
     {

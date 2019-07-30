@@ -15,7 +15,7 @@ namespace BEdita\API\Datasource;
 
 use Cake\Datasource\Paginator;
 use Cake\Datasource\RepositoryInterface;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 
 /**
  * Handle model pagination using JSON API conventions.

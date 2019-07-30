@@ -18,7 +18,7 @@ use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
 use Cake\Mailer\Email;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;

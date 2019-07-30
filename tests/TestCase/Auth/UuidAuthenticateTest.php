@@ -219,7 +219,7 @@ class UuidAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedException \Cake\Http\Exception\UnauthorizedException
      * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */

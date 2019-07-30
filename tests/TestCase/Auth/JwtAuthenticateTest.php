@@ -21,7 +21,7 @@ use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -271,7 +271,7 @@ class JwtAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedException \Cake\Http\Exception\UnauthorizedException
      * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
@@ -292,7 +292,7 @@ class JwtAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedException \Cake\Http\Exception\UnauthorizedException
      * @expectedExceptionMessage Invalid audience
      * @covers ::unauthenticated()
      */

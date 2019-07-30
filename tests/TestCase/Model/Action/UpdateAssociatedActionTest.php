@@ -17,7 +17,7 @@ use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;

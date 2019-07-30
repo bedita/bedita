@@ -15,9 +15,9 @@ namespace BEdita\API\Controller\Component;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
@@ -74,7 +74,7 @@ class JsonApiComponent extends Component
      *
      * @param string $json JSON string.
      * @return array JSON API input data array
-     * @throws \Cake\Network\Exception\BadRequestException When the request is malformed
+     * @throws \Cake\Http\Exception\BadRequestException When the request is malformed
      */
     public function parseInput($json)
     {
@@ -231,7 +231,7 @@ class JsonApiComponent extends Component
      * @param bool $allow Should client-generated IDs be allowed?
      * @param array|null $data Data to be checked. By default, this is taken from the request.
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource has a client-generated
+     * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
      */
     protected function allowClientGeneratedIds($allow = true, array $data = null)
@@ -267,7 +267,7 @@ class JsonApiComponent extends Component
      *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource in the payload has a
      *      non-supported `type`.
-     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
+     * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
      *      client-generated ID, but the feature is not supported.
      */
     public function startup()

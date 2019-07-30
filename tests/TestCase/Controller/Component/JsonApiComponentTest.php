@@ -349,7 +349,7 @@ class JsonApiComponentTest extends TestCase
     public function testParseInput($expected, $input)
     {
         if ($expected === false) {
-            $this->expectException('\Cake\Network\Exception\BadRequestException');
+            $this->expectException('\Cake\Http\Exception\BadRequestException');
         }
 
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
@@ -565,7 +565,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {
-            $this->expectException('\Cake\Network\Exception\ForbiddenException');
+            $this->expectException('\Cake\Http\Exception\ForbiddenException');
         }
 
         $request = new ServerRequest([

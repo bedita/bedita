@@ -17,7 +17,7 @@ use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 
 /**
  * Authenticate users via OAuth2 providers.

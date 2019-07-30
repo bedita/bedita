@@ -14,7 +14,7 @@
 namespace BEdita\API\Test\TestCase\Datasource;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
