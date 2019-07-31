@@ -61,9 +61,7 @@ class JsonApiComponent extends Component
         if (!empty($config['contentType'])) {
             $contentType = $this->getController()->response->getMimeType($config['contentType']) ?: $config['contentType'];
         }
-        $this->getController()->response->type([
-            'jsonapi' => $contentType,
-        ]);
+        $this->getController()->response = $this->getController()->response->withType('jsonapi');
 
         $this->RequestHandler->setConfig('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
         $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');

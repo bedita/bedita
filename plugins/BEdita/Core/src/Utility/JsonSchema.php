@@ -150,7 +150,7 @@ class JsonSchema
         $table = TableRegistry::get((string)Inflector::camelize($resource));
         $entity = $table->newEntity();
         $schema = $table->getSchema();
-        $hiddenProperties = $entity->hiddenProperties();
+        $hiddenProperties = $entity->getHidden();
 
         $properties = [];
         $required = [];

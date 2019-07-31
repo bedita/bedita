@@ -199,7 +199,7 @@ class ProfilesTableTest extends TestCase
         $profile = $this->Profiles->find()
             ->where(['object_type_id' => 3])
             ->first();
-        $visibleProperties = $profile->visibleProperties();
+        $visibleProperties = $profile->getVisible();
         sort($visibleProperties);
 
         $this->assertEquals($expectedProperties, $visibleProperties);

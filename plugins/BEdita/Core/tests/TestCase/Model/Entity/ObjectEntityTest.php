@@ -215,7 +215,7 @@ class ObjectEntityTest extends TestCase
      * @param int $objectTypeId Object type ID.
      * @return void
      *
-     * @covers ::visibleProperties()
+     * @covers ::getVisible()
      * @covers ::loadObjectType()
      * @dataProvider visiblePropertiesProvider()
      */
@@ -227,7 +227,7 @@ class ObjectEntityTest extends TestCase
         foreach ($properties as $prop) {
             $entity->set($prop, $prop);
         }
-        $visible = $entity->visibleProperties();
+        $visible = $entity->getVisible();
 
         static::assertSame($expectedVisible, array_values($visible));
     }

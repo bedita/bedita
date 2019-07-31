@@ -154,7 +154,7 @@ class EndpointAuthorize extends BaseAuthorize
      */
     protected function getEndpoint()
     {
-        $endpointName = $this->request->url;
+        $endpointName = $this->request->getPath();
         if (($slashPos = strpos($endpointName, '/')) !== false) {
             $endpointName = substr($endpointName, 0, $slashPos);
         }

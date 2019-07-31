@@ -216,9 +216,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * {@inheritDoc}
      */
-    public function visibleProperties()
+    public function getVisible()
     {
-        $visible = parent::visibleProperties();
+        $visible = parent::getVisible();
         $this->loadObjectType();
         if (!$this->object_type) {
             return $visible;

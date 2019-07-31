@@ -46,7 +46,7 @@ trait JsonApiTrait
      *
      * @return string[]
      */
-    abstract public function visibleProperties();
+    abstract public function getVisible();
 
     /**
      * Getter for entity's hidden properties.
@@ -167,7 +167,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->filterFields($this->visibleProperties());
+        $visible = $this->filterFields($this->getVisible());
 
         $properties = array_filter(
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
@@ -186,7 +186,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->filterFields($this->visibleProperties());
+        $visible = $this->filterFields($this->getVisible());
         $virtual = $this->getVirtual();
 
         $properties = array_filter(

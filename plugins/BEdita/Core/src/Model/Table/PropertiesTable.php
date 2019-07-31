@@ -139,7 +139,7 @@ class PropertiesTable extends Table
      */
     public function beforeFind(Event $event, Query $query)
     {
-        $from = $query->from();
+        $from = $query->clause('from');
         if (empty($from)) {
             $query->find('type', ['both']);
         }

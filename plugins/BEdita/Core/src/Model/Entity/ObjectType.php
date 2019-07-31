@@ -292,7 +292,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             ->find('objectType', [$this->id])
             ->toArray();
         $entity = TableRegistry::get($this->name)->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
+        $hiddenProperties = $entity->getHidden();
         $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
         $properties = $required = [];
