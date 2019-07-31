@@ -66,7 +66,7 @@ jobs:
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2 with coverage"
+    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2"
       stage: complete
       dist: xenial
       php: 7.2
@@ -79,8 +79,6 @@ jobs:
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
-      script: vendor/bin/phpunit --coverage-clover=clover.xml
-      after_success: bash <(curl -s https://codecov.io/bash)
     - name: "MySQL 5.6 on PHP 7.2"
       stage: complete
       dist: trusty
