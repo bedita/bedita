@@ -65,10 +65,7 @@ class LoginController extends AppController
         if ($this->request->getParam('action') === 'login') {
             $authenticationComponents = [
                 AuthComponent::ALL => [
-                    'scope' => [
-                        'blocked' => false,
-                    ],
-                    'contain' => ['Roles'],
+                  'finder' => 'loginRoles',
                 ],
                 'Form' => [
                     'fields' => [
@@ -76,8 +73,7 @@ class LoginController extends AppController
                         'password' => 'password_hash',
                     ],
                     'passwordHasher' => self::PASSWORD_HASHER,
-                    'finder' => 'login',
-                 ],
+                ],
                 'BEdita/API.Jwt' => [
                     'queryDatasource' => true,
                 ],
