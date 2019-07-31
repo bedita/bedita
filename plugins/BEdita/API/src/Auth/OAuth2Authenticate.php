@@ -53,9 +53,7 @@ class OAuth2Authenticate extends BaseAuthenticate
             'username' => 'ExternalAuth.provider_username',
             'password' => null,
         ],
-        'scope' => [],
         'finder' => null,
-        'contain' => ['Roles'],
         'passwordHasher' => 'Default',
     ];
 

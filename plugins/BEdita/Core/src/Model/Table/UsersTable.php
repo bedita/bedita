@@ -247,7 +247,7 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
-        $query = $query->find('login');
+        $query = $query->find('loginRoles');
 
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
@@ -294,6 +294,19 @@ class UsersTable extends Table
     }
 
     /**
+     * Finder for valid login users + associated roles via `contain`
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findLoginRoles(Query $query)
+    {
+        $query = $query->find('login');
+
+        return $query->contain(['Roles']);
+    }
+
+    /**
      * Before delete checks: if record is not deletable, raise a ImmutableResourceException
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
@@ -320,7 +333,7 @@ class UsersTable extends Table
         foreach ($this->inheritedTables() as $table) {
             $notNull = array_merge($notNull, $this->notNullableColumns($table));
         }
-        $properties = array_diff((array)$entity->visibleProperties(), $notNull, ['type']);
+        $properties = array_diff((array)$entity->getVisible(), $notNull, ['type']);
         foreach ($properties as $name) {
             $entity->set($name, null);
         }
