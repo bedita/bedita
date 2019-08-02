@@ -300,7 +300,12 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 }
 
 .toolbar {
-	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
+	font-family: "Arial", "Helvetica", sans-serif;
+}
+
+div.toolbar {
+	white-space: nowrap;
+	display: inline-block;
 }
 
 .graced, .serif {font-family: "Georgia", "Times New Roman", Times, serif;}
@@ -1296,11 +1301,11 @@ TR.trick {
 	color:#FFFFFF;
 }
 
-.toolbar H2 {font-size: 1.1em; margin-top:20px; margin-bottom:10px;}
+.toolbar H2 {font-size: 1.4em; margin-top:20px; margin-bottom:10px;}
 
 .toolbar TD {
 	border-right:1px solid gray;
-	padding:5px 15px 5px 15px;
+	padding:0px 15px 0px 15px;
 	vertical-align:middle;
 }
 
@@ -1309,7 +1314,14 @@ TR.trick {
 }
 .toolbar TD:first-child {
 	padding-left:0px;
-	padding-top: 10px !important;
+}
+
+.separator {
+	border-right:1px solid gray;
+	display: inline;
+	padding:5px 0px 5px 15px;
+	margin-right: 15px;
+
 }
 
 /*...........................................    
@@ -1874,6 +1886,12 @@ INPUT.objectCheck {
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
 	border:1px solid silver;
+}
+
+INPUT.paginationPage {
+	line-height: 1em;
+	text-align: center;
+	font-weight: bold;
 }
 
 #pwd, #pwdagain, INPUT[type=password] {

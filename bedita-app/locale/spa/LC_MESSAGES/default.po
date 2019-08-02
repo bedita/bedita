@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-11-17 11:29:27\n"
+"POT-Creation-Date: 2019-07-26 09:14:55\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -246,6 +246,9 @@ msgstr ""
 
 msgid "Captcha image and text don't match"
 msgstr "Imagen captcha y texto no corresponden"
+
+msgid "Captions"
+msgstr ""
 
 msgid "Card"
 msgstr "Tarjeta"
@@ -849,9 +852,6 @@ msgstr ""
 
 msgid "Get contents"
 msgstr "Obtener los contenidos"
-
-msgid "Gmaps LookaT"
-msgstr "Gmaps LookaT"
 
 msgid "Go to"
 msgstr "Ir a"
@@ -1459,6 +1459,9 @@ msgid "Number of objects"
 msgstr "Número de objetos"
 
 msgid "Object id not found: %d"
+msgstr ""
+
+msgid "Object of a type not allowed for module"
 msgstr ""
 
 msgid "Object type"
@@ -2189,6 +2192,9 @@ msgstr "admin"
 msgid "all"
 msgstr "todo"
 
+msgid "all areas"
+msgstr "todas las publicaciones"
+
 msgid "all bibliographies"
 msgstr "todas las bibliografías"
 
@@ -2200,6 +2206,12 @@ msgstr "todas las tarjetas"
 
 msgid "all comments"
 msgstr "todos los comentarios"
+
+msgid "all documents"
+msgstr "todos los documentos"
+
+msgid "all events"
+msgstr "todos los eventos"
 
 msgid "all galleries"
 msgstr "todas las galerías"
@@ -2636,6 +2648,9 @@ msgstr ""
 msgid "inserted on"
 msgstr "insertado en"
 
+msgid "invalid"
+msgstr ""
+
 msgid "inventory"
 msgstr "inventario"
 
@@ -2755,9 +2770,6 @@ msgstr "lengua principal"
 
 msgid "master title"
 msgstr "título principal"
-
-msgid "matching the query"
-msgstr "corresponde a la búsqueda"
 
 msgid "matching the query containing"
 msgstr ""
@@ -3538,6 +3550,18 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+msgid "{t}matching the query containing{/t}"
+msgstr ""
+
+msgid "{t}matching the query{/t}"
+msgstr ""
+
+#~ msgid "Gmaps LookaT"
+#~ msgstr "Gmaps LookaT"
+
+#~ msgid "matching the query"
+#~ msgstr "corresponde a la búsqueda"
 
 #~ msgid "Add event date"
 #~ msgstr "Añadir fecha evento"
