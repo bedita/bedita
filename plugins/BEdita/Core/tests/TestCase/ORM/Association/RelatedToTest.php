@@ -107,7 +107,7 @@ class RelatedToTest extends TestCase
     public function testGetSubQueryForMatching(array $expected, $table, $association, array $options = [])
     {
         $table = TableRegistry::get($table);
-        $association = $table->association($association);
+        $association = $table->getAssociation($association);
         if (!($association instanceof RelatedTo)) {
             static::fail('Wrong association type');
 

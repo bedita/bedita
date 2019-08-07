@@ -52,7 +52,7 @@ class ListRelatedFoldersActionTest extends TestCase
      */
     public function testExecuteParents()
     {
-        $association = TableRegistry::get('Folders')->association('Parents');
+        $association = TableRegistry::get('Folders')->getAssociation('Parents');
         $action = new ListRelatedFoldersAction(compact('association'));
         $result = $action(['primaryKey' => 12]);
         static::assertInstanceOf(Folder::class, $result);
@@ -69,7 +69,7 @@ class ListRelatedFoldersActionTest extends TestCase
      */
     public function testExecuteChildren()
     {
-        $association = TableRegistry::get('Folders')->association('Children');
+        $association = TableRegistry::get('Folders')->getAssociation('Children');
         $action = new ListRelatedFoldersAction(compact('association'));
         $result = $action(['primaryKey' => 11]);
 

@@ -130,7 +130,7 @@ class AddAssociatedActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $association = TableRegistry::get($table)->association($association);
+        $association = TableRegistry::get($table)->getAssociation($association);
         $action = new AddAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
@@ -182,7 +182,7 @@ class AddAssociatedActionTest extends TestCase
         try {
             $table = TableRegistry::get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
-            $association = $table->association('FakeTags');
+            $association = $table->getAssociation('FakeTags');
 
             $association->junction()->rulesChecker()->add(
                 function () {
@@ -229,7 +229,7 @@ class AddAssociatedActionTest extends TestCase
         ];
 
         /** @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = TableRegistry::get('FakeArticles')->association('FakeTags');
+        $association = TableRegistry::get('FakeArticles')->getAssociation('FakeTags');
         $action = new AddAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get(1, ['contain' => [$association->getName()]]);

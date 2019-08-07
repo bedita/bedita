@@ -65,14 +65,14 @@ class RelationsBehaviorTest extends TestCase
         static::assertSame(2, $Documents->objectType()->id);
         static::assertSame(3, $Profiles->objectType()->id);
 
-        static::assertInstanceOf(BelongsToMany::class, $Documents->association('Test'));
-        static::assertSame('BEdita/Core.Objects', $Documents->association('Test')->className());
-        static::assertInstanceOf(BelongsToMany::class, $Documents->association('InverseTest'));
-        static::assertSame('BEdita/Core.Objects', $Documents->association('InverseTest')->className());
-        static::assertInstanceOf(BelongsToMany::class, $Profiles->association('InverseTest'));
-        static::assertSame('BEdita/Core.Objects', $Profiles->association('InverseTest')->className());
-        static::assertInstanceOf(BelongsToMany::class, $Locations->association('InverseAnotherTest'));
-        static::assertSame('BEdita/Core.Users', $Locations->association('InverseAnotherTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('Test'));
+        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('Test')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('InverseTest'));
+        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('InverseTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Profiles->getAssociation('InverseTest'));
+        static::assertSame('BEdita/Core.Objects', $Profiles->getAssociation('InverseTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Locations->getAssociation('InverseAnotherTest'));
+        static::assertSame('BEdita/Core.Users', $Locations->getAssociation('InverseAnotherTest')->className());
 
         $before = count($Profiles->associations()->keys());
         $Profiles->setupRelations('profiles');

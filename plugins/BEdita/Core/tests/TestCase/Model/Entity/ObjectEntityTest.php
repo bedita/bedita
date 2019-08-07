@@ -463,7 +463,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
+        $entity = TableRegistry::get('Documents')->getAssociation('Test')->newEntity();
         $entity->set('type', 'profile');
         $entity = $entity->jsonApiSerialize();
 

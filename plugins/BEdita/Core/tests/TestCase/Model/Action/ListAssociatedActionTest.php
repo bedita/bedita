@@ -199,7 +199,7 @@ class ListAssociatedActionTest extends TestCase
         if ($options === null) {
             $options = ['list' => true];
         }
-        $association = TableRegistry::get($table)->association($association);
+        $association = TableRegistry::get($table)->getAssociation($association);
         $action = new ListAssociatedAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + $options);
