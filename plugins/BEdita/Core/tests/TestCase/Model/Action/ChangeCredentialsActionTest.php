@@ -21,6 +21,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -56,8 +57,8 @@ class ChangeCredentialsActionTest extends TestCase
     {
         parent::setUp();
 
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug'
         ]);
     }

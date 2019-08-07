@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Mailer;
 
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -68,8 +69,8 @@ class UserMailerTest extends TestCase
     {
         parent::setUp();
 
-        Email::dropTransport('test');
-        Email::setConfigTransport('test', [
+        TransportFactory::drop('test');
+        TransportFactory::setConfig('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
 
@@ -97,7 +98,7 @@ class UserMailerTest extends TestCase
         $this->Email = null;
 
         Email::drop('test');
-        Email::dropTransport('test');
+        TransportFactory::drop('test');
     }
 
     /**

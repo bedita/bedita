@@ -23,6 +23,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
@@ -80,8 +81,8 @@ class SignupUserActivationActionTest extends TestCase
         $this->Users = TableRegistry::get('Users');
 
         Configure::write('Signup', []);
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug'
         ]);
     }

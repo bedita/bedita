@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -51,8 +52,8 @@ class ChangeCredentialsRequestActionTest extends TestCase
     {
         parent::setUp();
 
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug'
         ]);
     }

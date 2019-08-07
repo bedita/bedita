@@ -21,6 +21,7 @@ use Cake\Core\Exception\Exception as CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -64,8 +65,8 @@ class SignupUserActionTest extends TestCase
         parent::setUp();
 
         Configure::write('Signup', []);
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug',
         ]);
     }

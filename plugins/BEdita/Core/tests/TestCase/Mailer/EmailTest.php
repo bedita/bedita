@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -27,7 +28,7 @@ class EmailTest extends TestCase
      */
     public function setUp()
     {
-        Email::setConfigTransport('test', [
+        TransportFactory::setConfig('test', [
             'className' => 'Debug',
         ]);
 
@@ -41,7 +42,7 @@ class EmailTest extends TestCase
     {
         parent::tearDown();
 
-        Email::dropTransport('test');
+        TransportFactory::drop('test');
     }
 
     /**
