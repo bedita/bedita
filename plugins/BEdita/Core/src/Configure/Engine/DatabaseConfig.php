@@ -115,7 +115,7 @@ class DatabaseConfig implements ConfigEngineInterface
         $table->getConnection()->transactional(function () use ($table, $entities) {
             foreach ($entities as $entity) {
                 if (!$table->save($entity, ['atomic' => false])) {
-                    throw new Exception(sprintf('Config save failed: %s', print_r($entity->errors(), true)));
+                    throw new Exception(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
                 }
             }
         });
