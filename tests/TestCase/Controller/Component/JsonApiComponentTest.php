@@ -428,7 +428,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
         if (!$expected) {
-            $this->expectException('\Cake\Network\Exception\ConflictException');
+            $this->expectException('\Cake\Http\Exception\ConflictException');
         }
 
         $request = new ServerRequest([
