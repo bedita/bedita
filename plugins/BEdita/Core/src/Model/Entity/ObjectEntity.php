@@ -204,10 +204,12 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                 $included = array_merge($included, $entities);
             }
 
-            $relationships[$relationship] = compact('data') + [
+            $relationships[$relationship] = [
                 'links' => compact('related', 'self'),
             ];
-            unset($data);
+            if (isset($data)) {
+                $relationships[$relationship] += compact('data');
+            }
         }
 
         return [$relationships, $included];
