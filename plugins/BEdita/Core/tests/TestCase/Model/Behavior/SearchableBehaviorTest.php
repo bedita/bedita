@@ -32,9 +32,9 @@ class SearchableBehaviorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_felines',
+        'plugin.BEdita/Core.FakeAnimals',
+        'plugin.BEdita/Core.FakeMammals',
+        'plugin.BEdita/Core.FakeFelines',
     ];
 
     /**

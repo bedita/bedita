@@ -33,7 +33,7 @@ class SaveEntityActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
+        'plugin.BEdita/Core.FakeAnimals',
     ];
 
     /**

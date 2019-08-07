@@ -32,9 +32,9 @@ class ListEntitiesActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_articles',
-        'plugin.BEdita/Core.fake_mammals',
+        'plugin.BEdita/Core.FakeAnimals',
+        'plugin.BEdita/Core.FakeArticles',
+        'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectTypes',
