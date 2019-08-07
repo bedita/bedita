@@ -26,8 +26,8 @@ class PaginationTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
     ];
 
     /**

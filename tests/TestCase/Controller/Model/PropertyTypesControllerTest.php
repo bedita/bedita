@@ -27,8 +27,8 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.properties',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
     ];
 
     /**
