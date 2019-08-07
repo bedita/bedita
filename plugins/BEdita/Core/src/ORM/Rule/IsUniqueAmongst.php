@@ -58,7 +58,7 @@ class IsUniqueAmongst extends IsUnique
             return true;
         }
 
-        $alias = $options['repository']->alias();
+        $alias = $options['repository']->getAlias();
         $conditions = $this->buildConditions($alias, $entity->extract(array_keys($this->_fields)));
         if ($entity->isNew() === false) {
             $keys = (array)$options['repository']->primaryKey();
