@@ -13,7 +13,7 @@
 namespace BEdita\API\Middleware;
 
 use Cake\Http\Response;
-use Cake\Network\CorsBuilder;
+use Cake\Http\CorsBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
