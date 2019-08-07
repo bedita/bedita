@@ -283,7 +283,7 @@ class UniqueNameBehaviorTest extends TestCase
         $result = $behavior->uniqueNameFromValue($value, $regenerate, $cfg);
 
         if ($regenerate) {
-            $cfg = array_merge($behavior->config(), $cfg);
+            $cfg = array_merge($behavior->getConfig(), $cfg);
             $result = substr($result, 0, strlen($result) - $cfg['hashlength']);
         }
         $this->assertEquals($result, $expected);

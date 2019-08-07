@@ -16,7 +16,7 @@ namespace BEdita\Core\Mailer\Transport;
 use BEdita\Core\Mailer\Email as BeditaEmail;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
-use Cake\Network\Email\DebugTransport;
+use Cake\Mailer\Transport\DebugTransport;
 use Cake\ORM\TableRegistry;
 
 /**

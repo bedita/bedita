@@ -25,7 +25,7 @@ use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
