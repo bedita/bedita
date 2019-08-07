@@ -22,6 +22,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
+use Cake\Routing\RouteCollection;
 
 /**
  * Base class for API integration tests.
@@ -139,6 +140,16 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         $tokens = $this->authUser($username, $password);
 
         return ['Authorization' => 'Bearer ' . $tokens['jwt']];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function _makeDispatcher()
+    {
+        Router::setRouteCollection(new RouteCollection());
+
+        return parent::_makeDispatcher();
     }
 
     /**
