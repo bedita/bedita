@@ -7,10 +7,9 @@
  */
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-require dirname(__DIR__) . '/config/bootstrap.php';
-
 $_SERVER['PHP_SELF'] = '/';
 
+use BEdita\App\Application;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
@@ -22,6 +21,10 @@ use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
+
+$app = new Application(dirname(__DIR__) . '/config');
+$app->bootstrap();
+$app->pluginBootstrap();
 
 TableRegistry::clear();
 

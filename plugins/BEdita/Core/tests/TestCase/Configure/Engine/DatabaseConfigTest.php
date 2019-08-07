@@ -38,8 +38,8 @@ class DatabaseConfigTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.config',
-        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.Config',
+        'plugin.BEdita/Core.Applications',
     ];
 
     /**
