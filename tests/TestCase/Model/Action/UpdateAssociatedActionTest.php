@@ -53,7 +53,7 @@ class UpdateAssociatedActionTest extends TestCase
                 'joinTable' => 'fake_articles_tags',
             ]);
         /* @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = TableRegistry::get('FakeTags')->association('FakeArticles');
+        $association = TableRegistry::get('FakeTags')->getAssociation('FakeArticles');
         $association->junction()
             ->getValidator()
             ->email('fake_params');
@@ -221,7 +221,7 @@ class UpdateAssociatedActionTest extends TestCase
 
         $request = new ServerRequest();
         $request = $request->withParsedBody($data);
-        $association = TableRegistry::get($table)->association($association);
+        $association = TableRegistry::get($table)->getAssociation($association);
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -271,7 +271,7 @@ class UpdateAssociatedActionTest extends TestCase
                 'id' => 2,
             ],
         ]);
-        $association = TableRegistry::get('FakeArticles')->association('FakeTags');
+        $association = TableRegistry::get('FakeArticles')->getAssociation('FakeTags');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
