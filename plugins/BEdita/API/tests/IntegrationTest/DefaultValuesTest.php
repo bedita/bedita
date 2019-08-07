@@ -25,7 +25,7 @@ class DefaultValuesTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.streams',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**

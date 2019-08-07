@@ -25,8 +25,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.date_ranges',
-        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.DateRanges',
+        'plugin.BEdita/Core.Locations',
     ];
 
     /**

@@ -33,7 +33,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.async_jobs',
+        'plugin.BEdita/Core.AsyncJobs',
     ];
 
     /**

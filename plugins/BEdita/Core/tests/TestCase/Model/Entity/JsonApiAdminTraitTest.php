@@ -37,7 +37,7 @@ class JsonApiAdminTraitTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.Applications',
     ];
 
     /**

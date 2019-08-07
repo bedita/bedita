@@ -29,7 +29,7 @@ class StreamsControllerTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.streams',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**

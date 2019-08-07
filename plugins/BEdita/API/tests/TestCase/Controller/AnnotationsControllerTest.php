@@ -27,7 +27,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.annotations'
+        'plugin.BEdita/Core.Annotations'
     ];
 
     /**

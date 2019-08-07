@@ -37,9 +37,9 @@ class RelationTypesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Relations',
     ];
 
     /**

@@ -30,10 +30,10 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.object_relations',
-        'plugin.BEdita/Core.streams',
-        'plugin.BEdita/Core.media',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.Media',
     ];
 
     /**

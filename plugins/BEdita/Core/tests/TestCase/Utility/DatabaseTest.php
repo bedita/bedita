@@ -36,11 +36,11 @@ class DatabaseTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.config',
-        'plugin.BEdita/Core.async_jobs',
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.Config',
+        'plugin.BEdita/Core.AsyncJobs',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Roles',
     ];
 
     /**

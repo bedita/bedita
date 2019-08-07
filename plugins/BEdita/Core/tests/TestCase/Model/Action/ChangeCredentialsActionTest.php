@@ -38,15 +38,15 @@ class ChangeCredentialsActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles_users',
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.async_jobs',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.AsyncJobs',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
     ];
 
     /**
