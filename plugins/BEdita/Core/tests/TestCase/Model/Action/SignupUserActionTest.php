@@ -23,7 +23,7 @@ use Cake\Event\EventManager;
 use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Network\Exception\InternalErrorException;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -368,7 +368,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedException \Cake\Http\Exception\InternalErrorException
      */
     public function testExceptionSendMail()
     {

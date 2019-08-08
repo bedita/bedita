@@ -54,7 +54,7 @@ class FoldersController extends ObjectsController
         }
 
         if ($relationship === 'parent') {
-            return $this->Table->association('Parents');
+            return $this->Table->getAssociation('Parents');
         }
 
         return parent::findAssociation($relationship);

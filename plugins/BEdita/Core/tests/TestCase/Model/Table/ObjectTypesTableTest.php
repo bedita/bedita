@@ -541,7 +541,7 @@ class ObjectTypesTableTest extends TestCase
     public function testFindAll()
     {
         $query = $this->ObjectTypes->find();
-        $contain = $query->contain();
+        $contain = $query->getContain();
 
         static::assertArrayHasKey('LeftRelations', $contain);
         static::assertArrayHasKey('RightRelations', $contain);
