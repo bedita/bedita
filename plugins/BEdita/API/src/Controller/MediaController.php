@@ -85,7 +85,7 @@ class MediaController extends ObjectsController
         $preset = $this->request->getQuery('preset');
         $options = (array)$this->request->getQuery('options');
 
-        $thumbnails = $this->Table->association('Streams')->find()
+        $thumbnails = $this->Table->getAssociation('Streams')->find()
             ->where(function (QueryExpression $exp) use ($ids) {
                 return $exp->in('object_id', $ids);
             })

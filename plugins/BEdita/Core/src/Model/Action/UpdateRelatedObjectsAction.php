@@ -53,14 +53,14 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 
         $table = $this->Association->junction();
         $entity = $table->find()
-            ->where([$table->association('Objects')->getForeignKey() => $data['entity']->id])
+            ->where([$table->getAssociation('Objects')->getForeignKey() => $data['entity']->id])
             ->firstOrFail();
         $relatedEntities = $data['relatedEntities'];
         if (is_array($relatedEntities) && count($relatedEntities) === 1) {
             $relatedEntities = reset($relatedEntities);
         }
 
-        $this->Association = $table->association('ParentObjects');
+        $this->Association = $table->getAssociation('ParentObjects');
         $this->setConfig('association', $this->Association);
 
         return compact('entity', 'relatedEntities') + $data;

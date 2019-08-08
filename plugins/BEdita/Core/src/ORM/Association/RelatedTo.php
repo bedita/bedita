@@ -36,7 +36,7 @@ class RelatedTo extends BelongsToMany
             $options['conditions'] = [];
         }
         $junction = $this->junction();
-        $belongsTo = $junction->association($this->getSource()->getAlias());
+        $belongsTo = $junction->getAssociation($this->getSource()->getAlias());
         $condition = $belongsTo->_joinCondition(['foreignKey' => $belongsTo->getForeignKey()]);
 
         $subQuery = $this->find()
@@ -48,7 +48,7 @@ class RelatedTo extends BelongsToMany
             $subQuery = $options['queryBuilder']($subQuery);
         }
 
-        $assoc = $junction->association($this->getTarget()->getAlias());
+        $assoc = $junction->getAssociation($this->getTarget()->getAlias());
         $conditions = $assoc->_joinCondition([
             'foreignKey' => $this->getTargetForeignKey()
         ]);

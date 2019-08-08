@@ -16,7 +16,7 @@ use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -95,7 +95,7 @@ class TrashController extends AppController
      *
      * @param int $id Object ID.
      * @return \Cake\Http\Response
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
+     * @throws \Cake\Http\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
      * @throws \Cake\Http\Exception\InternalErrorException Throws an exception if an error occurs during restore.
      */

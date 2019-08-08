@@ -20,7 +20,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -63,7 +63,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      * {@inheritDoc}
      *
      * @throws \Cake\Http\Exception\BadRequestException When missing id or async_jobs row is invalid
-     * @throws \Cake\Network\Exception\ConflictException When the user is already active
+     * @throws \Cake\Http\Exception\ConflictException When the user is already active
      */
     public function execute(array $data = [])
     {

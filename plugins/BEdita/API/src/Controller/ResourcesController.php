@@ -25,7 +25,7 @@ use BEdita\Core\Model\Action\SetAssociatedAction;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;

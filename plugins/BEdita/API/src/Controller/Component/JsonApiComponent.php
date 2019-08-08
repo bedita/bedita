@@ -16,7 +16,7 @@ use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
@@ -195,7 +195,7 @@ class JsonApiComponent extends Component
      * @param mixed $types One or more allowed types to check resources array against.
      * @param array|null $data Data to be checked. By default, this is taken from the request.
      * @return void
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
+     * @throws \Cake\Http\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
      */
     protected function allowedResourceTypes($types, array $data = null)
     {
@@ -263,7 +263,7 @@ class JsonApiComponent extends Component
      * @return void
      * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
      *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource in the payload has a
+     * @throws \Cake\Http\Exception\ConflictException Throws an exception if a resource in the payload has a
      *      non-supported `type`.
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
      *      client-generated ID, but the feature is not supported.

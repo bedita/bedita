@@ -103,7 +103,7 @@ class ListEntitiesAction extends BaseAction
             $camelizedKey = Inflector::camelize($key);
             if ($this->Table->associations()->has($camelizedKey)) {
                 // Associated match (primary key only).
-                $target = $this->Table->association($camelizedKey)->getTarget();
+                $target = $this->Table->getAssociation($camelizedKey)->getTarget();
                 $targetPrimaryKey = $target->aliasField($target->getPrimaryKey());
                 if (is_array($value)) {
                     $targetPrimaryKey .= ' IN';
