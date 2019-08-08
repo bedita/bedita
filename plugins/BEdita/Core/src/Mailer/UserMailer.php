@@ -136,7 +136,7 @@ class UserMailer extends Mailer
         ]);
 
         $this->viewBuilder()
-            ->setTemplate('BEdita/Core.signup')
+            ->setTemplate('BEdita/Core.change_request')
             ->setLayout('BEdita/Core.default');
 
         return $this->setEmailFormat('both')
