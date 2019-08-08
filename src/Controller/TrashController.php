@@ -97,7 +97,7 @@ class TrashController extends AppController
      * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during restore.
+     * @throws \Cake\Http\Exception\InternalErrorException Throws an exception if an error occurs during restore.
      */
     public function restore($id)
     {

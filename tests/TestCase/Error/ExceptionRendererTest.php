@@ -17,7 +17,7 @@ use BEdita\API\Error\ExceptionRenderer;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\Response;
-use Cake\Network\Exception\InternalErrorException;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\TestSuite\TestCase;
 
