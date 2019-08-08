@@ -61,6 +61,8 @@ class ObjectEntityTest extends TestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**

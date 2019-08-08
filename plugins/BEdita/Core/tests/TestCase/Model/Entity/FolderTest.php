@@ -57,6 +57,8 @@ class FolderTest extends TestCase
         parent::setUp();
 
         $this->Folders = TableRegistry::get('Folders');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**

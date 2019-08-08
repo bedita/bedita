@@ -67,6 +67,8 @@ class JsonApiTraitTest extends TestCase
 
         $this->Roles = TableRegistry::get('Roles');
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
