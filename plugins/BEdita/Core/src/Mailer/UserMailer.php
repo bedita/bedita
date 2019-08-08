@@ -49,14 +49,15 @@ class UserMailer extends Mailer
             'user' => $user,
             'projectName' => $projectName,
         ]);
-
-        return $this
+        $email = $this
             ->setEmailFormat('both')
             ->setTo($user->email)
-            ->setSubject($subject)
-            ->viewBuilder()
-                ->setTemplate('BEdita/Core.welcome')
-                ->setLayout('BEdita/Core.default');
+            ->setSubject($subject);
+        $email->viewBuilder()
+            ->setTemplate('BEdita/Core.welcome')
+            ->setLayout('BEdita/Core.default');
+
+        return $email;
     }
 
     /**
@@ -91,14 +92,15 @@ class UserMailer extends Mailer
             'activationUrl' => $options['params']['activationUrl'],
             'projectName' => $projectName
         ]);
-
-        return $this
+        $email = $this
             ->setEmailFormat('both')
             ->setTo($user->email)
-            ->setSubject($subject)
-            ->viewBuilder()
-                ->setTemplate('BEdita/Core.signup')
-                ->setLayout('BEdita/Core.default');
+            ->setSubject($subject);
+        $email->viewBuilder()
+            ->setTemplate('BEdita/Core.signup')
+            ->setLayout('BEdita/Core.default');
+
+        return $email;
     }
 
     /**
@@ -134,13 +136,15 @@ class UserMailer extends Mailer
             'projectName' => $projectName
         ]);
 
-        return $this
+        $email = $this
             ->setEmailFormat('both')
             ->setTo($user->email)
-            ->setSubject($subject)
-            ->viewBuilder()
-                ->setTemplate('BEdita/Core.change_request')
-                ->setLayout('BEdita/Core.default');
+            ->setSubject($subject);
+        $email->viewBuilder()
+            ->setTemplate('BEdita/Core.change_request')
+            ->setLayout('BEdita/Core.default');
+
+        return $email;
     }
 
     /**
