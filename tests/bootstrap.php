@@ -58,14 +58,12 @@ FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [
     'default' => [
         'className' => 'BEdita/Core.Local',
-        // TODO: better path definition...
-        'path' => ROOT . 'plugins/BEdita/Core/tests' . DS . 'uploads',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'uploads',
         'baseUrl' => 'https://static.example.org/files',
     ],
     'thumbnails' => [
         'className' => 'BEdita/Core.Local',
-        // TODO: better path definition...
-        'path' => ROOT . 'plugins/BEdita/Core/tests' . DS . 'thumbnails',
+        'path' => Plugin::path('BEdita/Core') . 'tests' . DS . 'thumbnails',
         'baseUrl' => 'https://static.example.org/thumbs',
     ],
 ]);
