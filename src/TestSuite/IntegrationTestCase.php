@@ -17,7 +17,7 @@ use BEdita\API\Event\CommonEventHandler;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
-use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -99,8 +99,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         LoggedUser::resetUser();
         CurrentApplication::setFromApiKey(API_KEY);
 
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug'
         ]);
 
