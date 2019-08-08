@@ -105,7 +105,7 @@ class BeditaShell extends Shell
 
         $this->hr();
 
-        $tables = ConnectionManager::get($this->param('connection'))->schemaCollection()->listTables();
+        $tables = ConnectionManager::get($this->param('connection'))->getSchemaCollection()->listTables();
         if (empty($tables)) {
             $this->out('=====> Initializing schema');
             $this->InitSchema->params = ['seed' => true] + $this->params;

@@ -399,7 +399,7 @@ class InheritanceEventHandlerTest extends TestCase
     {
         $eventDispatchedFelines = $eventDispatchedMammals = $eventDispatchedAnimals = 0;
         // Main table
-        $this->fakeFelines->eventManager()->on(
+        $this->fakeFelines->getEventManager()->on(
             'Model.beforeSave',
             function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedFelines) {
                 $eventDispatchedFelines++;
@@ -409,7 +409,7 @@ class InheritanceEventHandlerTest extends TestCase
         );
 
         // Inherited table
-        $this->fakeMammals->eventManager()->on(
+        $this->fakeMammals->getEventManager()->on(
             'Model.beforeSave',
             function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedMammals) {
                 $eventDispatchedMammals++;
@@ -420,7 +420,7 @@ class InheritanceEventHandlerTest extends TestCase
         );
 
         // Inherited table
-        $this->fakeAnimals->eventManager()->on(
+        $this->fakeAnimals->getEventManager()->on(
             'Model.beforeSave',
             function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedAnimals) {
                 $eventDispatchedAnimals++;
