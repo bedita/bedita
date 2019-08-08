@@ -50,9 +50,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName,
         ]);
 
-        return $this
+        $this->viewBuilder()
             ->setTemplate('BEdita/Core.welcome')
-            ->setLayout('BEdita/Core.default')
+            ->setLayout('BEdita/Core.default');
+
+        return $this
             ->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
@@ -91,9 +93,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName
         ]);
 
-        return $this->setTemplate('BEdita/Core.signup')
-            ->setLayout('BEdita/Core.default')
-            ->setEmailFormat('both')
+        $this->viewBuilder()
+            ->setTemplate('BEdita/Core.signup')
+            ->setLayout('BEdita/Core.default');
+
+        return $this->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
     }
@@ -131,9 +135,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName
         ]);
 
-        return $this->setTemplate('BEdita/Core.change_request')
-            ->setLayout('BEdita/Core.default')
-            ->setEmailFormat('both')
+        $this->viewBuilder()
+            ->setTemplate('BEdita/Core.signup')
+            ->setLayout('BEdita/Core.default');
+
+        return $this->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
     }

@@ -61,7 +61,7 @@ class IsUniqueAmongst extends IsUnique
         $alias = $options['repository']->getAlias();
         $conditions = $this->buildConditions($alias, $entity->extract(array_keys($this->_fields)));
         if ($entity->isNew() === false) {
-            $keys = (array)$options['repository']->primaryKey();
+            $keys = (array)$options['repository']->getPrimaryKey();
             $keys = $this->_alias($alias, $entity->extract($keys), true);
             if (array_filter($keys, 'strlen')) {
                 $conditions['NOT'] = $keys;
