@@ -15,8 +15,8 @@ namespace BEdita\API\Test\TestCase\View;
 
 use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
+use Cake\Http\Response;
 use Cake\Network\Request;
-use Cake\Network\Response;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -58,6 +58,7 @@ class JsonApiViewTest extends TestCase
         parent::setUp();
 
         $this->Roles = TableRegistry::get('Roles');
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
