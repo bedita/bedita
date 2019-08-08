@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Validation;
 
-use BEdita\Core\Plugin;
+use Cake\Core\Plugin;
 use Cake\Database\Schema\TableSchema;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
