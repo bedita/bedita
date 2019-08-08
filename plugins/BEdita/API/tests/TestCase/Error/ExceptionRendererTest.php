@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -16,10 +16,26 @@ namespace BEdita\API\Test\TestCase\Error;
 use BEdita\API\Error\ExceptionRenderer;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Http\Response;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
+
+/**
+ * Extension class with utility methods use in tests
+ */
+class MyExceptionRenderer extends ExceptionRenderer
+{
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+}
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -53,11 +69,6 @@ class ExceptionRendererTest extends TestCase
     {
         foreach ($this->backupConf as $key => $val) {
             Configure::write($key, $val);
-        }
-
-        // restore plugin if was unloaded
-        if (!Plugin::loaded('BEdita/API')) {
-            Plugin::load('BEdita/API', ['routes' => true]);
         }
 
         parent::tearDown();
@@ -138,12 +149,12 @@ class ExceptionRendererTest extends TestCase
             $exception = new NotFoundException($exception);
         }
 
-        $renderer = new ExceptionRenderer($exception);
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', 'application/json');
+        $renderer = new MyExceptionRenderer($exception);
+        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', 'application/json');
         $response = $renderer->render();
 
         $responseBody = json_decode((string)$response->getBody(), true);
-        static::assertEquals('error', $renderer->template);
+        static::assertEquals('error', $renderer->getTemplate());
         static::assertEquals($title, $responseBody['error']['title']);
         if ($detail) {
             static::assertEquals($detail, $responseBody['error']['detail']);
@@ -216,11 +227,11 @@ class ExceptionRendererTest extends TestCase
         Configure::write($config);
 
         if ($unloadPlugin) {
-            Plugin::unload('BEdita/API');
+            Plugin::getCollection()->clear();
         }
 
-        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', $accept);
+        $renderer = new MyExceptionRenderer(new NotFoundException('test html'));
+        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', $accept);
         $response = $renderer->render();
 
         $this->checkResponseJson($renderer, $response, $config['debug']);
@@ -242,13 +253,13 @@ class ExceptionRendererTest extends TestCase
         Configure::write($config);
 
         if ($unloadPlugin) {
-            Plugin::unload('BEdita/API');
+            Plugin::getCollection()->clear();
         }
 
-        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
-        $renderer->controller->request = $renderer->controller->request->withEnv('HTTP_ACCEPT', $accept);
+        $renderer = new MyExceptionRenderer(new NotFoundException('test html'));
+        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', $accept);
 
-        $renderer->controller->getEventManager()->on('Controller.beforeRender', function () {
+        $renderer->getController()->getEventManager()->on('Controller.beforeRender', function () {
             throw new InternalErrorException();
         });
 
@@ -265,11 +276,11 @@ class ExceptionRendererTest extends TestCase
      * @param int $debug
      * @return void
      */
-    protected function checkResponseJson(ExceptionRenderer $renderer, Response $response, $debug)
+    protected function checkResponseJson(MyExceptionRenderer $renderer, Response $response, $debug)
     {
-        $accept = $renderer->controller->request->getHeaderLine('accept');
+        $accept = $renderer->getController()->request->getHeaderLine('accept');
         $contentTypeExpected = ($accept == 'application/json') ? $accept : 'application/vnd.api+json';
-        $this->assertStringStartsWith($contentTypeExpected, $response->type());
+        $this->assertStringStartsWith($contentTypeExpected, $response->getType());
         $responseBody = json_decode((string)$response->getBody(), true);
         $this->assertTrue(is_array($responseBody));
 
