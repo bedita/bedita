@@ -106,7 +106,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the left side.
         foreach ($objectType->getRelations('left') as $relation) {
-            if ($this->getTable()->hasAssociation($relation->alias) !== null) {
+            if ($this->getTable()->hasAssociation($relation->alias) === true) {
                 continue;
             }
 
@@ -141,7 +141,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the right side.
         foreach ($objectType->getRelations('right') as $relation) {
-            if ($this->getTable()->hasAssociation($relation->inverse_alias) !== null) {
+            if ($this->getTable()->hasAssociation($relation->inverse_alias) === true) {
                 continue;
             }
 
