@@ -52,6 +52,7 @@ class JsonApiComponentTest extends TestCase
         parent::setUp();
 
         Router::fullBaseUrl('http://example.org');
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**

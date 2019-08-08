@@ -61,6 +61,8 @@ class JsonApiTest extends TestCase
         parent::setUp();
 
         $this->Roles = TableRegistry::get('Roles');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
