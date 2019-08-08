@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -18,10 +18,10 @@ use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
-use Cake\Http\Exception\UnauthorizedException;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -45,6 +45,15 @@ class JwtAuthenticateTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
+    }
 
     /**
      * Data provider for `testGetToken` test case.
