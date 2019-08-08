@@ -27,7 +27,7 @@ class ObjectPropertiesTableTest extends TestCase
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.object_properties',
+        'plugin.BEdita/Core.ObjectProperties',
     ];
 
     /**
