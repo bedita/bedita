@@ -66,13 +66,13 @@ class RelationsBehaviorTest extends TestCase
         static::assertSame(3, $Profiles->objectType()->id);
 
         static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('Test'));
-        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('Test')->className());
+        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('Test')->getClassName());
         static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('InverseTest'));
-        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('InverseTest')->className());
+        static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('InverseTest')->getClassName());
         static::assertInstanceOf(BelongsToMany::class, $Profiles->getAssociation('InverseTest'));
-        static::assertSame('BEdita/Core.Objects', $Profiles->getAssociation('InverseTest')->className());
+        static::assertSame('BEdita/Core.Objects', $Profiles->getAssociation('InverseTest')->getClassName());
         static::assertInstanceOf(BelongsToMany::class, $Locations->getAssociation('InverseAnotherTest'));
-        static::assertSame('BEdita/Core.Users', $Locations->getAssociation('InverseAnotherTest')->className());
+        static::assertSame('BEdita/Core.Users', $Locations->getAssociation('InverseAnotherTest')->getClassName());
 
         $before = count($Profiles->associations()->keys());
         $Profiles->setupRelations('profiles');
