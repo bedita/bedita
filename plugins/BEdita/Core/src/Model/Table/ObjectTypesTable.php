@@ -498,12 +498,11 @@ class ObjectTypesTable extends Table
         }
 
         return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
-            return $query->where(function (QueryExpression $exp) use ($options) {
-                return $exp->or_([
-                    $this->Objects->aliasField('id') => $options['id'],
-                    $this->Objects->aliasField('uname') => $options['id'],
-                ]);
-            });
+            if (!is_numeric($options['id'])) {
+                return $query->where([$this->Objects->aliasField('uname') => $options['id']]);
+            }
+
+            return $query->where([$this->Objects->aliasField('id') => intval($options['id'])]);
         });
     }
 }
