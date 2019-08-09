@@ -43,16 +43,6 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        Plugin::load('Migrations');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public static function tearDownAfterClass()
     {
         ConnectionManager::get('default')
