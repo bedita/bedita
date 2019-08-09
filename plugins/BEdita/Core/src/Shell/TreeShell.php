@@ -32,8 +32,8 @@ class TreeShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'Recover' => ['className' => RecoverTreeTask::class],
-        'Check' => ['className' => CheckTreeTask::class],
+        'Recover' => ['class' => 'BEdita/Core.RecoverTree', 'config' => []],
+        'Check' => ['class' => 'BEdita/Core.CheckTree', 'config' => []],
     ];
 
     /**
