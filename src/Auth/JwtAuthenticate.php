@@ -15,9 +15,9 @@ namespace BEdita\API\Auth;
 
 use BEdita\API\Exception\ExpiredTokenException;
 use Cake\Auth\BaseAuthenticate;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;

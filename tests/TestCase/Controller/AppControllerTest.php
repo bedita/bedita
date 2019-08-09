@@ -18,9 +18,9 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotAcceptableException;
+use Cake\Http\ServerRequest;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
