@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Event\EventDispatcherTrait;
-use Cake\I18n\Time;
 use Cake\Http\Exception\BadRequestException;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 

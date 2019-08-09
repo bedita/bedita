@@ -17,10 +17,10 @@ use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\I18n\Time;
-use Cake\Mailer\MailerAwareTrait;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
+use Cake\I18n\Time;
+use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 
 /**

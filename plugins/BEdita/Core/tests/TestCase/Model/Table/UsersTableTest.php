@@ -16,8 +16,8 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
 use Cake\Http\Exception\BadRequestException;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 

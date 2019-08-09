@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Log\LogTrait;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
+use Cake\Log\LogTrait;
 use Cake\Utility\Hash;
 
 /**

@@ -15,8 +15,8 @@ namespace BEdita\Core\Test\TestCase\Mailer;
 
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
-use Cake\Mailer\TransportFactory;
 use Cake\Mailer\MailerAwareTrait;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 

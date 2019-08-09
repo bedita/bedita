@@ -17,12 +17,12 @@ use BEdita\API\Event\CommonEventHandler;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
-use Cake\Mailer\TransportFactory;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
-use Cake\Routing\RouteCollection;
 
 /**
  * Base class for API integration tests.

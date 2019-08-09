@@ -14,9 +14,9 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validation;
 
