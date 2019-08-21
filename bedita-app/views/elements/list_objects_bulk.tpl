@@ -5,17 +5,7 @@
 	&nbsp;<label for="selectAll{if !empty($context)}-{$context}{/if}">{t}(un)select all{/t}</label>
 	&nbsp;&nbsp;&nbsp;
 	{if !isset($bulk_tags) || $bulk_tags==false}
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-		&nbsp;{t}of{/t}&nbsp;
-		{if ($beToolbar->pages()) > 0}
-		{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
-		{else}1{/if}
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')}
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
-		|&nbsp;&nbsp;&nbsp;
-        {$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span> 
+		{$beToolbar->show('compact', ['noitem' => $noitem|default:false, 'itemName' => $itemName|default:null])}
 	{/if}
 </div>
 

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-11-17 11:29:27\n"
+"POT-Creation-Date: 2019-07-26 09:14:55\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -241,6 +241,9 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Captcha image and text don't match"
+msgstr ""
+
+msgid "Captions"
 msgstr ""
 
 msgid "Card"
@@ -839,9 +842,6 @@ msgid "GeoTag"
 msgstr ""
 
 msgid "Get contents"
-msgstr ""
-
-msgid "Gmaps LookaT"
 msgstr ""
 
 msgid "Go to"
@@ -1446,6 +1446,9 @@ msgid "Number of objects"
 msgstr ""
 
 msgid "Object id not found: %d"
+msgstr ""
+
+msgid "Object of a type not allowed for module"
 msgstr ""
 
 msgid "Object type"
@@ -2170,6 +2173,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "all areas"
+msgstr ""
+
 msgid "all bibliographies"
 msgstr ""
 
@@ -2180,6 +2186,12 @@ msgid "all cards"
 msgstr ""
 
 msgid "all comments"
+msgstr ""
+
+msgid "all documents"
+msgstr ""
+
+msgid "all events"
 msgstr ""
 
 msgid "all galleries"
@@ -2617,6 +2629,9 @@ msgstr ""
 msgid "inserted on"
 msgstr ""
 
+msgid "invalid"
+msgstr ""
+
 msgid "inventory"
 msgstr ""
 
@@ -2735,9 +2750,6 @@ msgid "master language"
 msgstr ""
 
 msgid "master title"
-msgstr ""
-
-msgid "matching the query"
 msgstr ""
 
 msgid "matching the query containing"
@@ -3514,4 +3526,10 @@ msgid "your 5 recent items"
 msgstr ""
 
 msgid "your message"
+msgstr ""
+
+msgid "{t}matching the query containing{/t}"
+msgstr ""
+
+msgid "{t}matching the query{/t}"
 msgstr ""
