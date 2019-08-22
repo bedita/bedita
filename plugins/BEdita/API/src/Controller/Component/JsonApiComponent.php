@@ -272,7 +272,9 @@ class JsonApiComponent extends Component
     {
         $controller = $this->getController();
 
-        $this->RequestHandler->renderAs($controller, 'jsonapi');
+        if ($controller->request->is('jsonapi')) {
+            $this->RequestHandler->renderAs($controller, 'jsonapi');
+        }
 
         if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
