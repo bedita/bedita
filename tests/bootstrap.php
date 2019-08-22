@@ -93,5 +93,7 @@ Configure::write('Thumbnails', [
 ]);
 Configure::write('debug', true);
 
+Configure::write('Plugins', []);
+
 Cache::clear(false, '_cake_core_');
 Cache::clear(false, '_cake_model_');
