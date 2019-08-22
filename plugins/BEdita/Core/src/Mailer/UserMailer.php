@@ -31,7 +31,7 @@ class UserMailer extends Mailer
      * - `user` the user Entity to send welcome email
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function welcome($options)
@@ -68,7 +68,7 @@ class UserMailer extends Mailer
      * - `activationUrl` the activation url to follow
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function signup(array $options)
@@ -110,7 +110,7 @@ class UserMailer extends Mailer
      * - `changeUrl` the change url to follow
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function changeRequest(array $options)
