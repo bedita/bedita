@@ -209,6 +209,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             ];
             if (isset($data)) {
                 $relationships[$relationship] += compact('data');
+                unset($data);
             }
         }
 
