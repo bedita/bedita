@@ -145,15 +145,19 @@ class InitSchemaTask extends Shell
     protected function migrate(ConnectionInterface $connection)
     {
         $this->out('Running migrations... ', 0);
-        $migrations = new Migrations([
-            'connection' => $connection->configName(),
-            'plugin' => 'BEdita/Core',
-        ]);
-        if (!$migrations->migrate()) {
-            $this->out('<error>FAIL</error>');
 
-            $this->abort('Could not migrate database, aborting');
-        }
+        $connection->transactional(function (Connection $connection) {
+            $migrations = new Migrations([
+                'connection' => $connection->configName(),
+                'plugin' => 'BEdita/Core',
+            ]);
+            if (!$migrations->migrate()) {
+                $this->out('<error>FAIL</error>');
+
+                $this->abort('Could not migrate database, aborting');
+            }
+        });
+
         $this->out('<info>DONE</info>');
     }
 
@@ -176,15 +180,17 @@ class InitSchemaTask extends Shell
         }
 
         $this->out('Seeding data... ', 0);
-        $migrations = new Migrations([
-            'connection' => $connection->configName(),
-            'plugin' => 'BEdita/Core',
-        ]);
-        if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'InitialSeed'])) {
-            $this->out('<error>FAIL</error>');
+        $connection->transactional(function (Connection $connection) {
+            $migrations = new Migrations([
+                'connection' => $connection->configName(),
+                'plugin' => 'BEdita/Core',
+            ]);
+            if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'InitialSeed'])) {
+                $this->out('<error>FAIL</error>');
 
-            $this->abort('Could not seed initial data set');
-        }
+                $this->abort('Could not seed initial data set');
+            }
+        });
         $this->out('<info>DONE</info>');
     }
 }
