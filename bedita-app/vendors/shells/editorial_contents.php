@@ -38,23 +38,53 @@ class EditorialContentsShell extends BeditaBaseShell
      */
     public function help() {
         $this->out('Update `publisher` field for all users that belong to a group');
-        $this->out('that grants them access to backend app.');
+        $this->out('that grants them access to backend app with default publisher configurated.');
+        $this->out();
+        $this->out('  Usage: editorial_contents [--reset-empty-publisher]');
+        $this->out();
+        $this->out('    --reset-empty-publisher change object publisher from empty string to NULL value');
         $this->out();
 
-        $this->out('  Usage: editorial_contents');
     }
 
     /**
      * Convert all date items in the database.
      */
     public function main() {
-        // Check that we actually have something to update.
-        $publisher = Configure::read('editorialContents.defaultPublisher');
-        if (empty($publisher)) {
-            $this->out('=====> Configuration item `editorialContents.defaultPublisher` must not be empty');
-            $this->err('Aborting');
 
-            exit(1);
+        $resetEmptyPublisher = !empty($this->params['-reset-empty-publisher']);
+
+        if ($resetEmptyPublisher) {
+
+            $backendAuth = 0;
+            $conditions = array('BEObject.publisher' => '');
+            $conditionQuery = '';
+            $publisher = 'NULL';
+
+        } else {
+
+            $backendAuth = 1;
+            $conditions = array(
+                'OR' => array(
+                    'BEObject.publisher' => null,
+                    'AND' => array(
+                        'BEObject.publisher' => '',
+                        '1 = 1',
+                    ),
+                ),
+            );
+            $conditionQuery = 'OR `objects`.`publisher` IS NULL';
+
+            $publisher = Configure::read('editorialContents.defaultPublisher');
+
+            if (empty($publisher)) {
+                $this->out('=====> Configuration item `editorialContents.defaultPublisher` must not be empty');
+                $this->err('Aborting');
+    
+                exit(1);
+            } else {
+                $publisher =  sprintf('\'%s\'', Sanitize::escape($publisher));
+            }
         }
 
         // Count objects affected by this operation.
@@ -76,22 +106,19 @@ class EditorialContentsShell extends BeditaBaseShell
                     'type' => 'INNER',
                     'conditions' => array(
                         'Group.id = GroupsUser.group_id',
-                        'Group.backend_auth' => 1,
+                        'Group.backend_auth' => $backendAuth,
                     ),
                 ),
             ),
-            'conditions' => array(
-                'OR' => array(
-                    'BEObject.publisher' => null,
-                    'AND' => array(
-                        'BEObject.publisher' => '',
-                        '1 = 1',
-                    ),
-                ),
-            ),
+            'conditions' => $conditions
         ));
         $count = $count[0]['count'];
 
+        if (!$count) {
+            $this->out('=====> All objects are updated');
+
+            exit(1);
+        }
         $question = sprintf('=====> %d objects will be updated. Do you wish to continue?', $count);
         if ($this->in($question, array('y', 'n'), 'n') !== 'y') {
             $this->err('Aborting');
@@ -103,14 +130,11 @@ class EditorialContentsShell extends BeditaBaseShell
         App::import('Sanitize');
         $this->out('=====> Updating rows in database...');
         $this->BEObject->query(
-            sprintf(
-                'UPDATE `objects`' . PHP_EOL .
-                '    INNER JOIN `groups_users` ON (`groups_users`.`user_id` = `objects`.`user_created`)' . PHP_EOL .
-                '    INNER JOIN `groups` ON (`groups`.`id` = `groups_users`.`group_id`)' . PHP_EOL .
-                '    SET `objects`.`publisher` = \'%s\'' . PHP_EOL .
-                '    WHERE (`objects`.`publisher` IS NULL OR `objects`.`publisher` = \'\') AND `groups`.`backend_auth` = 1',
-                Sanitize::escape($publisher)
-            )
+            'UPDATE `objects`' . PHP_EOL .
+            '    INNER JOIN `groups_users` ON (`groups_users`.`user_id` = `objects`.`user_created`)' . PHP_EOL .
+            '    INNER JOIN `groups` ON (`groups`.`id` = `groups_users`.`group_id`)' . PHP_EOL .
+            '    SET `objects`.`publisher` = ' . $publisher . PHP_EOL .
+            '    WHERE (`objects`.`publisher` = \'\' ' . $conditionQuery . ') AND `groups`.`backend_auth` = ' . $backendAuth
         );
 
         // Clean up cache.
