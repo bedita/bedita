@@ -318,13 +318,14 @@ trait JsonApiTrait
                 $included = array_merge($included, $entities);
             }
 
-            $relationships[$relationship] = [
-                'links' => compact('related', 'self'),
-            ];
+            $relationships[$relationship] = [];
             if (isset($data)) {
                 $relationships[$relationship] += compact('data');
                 unset($data);
             }
+            $relationships[$relationship] += [
+                'links' => compact('related', 'self'),
+            ];
         }
 
         return [$relationships, $included];
