@@ -17,6 +17,7 @@ use BEdita\API\Utility\JsonApi;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
+use Cake\Utility\Hash;
 use Cake\View\JsonView;
 
 /**
@@ -57,34 +58,22 @@ class JsonApiView extends JsonView
      */
     protected function _dataToSerialize($serialize = true)
     {
-        if (empty($this->viewVars['_error'])) {
-            $fields = $this->parseFieldsQuery();
-            $data = parent::_dataToSerialize($serialize) ?: [];
-            $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
-            if ($data) {
-                $included = [];
-                $data = JsonApi::formatData(reset($data), $options, $fields, $included);
-            }
-            if (empty($included)) {
-                unset($included);
-            } else {
-                $included = JsonApi::formatData($included, $options, $fields);
-                unset($included['_schema']);
-            }
-        } else {
-            $error = $this->viewVars['_error'];
+        if (!empty($this->viewVars['_error'])) {
+            return $this->serializeError();
         }
 
-        if (!empty($error['status'])) {
-            $error['status'] = (string)$error['status'];
+        $links = Hash::get($this->viewVars, '_links');
+        $meta = Hash::get($this->viewVars, '_meta');
+        if (empty($serialize)) {
+            return array_filter(compact('links', 'meta'));
         }
 
-        if (!empty($this->viewVars['_links'])) {
-            $links = $this->viewVars['_links'];
-        }
-
-        if (!empty($this->viewVars['_meta'])) {
-            $meta = $this->viewVars['_meta'];
+        $fields = $this->parseFieldsQuery();
+        $data = parent::_dataToSerialize() ?: [];
+        $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
+        if ($data) {
+            $included = [];
+            $data = JsonApi::formatData(reset($data), $options, $fields, $included);
         }
 
         if (!empty($data['_schema'])) {
@@ -92,11 +81,33 @@ class JsonApiView extends JsonView
             unset($data['_schema']);
         }
 
-        if (empty($serialize)) {
-            unset($data);
+        // `data` key may be empty, `links` and `meta` may not
+        $res = compact('data') + array_filter(compact('links', 'meta'));
+
+        if (!empty($included)) {
+            $included = JsonApi::formatData($included, $options, $fields);
+            unset($included['_schema']);
+            $res += compact('included');
         }
 
-        return compact('error', 'data', 'links', 'meta', 'included');
+        return $res;
+    }
+
+    /**
+     * Serialize error data
+     *
+     * @return array
+     */
+    protected function serializeError()
+    {
+        $error = $this->viewVars['_error'];
+        if (!empty($error['status'])) {
+            $error['status'] = (string)$error['status'];
+        }
+        $links = Hash::get($this->viewVars, '_links');
+        $meta = Hash::get($this->viewVars, '_meta');
+
+        return array_filter(compact('error', 'links', 'meta'));
     }
 
     /**

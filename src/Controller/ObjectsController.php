@@ -371,10 +371,12 @@ class ObjectsController extends ResourcesController
                 ->withStatus(204);
         }
 
-        $this->set(compact('data'));
-        $this->set([
-            '_serialize' => isset($data) ? ['data'] : [],
-        ]);
+        $serialize = [];
+        if (isset($data)) {
+            $this->set(compact('data'));
+            $serialize = ['data'];
+        }
+        $this->set(['_serialize' => $serialize]);
 
         return null;
     }
