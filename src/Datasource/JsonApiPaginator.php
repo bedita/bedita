@@ -69,6 +69,7 @@ class JsonApiPaginator extends Paginator
                 $options['sort'] = substr($options['sort'], 1);
                 $options['direction'] = 'desc';
             }
+            unset($options['order']);
         }
 
         $options = parent::validateSort($object, $options);
