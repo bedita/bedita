@@ -68,7 +68,7 @@ class TrashController extends AppController
         $filter['locked'] = false;
         $action = new ListObjectsAction(['table' => $this->Objects]);
         $deleted = true;
-        $query = $action(compact('filter', 'contain', 'deleted'));
+        $query = $action(compact('filter', 'deleted'));
         $trash = $this->paginate($query);
 
         $this->set(compact('trash'));

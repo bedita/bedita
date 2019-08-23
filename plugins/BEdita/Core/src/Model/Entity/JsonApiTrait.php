@@ -382,6 +382,7 @@ trait JsonApiTrait
             $this->setFields($fields['_common']);
         }
 
+        $attributes = $meta = $links = $relationships = $included = null;
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES) === 0) {
             $attributes = $this->getAttributes();
         }
