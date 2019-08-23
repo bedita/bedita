@@ -61,7 +61,7 @@ class RelationsTable extends Table
         $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('LeftObjectTypes', [
             'className' => 'ObjectTypes',
-            'through' => $through->getRegistryAlias(),
+            'through' => $through,
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [
@@ -71,7 +71,7 @@ class RelationsTable extends Table
         $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightObjectTypes', [
             'className' => 'ObjectTypes',
-            'through' => $through->getRegistryAlias(),
+            'through' => $through,
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [

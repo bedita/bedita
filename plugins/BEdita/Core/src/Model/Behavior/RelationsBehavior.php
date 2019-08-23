@@ -126,7 +126,7 @@ class RelationsBehavior extends Behavior
 
             $this->relatedTo($relation->alias, [
                 'className' => $className,
-                'through' => $through->getRegistryAlias(),
+                'through' => $through,
                 'foreignKey' => 'left_id',
                 'targetForeignKey' => 'right_id',
                 'conditions' => [
@@ -161,7 +161,7 @@ class RelationsBehavior extends Behavior
 
             $this->relatedTo($relation->inverse_alias, [
                 'className' => $className,
-                'through' => $through->getRegistryAlias(),
+                'through' => $through,
                 'foreignKey' => 'right_id',
                 'targetForeignKey' => 'left_id',
                 'conditions' => [
