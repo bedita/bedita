@@ -109,6 +109,17 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
+     * TODO: this is a workaround, method should not be necessary
+     * Failing test: BEdita\Core\Test\TestCase\Model\Entity\JsonApiTraitTest::testGetRelationshipsIncludedSingle
+     *
+     * {@inheritDoc}
+     */
+    public function getSource()
+    {
+        return 'ObjectTypes';
+    }
+
+    /**
      * Getter for property `singular`.
      *
      * If `singular` field is not set or empty, use inflected form of `name`.
