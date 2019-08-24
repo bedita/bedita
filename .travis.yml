@@ -134,9 +134,9 @@ install:
   - composer install --prefer-dist --no-interaction
 
 before_script:
-  # Enable required PHP Extensions.
-  - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # # Enable required PHP Extensions.
+  # - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv rehash
   - set +H
 
