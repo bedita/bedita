@@ -17,7 +17,8 @@ class AllowPermissionsOnAllEndpoints extends AbstractMigration
         $this->table('endpoint_permissions')
             ->dropForeignKey(
                 'endpoint_id'
-            );
+            )            
+            ->update();
 
         $this->table('endpoint_permissions')
             ->changeColumn('endpoint_id', 'integer', [
