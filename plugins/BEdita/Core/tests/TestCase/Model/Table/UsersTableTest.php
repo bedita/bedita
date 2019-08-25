@@ -194,6 +194,23 @@ class UsersTableTest extends TestCase
         static::assertEquals('second user', $user['username']);
     }
 
+        /**
+     * Test `loginRoles` finder.
+     *
+     * @return void
+     *
+     * @covers ::findLoginRoles()
+     */
+    public function testFindLoginRoles()
+    {
+        $user = $this->Users->find('loginRoles')->where(['username' => 'second user'])->first();
+        static::assertNotEmpty($user);
+        static::assertEquals('second user', $user['username']);
+        static::assertNotEmpty($user['roles']);
+        static::assertEquals(1, count($user['roles']));
+        static::assertEquals('second role', $user['roles'][0]['name']);
+    }
+
     /**
      * Test `login` finder fail.
      *

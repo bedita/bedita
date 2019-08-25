@@ -113,6 +113,8 @@ class ObjectType extends Entity implements JsonApiSerializable
      * Failing test: BEdita\Core\Test\TestCase\Model\Entity\JsonApiTraitTest::testGetRelationshipsIncludedSingle
      *
      * {@inheritDoc}
+     * 
+     * @codeCoverageIgnore
      */
     public function getSource()
     {
