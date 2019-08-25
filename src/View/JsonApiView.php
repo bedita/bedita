@@ -62,13 +62,13 @@ class JsonApiView extends JsonView
             return $this->serializeError();
         }
 
+        $fields = $this->parseFieldsQuery();
         $links = Hash::get($this->viewVars, '_links');
         $meta = Hash::get($this->viewVars, '_meta');
         if (empty($serialize)) {
             return array_filter(compact('links', 'meta'));
         }
 
-        $fields = $this->parseFieldsQuery();
         $data = parent::_dataToSerialize() ?: [];
         $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
         if ($data) {
