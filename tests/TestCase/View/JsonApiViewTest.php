@@ -13,13 +13,13 @@
 
 namespace BEdita\API\Test\TestCase\View;
 
-use Cake\ORM\Table;
-use Cake\Http\Response;
-use Cake\ORM\TableRegistry;
-use Cake\Http\ServerRequest;
-use Cake\TestSuite\TestCase;
-use Cake\Controller\Controller;
 use BEdita\API\Test\TestConstants;
+use Cake\Controller\Controller;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
 
 /**
  * @covers \BEdita\API\View\JsonApiView
@@ -267,7 +267,7 @@ class JsonApiViewTest extends TestCase
                                 'data' => [
                                    [
                                         'id' => '1',
-                                        'type'=> 'users'
+                                        'type' => 'users'
                                    ],
                                 ],
                                 'links' => [
@@ -323,14 +323,14 @@ class JsonApiViewTest extends TestCase
                 ]),
                 function (Table $Table) {
                     return [
-                        'object' => $Table->get(1, ['contain' => 'Users']), 
+                        'object' => $Table->get(1, ['contain' => 'Users']),
                         '_serialize' => true,
                         '_fields' => [
                             'roles' => '',
                             'users' => '',
                         ],
                     ];
-                },                
+                },
             ],
         ];
     }
@@ -361,10 +361,10 @@ class JsonApiViewTest extends TestCase
 
     /**
      * Test 'json' response in constructor
-     * 
+     *
      * @return void
      */
-    public function testJsonRequest() 
+    public function testJsonRequest()
     {
         $request = new ServerRequest([
             'environment' => [
@@ -378,5 +378,4 @@ class JsonApiViewTest extends TestCase
         $view = $Controller->createView();
         static::assertEquals('application/json', $view->getResponse()->getType());
     }
-
 }
