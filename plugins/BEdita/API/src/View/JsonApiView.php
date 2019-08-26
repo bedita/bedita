@@ -58,19 +58,19 @@ class JsonApiView extends JsonView
      */
     protected function _dataToSerialize($serialize = true)
     {
-        if (!empty($this->viewVars['_error'])) {
+        if (!empty($this->get('_error'))) {
             return $this->serializeError();
         }
 
         $fields = $this->parseFieldsQuery();
-        $links = Hash::get($this->viewVars, '_links');
-        $meta = Hash::get($this->viewVars, '_meta');
+        $links = $this->get('_links');
+        $meta = $this->get('_meta');
         if (empty($serialize)) {
             return array_filter(compact('links', 'meta'));
         }
 
         $data = parent::_dataToSerialize() ?: [];
-        $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
+        $options = $this->get('_jsonApiOptions', 0);
         if ($data) {
             $included = [];
             $data = JsonApi::formatData(reset($data), $options, $fields, $included);
@@ -100,12 +100,12 @@ class JsonApiView extends JsonView
      */
     protected function serializeError()
     {
-        $error = $this->viewVars['_error'];
+        $error = $this->get('_error');
         if (!empty($error['status'])) {
             $error['status'] = (string)$error['status'];
         }
-        $links = Hash::get($this->viewVars, '_links');
-        $meta = Hash::get($this->viewVars, '_meta');
+        $links = $this->get('_links');
+        $meta = $this->get('_meta');
 
         return array_filter(compact('error', 'links', 'meta'));
     }
@@ -119,14 +119,15 @@ class JsonApiView extends JsonView
      */
     protected function parseFieldsQuery()
     {
-        if (empty($this->viewVars['_fields'])) {
+        $fields = $this->get('_fields');
+        if (empty($fields)) {
             return [];
         }
-        if (is_string($this->viewVars['_fields'])) {
-            return ['_common' => explode(',', $this->viewVars['_fields'])];
+        if (is_string($fields)) {
+            return ['_common' => explode(',', $fields)];
         }
         $res = [];
-        foreach ($this->viewVars['_fields'] as $type => $val) {
+        foreach ($fields as $type => $val) {
             $res[$type] = explode(',', $val);
         }
 
