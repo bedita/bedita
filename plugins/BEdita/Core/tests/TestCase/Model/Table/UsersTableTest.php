@@ -194,7 +194,7 @@ class UsersTableTest extends TestCase
         static::assertEquals('second user', $user['username']);
     }
 
-        /**
+    /**
      * Test `loginRoles` finder.
      *
      * @return void
