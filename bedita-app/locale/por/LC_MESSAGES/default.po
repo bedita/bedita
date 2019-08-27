@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-07-26 09:14:55\n"
+"POT-Creation-Date: 2019-08-27 09:51:56\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1871,6 +1871,9 @@ msgstr ""
 msgid "This content is not on publication tree. Continue?"
 msgstr ""
 
+msgid "This element is subject to rights that may limit its use"
+msgstr ""
+
 msgid "This help page is under construction: coming soon"
 msgstr ""
 
@@ -2174,9 +2177,6 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-msgid "all areas"
-msgstr ""
-
 msgid "all bibliographies"
 msgstr ""
 
@@ -2187,12 +2187,6 @@ msgid "all cards"
 msgstr ""
 
 msgid "all comments"
-msgstr ""
-
-msgid "all documents"
-msgstr ""
-
-msgid "all events"
 msgstr ""
 
 msgid "all galleries"
@@ -2751,6 +2745,9 @@ msgid "master language"
 msgstr ""
 
 msgid "master title"
+msgstr ""
+
+msgid "matching the query"
 msgstr ""
 
 msgid "matching the query containing"
@@ -3445,9 +3442,6 @@ msgstr ""
 msgid "use template"
 msgstr ""
 
-msgid "user"
-msgstr "usuário"
-
 msgid "user contents"
 msgstr ""
 
@@ -3529,11 +3523,8 @@ msgstr ""
 msgid "your message"
 msgstr ""
 
-msgid "{t}matching the query containing{/t}"
-msgstr ""
-
-msgid "{t}matching the query{/t}"
-msgstr ""
+#~ msgid "user"
+#~ msgstr "usuário"
 
 #~ msgid "Add event date"
 #~ msgstr "Adicionar data evento"

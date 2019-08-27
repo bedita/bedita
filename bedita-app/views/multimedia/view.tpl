@@ -26,7 +26,10 @@
 
 {include file = './inc/menuleft.tpl'}
 
+
+
 <div class="head">
+    {$view->element('rights_message')}
 	<h1>{if !empty($object)}{$object.title|escape|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 	{if !empty($object.uri)}
 	{if (substr($object.uri,0,7) == 'http://') or (substr($object.uri,0,8) == 'https://')}

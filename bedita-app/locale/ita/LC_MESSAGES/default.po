@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-07-26 09:14:55\n"
+"POT-Creation-Date: 2019-08-27 09:51:56\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1904,6 +1904,9 @@ msgstr "L'oggetto che stai per clonare contiene relazioni"
 msgid "This content is not on publication tree. Continue?"
 msgstr "Questo contenuto non è nell'albero della pubblicazione. Continuare?"
 
+msgid "This element is subject to rights that may limit its use"
+msgstr "Questo elemento è soggetto a diritti che ne limitano l'utilizzo"
+
 msgid "This help page is under construction: coming soon"
 msgstr "Questa pagina di aiuto è in costruzione: disponibile prossimamente"
 
@@ -2219,9 +2222,6 @@ msgstr "amministrazione"
 msgid "all"
 msgstr "tutti"
 
-msgid "all areas"
-msgstr "tutte le pubblicazioni"
-
 msgid "all bibliographies"
 msgstr "tutte le bibliografie"
 
@@ -2233,12 +2233,6 @@ msgstr "tutte le schede"
 
 msgid "all comments"
 msgstr "tutti i commenti"
-
-msgid "all documents"
-msgstr "tutti i documenti"
-
-msgid "all events"
-msgstr "tutti gli eventi"
 
 msgid "all galleries"
 msgstr "tutte le gallerie"
@@ -2797,6 +2791,9 @@ msgstr "lingua principale"
 
 msgid "master title"
 msgstr "titolo principale"
+
+msgid "matching the query"
+msgstr "corrisponde a ricerca"
 
 msgid "matching the query containing"
 msgstr "corrispondenti alla query che contiene"
@@ -3499,9 +3496,6 @@ msgstr "nome url"
 msgid "use template"
 msgstr "usa template"
 
-msgid "user"
-msgstr "utente"
-
 msgid "user contents"
 msgstr "contenuti utente"
 
@@ -3583,17 +3577,20 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr "il tuo messaggio"
 
-msgid "{t}matching the query containing{/t}"
-msgstr ""
+#~ msgid "all areas"
+#~ msgstr "tutte le pubblicazioni"
 
-msgid "{t}matching the query{/t}"
-msgstr ""
+#~ msgid "all documents"
+#~ msgstr "tutti i documenti"
+
+#~ msgid "all events"
+#~ msgstr "tutti gli eventi"
+
+#~ msgid "user"
+#~ msgstr "utente"
 
 #~ msgid "Gmaps LookaT"
 #~ msgstr "Gmaps LookaT"
-
-#~ msgid "matching the query"
-#~ msgstr "corrisponde a ricerca"
 
 #~ msgid "Calendar start date after end date"
 #~ msgstr "Nel calendario la data d'inizio è dopo la data di fine"

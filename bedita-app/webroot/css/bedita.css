@@ -3363,3 +3363,17 @@ input[type=submit].auth_button_google {
     	clear: none;
     }
 }
+
+.rights-message {
+    position: absolute;
+    width: max-content;
+}
+
+.rights-message label {
+    font-weight: normal;
+}
+
+.rights-message span {
+	color: yellow;
+	font-weight: bold;
+}

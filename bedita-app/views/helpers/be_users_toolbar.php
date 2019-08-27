@@ -182,9 +182,9 @@ class BeUsersToolbarHelper extends AppHelper
      */
     public function pageQuery() {
         if ($this->SessionFilter->check('query')) {
-            $html = __('{t}matching the query{/t}', true);
+            $html = __('matching the query', true);
             if ($this->SessionFilter->check('substring')) {
-                $html = __('{t}matching the query containing{/t}', true);
+                $html = __('matching the query containing', true);
             }
 
             return sprintf('%s: “ <span style="color:white" class="evidence">%s</span> ”', $html, $this->SessionFilter->read('query'));
