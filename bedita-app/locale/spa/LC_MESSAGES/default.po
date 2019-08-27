@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-07-26 09:14:55\n"
+"POT-Creation-Date: 2019-08-27 09:51:56\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1885,6 +1885,9 @@ msgstr ""
 msgid "This content is not on publication tree. Continue?"
 msgstr "Este contenido no está en el árbol de la publicación. ¿Continuar?"
 
+msgid "This element is subject to rights that may limit its use"
+msgstr ""
+
 msgid "This help page is under construction: coming soon"
 msgstr "Esta página de ayuda está en construcción: próximamente"
 
@@ -2192,9 +2195,6 @@ msgstr "admin"
 msgid "all"
 msgstr "todo"
 
-msgid "all areas"
-msgstr "todas las publicaciones"
-
 msgid "all bibliographies"
 msgstr "todas las bibliografías"
 
@@ -2206,12 +2206,6 @@ msgstr "todas las tarjetas"
 
 msgid "all comments"
 msgstr "todos los comentarios"
-
-msgid "all documents"
-msgstr "todos los documentos"
-
-msgid "all events"
-msgstr "todos los eventos"
 
 msgid "all galleries"
 msgstr "todas las galerías"
@@ -2770,6 +2764,9 @@ msgstr "lengua principal"
 
 msgid "master title"
 msgstr "título principal"
+
+msgid "matching the query"
+msgstr "corresponde a la búsqueda"
 
 msgid "matching the query containing"
 msgstr ""
@@ -3467,9 +3464,6 @@ msgstr "nombre url"
 msgid "use template"
 msgstr "utilizar template"
 
-msgid "user"
-msgstr "usuario"
-
 msgid "user contents"
 msgstr ""
 
@@ -3551,17 +3545,20 @@ msgstr "los 5 artículos recientes"
 msgid "your message"
 msgstr "su mensaje"
 
-msgid "{t}matching the query containing{/t}"
-msgstr ""
+#~ msgid "all areas"
+#~ msgstr "todas las publicaciones"
 
-msgid "{t}matching the query{/t}"
-msgstr ""
+#~ msgid "all documents"
+#~ msgstr "todos los documentos"
+
+#~ msgid "all events"
+#~ msgstr "todos los eventos"
+
+#~ msgid "user"
+#~ msgstr "usuario"
 
 #~ msgid "Gmaps LookaT"
 #~ msgstr "Gmaps LookaT"
-
-#~ msgid "matching the query"
-#~ msgstr "corresponde a la búsqueda"
 
 #~ msgid "Add event date"
 #~ msgstr "Añadir fecha evento"
