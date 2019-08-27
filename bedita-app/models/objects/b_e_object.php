@@ -772,6 +772,9 @@ class BEObject extends BEAppModel {
         }
 
         if (!empty($data['id']) || !BACKEND_APP) {
+            if (isset($data['publisher']) && empty($data['publisher'])) {
+                $data['publisher'] = null;
+            }
             return;
         }
 

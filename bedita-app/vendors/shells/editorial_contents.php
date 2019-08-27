@@ -38,60 +38,66 @@ class EditorialContentsShell extends BeditaBaseShell
      */
     public function help() {
         $this->out('Update `publisher` field for all users that belong to a group');
-        $this->out('that grants them access to backend app.');
+        $this->out('that grants them access to backend app with default publisher configurated.');
+        $this->out();
+        $this->out('  Usage: editorial_contents [--reset-empty-publisher]');
+        $this->out();
+        $this->out('    --reset-empty-publisher change object publisher from empty string to NULL value');
         $this->out();
 
-        $this->out('  Usage: editorial_contents');
     }
 
     /**
      * Convert all date items in the database.
      */
     public function main() {
-        // Check that we actually have something to update.
-        $publisher = Configure::read('editorialContents.defaultPublisher');
-        if (empty($publisher)) {
-            $this->out('=====> Configuration item `editorialContents.defaultPublisher` must not be empty');
-            $this->err('Aborting');
+
+        $resetEmptyPublisher = !empty($this->params['-reset-empty-publisher']);
+        $query =  array(
+            'fields' => array('COUNT(DISTINCT BEObject.id) AS count'),
+            'contain' => array(),
+        );
+        // Count objects affected by this operation.
+        if ($resetEmptyPublisher) {
+            $query['conditions'] = array('BEObject.publisher' => '');
+        } else {
+            $query['joins'] = array(
+                    array(
+                        'table' => 'groups_users',
+                        'alias' => 'GroupsUser',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'GroupsUser.user_id = BEObject.user_created',
+                        ),
+                    ),
+                    array(
+                        'table' => 'groups',
+                        'alias' => 'Group',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'Group.id = GroupsUser.group_id',
+                            'Group.backend_auth' => 1,
+                        ),
+                    ),
+                );
+            $query['conditions'] = array(
+                    'OR' => array(
+                        'BEObject.publisher' => null,
+                        'AND' => array(
+                            'BEObject.publisher' => '',
+                            '1 = 1',
+                        ),
+                    ),
+                );
+        }
+        $count = $this->BEObject->find('first', $query);
+        $count = $count[0]['count'];
+
+        if (!$count) {
+            $this->out('=====> All objects are updated');
 
             exit(1);
         }
-
-        // Count objects affected by this operation.
-        $count = $this->BEObject->find('first', array(
-            'fields' => array('COUNT(DISTINCT BEObject.id) AS count'),
-            'contain' => array(),
-            'joins' => array(
-                array(
-                    'table' => 'groups_users',
-                    'alias' => 'GroupsUser',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'GroupsUser.user_id = BEObject.user_created',
-                    ),
-                ),
-                array(
-                    'table' => 'groups',
-                    'alias' => 'Group',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'Group.id = GroupsUser.group_id',
-                        'Group.backend_auth' => 1,
-                    ),
-                ),
-            ),
-            'conditions' => array(
-                'OR' => array(
-                    'BEObject.publisher' => null,
-                    'AND' => array(
-                        'BEObject.publisher' => '',
-                        '1 = 1',
-                    ),
-                ),
-            ),
-        ));
-        $count = $count[0]['count'];
-
         $question = sprintf('=====> %d objects will be updated. Do you wish to continue?', $count);
         if ($this->in($question, array('y', 'n'), 'n') !== 'y') {
             $this->err('Aborting');
@@ -102,17 +108,34 @@ class EditorialContentsShell extends BeditaBaseShell
         // Perform update.
         App::import('Sanitize');
         $this->out('=====> Updating rows in database...');
-        $this->BEObject->query(
-            sprintf(
+
+        if ($resetEmptyPublisher) {
+            $this->BEObject->query(
+                'UPDATE `objects`' . PHP_EOL .
+                '    SET `objects`.`publisher` = NULL' . PHP_EOL .
+                '    WHERE `objects`.`publisher` = \'\''
+            );
+        } else {
+            $publisher = Configure::read('editorialContents.defaultPublisher');
+
+            if (empty($publisher)) {
+                $this->out('=====> Configuration item `editorialContents.defaultPublisher` must not be empty');
+                $this->err('Aborting');
+    
+                exit(1);
+            } else {
+                $publisher = sprintf('\'%s\'', Sanitize::escape($publisher));
+            }
+
+            $this->BEObject->query(
                 'UPDATE `objects`' . PHP_EOL .
                 '    INNER JOIN `groups_users` ON (`groups_users`.`user_id` = `objects`.`user_created`)' . PHP_EOL .
                 '    INNER JOIN `groups` ON (`groups`.`id` = `groups_users`.`group_id`)' . PHP_EOL .
-                '    SET `objects`.`publisher` = \'%s\'' . PHP_EOL .
-                '    WHERE (`objects`.`publisher` IS NULL OR `objects`.`publisher` = \'\') AND `groups`.`backend_auth` = 1',
-                Sanitize::escape($publisher)
-            )
-        );
-
+                '    SET `objects`.`publisher` = ' . $publisher . PHP_EOL .
+                '    WHERE (`objects`.`publisher` = \'\' OR `objects`.`publisher` IS NULL) AND `groups`.`backend_auth` = 1'
+            );
+        }
+        
         // Clean up cache.
         $question = '=====> It is STRONGLY suggested that you empty your cache, in order to avoid having outdated publisher fields.' . PHP_EOL;
         $question .= '=====> Do you want to clear your cache now?';
