@@ -3369,6 +3369,11 @@ input[type=submit].auth_button_google {
     width: max-content;
 }
 
+.rights-message label {
+    font-weight: normal;
+}
+
 .rights-message span {
-    color: yellow;
+	color: yellow;
+	font-weight: bold;
 }
