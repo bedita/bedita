@@ -31,7 +31,7 @@
         "cakephp/debug_kit": "^3.19.0",
         "cakephp/cakephp-codesniffer": "^3.1",
         "psy/psysh": "@stable",
-        "bedita/dev-tools": "dev-master",
+        "bedita/dev-tools": "1.1.*",
         "phpunit/phpunit": "^6.0"
     },
     "autoload": {
