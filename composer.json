@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "psy/psysh": "@stable",
-        "bedita/dev-tools": "dev-master",
+        "bedita/dev-tools": "1.0.*",
         "cakephp/bake": "~1.1",
         "phpunit/phpunit": "^5.7|^6.0",
         "cakephp/cakephp-codesniffer": "~3.0"
