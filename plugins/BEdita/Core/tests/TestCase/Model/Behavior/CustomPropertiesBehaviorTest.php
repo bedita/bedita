@@ -204,6 +204,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
         ];
     }
+
     /**
      * Test setting of priority before entity is saved.
      *

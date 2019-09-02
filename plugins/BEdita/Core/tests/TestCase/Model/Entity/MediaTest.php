@@ -43,6 +43,7 @@ class MediaTest extends TestCase
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
+
     /**
      * {@inheritDoc}
      */
