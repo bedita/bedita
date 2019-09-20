@@ -28,8 +28,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7|^6.0",
-        "cakephp/cakephp-codesniffer": "~3.0",
-        "phpmd/phpmd": "*"
+        "cakephp/cakephp-codesniffer": "~3.0"
     },
     "autoload": {
         "psr-4": {
