@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Relations;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -56,6 +57,7 @@ class RelationsTest extends TestCase
      * Test `create` method.
      *
      * @covers ::create()
+     * @covers ::validate()
      * @covers ::addTypes()
      */
     public function testCreate()
@@ -80,5 +82,19 @@ class RelationsTest extends TestCase
         Relations::remove($this->relations);
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
         static::assertEquals(3, count($allRelations));
+    }
+
+    /**
+     * Test `validate` failure.
+     *
+     * @covers ::validate()
+     */
+    public function testValidate()
+    {
+        static::expectException(BadRequestException::class);
+        static::expectExceptionMessage('Missing left/right relation types');
+
+        unset($this->relations[0]['left']);
+        Relations::create($this->relations);
     }
 }

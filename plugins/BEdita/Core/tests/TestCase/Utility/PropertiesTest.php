@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Properties;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -60,6 +61,7 @@ class PropertiesTest extends TestCase
      * Test `create` method.
      *
      * @covers ::create()
+     * @covers ::validate()
      */
     public function testCreate()
     {
@@ -87,5 +89,19 @@ class PropertiesTest extends TestCase
             ->where(['name IN' => ['custom_one', 'custom_two']])
             ->toArray();
         static::assertEquals(0, count($newProperties));
+    }
+
+    /**
+     * Test `validate` failure.
+     *
+     * @covers ::validate()
+     */
+    public function testValidate()
+    {
+        static::expectException(BadRequestException::class);
+        static::expectExceptionMessage('Missing mandatory property data "name"');
+
+        unset($this->properties[0]['name']);
+        Properties::create($this->properties);
     }
 }

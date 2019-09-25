@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -48,6 +50,7 @@ class Relations
     {
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
         foreach ($relations as $data) {
+            static::validate($data);
             $relation = $Relations->newEntity($data);
             $relation = $Relations->saveOrFail($relation);
 
@@ -93,8 +96,9 @@ class Relations
     {
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
         foreach ($relations as $r) {
+            static::validate($r);
             $relation = $Relations->find()
-                ->where(['name' => $r['name']])
+                ->where(['name' => Hash::get($r, 'name')])
                 ->firstOrFail();
 
             static::removeTypes($relation->get('id'), $r['left'], 'left', $options);
@@ -130,6 +134,23 @@ class Relations
                 ->firstOrFail();
 
             $RelationTypes->deleteOrFail($relationType);
+        }
+    }
+
+    /**
+     * Validate relations before creation or removal
+     *
+     * @param array $data Relations data
+     * @return void
+     * @throws BadRequestException
+     */
+    protected static function validate(array $data) : void
+    {
+        if (empty($data['left']) || !is_array($data['left']) ||
+            empty($data['right']) || !is_array($data['right'])) {
+            throw new BadRequestException(
+                __d('bedita', 'Missing left/right relation types')
+            );
         }
     }
 }

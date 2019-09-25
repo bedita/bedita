@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -50,10 +52,12 @@ class Properties
         $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
 
         foreach ($properties as $p) {
+            static::validate($p);
             $property = $Properties->newEntity([
                 'name' => $p['name'],
                 'property_type_name' => $p['property'],
                 'object_type_name' => $p['object'],
+                'description' => Hash::get($p, 'description'),
             ]);
 
             $Properties->saveOrFail($property);
@@ -73,6 +77,7 @@ class Properties
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
 
         foreach ($properties as $p) {
+            static::validate($p);
             $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
 
             $property = $Properties->find()
@@ -83,6 +88,24 @@ class Properties
                 ->firstOrFail();
 
             $Properties->deleteOrFail($property);
+        }
+    }
+
+    /**
+     * Validate properties before creation or removal
+     *
+     * @param array $data Properties data
+     * @return void
+     * @throws BadRequestException
+     */
+    protected static function validate(array $data) : void
+    {
+        $required = ['name', 'object', 'property'];
+        $diff = array_diff_key(array_flip($required), array_filter($data));
+        if (!empty($diff)) {
+            throw new BadRequestException(
+                __d('bedita', 'Missing mandatory property data "{0}"', implode(array_keys($diff)))
+            );
         }
     }
 }
