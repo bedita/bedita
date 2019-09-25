@@ -21,6 +21,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -39,6 +40,8 @@ use Cake\Utility\Inflector;
  * Controller for `/objects` endpoint.
  *
  * @since 4.0.0
+ *
+ * @property-read \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class ObjectsController extends ResourcesController
 {
@@ -71,7 +74,7 @@ class ObjectsController extends ResourcesController
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
-            $allowedTypes = TableRegistry::get('ObjectTypes')
+            $allowedTypes = $this->Objects->ObjectTypes
                 ->find('list')
                 ->find('byRelation', compact('name') + ['descendants' => true])
                 ->toArray();
@@ -113,8 +116,7 @@ class ObjectsController extends ResourcesController
     {
         $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
         try {
-            /** @var \BEdita\Core\Model\Entity\ObjectType $this->objectType */
-            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            $this->objectType = $this->Objects->ObjectTypes->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
                     sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
@@ -225,8 +227,26 @@ class ObjectsController extends ResourcesController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
-        $id = TableRegistry::get('Objects')->getId($id);
-        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $id = $this->Objects->getId($id);
+        $available = $this->getAvailableUrl($relationship);
+
+        if ($association instanceof RelatedTo) {
+            // Load list of object types that may reside on the other side of the considered relation.
+            $relations = $this->objectType->getRelations('both');
+            $relation = $relations[$relationship];
+            $objectTypes = $relation->right_object_types;
+            if ($relationship === $relation->inverse_name) {
+                $objectTypes = $relation->left_object_types;
+            }
+
+            if (count($objectTypes) === 1) {
+                // If only one object type may be on the other side, setup relations as if that object type was being accessed directly.
+                $association->getTarget()->behaviors()->call('setupRelations', $objectTypes);
+                $secondLevelRelations = $this->Objects->ObjectTypes->get($objectTypes[0]->id)->getRelations('both');
+                $this->setConfig('allowedAssociations', array_fill_keys(array_keys($secondLevelRelations), []), false);
+            }
+        }
+        $contain = $this->prepareInclude($this->request->getQuery('include'), $association->getTarget());
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
         $entity = $action([
@@ -284,7 +304,7 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get']);
 
         $relationship = $this->request->getParam('relationship');
-        $relatedId = TableRegistry::get('Objects')->getId($this->request->getParam('related_id'));
+        $relatedId = $this->Objects->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
@@ -311,7 +331,7 @@ class ObjectsController extends ResourcesController
      */
     public function relationships()
     {
-        $id = TableRegistry::get('Objects')->getId($this->request->getParam('id'));
+        $id = $this->Objects->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);

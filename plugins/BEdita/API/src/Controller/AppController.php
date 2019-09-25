@@ -23,6 +23,7 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 
 /**
@@ -139,10 +140,11 @@ class AppController extends Controller
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
      * @param string|array|null $include Association(s) to be included.
+     * @param \Cake\ORM\Table|null $table Table to prepare includes for.
      * @return array
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
      */
-    protected function prepareInclude($include)
+    protected function prepareInclude($include, Table $table = null)
     {
         if ($include === null) {
             return [];
@@ -161,7 +163,7 @@ class AppController extends Controller
             }
 
             try {
-                $association = $this->findAssociation($relationship);
+                $association = $this->findAssociation($relationship, $table);
             } catch (NotFoundException $e) {
                 throw new BadRequestException(
                     __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
@@ -179,11 +181,12 @@ class AppController extends Controller
      * Subclasses need to override this method.
      *
      * @param string $relationship Relationship name.
+     * @param \Cake\ORM\Table|null $table Table to use when finding association.
      * @return \Cake\ORM\Association|void
      * @throws \Cake\Network\Exception\NotFoundException Throws an exception if no suitable association could be found.
      * @codeCoverageIgnore
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation($relationship, Table $table = null)
     {
         throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }
