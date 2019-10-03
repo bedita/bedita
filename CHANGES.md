@@ -1,5 +1,40 @@
 # ChangeLog
 
+## Version 4.0.0 - Cactus
+
+### API changes (4.0.0)
+
+* [#1614](https://github.com/bedita/bedita/pull/1614) Block auth operations on blocked/deleted user
+* [#1604](https://github.com/bedita/bedita/pull/1604) Logged user cannot trash himself
+* [#1594](https://github.com/bedita/bedita/pull/1594) Fix Uploading XML or JSON files
+* [#1590](https://github.com/bedita/bedita/pull/1590) Add `meta.media_url` property in media objects
+* [#1582](https://github.com/bedita/bedita/issues/1582) Fix Relation with empty params can't be saved
+* [#1580](https://github.com/bedita/bedita/pull/1580) Signup new configuration options
+* Add `locked` filter on objects
+
+### Core changes (4.0.0)
+
+* [#1625](https://github.com/bedita/bedita/pull/1625) Relations and Properties utilities
+* [#1613](https://github.com/bedita/bedita/pull/1613) Allow `+02` and `+0200` as TZ format in input date
+* [#1612](https://github.com/bedita/bedita/pull/1612) Fix `DefaultValues` config on core types
+* [#1589](https://github.com/bedita/bedita/pull/1589) Fix `DefaultValues` behavior
+* [#1607](https://github.com/bedita/bedita/pull/1607) Avoid bad side effects on DataCleanup (see #1601)
+* [#1595](https://github.com/bedita/bedita/pull/1595) New `streams removeOrphans` shell
+* [#1581](https://github.com/bedita/bedita/pull/1581) Fix created_by/modified_by foreign key check
+* [#1579](https://github.com/bedita/bedita/pull/1579) Permanent user removal and anonymization #1556
+* [#1592](https://github.com/bedita/bedita/pull/1592) Apply default values only on new objects (id available)
+* [#1583](https://github.com/bedita/bedita/pull/1583) Allow missing or empty `params` JSON object relations
+* Make user `email` changeable if null
+
+### Integration changes (4.0.0)
+
+* [#1616](https://github.com/bedita/bedita/pull/1616) Travis can't install mysql-5.7 on trusty
+* [#1619](https://github.com/bedita/bedita/pull/1619) Remove coverage on PG task
+* [#1605](https://github.com/bedita/bedita/pull/1605) Fix Docker permissions
+* [#1564](https://github.com/bedita/bedita/pull/1564) Set perms for webroot files in entrypoint.sh
+* Use `bedita/dev-tools` stable releases
+* Upgrade to `CakePHP 3.8.x` and support `PHP 7.3`
+
 ## Version 4.0.0.RC2 - Cactus
 
 ### API changes (4.0.0.RC2)
