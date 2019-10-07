@@ -10,6 +10,7 @@
 * [#1590](https://github.com/bedita/bedita/pull/1590) Add `meta.media_url` property in media objects
 * [#1582](https://github.com/bedita/bedita/issues/1582) Fix Relation with empty params can't be saved
 * [#1580](https://github.com/bedita/bedita/pull/1580) Signup new configuration options
+* [#1628](https://github.com/bedita/bedita/pull/1628) Custom error handler to avoid HTML on `trigger_error`
 * Add `locked` filter on objects
 
 ### Core changes (4.0.0)
