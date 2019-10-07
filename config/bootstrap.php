@@ -29,6 +29,7 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
+use BEdita\API\Error\ErrorHandler;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
@@ -36,7 +37,6 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Datasource\ConnectionManager;
-use Cake\Error\ErrorHandler;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
