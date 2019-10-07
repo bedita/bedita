@@ -37,7 +37,7 @@ class AuthProvidersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.auth_providers',
+        'plugin.BEdita/Core.AuthProviders',
     ];
 
     /**

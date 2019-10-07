@@ -43,16 +43,6 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        Plugin::load('Migrations');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public static function tearDownAfterClass()
     {
         ConnectionManager::get('default')
@@ -84,12 +74,16 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testMissingMigrationsPlugin()
     {
-        Plugin::unload('Migrations');
+        $pluginCollection = Plugin::getCollection();
+        $migrationPlugin = $pluginCollection->get('Migrations');
+        $pluginCollection->remove('Migrations');
 
         $this->exec(CheckSchemaTask::class);
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
+        // restore plugin
+        $pluginCollection->add($migrationPlugin);
     }
 
     /**

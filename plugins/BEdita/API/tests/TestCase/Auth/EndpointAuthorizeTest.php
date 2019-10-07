@@ -18,10 +18,10 @@ use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\NotFoundException;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Psr\Http\Message\UriInterface;
@@ -38,12 +38,12 @@ class EndpointAuthorizeTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.config',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Config',
     ];
 
     /**
@@ -347,7 +347,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedException \Cake\Http\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
     public function testBlockAnonymousWritesByDefault()
@@ -388,7 +388,7 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedException \Cake\Http\Exception\UnauthorizedException
      * @expectedExceptionMessage Unauthorized
      */
     public function testBlockUnloggedByDefault()

@@ -22,7 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -247,7 +247,7 @@ class UsersTable extends Table
      */
     protected function findExternalAuth(Query $query, array $options = [])
     {
-        $query = $query->find('login');
+        $query = $query->find('loginRoles');
 
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
@@ -280,7 +280,7 @@ class UsersTable extends Table
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
-     * @throws \Cake\Network\Exception\BadRequestException if `username` is missing
+     * @throws \Cake\Http\Exception\BadRequestException if `username` is missing
      */
     protected function findLogin(Query $query)
     {
@@ -291,6 +291,19 @@ class UsersTable extends Table
                     ->eq($this->aliasField('blocked'), false)
                     ->in($this->aliasField('status'), ['on', 'draft']);
             });
+    }
+
+    /**
+     * Finder for valid login users + associated roles via `contain`
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findLoginRoles(Query $query)
+    {
+        $query = $query->find('login');
+
+        return $query->contain(['Roles']);
     }
 
     /**
@@ -320,7 +333,7 @@ class UsersTable extends Table
         foreach ($this->inheritedTables() as $table) {
             $notNull = array_merge($notNull, $this->notNullableColumns($table));
         }
-        $properties = array_diff((array)$entity->visibleProperties(), $notNull, ['type']);
+        $properties = array_diff((array)$entity->getVisible(), $notNull, ['type']);
         foreach ($properties as $name) {
             $entity->set($name, null);
         }
@@ -405,7 +418,7 @@ class UsersTable extends Table
      * @param \Cake\Event\Event $event The event dispatched
      * @param \ArrayObject $data The input data to save
      * @return void
-     * @throws \Cake\Network\Exception\BadRequestException if password is not valid
+     * @throws \Cake\Http\Exception\BadRequestException if password is not valid
      */
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {

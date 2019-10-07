@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@ namespace BEdita\API\Test\TestCase\View;
 
 use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,15 +39,18 @@ class JsonApiViewTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
     ];
 
     /**
@@ -58,6 +61,7 @@ class JsonApiViewTest extends TestCase
         parent::setUp();
 
         $this->Roles = TableRegistry::get('Roles');
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
@@ -249,11 +253,84 @@ class JsonApiViewTest extends TestCase
                     '_links' => [
                         'self' => 'http://example.com/roles',
                     ],
-                    '_fields' => [
-                        'roles' => 'name,descritpion',
-                    ],
+                    '_fields' => 'name,descritpion',
                     '_serialize' => [],
                 ],
+            ],
+            'included' => [
+                json_encode([
+                    'data' => [
+                        'id' => '1',
+                        'type' => 'roles',
+                        'relationships' => [
+                            'users' => [
+                                'data' => [
+                                   [
+                                        'id' => '1',
+                                        'type' => 'users'
+                                   ],
+                                ],
+                                'links' => [
+                                    'related' => '/roles/1/users',
+                                    'self' => '/roles/1/relationships/users'
+                                ]
+                             ],
+                        ],
+                    ],
+                    'meta' => [
+                        'schema' => [
+                            'users' => [
+                                '$id' => '/model/schema/users',
+                                'revision' => TestConstants::SCHEMA_REVISIONS['users']
+                            ]
+                        ]
+                    ],
+                    'included' => [
+                        [
+                            'id' => '1',
+                            'type' => 'users',
+                            'links' => [
+                                'self' => '/users/1'
+                            ],
+                            'relationships' => [
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/1/roles',
+                                        'self' => '/users/1/relationships/roles'
+                                    ]
+                                ],
+                                'another_test' => [
+                                    'links' => [
+                                        'related' => '/users/1/another_test',
+                                        'self' => '/users/1/relationships/another_test'
+                                    ]
+                                ],
+                                'parents' => [
+                                    'links' => [
+                                        'related' => '/users/1/parents',
+                                        'self' => '/users/1/relationships/parents'
+                                    ]
+                                ],
+                                'translations' => [
+                                    'links' => [
+                                        'related' => '/users/1/translations',
+                                        'self' => '/users/1/relationships/translations'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                ]),
+                function (Table $Table) {
+                    return [
+                        'object' => $Table->get(1, ['contain' => 'Users']),
+                        '_serialize' => true,
+                        '_fields' => [
+                            'roles' => '',
+                            'users' => '',
+                        ],
+                    ];
+                },
             ],
         ];
     }
@@ -273,12 +350,32 @@ class JsonApiViewTest extends TestCase
             $data = $data($this->Roles);
         }
 
-        $Controller = new Controller(new Request(), new Response());
+        $Controller = new Controller(new ServerRequest(), new Response());
         $Controller->set($data);
         $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 
         $result = $Controller->createView()->render(false);
 
         static::assertJsonStringEqualsJsonString($expected, $result);
+    }
+
+    /**
+     * Test 'json' response in constructor
+     *
+     * @return void
+     */
+    public function testJsonRequest()
+    {
+        $request = new ServerRequest([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/json',
+                'REQUEST_METHOD' => 'GET',
+            ],
+        ]);
+
+        $Controller = new Controller($request, new Response());
+        $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
+        $view = $Controller->createView();
+        static::assertEquals('application/json', $view->getResponse()->getType());
     }
 }

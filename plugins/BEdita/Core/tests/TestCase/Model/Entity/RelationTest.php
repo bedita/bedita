@@ -38,7 +38,7 @@ class RelationTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.Relations',
     ];
 
     /**

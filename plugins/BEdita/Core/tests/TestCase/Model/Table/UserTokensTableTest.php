@@ -27,11 +27,11 @@ class UserTokensTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.user_tokens',
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.UserTokens',
     ];
 
     /**

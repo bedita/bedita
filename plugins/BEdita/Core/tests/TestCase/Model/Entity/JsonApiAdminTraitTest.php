@@ -37,7 +37,7 @@ class JsonApiAdminTraitTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.Applications',
     ];
 
     /**
@@ -48,6 +48,8 @@ class JsonApiAdminTraitTest extends TestCase
         parent::setUp();
 
         $this->Applications = TableRegistry::get('Applications');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**

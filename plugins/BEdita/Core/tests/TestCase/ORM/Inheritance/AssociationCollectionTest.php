@@ -56,7 +56,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testConstruct()
     {
-        $association = $this->fakeMammals->association('FakeFelines');
+        $association = $this->fakeMammals->getAssociation('FakeFelines');
         $collection = new AssociationCollection($this->fakeMammals);
 
         static::assertAttributeSame($this->fakeMammals, 'table', $collection);
@@ -194,7 +194,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemove()
     {
-        $association = $this->fakeMammals->association('FakeFelines');
+        $association = $this->fakeMammals->getAssociation('FakeFelines');
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeFelines');
 
@@ -210,7 +210,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemoveInner()
     {
-        $association = $this->fakeAnimals->association('FakeArticles');
+        $association = $this->fakeAnimals->getAssociation('FakeArticles');
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeArticles');
 
@@ -226,7 +226,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemoveNoCascade()
     {
-        $association = $this->fakeAnimals->association('FakeArticles');
+        $association = $this->fakeAnimals->getAssociation('FakeArticles');
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeArticles', false);
 
@@ -258,7 +258,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testCascadeDelete()
     {
-        $this->fakeAnimals->association('FakeArticles')->getEventManager()->on('Model.beforeDelete', function () {
+        $this->fakeAnimals->getAssociation('FakeArticles')->getEventManager()->on('Model.beforeDelete', function () {
             static::fail('Callbacks triggered');
         });
 
@@ -266,7 +266,7 @@ class AssociationCollectionTest extends TestCase
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->cascadeDelete($mammal, []);
 
-        static::assertSame(0, $this->fakeAnimals->association('FakeArticles')->find()->where(['fake_animal_id' => 1])->count());
+        static::assertSame(0, $this->fakeAnimals->getAssociation('FakeArticles')->find()->where(['fake_animal_id' => 1])->count());
     }
 
     /**

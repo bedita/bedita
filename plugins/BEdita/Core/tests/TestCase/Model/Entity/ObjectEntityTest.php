@@ -39,18 +39,18 @@ class ObjectEntityTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.properties',
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
-        'plugin.BEdita/Core.trees',
-        'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.ObjectRelations',
     ];
 
     /**
@@ -61,6 +61,8 @@ class ObjectEntityTest extends TestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
+
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
@@ -215,7 +217,7 @@ class ObjectEntityTest extends TestCase
      * @param int $objectTypeId Object type ID.
      * @return void
      *
-     * @covers ::visibleProperties()
+     * @covers ::getVisible()
      * @covers ::loadObjectType()
      * @dataProvider visiblePropertiesProvider()
      */
@@ -227,7 +229,7 @@ class ObjectEntityTest extends TestCase
         foreach ($properties as $prop) {
             $entity->set($prop, $prop);
         }
-        $visible = $entity->visibleProperties();
+        $visible = $entity->getVisible();
 
         static::assertSame($expectedVisible, array_values($visible));
     }
@@ -463,7 +465,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
+        $entity = TableRegistry::get('Documents')->getAssociation('Test')->newEntity();
         $entity->set('type', 'profile');
         $entity = $entity->jsonApiSerialize();
 

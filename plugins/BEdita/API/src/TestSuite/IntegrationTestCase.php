@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,9 +17,10 @@ use BEdita\API\Event\CommonEventHandler;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
-use Cake\Mailer\Email;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
 
@@ -44,29 +45,29 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      * @var array
      */
     protected $authFixtures = [
-        'plugin.BEdita/Core.config',
-        'plugin.BEdita/Core.async_jobs',
-        'plugin.BEdita/Core.auth_providers',
-        'plugin.BEdita/Core.external_auth',
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.media',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.properties',
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.trees',
-        'plugin.BEdita/Core.object_relations',
-        'plugin.BEdita/Core.translations',
-        'plugin.BEdita/Core.user_tokens',
+        'plugin.BEdita/Core.Config',
+        'plugin.BEdita/Core.AsyncJobs',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Translations',
+        'plugin.BEdita/Core.UserTokens',
     ];
 
     /**
@@ -98,8 +99,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         LoggedUser::resetUser();
         CurrentApplication::setFromApiKey(API_KEY);
 
-        Email::dropTransport('default');
-        Email::setConfigTransport('default', [
+        TransportFactory::drop('default');
+        TransportFactory::setConfig('default', [
             'className' => 'Debug'
         ]);
 
@@ -139,6 +140,17 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         $tokens = $this->authUser($username, $password);
 
         return ['Authorization' => 'Bearer ' . $tokens['jwt']];
+    }
+
+    /**
+     * {@inheritDoc}
+     * @codeCoverageIgnore
+     */
+    protected function _makeDispatcher()
+    {
+        Router::setRouteCollection(new RouteCollection());
+
+        return parent::_makeDispatcher();
     }
 
     /**

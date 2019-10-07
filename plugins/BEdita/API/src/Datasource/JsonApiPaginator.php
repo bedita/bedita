@@ -15,7 +15,7 @@ namespace BEdita\API\Datasource;
 
 use Cake\Datasource\Paginator;
 use Cake\Datasource\RepositoryInterface;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -69,6 +69,7 @@ class JsonApiPaginator extends Paginator
                 $options['sort'] = substr($options['sort'], 1);
                 $options['direction'] = 'desc';
             }
+            unset($options['order']);
         }
 
         $options = parent::validateSort($object, $options);

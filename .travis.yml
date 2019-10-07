@@ -18,9 +18,9 @@ stages:
 jobs:
   include:
     # Minimal tests set
-    - name: "SQLite on PHP 7.1"
+    - name: "SQLite on PHP 7.3"
       stage: minimal
-      php: 7.1
+      php: 7.3
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - name: "MySQL 5.7 on PHP 7.1"
       stage: minimal
@@ -134,9 +134,9 @@ install:
   - composer install --prefer-dist --no-interaction
 
 before_script:
-  # Enable required PHP Extensions.
-  - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # # Enable required PHP Extensions.
+  # - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv rehash
   - set +H
 

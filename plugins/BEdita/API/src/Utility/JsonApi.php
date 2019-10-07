@@ -15,7 +15,7 @@ namespace BEdita\API\Utility;
 use BEdita\Core\Utility\JsonApiSerializable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;

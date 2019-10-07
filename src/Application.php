@@ -29,6 +29,59 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 class Application extends BaseApplication
 {
     /**
+     * {@inheritDoc}
+     */
+    public function bootstrap()
+    {
+        // Call parent to load bootstrap from files.
+        parent::bootstrap();
+
+        if (PHP_SAPI === 'cli') {
+            $this->bootstrapCli();
+        }
+
+        // Load more plugins here
+        $this->addPlugin('BEdita/Core', ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]);
+        $this->addPlugin('BEdita/API', ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]);
+
+        $this->loadFromConfig();
+    }
+
+    /**
+     * @return void
+     */
+    protected function bootstrapCli()
+    {
+        $this->addPlugin('Bake');
+        $this->addPlugin('Migrations');
+    }
+
+    /**
+     * Load plugins from 'Plugins' configuration
+     *
+     * @return void
+     */
+    protected function loadFromConfig() : void
+    {
+        $plugins = Configure::read('Plugins');
+        if ($plugins) {
+            $_defaults = [
+                'debugOnly' => false,
+                'autoload' => false,
+                'bootstrap' => false,
+                'routes' => false,
+                'ignoreMissing' => false
+            ];
+            foreach ($plugins as $plugin => $options) {
+                $options = array_merge($_defaults, $options);
+                if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
+                    $this->addPlugin($plugin, $options);
+                }
+            }
+        }
+    }
+
+    /**
      * Setup the middleware queue your application will use.
      *
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.

@@ -45,12 +45,12 @@ class BeditaShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'CheckApiKey' => ['className' => CheckApiKeyTask::class],
-        'CheckFilesystem' => ['className' => CheckFilesystemTask::class],
-        'CheckSchema' => ['className' => CheckSchemaTask::class],
-        'InitSchema' => ['className' => InitSchemaTask::class],
-        'SetupAdminUser' => ['className' => SetupAdminUserTask::class],
-        'SetupConnection' => ['className' => SetupConnectionTask::class],
+        'CheckApiKey' => ['class' => 'BEdita/Core.CheckApiKey', 'config' => []],
+        'CheckFilesystem' => ['class' => 'BEdita/Core.CheckFilesystem', 'config' => []],
+        'CheckSchema' => ['class' => 'BEdita/Core.CheckSchema', 'config' => []],
+        'InitSchema' => ['class' => 'BEdita/Core.InitSchema', 'config' => []],
+        'SetupAdminUser' => ['class' => 'BEdita/Core.SetupAdminUser', 'config' => []],
+        'SetupConnection' => ['class' => 'BEdita/Core.SetupConnection', 'config' => []],
     ];
 
     /**
@@ -105,7 +105,7 @@ class BeditaShell extends Shell
 
         $this->hr();
 
-        $tables = ConnectionManager::get($this->param('connection'))->schemaCollection()->listTables();
+        $tables = ConnectionManager::get($this->param('connection'))->getSchemaCollection()->listTables();
         if (empty($tables)) {
             $this->out('=====> Initializing schema');
             $this->InitSchema->params = ['seed' => true] + $this->params;

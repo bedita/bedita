@@ -31,13 +31,13 @@ class RelatedToTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.object_relations',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.ObjectRelations',
     ];
 
     /**
@@ -107,7 +107,7 @@ class RelatedToTest extends TestCase
     public function testGetSubQueryForMatching(array $expected, $table, $association, array $options = [])
     {
         $table = TableRegistry::get($table);
-        $association = $table->association($association);
+        $association = $table->getAssociation($association);
         if (!($association instanceof RelatedTo)) {
             static::fail('Wrong association type');
 

@@ -16,7 +16,7 @@ use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
-use Cake\Network\Exception\ConflictException;
+use Cake\Http\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -68,7 +68,7 @@ class TrashController extends AppController
         $filter['locked'] = false;
         $action = new ListObjectsAction(['table' => $this->Objects]);
         $deleted = true;
-        $query = $action(compact('filter', 'contain', 'deleted'));
+        $query = $action(compact('filter', 'deleted'));
         $trash = $this->paginate($query);
 
         $this->set(compact('trash'));
@@ -95,9 +95,9 @@ class TrashController extends AppController
      *
      * @param int $id Object ID.
      * @return \Cake\Http\Response
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
+     * @throws \Cake\Http\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during restore.
+     * @throws \Cake\Http\Exception\InternalErrorException Throws an exception if an error occurs during restore.
      */
     public function restore($id)
     {

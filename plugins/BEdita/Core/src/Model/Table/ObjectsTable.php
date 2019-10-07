@@ -163,7 +163,7 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Network\Exception\BadRequestException If a wrong lang tag is specified
+     * @throws \Cake\Http\Exception\BadRequestException If a wrong lang tag is specified
      */
     protected function checkLangTag(EntityInterface $entity)
     {

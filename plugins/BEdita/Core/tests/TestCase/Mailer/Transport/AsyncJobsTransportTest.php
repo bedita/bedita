@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Mailer\Transport;
 
 use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -30,7 +31,7 @@ class AsyncJobsTransportTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.async_jobs',
+        'plugin.BEdita/Core.AsyncJobs',
     ];
 
     /**
@@ -45,12 +46,12 @@ class AsyncJobsTransportTest extends TestCase
      */
     public function setUp()
     {
-        Email::dropTransport('test');
-        Email::setConfigTransport('test', [
+        TransportFactory::drop('test');
+        TransportFactory::setConfig('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
-        Email::dropTransport('debug');
-        Email::setConfigTransport('debug', [
+        TransportFactory::drop('debug');
+        TransportFactory::setConfig('debug', [
             'className' => 'Debug',
         ]);
         Email::drop('test');
@@ -74,8 +75,8 @@ class AsyncJobsTransportTest extends TestCase
         parent::tearDown();
 
         Email::drop('test');
-        Email::dropTransport('test');
-        Email::dropTransport('debug');
+        TransportFactory::drop('test');
+        TransportFactory::drop('debug');
     }
 
     /**
@@ -117,8 +118,8 @@ class AsyncJobsTransportTest extends TestCase
      */
     public function testSendPriority()
     {
-        Email::dropTransport('test');
-        Email::setConfigTransport('test', [
+        TransportFactory::drop('test');
+        TransportFactory::setConfig('test', [
             'className' => 'BEdita/Core.AsyncJobs',
             'priority' => 1000,
         ]);

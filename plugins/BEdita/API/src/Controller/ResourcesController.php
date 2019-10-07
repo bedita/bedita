@@ -25,9 +25,9 @@ use BEdita\Core\Model\Action\SetAssociatedAction;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
-use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\ConflictException;
+use Cake\Http\Exception\InternalErrorException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
@@ -94,7 +94,7 @@ abstract class ResourcesController extends AppController
      *
      * @param string $relationship Relationship name.
      * @return \Cake\ORM\Association
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if no association could be found.
+     * @throws \Cake\Http\Exception\NotFoundException Throws an exception if no association could be found.
      */
     protected function findAssociation($relationship)
     {

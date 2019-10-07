@@ -38,7 +38,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.Applications',
     ];
 
     /**

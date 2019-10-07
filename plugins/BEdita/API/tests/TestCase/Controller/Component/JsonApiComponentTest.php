@@ -34,14 +34,14 @@ class JsonApiComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
     ];
 
     /**
@@ -52,6 +52,7 @@ class JsonApiComponentTest extends TestCase
         parent::setUp();
 
         Router::fullBaseUrl('http://example.org');
+        $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
     /**
@@ -89,7 +90,7 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        static::assertEquals($expectedMimeType, $component->getController()->response->getMimeType('jsonapi'));
+        static::assertEquals($expectedMimeType, $component->getController()->response->getHeaderLine('content-type'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
@@ -349,7 +350,7 @@ class JsonApiComponentTest extends TestCase
     public function testParseInput($expected, $input)
     {
         if ($expected === false) {
-            $this->expectException('\Cake\Network\Exception\BadRequestException');
+            $this->expectException('\Cake\Http\Exception\BadRequestException');
         }
 
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
@@ -428,7 +429,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
         if (!$expected) {
-            $this->expectException('\Cake\Network\Exception\ConflictException');
+            $this->expectException('\Cake\Http\Exception\ConflictException');
         }
 
         $request = new ServerRequest([
@@ -565,7 +566,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {
-            $this->expectException('\Cake\Network\Exception\ForbiddenException');
+            $this->expectException('\Cake\Http\Exception\ForbiddenException');
         }
 
         $request = new ServerRequest([

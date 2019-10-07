@@ -81,7 +81,7 @@ class CheckSchemaTask extends Shell
      */
     public function main()
     {
-        if (!Plugin::loaded('Migrations')) {
+        if (!Plugin::isLoaded('Migrations')) {
             $this->abort('Plugin "Migrations" must be loaded in order to perform schema checks');
         }
 

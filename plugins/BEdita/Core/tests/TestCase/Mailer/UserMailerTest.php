@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Mailer;
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
 use Cake\Mailer\MailerAwareTrait;
+use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -46,19 +47,19 @@ class UserMailerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.async_jobs',
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.properties',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.external_auth',
-        'plugin.BEdita/Core.auth_providers',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.async_jobs',
+        'plugin.BEdita/Core.AsyncJobs',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.AsyncJobs',
     ];
 
     /**
@@ -68,8 +69,8 @@ class UserMailerTest extends TestCase
     {
         parent::setUp();
 
-        Email::dropTransport('test');
-        Email::setConfigTransport('test', [
+        TransportFactory::drop('test');
+        TransportFactory::setConfig('test', [
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
 
@@ -97,7 +98,7 @@ class UserMailerTest extends TestCase
         $this->Email = null;
 
         Email::drop('test');
-        Email::dropTransport('test');
+        TransportFactory::drop('test');
     }
 
     /**

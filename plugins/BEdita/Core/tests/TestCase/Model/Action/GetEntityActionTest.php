@@ -30,8 +30,8 @@ class GetEntityActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_articles',
+        'plugin.BEdita/Core.FakeAnimals',
+        'plugin.BEdita/Core.FakeArticles',
     ];
 
     /**

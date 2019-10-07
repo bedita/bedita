@@ -204,10 +204,13 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                 $included = array_merge($included, $entities);
             }
 
-            $relationships[$relationship] = compact('data') + [
+            $relationships[$relationship] = [
                 'links' => compact('related', 'self'),
             ];
-            unset($data);
+            if (isset($data)) {
+                $relationships[$relationship] += compact('data');
+                unset($data);
+            }
         }
 
         return [$relationships, $included];
@@ -216,9 +219,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * {@inheritDoc}
      */
-    public function visibleProperties()
+    public function getVisible()
     {
-        $visible = parent::visibleProperties();
+        $visible = parent::getVisible();
         $this->loadObjectType();
         if (!$this->object_type) {
             return $visible;

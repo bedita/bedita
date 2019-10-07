@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -31,7 +31,7 @@ class UserMailer extends Mailer
      * - `user` the user Entity to send welcome email
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function welcome($options)
@@ -50,9 +50,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName,
         ]);
 
-        return $this
+        $this->viewBuilder()
             ->setTemplate('BEdita/Core.welcome')
-            ->setLayout('BEdita/Core.default')
+            ->setLayout('BEdita/Core.default');
+
+        return $this
             ->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
@@ -66,7 +68,7 @@ class UserMailer extends Mailer
      * - `activationUrl` the activation url to follow
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function signup(array $options)
@@ -91,9 +93,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName
         ]);
 
-        return $this->setTemplate('BEdita/Core.signup')
-            ->setLayout('BEdita/Core.default')
-            ->setEmailFormat('both')
+        $this->viewBuilder()
+            ->setTemplate('BEdita/Core.signup')
+            ->setLayout('BEdita/Core.default');
+
+        return $this->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
     }
@@ -106,7 +110,7 @@ class UserMailer extends Mailer
      * - `changeUrl` the change url to follow
      *
      * @param array $options Email options
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
     public function changeRequest(array $options)
@@ -131,9 +135,11 @@ class UserMailer extends Mailer
             'projectName' => $projectName
         ]);
 
-        return $this->setTemplate('BEdita/Core.change_request')
-            ->setLayout('BEdita/Core.default')
-            ->setEmailFormat('both')
+        $this->viewBuilder()
+            ->setTemplate('BEdita/Core.change_request')
+            ->setLayout('BEdita/Core.default');
+
+        return $this->setEmailFormat('both')
             ->setTo($user->email)
             ->setSubject($subject);
     }

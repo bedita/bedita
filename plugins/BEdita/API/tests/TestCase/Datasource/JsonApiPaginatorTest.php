@@ -14,7 +14,7 @@
 namespace BEdita\API\Test\TestCase\Datasource;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -30,10 +30,10 @@ class JsonApiPaginatorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Roles',
     ];
 
     /**
@@ -150,7 +150,7 @@ class JsonApiPaginatorTest extends TestCase
         }
 
         $paginator = new JsonApiPaginator();
-        $repository = TableRegistry::get('Roles')->find()->repository();
+        $repository = TableRegistry::get('Roles')->find()->getRepository();
 
         $options = $paginator->validateSort($repository, compact('sort'));
 

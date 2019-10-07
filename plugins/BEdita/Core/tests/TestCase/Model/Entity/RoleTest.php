@@ -38,7 +38,7 @@ class RoleTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.Roles',
     ];
 
     /**

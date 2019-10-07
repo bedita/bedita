@@ -46,7 +46,7 @@ trait JsonApiTrait
      *
      * @return string[]
      */
-    abstract public function visibleProperties();
+    abstract public function getVisible();
 
     /**
      * Getter for entity's hidden properties.
@@ -167,7 +167,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->filterFields($this->visibleProperties());
+        $visible = $this->filterFields($this->getVisible());
 
         $properties = array_filter(
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
@@ -186,7 +186,7 @@ trait JsonApiTrait
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
-        $visible = $this->filterFields($this->visibleProperties());
+        $visible = $this->filterFields($this->getVisible());
         $virtual = $this->getVirtual();
 
         $properties = array_filter(
@@ -318,10 +318,14 @@ trait JsonApiTrait
                 $included = array_merge($included, $entities);
             }
 
-            $relationships[$relationship] = compact('data') + [
+            $relationships[$relationship] = [];
+            if (isset($data)) {
+                $relationships[$relationship] += compact('data');
+                unset($data);
+            }
+            $relationships[$relationship] += [
                 'links' => compact('related', 'self'),
             ];
-            unset($data);
         }
 
         return [$relationships, $included];
@@ -378,6 +382,7 @@ trait JsonApiTrait
             $this->setFields($fields['_common']);
         }
 
+        $attributes = $meta = $links = $relationships = $included = null;
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES) === 0) {
             $attributes = $this->getAttributes();
         }

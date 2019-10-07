@@ -59,7 +59,7 @@ class MessagesFileLoader extends BaseLoader
             $locale['language']
         ];
         foreach ($this->plugins as $pluginName) {
-            if (Plugin::loaded($pluginName)) {
+            if (Plugin::isLoaded($pluginName)) {
                 $basePath = Plugin::classPath($pluginName) . 'Locale' . DIRECTORY_SEPARATOR;
                 foreach ($folders as $folder) {
                     $searchPaths[] = $basePath . $folder . DIRECTORY_SEPARATOR;

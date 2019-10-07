@@ -162,7 +162,7 @@ class SearchableBehavior extends Behavior
         // Concat all fields into a single, lower-cased string.
         $fields = [];
         /* @var \Cake\ORM\Table $table */
-        $table = $query->repository();
+        $table = $query->getRepository();
         foreach (array_keys($this->getFields()) as $field) {
             $fields[] = $query->func()->coalesce([
                 $table->aliasField($field) => 'identifier',

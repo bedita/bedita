@@ -36,8 +36,8 @@ class DbAdminShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'Init' => ['className' => InitSchemaTask::class],
-        'CheckSchema' => ['className' => CheckSchemaTask::class],
+        'Init' => ['class' => 'BEdita/Core.InitSchema', 'config' => []],
+        'CheckSchema' => ['class' => 'BEdita/Core.CheckSchema', 'config' => []],
     ];
 
     /**

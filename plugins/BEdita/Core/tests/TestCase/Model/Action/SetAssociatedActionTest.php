@@ -34,11 +34,11 @@ class SetAssociatedActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_articles',
-        'plugin.BEdita/Core.fake_tags',
-        'plugin.BEdita/Core.fake_articles_tags',
-        'plugin.BEdita/Core.fake_labels',
+        'plugin.BEdita/Core.FakeAnimals',
+        'plugin.BEdita/Core.FakeArticles',
+        'plugin.BEdita/Core.FakeTags',
+        'plugin.BEdita/Core.FakeArticlesTags',
+        'plugin.BEdita/Core.FakeLabels',
     ];
 
     /**
@@ -192,7 +192,7 @@ class SetAssociatedActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $association = TableRegistry::get($table)->association($association);
+        $association = TableRegistry::get($table)->getAssociation($association);
         $action = new SetAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
@@ -238,7 +238,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      */
     public function testInvocationWithLinkErrors()
@@ -246,7 +246,7 @@ class SetAssociatedActionTest extends TestCase
         try {
             $table = TableRegistry::get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
-            $association = $table->association('FakeTags');
+            $association = $table->getAssociation('FakeTags');
 
             $association->junction()->rulesChecker()->add(
                 function () {
@@ -301,7 +301,7 @@ class SetAssociatedActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationWithValidationErrorsProvider()
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @expectedExceptionCode 400
      */
     public function testInvocationWithValidationErrors($source, $target)
@@ -312,7 +312,7 @@ class SetAssociatedActionTest extends TestCase
         try {
             $table = TableRegistry::get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
-            $association = $table->association('FakeTags');
+            $association = $table->getAssociation('FakeTags');
 
             $association->junction()->getValidator()
                 ->email($field, false, $validationErrorMessage);

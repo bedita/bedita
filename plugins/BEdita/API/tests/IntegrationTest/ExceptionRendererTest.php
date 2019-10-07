@@ -18,7 +18,7 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\HttpException;
+use Cake\Http\Exception\HttpException;
 
 /**
  * @coversNothing

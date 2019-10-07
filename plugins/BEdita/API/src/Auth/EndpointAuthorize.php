@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,8 +17,8 @@ use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
+use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -150,14 +150,13 @@ class EndpointAuthorize extends BaseAuthorize
      * Get endpoint for request.
      *
      * @return \BEdita\Core\Model\Entity\Endpoint
-     * @throws \Cake\Network\Exception\NotFoundException If endpoint is disabled
+     * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
      */
     protected function getEndpoint()
     {
-        $endpointName = $this->request->url;
-        if (($slashPos = strpos($endpointName, '/')) !== false) {
-            $endpointName = substr($endpointName, 0, $slashPos);
-        }
+        // endpoint name is the first part of URL path
+        $path = array_values(array_filter(explode('/', $this->request->getPath())));
+        $endpointName = Hash::get($path, '0', '');
 
         $Endpoints = TableRegistry::get('Endpoints');
         $this->endpoint = $Endpoints->find()

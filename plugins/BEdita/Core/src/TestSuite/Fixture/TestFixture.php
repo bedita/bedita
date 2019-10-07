@@ -71,7 +71,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      */
     protected function getTableSchemaFromConf()
     {
-        if (!Plugin::loaded($this->schemaPlugin)) {
+        if (!Plugin::isLoaded($this->schemaPlugin)) {
             return false;
         }
 

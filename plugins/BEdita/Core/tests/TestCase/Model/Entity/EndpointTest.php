@@ -38,8 +38,8 @@ class EndpointTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Endpoints',
     ];
 
     /**

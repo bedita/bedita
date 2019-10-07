@@ -12,8 +12,8 @@
  */
 namespace BEdita\API\Middleware;
 
+use Cake\Http\CorsBuilder;
 use Cake\Http\Response;
-use Cake\Network\CorsBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -113,7 +113,7 @@ class CorsMiddleware
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return \Psr\Http\Message\ResponseInterface A response.
-     * @throws \Cake\Network\Exception\ForbiddenException When origin
+     * @throws \Cake\Http\Exception\ForbiddenException When origin
      */
     protected function buildCors(ServerRequestInterface $request, ResponseInterface $response)
     {

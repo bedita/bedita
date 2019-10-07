@@ -33,11 +33,11 @@ class ListAssociatedActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
-        'plugin.BEdita/Core.fake_articles',
-        'plugin.BEdita/Core.fake_mammals',
-        'plugin.BEdita/Core.fake_tags',
-        'plugin.BEdita/Core.fake_articles_tags',
+        'plugin.BEdita/Core.FakeAnimals',
+        'plugin.BEdita/Core.FakeArticles',
+        'plugin.BEdita/Core.FakeMammals',
+        'plugin.BEdita/Core.FakeTags',
+        'plugin.BEdita/Core.FakeArticlesTags',
     ];
 
     /**
@@ -199,7 +199,7 @@ class ListAssociatedActionTest extends TestCase
         if ($options === null) {
             $options = ['list' => true];
         }
-        $association = TableRegistry::get($table)->association($association);
+        $association = TableRegistry::get($table)->getAssociation($association);
         $action = new ListAssociatedAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + $options);

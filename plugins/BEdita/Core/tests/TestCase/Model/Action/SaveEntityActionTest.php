@@ -33,7 +33,7 @@ class SaveEntityActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.fake_animals',
+        'plugin.BEdita/Core.FakeAnimals',
     ];
 
     /**
@@ -66,7 +66,7 @@ class SaveEntityActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedException \Cake\Http\Exception\BadRequestException
      * @covers ::initialize()
      * @covers ::execute()
      */
@@ -94,7 +94,7 @@ class SaveEntityActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedException \Cake\Http\Exception\InternalErrorException
      * @covers ::initialize()
      * @covers ::execute()
      */

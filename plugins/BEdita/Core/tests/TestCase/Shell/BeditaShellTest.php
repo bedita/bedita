@@ -51,7 +51,7 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
 
         // Try to avoid "database schema has changed" error on SQLite.
         try {
-            ConnectionManager::get('default')->schemaCollection()->listTables();
+            ConnectionManager::get('default')->getSchemaCollection()->listTables();
         } catch (\PDOException $e) {
             // Do nothing.
         }

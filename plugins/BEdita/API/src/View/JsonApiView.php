@@ -14,6 +14,10 @@
 namespace BEdita\API\View;
 
 use BEdita\API\Utility\JsonApi;
+use Cake\Event\EventManager;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
+use Cake\Utility\Hash;
 use Cake\View\JsonView;
 
 /**
@@ -36,36 +40,40 @@ class JsonApiView extends JsonView
     /**
      * {@inheritDoc}
      */
+    public function __construct(
+        ServerRequest $request = null,
+        Response $response = null,
+        EventManager $eventManager = null,
+        array $viewOptions = []
+    ) {
+        if ($request && $request->is('json')) {
+            // change default response type if request is `json`
+            $this->_responseType = 'json';
+        }
+        parent::__construct($request, $response, $eventManager, $viewOptions);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function _dataToSerialize($serialize = true)
     {
-        if (empty($this->viewVars['_error'])) {
-            $fields = $this->parseFieldsQuery();
-            $data = parent::_dataToSerialize($serialize) ?: [];
-            $options = !empty($this->viewVars['_jsonApiOptions']) ? $this->viewVars['_jsonApiOptions'] : 0;
-            if ($data) {
-                $included = [];
-                $data = JsonApi::formatData(reset($data), $options, $fields, $included);
-            }
-            if (empty($included)) {
-                unset($included);
-            } else {
-                $included = JsonApi::formatData($included, $options, $fields);
-                unset($included['_schema']);
-            }
-        } else {
-            $error = $this->viewVars['_error'];
+        if (!empty($this->get('_error'))) {
+            return $this->serializeError();
         }
 
-        if (!empty($error['status'])) {
-            $error['status'] = (string)$error['status'];
+        $fields = $this->parseFieldsQuery();
+        $links = $this->get('_links');
+        $meta = $this->get('_meta');
+        if (empty($serialize)) {
+            return array_filter(compact('links', 'meta'));
         }
 
-        if (!empty($this->viewVars['_links'])) {
-            $links = $this->viewVars['_links'];
-        }
-
-        if (!empty($this->viewVars['_meta'])) {
-            $meta = $this->viewVars['_meta'];
+        $data = parent::_dataToSerialize() ?: [];
+        $options = $this->get('_jsonApiOptions', 0);
+        if ($data) {
+            $included = [];
+            $data = JsonApi::formatData(reset($data), $options, $fields, $included);
         }
 
         if (!empty($data['_schema'])) {
@@ -73,11 +81,33 @@ class JsonApiView extends JsonView
             unset($data['_schema']);
         }
 
-        if (empty($serialize)) {
-            unset($data);
+        // `data` key may be empty, `links` and `meta` may not
+        $res = compact('data') + array_filter(compact('links', 'meta'));
+
+        if (!empty($included)) {
+            $included = JsonApi::formatData($included, $options, $fields);
+            unset($included['_schema']);
+            $res += compact('included');
         }
 
-        return compact('error', 'data', 'links', 'meta', 'included');
+        return $res;
+    }
+
+    /**
+     * Serialize error data
+     *
+     * @return array
+     */
+    protected function serializeError()
+    {
+        $error = $this->get('_error');
+        if (!empty($error['status'])) {
+            $error['status'] = (string)$error['status'];
+        }
+        $links = $this->get('_links');
+        $meta = $this->get('_meta');
+
+        return array_filter(compact('error', 'links', 'meta'));
     }
 
     /**
@@ -89,14 +119,15 @@ class JsonApiView extends JsonView
      */
     protected function parseFieldsQuery()
     {
-        if (empty($this->viewVars['_fields'])) {
+        $fields = $this->get('_fields');
+        if (empty($fields)) {
             return [];
         }
-        if (is_string($this->viewVars['_fields'])) {
-            return ['_common' => explode(',', $this->viewVars['_fields'])];
+        if (is_string($fields)) {
+            return ['_common' => explode(',', $fields)];
         }
         $res = [];
-        foreach ($this->viewVars['_fields'] as $type => $val) {
+        foreach ($fields as $type => $val) {
             $res[$type] = explode(',', $val);
         }
 

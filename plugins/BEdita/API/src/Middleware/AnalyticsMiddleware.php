@@ -54,7 +54,7 @@ class AnalyticsMiddleware
         }
 
         if (!in_array('analytics', Log::configured())) {
-            Log::config('analytics', [
+            Log::setConfig('analytics', [
                 'className' => 'File',
                 'path' => LOGS,
                 'scopes' => ['analytics'],

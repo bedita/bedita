@@ -166,7 +166,7 @@ class TableTest extends TestCase
             'id' => 1,
             'family' => 'purring cats'
         ];
-        $result = $feline->extract($felines->first()->visibleProperties());
+        $result = $feline->extract($felines->first()->getVisible());
         ksort($expected);
         ksort($result);
         static::assertEquals($expected, $result);
@@ -197,7 +197,7 @@ class TableTest extends TestCase
             'subclass' => 'Eutheria',
             'family' => 'purring cats'
         ];
-        $result = $feline->extract($felines->first()->visibleProperties());
+        $result = $feline->extract($felines->first()->getVisible());
         ksort($expected);
         ksort($result);
         static::assertEquals($expected, $result);

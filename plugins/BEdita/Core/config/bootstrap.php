@@ -33,7 +33,7 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
 /**
  * Load BEdita meta config.
  */
-if (!Configure::configured('ini')) {
+if (!Configure::isConfigured('ini')) {
     Configure::config('ini', new IniConfig());
 }
 
@@ -97,4 +97,6 @@ Configure::load('BEdita/Core.bedita', 'ini');
 /**
  * Load thumbnail generators.
  */
-Thumbnail::setConfig(Configure::read('Thumbnails.generators') ?: []);
+if (!Thumbnail::configured()) {
+    Thumbnail::setConfig(Configure::read('Thumbnails.generators') ?: []);
+}

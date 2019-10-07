@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Cache\Cache;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -33,18 +33,18 @@ class JsonSchemaTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.properties',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.locations',
-        'plugin.BEdita/Core.media',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.streams',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**

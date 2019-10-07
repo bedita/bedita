@@ -18,7 +18,7 @@ use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -118,7 +118,7 @@ class PropertyTypesTable extends Table
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being deleted.
      * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if one or more properties exist
+     * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
     public function beforeDelete(Event $event, EntityInterface $entity)

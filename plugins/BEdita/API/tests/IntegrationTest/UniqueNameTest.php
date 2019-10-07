@@ -26,7 +26,7 @@ class UniqueNameTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.Locations',
     ];
 
     /**
@@ -93,45 +93,38 @@ class UniqueNameTest extends IntegrationTestCase
     }
 
     /**
-     * Test custom unique name generator.
+     * Test unique name customization.
      *
      * @return void
      *
      * @coversNothing
      */
-    public function testCustomGenerator()
+    public function testCustomBehavior()
     {
-        $table = TableRegistry::get('Locations');
-        $designatedUname = 'my-uname-' . Text::uuid();
-        $table->addBehavior('BEdita/Core.UniqueName', [
-            'generator' => function () use ($designatedUname) {
-                return $designatedUname;
-            }
-        ]);
-
         $authHeader = $this->getUserAuthHeader();
         $this->configRequestHeaders('POST', $authHeader);
 
         $data = [
-            'type' => 'locations',
+            'type' => 'profiles',
             'attributes' => [
-                'title' => 'my title',
+                'title' => 'my profile',
             ],
         ];
-        $this->post('/locations', json_encode(compact('data')));
+        $this->post('/profiles', json_encode(compact('data')));
 
         $id = $this->lastObjectId();
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', sprintf('http://api.example.com/locations/%s', $id));
+        $this->assertHeader('Location', sprintf('http://api.example.com/profiles/%s', $id));
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
         static::assertArrayHasKey('data', $body);
         static::assertArrayHasKey('attributes', $body['data']);
         static::assertArrayHasKey('uname', $body['data']['attributes']);
+        $designatedUname = 'profile-my-profile';
         static::assertSame($designatedUname, $body['data']['attributes']['uname']);
 
-        static::assertSame($designatedUname, $table->get($id)->get('uname'));
+        static::assertSame($designatedUname, TableRegistry::get('Profiles')->get($id)->get('uname'));
     }
 }

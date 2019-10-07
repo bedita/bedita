@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Network\Exception;
 
-use Cake\Network\Exception\HttpException;
+use Cake\Http\Exception\HttpException;
 
 /**
  * Represents an HTTP 415 error 'Unsupported Media Type'

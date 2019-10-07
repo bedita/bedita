@@ -37,7 +37,7 @@ class PropertyTypeTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.PropertyTypes',
     ];
 
     /**

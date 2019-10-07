@@ -56,7 +56,7 @@ class MarshallerTest extends TestCase
         ];
 
         $entity = $marshaller->one($data);
-        static::assertEquals($data, $entity->extract($entity->visibleProperties()));
+        static::assertEquals($data, $entity->extract($entity->getVisible()));
     }
 
     /**
@@ -119,6 +119,6 @@ class MarshallerTest extends TestCase
         $entity = $marshaller->one($data);
 
         $entity = $marshaller->one($data);
-        static::assertEquals($expected, $entity->extract($entity->visibleProperties()));
+        static::assertEquals($expected, $entity->extract($entity->getVisible()));
     }
 }

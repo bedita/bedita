@@ -29,7 +29,7 @@ class MetadataTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
-        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.Locations',
     ];
 
     /**
