@@ -55,9 +55,10 @@ class Application extends BaseApplication
     {
         $this->addPlugin('Migrations');
         try {
-            // allow missing `bake` plugin in no-dev environment
             $this->addPlugin('Bake');
         } catch (MissingPluginException $e) {
+            // intentionally empty catch block
+            // allow missing `bake` plugin in no-dev environment
         }
     }
 
