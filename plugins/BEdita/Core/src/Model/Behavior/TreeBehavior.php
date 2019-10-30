@@ -146,4 +146,20 @@ class TreeBehavior extends CakeTreeBehavior
 
         return $position;
     }
+
+    /**
+     * Calls $this->_recoverTree() without transactional(...)
+     *
+     * @param $transactional Execute recover action inside a transaction (default true)
+     * @return void
+     * @codeCoverageIgnore
+     */
+    public function recover($transactional = true)
+    {
+        if ($transactional) {
+            return parent::recover();
+        }
+
+        $this->_recover();
+    }
 }
