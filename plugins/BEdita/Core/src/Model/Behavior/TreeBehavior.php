@@ -160,6 +160,6 @@ class TreeBehavior extends CakeTreeBehavior
             return parent::recover();
         }
 
-        $this->_recover();
+        $this->_recoverTree();
     }
 }
