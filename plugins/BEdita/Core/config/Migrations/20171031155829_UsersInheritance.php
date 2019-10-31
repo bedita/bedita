@@ -35,7 +35,7 @@ class UsersInheritance extends AbstractMigration
         ]);
         /* @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
         $tree = $table->behaviors()->get('Tree');
-        $tree->recover(false);
+        $tree->nonAtomicRecover();
     }
 
     /**
