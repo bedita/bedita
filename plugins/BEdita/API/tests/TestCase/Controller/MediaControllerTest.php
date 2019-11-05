@@ -216,6 +216,7 @@ class MediaControllerTest extends IntegrationTestCase
      * @dataProvider thumbsProvider()
      * @covers ::thumbs()
      * @covers ::getIds()
+     * @covers ::fetchProviderThumbs()
      */
     public function testThumbs($expected, $id, array $query = [])
     {
@@ -293,6 +294,49 @@ class MediaControllerTest extends IntegrationTestCase
         $body = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(400);
         static::assertSame('Missing IDs to generate thumbnails for', Hash::get($body, 'error.title'));
+    }
+
+    /**
+     * Test `thumbs` method with provider thumbnails.
+     *
+     * @return void
+     *
+     * @covers ::fetchProviderThumbs()
+     */
+    public function testProviderThumbs()
+    {
+        // add remote media with provider thumb
+        $data = [
+            'type' => 'files',
+            'attributes' => [
+                'provider_thumbnail' => 'https://thumbs.example.org/item.jpg',
+            ],
+        ];
+        $newId = $this->lastObjectId() + 1;
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/files', json_encode(compact('data')));
+
+        $expected = [
+            [
+                'id' => 14,
+                'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                'ready' => false,
+                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.gif',
+            ],
+            [
+                'id' => $newId,
+                'ready' => true,
+                'url' => $data['attributes']['provider_thumbnail'],
+            ],
+        ];
+
+        $this->configRequestHeaders('GET');
+        $this->get(sprintf('/media/thumbs?ids=14,%d', $newId));
+
+        $body = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $thumbnails = Hash::get((array)$body, 'meta.thumbnails');
+        static::assertEquals($expected, $thumbnails);
     }
 
     /**
