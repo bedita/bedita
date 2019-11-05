@@ -19,8 +19,6 @@ BEdita 4 is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS 
 
 [GrapQL](http://graphql.org) initial support available via dedicated plugin.
 
-Development is currently in _beta_ stage - DON'T USE IT ON A PRODUCTION SYSTEM
-
 The easiest and quickest way to try out BEdita4 is via [Docker](https://www.docker.com), [read instructions below](#docker).
 
 ## Prerequisites
@@ -38,7 +36,7 @@ Quick setup in three steps.
 1. Create project via composer
 
 ```bash
- composer create-project -s dev bedita/bedita
+ composer create-project bedita/bedita
 ```
 
 If you are using a **.zip** or **.tar.gz** release file you just need to unpack it and then run ``composer install``.
