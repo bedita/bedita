@@ -17,6 +17,7 @@ use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Utility\Hash;
 
 /**
  * Controller for media.
@@ -99,7 +100,41 @@ class MediaController extends ObjectsController
             })
             ->toList();
 
+        $this->fetchProviderThumbs($ids, $thumbnails);
+
         $this->set('_meta', compact('thumbnails'));
         $this->set('_serialize', []);
+    }
+
+    /**
+     * Add provider thumbnails to thumbnails array for remote media
+     *
+     * @param array $ids Media ids
+     * @param array $thumbnails Thumbnail array
+     * @return void
+     */
+    protected function fetchProviderThumbs(array $ids, array &$thumbnails) : void
+    {
+        $thumbItems = Hash::combine($thumbnails, '{n}.id', '{n}.*');
+        $mediaIds = array_keys(array_diff_key(array_flip($ids), $thumbItems));
+        if (empty($mediaIds)) {
+            return;
+        }
+
+        $conditions = [
+            'id IN' => $mediaIds,
+            $this->Table->aliasField('provider_thumbnail') . ' IS NOT NULL',
+        ];
+        $thumbs = $this->Table->find()
+            ->where($conditions)
+            ->select(['id', 'provider_thumbnail'])
+            ->toArray();
+        foreach ($thumbs as $thumb) {
+            $thumbnails[] = [
+                'id' => $thumb['id'],
+                'ready' => true,
+                'url' => $thumb['provider_thumbnail'],
+            ];
+        }
     }
 }
