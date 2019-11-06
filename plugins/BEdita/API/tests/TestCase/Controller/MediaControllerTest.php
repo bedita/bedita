@@ -285,6 +285,7 @@ class MediaControllerTest extends IntegrationTestCase
      *
      * @covers ::thumbs()
      * @covers ::getIds()
+     * @covers ::getAvailableIds()
      */
     public function testThumbsNoIds()
     {
