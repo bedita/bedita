@@ -389,4 +389,21 @@ class ObjectsTable extends Table
             return $query->where(['Translations.lang' => $options['lang']]);
         });
     }
+
+    /**
+     * Finder for available objects based on these rules:
+     *  - `status` should be acceptable (=> via `findStatusLevel`)
+     *  - `deleted` should be 0
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findAvailable(Query $query)
+    {
+        if (Configure::check('Status.level')) {
+            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
+        }
+
+        return $query->where(['deleted' => 0]);
+    }
 }
