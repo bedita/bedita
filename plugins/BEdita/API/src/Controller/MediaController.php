@@ -77,6 +77,9 @@ class MediaController extends ObjectsController
      */
     protected function getAvailableIds(array $ids) : array
     {
+        if (empty($ids)) {
+            return $ids;
+        }
         $available = $this->Table->find('available')
             ->where(['id IN' => $ids])
             ->select(['id'])
@@ -131,8 +134,7 @@ class MediaController extends ObjectsController
      */
     protected function fetchProviderThumbs(array $ids, array &$thumbnails) : void
     {
-        $thumbItems = Hash::combine($thumbnails, '{n}.id', '{n}.*');
-        $mediaIds = array_keys(array_diff_key(array_flip($ids), $thumbItems));
+        $mediaIds = array_diff($ids, Hash::extract($thumbnails, '{n}.id'));
         if (empty($mediaIds)) {
             return;
         }
