@@ -297,6 +297,45 @@ class MediaControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test available IDs.
+     *
+     * @return void
+     *
+     * @covers ::getAvailableIds()
+     */
+    public function testAvailableIds()
+    {
+        $data = [
+            'id' => '10',
+            'type' => 'files',
+            'attributes' => [
+                'status' => 'off',
+            ],
+        ];
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/files/10', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        Configure::write('Status.level', 'on');
+
+        $this->configRequestHeaders('GET');
+        $this->get('/media/thumbs?ids=10,14');
+
+        $body = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $thumbnails = Hash::get((array)$body, 'meta.thumbnails');
+        $expected = [
+            [
+                'id' => 14,
+                'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                'ready' => false,
+                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.gif',
+            ],
+        ];
+        static::assertEquals($expected, $thumbnails);
+    }
+
+    /**
      * Test `thumbs` method with provider thumbnails.
      *
      * @return void

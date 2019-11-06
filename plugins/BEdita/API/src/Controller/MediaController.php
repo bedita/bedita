@@ -66,7 +66,23 @@ class MediaController extends ObjectsController
             throw new BadRequestException(__d('bedita', 'Cannot generate thumbnails for more than {0} media at once', $maxLimit));
         }
 
-        return $ids;
+        return $this->getAvailableIds($ids);
+    }
+
+    /**
+     * Retrieve actual available IDs checking `status` and `deleted`
+     *
+     * @param array $ids Object ids array
+     * @return array
+     */
+    protected function getAvailableIds(array $ids) : array
+    {
+        $available = $this->Table->find('available')
+            ->where(['id IN' => $ids])
+            ->select(['id'])
+            ->toArray();
+
+        return (array)Hash::extract($available, '{n}.id');
     }
 
     /**
