@@ -625,4 +625,43 @@ class ObjectsTableTest extends TestCase
         static::assertSame(1, count($result));
         static::assertSame(2, $result[0]['id']);
     }
+
+    /**
+     * Data provider for `testFindAvailable`.
+     *
+     * @return array
+     */
+    public function findAvailableProvider()
+    {
+        return [
+            'no status' => [
+                12,
+                ['id > 0']
+            ],
+            'status on' => [
+                7,
+                ['id > 5'],
+                'on',
+            ],
+        ];
+    }
+
+    /**
+     * Test `findAvailable()`.
+     *
+     * @return void
+     *
+     * @dataProvider findAvailableProvider()
+     * @covers ::findAvailable()
+     */
+    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null)
+    {
+        $result = $this->Objects->find('available')
+            ->where($condition)
+            ->toArray();
+        if (!empty($statusLevel)) {
+            Configure::write('Status.level', $statusLevel);
+        }
+        static::assertSame($expected, count($result));
+    }
 }
