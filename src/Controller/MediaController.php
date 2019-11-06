@@ -134,7 +134,7 @@ class MediaController extends ObjectsController
      */
     protected function fetchProviderThumbs(array $ids, array &$thumbnails) : void
     {
-        $mediaIds = array_diff($ids, Hash::extract($thumbnails, '{n}.id'));
+        $mediaIds = array_diff($ids, (array)Hash::extract($thumbnails, '{n}.id'));
         if (empty($mediaIds)) {
             return;
         }
