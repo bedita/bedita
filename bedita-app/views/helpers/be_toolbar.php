@@ -376,7 +376,7 @@ class BeToolbarHelper extends AppHelper {
             'onkeypress' => 'if (event.keyCode === 13) { event.preventDefault(); event.stopPropagation(); this.blur(); }',
         );
 
-        return $this->Form->input('', $options);
+        return $this->Form->input('paginationPage', $options);
     }
 
     /**
