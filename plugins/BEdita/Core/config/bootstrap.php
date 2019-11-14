@@ -60,10 +60,16 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
 
 /**
  * Use custom DateType & DateTimeType
+ *
+ * Timezone conversion is not currently supported in CakePHP 3.8 saving to Database
+ * We should use `timezone` as defined in `Datasource` configuration, with 'UTC' as default
+ * For now is safe to force 'UTC' as timezone
+ *
+ * See https://github.com/cakephp/cakephp/issues/13646
  */
 Type::set('date', new DateType());
-Type::set('datetime', new DateTimeType());
-Type::set('timestamp', new DateTimeType());
+Type::set('datetime', (new DateTimeType())->setTimezone('UTC'));
+Type::set('timestamp', (new DateTimeType())->setTimezone('UTC'));
 
 /**
  * Use custom BoolType
