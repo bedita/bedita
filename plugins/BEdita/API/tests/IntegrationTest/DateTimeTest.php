@@ -159,4 +159,31 @@ class DateTimeTest extends IntegrationTestCase
         $fields = array_intersect_key($attributes, $expected);
         static::assertEquals($expected, $fields);
     }
+
+    /**
+     * Make sure `datetime` properties are saved with 'UTC' timezone as expected
+     *
+     * @return void
+     */
+    public function testTimezoneSave()
+    {
+        $data = [
+            'type' => 'documents',
+            'id' => '2',
+            'attributes' => [
+                'publish_start' => '2018-08-02T16:23:23+02:00',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2', json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/documents/2');
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $attributes = Hash::get($result, 'data.attributes', []);
+        static::assertEquals('2018-08-02T14:23:23+00:00', $attributes['publish_start']);
+    }
 }
