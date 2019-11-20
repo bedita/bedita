@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -54,6 +55,7 @@ class ObjectTypesTableTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.ObjectHistory',
     ];
 
     /**
@@ -669,6 +671,7 @@ class ObjectTypesTableTest extends TestCase
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
+        LoggedUser::setUser(['id' => 1]);
         $success = $table->save($entity);
         static::assertTrue((bool)$success);
 

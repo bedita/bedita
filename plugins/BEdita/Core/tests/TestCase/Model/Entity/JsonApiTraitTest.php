@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -56,6 +57,7 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.ObjectHistory',
     ];
 
     /**
@@ -333,6 +335,7 @@ class JsonApiTraitTest extends TestCase
         $doc->modified_by = 1;
         $doc = TableRegistry::get('Objects')->saveOrFail($doc);
 
+        LoggedUser::setUser(['id' => 1]);
         $usersTable->delete($usersTable->get(5));
 
         $expected = [

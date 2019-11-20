@@ -22,6 +22,11 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class ObjectHistoryFixture extends TestFixture
 {
     /**
+     * {@inheritDoc}
+     */
+    public $table = 'object_history';
+
+    /**
      * Records
      *
      * @var array
@@ -38,7 +43,7 @@ class ObjectHistoryFixture extends TestFixture
 
         ],
         [
-            'id' => 1,
+            'id' => 2,
             'object_id' => 2,
             'created' => '2016-05-13 07:09:23',
             'user_id' => 1,
