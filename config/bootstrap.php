@@ -29,6 +29,7 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
+use BEdita\API\Error\ErrorHandler;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
@@ -36,7 +37,6 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Datasource\ConnectionManager;
-use Cake\Error\ErrorHandler;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
@@ -115,11 +115,11 @@ if (Configure::read('debug')) {
 }
 
 /*
- * Set server timezone to UTC. You can change it to another timezone of your
- * choice but using UTC makes time calculations / conversions easier.
+ * Set server timezone using 'BEDITA_DEFAULT_TIMEZONE' with 'UTC' as default.
+ * 'UTC' makes time calculations / conversions easier, it is the recommended choice.
  * Check http://php.net/manual/en/timezones.php for list of valid timezone strings.
  */
-date_default_timezone_set('UTC');
+date_default_timezone_set(env('BEDITA_DEFAULT_TIMEZONE', 'UTC'));
 
 /*
  * Configure the mbstring extension to use the correct encoding.

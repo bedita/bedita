@@ -50,13 +50,13 @@ class FoldersType extends AbstractMigration
             'connection' => $adapter->getCakeConnection(),
         ]);
         // Now let's fix NSM (nested-set model) left and right indexes from tree data.
-        $table->addBehavior('Tree', [
+        $table->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
-        /* @var \Cake\ORM\Behavior\TreeBehavior $tree */
+        /* @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
         $tree = $table->behaviors()->get('Tree');
-        $tree->recover();
+        $tree->nonAtomicRecover();
     }
 
     /**
