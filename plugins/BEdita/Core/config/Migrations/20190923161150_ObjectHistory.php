@@ -48,7 +48,7 @@ class ObjectHistory extends AbstractMigration
             ->addColumn('application_id', 'integer', [
                 'comment' => 'link to application',
                 'limit' => 10,
-                'null' => false,
+                'null' => true,
                 'signed' => false,
             ])
             ->addColumn('user_action', $enum, [
