@@ -57,7 +57,6 @@ use Cake\Routing\Router;
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
 {
-
     use JsonApiTrait {
         listAssociations as protected jsonApiListAssociations;
         getMeta as protected jsonApiGetMeta;

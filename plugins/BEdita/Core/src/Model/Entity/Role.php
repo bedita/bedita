@@ -32,7 +32,6 @@ use Cake\ORM\Entity;
  */
 class Role extends Entity implements JsonApiSerializable
 {
-
     use JsonApiTrait;
 
     /**

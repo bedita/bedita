@@ -35,7 +35,6 @@ use Cake\ORM\Entity;
  */
 class Translation extends Entity implements JsonApiSerializable
 {
-
     use JsonApiTrait;
 
     /**

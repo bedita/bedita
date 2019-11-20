@@ -29,7 +29,6 @@ use League\Flysystem\MountManager;
  */
 class FilesystemRegistry extends ObjectRegistry
 {
-
     use SingletonTrait;
     use StaticConfigTrait;
 

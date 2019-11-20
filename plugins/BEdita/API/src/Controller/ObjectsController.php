@@ -143,7 +143,8 @@ class ObjectsController extends ResourcesController
      */
     public function beforeFilter(Event $event)
     {
-        if ($this->request->getParam('action') === 'relationships'
+        if (
+            $this->request->getParam('action') === 'relationships'
             && $this->request->getParam('relationship') === 'streams'
             && !$this->request->is('get')
         ) {

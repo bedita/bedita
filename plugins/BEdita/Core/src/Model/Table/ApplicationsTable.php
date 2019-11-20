@@ -125,8 +125,10 @@ class ApplicationsTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        if (!$entity->isNew() && $entity->get('enabled') == false &&
-            in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
+        if (
+            !$entity->isNew() && $entity->get('enabled') == false &&
+            in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])
+        ) {
             throw new ImmutableResourceException(__d('bedita', 'Could not disable "Application" {0}', $entity->id));
         }
 

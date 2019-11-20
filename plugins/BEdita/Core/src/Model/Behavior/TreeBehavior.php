@@ -154,7 +154,7 @@ class TreeBehavior extends CakeTreeBehavior
      * @return void
      * @codeCoverageIgnore
      */
-    public function nonAtomicRecover() : void
+    public function nonAtomicRecover(): void
     {
         $this->_recoverTree();
     }

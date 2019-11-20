@@ -403,8 +403,10 @@ class UsersTable extends Table
             throw new BadRequestException(__d('bedita', 'Logged users cannot delete their own account'));
         }
         foreach (['username', 'uname'] as $prop) {
-            if (!($entity->get('deleted') && $entity->get('locked')) &&
-                strpos((string)$entity->get($prop), self::DELETED_USER_PREFIX) === 0) {
+            if (
+                !($entity->get('deleted') && $entity->get('locked')) &&
+                strpos((string)$entity->get($prop), self::DELETED_USER_PREFIX) === 0
+            ) {
                 throw new BadRequestException(
                     __d('bedita', '"{0}" cannot start with reserved word "{1}"', $prop, self::DELETED_USER_PREFIX)
                 );
