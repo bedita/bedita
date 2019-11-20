@@ -75,6 +75,7 @@ class ObjectsTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
 
+        $this->addBehavior('BEdita/Core.History', (array)Configure::read('History'));
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.DataCleanup');
         $this->addBehavior('BEdita/Core.UserModified');

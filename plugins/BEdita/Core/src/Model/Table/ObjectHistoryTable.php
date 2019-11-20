@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -92,18 +93,14 @@ class ObjectHistoryTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * {@inheritDoc}
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    protected function _initializeSchema(TableSchema $schema)
     {
-        $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['application_id'], 'Applications'));
+        $schema->setColumnType('changed', 'jsonobject');
 
-        return $rules;
+        return $schema;
     }
 }
