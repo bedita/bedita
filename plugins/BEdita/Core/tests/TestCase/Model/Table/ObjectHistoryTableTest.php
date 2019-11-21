@@ -85,11 +85,11 @@ class ObjectHistoryTableTest extends TestCase
      */
     public function testFindActivity()
     {
-        $result = $this->ObjectHistory->find('activity', [1])
+        $result = $this->ObjectHistory->find('activity', [5])
             ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
             ->toArray();
 
-        $expected = [1 => 1, 2 => 2];
+        $expected = [2 => 2];
         static::assertEquals($expected, $result);
     }
 
