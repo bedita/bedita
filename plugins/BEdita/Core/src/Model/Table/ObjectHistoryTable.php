@@ -12,8 +12,9 @@
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\Database\Schema\TableSchema;
-use Cake\ORM\RulesChecker;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -99,8 +100,44 @@ class ObjectHistoryTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->setColumnType('changed', 'jsonobject');
+        $schema->setColumnType('changed', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Find history event data of a single object.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The first element containing object `id`.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
+     */
+    protected function findHistory(Query $query, array $options): Query
+    {
+        if (empty($options[0]) || (!is_int($options[0]) && !is_string($options[0]))) {
+            throw new BadFilterException(__d('bedita', 'Missing or malformed required parameter "{0}"', 'id'));
+        }
+
+        return $query->where([$this->aliasField('object_id') => $options[0]])
+                ->order([$this->aliasField('created') => 'ASC']);
+    }
+
+    /**
+     * Find history activity data of a user.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The first element containing user `id`.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
+     */
+    protected function findActivity(Query $query, array $options): Query
+    {
+        if (empty($options[0]) || (!is_int($options[0]) && !is_string($options[0]))) {
+            throw new BadFilterException(__d('bedita', 'Missing or malformed required parameter "{0}"', 'id'));
+        }
+
+        return $query->where([$this->aliasField('user_id') => $options[0]])
+                ->order([$this->aliasField('created') => 'ASC']);
     }
 }

@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ObjectHistoryTable;
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -35,9 +35,6 @@ class ObjectHistoryTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectHistory',
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Users',
-        'plugin.BEdita/Core.Applications'
     ];
 
     /**
@@ -48,8 +45,8 @@ class ObjectHistoryTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('ObjectHistory') ? [] : ['className' => ObjectHistoryTable::class];
-        $this->ObjectHistory = TableRegistry::getTableLocator()->get('ObjectHistory', $config);
+
+        $this->ObjectHistory = TableRegistry::getTableLocator()->get('ObjectHistory');
     }
 
     /**
@@ -65,32 +62,68 @@ class ObjectHistoryTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Test `findHistory` method
      *
+     * @covers ::findHistory()
      * @return void
      */
-    public function testInitialize()
+    public function testFindHistory()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $result = $this->ObjectHistory->find('history', [2])
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        $expected = [1 => 1, 2 => 2];
+        static::assertEquals($expected, $result);
     }
 
     /**
-     * Test validationDefault method
+     * Test `findActivity` method
      *
+     * @covers ::findActivity()
      * @return void
      */
-    public function testValidationDefault()
+    public function testFindActivity()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $result = $this->ObjectHistory->find('activity', [1])
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        $expected = [1 => 1, 2 => 2];
+        static::assertEquals($expected, $result);
     }
 
     /**
-     * Test buildRules method
+     * Data provider for `testFindFail`
      *
+     * @return array
+     */
+    public function findFailProvider(): array
+    {
+        return [
+            'missing' => [
+                'history',
+                [],
+            ],
+            'bad opts' => [
+                'activity',
+                [new \stdClass()],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder methods failures
+     *
+     * @dataProvider findFailProvider
+     * @covers ::findActivity()
+     * @covers ::findHistory()
      * @return void
      */
-    public function testBuildRules()
+    public function testFindFail($finder, $options)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->expectException(BadFilterException::class);
+        $this->expectExceptionMessage('Missing or malformed required parameter "id"');
+        $this->ObjectHistory->find($finder, $options)->first();
     }
 }
