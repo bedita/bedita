@@ -128,6 +128,7 @@ class HistoryControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::view()
+     * @covers ::checkExistence()
      */
     public function testMissing()
     {
