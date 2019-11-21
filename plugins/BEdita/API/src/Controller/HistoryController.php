@@ -14,6 +14,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\History\HistoryInterface;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -32,9 +33,12 @@ class HistoryController extends AppController
      */
     public function view($id)
     {
+        $Objects = TableRegistry::getTableLocator()->get('Objects');
+        if (!$Objects->exists(['id' => $id])) {
+            throw new NotFoundException(__d('bedita', 'Object "{0}" not found', $id));
+        }
         /** @var HistoryInterface $historyModel */
-        $historyModel = TableRegistry::get('Objects')
-                ->behaviors()
+        $historyModel = $Objects->behaviors()
                 ->get('History')
                 ->historyModel;
         $data = $historyModel->readEvents($id);
