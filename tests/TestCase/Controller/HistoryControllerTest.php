@@ -43,7 +43,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'user_id' => 1,
                         'application_id' => 1,
                         'user_action' => 'create',
-                        'changed' => '{"title":"title one","description":"description here"}',                   
+                        'changed' => '{"title":"title one","description":"description here"}',
                     ],
                 ],
                 [
@@ -55,7 +55,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'user_id' => 1,
                         'application_id' => 1,
                         'user_action' => 'update',
-                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',                   
+                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
                     ],
                 ]
             ],
