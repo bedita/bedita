@@ -44,7 +44,7 @@ class ObjectHistoryFixture extends TestFixture
         [
             'object_id' => 2,
             'created' => '2016-05-13 07:09:23',
-            'user_id' => 1,
+            'user_id' => 5,
             'application_id' => 1,
             'user_action' => 'update',
             'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',

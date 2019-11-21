@@ -25,6 +25,8 @@ class HistoryControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::view()
+     * @covers ::initialize()
+     * @covers ::checkExistence()
      */
     public function testView()
     {
@@ -32,6 +34,10 @@ class HistoryControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/history/2',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/history/2',
+                'last' => 'http://api.example.com/history/2',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [
                 [
@@ -52,12 +58,21 @@ class HistoryControllerTest extends IntegrationTestCase
                     'meta' => [
                         'object_id' => 2,
                         'created' => '2016-05-13T07:09:23+00:00',
-                        'user_id' => 1,
+                        'user_id' => 5,
                         'application_id' => 1,
                         'user_action' => 'update',
                         'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
                     ],
                 ]
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
             ],
         ];
 
@@ -82,8 +97,21 @@ class HistoryControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/history/3',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/history/3',
+                'last' => 'http://api.example.com/history/3',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [],
+            'meta' => [
+                'pagination' => [
+                    'count' => 0,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 0,
+                    'page_size' => 20,
+                ],
+            ],
         ];
 
         $this->configRequestHeaders();
@@ -110,7 +138,7 @@ class HistoryControllerTest extends IntegrationTestCase
             ],
             'error' => [
                 'status' => '404',
-                'title' => 'Object "999" not found'
+                'title' => 'Unable to find "Objects" with ID "999"'
             ],
         ];
 
@@ -120,6 +148,58 @@ class HistoryControllerTest extends IntegrationTestCase
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         unset($result['error']['meta']);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `user` method.
+     *
+     * @return void
+     *
+     * @covers ::user()
+     * @covers ::checkExistence()
+     */
+    public function testUser()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/history/user/5',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/history/user/5',
+                'last' => 'http://api.example.com/history/user/5',
+                'prev' => null,
+                'next' => null,
+            ],
+            'data' => [
+                [
+                    'id' => '2',
+                    'type' => 'object_history',
+                    'meta' => [
+                        'object_id' => 2,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'user_id' => 5,
+                        'application_id' => 1,
+                        'user_action' => 'update',
+                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
+                    ],
+                ]
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 1,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 1,
+                    'page_size' => 20,
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/history/user/5');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
 }
