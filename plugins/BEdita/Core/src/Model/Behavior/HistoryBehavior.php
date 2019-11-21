@@ -13,14 +13,14 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use BEdita\Core\History\HistoryInterface;
+use BEdita\Core\History\HistoryTableRegistry;
+use BEdita\Core\Model\Entity\ObjectHistory;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
 use Cake\ORM\Behavior;
-use LogicException;
 
 /**
  * History behavior
@@ -34,15 +34,16 @@ class HistoryBehavior extends Behavior
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'model' => 'BEdita\Core\History\DefaultObjectHistory',
+        'table' => 'ObjectHistory',
+        'exclude' => ['type', 'id'],
     ];
 
     /**
-     *  History model
+     *  History table
      *
-     * @var \BEdida\Core\History\HistoryInterface
+     * @var \Cake\ORM\Table
      */
-    public $historyModel;
+    public $Table = null;
 
     /**
      * The changed properties.
@@ -58,10 +59,9 @@ class HistoryBehavior extends Behavior
     public function initialize(array $config)
     {
         parent::initialize($config);
-        $model = $this->getConfig('model');
-        $this->historyModel = new $model();
-        if (!$this->historyModel instanceof HistoryInterface) {
-            throw new \LogicException(__d('bedita', 'History model must implement HistoryInterface'));
+        $tableName = $this->getConfig('table');
+        if (!empty($tableName)) {
+            $this->Table = HistoryTableRegistry::get($tableName);
         }
     }
 
@@ -75,40 +75,43 @@ class HistoryBehavior extends Behavior
     public function beforeMarshal(Event $event, \ArrayObject $data)
     {
         $this->changed = $data->getArrayCopy();
+        $exclude = (array)$this->getConfig('exclude');
+        $this->changed = array_diff_key($this->changed, array_flip($exclude));
     }
 
     /**
      * Save user changed properties in history table or other datasource.
      *
      * @param \Cake\Event\Event $event Fired event.
-     * @param \Cake\Datasource\EntityInterface $entity Entity.
+     * @param \Cake\Datasource\EntityInterface $entity Entity data.
      * @return void
      */
     public function afterSave(Event $event, EntityInterface $entity): void
     {
-        if (empty($this->changed)) {
+        if (!$entity->isDirty('deleted') && (empty($this->changed) || empty($this->Table))) {
             return;
         }
-        $data = $this->historyData($entity);
-        $this->historyModel->addEvent($data);
+        $history = $this->historyEntity($entity);
+        $this->Table->saveOrFail($history);
     }
 
     /**
      * Retrieve history event data.
      *
      * @param EntityInterface $entity Object entity.
-     * @return array
+     * @return EntityInterface
      */
-    protected function historyData(EntityInterface $entity): array
+    protected function historyEntity(EntityInterface $entity): EntityInterface
     {
-        return [
-            'object_id' => $entity->get('id'),
-            'application_id' => CurrentApplication::getApplicationId(),
-            'user_id' => LoggedUser::id(),
-            'changed' => $this->changed,
-            'created' => Time::now(),
-            'user_action' => $this->entityUserAction($entity),
-        ];
+        $history = $this->Table->newEntity();
+        $history->object_id = $entity->get('id');
+        $history->application_id = CurrentApplication::getApplicationId();
+        $history->user_id = LoggedUser::id();
+        $history->changed = $this->changed;
+        $history->created = Time::now();
+        $history->user_action = $this->entityUserAction($entity);
+
+        return $history;
     }
 
     /**
@@ -145,8 +148,12 @@ class HistoryBehavior extends Behavior
      */
     public function afterDelete(Event $event, EntityInterface $entity)
     {
-        $data = $this->historyData($entity);
-        $data['user_action'] = 'remove';
-        $this->historyModel->addEvent($data);
+        if (empty($this->Table)) {
+            return;
+        }
+
+        $history = $this->historyEntity($entity);
+        $history->user_action = 'remove';
+        $this->Table->saveOrFail($history);
     }
 }

@@ -13,12 +13,10 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\History\HistoryInterface;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Behavior\HistoryBehavior
@@ -68,29 +66,10 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testInitialize()
     {
-        Configure::write(
-            'History.model',
-            new class () implements HistoryInterface
-            {
-                public function addEvent(array $data): void
-                {
-                }
-
-                public function readEvents($objectId, array $options = []): array
-                {
-                    return [];
-                }
-
-                public function readUserEvents($userId, array $options = []): array
-                {
-                    return [];
-                }
-            }
-        );
         $Documents = TableRegistry::get('Documents');
         $behavior = $Documents->getBehavior('History');
-        static::assertNotEmpty($behavior->historyModel);
-        static::assertNotEquals('BEdita\Core\History\DefaultObjectHistory', get_class($behavior->historyModel));
+        static::assertNotEmpty($behavior->Table);
+        static::assertEquals('BEdita\Core\Model\Table\ObjectHistoryTable', get_class($behavior->Table));
     }
 
     /**
@@ -100,22 +79,11 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testInitializeFailure()
     {
-        Configure::write(
-            'History.model',
-            new class ()
-            {
-                public function foo(): void
-                {
-                }
-            }
-        );
+        Configure::write('History.table', 'Roles');
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('History model must implement HistoryInterface');
+        $this->expectExceptionMessage('History table must implement "history" and "activity" finders');
 
         $Documents = TableRegistry::get('Documents');
-        $behavior = $Documents->getBehavior('History');
-        static::assertNotEmpty($behavior->historyModel);
-        static::assertEquals('BEdita\Core\History\DefaultObjectHistory', get_class($behavior->historyModel));
     }
 
     /**
@@ -127,15 +95,15 @@ class HistoryBehaviorTest extends TestCase
     {
         $Documents = TableRegistry::get('Documents');
         $data = [
-            'title' => 'hello history'
+            'type' => 'Documents',
+            'title' => 'hello history',
         ];
         $entity = $Documents->newEntity($data);
         $Documents->save($entity);
 
         $behavior = $Documents->getBehavior('History');
+        unset($data['type']);
         static::assertEquals($data, $behavior->changed);
-        static::assertNotEmpty($behavior->historyModel);
-        static::assertEquals('BEdita\Core\History\DefaultObjectHistory', get_class($behavior->historyModel));
     }
 
     /**
@@ -159,11 +127,7 @@ class HistoryBehaviorTest extends TestCase
         static::assertEquals($data, $behavior->changed);
 
         $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find()
-            ->where(['object_id' => 2])
-            ->order(['created' => 'DESC'])
-            ->first()
-            ->toArray();
+        $history = $ObjectHistory->find('history', [2])->last()->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
@@ -181,6 +145,28 @@ class HistoryBehaviorTest extends TestCase
     }
 
     /**
+     * Test `trash` and `restore` user actions
+     *
+     * @covers ::entityUserAction()
+     */
+    public function testTrashRestore()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->get(2);
+        $entity->deleted = true;
+        $entity = $Documents->saveOrFail($entity);
+
+        $ObjectHistory = TableRegistry::get('ObjectHistory');
+        $history = $ObjectHistory->find('history', [2])->last();
+        static::assertEquals('trash', $history->get('user_action'));
+
+        $entity->deleted = false;
+        $Documents->saveOrFail($entity);
+        $history = $ObjectHistory->find('history', [2])->last();
+        static::assertEquals('restore', $history->get('user_action'));
+    }
+
+    /**
      * Test `afterDelete` method
      *
      * @covers ::afterDelete()
@@ -189,5 +175,58 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testAfterDelete()
     {
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->get(2);
+        $Documents->delete($entity);
+
+        $ObjectHistory = TableRegistry::get('ObjectHistory');
+        $history = $ObjectHistory->find('history', [2])->last()->toArray();
+        static::assertNotEmpty($history);
+        $expected = [
+            'id' => 3,
+            'object_id' => 2,
+            'user_id' => 1,
+            'application_id' => null,
+            'user_action' => 'remove',
+            'changed' => [],
+        ];
+        static::assertNotEmpty($history['created']);
+        static::assertEquals('Cake\I18n\Time', get_class($history['created']));
+        unset($history['created']);
+        static::assertEquals($expected, $history);
+    }
+
+    /**
+     * Test `afterDelete` with empty table
+     *
+     * @covers ::afterDelete()
+     */
+    public function testAfterDeleteEmpty()
+    {
+        Configure::write('History', ['table' => null]);
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->get(2);
+        $Documents->delete($entity);
+
+        $ObjectHistory = TableRegistry::get('ObjectHistory');
+        $history = $ObjectHistory->find('history', [2])->toArray();
+        static::assertEquals(2, count($history));
+    }
+
+    /**
+     * Test `afterSave` with empty table
+     *
+     * @covers ::afterSave()
+     */
+    public function testAfterSaveEmpty()
+    {
+        Configure::write('History', ['table' => null]);
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->get(2);
+        $Documents->delete($entity);
+
+        $ObjectHistory = TableRegistry::get('ObjectHistory');
+        $history = $ObjectHistory->find('history', [2])->toArray();
+        static::assertEquals(2, count($history));
     }
 }
