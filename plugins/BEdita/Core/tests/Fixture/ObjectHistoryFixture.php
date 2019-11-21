@@ -33,7 +33,6 @@ class ObjectHistoryFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
             'object_id' => 2,
             'created' => '2016-05-13 07:09:22',
             'user_id' => 1,
@@ -43,7 +42,6 @@ class ObjectHistoryFixture extends TestFixture
 
         ],
         [
-            'id' => 2,
             'object_id' => 2,
             'created' => '2016-05-13 07:09:23',
             'user_id' => 1,
