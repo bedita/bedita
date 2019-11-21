@@ -68,4 +68,58 @@ class HistoryControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Test empty view method.
+     *
+     * @return void
+     *
+     * @covers ::view()
+     */
+    public function testEmpty()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/history/3',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/history/3');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test missing data method.
+     *
+     * @return void
+     *
+     * @covers ::view()
+     */
+    public function testMissing()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/history/999',
+                'home' => 'http://api.example.com/home',
+            ],
+            'error' => [
+                'status' => '404',
+                'title' => 'Object "999" not found'
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/history/999');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+        unset($result['error']['meta']);
+        $this->assertEquals($expected, $result);
+    }
 }
