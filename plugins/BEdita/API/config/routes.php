@@ -212,6 +212,11 @@ Router::plugin(
             ['controller' => 'History', 'action' => 'view', '_method' => 'GET'],
             ['_name' => 'history:view', 'pass' => ['id']]
         );
+        $routes->connect(
+            '/history/user/:id',
+            ['controller' => 'History', 'action' => 'user', '_method' => 'GET'],
+            ['_name' => 'history:user', 'pass' => ['id']]
+        );
 
         // Objects.
         $routes->connect(
