@@ -42,7 +42,7 @@ class ObjectHistory extends AbstractMigration
             ->addColumn('user_id', 'integer', [
                 'comment' => 'link to user',
                 'limit' => 10,
-                'null' => false,
+                'null' => true,
                 'signed' => false,
             ])
             ->addColumn('application_id', 'integer', [
