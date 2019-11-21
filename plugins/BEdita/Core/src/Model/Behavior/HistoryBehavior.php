@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\History\HistoryTableRegistry;
-use BEdita\Core\Model\Entity\ObjectHistory;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
