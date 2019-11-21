@@ -13,6 +13,8 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\ORM\Entity;
+use BEdita\Core\Model\Entity\JsonApiTrait;
+use BEdita\Core\Utility\JsonApiSerializable;
 
 /**
  * ObjectHistory Entity
@@ -29,8 +31,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\User $user
  * @property \BEdita\Core\Model\Entity\Application $application
  */
-class ObjectHistory extends Entity
+class ObjectHistory extends Entity implements JsonApiSerializable
 {
+    use JsonApiTrait;
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -41,14 +45,6 @@ class ObjectHistory extends Entity
      * @var array
      */
     protected $_accessible = [
-        'object_id' => true,
-        'created' => true,
-        'user_id' => true,
-        'application_id' => true,
-        'user_action' => true,
-        'changed' => true,
-        'object' => true,
-        'user' => true,
-        'application' => true
+        '*' => false,
     ];
 }

@@ -44,7 +44,10 @@ class DefaultObjectHistory implements HistoryInterface
      */
     public function addEvent(array $data): void
     {
-        $entity = $this->HistoryTable->newEntity($data);
+        $entity = $this->HistoryTable->newEntity();
+        foreach ($data as $k => $v) {
+            $entity->set($k, $v);
+        }
         $this->HistoryTable->saveOrFail($entity);
     }
 
@@ -53,7 +56,10 @@ class DefaultObjectHistory implements HistoryInterface
      */
     public function readEvents($objectId, array $options = []): array
     {
-        return [];
+        return $this->HistoryTable->find()
+                    ->where(['object_id' => $objectId])
+                    ->order(['created' => 'ASC'])
+                    ->toArray();
     }
 
     /**
