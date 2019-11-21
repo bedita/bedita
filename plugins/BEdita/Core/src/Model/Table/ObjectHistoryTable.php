@@ -43,6 +43,7 @@ class ObjectHistoryTable extends Table
      *
      * @param array $config The configuration for the Table.
      * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -88,7 +89,8 @@ class ObjectHistoryTable extends Table
             ->allowEmptyString('user_action');
 
         $validator
-            ->allowEmptyString('changed');
+            ->requirePresence('object_id')
+            ->notEmpty('object_id');
 
         return $validator;
     }

@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Table\ObjectHistoryTable
@@ -125,5 +126,51 @@ class ObjectHistoryTableTest extends TestCase
         $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing or malformed required parameter "id"');
         $this->ObjectHistory->find($finder, $options)->first();
+    }
+
+    /**
+     * Data provider for `testValidation` test case.
+     *
+     * @return array
+     */
+    public function validationProvider()
+    {
+        return [
+            'ok' => [
+                [],
+                [
+                    'user_id' => 1,
+                    'object_id' => '2',
+                ],
+            ],
+            'invalid 1' => [
+                [
+                    'object_id._required',
+                ],
+                [
+                    'application_id' => 2,
+                    'user_id' => 1,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test validation.
+     *
+     * @param string[] $expected Expected errors.
+     * @param array $data Data.
+     * @return void
+     *
+     * @dataProvider validationProvider
+     * @covers ::validationDefault()
+     */
+    public function testValidation(array $expected, array $data)
+    {
+        $entity = $this->ObjectHistory->newEntity();
+        $entity = $this->ObjectHistory->patchEntity($entity, $data);
+        $errors = array_keys(Hash::flatten($entity->getErrors()));
+
+        static::assertEquals($expected, $errors);
     }
 }

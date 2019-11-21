@@ -169,6 +169,22 @@ class HistoryBehaviorTest extends TestCase
     }
 
     /**
+     * Test `create` user action
+     *
+     * @covers ::entityUserAction()
+     */
+    public function testCreate()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->newEntity();
+        $Documents->patchEntity($entity, ['title' => 'new doc']);
+        $entity = $Documents->saveOrFail($entity);
+
+        $history = TableRegistry::get('ObjectHistory')->find('history', [$entity->get('id')])->last();
+        static::assertEquals('create', $history->get('user_action'));
+    }
+
+    /**
      * Test `afterDelete` method
      *
      * @covers ::afterDelete()
@@ -225,7 +241,8 @@ class HistoryBehaviorTest extends TestCase
         Configure::write('History', ['table' => null]);
         $Documents = TableRegistry::get('Documents');
         $entity = $Documents->get(2);
-        $Documents->delete($entity);
+        $Documents->patchEntity($entity, ['title' => 'new title']);
+        $Documents->saveOrFail($entity);
 
         $ObjectHistory = TableRegistry::get('ObjectHistory');
         $history = $ObjectHistory->find('history', [2])->toArray();
