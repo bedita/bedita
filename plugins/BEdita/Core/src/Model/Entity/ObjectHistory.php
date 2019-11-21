@@ -12,9 +12,9 @@
  */
 namespace BEdita\Core\Model\Entity;
 
-use Cake\ORM\Entity;
 use BEdita\Core\Model\Entity\JsonApiTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\ORM\Entity;
 
 /**
  * ObjectHistory Entity

@@ -12,9 +12,9 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\ORM\TableRegistry;
 use BEdita\Core\History\HistoryInterface;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\ORM\TableRegistry;
 
 /**
  * Controller for `/history` endpoint.
