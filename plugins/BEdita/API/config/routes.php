@@ -206,6 +206,13 @@ Router::plugin(
             ['_name' => 'config:index']
         );
 
+        // History.
+        $routes->connect(
+            '/history/:id',
+            ['controller' => 'History', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'history:view', 'pass' => ['id']]
+        );
+
         // Objects.
         $routes->connect(
             '/:object_type',
