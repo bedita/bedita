@@ -498,6 +498,9 @@ CREATE TABLE objects (
   comments VARCHAR(10) DEFAULT 'off' COMMENT 'define if an object is commentable (on, off, moderated)',
   PRIMARY KEY(id),
   INDEX objects_FKIndex1(object_type_id),
+  INDEX objects_created_FKIndex2(created),
+  INDEX objects_modified_FKIndex3(modified),
+  INDEX objects_publisher_FKIndex4(publisher),
   UNIQUE nickname_idx(nickname),
   FOREIGN KEY(user_created)
     REFERENCES users(id)
