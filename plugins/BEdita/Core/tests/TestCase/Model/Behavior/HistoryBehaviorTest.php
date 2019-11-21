@@ -38,6 +38,8 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.ObjectHistory',
     ];
 
@@ -110,7 +112,7 @@ class HistoryBehaviorTest extends TestCase
      * Test `afterSave` method
      *
      * @covers ::afterSave()
-     * @covers ::historyData()
+     * @covers ::historyEntity()
      * @covers ::entityUserAction()
      */
     public function testAfterSave()
@@ -170,7 +172,7 @@ class HistoryBehaviorTest extends TestCase
      * Test `afterDelete` method
      *
      * @covers ::afterDelete()
-     * @covers ::historyData()
+     * @covers ::historyEntity()
      * @covers ::entityUserAction()
      */
     public function testAfterDelete()

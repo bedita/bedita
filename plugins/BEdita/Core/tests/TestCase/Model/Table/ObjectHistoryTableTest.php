@@ -17,7 +17,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\ObjectHistoryTable Test Case
+ * @coversDefaultClass \BEdita\Core\Model\Table\ObjectHistoryTable
  */
 class ObjectHistoryTableTest extends TestCase
 {
