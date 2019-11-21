@@ -87,7 +87,7 @@ class HistoryBehavior extends Behavior
      */
     public function afterSave(Event $event, EntityInterface $entity): void
     {
-        if (!$entity->isDirty('deleted') && (empty($this->changed) || empty($this->Table))) {
+        if (empty($this->Table) || (empty($this->changed) && !$entity->isDirty('deleted'))) {
             return;
         }
         $history = $this->historyEntity($entity);
