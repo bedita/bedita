@@ -335,7 +335,6 @@ class JsonApiTraitTest extends TestCase
         $doc->modified_by = 1;
         $doc = TableRegistry::get('Objects')->saveOrFail($doc);
 
-        LoggedUser::setUser(['id' => 1]);
         $usersTable->delete($usersTable->get(5));
 
         $expected = [

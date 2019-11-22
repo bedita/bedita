@@ -671,7 +671,6 @@ class ObjectTypesTableTest extends TestCase
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
-        LoggedUser::setUser(['id' => 1]);
         $success = $table->save($entity);
         static::assertTrue((bool)$success);
 
