@@ -208,14 +208,9 @@ Router::plugin(
 
         // History.
         $routes->connect(
-            '/history/:id',
-            ['controller' => 'History', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'history:view', 'pass' => ['id']]
-        );
-        $routes->connect(
-            '/history/user/:id',
-            ['controller' => 'History', 'action' => 'user', '_method' => 'GET'],
-            ['_name' => 'history:user', 'pass' => ['id']]
+            '/history',
+            ['controller' => 'History', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'history:index']
         );
 
         // Objects.

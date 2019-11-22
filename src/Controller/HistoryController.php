@@ -12,10 +12,9 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\History\HistoryTableRegistry;
+use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\Configure;
-use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -41,19 +40,22 @@ class HistoryController extends AppController
         parent::initialize();
 
         $historyTable = (string)Configure::read('History.table', 'History');
-        $this->HistoryTable = HistoryTableRegistry::get($historyTable);
+        $this->HistoryTable = TableRegistry::getTableLocator()->get($historyTable);
     }
 
     /**
-     * View object history.
+     * History index.
      *
-     * @param int|string $id Object ID.
      * @return void
      */
-    public function view($id)
+    public function index()
     {
-        $this->checkExistence($id);
-        $query = $this->HistoryTable->find('history', [$id]);
+        $this->request->allowMethod('get');
+
+        $filter = (array)$this->request->getQuery('filter');
+        $action = new ListEntitiesAction(['table' => $this->HistoryTable]);
+        $query = $action(compact('filter'));
+        $this->set('_fields', $this->request->getQuery('fields', []));
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
@@ -62,41 +64,5 @@ class HistoryController extends AppController
             '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS |
                 JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS
         ]);
-    }
-
-    /**
-     * View user activity history.
-     *
-     * @param int|string $id User ID.
-     * @return void
-     */
-    public function user($id)
-    {
-        $this->checkExistence($id, 'Users');
-        $query = $this->HistoryTable->find('activity', [$id]);
-        $data = $this->paginate($query);
-
-        $this->set(compact('data'));
-        $this->set([
-            '_serialize' => ['data'],
-            '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS |
-                JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS
-        ]);
-    }
-
-    /**
-     * Check for object/user existence
-     *
-     * @param string|int $id Object or user id
-     * @param string $type Type to search, 'Objects' or 'Users'
-     * @return void
-     * @throws NotFoundException
-     */
-    protected function checkExistence($id, string $type = 'Objects')
-    {
-        $Table = TableRegistry::getTableLocator()->get($type);
-        if (!$Table->exists(['id' => $id])) {
-            throw new NotFoundException(__d('bedita', 'Unable to find "{0}" with ID "{1}"', $type, $id));
-        }
     }
 }
