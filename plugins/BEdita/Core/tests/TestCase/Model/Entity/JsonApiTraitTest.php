@@ -57,7 +57,7 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
-        'plugin.BEdita/Core.ObjectHistory',
+        'plugin.BEdita/Core.History',
     ];
 
     /**

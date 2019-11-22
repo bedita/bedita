@@ -28,7 +28,7 @@ class HistoryTableRegistryTest extends TestCase
      */
     public function testGet()
     {
-        $history = HistoryTableRegistry::get('ObjectHistory');
+        $history = HistoryTableRegistry::get('History');
         static::assertNotEmpty($history);
     }
 

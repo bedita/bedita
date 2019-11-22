@@ -33,8 +33,9 @@ class HistoryBehavior extends Behavior
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'table' => 'ObjectHistory',
+        'table' => 'History',
         'exclude' => ['type', 'id'],
+        'resource_type' => 'objects',
     ];
 
     /**
@@ -102,8 +103,10 @@ class HistoryBehavior extends Behavior
      */
     protected function historyEntity(EntityInterface $entity): EntityInterface
     {
+        /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->Table->newEntity();
-        $history->object_id = $entity->get('id');
+        $history->resource_id = $entity->get('id');
+        $history->resource_type = $this->getConfig('resource_type');
         $history->application_id = CurrentApplication::getApplicationId();
         $history->user_id = LoggedUser::id();
         $history->changed = $this->changed;
@@ -151,6 +154,7 @@ class HistoryBehavior extends Behavior
             return;
         }
 
+        /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->historyEntity($entity);
         $history->user_action = 'remove';
         $this->Table->saveOrFail($history);

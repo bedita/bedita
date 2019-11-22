@@ -19,24 +19,23 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * ObjectHistory Model
+ * History Model
  *
- * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
  *
- * @method \BEdita\Core\Model\Entity\ObjectHistory get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectHistory findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\History get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\History newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\History saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\History patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class ObjectHistoryTable extends Table
+class HistoryTable extends Table
 {
     /**
      * Initialize method
@@ -49,17 +48,12 @@ class ObjectHistoryTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('object_history');
+        $this->setTable('history');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Objects', [
-            'foreignKey' => 'object_id',
-            'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
-        ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
@@ -89,8 +83,8 @@ class ObjectHistoryTable extends Table
             ->allowEmptyString('user_action');
 
         $validator
-            ->requirePresence('object_id')
-            ->notEmpty('object_id');
+            ->requirePresence('resource_id')
+            ->notEmpty('resource_id');
 
         return $validator;
     }
@@ -120,8 +114,15 @@ class ObjectHistoryTable extends Table
         if (empty($options[0]) || (!is_int($options[0]) && !is_string($options[0]))) {
             throw new BadFilterException(__d('bedita', 'Missing or malformed required parameter "{0}"', 'id'));
         }
+        $condition = [
+            $this->aliasField('resource_id') => $options[0],
+            $this->aliasField('resource_type') => 'objects'
+        ];
+        if (!empty($options[1])) {
+            $condition[$this->aliasField('resource_type')] = $options[1];
+        }
 
-        return $query->where([$this->aliasField('object_id') => $options[0]])
+        return $query->where($condition)
                 ->order([$this->aliasField('created') => 'ASC']);
     }
 

@@ -18,16 +18,16 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectHistoryTable
+ * @coversDefaultClass \BEdita\Core\Model\Table\HistoryTable
  */
-class ObjectHistoryTableTest extends TestCase
+class HistoryTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\ObjectHistoryTable
+     * @var \BEdita\Core\Model\Table\HistoryTable
      */
-    public $ObjectHistory;
+    public $History;
 
     /**
      * Fixtures
@@ -35,7 +35,7 @@ class ObjectHistoryTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.ObjectHistory',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -47,7 +47,7 @@ class ObjectHistoryTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->ObjectHistory = TableRegistry::getTableLocator()->get('ObjectHistory');
+        $this->History = TableRegistry::getTableLocator()->get('History');
     }
 
     /**
@@ -57,7 +57,7 @@ class ObjectHistoryTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ObjectHistory);
+        unset($this->History);
 
         parent::tearDown();
     }
@@ -70,12 +70,27 @@ class ObjectHistoryTableTest extends TestCase
      */
     public function testFindHistory()
     {
-        $result = $this->ObjectHistory->find('history', [2])
+        $result = $this->History->find('history', [2])
             ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
             ->toArray();
 
         $expected = [1 => 1, 2 => 2];
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `findHistory` method for resources
+     *
+     * @covers ::findHistory()
+     * @return void
+     */
+    public function testFindResourceHistory()
+    {
+        $result = $this->History->find('history', [2, 'roles'])
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals([], $result);
     }
 
     /**
@@ -86,7 +101,7 @@ class ObjectHistoryTableTest extends TestCase
      */
     public function testFindActivity()
     {
-        $result = $this->ObjectHistory->find('activity', [5])
+        $result = $this->History->find('activity', [5])
             ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
             ->toArray();
 
@@ -125,7 +140,7 @@ class ObjectHistoryTableTest extends TestCase
     {
         $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing or malformed required parameter "id"');
-        $this->ObjectHistory->find($finder, $options)->first();
+        $this->History->find($finder, $options)->first();
     }
 
     /**
@@ -140,12 +155,12 @@ class ObjectHistoryTableTest extends TestCase
                 [],
                 [
                     'user_id' => 1,
-                    'object_id' => '2',
+                    'resource_id' => '2',
                 ],
             ],
             'invalid 1' => [
                 [
-                    'object_id._required',
+                    'resource_id._required',
                 ],
                 [
                     'application_id' => 2,
@@ -167,8 +182,8 @@ class ObjectHistoryTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->ObjectHistory->newEntity();
-        $entity = $this->ObjectHistory->patchEntity($entity, $data);
+        $entity = $this->History->newEntity();
+        $entity = $this->History->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
         static::assertEquals($expected, $errors);

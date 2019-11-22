@@ -40,7 +40,7 @@ class HistoryController extends AppController
     {
         parent::initialize();
 
-        $historyTable = (string)Configure::read('History.table', 'ObjectHistory');
+        $historyTable = (string)Configure::read('History.table', 'History');
         $this->HistoryTable = HistoryTableRegistry::get($historyTable);
     }
 

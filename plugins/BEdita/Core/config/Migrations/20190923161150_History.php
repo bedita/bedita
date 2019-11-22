@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class ObjectHistory extends AbstractMigration
+class History extends AbstractMigration
 {
     /**
      * {@inheritDoc}
@@ -17,7 +17,7 @@ class ObjectHistory extends AbstractMigration
         $enum = in_array('enum', $columnTypes) ? 'enum' : 'string';
         $json = in_array('json', $columnTypes) ? 'json' : 'text';
 
-        $this->table('object_history')
+        $this->table('history')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
                 'default' => null,
@@ -26,12 +26,17 @@ class ObjectHistory extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('object_id', 'integer', [
-                'comment' => 'link to object',
+            ->addColumn('resource_id', 'string', [
+                'comment' => 'resource identifier, may be integer or string',
                 'default' => null,
-                'limit' => 10,
+                'limit' => 255,
                 'null' => false,
-                'signed' => false,
+            ])
+            ->addColumn('resource_type', 'string', [
+                'comment' => 'resource type name, defaults to objects',
+                'default' => 'objects',
+                'limit' => 128,
+                'null' => true,
             ])
             ->addColumn('created', 'timestamp', [
                 'comment' => 'change action time',
@@ -66,10 +71,18 @@ class ObjectHistory extends AbstractMigration
             ])
             ->addIndex(
                 [
-                    'object_id',
+                    'resource_id',
                 ],
                 [
-                    'name' => 'objecthistory_objectid_idx',
+                    'name' => 'history_resourceid_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'resource_type',
+                ],
+                [
+                    'name' => 'history_resourcetype_idx',
                 ]
             )
             ->addIndex(
@@ -77,7 +90,7 @@ class ObjectHistory extends AbstractMigration
                     'user_id',
                 ],
                 [
-                    'name' => 'objecthistory_userid_idx',
+                    'name' => 'history_userid_idx',
                 ]
             )
             ->create();
@@ -88,7 +101,8 @@ class ObjectHistory extends AbstractMigration
      */
     public function down()
     {
-        $this->table('object_history')
-            ->drop();
+        $this->table('history')
+            ->drop()
+            ->save();
     }
 }

@@ -55,7 +55,7 @@ class ObjectTypesTableTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
-        'plugin.BEdita/Core.ObjectHistory',
+        'plugin.BEdita/Core.History',
     ];
 
     /**

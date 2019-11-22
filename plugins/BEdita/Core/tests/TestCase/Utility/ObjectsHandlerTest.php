@@ -40,7 +40,7 @@ class ObjectsHandlerTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Trees',
-        'plugin.BEdita/Core.ObjectHistory',
+        'plugin.BEdita/Core.History',
     ];
 
     /**

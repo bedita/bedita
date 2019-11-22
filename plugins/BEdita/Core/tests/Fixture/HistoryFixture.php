@@ -15,16 +15,16 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * ObjectHistoryFixture
+ * HistoryFixture
  *
  * @since 4.0.1
  */
-class ObjectHistoryFixture extends TestFixture
+class HistoryFixture extends TestFixture
 {
     /**
      * {@inheritDoc}
      */
-    public $table = 'object_history';
+    public $table = 'history';
 
     /**
      * Records
@@ -33,7 +33,8 @@ class ObjectHistoryFixture extends TestFixture
      */
     public $records = [
         [
-            'object_id' => 2,
+            'resource_id' => '2',
+            'resource_type' => 'objects',
             'created' => '2016-05-13 07:09:22',
             'user_id' => 1,
             'application_id' => 1,
@@ -42,7 +43,8 @@ class ObjectHistoryFixture extends TestFixture
 
         ],
         [
-            'object_id' => 2,
+            'resource_id' => '2',
+            'resource_type' => 'objects',
             'created' => '2016-05-13 07:09:23',
             'user_id' => 5,
             'application_id' => 1,

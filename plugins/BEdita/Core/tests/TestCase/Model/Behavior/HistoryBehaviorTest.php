@@ -40,7 +40,7 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Trees',
-        'plugin.BEdita/Core.ObjectHistory',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -71,7 +71,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents = TableRegistry::get('Documents');
         $behavior = $Documents->getBehavior('History');
         static::assertNotEmpty($behavior->Table);
-        static::assertEquals('BEdita\Core\Model\Table\ObjectHistoryTable', get_class($behavior->Table));
+        static::assertEquals('BEdita\Core\Model\Table\HistoryTable', get_class($behavior->Table));
     }
 
     /**
@@ -128,12 +128,13 @@ class HistoryBehaviorTest extends TestCase
         $behavior = $Documents->getBehavior('History');
         static::assertEquals($data, $behavior->changed);
 
-        $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find('history', [2])->last()->toArray();
+        $History = TableRegistry::get('History');
+        $history = $History->find('history', [2])->last()->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
-            'object_id' => 2,
+            'resource_id' => '2',
+            'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
             'user_action' => 'update',
@@ -158,13 +159,13 @@ class HistoryBehaviorTest extends TestCase
         $entity->deleted = true;
         $entity = $Documents->saveOrFail($entity);
 
-        $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find('history', [2])->last();
+        $History = TableRegistry::get('History');
+        $history = $History->find('history', [2])->last();
         static::assertEquals('trash', $history->get('user_action'));
 
         $entity->deleted = false;
         $Documents->saveOrFail($entity);
-        $history = $ObjectHistory->find('history', [2])->last();
+        $history = $History->find('history', [2])->last();
         static::assertEquals('restore', $history->get('user_action'));
     }
 
@@ -180,7 +181,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents->patchEntity($entity, ['title' => 'new doc']);
         $entity = $Documents->saveOrFail($entity);
 
-        $history = TableRegistry::get('ObjectHistory')->find('history', [$entity->get('id')])->last();
+        $history = TableRegistry::get('History')->find('history', [$entity->get('id')])->last();
         static::assertEquals('create', $history->get('user_action'));
     }
 
@@ -197,12 +198,13 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find('history', [2])->last()->toArray();
+        $History = TableRegistry::get('History');
+        $history = $History->find('history', [2])->last()->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
-            'object_id' => 2,
+            'resource_id' => '2',
+            'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
             'user_action' => 'remove',
@@ -226,8 +228,8 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find('history', [2])->toArray();
+        $History = TableRegistry::get('History');
+        $history = $History->find('history', [2])->toArray();
         static::assertEquals(2, count($history));
     }
 
@@ -244,8 +246,8 @@ class HistoryBehaviorTest extends TestCase
         $Documents->patchEntity($entity, ['title' => 'new title']);
         $Documents->saveOrFail($entity);
 
-        $ObjectHistory = TableRegistry::get('ObjectHistory');
-        $history = $ObjectHistory->find('history', [2])->toArray();
+        $History = TableRegistry::get('History');
+        $history = $History->find('history', [2])->toArray();
         static::assertEquals(2, count($history));
     }
 }
