@@ -29,7 +29,7 @@ jobs:
         - mysql
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 10 on PHP 7.2"
-      stage: complete
+      stage: minimal
       php: 7.2
       services:
         - postgresql
