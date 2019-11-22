@@ -20,22 +20,21 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 class HistoryControllerTest extends IntegrationTestCase
 {
     /**
-     * Test view method.
+     * Test index method.
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::index()
      * @covers ::initialize()
-     * @covers ::checkExistence()
      */
-    public function testView()
+    public function testIndex()
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/history/2',
+                'self' => 'http://api.example.com/history?filter%5Bresource_id%5D=2&filter%5Bresource_type%5D=objects',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/history/2',
-                'last' => 'http://api.example.com/history/2',
+                'first' => 'http://api.example.com/history?filter%5Bresource_id%5D=2&filter%5Bresource_type%5D=objects',
+                'last' => 'http://api.example.com/history?filter%5Bresource_id%5D=2&filter%5Bresource_type%5D=objects',
                 'prev' => null,
                 'next' => null,
             ],
@@ -79,7 +78,7 @@ class HistoryControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/history/2');
+        $this->get('/history?filter[resource_id]=2&filter[resource_type]=objects');
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -91,16 +90,16 @@ class HistoryControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::index()
      */
     public function testEmpty()
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/history/3',
+                'self' => 'http://api.example.com/history?filter%5Bresource_id%5D=999&filter%5Bresource_type%5D=objects',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/history/3',
-                'last' => 'http://api.example.com/history/3',
+                'first' => 'http://api.example.com/history?filter%5Bresource_id%5D=999&filter%5Bresource_type%5D=objects',
+                'last' => 'http://api.example.com/history?filter%5Bresource_id%5D=999&filter%5Bresource_type%5D=objects',
                 'prev' => null,
                 'next' => null,
             ],
@@ -117,7 +116,7 @@ class HistoryControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/history/3');
+        $this->get('/history?filter[resource_id]=999&filter[resource_type]=objects');
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -125,51 +124,20 @@ class HistoryControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test missing data method.
-     *
-     * @return void
-     *
-     * @covers ::view()
-     * @covers ::checkExistence()
-     */
-    public function testMissing()
-    {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/history/999',
-                'home' => 'http://api.example.com/home',
-            ],
-            'error' => [
-                'status' => '404',
-                'title' => 'Unable to find "Objects" with ID "999"'
-            ],
-        ];
-
-        $this->configRequestHeaders();
-        $this->get('/history/999');
-        $result = json_decode((string)$this->_response->getBody(), true);
-        $this->assertResponseCode(404);
-        $this->assertContentType('application/vnd.api+json');
-        unset($result['error']['meta']);
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * Test `user` method.
+     * Test `user_id` filter method.
      *
      * @return void
      *
      * @covers ::user()
-     * @covers ::checkExistence()
      */
     public function testUser()
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/history/user/5',
+                'self' => 'http://api.example.com/history?filter%5Buser_id%5D=5',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/history/user/5',
-                'last' => 'http://api.example.com/history/user/5',
+                'first' => 'http://api.example.com/history?filter%5Buser_id%5D=5',
+                'last' => 'http://api.example.com/history?filter%5Buser_id%5D=5',
                 'prev' => null,
                 'next' => null,
             ],
@@ -200,7 +168,7 @@ class HistoryControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/history/user/5');
+        $this->get('/history?filter[user_id]=5');
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

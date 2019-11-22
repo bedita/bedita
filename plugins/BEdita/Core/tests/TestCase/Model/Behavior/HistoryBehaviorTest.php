@@ -75,20 +75,6 @@ class HistoryBehaviorTest extends TestCase
     }
 
     /**
-     * Test `initialize` failure method
-     *
-     * @covers ::initialize()
-     */
-    public function testInitializeFailure()
-    {
-        Configure::write('History.table', 'Roles');
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('History table must implement "history" and "activity" finders');
-
-        $Documents = TableRegistry::get('Documents');
-    }
-
-    /**
      * Test `beforeMarshal` method
      *
      * @covers ::beforeMarshal()
@@ -128,8 +114,10 @@ class HistoryBehaviorTest extends TestCase
         $behavior = $Documents->getBehavior('History');
         static::assertEquals($data, $behavior->changed);
 
-        $History = TableRegistry::get('History');
-        $history = $History->find('history', [2])->last()->toArray();
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->last()
+                ->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
@@ -160,12 +148,16 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->saveOrFail($entity);
 
         $History = TableRegistry::get('History');
-        $history = $History->find('history', [2])->last();
+        $history = $History->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->last();
         static::assertEquals('trash', $history->get('user_action'));
 
         $entity->deleted = false;
         $Documents->saveOrFail($entity);
-        $history = $History->find('history', [2])->last();
+        $history = $History->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->last();
         static::assertEquals('restore', $history->get('user_action'));
     }
 
@@ -181,7 +173,9 @@ class HistoryBehaviorTest extends TestCase
         $Documents->patchEntity($entity, ['title' => 'new doc']);
         $entity = $Documents->saveOrFail($entity);
 
-        $history = TableRegistry::get('History')->find('history', [$entity->get('id')])->last();
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => $entity->get('id'), 'resource_type' => 'objects'])
+                ->last();
         static::assertEquals('create', $history->get('user_action'));
     }
 
@@ -198,8 +192,10 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $History = TableRegistry::get('History');
-        $history = $History->find('history', [2])->last()->toArray();
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->last()
+                ->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
@@ -228,8 +224,9 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $History = TableRegistry::get('History');
-        $history = $History->find('history', [2])->toArray();
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->toArray();
         static::assertEquals(2, count($history));
     }
 
@@ -246,8 +243,9 @@ class HistoryBehaviorTest extends TestCase
         $Documents->patchEntity($entity, ['title' => 'new title']);
         $Documents->saveOrFail($entity);
 
-        $History = TableRegistry::get('History');
-        $history = $History->find('history', [2])->toArray();
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->toArray();
         static::assertEquals(2, count($history));
     }
 }

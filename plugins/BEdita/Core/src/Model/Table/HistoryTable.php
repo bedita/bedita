@@ -84,7 +84,7 @@ class HistoryTable extends Table
 
         $validator
             ->requirePresence('resource_id')
-            ->notEmpty('resource_id');
+            ->notEmptyString('resource_id');
 
         return $validator;
     }
@@ -99,48 +99,5 @@ class HistoryTable extends Table
         $schema->setColumnType('changed', 'json');
 
         return $schema;
-    }
-
-    /**
-     * Find history event data of a single object.
-     *
-     * @param \Cake\ORM\Query $query Query object.
-     * @param array $options Additional options. The first element containing object `id`.
-     * @return \Cake\ORM\Query
-     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
-     */
-    protected function findHistory(Query $query, array $options): Query
-    {
-        if (empty($options[0]) || (!is_int($options[0]) && !is_string($options[0]))) {
-            throw new BadFilterException(__d('bedita', 'Missing or malformed required parameter "{0}"', 'id'));
-        }
-        $condition = [
-            $this->aliasField('resource_id') => $options[0],
-            $this->aliasField('resource_type') => 'objects'
-        ];
-        if (!empty($options[1])) {
-            $condition[$this->aliasField('resource_type')] = $options[1];
-        }
-
-        return $query->where($condition)
-                ->order([$this->aliasField('created') => 'ASC']);
-    }
-
-    /**
-     * Find history activity data of a user.
-     *
-     * @param \Cake\ORM\Query $query Query object.
-     * @param array $options Additional options. The first element containing user `id`.
-     * @return \Cake\ORM\Query
-     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
-     */
-    protected function findActivity(Query $query, array $options): Query
-    {
-        if (empty($options[0]) || (!is_int($options[0]) && !is_string($options[0]))) {
-            throw new BadFilterException(__d('bedita', 'Missing or malformed required parameter "{0}"', 'id'));
-        }
-
-        return $query->where([$this->aliasField('user_id') => $options[0]])
-                ->order([$this->aliasField('created') => 'ASC']);
     }
 }

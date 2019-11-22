@@ -13,13 +13,13 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use BEdita\Core\History\HistoryTableRegistry;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
 use Cake\ORM\Behavior;
+use Cake\ORM\TableRegistry;
 
 /**
  * History behavior
@@ -59,9 +59,9 @@ class HistoryBehavior extends Behavior
     public function initialize(array $config)
     {
         parent::initialize($config);
-        $tableName = $this->getConfig('table');
-        if (!empty($tableName)) {
-            $this->Table = HistoryTableRegistry::get($tableName);
+        $table = $this->getConfig('table');
+        if (!empty($table)) {
+            $this->Table = TableRegistry::getTableLocator()->get($table);
         }
     }
 
