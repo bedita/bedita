@@ -42,9 +42,10 @@ class HistoryControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'object_history',
+                    'type' => 'history',
                     'meta' => [
-                        'object_id' => 2,
+                        'resource_id' => 2,
+                        'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:22+00:00',
                         'user_id' => 1,
                         'application_id' => 1,
@@ -54,9 +55,10 @@ class HistoryControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '2',
-                    'type' => 'object_history',
+                    'type' => 'history',
                     'meta' => [
-                        'object_id' => 2,
+                        'resource_id' => 2,
+                        'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:23+00:00',
                         'user_id' => 5,
                         'application_id' => 1,
@@ -174,9 +176,10 @@ class HistoryControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '2',
-                    'type' => 'object_history',
+                    'type' => 'history',
                     'meta' => [
-                        'object_id' => 2,
+                        'resource_id' => 2,
+                        'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:23+00:00',
                         'user_id' => 5,
                         'application_id' => 1,
