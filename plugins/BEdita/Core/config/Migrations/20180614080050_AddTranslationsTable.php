@@ -204,6 +204,7 @@ class AddTranslationsTable extends AbstractMigration
             ->update();
 
         $this->table('translations')
-            ->drop();
+            ->drop()
+            ->save();
     }
 }
