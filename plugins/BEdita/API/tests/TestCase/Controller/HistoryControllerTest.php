@@ -128,7 +128,7 @@ class HistoryControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::user()
+     * @coversNothing
      */
     public function testUser()
     {
