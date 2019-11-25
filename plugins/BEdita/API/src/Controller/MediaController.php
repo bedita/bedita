@@ -75,7 +75,7 @@ class MediaController extends ObjectsController
      * @param array $ids Object ids array
      * @return array
      */
-    protected function getAvailableIds(array $ids) : array
+    protected function getAvailableIds(array $ids): array
     {
         if (empty($ids)) {
             return $ids;
@@ -132,7 +132,7 @@ class MediaController extends ObjectsController
      * @param array $thumbnails Thumbnail array
      * @return void
      */
-    protected function fetchProviderThumbs(array $ids, array &$thumbnails) : void
+    protected function fetchProviderThumbs(array $ids, array &$thumbnails): void
     {
         $mediaIds = array_diff($ids, (array)Hash::extract($thumbnails, '{n}.id'));
         if (empty($mediaIds)) {

@@ -25,7 +25,6 @@ use Cake\Utility\Hash;
  */
 class SaveEntityAction extends BaseAction
 {
-
     use LogTrait;
 
     /**

@@ -47,7 +47,7 @@ class Properties
      * @param array $options Table locator options
      * @return void
      */
-    public static function create(array $properties, array $options = []) : void
+    public static function create(array $properties, array $options = []): void
     {
         $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
 
@@ -71,7 +71,7 @@ class Properties
      * @param array $options Table locator options
      * @return void
      */
-    public static function remove(array $properties, array $options = []) : void
+    public static function remove(array $properties, array $options = []): void
     {
         $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
@@ -98,7 +98,7 @@ class Properties
      * @return void
      * @throws BadRequestException
      */
-    protected static function validate(array $data) : void
+    protected static function validate(array $data): void
     {
         $required = ['name', 'object', 'property'];
         $diff = array_diff_key(array_flip($required), array_filter($data));

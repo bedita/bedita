@@ -65,7 +65,7 @@ trait SingletonTrait
     final public static function getInstance()
     {
         if (static::$uniqueInstance === null) {
-            static::$uniqueInstance = new static;
+            static::$uniqueInstance = new static();
         }
 
         return static::$uniqueInstance;

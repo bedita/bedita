@@ -36,7 +36,6 @@ use Cake\Utility\Inflector;
  */
 class Relation extends Entity implements JsonApiSerializable
 {
-
     use JsonApiModelTrait;
 
     /**

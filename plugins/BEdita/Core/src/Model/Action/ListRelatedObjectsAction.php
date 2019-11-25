@@ -50,8 +50,10 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                 $table->setupRelations($objectType);
             }
             $this->ListAction = new ListObjectsAction(array_filter(compact('table', 'objectType')));
-        } elseif ($this->Association->getTarget() instanceof ObjectsTable
-                || $this->Association->getTarget() instanceof Table) {
+        } elseif (
+            $this->Association->getTarget() instanceof ObjectsTable
+                || $this->Association->getTarget() instanceof Table
+        ) {
             $table = $this->Association->getTarget();
             $this->ListAction = new ListObjectsAction(compact('table'));
         }
