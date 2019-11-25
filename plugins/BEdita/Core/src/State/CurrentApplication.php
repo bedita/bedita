@@ -60,7 +60,7 @@ class CurrentApplication
     /**
      * Static wrapper around {@see self::id()}.
      *
-     * @return \BEdita\Core\Model\Entity\Application|null
+     * @return int|null
      */
     public static function getApplicationId()
     {
