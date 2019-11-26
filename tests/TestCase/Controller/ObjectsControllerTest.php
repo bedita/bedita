@@ -2269,7 +2269,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'label' => 'Second category',
                             'params' => null,
                         ]
-                    ],                    'lang' => 'en',
+                    ],
+                    'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
                     'another_title' => null,
