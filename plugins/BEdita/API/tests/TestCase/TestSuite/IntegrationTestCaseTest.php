@@ -58,6 +58,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.ObjectRelations',
                     'plugin.BEdita/Core.Translations',
                     'plugin.BEdita/Core.UserTokens',
+                    'plugin.BEdita/Core.Categories',
+                    'plugin.BEdita/Core.ObjectCategories',
                 ],
                 []
             ],
@@ -86,6 +88,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.ObjectRelations',
                     'plugin.BEdita/Core.Translations',
                     'plugin.BEdita/Core.UserTokens',
+                    'plugin.BEdita/Core.Categories',
+                    'plugin.BEdita/Core.ObjectCategories',
                 ],
                 [
                     'plugin.BEdita/Core.Users',

@@ -42,6 +42,8 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
@@ -103,6 +105,7 @@ class ListRelatedObjectsActionTest extends TestCase
                             'inv_priority' => 1,
                             'params' => null,
                         ],
+                        'categories' => [],
                     ],
                     [
                         'id' => 2,
@@ -111,6 +114,18 @@ class ListRelatedObjectsActionTest extends TestCase
                             'priority' => 1,
                             'inv_priority' => 2,
                             'params' => null,
+                        ],
+                        'categories' => [
+                            [
+                                'name' => 'first-cat',
+                                'label' => 'First category',
+                                'params' => '100',
+                            ],
+                            [
+                                'name' => 'second-cat',
+                                'label' => 'Second category',
+                                'params' => null,
+                            ],
                         ],
                     ],
                 ],
@@ -165,6 +180,18 @@ class ListRelatedObjectsActionTest extends TestCase
                             'priority' => 1,
                             'inv_priority' => 2,
                             'params' => null,
+                        ],
+                        'categories' => [
+                            [
+                                'name' => 'first-cat',
+                                'label' => 'First category',
+                                'params' => '100',
+                            ],
+                            [
+                                'name' => 'second-cat',
+                                'label' => 'Second category',
+                                'params' => null,
+                            ],
                         ],
                     ],
                 ],

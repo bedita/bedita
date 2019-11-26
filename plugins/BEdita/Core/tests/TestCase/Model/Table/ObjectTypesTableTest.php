@@ -249,7 +249,7 @@ class ObjectTypesTableTest extends TestCase
                     'description' => null,
                     'alias' => 'Documents',
                     'table' => 'BEdita/Core.Objects',
-                    'associations' => null,
+                    'associations' => ['Categories'],
                     'hidden' => null,
                     'relations' => [
                         'test',
@@ -272,7 +272,7 @@ class ObjectTypesTableTest extends TestCase
                     'description' => null,
                     'alias' => 'Documents',
                     'table' => 'BEdita/Core.Objects',
-                    'associations' => null,
+                    'associations' => ['Categories'],
                     'hidden' => null,
                     'relations' => [
                         'test',
@@ -295,7 +295,7 @@ class ObjectTypesTableTest extends TestCase
                     'description' => null,
                     'alias' => 'Documents',
                     'table' => 'BEdita/Core.Objects',
-                    'associations' => null,
+                    'associations' => ['Categories'],
                     'hidden' => null,
                     'relations' => [
                         'test',
@@ -318,7 +318,7 @@ class ObjectTypesTableTest extends TestCase
                     'description' => null,
                     'alias' => 'Documents',
                     'table' => 'BEdita/Core.Objects',
-                    'associations' => null,
+                    'associations' => ['Categories'],
                     'hidden' => null,
                     'relations' => [
                         'test',
@@ -341,7 +341,7 @@ class ObjectTypesTableTest extends TestCase
                     'description' => null,
                     'alias' => 'Documents',
                     'table' => 'BEdita/Core.Objects',
-                    'associations' => null,
+                    'associations' => ['Categories'],
                     'hidden' => null,
                     'relations' => [
                         'test',
