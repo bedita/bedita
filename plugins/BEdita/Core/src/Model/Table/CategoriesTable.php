@@ -140,6 +140,34 @@ class CategoriesTable extends Table
     }
 
     /**
+     * Find enabled categories
+     *
+     * @param Query $query Query object
+     * @return Query
+     */
+    protected function findEnabledCategories(Query $query)
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+            sprintf('%s IS NOT NULL', $this->aliasField('object_type_id')),
+        ]);
+    }
+
+    /**
+     * Find enabled tags
+     *
+     * @param Query $query Query object
+     * @return Query
+     */
+    protected function findEnabledTags(Query $query)
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+            sprintf('%s IS NULL', $this->aliasField('object_type_id')),
+        ]);
+    }
+
+    /**
      * Remove some categories fields when retrieved as association.
      *
      * @param \Cake\Event\Event $event Fired event.
