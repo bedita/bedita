@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Collection\CollectionInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -44,6 +46,7 @@ class CategoriesTable extends Table
      *
      * @param array $config The configuration for the Table.
      * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -78,6 +81,7 @@ class CategoriesTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -117,6 +121,7 @@ class CategoriesTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {
@@ -132,5 +137,34 @@ class CategoriesTable extends Table
         ));
 
         return $rules;
+    }
+
+    /**
+     * Remove some categories fields when retrieved as association.
+     *
+     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \ArrayObject $options Options array.
+     * @param bool $primary Primary flag.
+     * @return void
+     */
+    public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    {
+        if ($primary) {
+            return;
+        }
+        $query->formatResults(function (CollectionInterface $results) {
+            return $results->map(function ($row) {
+                if (!empty($row['_joinData'])) {
+                    $row['params'] = $row['_joinData']['params'];
+                }
+                $keys = ['id', 'object_type_id', 'parent_id', 'tree_left', 'tree_right', 'enabled', 'created', 'modified'];
+                foreach ($keys as $k) {
+                    unset($row[$k]);
+                }
+
+                return $row;
+            });
+        });
     }
 }

@@ -48,4 +48,11 @@ class Category extends Entity implements JsonApiSerializable
         'created' => false,
         'modified' => false,
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        '_joinData',
+    ];
 }

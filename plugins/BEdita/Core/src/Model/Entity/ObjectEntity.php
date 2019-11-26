@@ -152,7 +152,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     protected static function listAssociations(Table $Table, array $hidden = [])
     {
         $associations = static::jsonApiListAssociations($Table, $hidden);
-        $associations = array_diff($associations, ['date_ranges']);
+        $associations = array_diff($associations, ['date_ranges', 'categories']);
 
         return $associations;
     }
