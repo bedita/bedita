@@ -69,6 +69,7 @@ class ObjectTypesFixture extends TestFixture
             'tree_left' => 4,
             'tree_right' => 5,
             'description' => null,
+            'associations' => '["Tags"]',
             'plugin' => 'BEdita/Core',
             'model' => 'Profiles',
             'created' => '2017-11-10 09:27:23',

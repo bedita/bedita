@@ -34,6 +34,16 @@ class ObjectCategoriesFixture extends TestFixture
             'object_id' => 2,
             'category_id' => 2,
             'params' => null,
-        ]
+        ],
+        [
+            'object_id' => 2,
+            'category_id' => 3,
+            'params' => null,
+        ],
+        [
+            'object_id' => 3,
+            'category_id' => 4,
+            'params' => null,
+        ],
     ];
 }

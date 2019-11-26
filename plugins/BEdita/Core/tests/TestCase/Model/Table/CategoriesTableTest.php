@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\CategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\CategoriesTable} Test Case
@@ -48,13 +48,31 @@ class CategoriesTableTest extends TestCase
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->Categories = TableRegistry::getTableLocator()->get('Categories');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        unset($this->Categories);
+        parent::tearDown();
+    }
+
+    /**
      * Test `beforeFind` method
      *
      * @return void
      */
     public function testBeforeFindPrimary()
     {
-        $category = TableRegistry::getTableLocator()->get('Categories')->get(1)->toArray();
+        $category = $this->Categories->get(1)->toArray();
         $expected = [
             'id' => 1,
             'object_type_id' => 2,
@@ -92,5 +110,23 @@ class CategoriesTableTest extends TestCase
             ],
         ];
         static::assertEquals($expected, $document['categories']);
+    }
+
+    /**
+     * Test `findEnabledCategories` method
+     */
+    public function testFindEnabledCategories()
+    {
+        $categories = $this->Categories->find('enabledCategories')->toArray();
+        static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
+    }
+
+    /**
+     * Test `findEnabledTags` method
+     */
+    public function testFindEnabledTags()
+    {
+        $categories = $this->Categories->find('enabledTags')->toArray();
+        static::assertEquals([4], Hash::extract($categories, '{n}.id'));
     }
 }

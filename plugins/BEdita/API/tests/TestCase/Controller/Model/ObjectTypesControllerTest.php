@@ -162,7 +162,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'name' => 'profiles',
                         'description' => null,
                         'table' => 'BEdita/Core.Profiles',
-                        'associations' => null,
+                        'associations' => ['Tags'],
                         'hidden' => null,
                         'is_abstract' => false,
                         'parent_name' => 'objects',
