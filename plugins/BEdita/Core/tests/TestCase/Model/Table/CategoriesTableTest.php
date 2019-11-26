@@ -37,61 +37,60 @@ class CategoriesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.ObjectCategories'
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
-     * setUp method
+     * Test `beforeFind` method
      *
      * @return void
      */
-    public function setUp()
+    public function testBeforeFindPrimary()
     {
-        parent::setUp();
-        $this->Categories = TableRegistry::getTableLocator()->get('Categories');
+        $category = TableRegistry::getTableLocator()->get('Categories')->get(1)->toArray();
+        $expected = [
+            'id' => 1,
+            'object_type_id' => 2,
+            'name' => 'first-cat',
+            'label' => 'First category',
+            'parent_id' => null,
+            'tree_left' => null,
+            'tree_right' => null,
+            'enabled' => true,
+        ];
+        unset($category['created'], $category['modified']);
+        static::assertEquals($expected, $category);
     }
 
     /**
-     * tearDown method
+     * Test `beforeFind` method in case of association
      *
      * @return void
      */
-    public function tearDown()
+    public function testBeforeFindAssoc()
     {
-        unset($this->Categories);
-
-        parent::tearDown();
-    }
-
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     */
-    public function testValidationDefault()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $document = TableRegistry::getTableLocator()->get('Documents')
+            ->get(2, ['contain' => ['Categories']])
+            ->toArray();
+        $expected = [
+            [
+                'name' => 'first-cat',
+                'label' => 'First category',
+                'params' => '100',
+            ],
+            [
+                'name' => 'second-cat',
+                'label' => 'Second category',
+                'params' => null,
+            ],
+        ];
+        static::assertEquals($expected, $document['categories']);
     }
 }
