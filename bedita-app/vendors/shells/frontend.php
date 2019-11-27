@@ -130,7 +130,7 @@ class FrontendShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('1. init: initialize a new BEdita frontend instance from scratch');
         $this->out(' ');
-        $this->out('   Usage: init [-name <forntend-folder-name>] [-path <base-frontend-path>');
+        $this->out('   Usage: init [-name <frontend-folder-name>] [-path <base-frontend-path>');
         $this->out(' ');
     }
 }
