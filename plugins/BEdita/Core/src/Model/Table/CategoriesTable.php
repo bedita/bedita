@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use Cake\Collection\CollectionInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -69,6 +70,10 @@ class CategoriesTable extends Table
         $this->hasMany('ChildCategories', [
             'className' => 'BEdita/Core.Categories',
             'foreignKey' => 'parent_id'
+        ]);
+        $this->addBehavior('Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
         ]);
         $this->hasMany('ObjectCategories', [
             'foreignKey' => 'category_id',
@@ -165,6 +170,56 @@ class CategoriesTable extends Table
             $this->aliasField('enabled') => true,
             sprintf('%s IS NULL', $this->aliasField('object_type_id')),
         ]);
+    }
+
+    /**
+     * Find categories ids by name
+     * $options array MUST contain following keys
+     *  - `typeId`, object typ id
+     *  - `names`, categories names array
+     *
+     * @param Query $query Query object
+     * @param array $options Array containing object type id and category names.
+     * @return Query
+     */
+    protected function findCategoriesIds(Query $query, array $options)
+    {
+        if (empty($options['typeId'])) {
+            throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'typeId'));
+        }
+        if (empty($options['names']) || !is_array($options['names'])) {
+            throw new BadRequestException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
+        }
+
+        return $query->select(['id', 'name'])
+            ->where([
+                $this->aliasField('enabled') => true,
+                $this->aliasField('object_type_id') => (int)$options['typeId'],
+                $this->aliasField('name') . ' IN' => $options['names'],
+            ]);
+    }
+
+    /**
+     * Find tags ids by name
+     * $options array MUST contain following keys
+     *  - `names`, categories names array
+     *
+     * @param Query $query Query object
+     * @param array $options Array containing category names.
+     * @return Query
+     */
+    protected function findTagsIds(Query $query, array $options)
+    {
+        if (empty($options['names']) || !is_array($options['names'])) {
+            throw new BadRequestException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
+        }
+
+        return $query->select(['id', 'name'])
+            ->where([
+                $this->aliasField('enabled') => true,
+                $this->aliasField('object_type_id') . ' IS NULL',
+                $this->aliasField('name') . ' IN' => $options['names'],
+            ]);
     }
 
     /**
