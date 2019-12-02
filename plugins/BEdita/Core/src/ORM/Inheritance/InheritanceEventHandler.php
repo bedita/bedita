@@ -25,6 +25,16 @@ use Cake\ORM\Table as CakeTable;
  */
 class InheritanceEventHandler implements EventListenerInterface
 {
+    /**
+     * Array of properties that should not be saved in descendant tables
+     * TODO: use associations properties to determine this array
+     *
+     * @var array
+     */
+    protected $excludeDescendantsSave = [
+        'tags',
+        'categories',
+    ];
 
     /**
      * {@inheritDoc}
@@ -34,6 +44,10 @@ class InheritanceEventHandler implements EventListenerInterface
         return [
             'Model.beforeSave' => [
                 'callable' => 'beforeSave',
+                'priority' => 99,
+            ],
+            'Model.afterSave' => [
+                'callable' => 'afterSave',
                 'priority' => 99,
             ],
             'Model.afterDelete' => [
@@ -132,6 +146,23 @@ class InheritanceEventHandler implements EventListenerInterface
     }
 
     /**
+     * Update entities with previously kept back properties with `__` prefix
+     *
+     * @param Event $event Dispatched event.
+     * @param EntityInterface $entity Entity.
+     * @return void
+     */
+    public function afterSave(Event $event, EntityInterface $entity)
+    {
+        foreach ($this->excludeDescendantsSave as $item) {
+            if ($entity->has('__' . $item)) {
+                $entity->set($item, $entity->get('__' . $item));
+                $entity->unsetProperty('__' . $item);
+            }
+        }
+    }
+
+    /**
      * Delete entities on inherited tables after the entity was deleted.
      *
      * @param \Cake\Event\Event $event Dispatched event.
@@ -213,6 +244,14 @@ class InheritanceEventHandler implements EventListenerInterface
                 ),
                 ['guard' => false]
             );
+        }
+
+        // Use `__` prefix to keep property values to exclude in save
+        foreach ($this->excludeDescendantsSave as $item) {
+            if ($entity->has($item)) {
+                $entity->set('__' . $item, $parent->get($item));
+            }
+            $entity->unsetProperty($item);
         }
 
         return $entity;
