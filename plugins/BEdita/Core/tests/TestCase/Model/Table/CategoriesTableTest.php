@@ -130,7 +130,7 @@ class CategoriesTableTest extends TestCase
      * Test `findEnabledTags` method
      *
      * @return void
-     * @covers ::findEnabledCategories()
+     * @covers ::findEnabledTags()
      */
     public function testFindEnabledTags()
     {
