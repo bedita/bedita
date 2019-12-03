@@ -547,6 +547,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/model/property_types/13');
         static::assertTrue(TableRegistry::get('PropertyTypes')->exists(['name' => 'gustavo']));
+        static::assertFalse(TableRegistry::get('PropertyTypes')->get(13)->get('core_type'));
     }
 
     /**
