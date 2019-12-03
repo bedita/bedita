@@ -9,17 +9,17 @@ class CorePropertyTypes extends AbstractMigration
     public function up()
     {
         $this->table('property_types')
-            ->addColumn('created', 'timestamp', [
-                'comment' => 'creation time',
-                'default' => 'CURRENT_TIMESTAMP',
+            ->addColumn('created', 'datetime', [
+                'comment' => 'creation date',
+                'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
-            ->addColumn('modified', 'timestamp', [
-                'comment' => 'last modification time',
-                'default' => 'CURRENT_TIMESTAMP',
+            ->addColumn('modified', 'datetime', [
+                'comment' => 'last modification date',
+                'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('core_type', 'boolean', [
                 'comment' => 'core property type flag, if true type is immutable',
@@ -32,7 +32,7 @@ class CorePropertyTypes extends AbstractMigration
                     'core_type',
                 ],
                 [
-                    'name' => 'objecttypes_coretype_idx',
+                    'name' => 'propertytypes_coretype_idx',
                 ]
             )
             ->update();
@@ -40,7 +40,7 @@ class CorePropertyTypes extends AbstractMigration
         // UPDATE core_type
         $coreTypes = "'boolean', 'date', 'datetime', 'email', 'integer', 'json', 'number', 'status', 'string', 'text', 'url'";
         $true = ($this->getAdapter()->getAdapterType() === 'sqlite') ? "1" : "TRUE";
-        $this->query(sprintf("UPDATE object_types SET core_type = %s WHERE name IN (%s)", $true, $coreTypes));
+        $this->query(sprintf("UPDATE property_types SET core_type = %s WHERE name IN (%s)", $true, $coreTypes));
     }
 
     /**
