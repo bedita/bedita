@@ -161,7 +161,7 @@ class PropertyTypesTableTest extends TestCase
 
         static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
 
-        $propertyType = $this->PropertyTypes->get(9);
+        $propertyType = $this->PropertyTypes->get(12);
         $propertyType->name = 'gustavo';
         $this->PropertyTypes->save($propertyType);
 
@@ -304,5 +304,37 @@ class PropertyTypesTableTest extends TestCase
         $result = $this->PropertyTypes->detect($name, $table)->name;
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test that an exception is raised when attempting to change a core property type.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
+     * @expectedExceptionCode 403
+     * @expectedExceptionMessage Could not modify core property
+     */
+    public function testBeforeSaveForbidden()
+    {
+        $propertyType = $this->PropertyTypes->get(1);
+        $propertyType->set('name', 'gustavo');
+        $this->PropertyTypes->save($propertyType);
+    }
+
+    /**
+     * Test that no exception is raised when attempting to change a non core property type.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveOk()
+    {
+        $propertyType = $this->PropertyTypes->get(12);
+        $propertyType->set('name', 'gustavo');
+        $success = $this->PropertyTypes->save($propertyType);
+        static::assertNotFalse($success);
     }
 }

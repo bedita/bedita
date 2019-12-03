@@ -18,7 +18,7 @@ use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
-use Cake\Database\Schema\Table;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 
@@ -99,7 +99,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
         /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
-        $table = new Table('foo_bar');
+        $table = new TableSchema('foo_bar');
         $table
             ->addColumn('foo_bar', [
                 'type' => 'string',
@@ -120,11 +120,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
                 'default' => null,
             ])
             ->addIndex('mytestindex', [
-                'type' => Table::INDEX_INDEX,
+                'type' => TableSchema::INDEX_INDEX,
                 'columns' => ['foo_bar'],
             ])
             ->addConstraint('foobar_uq', [
-                'type' => Table::CONSTRAINT_UNIQUE,
+                'type' => TableSchema::CONSTRAINT_UNIQUE,
                 'columns' => ['foo_bar'],
             ]);
         foreach ($table->createSql($connection) as $statement) {
@@ -179,7 +179,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
         /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
-        $table = new Table('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
+        $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
         foreach ($table->createSql($connection) as $statement) {
             $connection->query($statement);
         }
@@ -249,7 +249,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
             $this->assertExitCode(Shell::CODE_ERROR);
             foreach ($constraints as $constraint) {
                 $info = $table->getConstraint($constraint);
-                if ($info && isset($info['type']) && $info['type'] !== Table::CONSTRAINT_FOREIGN) {
+                if ($info && isset($info['type']) && $info['type'] !== TableSchema::CONSTRAINT_FOREIGN) {
                     continue;
                 }
 
