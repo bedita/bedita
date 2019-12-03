@@ -33,7 +33,7 @@ class DefaultValuesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function createProvider() : array
+    public function createProvider(): array
     {
         return [
             'files on' => [
@@ -90,7 +90,7 @@ class DefaultValuesTest extends IntegrationTestCase
      * @dataProvider createProvider
      * @coversNothing
      */
-    public function testCreate(array $expected, string $type, array $attributes, array $config) : void
+    public function testCreate(array $expected, string $type, array $attributes, array $config): void
     {
         Configure::write('DefaultValues', $config);
 
