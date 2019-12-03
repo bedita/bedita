@@ -32,7 +32,6 @@ use Cake\ORM\Entity;
  */
 class Config extends Entity implements JsonApiSerializable
 {
-
     use JsonApiAdminTrait;
 
     /**

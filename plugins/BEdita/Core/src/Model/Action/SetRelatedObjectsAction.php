@@ -23,7 +23,6 @@ use Cake\Datasource\EntityInterface;
  */
 class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
 {
-
     use AssociatedTrait;
 
     /**

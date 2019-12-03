@@ -26,7 +26,6 @@ use Cake\ORM\TableRegistry;
  */
 class CurrentApplication
 {
-
     use SingletonTrait;
 
     /**

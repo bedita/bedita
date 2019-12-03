@@ -46,7 +46,7 @@ class Relations
      * @param array $options Table locator options
      * @return void
      */
-    public static function create(array $relations, array $options = []) : void
+    public static function create(array $relations, array $options = []): void
     {
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
         foreach ($relations as $data) {
@@ -68,7 +68,7 @@ class Relations
      * @param array $options Table locator options
      * @return void
      */
-    protected static function addTypes($relationId, array $types, string $side, array $options = []) : void
+    protected static function addTypes($relationId, array $types, string $side, array $options = []): void
     {
         $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
@@ -92,7 +92,7 @@ class Relations
      * @param array $options Table locator options
      * @return void
      */
-    public static function remove(array $relations, array $options = []) : void
+    public static function remove(array $relations, array $options = []): void
     {
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
         foreach ($relations as $r) {
@@ -117,7 +117,7 @@ class Relations
      * @param array $options Table locator options
      * @return void
      */
-    protected static function removeTypes($relationId, array $types, string $side, array $options = []) : void
+    protected static function removeTypes($relationId, array $types, string $side, array $options = []): void
     {
         $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
@@ -144,10 +144,12 @@ class Relations
      * @return void
      * @throws BadRequestException
      */
-    protected static function validate(array $data) : void
+    protected static function validate(array $data): void
     {
-        if (empty($data['left']) || !is_array($data['left']) ||
-            empty($data['right']) || !is_array($data['right'])) {
+        if (
+            empty($data['left']) || !is_array($data['left']) ||
+            empty($data['right']) || !is_array($data['right'])
+        ) {
             throw new BadRequestException(
                 __d('bedita', 'Missing left/right relation types')
             );

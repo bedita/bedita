@@ -26,7 +26,6 @@ use Cake\ORM\Association\HasMany;
  */
 class RemoveAssociatedAction extends UpdateAssociatedAction
 {
-
     use AssociatedTrait;
 
     /**

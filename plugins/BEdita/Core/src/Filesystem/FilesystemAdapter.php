@@ -29,7 +29,6 @@ use League\Flysystem\AdapterInterface;
  */
 abstract class FilesystemAdapter
 {
-
     use InstanceConfigTrait;
 
     /**

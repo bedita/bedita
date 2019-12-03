@@ -207,7 +207,8 @@ class DateRange extends Entity
             $dateRange = clone $dateRange1;
 
             while (($dateRange2 = current($array2)) !== false) {
-                if ($dateRange->end_date === null
+                if (
+                    $dateRange->end_date === null
                     && $dateRange2->end_date === null
                     && $dateRange->start_date->getTimestamp() === $dateRange2->start_date->getTimestamp()
                 ) {

@@ -30,7 +30,6 @@ use Cake\ORM\TableRegistry;
  */
 class SignupUserActivationAction extends BaseAction implements EventListenerInterface
 {
-
     use EventDispatcherTrait;
     use MailerAwareTrait;
 

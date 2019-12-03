@@ -77,9 +77,11 @@ class EndpointAuthorize extends BaseAuthorize
         $this->request = $request;
 
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
-        if (!$this->getConfig('defaultAuthorized') &&
+        if (
+            !$this->getConfig('defaultAuthorized') &&
             $this->isAnonymous($user) &&
-            $this->getConfig('blockAnonymousUsers')) {
+            $this->getConfig('blockAnonymousUsers')
+        ) {
             $this->unauthenticated();
         }
 

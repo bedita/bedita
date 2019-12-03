@@ -26,7 +26,6 @@ use Cake\Validation\Validator;
  */
 class ChangeCredentialsAction extends BaseAction
 {
-
     use EventDispatcherTrait;
 
     /**

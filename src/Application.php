@@ -67,7 +67,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    protected function loadFromConfig() : void
+    protected function loadFromConfig(): void
     {
         $plugins = Configure::read('Plugins');
         if ($plugins) {
