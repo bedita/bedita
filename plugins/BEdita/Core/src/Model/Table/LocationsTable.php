@@ -48,27 +48,25 @@ class LocationsTable extends Table
         $this->setTable('locations');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+s
+        $this->addBehavior('BEdita/Core.ObjectModel');
 
         $this->extensionOf('Objects');
 
-        $this->addBehavior('BEdita/Core.Relations');
-
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-                'address' => 1,
-                'locality' => 2,
-                'country_name' => 2,
-                'region' => 2,
-            ],
-        ]);
+        if ($this->behaviors()->has('Searchable')) {
+            $this->behaviors()->get('Searchable')->setConfig([
+                'fields' => [
+                    'title' => 10,
+                    'description' => 7,
+                    'body' => 5,
+                    'address' => 1,
+                    'locality' => 2,
+                    'country_name' => 2,
+                    'region' => 2,
+                ],
+            ]);
+        }
 
         $this->addBehavior('BEdita/Core.Geometry');
-
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
     }
 }

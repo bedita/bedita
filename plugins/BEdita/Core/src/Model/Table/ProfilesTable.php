@@ -54,34 +54,34 @@ class ProfilesTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
 
-        $this->addBehavior('BEdita/Core.Relations');
-
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        $this->addBehavior('BEdita/Core.ObjectModel');
 
         $this->extensionOf('Objects');
 
-        $this->addBehavior('BEdita/Core.UniqueName', [
-            'sourceField' => 'title',
-            'prefix' => 'profile-'
-        ]);
+        if ($this->behaviors()->has('UniqueName')) {
+            $this->behaviors()->get('UniqueName')->setConfig([
+                'sourceField' => 'title',
+                'prefix' => 'profile-'
+            ]);
+        }
 
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-                'name' => 10,
-                'surname' => 10,
-                'email' => 7,
-                'company_name' => 10,
-                'street_address' => 1,
-                'city' => 2,
-                'country' => 2,
-                'state_name' => 2,
-            ],
-        ]);
+        if ($this->behaviors()->has('Searchable')) {
+            $this->behaviors()->get('Searchable')->setConfig([
+                'fields' => [
+                    'title' => 10,
+                    'description' => 7,
+                    'body' => 5,
+                    'name' => 10,
+                    'surname' => 10,
+                    'email' => 7,
+                    'company_name' => 10,
+                    'street_address' => 1,
+                    'city' => 2,
+                    'country' => 2,
+                    'state_name' => 2,
+                ],
+            ]);
+        }
     }
 
     /**

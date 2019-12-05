@@ -80,11 +80,30 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
 
-        $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.ObjectModel');
 
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        $this->extensionOf('Profiles');
 
-        $this->addBehavior('BEdita/Core.CustomProperties');
+        if ($this->behaviors()->has('UniqueName')) {
+            $this->behaviors()->get('UniqueName')->setConfig([
+                'sourceField' => 'username',
+                'prefix' => 'user-'
+            ]);
+        }
+
+        if ($this->behaviors()->has('Searchable')) {
+            $this->behaviors()->get('Searchable')->setConfig([
+                'fields' => [
+                    'username' => 10,
+                    'title' => 10,
+                    'name' => 10,
+                    'surname' => 10,
+                    'email' => 7,
+                    'description' => 7,
+                    'body' => 5,
+                    ],
+            ]);
+        }
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
@@ -92,26 +111,6 @@ class UsersTable extends Table
 
         $this->belongsToMany('Roles', [
             'through' => 'RolesUsers',
-        ]);
-
-        $this->extensionOf('Profiles');
-
-        $this->addBehavior('BEdita/Core.UniqueName', [
-            'sourceField' => 'username',
-            'prefix' => 'user-'
-        ]);
-
-        $this->addBehavior('BEdita/Core.Relations');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'username' => 10,
-                'title' => 10,
-                'name' => 10,
-                'surname' => 10,
-                'email' => 7,
-                'description' => 7,
-                'body' => 5,
-            ],
         ]);
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);

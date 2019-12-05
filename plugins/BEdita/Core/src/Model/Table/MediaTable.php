@@ -39,18 +39,28 @@ class MediaTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
 
+        $this->addBehavior('BEdita/Core.ObjectModel');
+
         $this->extensionOf('Objects');
 
-        $this->addBehavior('BEdita/Core.Relations');
+        if ($this->behaviors()->has('UniqueName')) {
+            $this->behaviors()->get('UniqueName')->setConfig([
+                'sourceField' => 'title',
+                'prefix' => 'media-'
+            ]);
+        }
 
-        $this->addBehavior('BEdita/Core.UniqueName', [
-            'sourceField' => 'title',
-            'prefix' => 'media-'
-        ]);
-
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        if ($this->behaviors()->has('Searchable')) {
+            $this->behaviors()->get('Searchable')->setConfig([
+                'fields' => [
+                    'title' => 10,
+                    'description' => 7,
+                    'body' => 5,
+                    'provider' => 5,
+                    'name' => 8,
+                ],
+            ]);
+        }
 
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',
