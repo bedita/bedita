@@ -157,6 +157,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->order(['id' => 'ASC'])
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
@@ -191,6 +192,7 @@ class HistoryBehaviorTest extends TestCase
         $History = TableRegistry::get('History');
         $history = $History->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->order(['id' => 'ASC'])
                 ->last();
         static::assertEquals('trash', $history->get('user_action'));
 
@@ -198,6 +200,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents->saveOrFail($entity);
         $history = $History->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->order(['id' => 'ASC'])
                 ->last();
         static::assertNotEmpty($history);
         static::assertEquals('restore', $history->get('user_action'));
@@ -244,6 +247,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->order(['id' => 'ASC'])
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
