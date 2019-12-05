@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
@@ -34,7 +35,10 @@ class HistoryBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'table' => 'History',
-        'exclude' => ['type', 'id'],
+        'exclude' => [
+            'id',
+            'type',
+        ],
         'resource_type' => 'objects',
     ];
 
@@ -58,7 +62,10 @@ class HistoryBehavior extends Behavior
      */
     public function initialize(array $config)
     {
-        parent::initialize($config);
+        // Behavior config may be set via `Configure` but
+        // $config array takes precedence
+        $config = array_merge((array)Configure::read('History'), $config);
+        $this->setConfig($config, null, false);
         $table = $this->getConfig('table');
         if (!empty($table)) {
             $this->Table = TableRegistry::getTableLocator()->get($table);
@@ -77,6 +84,22 @@ class HistoryBehavior extends Behavior
         $this->changed = $data->getArrayCopy();
         $exclude = (array)$this->getConfig('exclude');
         $this->changed = array_diff_key($this->changed, array_flip($exclude));
+    }
+
+    /**
+     * Remove from `changed` array properties that are not dirty.
+     *
+     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity data.
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity): void
+    {
+        foreach (array_keys($this->changed) as $prop) {
+            if (!$entity->isDirty($prop)) {
+                unset($this->changed[$prop]);
+            }
+        }
     }
 
     /**
