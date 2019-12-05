@@ -114,21 +114,24 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testBeforeSave()
     {
-        $Documents = TableRegistry::get('Documents');
-        $doc = $Documents->get(2);
+        $Users = TableRegistry::get('Users');
+        $doc = $Users->get(5);
         $data = [
-            'title' => 'title one',
-            'description' => 'new history desc'
+            'username' => 'second user',
+            'description' => 'user desc',
+            'password' => 'gustavogustavo',
         ];
-        $entity = $Documents->patchEntity($doc, $data);
-        $Documents->save($entity);
+        $entity = $Users->patchEntity($doc, $data);
+        $Users->save($entity);
 
         $history = TableRegistry::get('History')->find()
-                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->where(['resource_id' => '5', 'resource_type' => 'objects'])
                 ->last();
         static::assertNotEmpty($history);
-        unset($data['title']);
-        // verify that `title` is not in `changed` array
+        unset($data['username']);
+        $data['password'] = '*****';
+        // verify that `username` is not in `changed` array
+        // and `password` is obfuscated
         static::assertEquals($data, $history->get('changed'));
     }
 

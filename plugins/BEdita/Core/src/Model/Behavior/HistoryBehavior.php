@@ -38,6 +38,10 @@ class HistoryBehavior extends Behavior
         'exclude' => [
             'id',
             'type',
+            'confirm-password',
+        ],
+        'obfuscate' => [
+            'password' => '*****',
         ],
         'resource_type' => 'objects',
     ];
@@ -84,6 +88,11 @@ class HistoryBehavior extends Behavior
         $this->changed = $data->getArrayCopy();
         $exclude = (array)$this->getConfig('exclude');
         $this->changed = array_diff_key($this->changed, array_flip($exclude));
+        $obfuscate = array_intersect_key(
+            (array)$this->getConfig('obfuscate'),
+            $this->changed
+        );
+        $this->changed = array_merge($this->changed, $obfuscate);
     }
 
     /**
