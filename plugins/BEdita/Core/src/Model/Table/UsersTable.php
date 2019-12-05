@@ -80,6 +80,8 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
 
+        $this->addBehavior('BEdita/Core.History');
+
         $this->addBehavior('Timestamp');
 
         $this->addBehavior('BEdita/Core.DataCleanup');

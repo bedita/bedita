@@ -51,6 +51,8 @@ class LocationsTable extends Table
 
         $this->extensionOf('Objects');
 
+        $this->addBehavior('BEdita/Core.History');
+
         $this->addBehavior('BEdita/Core.Relations');
 
         $this->addBehavior('BEdita/Core.Searchable', [

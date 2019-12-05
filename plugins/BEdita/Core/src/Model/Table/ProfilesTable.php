@@ -54,6 +54,8 @@ class ProfilesTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
 
+        $this->addBehavior('BEdita/Core.History');
+
         $this->addBehavior('BEdita/Core.Relations');
 
         $this->addBehavior('BEdita/Core.CustomProperties');
