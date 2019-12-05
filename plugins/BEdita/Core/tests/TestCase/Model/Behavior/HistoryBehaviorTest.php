@@ -68,10 +68,23 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testInitialize()
     {
+        $prevConf = Configure::read('History');
+
+        // pass config via `Configure`
+        Configure::write('History.exclude', ['id']);
         $Documents = TableRegistry::get('Documents');
         $behavior = $Documents->getBehavior('History');
+        static::assertEquals(['id'], $behavior->getConfig('exclude'));
         static::assertNotEmpty($behavior->Table);
         static::assertEquals('BEdita\Core\Model\Table\HistoryTable', get_class($behavior->Table));
+
+        // pass config via addBehavior argument
+        $Documents->removeBehavior('History');
+        $Documents->addBehavior('BEdita/Core.History', ['exclude' => ['type']]);
+        $behavior = $Documents->getBehavior('History');
+        static::assertEquals(['type'], $behavior->getConfig('exclude'));
+
+        Configure::write('History', $prevConf);
     }
 
     /**
@@ -92,6 +105,31 @@ class HistoryBehaviorTest extends TestCase
         $behavior = $Documents->getBehavior('History');
         unset($data['type']);
         static::assertEquals($data, $behavior->changed);
+    }
+
+    /**
+     * Test `beforeSave` method
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $doc = $Documents->get(2);
+        $data = [
+            'title' => 'title one',
+            'description' => 'new history desc'
+        ];
+        $entity = $Documents->patchEntity($doc, $data);
+        $Documents->save($entity);
+
+        $history = TableRegistry::get('History')->find()
+                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->last();
+        static::assertNotEmpty($history);
+        unset($data['title']);
+        // verify that `title` is not in `changed` array
+        static::assertEquals($data, $history->get('changed'));
     }
 
     /**
@@ -158,6 +196,7 @@ class HistoryBehaviorTest extends TestCase
         $history = $History->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->last();
+        static::assertNotEmpty($history);
         static::assertEquals('restore', $history->get('user_action'));
     }
 
@@ -168,15 +207,23 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testCreate()
     {
-        $Documents = TableRegistry::get('Documents');
-        $entity = $Documents->newEntity();
-        $Documents->patchEntity($entity, ['title' => 'new doc']);
-        $entity = $Documents->saveOrFail($entity);
+        $Users = TableRegistry::get('Users');
+        $entity = $Users->newEntity();
+        $data = [
+            'username' => 'aurelio',
+            'name' => 'Aurelio',
+            'surname' => 'Supporto',
+        ];
+        $Users->patchEntity($entity, $data);
+        $entity = $Users->saveOrFail($entity);
 
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => $entity->get('id'), 'resource_type' => 'objects'])
-                ->last();
-        static::assertEquals('create', $history->get('user_action'));
+                ->toArray();
+        static::assertNotEmpty($history);
+        static::assertEquals(1, count($history));
+        static::assertEquals('create', $history[0]->get('user_action'));
+        static::assertEquals($data, $history[0]->get('changed'));
     }
 
     /**
@@ -227,6 +274,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->toArray();
+        static::assertNotEmpty($history);
         static::assertEquals(2, count($history));
     }
 
@@ -246,6 +294,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->toArray();
+        static::assertNotEmpty($history);
         static::assertEquals(2, count($history));
     }
 }
