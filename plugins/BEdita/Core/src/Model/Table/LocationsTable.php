@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\LocationsValidator;
-use BEdita\Core\ORM\Inheritance\Table;
 
 /**
  * Locations Model
@@ -49,12 +49,10 @@ class LocationsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->addBehavior('BEdita/Core.ObjectModel');
-
         $this->extensionOf('Objects');
 
-        if ($this->behaviors()->has('Searchable')) {
-            $this->behaviors()->get('Searchable')->setConfig([
+        if ($this->hasBehavior('Searchable')) {
+            $this->getBehavior('Searchable')->setConfig([
                 'fields' => [
                     'title' => 10,
                     'description' => 7,

@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
-use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -80,19 +80,17 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
 
-        $this->addBehavior('BEdita/Core.ObjectModel');
-
         $this->extensionOf('Profiles');
 
-        if ($this->behaviors()->has('UniqueName')) {
-            $this->behaviors()->get('UniqueName')->setConfig([
+        if ($this->hasBehavior('UniqueName')) {
+            $this->getBehavior('UniqueName')->setConfig([
                 'sourceField' => 'username',
                 'prefix' => 'user-'
             ]);
         }
 
-        if ($this->behaviors()->has('Searchable')) {
-            $this->behaviors()->get('Searchable')->setConfig([
+        if ($this->hasBehavior('Searchable')) {
+            $this->getBehavior('Searchable')->setConfig([
                 'fields' => [
                     'username' => 10,
                     'title' => 10,
