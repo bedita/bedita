@@ -75,20 +75,8 @@ class ObjectsTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
 
-        $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');
-        $this->addBehavior('BEdita/Core.DataCleanup');
-        $this->addBehavior('BEdita/Core.UserModified');
-        $this->addBehavior('BEdita/Core.Relations');
-        $this->addBehavior('BEdita/Core.CustomProperties');
-        $this->addBehavior('BEdita/Core.UniqueName');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-            ],
-        ]);
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',

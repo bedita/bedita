@@ -34,6 +34,8 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
@@ -101,7 +103,7 @@ class UniqueNameBehaviorTest extends TestCase
         $Users = TableRegistry::get('Users');
         $user = $Users->newEntity();
 
-        $Users->patchEntity($user, compact('username'));
+        $user = $Users->patchEntity($user, compact('username'));
         $Users->uniqueName($user);
         $user->type = 'users';
         $Users->save($user);
