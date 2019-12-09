@@ -43,7 +43,6 @@ use Cake\Utility\Inflector;
  */
 abstract class ResourcesController extends AppController
 {
-
     use InstanceConfigTrait;
 
     /**

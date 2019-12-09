@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
@@ -51,6 +52,9 @@ class PropertyTypesTable extends Table
 
         $this->setTable('property_types');
         $this->setPrimaryKey('id');
+        $this->setDisplayField('name');
+
+        $this->addBehavior('Timestamp');
 
         $this->hasMany('Properties');
     }
@@ -100,6 +104,21 @@ class PropertyTypesTable extends Table
         $rules->add($rules->isUnique(['name']));
 
         return $rules;
+    }
+
+    /**
+     * Avoid modifications when `core_type` is true.
+     *
+     * @param \Cake\Event\Event $event Event fired
+     * @param \Cake\Datasource\EntityInterface $entity Entity to be saved
+     * @return void
+     * @throws ImmutableResourceException
+     */
+    public function beforeSave(Event $event, EntityInterface $entity)
+    {
+        if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
+            throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
+        }
     }
 
     /**

@@ -46,7 +46,6 @@ use Zend\Diactoros\Stream as ZendStream;
  */
 class Stream extends Entity implements JsonApiSerializable
 {
-
     use JsonApiTrait;
     use LogTrait;
 

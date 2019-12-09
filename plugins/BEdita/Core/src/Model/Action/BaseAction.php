@@ -22,7 +22,6 @@ use Cake\Core\InstanceConfigTrait;
  */
 abstract class BaseAction
 {
-
     use InstanceConfigTrait;
 
     /**

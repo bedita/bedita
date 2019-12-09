@@ -25,7 +25,6 @@ use Cake\Utility\Hash;
  */
 class LoggedUser
 {
-
     use SingletonTrait;
 
     /**

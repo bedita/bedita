@@ -146,4 +146,16 @@ class TreeBehavior extends CakeTreeBehavior
 
         return $position;
     }
+
+    /**
+     * Calls $this->_recoverTree() without transactional(...)
+     * Warning: you should set up a transactional flow manually if you use this method!
+     *
+     * @return void
+     * @codeCoverageIgnore
+     */
+    public function nonAtomicRecover(): void
+    {
+        $this->_recoverTree();
+    }
 }

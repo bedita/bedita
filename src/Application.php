@@ -15,6 +15,7 @@
 namespace BEdita\App;
 
 use Cake\Core\Configure;
+use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Routing\Middleware\AssetMiddleware;
@@ -52,8 +53,13 @@ class Application extends BaseApplication
      */
     protected function bootstrapCli()
     {
-        $this->addPlugin('Bake');
         $this->addPlugin('Migrations');
+        try {
+            $this->addPlugin('Bake');
+        } catch (MissingPluginException $e) {
+            // intentionally empty catch block
+            // allow missing `bake` plugin in no-dev environment
+        }
     }
 
     /**
@@ -61,7 +67,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    protected function loadFromConfig() : void
+    protected function loadFromConfig(): void
     {
         $plugins = Configure::read('Plugins');
         if ($plugins) {

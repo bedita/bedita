@@ -157,6 +157,7 @@ class AddUserTokensTable extends AbstractMigration
             ->update();
 
         $this->table('user_tokens')
-            ->drop();
+            ->drop()
+            ->save();
     }
 }

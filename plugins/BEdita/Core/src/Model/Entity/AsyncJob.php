@@ -26,7 +26,6 @@ use Cake\ORM\Entity;
  */
 class AsyncJob extends Entity implements JsonApiSerializable
 {
-
     use JsonApiAdminTrait;
 
     /**

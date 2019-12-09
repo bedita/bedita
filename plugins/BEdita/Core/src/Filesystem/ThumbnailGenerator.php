@@ -22,7 +22,6 @@ use Cake\Core\InstanceConfigTrait;
  */
 abstract class ThumbnailGenerator implements GeneratorInterface
 {
-
     use InstanceConfigTrait;
 
     /**

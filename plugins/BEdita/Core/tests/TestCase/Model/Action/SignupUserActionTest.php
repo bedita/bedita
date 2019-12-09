@@ -386,7 +386,7 @@ class SignupUserActionTest extends TestCase
         EventManager::instance()->on('Auth.signup', function () use (&$eventDispatched) {
             $eventDispatched++;
 
-            throw new InternalErrorException;
+            throw new InternalErrorException();
         });
 
         $action = new SignupUserAction();

@@ -352,7 +352,8 @@ trait JsonApiTrait
         foreach ($associations as $association) {
             list(, $associationType) = namespaceSplit(get_class($association));
             $name = $association->getProperty();
-            if (!($association instanceof Association) ||
+            if (
+                !($association instanceof Association) ||
                 in_array($name, $hidden) ||
                 ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))
             ) {

@@ -39,7 +39,6 @@ use Cake\Validation\Validator;
  */
 class ChangeCredentialsRequestAction extends BaseAction implements EventListenerInterface
 {
-
     use EventDispatcherTrait;
     use MailerAwareTrait;
 
