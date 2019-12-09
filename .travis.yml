@@ -21,10 +21,8 @@ jobs:
     - name: "MariaDB 10 on PHP 7.3"
       stage: minimal
       php: 7.3
-      services:
-        - mariadb
       addons:
-        - mariadb
+        mariadb: '10.4'
       env: "DB=mariadb db_dsn='mysql://root@localhost/bedita_test'"
     - name: "SQLite on PHP 7.1"
       stage: minimal
