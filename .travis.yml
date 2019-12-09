@@ -19,7 +19,7 @@ jobs:
   include:
     # Minimal tests set
     - name: "MariaDB 10 on PHP 7.3"
-      stage: complete
+      stage: minimal
       php: 7.3
       services:
         - mariadb
