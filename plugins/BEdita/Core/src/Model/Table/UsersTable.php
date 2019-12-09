@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
-use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -80,29 +80,14 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
 
-        $this->addBehavior('Timestamp');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
-
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->hasMany('ExternalAuth', [
-            'foreignKey' => 'user_id',
-        ]);
-
-        $this->belongsToMany('Roles', [
-            'through' => 'RolesUsers',
-        ]);
-
         $this->extensionOf('Profiles');
 
-        $this->addBehavior('BEdita/Core.UniqueName', [
+        $this->getBehavior('UniqueName')->setConfig([
             'sourceField' => 'username',
             'prefix' => 'user-'
         ]);
 
-        $this->addBehavior('BEdita/Core.Relations');
-        $this->addBehavior('BEdita/Core.Searchable', [
+        $this->getBehavior('Searchable')->setConfig([
             'fields' => [
                 'username' => 10,
                 'title' => 10,
@@ -112,6 +97,14 @@ class UsersTable extends Table
                 'description' => 7,
                 'body' => 5,
             ],
+        ]);
+
+        $this->hasMany('ExternalAuth', [
+            'foreignKey' => 'user_id',
+        ]);
+
+        $this->belongsToMany('Roles', [
+            'through' => 'RolesUsers',
         ]);
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
