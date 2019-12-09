@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\LocationsValidator;
-use BEdita\Core\ORM\Inheritance\Table;
 
 /**
  * Locations Model
@@ -51,11 +51,7 @@ class LocationsTable extends Table
 
         $this->extensionOf('Objects');
 
-        $this->addBehavior('BEdita/Core.History');
-
-        $this->addBehavior('BEdita/Core.Relations');
-
-        $this->addBehavior('BEdita/Core.Searchable', [
+        $this->getBehavior('Searchable')->setConfig([
             'fields' => [
                 'title' => 10,
                 'description' => 7,
@@ -68,9 +64,5 @@ class LocationsTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.Geometry');
-
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
     }
 }
