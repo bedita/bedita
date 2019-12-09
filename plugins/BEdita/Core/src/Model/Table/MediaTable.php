@@ -41,24 +41,20 @@ class MediaTable extends Table
 
         $this->extensionOf('Objects');
 
-        if ($this->hasBehavior('UniqueName')) {
-            $this->getBehavior('UniqueName')->setConfig([
-                'sourceField' => 'title',
-                'prefix' => 'media-'
-            ]);
-        }
+        $this->getBehavior('UniqueName')->setConfig([
+            'sourceField' => 'title',
+            'prefix' => 'media-'
+        ]);
 
-        if ($this->hasBehavior('Searchable')) {
-            $this->getBehavior('Searchable')->setConfig([
-                'fields' => [
-                    'title' => 10,
-                    'description' => 7,
-                    'body' => 5,
-                    'provider' => 5,
-                    'name' => 8,
-                ],
-            ]);
-        }
+        $this->getBehavior('Searchable')->setConfig([
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'provider' => 5,
+                'name' => 8,
+            ],
+        ]);
 
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',

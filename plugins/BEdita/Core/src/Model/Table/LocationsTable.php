@@ -51,19 +51,17 @@ class LocationsTable extends Table
 
         $this->extensionOf('Objects');
 
-        if ($this->hasBehavior('Searchable')) {
-            $this->getBehavior('Searchable')->setConfig([
-                'fields' => [
-                    'title' => 10,
-                    'description' => 7,
-                    'body' => 5,
-                    'address' => 1,
-                    'locality' => 2,
-                    'country_name' => 2,
-                    'region' => 2,
-                ],
-            ]);
-        }
+        $this->getBehavior('Searchable')->setConfig([
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'address' => 1,
+                'locality' => 2,
+                'country_name' => 2,
+                'region' => 2,
+            ],
+        ]);
 
         $this->addBehavior('BEdita/Core.Geometry');
     }

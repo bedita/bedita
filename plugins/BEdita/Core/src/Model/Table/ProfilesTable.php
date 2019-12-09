@@ -55,30 +55,26 @@ class ProfilesTable extends Table
 
         $this->extensionOf('Objects');
 
-        if ($this->hasBehavior('UniqueName')) {
-            $this->getBehavior('UniqueName')->setConfig([
-                'sourceField' => 'title',
-                'prefix' => 'profile-'
-            ]);
-        }
+        $this->getBehavior('UniqueName')->setConfig([
+            'sourceField' => 'title',
+            'prefix' => 'profile-'
+        ]);
 
-        if ($this->hasBehavior('Searchable')) {
-            $this->getBehavior('Searchable')->setConfig([
-                'fields' => [
-                    'title' => 10,
-                    'description' => 7,
-                    'body' => 5,
-                    'name' => 10,
-                    'surname' => 10,
-                    'email' => 7,
-                    'company_name' => 10,
-                    'street_address' => 1,
-                    'city' => 2,
-                    'country' => 2,
-                    'state_name' => 2,
-                ],
-            ]);
-        }
+        $this->getBehavior('Searchable')->setConfig([
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'name' => 10,
+                'surname' => 10,
+                'email' => 7,
+                'company_name' => 10,
+                'street_address' => 1,
+                'city' => 2,
+                'country' => 2,
+                'state_name' => 2,
+            ],
+        ]);
     }
 
     /**

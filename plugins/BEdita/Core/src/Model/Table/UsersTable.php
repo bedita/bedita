@@ -82,26 +82,22 @@ class UsersTable extends Table
 
         $this->extensionOf('Profiles');
 
-        if ($this->hasBehavior('UniqueName')) {
-            $this->getBehavior('UniqueName')->setConfig([
-                'sourceField' => 'username',
-                'prefix' => 'user-'
-            ]);
-        }
+        $this->getBehavior('UniqueName')->setConfig([
+            'sourceField' => 'username',
+            'prefix' => 'user-'
+        ]);
 
-        if ($this->hasBehavior('Searchable')) {
-            $this->getBehavior('Searchable')->setConfig([
-                'fields' => [
-                    'username' => 10,
-                    'title' => 10,
-                    'name' => 10,
-                    'surname' => 10,
-                    'email' => 7,
-                    'description' => 7,
-                    'body' => 5,
-                    ],
-            ]);
-        }
+        $this->getBehavior('Searchable')->setConfig([
+            'fields' => [
+                'username' => 10,
+                'title' => 10,
+                'name' => 10,
+                'surname' => 10,
+                'email' => 7,
+                'description' => 7,
+                'body' => 5,
+            ],
+        ]);
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
