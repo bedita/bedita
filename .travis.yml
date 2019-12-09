@@ -23,7 +23,7 @@ jobs:
       php: 7.3
       addons:
         mariadb: '10.4'
-      env: "DB=mariadb db_dsn='mysql://root@localhost/bedita_test'"
+      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test'"
     - name: "SQLite on PHP 7.1"
       stage: minimal
       php: 7.1
@@ -126,7 +126,7 @@ before_script:
 
   # Set up and configure databases.
   - if [ "$DB" = 'mysql' ] || [ "$DB" = 'mysql8' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
-  - if [ "$DB" = 'mariadb' ]; then sudo mysql -e 'CREATE DATABASE bedita_test;'; sudo mysql -e 'SHOW DATABASES;'; fi
+  - if [ "$DB" = 'mariadb' ]; then sudo mysql -e 'CREATE DATABASE bedita_test;'; sudo mysql -e "SET Password=PASSWORD('travis');"; sudo mysql -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
