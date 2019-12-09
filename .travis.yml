@@ -28,7 +28,7 @@ jobs:
       env: "DB=mariadb db_dsn='mysql://root@localhost/bedita_test'"
     - name: "SQLite on PHP 7.1"
       stage: minimal
-      php: 7.3
+      php: 7.1
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - name: "MySQL 8 on PHP 7.2"
       stage: minimal
@@ -38,7 +38,7 @@ jobs:
       env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 10 on PHP 7.3"
       stage: minimal
-      php: 7.2
+      php: 7.3
       services:
         - postgresql
       addons:
@@ -68,7 +68,7 @@ jobs:
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-      - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2"
+    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2"
       stage: complete
       dist: xenial
       php: 7.2
