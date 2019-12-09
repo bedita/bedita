@@ -10,7 +10,7 @@ It's also an extensible framework to build your custom back-end API via plugins.
 It provides a complete content management solution with:
 
 * a _headless_ HTTP server application with a complete REST API to model, create, modify and retrieve data
-* a default admin web application (not yet available)
+* a default admin web application **[BEdita Manager](https://github.com/bedita/manager)**
 
 BEdita 4 is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
 [Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com) in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) or time series databases to boost performance and scale up to Big Data scenarios.
@@ -23,8 +23,8 @@ The easiest and quickest way to try out BEdita4 is via [Docker](https://www.dock
 
 ## Prerequisites
 
-* PHP 7.1.0 or newer
-* MySQL 5.7 (recommended) or MySQL 5.6, Postgres 9.5/9.6 or SQLite 3
+* PHP 7.1, 7.2 or 7.3 with extensions: `json`, `mbstring`, `fileinfo`, `intl`, `pdo`, `simplexml`
+* MySQL 5.7 (recommended) or MySQL 8.0, Postgres 9.6/10/11/12, MariaDB 10.2/10.3/10.4 or SQLite 3
 * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 ## Install
@@ -33,17 +33,17 @@ For a detailed setup overview see [Setup Documentation](https://docs.bedita.net/
 
 Quick setup in three steps.
 
-1. Create project via composer
+01. Create project via composer
 
-```bash
- composer create-project bedita/bedita
-```
+ ```bash
+  composer create-project bedita/bedita
+ ```
 
-If you are using a **.zip** or **.tar.gz** release file you just need to unpack it and then run ``composer install``.
+ If you are using a **.zip** or **.tar.gz** release file you just need to unpack it and then run ``composer install``.
 
-1. Create an empty database either MySQL or PostgresSQL. Do nothing for SQLite.
+02. Create an empty database either MySQL or PostgresSQL. Do nothing for SQLite.
 
-1. Change to the newly created folder and run this script to initialize the database and create first admin user:
+02. Change to the newly created folder and run this script to initialize the database and create first admin user:
 
 ```bash
  bin/cake bedita setup
