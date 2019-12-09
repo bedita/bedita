@@ -23,7 +23,7 @@ jobs:
       php: 7.3
       addons:
         mariadb: '10.4'
-      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test'"
+      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC'"
     - name: "SQLite on PHP 7.1"
       stage: minimal
       php: 7.1
