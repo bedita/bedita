@@ -36,6 +36,7 @@ class CategoriesBehaviorTest extends TestCase
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
     ];
@@ -176,8 +177,9 @@ class CategoriesBehaviorTest extends TestCase
         }
         $entity = $table->get($id, $options);
 
-        $table->patchEntity($entity, $data);
+        $entity = $table->patchEntity($entity, $data);
         $entity = $table->save($entity);
+        static::assertNotFalse($entity);
 
         foreach (array_keys($expected) as $key) {
             $result = (array)$entity->get($key);
