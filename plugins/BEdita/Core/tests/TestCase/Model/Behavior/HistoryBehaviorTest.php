@@ -104,7 +104,7 @@ class HistoryBehaviorTest extends TestCase
 
         $behavior = $Documents->getBehavior('History');
         unset($data['type']);
-        static::assertEquals($data, $behavior->changed);
+        static::assertEquals($data, $behavior->getChanged());
     }
 
     /**
@@ -153,7 +153,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents->save($entity);
 
         $behavior = $Documents->getBehavior('History');
-        static::assertEquals($data, $behavior->changed);
+        static::assertEquals($data, $behavior->getChanged());
 
         $history = TableRegistry::get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])

@@ -18,7 +18,6 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\I18n\Time;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 
@@ -59,7 +58,18 @@ class HistoryBehavior extends Behavior
      *
      * @var array
      */
-    public $changed = [];
+    protected $changed = [];
+
+    /**
+     * Retrieve changed properties array
+     *
+     * @return array
+     * @codeCoverageIgnore
+     */
+    public function getChanged()
+    {
+        return $this->changed;
+    }
 
     /**
      * {@inheritDoc}
