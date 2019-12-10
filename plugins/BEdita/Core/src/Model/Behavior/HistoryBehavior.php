@@ -73,6 +73,9 @@ class HistoryBehavior extends Behavior
         $table = $this->getConfig('table');
         if (!empty($table)) {
             $this->Table = TableRegistry::getTableLocator()->get($table);
+            if (!$this->Table->hasBehavior('Timestamp')) {
+                $this->Table->addBehavior('Timestamp');
+            }
         }
     }
 
@@ -142,7 +145,6 @@ class HistoryBehavior extends Behavior
         $history->application_id = CurrentApplication::getApplicationId();
         $history->user_id = LoggedUser::id();
         $history->changed = $this->changed;
-        $history->created = Time::now();
         $history->user_action = $this->entityUserAction($entity);
 
         return $history;
