@@ -43,6 +43,6 @@ class ObjectModelBehaviorTest extends TestCase
         static::assertEquals(0, $count);
         $table->addBehavior('BEdita/Core.ObjectModel');
         $count = $table->behaviors()->count();
-        static::assertEquals(9, $count);
+        static::assertEquals(10, $count);
     }
 }
