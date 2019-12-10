@@ -18,22 +18,16 @@ stages:
 jobs:
   include:
     # Minimal tests set
-    - name: "MariaDB 10 on PHP 7.3"
-      stage: minimal
-      php: 7.3
-      addons:
-        mariadb: '10.4'
-      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
     - name: "SQLite on PHP 7.1"
       stage: minimal
       php: 7.1
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - name: "MySQL 8 on PHP 7.2"
+    - name: "MySQL 5.7 on PHP 7.2"
       stage: minimal
       php: 7.2
       services:
         - mysql
-      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
+      env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
     - name: "PostgreSQL 10 on PHP 7.3"
       stage: minimal
       php: 7.3
@@ -66,10 +60,10 @@ jobs:
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2"
+    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.3"
       stage: complete
       dist: xenial
-      php: 7.2
+      php: 7.3
       services:
         - postgresql
       addons:
@@ -79,6 +73,18 @@ jobs:
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+    - name: "MariaDB 10 on PHP 7.3"
+      stage: complete
+      php: 7.3
+      addons:
+        mariadb: '10.4'
+      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
+    - name: "MySQL 8 on PHP 7.3"
+      stage: complete
+      php: 7.3
+      services:
+        - mysql
+      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
     - name: "Static Code Analysis"
       stage: complete
       php: 7.2
