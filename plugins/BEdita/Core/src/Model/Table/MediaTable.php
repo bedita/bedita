@@ -1,8 +1,8 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
-use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Schema\TableSchema;
 
 /**
@@ -41,16 +41,20 @@ class MediaTable extends Table
 
         $this->extensionOf('Objects');
 
-        $this->addBehavior('BEdita/Core.Relations');
-
-        $this->addBehavior('BEdita/Core.UniqueName', [
+        $this->getBehavior('UniqueName')->setConfig([
             'sourceField' => 'title',
             'prefix' => 'media-'
         ]);
 
-        $this->addBehavior('BEdita/Core.CustomProperties');
-
-        $this->addBehavior('BEdita/Core.DataCleanup');
+        $this->getBehavior('Searchable')->setConfig([
+            'fields' => [
+                'title' => 10,
+                'description' => 7,
+                'body' => 5,
+                'provider' => 5,
+                'name' => 8,
+            ],
+        ]);
 
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',

@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -56,6 +57,7 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
