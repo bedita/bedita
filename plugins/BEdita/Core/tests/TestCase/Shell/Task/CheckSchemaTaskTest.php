@@ -19,8 +19,10 @@ use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckSchemaTask
@@ -64,6 +66,24 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
             });
 
         parent::tearDownAfterClass();
+    }
+
+    /**
+     * Check whether or not perform a check on a given $connection
+     *
+     * @param ConnectionInterface $connection
+     * @return bool
+     */
+    protected function checkAvailable($connection)
+    {
+        if (!($connection->getDriver() instanceof Mysql)) {
+            return false;
+        }
+        // Real vendor must not be defined, otherwise we are dealing
+        // with MariaDB, Aurora or other MySQL compatible DB
+        $realVendor = Hash::get((array)$connection->config(), 'realVendor');
+
+        return empty($realVendor);
     }
 
     /**
@@ -133,7 +153,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        if ($connection->getDriver() instanceof Mysql) {
+        if ($this->checkAvailable($connection)) {
             static::assertExitCode(Shell::CODE_ERROR);
             $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
             $this->assertOutputContains('Column name "password" is not valid (reserved word)');
@@ -161,7 +181,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
         $this->exec(CheckSchemaTask::class);
 
         $this->assertExitCode(Shell::CODE_SUCCESS);
-        if (!($connection->getDriver() instanceof Mysql)) {
+        if (!$this->checkAvailable($connection)) {
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
         $this->assertErrorEmpty();
@@ -186,7 +206,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        if ($connection->getDriver() instanceof Mysql) {
+        if ($this->checkAvailable($connection)) {
             $this->assertExitCode(Shell::CODE_ERROR);
             $this->assertOutputContains('Table "foo_bar" has been added');
         } else {
@@ -215,7 +235,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        if ($connection->getDriver() instanceof Mysql) {
+        if ($this->checkAvailable($connection)) {
             $this->assertExitCode(Shell::CODE_ERROR);
             $this->assertOutputContains('Table "config" has been removed');
         } else {
@@ -245,7 +265,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        if ($connection->getDriver() instanceof Mysql) {
+        if ($this->checkAvailable($connection)) {
             $this->assertExitCode(Shell::CODE_ERROR);
             foreach ($constraints as $constraint) {
                 $info = $table->getConstraint($constraint);
