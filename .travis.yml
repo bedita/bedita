@@ -18,19 +18,19 @@ stages:
 jobs:
   include:
     # Minimal tests set
-    - name: "SQLite on PHP 7.3"
-      stage: minimal
-      php: 7.3
-      env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - name: "MySQL 5.7 on PHP 7.1"
+    - name: "SQLite on PHP 7.1"
       stage: minimal
       php: 7.1
+      env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
+    - name: "MySQL 5.7 on PHP 7.2"
+      stage: minimal
+      php: 7.2
       services:
         - mysql
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
-    - name: "PostgreSQL 10 on PHP 7.2"
+    - name: "PostgreSQL 10 on PHP 7.3"
       stage: minimal
-      php: 7.2
+      php: 7.3
       services:
         - postgresql
       addons:
@@ -45,7 +45,6 @@ jobs:
         vendor/bin/phpcs -n -p --extensions=php \
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
-
     # Complete tests suite
     - name: "SQlite on PHP 7.2 with coverage"
       stage: complete
@@ -61,10 +60,10 @@ jobs:
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.2"
+    - name: "PostgreSQL 9.6 + PostGIS on PHP 7.3"
       stage: complete
       dist: xenial
-      php: 7.2
+      php: 7.3
       services:
         - postgresql
       addons:
@@ -74,6 +73,18 @@ jobs:
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+    - name: "MariaDB 10 on PHP 7.3"
+      stage: complete
+      php: 7.3
+      addons:
+        mariadb: '10.4'
+      env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
+    - name: "MySQL 8 on PHP 7.3"
+      stage: complete
+      php: 7.3
+      services:
+        - mysql
+      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
     - name: "Static Code Analysis"
       stage: complete
       php: 7.2
@@ -108,20 +119,20 @@ jobs:
 before_install:
   # Use GitHub OAuth token with Composer to increase API limits.
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
+  # upgrade to MySQL 8 if requested
+  - if [ "$DB" = 'mysql8' ]; then wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb; sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb; sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 8C718D3B5072E1F5; sudo apt-get update -q; sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server; sudo systemctl restart mysql; sudo mysql_upgrade; mysql --version ; fi
 
 install:
   # Install Composer dependencies.
   - composer install --prefer-dist --no-interaction
 
 before_script:
-  # # Enable required PHP Extensions.
-  # - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  # - echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv rehash
   - set +H
 
   # Set up and configure databases.
-  - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
+  - if [ "$DB" = 'mysql' ] || [ "$DB" = 'mysql8' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
+  - if [ "$DB" = 'mariadb' ]; then sudo mysql -e 'CREATE DATABASE bedita_test;'; sudo mysql -e "SET Password=PASSWORD('travis');"; sudo mysql -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
 
