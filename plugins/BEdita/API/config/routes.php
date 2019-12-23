@@ -48,7 +48,7 @@ Router::plugin(
         // Home.
         $routes->redirect(
             '/',
-            ['_name' => 'api:home'],
+            '/home',
             ['persist' => true]
         );
         $routes->connect(
