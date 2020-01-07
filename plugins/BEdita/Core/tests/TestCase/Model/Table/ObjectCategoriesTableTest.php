@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ObjectCategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectCategoriesTable} Test Case
@@ -38,6 +38,8 @@ class ObjectCategoriesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
@@ -67,32 +69,89 @@ class ObjectCategoriesTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testValidation` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function validationProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'ok' => [
+                [],
+                [
+                    'category_id' => 2,
+                    'object_id' => 6,
+                ],
+            ],
+            'invalid' => [
+                [
+                    'object_id._required',
+                ],
+                [
+                    'category_id' => 2,
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test validation.
      *
+     * @param string[] $expected Expected errors.
+     * @param array $data Data.
      * @return void
+     *
+     * @dataProvider validationProvider
+     * @covers ::validationDefault()
      */
-    public function testValidationDefault()
+    public function testValidation(array $expected, array $data)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $entity = $this->ObjectCategories->newEntity();
+        $entity = $this->ObjectCategories->patchEntity($entity, $data);
+        $errors = array_keys(Hash::flatten($entity->getErrors()));
+
+        static::assertEquals($expected, $errors);
     }
 
     /**
-     * Test buildRules method
+     * Data provider for `testBuildRules` test case.
+     *
+     * @return array
+     */
+    public function buildRulesProvider()
+    {
+        return [
+            'inValidObject' => [
+                false,
+                [
+                    'object_id' => 1234,
+                    'category_id' => 1,
+                ],
+            ],
+            'inValidCategory' => [
+                false,
+                [
+                    'object_id' => 4,
+                    'category_id' => 1234,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test build rules validation.
+     *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
      *
      * @return void
+     * @dataProvider buildRulesProvider
+     * @covers ::buildRules()
      */
-    public function testBuildRules()
+    public function testBuildRules($expected, array $data)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $endpoint = $this->ObjectCategories->newEntity($data, ['validate' => false]);
+        $success = $this->ObjectCategories->save($endpoint);
+        $this->assertEquals($expected, (bool)$success, print_r($endpoint->getErrors(), true));
     }
 }

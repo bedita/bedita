@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -39,6 +40,7 @@ class ObjectCategoriesTable extends Table
      *
      * @param array $config The configuration for the Table.
      * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -70,13 +72,32 @@ class ObjectCategoriesTable extends Table
     {
         $validator
             ->nonNegativeInteger('id')
-            ->allowEmptyString('id', null, 'create');
+            ->allowEmptyString('id', null, 'create')
+            ->allowEmpty('params');
 
         $validator
-            ->scalar('params')
-            ->allowEmptyString('params');
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmpty('object_id');
 
-        return $validator;
+        $validator
+            ->integer('category_id')
+            ->requirePresence('category_id', 'create')
+            ->notEmpty('category_id');
+
+            return $validator;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->setColumnType('params', 'json');
+
+        return $schema;
     }
 
     /**
