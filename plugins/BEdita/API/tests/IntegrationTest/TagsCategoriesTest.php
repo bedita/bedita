@@ -231,7 +231,6 @@ class TagsCategoriesTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $result = json_decode((string)$this->_response->getBody(), true);
-// pr($result);
 
         // View object
         $this->configRequestHeaders();
@@ -240,7 +239,6 @@ class TagsCategoriesTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-// pr($result);
         foreach (['tags', 'categories'] as $item) {
             if (!isset($expected[$item])) {
                 static::assertArrayNotHasKey($item, $result['data']['attributes']);

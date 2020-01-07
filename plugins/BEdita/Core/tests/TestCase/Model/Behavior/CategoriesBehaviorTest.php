@@ -119,7 +119,6 @@ class CategoriesBehaviorTest extends TestCase
                 2,
                 'Documents',
             ],
-
             'no categories allowed' => [
                 [
                     'categories' => [],
@@ -132,7 +131,6 @@ class CategoriesBehaviorTest extends TestCase
                 4,
                 'Profiles',
             ],
-
             'missing tags' => [
                 [
                     'tags' => []
@@ -150,7 +148,7 @@ class CategoriesBehaviorTest extends TestCase
     }
 
     /**
-     * Test correct save of custom properties.
+     * Test tags and categories `save`.
      *
      * @param array $expected Expected result.
      * @param array $data Data.

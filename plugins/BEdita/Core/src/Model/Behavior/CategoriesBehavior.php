@@ -60,8 +60,8 @@ class CategoriesBehavior extends Behavior
         }
         // Check if `Tags` or `Categories` associations are enabled
         $objectType = $this->getTable()
-                    ->getAssociation('ObjectTypes')
-                    ->get($entity->get('type'));
+            ->getAssociation('ObjectTypes')
+            ->get($entity->get('type'));
         if (!in_array(Inflector::humanize($item), (array)$objectType->get('associations'))) {
             $entity->unsetProperty($item);
 
