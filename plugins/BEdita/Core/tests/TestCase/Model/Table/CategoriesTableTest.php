@@ -125,37 +125,4 @@ class CategoriesTableTest extends TestCase
         $categories = $this->Categories->find('enabled')->toArray();
         static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
     }
-
-    /**
-     * Test `findIds` method
-     *
-     * @return void
-     * @covers ::findIds()
-     */
-    public function testFindIds()
-    {
-        $categories = $this->Categories
-            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
-            ->toArray();
-        static::assertEquals(1, count($categories));
-        static::assertEquals(2, $categories[0]['id']);
-
-        $categories = $this->Categories
-            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
-            ->toArray();
-        static::assertEmpty($categories);
-    }
-
-    /**
-     * Test `findIds` failure
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testFindCategoriesIdsFail2()
-    {
-        static::expectException('\Cake\Http\Exception\BadRequestException');
-        static::expectExceptionMessage('Missing or wrong required parameter "names"');
-        $this->Categories->find('ids', ['typeId' => 2, 'names' => 'unnamed'])->toArray();
-    }
 }

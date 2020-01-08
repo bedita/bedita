@@ -18,11 +18,11 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * {@see \BEdita\Core\Model\Table\CategoriesTagsTrait} Test Case
+ * {@see \BEdita\Core\Model\Table\CategoriesTagsBaseTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\CategoriesTagsTrait
+ * @coversDefaultClass \BEdita\Core\Model\Table\CategoriesTagsBaseTable
  */
-class CategoriesTagsTraitTest extends TestCase
+class CategoriesTagsBaseTableTest extends TestCase
 {
     /**
      * Fixtures
@@ -70,7 +70,7 @@ class CategoriesTagsTraitTest extends TestCase
      * Test `testFindEnabled` method
      *
      * @return void
-     * @covers ::testFindEnabled()
+     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {
@@ -82,12 +82,12 @@ class CategoriesTagsTraitTest extends TestCase
     }
 
     /**
-     * Test `idsByNames` method
+     * Test `findIds` method
      *
      * @return void
-     * @covers ::idsByNames()
+     * @covers ::findIds()
      */
-    public function testIdsByNames()
+    public function testFindIds()
     {
         $table = TableRegistry::getTableLocator()->get('Tags');
         $tags = $table->find('ids', ['names' => ['first-tag']])->toArray();
@@ -99,15 +99,53 @@ class CategoriesTagsTraitTest extends TestCase
     }
 
     /**
-     * Test `findTagsIds` failure
+     * Test `findIds` failure on 'Tags'
      *
      * @return void
-     * @covers ::findTagsIds()
+     * @covers ::findIds()
      */
     public function testFindTagsIdsFail()
     {
         static::expectException('\Cake\Http\Exception\BadRequestException');
         static::expectExceptionMessage('Missing or wrong required parameter "names"');
-        TableRegistry::getTableLocator()->get('Tags')->find('ids', ['names' => 42])->toArray();
+        TableRegistry::getTableLocator()->get('Tags')
+            ->find('ids', ['names' => 42])
+            ->toArray();
+    }
+
+    /**
+     * Test `findIds` method on 'Categories'
+     *
+     * @return void
+     * @covers ::findIds()
+     */
+    public function testFindIds2()
+    {
+        $table = TableRegistry::getTableLocator()->get('Categories');
+        $categories = $table
+            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
+            ->toArray();
+        static::assertEquals(1, count($categories));
+        static::assertEquals(2, $categories[0]['id']);
+
+        $categories = $table
+            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
+            ->toArray();
+        static::assertEmpty($categories);
+    }
+
+    /**
+     * Test `findIds` failure on 'Categories'
+     *
+     * @return void
+     * @covers ::findIds()
+     */
+    public function testFindCategoriesIdsFail2()
+    {
+        static::expectException('\Cake\Http\Exception\BadRequestException');
+        static::expectExceptionMessage('Missing or wrong required parameter "names"');
+        TableRegistry::getTableLocator()->get('Categories')
+            ->find('ids', ['typeId' => 2, 'names' => 'unnamed'])
+            ->toArray();
     }
 }

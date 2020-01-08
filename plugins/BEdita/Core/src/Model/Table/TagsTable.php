@@ -35,10 +35,8 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class TagsTable extends Table
+class TagsTable extends CategoriesTagsBaseTable
 {
-    use CategoriesTagsTrait;
-
     /**
      * Initialize method
      *
@@ -80,20 +78,6 @@ class TagsTable extends Table
             ->add('parent_id', 'requireNull', ['rule' => [Validation::class, 'requireNull']]);
 
         return $validator;
-    }
-
-    /**
-     * Find tags ids by name
-     * $options array MUST contain following keys
-     *  - `names`, categories names array
-     *
-     * @param Query $query Query object
-     * @param array $options Array containing category names.
-     * @return Query
-     */
-    protected function findIds(Query $query, array $options)
-    {
-        return $this->idsByNames($query, $options);
     }
 
     /**

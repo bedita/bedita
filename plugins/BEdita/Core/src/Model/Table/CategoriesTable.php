@@ -38,10 +38,8 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CategoriesTable extends Table
+class CategoriesTable extends CategoriesTagsBaseTable
 {
-    use CategoriesTagsTrait;
-
     /**
      * Initialize method
      *
@@ -129,23 +127,6 @@ class CategoriesTable extends Table
         ));
 
         return $rules;
-    }
-
-    /**
-     * Find categories ids by name
-     * $options array MUST contain following keys
-     *  - `typeId`, object typ id
-     *  - `names`, categories names array
-     *
-     * @param Query $query Query object
-     * @param array $options Array containing object type id and category names.
-     * @return Query
-     */
-    protected function findIds(Query $query, array $options)
-    {
-        $options['_categories'] = true;
-
-        return $this->idsByNames($query, $options);
     }
 
     /**

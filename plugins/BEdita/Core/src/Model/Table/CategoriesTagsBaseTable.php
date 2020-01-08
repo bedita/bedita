@@ -16,14 +16,15 @@ namespace BEdita\Core\Model\Table;
 use Cake\Collection\CollectionInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Categories & tags commmon methods trait
+ * Categories & tags tables base class
  *
  * @since 4.1.0
  */
-trait CategoriesTagsTrait
+abstract class CategoriesTagsBaseTable extends Table
 {
     /**
      * Common validation rules.
@@ -64,7 +65,9 @@ trait CategoriesTagsTrait
      */
     protected function findEnabled(Query $query)
     {
-        return $query->where(['enabled' => true]);
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
     }
 
     /**
@@ -77,9 +80,9 @@ trait CategoriesTagsTrait
      * @param array $options Array containing object type id and category names.
      * @return Query
      */
-    protected function idsByNames(Query $query, array $options)
+    protected function findIds(Query $query, array $options)
     {
-        if (!empty($options['_categories']) && empty($options['typeId'])) {
+        if (($this->getAlias() === 'Categories') && empty($options['typeId'])) {
             throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'typeId'));
         }
         if (empty($options['names']) || !is_array($options['names'])) {
@@ -91,10 +94,8 @@ trait CategoriesTagsTrait
             $this->aliasField('name') . ' IN' => $options['names'],
         ];
 
-        if (!empty($options['_categories'])) {
+        if ($this->getAlias() === 'Categories') {
             $conditions[] = [$this->aliasField('object_type_id') => (int)$options['typeId']];
-        } else {
-            $conditions[] = $this->aliasField('object_type_id') . ' IS NULL';
         }
 
         return $query->select(['id', 'name'])
@@ -107,7 +108,7 @@ trait CategoriesTagsTrait
      * @param \Cake\ORM\Query $query Query object instance.
      * @return void
      */
-    public function removeFields(Query $query)
+    protected function removeFields(Query $query)
     {
         $query->formatResults(function (CollectionInterface $results) {
             return $results->map(function ($row) {
