@@ -18,9 +18,9 @@ stages:
 jobs:
   include:
     # Minimal tests set
-    - name: "SQLite on PHP 7.1"
+    - name: "SQLite on PHP 7.4"
       stage: minimal
-      php: 7.1
+      php: 7.4
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - name: "MySQL 5.7 on PHP 7.2"
       stage: minimal
@@ -46,15 +46,15 @@ jobs:
           --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
           ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
     # Complete tests suite
-    - name: "SQlite on PHP 7.2 with coverage"
+    - name: "SQlite on PHP 7.3 with coverage"
       stage: complete
-      php: 7.2
+      php: 7.3
       env: "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
       script: vendor/bin/phpunit --coverage-clover=clover.xml
       after_success: bash <(curl -s https://codecov.io/bash)
-    - name: "MySQL 5.7 on PHP 7.2 with coverage"
+    - name: "MySQL 5.7 on PHP 7.3 with coverage"
       stage: complete
-      php: 7.2
+      php: 7.3
       services:
         - mysql
       env: "DB=mysql db_dsn='mysql://root@localhost/bedita_test'"
@@ -79,9 +79,9 @@ jobs:
       addons:
         mariadb: '10.4'
       env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
-    - name: "MySQL 8 on PHP 7.3"
+    - name: "MySQL 8 on PHP 7.4"
       stage: complete
-      php: 7.3
+      php: 7.4
       services:
         - mysql
       env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
