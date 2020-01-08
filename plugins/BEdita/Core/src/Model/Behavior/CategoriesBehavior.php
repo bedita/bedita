@@ -21,7 +21,7 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
- * Categories behavior
+ * Categories and Tags behavior
  *
  * @since 4.1.0
  */
@@ -90,9 +90,9 @@ class CategoriesBehavior extends Behavior
             $options['typeId'] = (int)$objectType->get('id');
         }
 
-        // Invoke `categoriesIds` or `tagsIds` finder
-        return TableRegistry::getTableLocator()->get('Categories')
-            ->find(sprintf('%sIds', $item), $options)
+        // Invoke `ids` finder in `Categories` or `Tags` table
+        return TableRegistry::getTableLocator()->get(Inflector::humanize($item))
+            ->find('ids', $options)
             ->toArray();
     }
 

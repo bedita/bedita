@@ -115,101 +115,47 @@ class CategoriesTableTest extends TestCase
     }
 
     /**
-     * Test `findEnabledCategories` method
+     * Test find enabled categories
      *
      * @return void
-     * @covers ::findEnabledCategories()
+     * @coversNothing
      */
     public function testFindEnabledCategories()
     {
-        $categories = $this->Categories->find('enabledCategories')->toArray();
+        $categories = $this->Categories->find('enabled')->toArray();
         static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
     }
 
     /**
-     * Test `findEnabledTags` method
+     * Test `findIds` method
      *
      * @return void
-     * @covers ::findEnabledTags()
+     * @covers ::findIds()
      */
-    public function testFindEnabledTags()
-    {
-        $categories = $this->Categories->find('enabledTags')->toArray();
-        static::assertEquals([4], Hash::extract($categories, '{n}.id'));
-    }
-
-    /**
-     * Test `findTagsIds` method
-     *
-     * @return void
-     * @covers ::findTagsIds()
-     */
-    public function testFindTagsIds()
-    {
-        $tags = $this->Categories->find('tagsIds', ['names' => ['first-tag']])->toArray();
-        static::assertEquals(1, count($tags));
-        static::assertEquals(4, $tags[0]['id']);
-
-        $tags = $this->Categories->find('tagsIds', ['names' => ['tag-1', 'tag-2']])->toArray();
-        static::assertEmpty($tags);
-    }
-
-    /**
-     * Test `findTagsIds` failure
-     *
-     * @return void
-     * @covers ::findTagsIds()
-     */
-    public function testFindTagsIdsFail()
-    {
-        static::expectException('\Cake\Http\Exception\BadRequestException');
-        static::expectExceptionMessage('Missing or wrong required parameter "names"');
-        $this->Categories->find('tagsIds', ['names' => 42])->toArray();
-    }
-
-    /**
-     * Test `findCategoriesIds` method
-     *
-     * @return void
-     * @covers ::findCategoriesIds()
-     */
-    public function testFindCategoriesIds()
+    public function testFindIds()
     {
         $categories = $this->Categories
-            ->find('categoriesIds', ['names' => ['second-cat'], 'typeId' => 2])
+            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
             ->toArray();
         static::assertEquals(1, count($categories));
         static::assertEquals(2, $categories[0]['id']);
 
         $categories = $this->Categories
-            ->find('categoriesIds', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
+            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
             ->toArray();
         static::assertEmpty($categories);
     }
 
     /**
-     * Test `findCategoriesIds` failure
+     * Test `findIds` failure
      *
      * @return void
-     * @covers ::findCategoriesIds()
-     */
-    public function testFindCategoriesIdsFail()
-    {
-        static::expectException('\Cake\Http\Exception\BadRequestException');
-        static::expectExceptionMessage('Missing required parameter "typeId"');
-        $this->Categories->find('categoriesIds', ['names' => ['second-cat']])->toArray();
-    }
-
-    /**
-     * Test `findCategoriesIds` failure
-     *
-     * @return void
-     * @covers ::findCategoriesIds()
+     * @coversNothing
      */
     public function testFindCategoriesIdsFail2()
     {
         static::expectException('\Cake\Http\Exception\BadRequestException');
         static::expectExceptionMessage('Missing or wrong required parameter "names"');
-        $this->Categories->find('categoriesIds', ['typeId' => 2, 'names' => 'unnamed'])->toArray();
+        $this->Categories->find('ids', ['typeId' => 2, 'names' => 'unnamed'])->toArray();
     }
 }

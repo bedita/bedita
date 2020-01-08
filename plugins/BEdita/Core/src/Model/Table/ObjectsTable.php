@@ -108,15 +108,15 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.ObjectCategories',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'category_id',
-            'finder' => 'enabledCategories',
+            'finder' => 'enabled',
             'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('Tags', [
-            'className' => 'BEdita/Core.Categories',
-            'through' => 'BEdita/Core.ObjectCategories',
+            'className' => 'BEdita/Core.Tags',
+            'through' => 'BEdita/Core.ObjectTags',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'category_id',
-            'finder' => 'enabledTags',
+            'finder' => 'enabled',
             'cascadeCallbacks' => true,
         ]);
         $this->hasMany('TreeNodes', [

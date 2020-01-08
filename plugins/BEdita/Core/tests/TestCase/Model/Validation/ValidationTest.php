@@ -340,4 +340,15 @@ class ValidationTest extends TestCase
 
         static::assertSame($expected, $result);
     }
+
+    /**
+     * Test `requireNull` validation.
+     *
+     * @covers ::requireNull()
+     */
+    public function testRequireNull()
+    {
+        static::assertTrue(Validation::requireNull(null));
+        static::assertFalse(Validation::requireNull(''));
+    }
 }

@@ -110,7 +110,11 @@ class ObjectCategoriesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        $rules->add($rules->existsIn(['category_id'], 'Categories'));
+        if ($this->associations()->has('Categories')) {
+            $rules->add($rules->existsIn(['category_id'], 'Categories'));
+        } else {
+            $rules->add($rules->existsIn(['category_id'], 'Tags'));
+        }
 
         return $rules;
     }

@@ -39,6 +39,7 @@ class CategoriesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.History',
     ];
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,9 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Collection\CollectionInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -42,6 +40,8 @@ use Cake\Validation\Validator;
  */
 class CategoriesTable extends Table
 {
+    use CategoriesTagsTrait;
+
     /**
      * Initialize method
      *
@@ -90,20 +90,7 @@ class CategoriesTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
-        $validator
-            ->nonNegativeInteger('id')
-            ->allowEmptyString('id', null, 'create');
-
-        $validator
-            ->scalar('name')
-            ->maxLength('name', 50)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
-
-        $validator
-            ->scalar('label')
-            ->maxLength('label', 255)
-            ->allowEmptyString('label');
+        $this->validationRules($validator);
 
         $validator
             ->integer('tree_left')
@@ -145,34 +132,6 @@ class CategoriesTable extends Table
     }
 
     /**
-     * Find enabled categories
-     *
-     * @param Query $query Query object
-     * @return Query
-     */
-    protected function findEnabledCategories(Query $query)
-    {
-        return $query->where([
-            $this->aliasField('enabled') => true,
-            sprintf('%s IS NOT NULL', $this->aliasField('object_type_id')),
-        ]);
-    }
-
-    /**
-     * Find enabled tags
-     *
-     * @param Query $query Query object
-     * @return Query
-     */
-    protected function findEnabledTags(Query $query)
-    {
-        return $query->where([
-            $this->aliasField('enabled') => true,
-            sprintf('%s IS NULL', $this->aliasField('object_type_id')),
-        ]);
-    }
-
-    /**
      * Find categories ids by name
      * $options array MUST contain following keys
      *  - `typeId`, object typ id
@@ -182,48 +141,15 @@ class CategoriesTable extends Table
      * @param array $options Array containing object type id and category names.
      * @return Query
      */
-    protected function findCategoriesIds(Query $query, array $options)
+    protected function findIds(Query $query, array $options)
     {
-        if (empty($options['typeId'])) {
-            throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'typeId'));
-        }
-        if (empty($options['names']) || !is_array($options['names'])) {
-            throw new BadRequestException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
-        }
+        $options['_categories'] = true;
 
-        return $query->select(['id', 'name'])
-            ->where([
-                $this->aliasField('enabled') => true,
-                $this->aliasField('object_type_id') => (int)$options['typeId'],
-                $this->aliasField('name') . ' IN' => $options['names'],
-            ]);
+        return $this->idsByNames($query, $options);
     }
 
     /**
-     * Find tags ids by name
-     * $options array MUST contain following keys
-     *  - `names`, categories names array
-     *
-     * @param Query $query Query object
-     * @param array $options Array containing category names.
-     * @return Query
-     */
-    protected function findTagsIds(Query $query, array $options)
-    {
-        if (empty($options['names']) || !is_array($options['names'])) {
-            throw new BadRequestException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
-        }
-
-        return $query->select(['id', 'name'])
-            ->where([
-                $this->aliasField('enabled') => true,
-                $this->aliasField('object_type_id') . ' IS NULL',
-                $this->aliasField('name') . ' IN' => $options['names'],
-            ]);
-    }
-
-    /**
-     * Remove some categories fields when retrieved as association.
+     * Add `object_typ_id` condition and remove some fields when retrieved as association.
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
@@ -233,21 +159,10 @@ class CategoriesTable extends Table
      */
     public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
     {
+        $query->andWhere([$this->aliasField('object_type_id') . ' IS NOT NULL']);
         if ($primary) {
             return;
         }
-        $query->formatResults(function (CollectionInterface $results) {
-            return $results->map(function ($row) {
-                if (!empty($row['_joinData'])) {
-                    $row['params'] = $row['_joinData']['params'];
-                }
-                $keys = ['id', 'object_type_id', 'parent_id', 'tree_left', 'tree_right', 'enabled', 'created', 'modified'];
-                foreach ($keys as $k) {
-                    unset($row[$k]);
-                }
-
-                return $row;
-            });
-        });
+        $this->removeFields($query);
     }
 }

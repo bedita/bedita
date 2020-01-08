@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,21 +15,20 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 
 /**
- * {@see \BEdita\Core\Model\Table\ObjectCategoriesTable} Test Case
+ * {@see \BEdita\Core\Model\Table\ObjectTagsTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectCategoriesTable
+ * @coversDefaultClass \BEdita\Core\Model\Table\ObjectTagsTable
  */
-class ObjectCategoriesTableTest extends TestCase
+class ObjectTagsTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\ObjectCategoriesTable
+     * @var \BEdita\Core\Model\Table\ObjectTagsTable
      */
-    public $ObjectCategories;
+    public $ObjectTags;
 
     /**
      * Fixtures
@@ -53,7 +52,7 @@ class ObjectCategoriesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->ObjectCategories = TableRegistry::getTableLocator()->get('ObjectCategories');
+        $this->ObjectTags = TableRegistry::getTableLocator()->get('ObjectTags');
     }
 
     /**
@@ -63,54 +62,9 @@ class ObjectCategoriesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ObjectCategories);
+        unset($this->ObjectTags);
 
         parent::tearDown();
-    }
-
-    /**
-     * Data provider for `testValidation` test case.
-     *
-     * @return array
-     */
-    public function validationProvider()
-    {
-        return [
-            'ok' => [
-                [],
-                [
-                    'category_id' => 2,
-                    'object_id' => 6,
-                ],
-            ],
-            'invalid' => [
-                [
-                    'object_id._required',
-                ],
-                [
-                    'category_id' => 2,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Test validation.
-     *
-     * @param string[] $expected Expected errors.
-     * @param array $data Data.
-     * @return void
-     *
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
-     */
-    public function testValidation(array $expected, array $data)
-    {
-        $entity = $this->ObjectCategories->newEntity();
-        $entity = $this->ObjectCategories->patchEntity($entity, $data);
-        $errors = array_keys(Hash::flatten($entity->getErrors()));
-
-        static::assertEquals($expected, $errors);
     }
 
     /**
@@ -125,14 +79,21 @@ class ObjectCategoriesTableTest extends TestCase
                 false,
                 [
                     'object_id' => 1234,
-                    'category_id' => 1,
+                    'category_id' => 4,
                 ],
             ],
-            'inValidCategory' => [
+            'inValidTag' => [
                 false,
                 [
                     'object_id' => 4,
                     'category_id' => 1234,
+                ],
+            ],
+            'valid' => [
+                true,
+                [
+                    'object_id' => 5,
+                    'category_id' => 4,
                 ],
             ],
         ];
@@ -146,12 +107,12 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @return void
      * @dataProvider buildRulesProvider
-     * @covers ::buildRules()
+     * @covers \BEdita\Core\Model\Table\ObjectCategoriesTable::buildRules()
      */
     public function testBuildRules($expected, array $data)
     {
-        $entity = $this->ObjectCategories->newEntity($data, ['validate' => false]);
-        $success = $this->ObjectCategories->save($entity);
+        $entity = $this->ObjectTags->newEntity($data, ['validate' => false]);
+        $success = $this->ObjectTags->save($entity);
         $this->assertEquals($expected, (bool)$success, print_r($entity->getErrors(), true));
     }
 }
