@@ -73,17 +73,17 @@ class ObjectCategoriesTable extends Table
         $validator
             ->nonNegativeInteger('id')
             ->allowEmptyString('id', null, 'create')
-            ->allowEmpty('params');
+            ->allowEmptyString('params');
 
         $validator
             ->integer('object_id')
             ->requirePresence('object_id', 'create')
-            ->notEmpty('object_id');
+            ->notEmptyString('object_id');
 
         $validator
             ->integer('category_id')
             ->requirePresence('category_id', 'create')
-            ->notEmpty('category_id');
+            ->notEmptyString('category_id');
 
             return $validator;
     }

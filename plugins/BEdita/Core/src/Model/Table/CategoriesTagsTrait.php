@@ -64,9 +64,7 @@ trait CategoriesTagsTrait
      */
     protected function findEnabled(Query $query)
     {
-        return $query->where([
-            $this->aliasField('enabled') => true
-        ]);
+        return $query->where(['enabled' => true]);
     }
 
     /**
