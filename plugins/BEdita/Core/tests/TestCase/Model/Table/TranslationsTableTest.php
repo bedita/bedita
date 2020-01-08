@@ -51,7 +51,7 @@ class TranslationsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Translations = TableRegistry::get('Translations');
+        $this->Translations = TableRegistry::getTableLocator()->get('Translations');
     }
 
     /**

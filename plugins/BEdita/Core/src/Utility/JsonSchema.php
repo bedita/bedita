@@ -86,7 +86,7 @@ class JsonSchema
         }
 
         /* @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         try {
             $objectType = $ObjectTypes->get($type);
 
@@ -147,7 +147,7 @@ class JsonSchema
      */
     public static function resourceSchema($resource)
     {
-        $table = TableRegistry::get((string)Inflector::camelize($resource));
+        $table = TableRegistry::getTableLocator()->get((string)Inflector::camelize($resource));
         $entity = $table->newEntity();
         $schema = $table->getSchema();
         $hiddenProperties = $entity->getHidden();

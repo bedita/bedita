@@ -35,7 +35,7 @@ class ThumbnailService implements JobService
     {
         try {
             /** @var \BEdita\Core\Model\Table\StreamsTable $table */
-            $table = TableRegistry::get('Streams');
+            $table = TableRegistry::getTableLocator()->get('Streams');
             $stream = $table->get(Hash::get($payload, 'uuid'));
 
             $generator = Thumbnail::getGenerator(Hash::get($payload, 'generator', 'default'));

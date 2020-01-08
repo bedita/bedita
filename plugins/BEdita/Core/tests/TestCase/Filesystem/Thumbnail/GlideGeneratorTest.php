@@ -68,7 +68,7 @@ class GlideGeneratorTest extends TestCase
         parent::setUp();
 
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-        $this->Streams = TableRegistry::get('Streams');
+        $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $this->generator = new GlideGenerator();
         $this->generator->initialize([]);

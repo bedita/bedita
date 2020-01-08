@@ -68,7 +68,7 @@ class ObjectTypesTableTest extends TestCase
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
-        $this->ObjectTypes = TableRegistry::get('ObjectTypes');
+        $this->ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
     }
 
     /**
@@ -666,7 +666,7 @@ class ObjectTypesTableTest extends TestCase
         $data = [
             'title' => 'Foo',
         ];
-        $table = TableRegistry::get('Foos');
+        $table = TableRegistry::getTableLocator()->get('Foos');
         $entity = $table->newEntity();
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;

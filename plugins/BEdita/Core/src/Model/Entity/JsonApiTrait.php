@@ -76,7 +76,7 @@ trait JsonApiTrait
      */
     public function getTable()
     {
-        return TableRegistry::get($this->getSource());
+        return TableRegistry::getTableLocator()->get($this->getSource());
     }
 
     /**

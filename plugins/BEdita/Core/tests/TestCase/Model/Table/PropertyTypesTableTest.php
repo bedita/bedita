@@ -65,7 +65,7 @@ class PropertyTypesTableTest extends TestCase
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
-        $this->PropertyTypes = TableRegistry::get('PropertyTypes');
+        $this->PropertyTypes = TableRegistry::getTableLocator()->get('PropertyTypes');
     }
 
     /**
@@ -293,7 +293,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testDetect($expected, $name, $table, $overrideType = null)
     {
-        $table = TableRegistry::get($table);
+        $table = TableRegistry::getTableLocator()->get($table);
         if ($overrideType !== null) {
             $table
                 ->setValidator('default', new Validator())

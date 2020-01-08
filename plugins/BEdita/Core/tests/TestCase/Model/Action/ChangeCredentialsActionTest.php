@@ -70,10 +70,10 @@ class ChangeCredentialsActionTest extends TestCase
      */
     protected function createTestJob()
     {
-        $action = new SaveEntityAction(['table' => TableRegistry::get('AsyncJobs')]);
+        $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::get('AsyncJobs')->newEntity(),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
@@ -114,7 +114,7 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new ChangeCredentialsAction();
         $res = $action($data);
 
-        $user = TableRegistry::get('Users')->get(1, ['contain' => ['Roles']]);
+        $user = TableRegistry::getTableLocator()->get('Users')->get(1, ['contain' => ['Roles']]);
         static::assertEquals($res->id, $user->id);
         static::assertEquals($res->username, $user->username);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');

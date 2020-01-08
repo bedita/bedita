@@ -738,8 +738,8 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Translations')->deleteAll([]);
-        TableRegistry::get('Objects')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Objects')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/objects');
@@ -917,7 +917,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         // restore object -> deleted = false
-        $objectsTable = TableRegistry::get('Objects');
+        $objectsTable = TableRegistry::getTableLocator()->get('Objects');
         $object = $objectsTable->get(6);
         $object->deleted = false;
         $this->authUser();
@@ -1002,7 +1002,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         static::assertArrayHasKey('attributes', $result['data']);
         static::assertArrayHasKey('status', $result['data']['attributes']);
         $this->assertHeader('Location', 'http://api.example.com/documents/' . $newId);
-        static::assertTrue(TableRegistry::get('Documents')->exists($data['attributes']));
+        static::assertTrue(TableRegistry::getTableLocator()->get('Documents')->exists($data['attributes']));
     }
 
     /**
@@ -1034,7 +1034,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
-        static::assertFalse(TableRegistry::get('Documents')->exists($data['attributes']));
+        static::assertFalse(TableRegistry::getTableLocator()->get('Documents')->exists($data['attributes']));
     }
 
     /**
@@ -1066,7 +1066,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);
-        static::assertFalse(TableRegistry::get('Documents')->exists($data['attributes']));
+        static::assertFalse(TableRegistry::getTableLocator()->get('Documents')->exists($data['attributes']));
     }
 
     /**
@@ -1149,7 +1149,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $document = TableRegistry::get('Documents')->get('2');
+        $document = TableRegistry::getTableLocator()->get('Documents')->get('2');
         static::assertEquals($newTitle, $document->get('title'));
         static::assertEquals('documents', $document->get('type'));
         static::assertEquals('on', $document->get('status'));
@@ -1185,8 +1185,8 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('title two', TableRegistry::get('Documents')->get(3)->get('title'));
-        $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
+        $this->assertEquals('title two', TableRegistry::getTableLocator()->get('Documents')->get(3)->get('title'));
+        $this->assertEquals('title one', TableRegistry::getTableLocator()->get('Documents')->get(2)->get('title'));
 
         $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/profiles/3', json_encode(compact('data')));
@@ -1220,7 +1220,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('title-one', TableRegistry::get('Documents')->get(2)->get('uname'));
+        $this->assertEquals('title-one', TableRegistry::getTableLocator()->get('Documents')->get(2)->get('uname'));
 
         $this->configRequestHeaders('PATCH', $authHeader);
         $data['id'] = 33;
@@ -1253,7 +1253,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
-        $docDeleted = TableRegistry::get('Documents')->get(7);
+        $docDeleted = TableRegistry::getTableLocator()->get('Documents')->get(7);
         $this->assertEquals($docDeleted->deleted, 1);
 
         $this->configRequestHeaders('DELETE', $authHeader);

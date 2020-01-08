@@ -47,7 +47,7 @@ class MarshallerTest extends TestCase
     public function testBuildPropertyMapWithoutInheritance()
     {
         $tableOptions = $this->tableOptions + ['table' => 'fake_felines'];
-        $table = TableRegistry::get('FakeTiger', $tableOptions);
+        $table = TableRegistry::getTableLocator()->get('FakeTiger', $tableOptions);
         $marshaller = new Marshaller($table);
         $data = [
             'name' => 'tiger',

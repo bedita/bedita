@@ -51,7 +51,7 @@ class ProfileTest extends TestCase
     {
         parent::setUp();
 
-        $this->Profiles = TableRegistry::get('Profiles');
+        $this->Profiles = TableRegistry::getTableLocator()->get('Profiles');
     }
 
     /**

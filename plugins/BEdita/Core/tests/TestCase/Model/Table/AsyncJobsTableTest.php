@@ -45,7 +45,7 @@ class AsyncJobsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         if (in_array('async_jobs', ConnectionManager::configured())) {
             $this->connection = ConnectionManager::getConfig('async_jobs');

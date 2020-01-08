@@ -64,7 +64,7 @@ class ExternalAuthTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->ExternalAuth = TableRegistry::get('ExternalAuth');
+        $this->ExternalAuth = TableRegistry::getTableLocator()->get('ExternalAuth');
     }
 
     /**

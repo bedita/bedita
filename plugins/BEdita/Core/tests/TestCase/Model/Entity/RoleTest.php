@@ -48,7 +48,7 @@ class RoleTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::get('Roles');
+        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
     }
 
     /**

@@ -427,7 +427,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('PropertyTypes')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('PropertyTypes')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/model/property_types');
@@ -546,8 +546,8 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/model/property_types/13');
-        static::assertTrue(TableRegistry::get('PropertyTypes')->exists(['name' => 'gustavo']));
-        static::assertFalse(TableRegistry::get('PropertyTypes')->get(13)->get('core_type'));
+        static::assertTrue(TableRegistry::getTableLocator()->get('PropertyTypes')->exists(['name' => 'gustavo']));
+        static::assertFalse(TableRegistry::getTableLocator()->get('PropertyTypes')->get(13)->get('core_type'));
     }
 
     /**
@@ -567,14 +567,14 @@ class PropertyTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('PropertyTypes')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('PropertyTypes')->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/property_types', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals($count, TableRegistry::get('PropertyTypes')->find()->count());
+        static::assertEquals($count, TableRegistry::getTableLocator()->get('PropertyTypes')->find()->count());
     }
 
     /**
@@ -607,7 +607,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         unset($result['data']['relationships'], $result['data']['meta']);
         static::assertEquals($data, $result['data']);
-        static::assertEquals($data['attributes']['params'], TableRegistry::get('PropertyTypes')->get(12)->get('params'));
+        static::assertEquals($data['attributes']['params'], TableRegistry::getTableLocator()->get('PropertyTypes')->get(12)->get('params'));
     }
 
     /**
@@ -633,8 +633,8 @@ class PropertyTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals('string', TableRegistry::get('PropertyTypes')->get(1)->get('name'));
-        static::assertEquals('text', TableRegistry::get('PropertyTypes')->get(2)->get('name'));
+        static::assertEquals('string', TableRegistry::getTableLocator()->get('PropertyTypes')->get(1)->get('name'));
+        static::assertEquals('text', TableRegistry::getTableLocator()->get('PropertyTypes')->get(2)->get('name'));
     }
 
     /**
@@ -667,7 +667,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         ];
         unset($result['error']['meta'], $result['links']);
         static::assertEquals($expected, $result);
-        static::assertEquals('string', TableRegistry::get('PropertyTypes')->get(1)->get('name'));
+        static::assertEquals('string', TableRegistry::getTableLocator()->get('PropertyTypes')->get(1)->get('name'));
     }
 
     /**
@@ -685,6 +685,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('PropertyTypes')->exists(['id' => 12]));
+        static::assertFalse(TableRegistry::getTableLocator()->get('PropertyTypes')->exists(['id' => 12]));
     }
 }

@@ -105,7 +105,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     public function getTable()
     {
-        return TableRegistry::get($this->type ?: $this->getSource());
+        return TableRegistry::getTableLocator()->get($this->type ?: $this->getSource());
     }
 
     /**
@@ -241,7 +241,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         if (!$this->object_type) {
             try {
                 $typeId = $this->object_type_id ?: $this->getSource();
-                $this->object_type = TableRegistry::get('ObjectTypes')->get($typeId);
+                $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($typeId);
             } catch (RecordNotFoundException $e) {
             } catch (InvalidPrimaryKeyException $e) {
             }
@@ -272,7 +272,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     protected function _setType($type)
     {
         try {
-            $this->object_type = TableRegistry::get('ObjectTypes')->get($type);
+            $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             $this->object_type_id = $this->object_type->id;
             $this->setDirty('object_type_id', true);
         } catch (RecordNotFoundException $e) {

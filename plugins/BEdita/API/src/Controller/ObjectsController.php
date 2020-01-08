@@ -71,7 +71,7 @@ class ObjectsController extends ResourcesController
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
-            $allowedTypes = TableRegistry::get('ObjectTypes')
+            $allowedTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                 ->find('list')
                 ->find('byRelation', compact('name') + ['descendants' => true])
                 ->toArray();
@@ -114,7 +114,7 @@ class ObjectsController extends ResourcesController
         $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
         try {
             /** @var \BEdita\Core\Model\Entity\ObjectType $this->objectType */
-            $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+            $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
                     sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
@@ -130,7 +130,7 @@ class ObjectsController extends ResourcesController
                 ));
             }
             $this->modelClass = $this->objectType->alias;
-            $this->Table = TableRegistry::get($this->modelClass);
+            $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
         } catch (RecordNotFoundException $e) {
             $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
 
@@ -226,7 +226,7 @@ class ObjectsController extends ResourcesController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
-        $id = TableRegistry::get('Objects')->getId($id);
+        $id = TableRegistry::getTableLocator()->get('Objects')->getId($id);
         $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
@@ -285,7 +285,7 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get']);
 
         $relationship = $this->request->getParam('relationship');
-        $relatedId = TableRegistry::get('Objects')->getId($this->request->getParam('related_id'));
+        $relatedId = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
@@ -312,7 +312,7 @@ class ObjectsController extends ResourcesController
      */
     public function relationships()
     {
-        $id = TableRegistry::get('Objects')->getId($this->request->getParam('id'));
+        $id = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);

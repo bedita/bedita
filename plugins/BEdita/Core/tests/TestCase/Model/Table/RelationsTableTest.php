@@ -58,7 +58,7 @@ class RelationsTableTest extends TestCase
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
-        $this->Relations = TableRegistry::get('Relations');
+        $this->Relations = TableRegistry::getTableLocator()->get('Relations');
     }
 
     /**

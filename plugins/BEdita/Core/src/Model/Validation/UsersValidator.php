@@ -32,7 +32,7 @@ class UsersValidator extends ProfilesValidator
     {
         parent::__construct();
 
-        $this->setProvider('usersTable', TableRegistry::get('Users'));
+        $this->setProvider('usersTable', TableRegistry::getTableLocator()->get('Users'));
 
         $this
             ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])

@@ -240,7 +240,7 @@ class ListRelatedObjectsActionTest extends TestCase
         Configure::write('Status.level', $statusLevel);
 
         $alias = Inflector::camelize(Inflector::underscore($relation));
-        $association = TableRegistry::get($objectType)->getAssociation($alias);
+        $association = TableRegistry::getTableLocator()->get($objectType)->getAssociation($alias);
         $action = new ListRelatedObjectsAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + compact('list', 'only'));

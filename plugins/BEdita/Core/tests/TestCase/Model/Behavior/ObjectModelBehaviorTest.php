@@ -38,7 +38,7 @@ class ObjectModelBehaviorTest extends TestCase
      */
     public function testInitialize()
     {
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $count = $table->behaviors()->count();
         static::assertEquals(0, $count);
         $table->addBehavior('BEdita/Core.ObjectModel');

@@ -55,7 +55,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
     }
 
     /**

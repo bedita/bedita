@@ -58,7 +58,7 @@ class RelationsTable extends Table
 
         $this->hasMany('ObjectRelations');
 
-        $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
+        $through = TableRegistry::getTableLocator()->get('LeftRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('LeftObjectTypes', [
             'className' => 'ObjectTypes',
             'through' => $through,
@@ -68,7 +68,7 @@ class RelationsTable extends Table
                 $through->aliasField('side') => 'left',
             ],
         ]);
-        $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
+        $through = TableRegistry::getTableLocator()->get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightObjectTypes', [
             'className' => 'ObjectTypes',
             'through' => $through,

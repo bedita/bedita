@@ -44,7 +44,7 @@ class DeleteEntityActionTest extends TestCase
      */
     public function testExecute()
     {
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new DeleteEntityAction(compact('table'));
 
         $entity = $table->get(1);

@@ -48,8 +48,8 @@ class ChangeCredentialsAction extends BaseAction
      */
     protected function initialize(array $config)
     {
-        $this->Users = TableRegistry::get('Users');
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
     }
 
     /**

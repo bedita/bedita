@@ -99,7 +99,7 @@ class StaticPropertiesTable extends Table
         Log::debug('Using temporary table for static properties'); // Log for statistics purposes... :/
 
         $tableName = $this->getTable();
-        $parentTable = TableRegistry::get('Properties');
+        $parentTable = TableRegistry::getTableLocator()->get('Properties');
         $safeRename = function ($indexOrConstraint) use ($tableName) {
             return preg_replace(
                 '/^properties_/',
@@ -193,7 +193,7 @@ class StaticPropertiesTable extends Table
      */
     protected function listOwnTables(ObjectType $objectType)
     {
-        $table = TableRegistry::get($objectType->alias);
+        $table = TableRegistry::getTableLocator()->get($objectType->alias);
         $tables = [$table];
         if ($table instanceof InheritanceTable) {
             $tables = array_merge($tables, $table->inheritedTables());
@@ -204,7 +204,7 @@ class StaticPropertiesTable extends Table
             return $tables;
         }
 
-        $parentTable = TableRegistry::get($objectType->parent->alias);
+        $parentTable = TableRegistry::getTableLocator()->get($objectType->parent->alias);
         if ($parentTable->getTable() === $table->getTable()) {
             // Same physical table as parent object: nothing to do. This happens for
             // "null extensions", like documents that extend objects, but don't have

@@ -50,9 +50,9 @@ class ListEntitiesActionTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeAnimals', ['className' => Table::class])
+        TableRegistry::getTableLocator()->get('FakeAnimals', ['className' => Table::class])
             ->hasMany('FakeArticles');
-        TableRegistry::get('FakeMammals', ['className' => Table::class])
+        TableRegistry::getTableLocator()->get('FakeMammals', ['className' => Table::class])
             ->extensionOf('FakeAnimals');
     }
 
@@ -234,7 +234,7 @@ class ListEntitiesActionTest extends TestCase
      */
     public function testExecute(array $expected, $filter, $table = 'FakeAnimals')
     {
-        $table = TableRegistry::get($table);
+        $table = TableRegistry::getTableLocator()->get($table);
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(compact('filter'));
@@ -291,7 +291,7 @@ class ListEntitiesActionTest extends TestCase
             ],
         ];
 
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $contain = ['FakeArticles'];
         $action = new ListEntitiesAction(compact('table'));
 
@@ -311,7 +311,7 @@ class ListEntitiesActionTest extends TestCase
      */
     public function testBadFilter()
     {
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new ListEntitiesAction(compact('table'));
 
         static::expectException('BEdita\Core\Exception\BadFilterException');

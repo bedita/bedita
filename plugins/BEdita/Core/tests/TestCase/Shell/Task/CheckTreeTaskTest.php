@@ -56,7 +56,7 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::get('Trees');
+        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
     }
 
     /**

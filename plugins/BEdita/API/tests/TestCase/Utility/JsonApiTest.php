@@ -60,7 +60,7 @@ class JsonApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::get('Roles');
+        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
@@ -454,7 +454,7 @@ class JsonApiTest extends TestCase
                     ],
                 ],
                 function () {
-                    return TableRegistry::get('Documents')->get(2, ['contain' => ['Test']]);
+                    return TableRegistry::getTableLocator()->get('Documents')->get(2, ['contain' => ['Test']]);
                 },
             ],
         ];
@@ -682,7 +682,7 @@ class JsonApiTest extends TestCase
             ]
         ];
 
-        $result = JsonApi::formatData(TableRegistry::get('Documents')->get(2));
+        $result = JsonApi::formatData(TableRegistry::getTableLocator()->get('Documents')->get(2));
         $result = json_decode(json_encode($result), true);
 
         static::assertEquals($expected, $result);

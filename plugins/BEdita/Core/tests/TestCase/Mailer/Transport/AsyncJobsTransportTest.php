@@ -62,7 +62,7 @@ class AsyncJobsTransportTest extends TestCase
             ],
         ]);
 
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         parent::setUp();
     }

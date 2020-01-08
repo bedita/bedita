@@ -48,24 +48,24 @@ class SetAssociatedActionTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeLabels')
+        TableRegistry::getTableLocator()->get('FakeLabels')
             ->belongsTo('FakeTags');
 
-        TableRegistry::get('FakeTags')
+        TableRegistry::getTableLocator()->get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ])
             ->getSource()
             ->hasOne('FakeLabels');
 
-        TableRegistry::get('FakeArticles')
+        TableRegistry::getTableLocator()->get('FakeArticles')
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
             ->getSource()
             ->belongsTo('FakeAnimals');
 
-        TableRegistry::get('FakeAnimals')
+        TableRegistry::getTableLocator()->get('FakeAnimals')
             ->hasMany('FakeArticles');
     }
 
@@ -192,7 +192,7 @@ class SetAssociatedActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $association = TableRegistry::get($table)->getAssociation($association);
+        $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new SetAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
@@ -244,7 +244,7 @@ class SetAssociatedActionTest extends TestCase
     public function testInvocationWithLinkErrors()
     {
         try {
-            $table = TableRegistry::get('FakeArticles');
+            $table = TableRegistry::getTableLocator()->get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
             $association = $table->getAssociation('FakeTags');
 
@@ -310,7 +310,7 @@ class SetAssociatedActionTest extends TestCase
         $validationErrorMessage = 'Invalid email';
 
         try {
-            $table = TableRegistry::get('FakeArticles');
+            $table = TableRegistry::getTableLocator()->get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
             $association = $table->getAssociation('FakeTags');
 

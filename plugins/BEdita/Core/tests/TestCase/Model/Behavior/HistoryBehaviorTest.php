@@ -72,7 +72,7 @@ class HistoryBehaviorTest extends TestCase
 
         // pass config via `Configure`
         Configure::write('History.exclude', ['id']);
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $behavior = $Documents->getBehavior('History');
         static::assertEquals(['id'], $behavior->getConfig('exclude'));
         static::assertNotEmpty($behavior->Table);
@@ -94,7 +94,7 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testBeforeMarshal()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $data = [
             'type' => 'Documents',
             'title' => 'hello history',
@@ -114,7 +114,7 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testBeforeSave()
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $doc = $Users->get(5);
         $data = [
             'username' => 'second user',
@@ -124,7 +124,7 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Users->patchEntity($doc, $data);
         $Users->save($entity);
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '5', 'resource_type' => 'objects'])
                 ->last();
         static::assertNotEmpty($history);
@@ -144,7 +144,7 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testAfterSave()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $doc = $Documents->get(2);
         $data = [
             'description' => 'new history desc'
@@ -155,7 +155,7 @@ class HistoryBehaviorTest extends TestCase
         $behavior = $Documents->getBehavior('History');
         static::assertEquals($data, $behavior->getChanged());
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
                 ->last()
@@ -184,12 +184,12 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testTrashRestore()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->get(2);
         $entity->deleted = true;
         $entity = $Documents->saveOrFail($entity);
 
-        $History = TableRegistry::get('History');
+        $History = TableRegistry::getTableLocator()->get('History');
         $history = $History->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
@@ -213,7 +213,7 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testCreate()
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $entity = $Users->newEntity();
         $data = [
             'username' => 'aurelio',
@@ -223,7 +223,7 @@ class HistoryBehaviorTest extends TestCase
         $Users->patchEntity($entity, $data);
         $entity = $Users->saveOrFail($entity);
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => $entity->get('id'), 'resource_type' => 'objects'])
                 ->toArray();
         static::assertNotEmpty($history);
@@ -241,11 +241,11 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testAfterDelete()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
                 ->last()
@@ -274,11 +274,11 @@ class HistoryBehaviorTest extends TestCase
     public function testAfterDeleteEmpty()
     {
         Configure::write('History', ['table' => null]);
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->get(2);
         $Documents->delete($entity);
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->toArray();
         static::assertNotEmpty($history);
@@ -293,12 +293,12 @@ class HistoryBehaviorTest extends TestCase
     public function testAfterSaveEmpty()
     {
         Configure::write('History', ['table' => null]);
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->get(2);
         $Documents->patchEntity($entity, ['title' => 'new title']);
         $Documents->saveOrFail($entity);
 
-        $history = TableRegistry::get('History')->find()
+        $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->toArray();
         static::assertNotEmpty($history);

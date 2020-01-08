@@ -48,7 +48,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        $this->Applications = TableRegistry::get('Applications');
+        $this->Applications = TableRegistry::getTableLocator()->get('Applications');
     }
 
     /**

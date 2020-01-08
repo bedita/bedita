@@ -75,9 +75,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function initialize(array $config)
     {
-        $this->Users = TableRegistry::get('Users');
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
-        $this->Roles = TableRegistry::get('Roles');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
+        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
 
         $this->getEventManager()->on($this);
     }
@@ -271,7 +271,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected function checkExternalAuth(array $data)
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
-        $authProvider = TableRegistry::get('AuthProviders')->find('enabled')
+        $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->find('enabled')
             ->where(['name' => $data['auth_provider']])
             ->first();
         if (empty($authProvider)) {

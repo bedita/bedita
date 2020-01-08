@@ -359,7 +359,7 @@ class InheritanceEventHandlerTest extends TestCase
     public function testApplicationRulesErrorsPropagation($expected, $rulesConfig)
     {
         foreach ($rulesConfig as $rule) {
-            $table = TableRegistry::get($rule['table']);
+            $table = TableRegistry::getTableLocator()->get($rule['table']);
             $options = $rule['options'];
             $table->getEventManager()->on(
                 'Model.buildRules',

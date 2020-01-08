@@ -46,7 +46,7 @@ class PropertyTypeTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->PropertyTypes = TableRegistry::get('PropertyTypes');
+        $this->PropertyTypes = TableRegistry::getTableLocator()->get('PropertyTypes');
     }
 
     /**

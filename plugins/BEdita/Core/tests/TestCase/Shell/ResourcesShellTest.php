@@ -87,7 +87,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
         );
         $this->exec(sprintf('resources add -t %s', $type), $input);
 
-        $exists = TableRegistry::get(Inflector::camelize($type))->exists(compact('name'));
+        $exists = TableRegistry::getTableLocator()->get(Inflector::camelize($type))->exists(compact('name'));
         if ($expected === true) {
             static::assertTrue($exists);
             $this->assertExitCode(Shell::CODE_SUCCESS);
@@ -146,7 +146,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
-        $endpointPermission = TableRegistry::get('EndpointPermissions')->find()->last();
+        $endpointPermission = TableRegistry::getTableLocator()->get('EndpointPermissions')->find()->last();
 
         $read = EndpointPermission::decode(EndpointPermission::encode($read));
         $write = EndpointPermission::decode(EndpointPermission::encode($write));
@@ -193,7 +193,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      */
     public function testEdit($type, $resId, $field, $value = null)
     {
-        $table = TableRegistry::get(Inflector::camelize($type));
+        $table = TableRegistry::getTableLocator()->get(Inflector::camelize($type));
         if (is_numeric($resId)) {
             $entity = $table->get($resId);
         } else {
@@ -301,11 +301,11 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      */
     public function testRemove($expected, $id, $answer)
     {
-        $countBefore = TableRegistry::get('Applications')->find()->count();
+        $countBefore = TableRegistry::getTableLocator()->get('Applications')->find()->count();
 
         $this->exec(sprintf('resources rm -t applications %s', $id), [$answer]);
 
-        $countAfter = TableRegistry::get('Applications')->find()->count();
+        $countAfter = TableRegistry::getTableLocator()->get('Applications')->find()->count();
 
         if ($expected) {
             $this->assertExitCode(Shell::CODE_SUCCESS);

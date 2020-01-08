@@ -115,7 +115,7 @@ class RelationsBehavior extends Behavior
                 $className = $relation->right_object_types[0]->table;
             }
 
-            $through = TableRegistry::get(
+            $through = TableRegistry::getTableLocator()->get(
                 $relation->alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
             );
@@ -150,7 +150,7 @@ class RelationsBehavior extends Behavior
                 $className = $relation->left_object_types[0]->table;
             }
 
-            $through = TableRegistry::get(
+            $through = TableRegistry::getTableLocator()->get(
                 $relation->inverse_alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
             );

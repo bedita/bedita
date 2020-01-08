@@ -36,7 +36,7 @@ class TrashControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('Objects');
+        $this->Objects = TableRegistry::getTableLocator()->get('Objects');
     }
 
     /**
@@ -173,8 +173,8 @@ class TrashControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Translations')->deleteAll([]);
-        TableRegistry::get('Objects')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Objects')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/trash');

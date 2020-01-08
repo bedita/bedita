@@ -39,7 +39,7 @@ class ObjectPropertiesTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('ObjectProperties') ? [] : ['className' => 'BEdita\Core\Model\Table\ObjectPropertiesTable'];
-        $this->ObjectProperties = TableRegistry::get('ObjectProperties', $config);
+        $this->ObjectProperties = TableRegistry::getTableLocator()->get('ObjectProperties', $config);
     }
 
     /**

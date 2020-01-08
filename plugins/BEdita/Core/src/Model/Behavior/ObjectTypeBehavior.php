@@ -55,7 +55,7 @@ class ObjectTypeBehavior extends Behavior
         }
 
         if (!($objectType instanceof ObjectType)) {
-            $objectType = TableRegistry::get($this->getConfig('table'))
+            $objectType = TableRegistry::getTableLocator()->get($this->getConfig('table'))
                 ->get($objectType);
         }
 

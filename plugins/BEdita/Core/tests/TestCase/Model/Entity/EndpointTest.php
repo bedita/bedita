@@ -49,7 +49,7 @@ class EndpointTest extends TestCase
     {
         parent::setUp();
 
-        $this->Endpoints = TableRegistry::get('Endpoints');
+        $this->Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
     }
 
     /**

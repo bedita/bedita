@@ -84,7 +84,7 @@ class UserMailerTest extends TestCase
 
         $this->Email = new Email('test');
 
-        $this->Users = TableRegistry::get('Users');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
     }
 
     /**
@@ -184,7 +184,7 @@ class UserMailerTest extends TestCase
      */
     public function testSignupMissingUserEmail()
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->get(5);
         $user->email = null;
         $Users->save($user);

@@ -62,7 +62,7 @@ class StaticPropertyTest extends TestCase
     {
         parent::setUp();
 
-        $this->Properties = TableRegistry::get('Properties');
+        $this->Properties = TableRegistry::getTableLocator()->get('Properties');
     }
 
     /**

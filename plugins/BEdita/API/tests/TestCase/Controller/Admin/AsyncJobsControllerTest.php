@@ -33,7 +33,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      */
     public function testIndex()
     {
-        $AsyncJobs = TableRegistry::get('AsyncJobs');
+        $AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/admin/async_jobs?sort=uuid',
@@ -288,7 +288,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('AsyncJobs')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('AsyncJobs')->deleteAll([]);
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/admin/async_jobs');
@@ -407,7 +407,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $asyncJob = TableRegistry::get('AsyncJobs')
+        $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
             ->order(['created' => 'DESC'])
             ->first();
@@ -435,7 +435,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $AsyncJobs = TableRegistry::get('AsyncJobs');
+        $AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
         $count = $AsyncJobs->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -470,7 +470,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $AsyncJobs = TableRegistry::get('AsyncJobs');
+        $AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
         $entity = $AsyncJobs->get('e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76');
         static::assertEquals(99, $entity->get('priority'));
     }
@@ -493,7 +493,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $AsyncJobs = TableRegistry::get('AsyncJobs');
+        $AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
         $expected = $AsyncJobs->get('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c')->get('priority');
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -519,6 +519,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('AsyncJobs')->exists(['uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c']));
+        static::assertFalse(TableRegistry::getTableLocator()->get('AsyncJobs')->exists(['uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c']));
     }
 }

@@ -94,8 +94,8 @@ class AsyncGeneratorTest extends TestCase
 
         Thumbnail::setConfig('test', ['className' => TestGenerator::class]);
 
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
-        $this->Streams = TableRegistry::get('Streams');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
+        $this->Streams = TableRegistry::getTableLocator()->get('Streams');
         $this->generator = new AsyncGenerator();
         $this->generator->initialize(['baseGenerator' => 'test']);
     }

@@ -57,7 +57,7 @@ class ObjectTypeTest extends TestCase
     {
         parent::setUp();
 
-        $this->ObjectTypes = TableRegistry::get('ObjectTypes');
+        $this->ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }

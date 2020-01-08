@@ -48,7 +48,7 @@ class UuidLoginTest extends IntegrationTestCase
         static::assertNotNull($jwt);
         $payload = json_decode(base64_decode(explode('.', $jwt)[1]), true);
 
-        $exists = TableRegistry::get('ExternalAuth')->exists([
+        $exists = TableRegistry::getTableLocator()->get('ExternalAuth')->exists([
             'provider_username' => $uuid,
             'user_id' => $payload['id'],
             'auth_provider_id' => 2,
@@ -63,7 +63,7 @@ class UuidLoginTest extends IntegrationTestCase
      */
     public function testLoginUuidDisabled()
     {
-        TableRegistry::get('AuthProviders')->delete(TableRegistry::get('AuthProviders')->get(2));
+        TableRegistry::getTableLocator()->get('AuthProviders')->delete(TableRegistry::getTableLocator()->get('AuthProviders')->get(2));
 
         $uuid = Text::uuid();
         $this->configRequestHeaders('POST', [
@@ -79,7 +79,7 @@ class UuidLoginTest extends IntegrationTestCase
         $jwt = Hash::get($body, 'meta.jwt');
         static::assertNull($jwt);
 
-        $exists = TableRegistry::get('ExternalAuth')->exists([
+        $exists = TableRegistry::getTableLocator()->get('ExternalAuth')->exists([
             'provider_username' => $uuid,
         ]);
         static::assertFalse($exists);
@@ -102,7 +102,7 @@ class UuidLoginTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
 
-        $exists = TableRegistry::get('ExternalAuth')->exists([
+        $exists = TableRegistry::getTableLocator()->get('ExternalAuth')->exists([
             'provider_username' => $uuid,
         ]);
         static::assertFalse($exists);

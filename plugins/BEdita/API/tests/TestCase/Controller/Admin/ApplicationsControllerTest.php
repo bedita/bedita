@@ -135,9 +135,9 @@ class ApplicationsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('EndpointPermissions')->deleteAll([]);
-        TableRegistry::get('Config')->deleteAll(['application_id IS NOT NULL']);
-        TableRegistry::get('Applications')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Config')->deleteAll(['application_id IS NOT NULL']);
+        TableRegistry::getTableLocator()->get('Applications')->deleteAll([]);
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/admin/applications');
@@ -257,7 +257,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $application = TableRegistry::get('Applications')
+        $application = TableRegistry::getTableLocator()->get('Applications')
             ->find()
             ->order(['id' => 'DESC'])
             ->first();
@@ -285,7 +285,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Applications = TableRegistry::get('Applications');
+        $Applications = TableRegistry::getTableLocator()->get('Applications');
         $count = $Applications->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -320,7 +320,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $Applications = TableRegistry::get('Applications');
+        $Applications = TableRegistry::getTableLocator()->get('Applications');
         $entity = $Applications->get(1);
         static::assertEquals('new name', $entity->get('name'));
     }
@@ -343,7 +343,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Applications = TableRegistry::get('Applications');
+        $Applications = TableRegistry::getTableLocator()->get('Applications');
         $expected = $Applications->get(1)->get('name');
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -369,6 +369,6 @@ class ApplicationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('Applications')->exists(['id' => 2]));
+        static::assertFalse(TableRegistry::getTableLocator()->get('Applications')->exists(['id' => 2]));
     }
 }
