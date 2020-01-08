@@ -38,7 +38,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::get('Trees');
+        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
     }
 
     /**
@@ -77,7 +77,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         static::assertEquals(0, $this->countTrees($docId));
 
         // POST: add 3 folders as parents relationships
-        $foldersTable = TableRegistry::get('Folders');
+        $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folders = $foldersTable
             ->find('list', [
                 'keyField' => 'uname',
@@ -190,7 +190,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     public function testDeletedParent()
     {
         // a deleted folder must not be listed in `parents`
-        $foldersTable = TableRegistry::get('Folders');
+        $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folder = $foldersTable->get(12);
         $folder->deleted = true;
         $foldersTable->saveOrFail($folder);

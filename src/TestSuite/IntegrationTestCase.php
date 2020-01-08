@@ -238,7 +238,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      */
     public function lastObjectId()
     {
-        return TableRegistry::get('Objects')
+        return TableRegistry::getTableLocator()->get('Objects')
             ->find()
             ->select('id')
             ->order(['id' => 'DESC'])

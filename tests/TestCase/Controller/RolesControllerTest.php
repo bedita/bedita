@@ -147,8 +147,8 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
-        TableRegistry::get('Roles')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
+        TableRegistry::getTableLocator()->get('Roles')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/roles');
@@ -275,7 +275,7 @@ class RolesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
         $this->assertHeader('Location', 'http://api.example.com/roles/3');
-        static::assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+        static::assertTrue(TableRegistry::getTableLocator()->get('Roles')->exists(['name' => 'head_of_support']));
     }
 
     /**
@@ -295,14 +295,14 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('Roles')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('Roles')->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/roles', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Roles')->find()->count());
+        $this->assertEquals($count, TableRegistry::getTableLocator()->get('Roles')->find()->count());
     }
 
     /**
@@ -328,7 +328,7 @@ class RolesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_name', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals('new_name', TableRegistry::getTableLocator()->get('Roles')->get(1)->get('name'));
     }
 
     /**
@@ -354,8 +354,8 @@ class RolesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
-        $this->assertEquals('second role', TableRegistry::get('Roles')->get(2)->get('name'));
+        $this->assertEquals('first role', TableRegistry::getTableLocator()->get('Roles')->get(1)->get('name'));
+        $this->assertEquals('second role', TableRegistry::getTableLocator()->get('Roles')->get(2)->get('name'));
     }
 
     /**
@@ -381,7 +381,7 @@ class RolesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals('first role', TableRegistry::getTableLocator()->get('Roles')->get(1)->get('name'));
     }
 
     /**
@@ -399,14 +399,14 @@ class RolesControllerTest extends IntegrationTestCase
         $this->delete('/roles/1');
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertTrue(TableRegistry::get('Roles')->exists(['id' => 1]));
+        $this->assertTrue(TableRegistry::getTableLocator()->get('Roles')->exists(['id' => 1]));
 
         // delete role 2
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/roles/2');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 2]));
+        $this->assertFalse(TableRegistry::getTableLocator()->get('Roles')->exists(['id' => 2]));
     }
 
     /**

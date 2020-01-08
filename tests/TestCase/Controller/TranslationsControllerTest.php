@@ -256,7 +256,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->delete('/translations/2');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Translations')->exists(['id' => 2]));
+        $this->assertFalse(TableRegistry::getTableLocator()->get('Translations')->exists(['id' => 2]));
     }
 
     /**

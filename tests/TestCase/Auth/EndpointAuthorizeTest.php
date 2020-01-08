@@ -117,7 +117,7 @@ class EndpointAuthorizeTest extends TestCase
         $authorize->authorize([], $request);
 
         if (is_int($expected)) {
-            $expected = TableRegistry::get('Endpoints')->get($expected);
+            $expected = TableRegistry::getTableLocator()->get('Endpoints')->get($expected);
         }
 
         static::assertAttributeEquals($expected, 'endpoint', $authorize);
@@ -223,7 +223,7 @@ class EndpointAuthorizeTest extends TestCase
             static::expectExceptionMessage($expected->getMessage());
         }
 
-        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(2));
+        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));
 
         $environment = [
             'REQUEST_METHOD' => $requestMethod,
@@ -262,8 +262,8 @@ class EndpointAuthorizeTest extends TestCase
     public function testAllowByDefault()
     {
         // Ensure no permissions apply to `/home` endpoint.
-        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
-        TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
 
         $environment = [
             'REQUEST_METHOD' => 'GET',
@@ -306,7 +306,7 @@ class EndpointAuthorizeTest extends TestCase
     public function testAllowByDefaultUnknownEndpoint()
     {
         // Ensure no permissions apply to anonymous user.
-        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
 
         $environment = [
             'REQUEST_METHOD' => 'GET',
@@ -353,7 +353,7 @@ class EndpointAuthorizeTest extends TestCase
     public function testBlockAnonymousWritesByDefault()
     {
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
-        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 
         $environment = [
             'REQUEST_METHOD' => 'POST',
@@ -394,7 +394,7 @@ class EndpointAuthorizeTest extends TestCase
     public function testBlockUnloggedByDefault()
     {
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
-        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 
         $environment = [
             'REQUEST_METHOD' => 'GET',

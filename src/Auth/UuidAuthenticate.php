@@ -91,7 +91,7 @@ class UuidAuthenticate extends BaseAuthenticate
             return $externalAuth;
         }
 
-        $Table = TableRegistry::get($this->_config['userModel']);
+        $Table = TableRegistry::getTableLocator()->get($this->_config['userModel']);
         $providerUsername = $username;
         $Table->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername'));
 

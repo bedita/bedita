@@ -385,7 +385,7 @@ class SignupControllerTest extends IntegrationTestCase
         ];
         $this->post('/signup', json_encode($data));
 
-        $asyncJob = TableRegistry::get('AsyncJobs')->find()
+        $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
             ->order(['AsyncJobs.created' => 'DESC'])
             ->first();
 
@@ -423,13 +423,13 @@ class SignupControllerTest extends IntegrationTestCase
         ];
         $this->post('/signup', json_encode($data));
 
-        $asyncJob = TableRegistry::get('AsyncJobs')->find()
+        $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
             ->order(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $activationData = ['uuid' => $asyncJob->uuid];
 
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->find()
             ->order(['created' => 'DESC'])
             ->first();

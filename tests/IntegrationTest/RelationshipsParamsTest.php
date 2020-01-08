@@ -56,10 +56,10 @@ class RelationshipsParamsTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->Locations = TableRegistry::get('Locations');
-        $this->Users = TableRegistry::get('Users');
-        $this->Relations = TableRegistry::get('Relations');
-        $this->ObjectRelations = TableRegistry::get('ObjectRelations');
+        $this->Locations = TableRegistry::getTableLocator()->get('Locations');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
+        $this->Relations = TableRegistry::getTableLocator()->get('Relations');
+        $this->ObjectRelations = TableRegistry::getTableLocator()->get('ObjectRelations');
     }
 
     /**
@@ -268,7 +268,7 @@ class RelationshipsParamsTest extends IntegrationTestCase
 
         $currentPriority = $objectRelation->get('priority');
 
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $leftType = $ObjectTypes->find('all')
             ->where([
                 'id' => $this->ObjectRelations->LeftObjects->get($objectRelation->get('left_id'))->get('object_type_id'),

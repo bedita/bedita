@@ -51,7 +51,7 @@ class StreamsController extends ResourcesController
     public function initialize()
     {
         /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
             ->toList();
