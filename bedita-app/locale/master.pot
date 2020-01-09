@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2019-08-27 09:51:56\n"
+"POT-Creation-Date: 2020-01-09 12:39:38\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -2061,9 +2061,6 @@ msgstr ""
 msgid "Wrong username/password or session expired"
 msgstr ""
 
-msgid "X"
-msgstr ""
-
 msgid "YES"
 msgstr ""
 
@@ -2947,6 +2944,9 @@ msgid "open answer"
 msgstr ""
 
 msgid "open in new window"
+msgstr ""
+
+msgid "open link"
 msgstr ""
 
 msgid "operations"

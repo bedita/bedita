@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-08-27 09:51:56\n"
+"POT-Creation-Date: 2020-01-09 12:39:38\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2147,9 +2147,6 @@ msgstr "Falsches, altes Benutzerpasswort"
 msgid "Wrong username/password or session expired"
 msgstr "Falscher Benutzername/Passwort oder abgelaufene Sitzung"
 
-msgid "X"
-msgstr "X"
-
 msgid "YES"
 msgstr ""
 
@@ -3040,6 +3037,9 @@ msgstr "Antwort öffnen"
 msgid "open in new window"
 msgstr "in neuem Fenster öffnen"
 
+msgid "open link"
+msgstr ""
+
 msgid "operations"
 msgstr "Operationen"
 
@@ -3578,6 +3578,9 @@ msgstr "deine 5 letzten Elemente"
 
 msgid "your message"
 msgstr "deine Nachricht"
+
+#~ msgid "X"
+#~ msgstr "X"
 
 #~ msgid "all %s"
 #~ msgstr "alle %s"

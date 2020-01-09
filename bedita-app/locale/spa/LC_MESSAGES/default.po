@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-08-27 09:51:56\n"
+"POT-Creation-Date: 2020-01-09 12:39:38\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2112,9 +2112,6 @@ msgstr "Contraseña de antiguo usuario incorrecta"
 msgid "Wrong username/password or session expired"
 msgstr "Usuario/contraseña incorrecto o sesión finalizada"
 
-msgid "X"
-msgstr "X"
-
 msgid "YES"
 msgstr ""
 
@@ -3004,6 +3001,9 @@ msgstr "respuesta abierta"
 msgid "open in new window"
 msgstr "abrir en una nueva ventana"
 
+msgid "open link"
+msgstr ""
+
 msgid "operations"
 msgstr "operaciones"
 
@@ -3544,6 +3544,9 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "X"
+#~ msgstr "X"
 
 #~ msgid "all areas"
 #~ msgstr "todas las publicaciones"

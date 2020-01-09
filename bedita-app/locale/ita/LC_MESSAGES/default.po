@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2019-08-27 09:51:56\n"
+"POT-Creation-Date: 2020-01-09 12:39:38\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2137,9 +2137,6 @@ msgstr "Vecchia password utente errata"
 msgid "Wrong username/password or session expired"
 msgstr "Errore in username/password o sessione scaduta"
 
-msgid "X"
-msgstr "X"
-
 msgid "YES"
 msgstr "SI"
 
@@ -3031,6 +3028,9 @@ msgstr "risposta aperta"
 msgid "open in new window"
 msgstr "apri in una nuova finestra"
 
+msgid "open link"
+msgstr "apri link"
+
 msgid "operations"
 msgstr "operazioni"
 
@@ -3532,9 +3532,6 @@ msgstr "vedi tutto"
 msgid "view file"
 msgstr "apri file"
 
-msgid "open link"
-msgstr "apri link"
-
 msgid "visibility"
 msgstr "visibilità"
 
@@ -3579,6 +3576,9 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+#~ msgid "X"
+#~ msgstr "X"
 
 #~ msgid "all areas"
 #~ msgstr "tutte le pubblicazioni"
