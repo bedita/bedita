@@ -645,4 +645,66 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals([11, 13], Hash::extract($result['data'], '{n}.id'));
     }
+
+    /**
+     * Data provider for `testCategoriesTags`.
+     *
+     * @return array
+     */
+    public function categoriesTagsProvider()
+    {
+        return [
+            'categories' => [
+                '/documents',
+                'filter[categories]=first-cat',
+                [
+                    '2',
+                ],
+            ],
+            'two cats' => [
+                '/documents',
+                'filter[categories]=first-cat,second-cat',
+                [
+                    '2',
+                ],
+            ],
+            'disabled' => [
+                '/documents',
+                'filter[categories]=disabled-cat',
+                [
+                ],
+            ],
+            'tags' => [
+                '/profiles',
+                'filter[tags]=first-tag',
+                [
+                    '4',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test filters on categories and tags.
+     *
+     * @param string $endpoint Endpoint.
+     * @param string $query Query string.
+     * @param array $expected Expected result.
+     * @return void
+     *
+     * @dataProvider categoriesTagsProvider
+     * @coversNothing
+     */
+    public function testCategoriesTags($endpoint, $query, $expected)
+    {
+        $this->configRequestHeaders();
+        $this->get("$endpoint?$query");
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'));
+    }
 }

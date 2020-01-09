@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -762,7 +762,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/objects/2',
+                'self' => 'http://api.example.com/documents/2',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
@@ -778,9 +778,23 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'abstract here',
                         'list' => ['one', 'two', 'three'],
                     ],
+                    'categories' => [
+                        [
+                            'name' => 'first-cat',
+                            'label' => 'First category',
+                            'params' => '100',
+                        ],
+                        [
+                            'name' => 'second-cat',
+                            'label' => 'Second category',
+                            'params' => null,
+                        ]
+                    ],
                     'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
+                    'another_title' => null,
+                    'another_description' => null,
                 ],
                 'meta' => [
                     'locked' => true,
@@ -828,7 +842,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders();
-        $this->get('/objects/2');
+        $this->get('/documents/2');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -1307,6 +1321,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'extra' => [
                             'abstract' => 'abstract here',
                             'list' => ['one', 'two', 'three'],
+                        ],
+                        'categories' => [
+                            [
+                                'name' => 'first-cat',
+                                'label' => 'First category',
+                                'params' => '100',
+                            ],
+                            [
+                                'name' => 'second-cat',
+                                'label' => 'Second category',
+                                'params' => null,
+                            ]
                         ],
                         'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
@@ -2231,6 +2257,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'extra' => [
                         'abstract' => 'abstract here',
                         'list' => ['one', 'two', 'three'],
+                    ],
+                    'categories' => [
+                        [
+                            'name' => 'first-cat',
+                            'label' => 'First category',
+                            'params' => '100',
+                        ],
+                        [
+                            'name' => 'second-cat',
+                            'label' => 'Second category',
+                            'params' => null,
+                        ]
                     ],
                     'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
