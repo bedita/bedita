@@ -108,6 +108,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.ObjectCategories',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'category_id',
+            'sort' => ['name' => 'ASC'],
             'finder' => 'enabled',
             'cascadeCallbacks' => true,
         ]);
@@ -116,6 +117,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.ObjectTags',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'category_id',
+            'sort' => ['name' => 'ASC'],
             'finder' => 'enabled',
             'cascadeCallbacks' => true,
         ]);
