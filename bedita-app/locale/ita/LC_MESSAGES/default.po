@@ -3532,6 +3532,9 @@ msgstr "vedi tutto"
 msgid "view file"
 msgstr "apri file"
 
+msgid "open link"
+msgstr "apri link"
+
 msgid "visibility"
 msgstr "visibilità"
 
