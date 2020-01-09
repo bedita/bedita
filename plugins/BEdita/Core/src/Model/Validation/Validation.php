@@ -75,6 +75,17 @@ class Validation
     }
 
     /**
+     * Require a value to be `null`
+     *
+     * @param mixed $value Value to check
+     * @return bool
+     */
+    public static function requireNull($value)
+    {
+        return ($value === null);
+    }
+
+    /**
      * Checks that a value is a valid URL or custom url as myapp://
      *
      * @param string $value The url to check

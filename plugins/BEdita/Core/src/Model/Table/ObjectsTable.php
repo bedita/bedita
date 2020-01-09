@@ -76,6 +76,7 @@ class ObjectsTable extends Table
         $this->setDisplayField('title');
 
         $this->addBehavior('BEdita/Core.ObjectModel');
+        $this->addBehavior('BEdita/Core.Categories');
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
@@ -100,6 +101,24 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+            'cascadeCallbacks' => true,
+        ]);
+        $this->belongsToMany('Categories', [
+            'className' => 'BEdita/Core.Categories',
+            'through' => 'BEdita/Core.ObjectCategories',
+            'foreignKey' => 'object_id',
+            'targetForeignKey' => 'category_id',
+            'sort' => ['name' => 'ASC'],
+            'finder' => 'enabled',
+            'cascadeCallbacks' => true,
+        ]);
+        $this->belongsToMany('Tags', [
+            'className' => 'BEdita/Core.Tags',
+            'through' => 'BEdita/Core.ObjectTags',
+            'foreignKey' => 'object_id',
+            'targetForeignKey' => 'category_id',
+            'sort' => ['name' => 'ASC'],
+            'finder' => 'enabled',
             'cascadeCallbacks' => true,
         ]);
         $this->hasMany('TreeNodes', [
@@ -393,5 +412,53 @@ class ObjectsTable extends Table
         }
 
         return $query->where(['deleted' => 0]);
+    }
+
+    /**
+     * Finder for categories by name.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Category names.
+     * @return \Cake\ORM\Query
+     */
+    protected function findCategories(Query $query, array $options)
+    {
+        return $this->categoriesQuery('Categories', $query, $options);
+    }
+
+    /**
+     * Finder for tags by name.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Tag names.
+     * @return \Cake\ORM\Query
+     */
+    protected function findTags(Query $query, array $options)
+    {
+        return $this->categoriesQuery('Tags', $query, $options);
+    }
+
+    /**
+     * Finder for tags and categories by name.
+     * $options array MUST contain a list of category/tag names or a single element with a comma separated list.
+     *
+     * @param string $assoc Association name, 'Tags' or 'Categories'
+     * @param Query $query Query object instance.
+     * @param array $options Tag or category names.
+     * @return Query
+     */
+    protected function categoriesQuery(string $assoc, Query $query, array $options)
+    {
+        /**
+         * If a single element is passed with comma separated values
+         * a new array is created fromm it.
+         */
+        if (count($options) === 1) {
+            $options = array_filter(explode(',', reset($options)));
+        }
+
+        return $query->distinct()->innerJoinWith($assoc, function (Query $query) use ($assoc, $options) {
+            return $query->where([sprintf('%s.name IN', $assoc) => $options]);
+        });
     }
 }

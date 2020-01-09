@@ -53,7 +53,7 @@ class InheritanceEventHandlerTest extends TestCase
      */
     public function testImplementedEvents()
     {
-        $expected = ['Model.beforeSave', 'Model.afterDelete', 'Model.afterRules'];
+        $expected = ['Model.beforeSave', 'Model.afterSave', 'Model.afterDelete', 'Model.afterRules'];
 
         $handler = new InheritanceEventHandler();
         $implementedEvents = array_keys($handler->implementedEvents());

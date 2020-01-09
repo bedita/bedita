@@ -46,6 +46,8 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Translations',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
@@ -663,5 +665,39 @@ class ObjectsTableTest extends TestCase
             Configure::write('Status.level', $statusLevel);
         }
         static::assertSame($expected, count($result));
+    }
+
+    /**
+     * Test `findCategories` method.
+     *
+     * @return void
+     *
+     * @covers ::findCategories()
+     * @covers ::categoriesQuery()
+     */
+    public function testFindCategories()
+    {
+        $result = TableRegistry::getTableLocator()
+            ->get('Documents')
+            ->find('categories', ['first-cat,second-cat'])
+            ->toArray();
+        static::assertSame(1, count($result));
+    }
+
+    /**
+     * Test `findTags` method.
+     *
+     * @return void
+     *
+     * @covers ::findTags()
+     * @covers ::categoriesQuery()
+     */
+    public function testFindTags()
+    {
+        $result = TableRegistry::getTableLocator()
+            ->get('Profiles')
+            ->find('tags', ['first-tag'])
+            ->toArray();
+        static::assertSame(1, count($result));
     }
 }
