@@ -82,12 +82,12 @@ class StaticPropertiesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->StaticProperties = TableRegistry::get('StaticProperties');
+        $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
 
         static::assertSame(StaticProperty::class, $this->StaticProperties->getEntityClass());
         static::assertRegExp('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
-        $otherInstance = TableRegistry::get('BEdita/Core.StaticProperties');
+        $otherInstance = TableRegistry::getTableLocator()->get('BEdita/Core.StaticProperties');
 
         static::assertNotSame($otherInstance->getTable(), $this->StaticProperties->getTable());
     }
@@ -101,9 +101,9 @@ class StaticPropertiesTableTest extends TestCase
      */
     public function testCreateTable()
     {
-        $this->StaticProperties = TableRegistry::get('StaticProperties');
+        $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
 
-        $Properties = TableRegistry::get('Properties');
+        $Properties = TableRegistry::getTableLocator()->get('Properties');
 
         $staticPropSchema = $this->StaticProperties->getSchema();
         $propSchema = $Properties->getSchema();
@@ -259,7 +259,7 @@ class StaticPropertiesTableTest extends TestCase
      */
     public function testAddSchemaDetails(array $expected = null, array $conditions)
     {
-        $result = TableRegistry::get('StaticProperties')->find()
+        $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()
             ->where($conditions)
             ->enableHydration(false)
             ->first();
@@ -273,7 +273,7 @@ class StaticPropertiesTableTest extends TestCase
         static::assertNotNull($result);
         static::assertArraySubset($expected, $result);
 
-        $secondResult = TableRegistry::get('BEdita/Core.StaticProperties')->find()
+        $secondResult = TableRegistry::getTableLocator()->get('BEdita/Core.StaticProperties')->find()
             ->where($conditions)
             ->enableHydration(false)
             ->first();

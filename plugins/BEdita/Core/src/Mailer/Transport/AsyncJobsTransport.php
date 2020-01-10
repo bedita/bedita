@@ -43,7 +43,7 @@ class AsyncJobsTransport extends AbstractTransport
     public function send(Email $email)
     {
         /* @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
-        $table = TableRegistry::get('AsyncJobs');
+        $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         $asyncJob = $table->newEntity();
         $asyncJob->service = $this->getConfig('service');

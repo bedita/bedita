@@ -79,7 +79,7 @@ class ThumbnailServiceTest extends TestCase
             Thumbnail::drop($config);
         }
 
-        $this->Streams = TableRegistry::get('Streams');
+        $this->Streams = TableRegistry::getTableLocator()->get('Streams');
     }
 
     /**

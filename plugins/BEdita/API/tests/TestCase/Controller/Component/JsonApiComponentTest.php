@@ -227,7 +227,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::get('Roles'));
+        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         static::assertEquals($expectedLinks, $component->getLinks());
@@ -263,7 +263,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::get('Roles'));
+        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
         $controller->set([
             '_links' => $base,
             '_meta' => $base,

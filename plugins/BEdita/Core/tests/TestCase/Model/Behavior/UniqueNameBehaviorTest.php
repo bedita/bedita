@@ -100,7 +100,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueUser($username, $uname)
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->newEntity();
 
         $user = $Users->patchEntity($user, compact('username'));
@@ -167,7 +167,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testGenerateUniqueName($username, $name, $config)
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->newEntity();
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
@@ -225,7 +225,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueNameExists($uname, $id, $expected)
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $behavior = $Users->behaviors()->get('UniqueName');
         $result = $behavior->uniqueNameExists($uname, $id);
 
@@ -281,7 +281,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueNameFromValue($value, $expected, array $cfg, $regenerate)
     {
-        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
+        $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
         $result = $behavior->uniqueNameFromValue($value, $regenerate, $cfg);
 
         if ($regenerate) {
@@ -300,7 +300,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueNameMissing()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $behavior = $Documents->behaviors()->get('UniqueName');
 
         $data = ['title' => 'Some data', 'uname' => 'some-data'];
@@ -328,7 +328,7 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testBeforeSave()
     {
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->newEntity([
             'title' => 'uh là la'
         ]);

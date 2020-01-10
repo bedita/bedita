@@ -60,7 +60,7 @@ class FoldersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Folders = TableRegistry::get('Folders');
+        $this->Folders = TableRegistry::getTableLocator()->get('Folders');
         LoggedUser::setUser(['id' => 1]);
     }
 
@@ -244,7 +244,7 @@ class FoldersTableTest extends TestCase
      */
     public function testSave($expected, $data)
     {
-        $trees = TableRegistry::get('Trees');
+        $trees = TableRegistry::getTableLocator()->get('Trees');
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $descendants = $trees->childCount($node);
@@ -379,8 +379,8 @@ class FoldersTableTest extends TestCase
             })
             ->toArray();
 
-        $Trees = TableRegistry::get('Trees');
-        $Objects = TableRegistry::get('Objects');
+        $Trees = TableRegistry::getTableLocator()->get('Trees');
+        $Objects = TableRegistry::getTableLocator()->get('Objects');
 
         // all descendants exist and are on tree
         foreach (array_merge($notFoldersIds, $folderIds) as $id) {

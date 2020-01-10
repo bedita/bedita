@@ -70,7 +70,7 @@ class DeleteObjectActionTest extends TestCase
      */
     public function testExecute()
     {
-        $table = TableRegistry::get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Documents');
         $action = new DeleteObjectAction(compact('table'));
 
         $entity = $table->get(2);
@@ -89,7 +89,7 @@ class DeleteObjectActionTest extends TestCase
      */
     public function testExecuteHardDelete()
     {
-        $table = TableRegistry::get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Documents');
         $action = new DeleteObjectAction(compact('table'));
 
         $entity = $table->get(2);

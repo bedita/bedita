@@ -396,7 +396,7 @@ class SignupUserActionTest extends TestCase
             $action($data);
         } finally {
             static::assertSame(1, $eventDispatched, 'Event not dispatched');
-            static::assertFalse(TableRegistry::get('Users')->exists(['username' => 'testsignup']));
+            static::assertFalse(TableRegistry::getTableLocator()->get('Users')->exists(['username' => 'testsignup']));
         }
     }
 
@@ -430,7 +430,7 @@ class SignupUserActionTest extends TestCase
         $action($data);
 
         static::assertSame(1, $invoked);
-        $user = TableRegistry::get('Users')->find()->where(['username' => 'testsignup'])->first();
+        $user = TableRegistry::getTableLocator()->get('Users')->find()->where(['username' => 'testsignup'])->first();
         static::assertEquals('test.signup@example.com', $user->get('email'));
     }
 
@@ -456,7 +456,7 @@ class SignupUserActionTest extends TestCase
         $action = new SignupUserAction();
         $action($data);
 
-        $user = TableRegistry::get('Users')->find()->where(['username' => 'testsignup'])->first();
+        $user = TableRegistry::getTableLocator()->get('Users')->find()->where(['username' => 'testsignup'])->first();
         static::assertNull($user->get('email'));
     }
 

@@ -44,7 +44,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
         parent::setUp();
 
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-        $this->Streams = TableRegistry::get('Streams');
+        $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $mountManager = FilesystemRegistry::getMountManager();
         $this->keep = collection($mountManager->listContents('default://'))
@@ -116,13 +116,13 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      */
     public function testRemoveOrphans($expected, $days)
     {
-        $count = TableRegistry::get('Streams')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('Streams')->find()->count();
         $this->exec(sprintf('streams removeOrphans --days %d', $days));
 
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
-        $count -= TableRegistry::get('Streams')->find()->count();
+        $count -= TableRegistry::getTableLocator()->get('Streams')->find()->count();
         static::assertEquals($expected, $count);
     }
 }

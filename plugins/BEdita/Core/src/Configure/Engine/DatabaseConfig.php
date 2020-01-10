@@ -67,7 +67,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function read($key = null)
     {
         $values = [];
-        $config = TableRegistry::get('Config');
+        $config = TableRegistry::getTableLocator()->get('Config');
         $query = $config->find()->select(['name', 'context', 'content']);
         $query->where(function (QueryExpression $exp) {
             return $exp->notIn('name', $this->reservedKeys);
@@ -104,7 +104,7 @@ class DatabaseConfig implements ConfigEngineInterface
     {
         $context = $key;
         $entities = [];
-        $table = TableRegistry::get('Config');
+        $table = TableRegistry::getTableLocator()->get('Config');
         foreach ($data as $name => $content) {
             if (in_array($name, $this->reservedKeys)) {
                 continue;

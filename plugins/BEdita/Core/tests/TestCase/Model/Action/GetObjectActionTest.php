@@ -51,7 +51,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecute()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
         $result = $action(['primaryKey' => 9]);
@@ -68,8 +68,8 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectTypeFilter()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('Events');
-        $table = TableRegistry::get('Objects');
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('Events');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table', 'objectType'));
 
         $action(['primaryKey' => 8]);
@@ -84,7 +84,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectDeleted()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => 2, 'deleted' => true]);
@@ -99,7 +99,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectDeletedLocked()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => 15, 'deleted' => true, 'locked' => false]);
@@ -116,7 +116,7 @@ class GetObjectActionTest extends TestCase
     {
         Configure::write('Status.level', 'on');
 
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => 3]);
@@ -132,7 +132,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteInvalidPrimaryKey()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => [1, 2]]);
@@ -145,8 +145,8 @@ class GetObjectActionTest extends TestCase
      */
     public function testLang()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('Documents');
-        $table = TableRegistry::get('Objects');
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table', 'objectType'));
 
         $result = $action(['primaryKey' => 2, 'lang' => 'fr']);

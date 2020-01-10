@@ -59,7 +59,7 @@ class AsyncGenerator extends ThumbnailGenerator
     public function generate(Stream $stream, array $options = [])
     {
         /* @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
-        $table = TableRegistry::get('AsyncJobs');
+        $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         $asyncJob = $table->newEntity();
         $asyncJob->service = $this->getConfig('service');

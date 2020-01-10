@@ -62,7 +62,7 @@ class StreamTest extends TestCase
         parent::setUp();
 
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-        $this->Streams = TableRegistry::get('Streams');
+        $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $mountManager = FilesystemRegistry::getMountManager();
         $this->keep = collection($mountManager->listContents('default://'))

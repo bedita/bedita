@@ -81,7 +81,7 @@ class CustomPropertiesBehavior extends Behavior
 
         try {
             $objectType = $this->objectType($this->getTable()->getAlias());
-            $properties = TableRegistry::get('Properties')->find('type', ['dynamic'])
+            $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
                 ->find('objectType', [$objectType->id])
                 ->where(['enabled' => true])
                 ->all();

@@ -257,8 +257,8 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Translations')->deleteAll([]);
-        TableRegistry::get('Users')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Users')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/users');
@@ -439,7 +439,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/users/' . $newId);
-        static::assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
+        static::assertTrue(TableRegistry::getTableLocator()->get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
     /**
@@ -459,14 +459,14 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('Users')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('Users')->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/users', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Users')->find()->count());
+        $this->assertEquals($count, TableRegistry::getTableLocator()->get('Users')->find()->count());
     }
 
     /**
@@ -492,8 +492,8 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
-        static::assertEquals('users', TableRegistry::get('Users')->get(1)->get('type'));
+        static::assertEquals('new_username', TableRegistry::getTableLocator()->get('Users')->get(1)->get('username'));
+        static::assertEquals('users', TableRegistry::getTableLocator()->get('Users')->get(1)->get('type'));
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($data['id'], $result['data']['id']);
@@ -525,8 +525,8 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
-        $this->assertEquals('second user', TableRegistry::get('Users')->get(5)->get('username'));
+        $this->assertEquals('first user', TableRegistry::getTableLocator()->get('Users')->get(1)->get('username'));
+        $this->assertEquals('second user', TableRegistry::getTableLocator()->get('Users')->get(5)->get('username'));
     }
 
     /**
@@ -552,7 +552,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
+        $this->assertEquals('first user', TableRegistry::getTableLocator()->get('Users')->get(1)->get('username'));
     }
 
     /**
@@ -581,7 +581,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->get('/users/5');
         $this->assertResponseCode(404);
 
-        $userDeleted = TableRegistry::get('Users')->get(5);
+        $userDeleted = TableRegistry::getTableLocator()->get('Users')->get(5);
         $this->assertEquals($userDeleted->deleted, 1);
     }
 
@@ -682,7 +682,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
 
-        $user = TableRegistry::get('Users')->get($this->lastObjectId());
+        $user = TableRegistry::getTableLocator()->get('Users')->get($this->lastObjectId());
         static::assertEquals('gustavo_supporto', $user['username']);
         static::assertNull($user['email']);
     }

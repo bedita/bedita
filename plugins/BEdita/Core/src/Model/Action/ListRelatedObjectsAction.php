@@ -36,7 +36,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
         parent::initialize($config);
 
         if ($this->Association instanceof RelatedTo) {
-            $objectTypes = TableRegistry::get('ObjectTypes')
+            $objectTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                 ->find('byRelation', [
                     'name' => $this->Association->getName(),
                     'side' => 'right',

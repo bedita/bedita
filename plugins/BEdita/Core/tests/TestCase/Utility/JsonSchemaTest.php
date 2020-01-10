@@ -250,7 +250,7 @@ class JsonSchemaTest extends TestCase
         static::assertNotEmpty($revision);
 
         // add custom property and check schema revision change
-        $properties = TableRegistry::get('Properties');
+        $properties = TableRegistry::getTableLocator()->get('Properties');
         $data = [
             'name' => 'gustavo',
             'description' => '',

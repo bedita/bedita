@@ -50,7 +50,7 @@ class QueryFilterTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
+        $this->fakeAnimals = TableRegistry::getTableLocator()->get('FakeAnimals');
     }
 
     /**

@@ -140,7 +140,7 @@ class DataCleanupBehaviorTest extends TestCase
     public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
         Configure::write('DefaultValues', $defaultValues);
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
 
         $user = $Users->newEntity($inputData);
         foreach ($expected as $k => $v) {

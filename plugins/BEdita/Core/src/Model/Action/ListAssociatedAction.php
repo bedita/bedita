@@ -132,7 +132,7 @@ class ListAssociatedAction extends BaseAction
     protected function buildInverseAssociation()
     {
         $sourceTable = $this->Association->getTarget();
-        $targetTable = TableRegistry::get(static::INVERSE_ASSOCIATION_NAME, [
+        $targetTable = TableRegistry::getTableLocator()->get(static::INVERSE_ASSOCIATION_NAME, [
             'className' => $this->Association->getSource()->getRegistryAlias(),
         ]);
         $targetTable->setTable($this->Association->getSource()->getTable());

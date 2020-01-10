@@ -50,7 +50,7 @@ class CurrentApplicationTest extends TestCase
     {
         parent::setUp();
 
-        $this->Applications = TableRegistry::get('Applications');
+        $this->Applications = TableRegistry::getTableLocator()->get('Applications');
     }
 
     /**

@@ -367,7 +367,7 @@ class UsersTable extends Table
      */
     public function delete(EntityInterface $entity, $options = [])
     {
-        $exists = TableRegistry::get('Objects')->exists([
+        $exists = TableRegistry::getTableLocator()->get('Objects')->exists([
             'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],
         ]);
         if (!$exists) {

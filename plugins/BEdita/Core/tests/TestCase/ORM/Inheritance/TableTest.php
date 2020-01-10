@@ -128,7 +128,7 @@ class TableTest extends TestCase
         static::assertSame($expected, $common);
         static::assertSame($expected, $symmetricCommon);
 
-        static::assertSame([], $this->fakeMammals->commonInheritance(TableRegistry::get('FakeArticles')));
+        static::assertSame([], $this->fakeMammals->commonInheritance(TableRegistry::getTableLocator()->get('FakeArticles')));
     }
 
     /**

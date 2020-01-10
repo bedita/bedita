@@ -61,7 +61,7 @@ class ApplicationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Applications = TableRegistry::get('Applications');
+        $this->Applications = TableRegistry::getTableLocator()->get('Applications');
         $this->currentApplication = CurrentApplication::getApplication();
     }
 

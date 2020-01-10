@@ -125,7 +125,7 @@ class CurrentApplication
     public static function setFromApiKey($apiKey)
     {
         static::getInstance()->set(
-            TableRegistry::get('Applications')->find('apiKey', compact('apiKey'))->firstOrFail()
+            TableRegistry::getTableLocator()->get('Applications')->find('apiKey', compact('apiKey'))->firstOrFail()
         );
     }
 

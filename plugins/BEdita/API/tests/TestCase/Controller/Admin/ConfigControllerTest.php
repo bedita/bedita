@@ -124,7 +124,7 @@ class ConfigControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $entity = TableRegistry::get('Config')->get('Name1');
+        $entity = TableRegistry::getTableLocator()->get('Config')->get('Name1');
         static::assertEquals('data2', $entity->get('content'));
     }
 
@@ -143,6 +143,6 @@ class ConfigControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('Config')->exists(['name' => 'Name2']));
+        static::assertFalse(TableRegistry::getTableLocator()->get('Config')->exists(['name' => 'Name2']));
     }
 }

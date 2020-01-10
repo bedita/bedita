@@ -57,7 +57,7 @@ class ObjectsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('Objects');
+        $this->Objects = TableRegistry::getTableLocator()->get('Objects');
         LoggedUser::setUser(['id' => 1]);
     }
 

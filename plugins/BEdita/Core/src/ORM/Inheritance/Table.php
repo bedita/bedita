@@ -76,7 +76,7 @@ class Table extends CakeTable
     {
         // If it is an alias, immediately load the instance.
         if (is_string($associated)) {
-            $associated = TableRegistry::get($associated);
+            $associated = TableRegistry::getTableLocator()->get($associated);
         }
         $this->inheritedTable = $associated;
 
@@ -123,7 +123,7 @@ class Table extends CakeTable
     public function inheritedTable()
     {
         if (is_string($this->inheritedTable)) {
-            $this->extensionOf(TableRegistry::get($this->inheritedTable));
+            $this->extensionOf(TableRegistry::getTableLocator()->get($this->inheritedTable));
         }
 
         return $this->inheritedTable;

@@ -86,7 +86,7 @@ class PriorityBehaviorTest extends TestCase
      */
     public function testInitialize(array $expected, array $config = [])
     {
-        $table = TableRegistry::get('MyTable', ['className' => Table::class]);
+        $table = TableRegistry::getTableLocator()->get('MyTable', ['className' => Table::class]);
         $table->addBehavior('BEdita/Core.Priority', $config);
 
         $behavior = $table->behaviors()->get('Priority');
@@ -104,7 +104,7 @@ class PriorityBehaviorTest extends TestCase
      */
     public function testBeforeSave()
     {
-        $table = TableRegistry::get('MyTable', ['className' => Table::class]);
+        $table = TableRegistry::getTableLocator()->get('MyTable', ['className' => Table::class]);
         $table->addBehavior('BEdita/Core.Priority', [
             'fields' => [
                 '_all' => [

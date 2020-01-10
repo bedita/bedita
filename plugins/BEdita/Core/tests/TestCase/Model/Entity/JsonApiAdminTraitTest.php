@@ -47,7 +47,7 @@ class JsonApiAdminTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->Applications = TableRegistry::get('Applications');
+        $this->Applications = TableRegistry::getTableLocator()->get('Applications');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }

@@ -46,7 +46,7 @@ class SaveEntityActionTest extends TestCase
      */
     public function testExecute()
     {
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new SaveEntityAction(compact('table'));
 
         $entity = $table->newEntity();
@@ -72,7 +72,7 @@ class SaveEntityActionTest extends TestCase
      */
     public function testExecuteValitationErrors()
     {
-        $table = TableRegistry::get('FakeAnimals');
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $table->setValidator(
             $table::DEFAULT_VALIDATOR,
             (new Validator())
@@ -100,7 +100,7 @@ class SaveEntityActionTest extends TestCase
      */
     public function testExecuteSaveErrors()
     {
-        $entity = TableRegistry::get('FakeAnimals')->get(1);
+        $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
         $table = $this->getMockBuilder(Table::class)
             ->getMock();

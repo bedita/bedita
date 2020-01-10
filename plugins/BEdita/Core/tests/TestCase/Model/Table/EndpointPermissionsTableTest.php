@@ -54,7 +54,7 @@ class EndpointPermissionsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->EndpointPermissions = TableRegistry::get('EndpointPermissions');
+        $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
     }
 
     /**

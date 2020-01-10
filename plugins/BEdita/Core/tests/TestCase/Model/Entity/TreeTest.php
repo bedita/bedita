@@ -56,7 +56,7 @@ class TreeTest extends TestCase
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::get('Trees');
+        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
     }
 
     /**
@@ -106,7 +106,7 @@ class TreeTest extends TestCase
         $tree->parent_object = null;
         static::assertNull($tree->parent_id);
 
-        $parentFolder = TableRegistry::get('Folders')->get(13);
+        $parentFolder = TableRegistry::getTableLocator()->get('Folders')->get(13);
         $tree->parent_object = $parentFolder;
         static::assertEquals(13, $tree->parent_id);
     }

@@ -73,7 +73,7 @@ class ObjectTypeBehaviorTest extends TestCase
      */
     public function testObjectType($expected, $table, $objectType = null)
     {
-        $table = TableRegistry::get($table);
+        $table = TableRegistry::getTableLocator()->get($table);
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }

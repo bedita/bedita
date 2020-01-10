@@ -67,8 +67,8 @@ class JsonApiTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::get('Roles');
-        $this->ObjectTypes = TableRegistry::get('ObjectTypes');
+        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
+        $this->ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
@@ -326,14 +326,14 @@ class JsonApiTraitTest extends TestCase
     public function testGetRelationshipsIncludedEmpty()
     {
         // This is needed in order to permanently remove user with id 5
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(5);
         $user->created_by = 1;
         $user->modified_by = 1;
         $user = $usersTable->saveOrFail($user);
-        $doc = TableRegistry::get('Objects')->get(3);
+        $doc = TableRegistry::getTableLocator()->get('Objects')->get(3);
         $doc->modified_by = 1;
-        $doc = TableRegistry::get('Objects')->saveOrFail($doc);
+        $doc = TableRegistry::getTableLocator()->get('Objects')->saveOrFail($doc);
 
         $usersTable->delete($usersTable->get(5));
 

@@ -145,8 +145,8 @@ class EndpointsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('EndpointPermissions')->deleteAll([]);
-        TableRegistry::get('Endpoints')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Endpoints')->deleteAll([]);
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/admin/endpoints');
@@ -257,7 +257,7 @@ class EndpointsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $endpoint = TableRegistry::get('Endpoints')
+        $endpoint = TableRegistry::getTableLocator()->get('Endpoints')
             ->find()
             ->order(['id' => 'DESC'])
             ->first();
@@ -285,7 +285,7 @@ class EndpointsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Endpoints = TableRegistry::get('Endpoints');
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $count = $Endpoints->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -320,7 +320,7 @@ class EndpointsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $Endpoints = TableRegistry::get('Endpoints');
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $entity = $Endpoints->get(1);
         static::assertEquals('magic', $entity->get('name'));
     }
@@ -343,7 +343,7 @@ class EndpointsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Endpoints = TableRegistry::get('Endpoints');
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $expected = $Endpoints->get(1)->get('name');
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -369,6 +369,6 @@ class EndpointsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        static::assertFalse(TableRegistry::get('Endpoints')->exists(['id' => 2]));
+        static::assertFalse(TableRegistry::getTableLocator()->get('Endpoints')->exists(['id' => 2]));
     }
 }

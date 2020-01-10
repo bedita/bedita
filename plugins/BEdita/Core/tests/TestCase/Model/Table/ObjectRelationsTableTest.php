@@ -41,7 +41,7 @@ class ObjectRelationsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->ObjectRelations = TableRegistry::get('ObjectRelations');
+        $this->ObjectRelations = TableRegistry::getTableLocator()->get('ObjectRelations');
     }
 
     /**

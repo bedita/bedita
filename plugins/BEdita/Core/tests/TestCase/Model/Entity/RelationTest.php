@@ -48,7 +48,7 @@ class RelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->Relations = TableRegistry::get('Relations');
+        $this->Relations = TableRegistry::getTableLocator()->get('Relations');
     }
 
     /**

@@ -80,7 +80,7 @@ class NewObjectTypesTest extends IntegrationTestCase
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => $type]));
+        $this->assertTrue(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['name' => $type]));
 
         // ADD OBJECT
         $data = [

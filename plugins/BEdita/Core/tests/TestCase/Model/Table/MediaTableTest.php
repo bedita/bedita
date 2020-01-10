@@ -39,7 +39,7 @@ class MediaTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('Media') ? [] : ['className' => 'BEdita\Core\Model\Table\MediaTable'];
-        $this->Media = TableRegistry::get('Media', $config);
+        $this->Media = TableRegistry::getTableLocator()->get('Media', $config);
     }
 
     /**

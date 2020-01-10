@@ -49,7 +49,7 @@ class LocationTest extends TestCase
     {
         parent::setUp();
 
-        $this->Locations = TableRegistry::get('Locations');
+        $this->Locations = TableRegistry::getTableLocator()->get('Locations');
     }
 
     /**

@@ -71,7 +71,7 @@ class AuthProvider extends Entity
             return [];
         }
 
-        $table = TableRegistry::get('Roles');
+        $table = TableRegistry::getTableLocator()->get('Roles');
 
         return $table->find()
             ->where(function (QueryExpression $exp) use ($table, $roles) {

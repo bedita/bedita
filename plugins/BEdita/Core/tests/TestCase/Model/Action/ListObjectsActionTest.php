@@ -52,7 +52,7 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecute()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table'));
 
         $result = $action();
@@ -68,8 +68,8 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecuteObjectTypeFilter()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('Events');
-        $table = TableRegistry::get('Objects');
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('Events');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table', 'objectType'));
 
         $result = $action();
@@ -85,7 +85,7 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecuteDeleted()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table'));
 
         $result = $action(['deleted' => true]);
@@ -101,7 +101,7 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecuteCustomFilter()
     {
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table'));
 
         $result = $action([
@@ -121,7 +121,7 @@ class ListObjectsActionTest extends TestCase
     {
         Configure::write('Status.level', 'on');
 
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table'));
 
         $result = $action();
@@ -137,8 +137,8 @@ class ListObjectsActionTest extends TestCase
      */
     public function testLang()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('Documents');
-        $table = TableRegistry::get('Objects');
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new ListObjectsAction(compact('table', 'objectType'));
 
         $result = $action([

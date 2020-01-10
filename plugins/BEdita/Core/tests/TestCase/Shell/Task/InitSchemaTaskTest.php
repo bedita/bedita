@@ -107,7 +107,7 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
-        return TableRegistry::get('ObjectTypes')->find()->count();
+        return TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count();
     }
 
     /**
@@ -187,6 +187,6 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
-        static::assertEquals($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
+        static::assertEquals($notSeededCount, TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count());
     }
 }

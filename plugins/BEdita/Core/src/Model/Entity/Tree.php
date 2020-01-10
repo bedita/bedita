@@ -81,7 +81,7 @@ class Tree extends Entity
         }
 
         // set root_id and parent_node_id
-        $table = TableRegistry::get($this->getSource());
+        $table = TableRegistry::getTableLocator()->get($this->getSource());
         $parentNode = $table
             ->find()
             ->where(['object_id' => $parentId])
