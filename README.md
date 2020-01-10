@@ -23,7 +23,7 @@ The easiest and quickest way to try out BEdita4 is via [Docker](https://www.dock
 
 ## Prerequisites
 
-* PHP 7.1, 7.2 or 7.3 with extensions: `json`, `mbstring`, `fileinfo`, `intl`, `pdo`, `simplexml`
+* PHP 7.2, 7.3 or 7.4 with extensions: `json`, `mbstring`, `fileinfo`, `intl`, `pdo`, `simplexml`
 * MySQL 5.7 (recommended) or MySQL 8.0, Postgres 9.6/10/11/12, MariaDB 10.2/10.3/10.4 or SQLite 3
 * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
