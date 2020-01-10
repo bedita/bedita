@@ -106,7 +106,7 @@ class RelatedToTest extends TestCase
      */
     public function testGetSubQueryForMatching(array $expected, $table, $association, array $options = [])
     {
-        $table = TableRegistry::get($table);
+        $table = TableRegistry::getTableLocator()->get($table);
         $association = $table->getAssociation($association);
         if (!($association instanceof RelatedTo)) {
             static::fail('Wrong association type');
@@ -164,7 +164,7 @@ class RelatedToTest extends TestCase
     public function testIsSourceAbstract($expected, $table)
     {
         $relatedTo = new RelatedTo('SourceAbstract');
-        $relatedTo->setSource(TableRegistry::get($table));
+        $relatedTo->setSource(TableRegistry::getTableLocator()->get($table));
         static::assertSame($expected, $relatedTo->isSourceAbstract());
     }
 
@@ -182,7 +182,7 @@ class RelatedToTest extends TestCase
     public function testIsTargetAbstract($expected, $table)
     {
         $relatedTo = new RelatedTo('SourceAbstract');
-        $relatedTo->setTarget(TableRegistry::get($table));
+        $relatedTo->setTarget(TableRegistry::getTableLocator()->get($table));
         static::assertSame($expected, $relatedTo->isTargetAbstract());
     }
 }

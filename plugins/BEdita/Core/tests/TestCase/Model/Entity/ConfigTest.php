@@ -47,7 +47,7 @@ class ConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Config = TableRegistry::get('Config');
+        $this->Config = TableRegistry::getTableLocator()->get('Config');
     }
 
     /**

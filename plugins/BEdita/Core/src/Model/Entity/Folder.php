@@ -99,7 +99,7 @@ class Folder extends ObjectEntity
             return null;
         }
 
-        $table = TableRegistry::get($this->getSource());
+        $table = TableRegistry::getTableLocator()->get($this->getSource());
         $this->parent = $table
             ->find()
             ->where([
@@ -122,7 +122,7 @@ class Folder extends ObjectEntity
             return null;
         }
 
-        $trees = TableRegistry::get('Trees');
+        $trees = TableRegistry::getTableLocator()->get('Trees');
         try {
             $node = $trees->find()
                 ->where(['object_id' => $this->id])

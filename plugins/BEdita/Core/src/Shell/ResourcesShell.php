@@ -135,7 +135,7 @@ class ResourcesShell extends Shell
     {
         $modelName = Inflector::camelize($this->param('type'));
 
-        return TableRegistry::get($modelName);
+        return TableRegistry::getTableLocator()->get($modelName);
     }
 
     /**
@@ -196,7 +196,7 @@ class ResourcesShell extends Shell
         foreach ($fieldsTables as $field => $table) {
             $id = $this->in(sprintf('%s id or name', $table));
             if ($id && !is_numeric($id)) {
-                $id = TableRegistry::get($table)->find()->where(['name' => $id])->firstOrFail()->id;
+                $id = TableRegistry::getTableLocator()->get($table)->find()->where(['name' => $id])->firstOrFail()->id;
             }
             $entity->set($field, $id);
         }

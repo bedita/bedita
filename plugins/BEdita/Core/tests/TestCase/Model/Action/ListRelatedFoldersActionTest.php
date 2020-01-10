@@ -52,7 +52,7 @@ class ListRelatedFoldersActionTest extends TestCase
      */
     public function testExecuteParents()
     {
-        $association = TableRegistry::get('Folders')->getAssociation('Parents');
+        $association = TableRegistry::getTableLocator()->get('Folders')->getAssociation('Parents');
         $action = new ListRelatedFoldersAction(compact('association'));
         $result = $action(['primaryKey' => 12]);
         static::assertInstanceOf(Folder::class, $result);
@@ -69,7 +69,7 @@ class ListRelatedFoldersActionTest extends TestCase
      */
     public function testExecuteChildren()
     {
-        $association = TableRegistry::get('Folders')->getAssociation('Children');
+        $association = TableRegistry::getTableLocator()->get('Folders')->getAssociation('Children');
         $action = new ListRelatedFoldersAction(compact('association'));
         $result = $action(['primaryKey' => 11]);
 
@@ -80,7 +80,7 @@ class ListRelatedFoldersActionTest extends TestCase
         $actual = Hash::extract($children, '{n}.id');
         sort($actual);
 
-        $treesTable = TableRegistry::get('Trees');
+        $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $expected = $treesTable
             ->find('children', ['for' => $node->id, 'direct' => true])

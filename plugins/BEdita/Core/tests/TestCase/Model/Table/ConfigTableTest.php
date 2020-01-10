@@ -49,7 +49,7 @@ class ConfigTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Config = TableRegistry::get('Config');
+        $this->Config = TableRegistry::getTableLocator()->get('Config');
     }
 
     /**
@@ -145,7 +145,7 @@ class ConfigTableTest extends TestCase
         // `appVal` must not be present
         static::assertFalse(in_array('appVal', $names));
 
-        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(1));
+        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(1));
 
         $config = $this->Config->find('mine')->toArray();
         $names = Hash::extract($config, '{n}.name');

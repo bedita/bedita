@@ -45,7 +45,7 @@ class AnnotationsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Annotations = TableRegistry::get('Annotations');
+        $this->Annotations = TableRegistry::getTableLocator()->get('Annotations');
     }
 
     /**

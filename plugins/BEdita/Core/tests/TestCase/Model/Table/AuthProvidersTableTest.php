@@ -47,7 +47,7 @@ class AuthProvidersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->AuthProviders = TableRegistry::get('AuthProviders');
+        $this->AuthProviders = TableRegistry::getTableLocator()->get('AuthProviders');
     }
 
     /**

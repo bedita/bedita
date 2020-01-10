@@ -161,7 +161,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      */
     public function testRelatedDeleted()
     {
-        $table = TableRegistry::get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Documents');
         $entity = $table->get(3);
         $entity->set('deleted', true);
         $table->save($entity);
@@ -179,7 +179,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      */
     public function testIncludedDeleted()
     {
-        $table = TableRegistry::get('Documents');
+        $table = TableRegistry::getTableLocator()->get('Documents');
         $entity = $table->get(3);
         $entity->set('deleted', true);
         $table->save($entity);

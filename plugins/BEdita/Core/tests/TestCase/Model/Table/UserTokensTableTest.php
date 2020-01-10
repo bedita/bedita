@@ -42,7 +42,7 @@ class UserTokensTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->UserTokens = TableRegistry::get('UserTokens');
+        $this->UserTokens = TableRegistry::getTableLocator()->get('UserTokens');
     }
 
     /**

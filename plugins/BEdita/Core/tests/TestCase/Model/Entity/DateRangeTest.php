@@ -49,7 +49,7 @@ class DateRangeTest extends TestCase
     {
         parent::setUp();
 
-        $this->DateRanges = TableRegistry::get('DateRanges');
+        $this->DateRanges = TableRegistry::getTableLocator()->get('DateRanges');
     }
 
     /**

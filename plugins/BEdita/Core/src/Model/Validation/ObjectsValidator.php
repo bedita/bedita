@@ -33,7 +33,7 @@ class ObjectsValidator extends Validator
     {
         parent::__construct();
 
-        $this->setProvider('objectsTable', TableRegistry::get('Objects'));
+        $this->setProvider('objectsTable', TableRegistry::getTableLocator()->get('Objects'));
 
         $this
             ->naturalNumber('id')

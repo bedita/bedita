@@ -160,7 +160,7 @@ class EndpointAuthorize extends BaseAuthorize
         $path = array_values(array_filter(explode('/', $this->request->getPath())));
         $endpointName = Hash::get($path, '0', '');
 
-        $Endpoints = TableRegistry::get('Endpoints');
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $this->endpoint = $Endpoints->find()
             ->where([
                 'Endpoints.name' => $endpointName,
@@ -197,7 +197,7 @@ class EndpointAuthorize extends BaseAuthorize
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = $this->endpoint && !$this->endpoint->isNew() ? [$this->endpoint->id] : [];
 
-        $query = TableRegistry::get('EndpointPermissions')
+        $query = TableRegistry::getTableLocator()->get('EndpointPermissions')
             ->find('byApplication', compact('applicationId', 'strict'))
             ->find('byEndpoint', compact('endpointIds', 'strict'));
 

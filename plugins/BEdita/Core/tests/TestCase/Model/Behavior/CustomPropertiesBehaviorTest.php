@@ -50,7 +50,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testInitialize()
     {
-        $table = TableRegistry::get('FakeObjects', [
+        $table = TableRegistry::getTableLocator()->get('FakeObjects', [
             'className' => Table::class,
         ]);
         static::assertFalse($table->hasBehavior('BEdita/Core.ObjectType'));
@@ -114,7 +114,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testGetAvailable(array $expected, $tableName)
     {
-        $table = TableRegistry::get($tableName);
+        $table = TableRegistry::getTableLocator()->get($tableName);
         $behavior = $table->behaviors()->get('CustomProperties');
         $result = $behavior->getAvailable();
         $result = array_keys($result);
@@ -139,7 +139,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testGetAvailableTypeNotFound()
     {
         // test try/catch failure on `objectType` load
-        $Relations = TableRegistry::get('Relations');
+        $Relations = TableRegistry::getTableLocator()->get('Relations');
         $Relations->addBehavior('BEdita/Core.CustomProperties', ['field' => 'description']);
         $rel = $Relations->get(1);
         $result = $rel->toArray();
@@ -155,7 +155,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testEmpty()
     {
-        $table = TableRegistry::get('Locations');
+        $table = TableRegistry::getTableLocator()->get('Locations');
         $result = $table->behaviors()->get('CustomProperties')->getDefaultValues();
         static::assertEmpty($result);
     }
@@ -173,7 +173,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             'media_property' => null,
             'files_property' => null,
         ];
-        $user = TableRegistry::get('Files');
+        $user = TableRegistry::getTableLocator()->get('Files');
         $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
         static::assertEquals($expected, $result);
     }
@@ -221,7 +221,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testBeforeFind(array $expectedProperties, $id, $table, $hydrate = true)
     {
-        $result = TableRegistry::get($table)->find()
+        $result = TableRegistry::getTableLocator()->get($table)->find()
             ->where(compact('id'))
             ->enableHydration($hydrate)
             ->first();
@@ -246,7 +246,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testBeforeFindOtherType()
     {
-        $result = TableRegistry::get('Objects')
+        $result = TableRegistry::getTableLocator()->get('Objects')
             ->find('list')
             ->find('type', ['documents'])
             ->toArray();
@@ -325,7 +325,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testBeforeSave(array $expected, array $data, $id, $table)
     {
-        $table = TableRegistry::get($table);
+        $table = TableRegistry::getTableLocator()->get($table);
         $entity = $table->get($id);
 
         $table->patchEntity($entity, $data);

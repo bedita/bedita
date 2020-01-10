@@ -577,10 +577,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Properties')->deleteAll([]);
-        TableRegistry::get('Translations')->deleteAll([]);
-        TableRegistry::get('Objects')->deleteAll([]);
-        TableRegistry::get('ObjectTypes')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Properties')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Objects')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('ObjectTypes')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/model/object_types');
@@ -734,7 +734,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/model/object_types/11');
-        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
+        $this->assertTrue(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 
     /**
@@ -755,12 +755,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+        $this->assertEquals($count, TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count());
     }
 
     /**
@@ -782,12 +782,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+        $this->assertEquals($count, TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count());
     }
 
     /**
@@ -809,12 +809,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $count = TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/object_types', json_encode(compact('data')));
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+        $this->assertEquals($count, TableRegistry::getTableLocator()->get('ObjectTypes')->find()->count());
     }
 
     /**
@@ -841,7 +841,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $entity = $ObjectTypes->get(2);
         $this->assertEquals('document new', $entity->get('singular'));
 
@@ -900,8 +900,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(2)->get('singular'));
-        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(3)->get('singular'));
+        $this->assertEquals('document', TableRegistry::getTableLocator()->get('ObjectTypes')->get(2)->get('singular'));
+        $this->assertEquals('profile', TableRegistry::getTableLocator()->get('ObjectTypes')->get(3)->get('singular'));
     }
 
     /**
@@ -919,6 +919,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 5]));
+        $this->assertFalse(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['id' => 5]));
     }
 }

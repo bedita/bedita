@@ -47,25 +47,25 @@ class ListAssociatedActionTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeTags')
+        TableRegistry::getTableLocator()->get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
 
-        TableRegistry::get('FakeArticles')
+        TableRegistry::getTableLocator()->get('FakeArticles')
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
             ->getSource()
             ->belongsTo('FakeAnimals');
 
-        TableRegistry::get('FakeAnimals')
+        TableRegistry::getTableLocator()->get('FakeAnimals')
             ->hasMany('FakeArticles');
 
-        TableRegistry::get('FakeMammals', ['className' => Table::class])
+        TableRegistry::getTableLocator()->get('FakeMammals', ['className' => Table::class])
             ->extensionOf('FakeAnimals');
 
-        TableRegistry::get('FakeMammalArticles')
+        TableRegistry::getTableLocator()->get('FakeMammalArticles')
             ->setTable('fake_articles')
             ->belongsTo('FakeMammals', ['foreignKey' => 'fake_animal_id']);
     }
@@ -199,7 +199,7 @@ class ListAssociatedActionTest extends TestCase
         if ($options === null) {
             $options = ['list' => true];
         }
-        $association = TableRegistry::get($table)->getAssociation($association);
+        $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new ListAssociatedAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + $options);
@@ -218,7 +218,7 @@ class ListAssociatedActionTest extends TestCase
      */
     public function testUnknownAssociationType()
     {
-        $sourceTable = TableRegistry::get('FakeArticles');
+        $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
         $association = static::getMockForAbstractClass(Association::class, [
             'TestAssociation',
             compact('sourceTable'),

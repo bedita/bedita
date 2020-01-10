@@ -199,7 +199,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         $objectType = $this;
         $relations = (array)$this->get($property);
         while ($objectType->has('parent_id')) {
-            $objectType = TableRegistry::get($this->getSource())->get($objectType->get('parent_id'));
+            $objectType = TableRegistry::getTableLocator()->get($this->getSource())->get($objectType->get('parent_id'));
             $relations = array_merge($relations, (array)$objectType->get($property));
         }
 
@@ -248,7 +248,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             return $this->parent->get('name');
         }
 
-        return TableRegistry::get('ObjectTypes')->get($this->parent_id)->get('name');
+        return TableRegistry::getTableLocator()->get('ObjectTypes')->get($this->parent_id)->get('name');
     }
 
     /**
@@ -260,7 +260,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     protected function _setParentName($parentName)
     {
         try {
-            $objectType = TableRegistry::get('ObjectTypes')->get($parentName);
+            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($parentName);
             if (!$objectType->get('is_abstract') || !$objectType->get('enabled')) {
                 return null;
             }
@@ -288,10 +288,10 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
-        $allProperties = TableRegistry::get('Properties')
+        $allProperties = TableRegistry::getTableLocator()->get('Properties')
             ->find('objectType', [$this->id])
             ->toArray();
-        $entity = TableRegistry::get($this->name)->newEntity();
+        $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
         $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 

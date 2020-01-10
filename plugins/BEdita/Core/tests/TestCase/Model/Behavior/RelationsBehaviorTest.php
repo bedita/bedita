@@ -54,9 +54,9 @@ class RelationsBehaviorTest extends TestCase
     {
         TableRegistry::clear();
 
-        $Documents = TableRegistry::get('Documents');
-        $Profiles = TableRegistry::get('Profiles');
-        $Locations = TableRegistry::get('Locations');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $Profiles = TableRegistry::getTableLocator()->get('Profiles');
+        $Locations = TableRegistry::getTableLocator()->get('Locations');
 
         static::assertTrue($Documents->hasBehavior('ObjectType'));
         static::assertTrue($Profiles->hasBehavior('ObjectType'));
@@ -90,7 +90,7 @@ class RelationsBehaviorTest extends TestCase
      */
     public function testUnknownObjectType()
     {
-        $FakeArticles = TableRegistry::get('FakeArticles');
+        $FakeArticles = TableRegistry::getTableLocator()->get('FakeArticles');
 
         $before = count($FakeArticles->associations()->keys());
         $FakeArticles->addBehavior('BEdita/Core.Relations');
@@ -113,7 +113,7 @@ class RelationsBehaviorTest extends TestCase
             'inverse_test',
         ];
 
-        $Documents = TableRegistry::get('Documents');
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
 
         static::assertTrue($Documents->behaviors()->hasMethod('getRelations'));
 

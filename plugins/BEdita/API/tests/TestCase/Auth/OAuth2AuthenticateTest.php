@@ -136,7 +136,7 @@ class OAuth2AuthenticateTest extends TestCase
      */
     public function testAuthenticate($expected, ServerRequest $request, array $oauthResponse = [])
     {
-        $authConfig = TableRegistry::get('AuthProviders')
+        $authConfig = TableRegistry::getTableLocator()->get('AuthProviders')
             ->find('authenticate')
             ->toArray();
 

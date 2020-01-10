@@ -150,7 +150,7 @@ class JsonApiPaginatorTest extends TestCase
         }
 
         $paginator = new JsonApiPaginator();
-        $repository = TableRegistry::get('Roles')->find()->getRepository();
+        $repository = TableRegistry::getTableLocator()->get('Roles')->find()->getRepository();
 
         $options = $paginator->validateSort($repository, compact('sort'));
 

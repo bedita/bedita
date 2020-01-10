@@ -74,8 +74,8 @@ class ObjectsHandler
         }
         LoggedUser::setUser($user);
 
-        $objectType = TableRegistry::get('ObjectTypes')->get($type);
-        $table = TableRegistry::get($objectType->model);
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
+        $table = TableRegistry::getTableLocator()->get($objectType->model);
         if (!empty($data['id'])) {
             $entity = $table->get($data['id']);
         } else {
@@ -105,7 +105,7 @@ class ObjectsHandler
     public static function remove($id)
     {
         static::checkEnvironment();
-        $objectsTable = TableRegistry::get('Objects');
+        $objectsTable = TableRegistry::getTableLocator()->get('Objects');
         $entity = $objectsTable->get($id);
 
         return $objectsTable->delete($entity);

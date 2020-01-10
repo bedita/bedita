@@ -64,7 +64,7 @@ class TreesTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::get('Trees');
+        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
     }
 
     /**
@@ -286,7 +286,7 @@ class TreesTableTest extends TestCase
     {
         // create new Folder
         LoggedUser::setUser(['id' => 1]);
-        $Folders = TableRegistry::get('Folders');
+        $Folders = TableRegistry::getTableLocator()->get('Folders');
         $entity = $Folders->newEntity(['title' => 'subsub folder']);
         $entity->type = 'folders';
         $entity->parent = $Folders->get(12);

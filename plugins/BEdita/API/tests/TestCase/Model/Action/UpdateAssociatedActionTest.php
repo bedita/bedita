@@ -48,24 +48,24 @@ class UpdateAssociatedActionTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeTags')
+        TableRegistry::getTableLocator()->get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
         /* @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = TableRegistry::get('FakeTags')->getAssociation('FakeArticles');
+        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
         $association->junction()
             ->getValidator()
             ->email('fake_params');
 
-        TableRegistry::get('FakeArticles')
+        TableRegistry::getTableLocator()->get('FakeArticles')
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
             ->getSource()
             ->belongsTo('FakeAnimals');
 
-        TableRegistry::get('FakeAnimals')
+        TableRegistry::getTableLocator()->get('FakeAnimals')
             ->hasMany('FakeArticles');
     }
 
@@ -221,7 +221,7 @@ class UpdateAssociatedActionTest extends TestCase
 
         $request = new ServerRequest();
         $request = $request->withParsedBody($data);
-        $association = TableRegistry::get($table)->getAssociation($association);
+        $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -253,7 +253,7 @@ class UpdateAssociatedActionTest extends TestCase
     public function testKeepJunctionData()
     {
         // Prepare link with junction data.
-        $junction = TableRegistry::get('FakeArticlesTags');
+        $junction = TableRegistry::getTableLocator()->get('FakeArticlesTags');
         $junctionEntity = $junction->newEntity();
         $junction->patchEntity($junctionEntity, [
             'fake_article_id' => 2,
@@ -271,7 +271,7 @@ class UpdateAssociatedActionTest extends TestCase
                 'id' => 2,
             ],
         ]);
-        $association = TableRegistry::get('FakeArticles')->getAssociation('FakeTags');
+        $association = TableRegistry::getTableLocator()->get('FakeArticles')->getAssociation('FakeTags');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 

@@ -65,7 +65,7 @@ class UsersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
         LoggedUser::setUser(['id' => 1]);
     }
 
@@ -238,7 +238,7 @@ class UsersTableTest extends TestCase
     public function testExternalAuthLogin()
     {
         //1. Add external auth and create new user
-        $authProvider = TableRegistry::get('AuthProviders')->get(2);
+        $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->get(2);
         $providerUsername = 'gustavo';
         $params = ['job' => 'head of technical support'];
         $userId = null;
@@ -253,7 +253,7 @@ class UsersTableTest extends TestCase
         static::assertEquals(16, $externalAuth->user_id);
 
         // 2. Add external auth to current user
-        $authProvider = TableRegistry::get('AuthProviders')->get(1);
+        $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->get(1);
         $providerUsername = 'friend of gustavo';
         $params = ['job' => 'support of technical support'];
         $userId = 5;
@@ -724,7 +724,7 @@ class UsersTableTest extends TestCase
         $user->modified_by = 1;
         $user = $this->Users->saveOrFail($user);
 
-        $table = TableRegistry::get('Objects');
+        $table = TableRegistry::getTableLocator()->get('Objects');
         $doc = $table->get(3);
         $doc->modified_by = 1;
         $doc = $table->saveOrFail($doc);

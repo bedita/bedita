@@ -246,7 +246,7 @@ class TreesTable extends Table
     {
         static $foldersType = null;
         if ($foldersType === null) {
-            $foldersType = TableRegistry::get('ObjectTypes')->get('folders')->id;
+            $foldersType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('folders')->id;
         }
 
         return $this->Objects->exists([

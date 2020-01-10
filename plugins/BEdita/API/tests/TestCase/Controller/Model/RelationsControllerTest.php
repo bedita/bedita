@@ -193,7 +193,7 @@ class RelationsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Relations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Relations')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/model/relations');
@@ -323,7 +323,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $relation = TableRegistry::get('Relations')
+        $relation = TableRegistry::getTableLocator()->get('Relations')
             ->find()
             ->order(['id' => 'DESC'])
             ->first();
@@ -351,7 +351,7 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Relations = TableRegistry::get('Relations');
+        $Relations = TableRegistry::getTableLocator()->get('Relations');
         $count = $Relations->find()->count();
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -386,7 +386,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $Relations = TableRegistry::get('Relations');
+        $Relations = TableRegistry::getTableLocator()->get('Relations');
         $entity = $Relations->get(1);
         $this->assertEquals('new label', $entity->get('label'));
     }
@@ -409,7 +409,7 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $Relations = TableRegistry::get('Relations');
+        $Relations = TableRegistry::getTableLocator()->get('Relations');
         $expected = $Relations->get(1)->get('label');
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -435,7 +435,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Relations')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::getTableLocator()->get('Relations')->exists(['id' => 1]));
     }
 
     /**

@@ -32,7 +32,7 @@ class ObjectTypesValidator extends Validator
     {
         parent::__construct();
 
-        $this->setProvider('table', TableRegistry::get('ObjectTypes'));
+        $this->setProvider('table', TableRegistry::getTableLocator()->get('ObjectTypes'));
         $this->setProvider('bedita', Validation::class);
 
         $this

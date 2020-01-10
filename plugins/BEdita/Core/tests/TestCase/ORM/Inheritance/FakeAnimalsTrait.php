@@ -65,9 +65,9 @@ trait FakeAnimalsTrait
      */
     public function setupTables()
     {
-        $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
-        $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
+        $this->fakeFelines = TableRegistry::getTableLocator()->get('FakeFelines', $this->tableOptions);
+        $this->fakeMammals = TableRegistry::getTableLocator()->get('FakeMammals', $this->tableOptions);
+        $this->fakeAnimals = TableRegistry::getTableLocator()->get('FakeAnimals');
     }
 
     /**

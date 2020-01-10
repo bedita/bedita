@@ -186,7 +186,7 @@ class UuidAuthenticateTest extends TestCase
      */
     public function testAuthenticate($expected, $newUser, ServerRequest $request)
     {
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $count = $Users->find()->count();
 
         $dispatchedEvent = 0;
@@ -197,7 +197,7 @@ class UuidAuthenticateTest extends TestCase
             static::assertTrue(is_string(func_get_arg(2)));
         });
 
-        $authConfig = TableRegistry::get('AuthProviders')
+        $authConfig = TableRegistry::getTableLocator()->get('AuthProviders')
             ->find('authenticate')
             ->toArray();
 

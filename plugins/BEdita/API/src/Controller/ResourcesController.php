@@ -85,7 +85,7 @@ abstract class ResourcesController extends AppController
             }
         }
 
-        $this->Table = TableRegistry::get($this->modelClass);
+        $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
     }
 
     /**

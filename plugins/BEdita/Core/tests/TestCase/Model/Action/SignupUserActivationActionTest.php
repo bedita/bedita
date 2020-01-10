@@ -77,8 +77,8 @@ class SignupUserActivationActionTest extends TestCase
     {
         parent::setUp();
 
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
-        $this->Users = TableRegistry::get('Users');
+        $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
 
         Configure::write('Signup', []);
         TransportFactory::drop('default');
@@ -156,7 +156,7 @@ class SignupUserActivationActionTest extends TestCase
 
         $user->status = 'on';
         $user->verified = new Time();
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $Users->save($user);
 
         EventManager::instance()->on('Auth.signupActivation', function () {

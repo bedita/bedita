@@ -151,7 +151,7 @@ class UniqueNameBehavior extends Behavior
             $options['id <>'] = $id;
         }
 
-        return TableRegistry::get('Objects')->exists($options);
+        return TableRegistry::getTableLocator()->get('Objects')->exists($options);
     }
 
     /**

@@ -71,7 +71,7 @@ class MediaTest extends TestCase
      */
     public function testMediaUrl()
     {
-        $media = TableRegistry::get('Files')->get(14, ['contain' => ['Streams']]);
+        $media = TableRegistry::getTableLocator()->get('Files')->get(14, ['contain' => ['Streams']]);
 
         $url = $media->get('media_url');
         static::assertNotEmpty($url);
@@ -86,7 +86,7 @@ class MediaTest extends TestCase
      */
     public function testEmptyMediaUrl()
     {
-        $Files = TableRegistry::get('Files');
+        $Files = TableRegistry::getTableLocator()->get('Files');
         $entity = $Files->newEntity(['title' => 'New file']);
         $entity->created_by = 1;
         $entity->modified_by = 1;

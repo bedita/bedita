@@ -183,7 +183,7 @@ class SetRelatedObjectsActionTest extends TestCase
         }
 
         $alias = Inflector::camelize(Inflector::underscore($relation));
-        $association = TableRegistry::get($objectType)->getAssociation($alias);
+        $association = TableRegistry::getTableLocator()->get($objectType)->getAssociation($alias);
         $action = new SetRelatedObjectsAction(compact('association'));
 
         $entity = $association->getSource()->get($id);
@@ -216,7 +216,7 @@ class SetRelatedObjectsActionTest extends TestCase
      */
     public function testInvocationFallback()
     {
-        $association = TableRegistry::get('Users')->getAssociation('Roles');
+        $association = TableRegistry::getTableLocator()->get('Users')->getAssociation('Roles');
         $entity = $association->getSource()->get(1);
         $relatedEntities = $association->getTarget()->find()->toArray();
 

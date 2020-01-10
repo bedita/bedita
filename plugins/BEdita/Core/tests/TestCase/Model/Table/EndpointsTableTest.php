@@ -50,7 +50,7 @@ class EndpointsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Endpoints = TableRegistry::get('Endpoints');
+        $this->Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
     }
 
     /**

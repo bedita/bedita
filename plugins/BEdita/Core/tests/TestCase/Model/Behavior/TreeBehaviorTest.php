@@ -34,7 +34,7 @@ class TreeBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Table = TableRegistry::get('FakeCategories');
+        $this->Table = TableRegistry::getTableLocator()->get('FakeCategories');
         $this->Table->addBehavior('BEdita/Core.Tree', [
             'left' => 'left_idx',
             'right' => 'right_idx',

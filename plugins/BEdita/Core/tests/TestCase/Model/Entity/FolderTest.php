@@ -56,7 +56,7 @@ class FolderTest extends TestCase
     {
         parent::setUp();
 
-        $this->Folders = TableRegistry::get('Folders');
+        $this->Folders = TableRegistry::getTableLocator()->get('Folders');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
@@ -231,8 +231,8 @@ class FolderTest extends TestCase
      */
     public function testGetPathOrphanFolder()
     {
-        TableRegistry::get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::get('Trees')->recover();
+        TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $this->Folders->get(12);
     }

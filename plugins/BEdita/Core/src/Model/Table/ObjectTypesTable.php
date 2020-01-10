@@ -110,7 +110,7 @@ class ObjectTypesTable extends Table
             'dependent' => true,
         ]);
 
-        $through = TableRegistry::get('LeftRelationTypes', ['className' => 'RelationTypes']);
+        $through = TableRegistry::getTableLocator()->get('LeftRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('LeftRelations', [
             'className' => 'Relations',
             'through' => $through,
@@ -120,7 +120,7 @@ class ObjectTypesTable extends Table
                 $through->aliasField('side') => 'left',
             ],
         ]);
-        $through = TableRegistry::get('RightRelationTypes', ['className' => 'RelationTypes']);
+        $through = TableRegistry::getTableLocator()->get('RightRelationTypes', ['className' => 'RelationTypes']);
         $this->belongsToMany('RightRelations', [
             'className' => 'Relations',
             'through' => $through,
@@ -313,7 +313,7 @@ class ObjectTypesTable extends Table
      */
     protected function objectsExist($typeId)
     {
-        return TableRegistry::get('Objects')->exists(['object_type_id' => $typeId]);
+        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id' => $typeId]);
     }
 
     /**
@@ -386,17 +386,17 @@ class ObjectTypesTable extends Table
      *
      * ```php
      * // Find object types allowed on the "right" side:
-     * TableRegistry::get('ObjectTypes')
+     * TableRegistry::getTableLocator()->get('ObjectTypes')
      *     ->find('byRelation', ['name' => 'my_relation']);
      *
      * // Find a list of object type names allowed on the "left" side of the inverse relation:
-     * TableRegistry::get('ObjectTypes')
+     * TableRegistry::getTableLocator()->get('ObjectTypes')
      *     ->find('byRelation', ['name' => 'my_inverse_relation', 'side' => 'left'])
      *     ->find('list')
      *     ->toArray();
      *
      * // Include also descendants of the allowed object types (e.g.: return **Images** whereas **Media** are allowed):
-     * TableRegistry::get('ObjectTypes')
+     * TableRegistry::getTableLocator()->get('ObjectTypes')
      *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
      * ```
      *
