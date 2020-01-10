@@ -73,15 +73,15 @@ jobs:
           packages:
             - "postgresql-9.6-postgis-2.4" # Fix error with PostGIS extension not being found when `CREATE EXTENSION` is issued.
       env: "DB=pgsql DB_POSTGIS=1 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
-    - name: "MariaDB 10 on PHP 7.3"
+    - name: "MariaDB 10 on PHP 7.2"
       stage: complete
-      php: 7.3
+      php: 7.2
       addons:
         mariadb: '10.4'
       env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
-    - name: "MySQL 8 on PHP 7.4"
+    - name: "MySQL 8 on PHP 7.3"
       stage: complete
-      php: 7.4
+      php: 7.3
       services:
         - mysql
       env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
