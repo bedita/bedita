@@ -39,7 +39,7 @@ class FoldersControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->Folders = TableRegistry::get('Folders');
+        $this->Folders = TableRegistry::getTableLocator()->get('Folders');
     }
 
     /**
@@ -269,8 +269,8 @@ class FoldersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Translations')->deleteAll([]);
-        TableRegistry::get('Folders')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Folders')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/folders');
@@ -416,7 +416,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/folders/' . $folderId);
-        static::assertTrue(TableRegistry::get('Folders')->exists(['id' => $folderId]));
+        static::assertTrue(TableRegistry::getTableLocator()->get('Folders')->exists(['id' => $folderId]));
     }
 
     /**
@@ -441,8 +441,8 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals('Radice', TableRegistry::get('Folders')->get(11)->get('title'));
-        static::assertEquals('folders', TableRegistry::get('Folders')->get(11)->get('type'));
+        static::assertEquals('Radice', TableRegistry::getTableLocator()->get('Folders')->get(11)->get('title'));
+        static::assertEquals('folders', TableRegistry::getTableLocator()->get('Folders')->get(11)->get('type'));
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($data['id'], $result['data']['id']);
@@ -459,7 +459,7 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $foldersTable = TableRegistry::get('Folders');
+        $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folderId = 11;
         $children = $foldersTable
             ->find('ancestor', [$folderId])
@@ -553,7 +553,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->get('/folders/11/children');
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $treesTable = TableRegistry::get('Trees');
+        $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $children = $treesTable
             ->find('children', ['for' => $node->id, 'direct' => true])
@@ -720,7 +720,7 @@ class FoldersControllerTest extends IntegrationTestCase
     public function testDeletedChildren()
     {
         // add a deleted object to folder and verify it's not listed in `childrens`
-        $treesTable = TableRegistry::get('Trees');
+        $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $entity = $treesTable->newEntity([
                 'object_id' => 6,
             ]);
@@ -797,8 +797,8 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testGetOrphanFolder($id = null)
     {
-        TableRegistry::get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::get('Trees')->recover();
+        TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $endpoint = '/folders';
         if ($id) {
@@ -850,7 +850,7 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testMoveFolder($folderId, $parentId)
     {
-        $foldersTable = TableRegistry::get('Folders');
+        $foldersTable = TableRegistry::getTableLocator()->get('Folders');
 
         $getDescendants = function () use ($folderId, $foldersTable) {
             return $foldersTable
@@ -859,7 +859,7 @@ class FoldersControllerTest extends IntegrationTestCase
                 ->toArray();
         };
 
-        $treesTable = TableRegistry::get('Trees');
+        $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $folderTreeNode = $treesTable->find()->where(['object_id' => $folderId])->first();
 
         $getTreeList = function () use ($treesTable, $folderTreeNode) {
@@ -1223,7 +1223,7 @@ class FoldersControllerTest extends IntegrationTestCase
             LoggedUser::setUser(['id' => 1]);
         }
 
-        $documentsTable = TableRegistry::get('Documents');
+        $documentsTable = TableRegistry::getTableLocator()->get('Documents');
         $document = $documentsTable->newEntity($data);
 
         return $documentsTable->saveOrFail($document);

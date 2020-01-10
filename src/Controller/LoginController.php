@@ -79,7 +79,7 @@ class LoginController extends AppController
                 ],
             ];
 
-            $authenticationComponents += TableRegistry::get('AuthProviders')
+            $authenticationComponents += TableRegistry::getTableLocator()->get('AuthProviders')
                 ->find('authenticate')
                 ->toArray();
 
@@ -220,7 +220,7 @@ class LoginController extends AppController
         $data = $this->request->getData();
         $this->checkPassword($entity, $data);
 
-        $action = new SaveEntityAction(['table' => TableRegistry::get('Users')]);
+        $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('Users')]);
         $action(compact('entity', 'data'));
 
         // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
@@ -270,7 +270,7 @@ class LoginController extends AppController
         $contain = array_unique(array_merge($contain, ['Roles']));
         $conditions = ['id' => $userId];
 
-        $user = TableRegistry::get('Users')
+        $user = TableRegistry::getTableLocator()->get('Users')
             ->find('login', compact('conditions', 'contain'))
             ->first();
         if (empty($user)) {
@@ -286,7 +286,7 @@ class LoginController extends AppController
     protected function findAssociation($relationship)
     {
         $relationship = Inflector::underscore($relationship);
-        $association = TableRegistry::get('Users')->associations()->getByProperty($relationship);
+        $association = TableRegistry::getTableLocator()->get('Users')->associations()->getByProperty($relationship);
         if (empty($association)) {
             throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
         }

@@ -232,7 +232,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
         $this->delete('/annotations/1');
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Annotations')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::getTableLocator()->get('Annotations')->exists(['id' => 1]));
     }
 
     /**

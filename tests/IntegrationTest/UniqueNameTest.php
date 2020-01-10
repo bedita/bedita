@@ -125,6 +125,6 @@ class UniqueNameTest extends IntegrationTestCase
         $designatedUname = 'profile-my-profile';
         static::assertSame($designatedUname, $body['data']['attributes']['uname']);
 
-        static::assertSame($designatedUname, TableRegistry::get('Profiles')->get($id)->get('uname'));
+        static::assertSame($designatedUname, TableRegistry::getTableLocator()->get('Profiles')->get($id)->get('uname'));
     }
 }

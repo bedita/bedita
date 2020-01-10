@@ -87,7 +87,7 @@ class DeleteFolderTest extends IntegrationTestCase
         $this->patch(sprintf('/trash/%s', $folderId), json_encode(compact('data')));
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $trash = TableRegistry::get('Objects')->get($folderId);
+        $trash = TableRegistry::getTableLocator()->get('Objects')->get($folderId);
         $this->assertFalse($trash['deleted']);
 
         // check that all children are restored

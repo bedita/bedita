@@ -163,12 +163,12 @@ class OTPAuthenticateTest extends TestCase
     public function testAuthenticate($expected, ServerRequest $request)
     {
         $dispatchedEvent = 0;
-        TableRegistry::get('Users')->getEventManager()->on('Auth.userToken', function () use (&$dispatchedEvent) {
+        TableRegistry::getTableLocator()->get('Users')->getEventManager()->on('Auth.userToken', function () use (&$dispatchedEvent) {
             $dispatchedEvent++;
             static::assertInstanceOf(UserToken::class, func_get_arg(1));
         });
 
-        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(1));
+        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(1));
 
         $auth = new OTPAuthenticate(new ComponentRegistry(), []);
         $result = $auth->authenticate($request, new Response());
@@ -220,7 +220,7 @@ class OTPAuthenticateTest extends TestCase
      */
     public function testGenerateSecretAuthProvider()
     {
-        $AuthProviders = TableRegistry::get('AuthProviders');
+        $AuthProviders = TableRegistry::getTableLocator()->get('AuthProviders');
         $authProvider = $AuthProviders->get(4);
         $authProvider->set('params', ['generator' => 'time']);
         $AuthProviders->saveOrFail($authProvider);

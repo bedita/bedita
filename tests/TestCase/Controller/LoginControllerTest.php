@@ -62,7 +62,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
 
-        $lastLogin = TableRegistry::get('Users')->get(1)->get('last_login');
+        $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
         static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '', 1);
 
@@ -137,7 +137,7 @@ class LoginControllerTest extends IntegrationTestCase
         sleep(1);
 
         // block user
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(1);
         $user->blocked = true;
         $usersTable->saveOrFail($user);
@@ -203,7 +203,7 @@ class LoginControllerTest extends IntegrationTestCase
     {
         // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
         // POST /auth with role id 2 on application id 2 MUST fail
-        CurrentApplication::setApplication(TableRegistry::get('Applications')->get(2));
+        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));
 
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
 
@@ -270,7 +270,7 @@ class LoginControllerTest extends IntegrationTestCase
         sleep(1);
 
         // block user
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(1);
         $user->blocked = true;
         $usersTable->saveOrFail($user);
@@ -375,8 +375,8 @@ class LoginControllerTest extends IntegrationTestCase
      */
     protected function removePermissions()
     {
-        TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 1]);
-        TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id IS NULL']);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['endpoint_id' => 1]);
+        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['endpoint_id IS NULL']);
     }
 
     /**
@@ -410,10 +410,10 @@ class LoginControllerTest extends IntegrationTestCase
      */
     protected function createTestJob()
     {
-        $action = new SaveEntityAction(['table' => TableRegistry::get('AsyncJobs')]);
+        $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::get('AsyncJobs')->newEntity(),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
@@ -500,7 +500,7 @@ class LoginControllerTest extends IntegrationTestCase
     public function testUpdate(array $meta)
     {
         // set email to NULL to be able to change it
-        $table = TableRegistry::get('Users');
+        $table = TableRegistry::getTableLocator()->get('Users');
         $user = $table->get(1);
         $user->set('email', null);
         $table->saveOrFail($user);
@@ -599,7 +599,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testBlockedLogin()
     {
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(5);
         $user->blocked = true;
         $usersTable->saveOrFail($user);
@@ -648,7 +648,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testStatus($expected, $status)
     {
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(5);
         $user->set('status', $status);
         $usersTable->saveOrFail($user);
@@ -785,7 +785,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testOTPRequestFail()
     {
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(5);
         $user->deleted = true;
         $usersTable->saveOrFail($user);
@@ -833,7 +833,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testOTPFail()
     {
-        $usersTable = TableRegistry::get('Users');
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
         $user = $usersTable->get(5);
         $user->status = 'off';
         $usersTable->saveOrFail($user);
