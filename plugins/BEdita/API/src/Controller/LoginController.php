@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\User;
 use Cake\Auth\PasswordHasherFactory;
@@ -23,6 +24,7 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -62,7 +64,7 @@ class LoginController extends AppController
             $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
         }
 
-        if ($this->request->getParam('action') === 'login') {
+        if (in_array($this->request->getParam('action'), ['login', 'optout'])) {
             $authenticationComponents = [
                 AuthComponent::ALL => [
                   'finder' => 'loginRoles',
@@ -86,22 +88,81 @@ class LoginController extends AppController
             $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
 
+        if ($this->request->getParam('action') === 'optout') {
+            $this->Auth->setConfig('loginAction', ['_name' => 'api:login:optout']);
+        }
+
         if ($this->request->getParam('action') === 'change') {
             $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
         }
     }
 
     /**
-     * Login action use cases:
+     * Login action via user identification with classic username/password, OTP, Oauth2 or 2FA.
+     * See `identify` method for more details.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid or acces is not authorized
+     */
+    public function login(): void
+    {
+        $result = $this->identify();
+        // Check if result contains only an authorization code (OTP & 2FA use cases)
+        if (!empty($result['authorization_code']) && count($result) === 1) {
+            $meta = ['authorization_code' => $result['authorization_code']];
+        } else {
+            $result = $this->reducedUserData($result);
+            $meta = $this->jwtTokens($result);
+        }
+
+        $this->set('_serialize', []);
+        $this->set('_meta', $meta);
+    }
+
+    /**
+     * Optout action
+     *
+     * 1. User should be identified like in `login` with classic username\password or OPT/2FA or Oauth2 flow
+     * 2. User data are deleted or anonymized like calling `DELETE /users/{id}`
+     * 3. An event `Auth.optout` is dispatched in order to (optionally) remove some user created data or trigger other actions
+     *
+     * @return \Cake\Http\Response|null
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid or acces is not authorized
+     */
+    public function optout(): ?Response
+    {
+        $result = $this->identify();
+        // Check if result contains only an authorization code (OTP & 2FA use cases)
+        if (!empty($result['authorization_code']) && count($result) === 1) {
+            $meta = ['authorization_code' => $result['authorization_code']];
+            $this->set('_serialize', []);
+            $this->set('_meta', $meta);
+
+            return null;
+        }
+        // Execute actual optout
+        $table = TableRegistry::getTableLocator()->get('Users');
+        $action = new GetObjectAction(compact('table'));
+        $user = $action(['primaryKey' => $result['id']]);
+        // setup special `_optout` property to allow self-removal
+        $user->set('_optout', true);
+        $table->deleteOrFail($user);
+        $this->dispatchEvent('Auth.optout', [$result]);
+
+        return $this->response->withStatus(204);
+    }
+
+    /**
+     * User identification, used by `login` and `optout` actions:
      *
      *  - classic username and password
      *  - only with username, first step of OTP login
      *  - with username, authorization code and secret token as OTP login or 2FA access
      *
-     * @return void
-     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid.
+     * @return array
+     * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid or access is unauthorized
      */
-    public function login()
+    protected function identify(): array
     {
         $this->request->allowMethod('post');
 
@@ -115,21 +176,12 @@ class LoginController extends AppController
         if (!$result || !is_array($result)) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
-
-        // Check if result contains only an authorization code (OTP & 2FA use cases)
-        if (!empty($result['authorization_code']) && count($result) === 1) {
-            $meta = ['authorization_code' => $result['authorization_code']];
-        } else {
             // Result is a user; check endpoint permission on `/auth`
-            if (!$this->Auth->isAuthorized($result)) {
-                throw new UnauthorizedException(__('Login not authorized'));
-            }
-            $result = $this->reducedUserData($result);
-            $meta = $this->jwtTokens($result);
+        if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
+            throw new UnauthorizedException(__('Login not authorized'));
         }
 
-        $this->set('_serialize', []);
-        $this->set('_meta', $meta);
+        return $result;
     }
 
     /**

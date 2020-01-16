@@ -72,6 +72,11 @@ Router::plugin(
             ['_name' => 'login']
         );
         $routes->connect(
+            '/auth/optout',
+            ['controller' => 'Login', 'action' => 'optout', '_method' => 'POST'],
+            ['_name' => 'login:optout']
+        );
+        $routes->connect(
             '/auth/change',
             ['controller' => 'Login', 'action' => 'change'],
             ['_name' => 'login:change']
