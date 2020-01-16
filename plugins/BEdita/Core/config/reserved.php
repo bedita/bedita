@@ -22,6 +22,7 @@ return [
     'applications',
     'async_job',
     'async_jobs',
+    'auth',
     'categories',
     'category',
     'config',
