@@ -47,6 +47,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return string A valid JWT.
      *
      * @covers ::login()
+     * @covers ::identify()
      * @covers ::reducedUserData()
      * @covers ::jwtTokens()
      */
@@ -101,6 +102,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @depends testLoginOkJson
      * @covers ::login()
+     * @covers ::identify()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
     public function testSuccessfulRenew(array $meta)
@@ -130,6 +132,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @depends testLoginOkJson
      * @covers ::login()
+     * @covers ::identify()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
     public function testFailedRenew(array $meta)
@@ -165,6 +168,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::login()
+     * @covers ::identify()
      */
     public function testFailedLogin()
     {
@@ -198,6 +202,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::login()
+     * @covers ::identify()
      */
     public function testLoginAuthorizationDenied()
     {
@@ -748,6 +753,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::login()
+     * @covers ::identify()
      */
     public function testOTPRequestLogin()
     {
@@ -782,6 +788,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::login()
+     * @covers ::identify()
      */
     public function testOTPRequestFail()
     {
@@ -807,6 +814,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::login()
+     * @covers ::identify()
      */
     public function testOTPLogin()
     {
@@ -850,5 +858,51 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(401);
         static::assertNotEmpty($result);
         static::assertEquals(self::NOT_SUCCESSFUL_EXPECTED_RESULT, Hash::remove($result, 'error.meta'));
+    }
+
+    /**
+     * Data provider for `testOptout` test case.
+     *
+     * @return array
+     */
+    public function optoutProvider()
+    {
+        return [
+            'ok' => [
+                204,
+                [
+                    'username' => 'second user',
+                    'password' => 'password2',
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * Test `optout` method
+     *
+     * @param mixed $expected Expected result
+     * @param array $data POST data
+     * @return void
+     *
+     * @dataProvider optoutProvider()
+     * @covers ::optout()
+     * @covers ::initialize()
+     * @covers ::identify()
+     */
+    public function testOptout($expected, $data)
+    {
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth/optout', json_encode($data));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        if (is_int($expected)) {
+            $this->assertResponseCode($expected);
+            static::assertEmpty($result);
+        } else {
+            unset($result['meta'], $result['links']);
+            static::assertEquals($expected, $result);
+            $this->assertResponseCode($result['error']['status']);
+        }
     }
 }
