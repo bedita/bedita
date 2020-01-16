@@ -874,6 +874,24 @@ class LoginControllerTest extends IntegrationTestCase
                     'username' => 'second user',
                     'password' => 'password2',
                 ],
+            ],
+            'auth code' => [
+                [
+                    'meta' => [
+                        'authorization_code' => 1,
+                    ],
+                ],
+                [
+                    'username' => 'second user',
+                    'grant_type' => 'otp_request',
+                ],
+            ],
+            'unauth' => [
+                self::NOT_SUCCESSFUL_EXPECTED_RESULT,
+                [
+                    'username' => 'second user',
+                    'password' => 'wrongPassword',
+                ],
             ]
         ];
     }
@@ -899,10 +917,17 @@ class LoginControllerTest extends IntegrationTestCase
         if (is_int($expected)) {
             $this->assertResponseCode($expected);
             static::assertEmpty($result);
-        } else {
-            unset($result['meta'], $result['links']);
+        } elseif (!empty($expected['meta']['authorization_code'])) {
+            $this->assertResponseCode(200);
+            unset($result['links']);
+            static::assertNotEmpty($result['meta']['authorization_code']);
+            $expected['meta']['authorization_code'] = $result['meta']['authorization_code'];
             static::assertEquals($expected, $result);
-            $this->assertResponseCode($result['error']['status']);
+        } else {
+            unset($result['links'], $result['error']['meta']);
+            $this->assertResponseCode((int)$result['error']['status']);
+            unset($expected['links']);
+            static::assertEquals($expected, $result);
         }
     }
 }
