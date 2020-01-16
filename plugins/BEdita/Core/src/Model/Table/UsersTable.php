@@ -384,7 +384,7 @@ class UsersTable extends Table
      * Use cases:
      *  - trying to soft delete ADMIN_USER
      *  - logged user removing their account, but performing optout via `_optout` special property is allowed
-     *  - `username` or `uname` cannot start with reserved `__deleted-` string 
+     *  - `username` or `uname` cannot start with reserved `__deleted-` string
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
