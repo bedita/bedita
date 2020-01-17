@@ -80,7 +80,9 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
             return false;
         }
         // Real vendor must not be defined, otherwise we are dealing
-        // with MariaDB, Aurora or other MySQL compatible DB
+        // with MariaDB, Aurora or other MySQL compatible DB where some checks
+        // involving `Migrations.MigrationDiff` are failing. Same thing happens
+        // with MySQL 8 (but not always reproducible), deepening is needed...
         $realVendor = Hash::get((array)$connection->config(), 'realVendor');
 
         return empty($realVendor);
