@@ -106,16 +106,16 @@ class LoginController extends AppController
      */
     public function login(): void
     {
+        $this->set('_serialize', []);
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
-            $meta = ['authorization_code' => $result['authorization_code']];
-        } else {
-            $result = $this->reducedUserData($result);
-            $meta = $this->jwtTokens($result);
-        }
+            $this->set('_meta', ['authorization_code' => $result['authorization_code']]);
 
-        $this->set('_serialize', []);
+            return;
+        }
+        $user = $this->reducedUserData($result);
+        $meta = $this->jwtTokens($user);
         $this->set('_meta', $meta);
     }
 
