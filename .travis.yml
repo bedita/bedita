@@ -78,13 +78,15 @@ jobs:
       php: 7.2
       addons:
         mariadb: '10.4'
+      # add `realVendor` to avoid `schema checks` currently failing on MariaDB
       env: "DB=mariadb db_dsn='mysql://root:travis@localhost/bedita_test?timezone=UTC&realVendor=mariadb'"
     - name: "MySQL 8 on PHP 7.3"
       stage: complete
       php: 7.3
       services:
         - mysql
-      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test'"
+      # add `realVendor` to avoid `schema checks` currently failing (sometimes...) on MySQL 8
+      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test?realVendor=mysql8'"
     - name: "Static Code Analysis"
       stage: complete
       php: 7.2
