@@ -86,7 +86,7 @@ jobs:
       services:
         - mysql
       # add `realVendor` to avoid `schema checks` currently failing (sometimes...) on MySQL 8
-      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test&realVendor=mysql8'"
+      env: "DB=mysql8 db_dsn='mysql://root@localhost/bedita_test?realVendor=mysql8'"
     - name: "Static Code Analysis"
       stage: complete
       php: 7.2
