@@ -326,7 +326,7 @@ class UsersTable extends Table
         foreach ($this->inheritedTables() as $table) {
             $notNull = array_merge($notNull, $this->notNullableColumns($table));
         }
-        $properties = array_diff((array)$entity->getVisible(), $notNull, ['type']);
+        $properties = array_diff((array)$entity->getVisible(), $notNull, ['type', '_optout']);
         foreach ($properties as $name) {
             $entity->set($name, null);
         }
@@ -381,6 +381,10 @@ class UsersTable extends Table
 
     /**
      * Before save checks: if record is not deletable and deletion is the update type, raise a ImmutableResourceException
+     * Use cases:
+     *  - trying to soft delete ADMIN_USER
+     *  - logged user removing their account, but performing optout via `_optout` special property is allowed
+     *  - `username` or `uname` cannot start with reserved `__deleted-` string
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
@@ -392,7 +396,7 @@ class UsersTable extends Table
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
-        if ($entity->deleted === true && LoggedUser::id() === $entity->id) {
+        if ($entity->deleted === true && LoggedUser::id() === $entity->id && empty($entity->get('_optout'))) {
             throw new BadRequestException(__d('bedita', 'Logged users cannot delete their own account'));
         }
         foreach (['username', 'uname'] as $prop) {
