@@ -1,5 +1,33 @@
 # ChangeLog
 
+## Version 4.1.0 - Cactus
+
+### API changes (4.1.0)
+
+* [#1638](https://github.com/bedita/bedita/issues/1638) Categories and Tags API
+* [#1636](https://github.com/bedita/bedita/pull/1636) Object & resources `/history` endpoint
+* [#1649](https://github.com/bedita/bedita/pull/1649) User opt-out, remove user data request #1578
+* [#1632](https://github.com/bedita/bedita/pull/1632) Add external **provider thumbs** to `/media/thumbs` response
+* [#1644](https://github.com/bedita/bedita/pull/1644) Fix `/` to `/home` redirect via explicit path
+
+### Core changes (4.1.0)
+
+* [#1624](https://github.com/bedita/bedita/issues/1624) Object and resource history data model
+* [#1639](https://github.com/bedita/bedita/pull/1639) Categories and Tags data model
+* [#1641](https://github.com/bedita/bedita/pull/1641) Refactor object table hierarchy and behaviors
+* [#1640](https://github.com/bedita/bedita/pull/1640) Introduce **core** property types, `core_type` flag
+* [#1634](https://github.com/bedita/bedita/pull/1634) Fix timezone save problem on datetime properties, `UTC` as default
+* [#1645](https://github.com/bedita/bedita/pull/1645) Use `TableRegistry::getTableLocator()`, fix deprecations
+* Introduce `TreeBehavior::nonAtomicRecover()`, handle recover actions inside external transactions
+* Fix deprecated code
+
+### Integration changes (4.1.0)
+
+* [#1643](https://github.com/bedita/bedita/pull/1643) Add MySQL 8 and Maria DB 10 to Travis CI
+* [#1646](https://github.com/bedita/bedita/pull/1646) PHP 7.4 Travis task added, PHP 7.1 removed
+* [#1635](https://github.com/bedita/bedita/pull/1635) Update code sniffer rules to PSR-12 viacakephp/codesniffer 3.2.*
+* [#1631](https://github.com/bedita/bedita/pull/1631) Avoid migrations transaction error on SQlite
+
 ## Version 4.0.0 - Cactus
 
 ### API changes (4.0.0)
