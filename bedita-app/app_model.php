@@ -433,13 +433,12 @@ class BEAppModel extends AppModel {
 
         $afterFilter = $this->Behaviors->BuildFilter->prepareAfterFilter($filter, $order);
 
-        $size = null;
         $rankOrder = null;
 
-        // listen if search engine was used and eventually update $size and $rankOrder
+        // listen if search engine was used and eventually update $rankOrder
         BeLib::eventManager()->bind(
             'buildFindObjects.searchEngineResult',
-            function ($data) use (&$size, &$rankOrder) {
+            function ($data) use (&$rankOrder) {
                 $rankOrder = $data['order'];
                 return $data;
             }
