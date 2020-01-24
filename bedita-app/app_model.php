@@ -440,7 +440,6 @@ class BEAppModel extends AppModel {
         BeLib::eventManager()->bind(
             'buildFindObjects.searchEngineResult',
             function ($data) use (&$size, &$rankOrder) {
-                $size = $data['count'];
                 $rankOrder = $data['order'];
                 return $data;
             }
@@ -466,12 +465,10 @@ class BEAppModel extends AppModel {
             throw new BeditaException(__('Error finding objects', true));
         }
 
-        if ($size === null) {
-            $size = $this->findObjectsCount(array(
-                'joins' => $clauses['joins'],
-                'conditions' => $clauses['conditions']
-            ));
-        }
+        $size = $this->findObjectsCount(array(
+            'joins' => $clauses['joins'],
+            'conditions' => $clauses['conditions']
+        ));
 
         $recordset = array(
             'items'	=> array(),
