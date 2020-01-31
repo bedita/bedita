@@ -34,15 +34,24 @@ use Cake\Routing\Router;
  */
 class AppController extends Controller
 {
-
     /**
      * {@inheritDoc}
      */
     public $paginate = [
-        'maxLimit' => 100,
         'order' => [
             'id' => 'asc',
         ],
+    ];
+
+    /**
+     * Default pagination options.
+     * May be overridden in configuration.
+     *
+     * @var array
+     */
+    public $defaultPagination = [
+        'limit' => 20,
+        'maxLimit' => 100,
     ];
 
     /**
@@ -56,7 +65,7 @@ class AppController extends Controller
 
         $this->getApplication();
 
-        $this->loadComponent('Paginator', (array)Configure::read('Pagination'));
+        $this->loadComponent('Paginator', (array)Configure::read('Pagination', $this->defaultPagination));
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
             $this->loadComponent('BEdita/API.JsonApi', [
