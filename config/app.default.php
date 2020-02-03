@@ -400,16 +400,16 @@ return [
     ],
 
     /**
-     * Default pagination settings.
+     * Default pagination settings. Uncomment to change.
      *
      * - `limit` - Default number of items per page (page_size). Defaults to 20.
      * - `maxLimit` - The maximum numer of items retrievable using a `page_size` request per call. Defaults to 100.
-     *   This value cannot exceed a superlimit (@see \BEdita\API\Controller\Component\PaginatorComponent::MAX_LIMIT))
+     *   This value cannot exceed a superlimit (@see \BEdita\API\Datasource\JsonApiPaginator::MAX_LIMIT))
      */
-    'Pagination' => [
-        'limit' => 20,
-        'maxLimit' => 100,
-    ],
+    // 'Pagination' => [
+    //     'limit' => 20,
+    //     'maxLimit' => 100,
+    // ],
 
     /**
      * Project information.

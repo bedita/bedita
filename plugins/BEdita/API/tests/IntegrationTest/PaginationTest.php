@@ -57,8 +57,22 @@ class PaginationTest extends IntegrationTestCase
                 ],
                 [
                     'limit' => 5,
+                ],
+            ],
+            // set 10 as maxLimit, page_size of 20 not allowed
+            'low max limit' => [
+                [
+                    'count' => 12,
+                    'page' => 1,
+                    'page_count' => 2,
+                    'page_items' => 10,
+                    'page_size' => 10,
+                ],
+                [
+                    'limit' => 5,
                     'maxLimit' => 10,
                 ],
+                'page_size=20',
             ],
             'higher' => [
                 [
@@ -72,24 +86,55 @@ class PaginationTest extends IntegrationTestCase
                     'limit' => 50,
                 ],
             ],
+            // set 200 as maxLimit, page_size of 200 allowed
+            'increase max' => [
+                [
+                    'count' => 12,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 12,
+                    'page_size' => 200,
+                ],
+                [
+                    'maxLimit' => 200,
+                ],
+                'page_size=200',
+            ],
+            // try to set an invalid limit of 1000
+            // BEdita\API\Datasource\JsonApiPaginator::MAX_LIMIT (500) is used instead
             'too high' => [
                 [
                     'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
                     'page_items' => 12,
-                    'page_size' => 100,
+                    'page_size' => 500,
                 ],
                 [
                     'limit' => 1000,
                     'maxLimit' => 1000,
                 ],
+                'page_size=600',
+            ],
+            // set 500 as maxLimit, page_size of 300 is allowed
+            'not too high' => [
+                [
+                    'count' => 12,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 12,
+                    'page_size' => 300,
+                ],
+                [
+                    'maxLimit' => 500,
+                ],
+                'page_size=300',
             ],
         ];
     }
 
     /**
-     * Test that pagination options are applied correctly..
+     * Test that pagination options are applied correctly.
      *
      * @param array $expected Expected pagination.
      * @param array $options Pagination options.
@@ -98,12 +143,12 @@ class PaginationTest extends IntegrationTestCase
      * @dataProvider optionsProvider
      * @coversNothing
      */
-    public function testOptions(array $expected, array $options = [])
+    public function testOptions(array $expected, array $options = [], string $query = '')
     {
         Configure::write('Pagination', $options);
 
         $this->configRequestHeaders('GET');
-        $this->get('/objects');
+        $this->get('/objects?' . $query);
 
         $body = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
