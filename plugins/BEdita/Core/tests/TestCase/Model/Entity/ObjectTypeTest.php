@@ -244,7 +244,7 @@ class ObjectTypeTest extends TestCase
                 'right',
             ],
             'inherited' => [
-                ['test_abstract', 'inverse_test_abstract'],
+                ['inverse_test_abstract'],
                 'files',
             ],
         ];
