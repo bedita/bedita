@@ -42,7 +42,15 @@ class MediaTest extends TestCase
         'plugin.BEdita/Core.Streams',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.History',
     ];
+
+    /**
+     * Files table.
+     *
+     * @var \BEdita\Core\Model\Table\MediaTable
+     */
+    protected $Files;
 
     /**
      * {@inheritDoc}
@@ -51,6 +59,7 @@ class MediaTest extends TestCase
     {
         parent::setUp();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->Files = TableRegistry::getTableLocator()->get('Files');
     }
 
     /**
@@ -71,7 +80,7 @@ class MediaTest extends TestCase
      */
     public function testMediaUrl()
     {
-        $media = TableRegistry::getTableLocator()->get('Files')->get(14, ['contain' => ['Streams']]);
+        $media = $this->Files->get(14, ['contain' => ['Streams']]);
 
         $url = $media->get('media_url');
         static::assertNotEmpty($url);
@@ -79,20 +88,24 @@ class MediaTest extends TestCase
     }
 
     /**
-     * Test empty media url.
+     * Test empty media url and provider url fallback in case of no streams.
      *
      * @return void
      * @covers ::_getMediaUrl()
      */
-    public function testEmptyMediaUrl()
+    public function testGetMediaUrl()
     {
-        $Files = TableRegistry::getTableLocator()->get('Files');
-        $entity = $Files->newEntity(['title' => 'New file']);
+        $entity = $this->Files->newEntity(['title' => 'New file']);
         $entity->created_by = 1;
         $entity->modified_by = 1;
-        $entity = $Files->saveOrFail($entity);
+        $entity = $this->Files->saveOrFail($entity);
 
         $url = $entity->get('media_url');
         static::assertNull($url);
+
+        $providerUrl = 'https://example.com/myfile.zip';
+        $entity->set('provider_url', $providerUrl);
+        $entity = $this->Files->saveOrFail($entity);
+        static::assertEquals($providerUrl, $entity->get('media_url'));
     }
 }
