@@ -43,6 +43,10 @@ class Media extends ObjectEntity
 
     /**
      * Getter for media url.
+     * Return value:
+     *  - first stream URL if available
+     *  - provider_url as fallback
+     *  - null if no suitable URL is found
      *
      * @return string|null
      */
@@ -52,6 +56,11 @@ class Media extends ObjectEntity
             $this->getTable()->loadInto($this, ['Streams']);
         }
 
-        return Hash::get((array)$this->streams, '0.url', $this->provider_url);
+        $mediaUrl = (string)Hash::get((array)$this->streams, '0.url', $this->provider_url);
+        if (empty($mediaUrl)) {
+            return null;
+        }
+
+        return $mediaUrl;
     }
 }
