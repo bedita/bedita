@@ -426,6 +426,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/events/9',
                     ],
                     'relationships' => [
+                        'test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/test_abstract',
+                                'self' => 'http://api.example.com/events/9/relationships/test_abstract',
+                            ],
+                        ],
                         'parents' => [
                             'links' => [
                                 'related' => 'http://api.example.com/events/9/parents',
@@ -483,12 +489,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/10/translations',
                                 'self' => 'http://api.example.com/files/10/relationships/translations',
-                            ],
-                        ],
-                        'test_abstract' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/files/10/test_abstract',
-                                'self' => 'http://api.example.com/files/10/relationships/test_abstract',
                             ],
                         ],
                         'inverse_test_abstract' => [
@@ -679,12 +679,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/translations',
                                 'self' => 'http://api.example.com/files/14/relationships/translations',
-                            ],
-                        ],
-                        'test_abstract' => [
-                            'links' => [
-                                'related' => 'http://api.example.com/files/14/test_abstract',
-                                'self' => 'http://api.example.com/files/14/relationships/test_abstract',
                             ],
                         ],
                         'inverse_test_abstract' => [

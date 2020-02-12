@@ -46,9 +46,9 @@ class RelationsFixture extends TestFixture
         ],
         [
             'name' => 'test_abstract',
-            'label' => 'Test relation between abstract types',
+            'label' => 'Test relation involving abstract types',
             'inverse_name' => 'inverse_test_abstract',
-            'inverse_label' => 'Inverse test relation between abstract types',
+            'inverse_label' => 'Inverse test relation involving abstract types',
             'description' => 'Sample description.',
             'params' => null,
         ],

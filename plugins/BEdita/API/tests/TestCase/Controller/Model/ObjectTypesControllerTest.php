@@ -356,7 +356,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'alias' => 'Events',
-                        'relations' => [],
+                        'relations' => [
+                           'test_abstract',
+                        ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
@@ -449,7 +451,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Files',
                         'relations' => [
-                            'test_abstract',
                             'inverse_test_abstract',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',

@@ -55,7 +55,7 @@ class RelationTypesFixture extends TestFixture
         ],
         [
             'relation_id' => 3, // test_abstract / inverse_test_abstract
-            'object_type_id' => 9, // files
+            'object_type_id' => 7, // events
             'side' => 'left',
         ],
         [

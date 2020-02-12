@@ -13,6 +13,8 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -27,6 +29,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
@@ -201,5 +204,36 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->get('/documents/3/inverse_test?include=test');
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertCount(2, $result['included']);
+    }
+
+    /**
+     * Test that `?include` query parameter for `/events/:id` will contain all relevan media data.
+     *
+     * @return void
+     */
+    public function testIncludedMedia()
+    {
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $data = [
+            [
+                'id' => '14',
+                'type' => 'files',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/events/9/relationships/test_abstract', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/events/9?include=test_abstract');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(1, $result['included']);
+
+        static::assertEquals('My other media name', $result['included'][0]['attributes']['name']);
+        $expect = 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif';
+        static::assertEquals($expect, $result['included'][0]['meta']['media_url']);
+
+        FilesystemRegistry::dropAll();
     }
 }
