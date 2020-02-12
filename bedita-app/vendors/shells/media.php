@@ -44,7 +44,9 @@ class MediaShell extends BeditaBaseShell {
             if (!file_exists(dirname($output))) {
                 mkdir(dirname($output), 0777, true);
             }
-            file_put_contents($output, file_get_contents($input));
+            if (!file_exists($output)) {
+                symlink($input, $output);
+            }
         }
         $stillMissing = $this->missingMedia();
         if (!empty($stillMissing)) {
