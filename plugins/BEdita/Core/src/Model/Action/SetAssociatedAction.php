@@ -48,7 +48,11 @@ class SetAssociatedAction extends UpdateAssociatedAction
 
             $res = $this->toMany($entity, $relatedEntities);
             foreach ($relatedEntities as $relatedEntity) {
-                if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
+                if (
+                    $relatedEntity->has('_joinData') &&
+                    ($relatedEntity->get('_joinData') instanceof EntityInterface) &&
+                    $relatedEntity->get('_joinData')->getErrors()
+                ) {
                     throw new BadRequestException([
                         'title' => __d('bedita', 'Error linking entities'),
                         'detail' => $relatedEntity->get('_joinData')->getErrors(),

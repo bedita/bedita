@@ -176,7 +176,7 @@ class SetAssociatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception Expected result.
+     * @param bool|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $entity Entity to update relations for.
@@ -339,5 +339,43 @@ class SetAssociatedActionTest extends TestCase
 
             throw $e;
         }
+    }
+
+    /**
+     * Test that saving an assocation with an entity in `_joinData` works rightly.
+     *
+     * @return void
+     */
+    public function testInvocationOKWithJoinDataAsEntity()
+    {
+        $articleId = 1;
+        $tagId = 2;
+        $expected = 'Coffee please!';
+
+        $table = TableRegistry::getTableLocator()->get('FakeArticles');
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
+        $association = $table->getAssociation('FakeTags');
+        $entity = $table->get($articleId);
+        $joinEntity = $association->junction()->newEntity(['fake_params' => $expected]);
+
+        // add another association (FakeArticle.id = 1 has already an association with FakeTag.id = 1)
+        $relatedEntities = [
+            $association->getTarget()
+                ->get($tagId)
+                ->set('_joinData', $joinEntity),
+        ];
+
+        $action = new SetAssociatedAction(compact('association'));
+        static::assertSame(2, $action(compact('entity', 'relatedEntities')));
+
+        $joinEntity = $association->junction()
+            ->find()
+            ->where([
+                'fake_article_id' => $articleId,
+                'fake_tag_id' => $tagId,
+            ])
+            ->first();
+
+        static::assertSame($expected, $joinEntity->get('fake_params'));
     }
 }
