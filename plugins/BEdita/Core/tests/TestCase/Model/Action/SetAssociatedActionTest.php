@@ -341,12 +341,33 @@ class SetAssociatedActionTest extends TestCase
         }
     }
 
+    public function joinDataProvider()
+    {
+        return [
+            'entity' => [
+                1,
+                2,
+                true,
+            ],
+            'array' => [
+                1,
+                2,
+                false,
+            ],
+        ];
+    }
+
     /**
      * Test that saving an assocation with an entity in `_joinData` works rightly.
      *
+     * @param int $source Source entity id.
+     * @param int $target Target entity id.
+     * @param bool $joinDataAsEntity It says if join data is to treat as entity.
      * @return void
+     *
+     * @dataProvider joinDataProvider()
      */
-    public function testInvocationOKWithJoinDataAsEntity()
+    public function testInvocationOKWithJoinDataAsEntity($source, $target, $joinDataAsEntity)
     {
         $articleId = 1;
         $tagId = 2;
@@ -356,13 +377,17 @@ class SetAssociatedActionTest extends TestCase
         /** @var \Cake\ORM\Association\BelongsToMany $association */
         $association = $table->getAssociation('FakeTags');
         $entity = $table->get($articleId);
-        $joinEntity = $association->junction()->newEntity(['fake_params' => $expected]);
+
+        $joinData = ['fake_params' => $expected];
+        if ($joinDataAsEntity) {
+            $joinData = $association->junction()->newEntity($joinData);
+        }
 
         // add another association (FakeArticle.id = 1 has already an association with FakeTag.id = 1)
         $relatedEntities = [
             $association->getTarget()
                 ->get($tagId)
-                ->set('_joinData', $joinEntity),
+                ->set('_joinData', $joinData),
         ];
 
         $action = new SetAssociatedAction(compact('association'));
