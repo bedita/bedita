@@ -369,8 +369,8 @@ class SetAssociatedActionTest extends TestCase
      */
     public function testInvocationOKWithJoinDataAsEntity($source, $target, $joinDataAsEntity)
     {
-        $articleId = 1;
-        $tagId = 2;
+        $articleId = $source;
+        $tagId = $target;
         $expected = 'Coffee please!';
 
         $table = TableRegistry::getTableLocator()->get('FakeArticles');
