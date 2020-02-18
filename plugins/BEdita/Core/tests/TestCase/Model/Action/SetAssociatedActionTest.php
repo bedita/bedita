@@ -341,6 +341,11 @@ class SetAssociatedActionTest extends TestCase
         }
     }
 
+    /**
+     * Data provider for testInvocationOKWithJoinData
+     *
+     * @return array
+     */
     public function joinDataProvider()
     {
         return [
@@ -360,17 +365,15 @@ class SetAssociatedActionTest extends TestCase
     /**
      * Test that saving an assocation with an entity in `_joinData` works rightly.
      *
-     * @param int $source Source entity id.
-     * @param int $target Target entity id.
+     * @param int $articleId Article entity id.
+     * @param int $tagId Tag entity id.
      * @param bool $joinDataAsEntity It says if join data is to treat as entity.
      * @return void
      *
      * @dataProvider joinDataProvider()
      */
-    public function testInvocationOKWithJoinDataAsEntity($source, $target, $joinDataAsEntity)
+    public function testInvocationOKWithJoinData($articleId, $tagId, $joinDataAsEntity)
     {
-        $articleId = $source;
-        $tagId = $target;
         $expected = 'Coffee please!';
 
         $table = TableRegistry::getTableLocator()->get('FakeArticles');
