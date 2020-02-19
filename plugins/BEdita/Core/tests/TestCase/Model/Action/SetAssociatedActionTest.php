@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -386,7 +386,7 @@ class SetAssociatedActionTest extends TestCase
             $joinData = $association->junction()->newEntity($joinData);
         }
 
-        // add another association (FakeArticle.id = 1 has already an association with FakeTag.id = 1)
+        // replace associations
         $relatedEntities = [
             $association->getTarget()
                 ->get($tagId)
@@ -394,16 +394,22 @@ class SetAssociatedActionTest extends TestCase
         ];
 
         $action = new SetAssociatedAction(compact('association'));
-        static::assertSame(2, $action(compact('entity', 'relatedEntities')));
+        $action(compact('entity', 'relatedEntities'));
 
         $joinEntity = $association->junction()
             ->find()
             ->where([
                 'fake_article_id' => $articleId,
                 'fake_tag_id' => $tagId,
-            ])
+                ])
             ->first();
 
+        $countAssociations = $association->junction()
+            ->find()
+            ->where(['fake_article_id' => $articleId])
+            ->count();
+
+        static::assertSame(1, $countAssociations);
         static::assertSame($expected, $joinEntity->get('fake_params'));
     }
 }
