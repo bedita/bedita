@@ -265,4 +265,64 @@ class ObjectRelationsTableTest extends TestCase
             static::assertContains($expected, $result);
         }
     }
+
+    /**
+     * Data provider for `testBeforeSave` method
+     *
+     * @return array
+     */
+    public function beforeSaveProvider(): array
+    {
+        return [
+            'empty' => [
+                [
+                    'priority' => 1,
+                    'inv_priority' => 1,
+                ],
+                [
+                    'left_id' => 9,
+                    'relation_id' => 3,
+                    'right_id' => 10,
+                ],
+            ],
+            'add' => [
+                [
+                    'priority' => 3,
+                    'inv_priority' => 1,
+                ],
+                [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 6,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `beforeSave` method
+     *
+     * @param array $expected Expected result
+     * @param array $data Data to save
+     * @return void
+     *
+     * @dataProvider beforeSaveProvider
+     * @covers ::beforeSave()
+     * @covers ::maxPriority()
+     */
+    public function testBeforeSave(array $expected, array $data): void
+    {
+        $entity = $this->ObjectRelations->newEntity($data);
+        $entity->set('left_id', $data['left_id']);
+        $entity->set('relation_id', $data['relation_id']);
+        $entity->set('right_id', $data['right_id']);
+        $result = $this->ObjectRelations->saveOrFail($entity);
+
+        static::assertNotEmpty($result);
+        $saved = [
+            'priority' => $result->get('priority'),
+            'inv_priority' => $result->get('inv_priority'),
+        ];
+        static::assertEquals($expected, $saved);
+    }
 }
