@@ -126,10 +126,33 @@ class UpdateAssociatedAction extends BaseAction
 
             $meta = Hash::get($datum, '_meta.relation');
             if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
-                $targetEntities[$id]->_joinData = $meta;
+                $targetEntities[$id]->_joinData = $this->setupPriority($meta, $association);
             }
         }
 
         return $targetEntities;
+    }
+
+    /**
+     * Setup `priority` on `joinData` on ObjectRelation associations.
+     * If relation is inverse set `priority` as `inv_priority` and remove `priority`
+     * If relation is direct unset `inv_priority`.
+     *
+     * @param array $meta Meta input data.
+     * @param \Cake\ORM\Association $association Association.
+     * @return array
+     */
+    protected function setupPriority(array $meta, Association $association): array
+    {
+        if ($association->getForeignKey() === 'right_id') {
+            $meta['inv_priority'] = Hash::get($meta, 'priority');
+            unset($meta['priority']);
+
+            return $meta;
+        }
+
+        unset($meta['inv_priority']);
+
+        return $meta;
     }
 }

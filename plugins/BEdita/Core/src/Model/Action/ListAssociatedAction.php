@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectRelation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -91,7 +92,7 @@ class ListAssociatedAction extends BaseAction
             throw new InvalidPrimaryKeyException(__(
                 'Record not found in table "{0}" with primary key [{1}]',
                 $table->getTable(),
-                implode($primaryKey, ', ')
+                implode(', ', $primaryKey)
             ));
         }
 
@@ -228,12 +229,32 @@ class ListAssociatedAction extends BaseAction
                     $entity->setHidden([$inverseAssociation->getProperty()], true);
 
                     if (!empty($joinData)) {
+                        $this->setupPriority($joinData);
                         $entity->set('_joinData', $joinData);
                     }
 
                     return $entity;
                 });
             });
+    }
+
+    /**
+     * Setup `priority` on `joinData` on ObjectRelation associations:
+     *   - if relation is direct unset `inv_priority`
+     *   - if relation is inverse display `inv_priority` as `priority` and don't display `inv_priority`
+     *
+     * @param \Cake\Datasource\EntityInterface $joinData Join data entity.
+     * @return void
+     */
+    protected function setupPriority(EntityInterface $joinData): void
+    {
+        if (!$joinData instanceof ObjectRelation) {
+            return;
+        }
+        if ($this->Association->getForeignKey() === 'right_id') {
+            $joinData->set('priority', $joinData->get('inv_priority'));
+        }
+        $joinData->unsetProperty('inv_priority');
     }
 
     /**
