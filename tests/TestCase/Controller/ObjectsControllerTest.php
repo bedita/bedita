@@ -1741,7 +1741,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 1,
-                            'inv_priority' => 2,
                             'params' => [
                                 'gustavo' => 'supporto',
                             ],
