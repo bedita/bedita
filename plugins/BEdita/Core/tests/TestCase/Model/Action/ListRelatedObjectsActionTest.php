@@ -61,7 +61,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'type' => 'profiles',
                         '_joinData' => [
                             'priority' => 1,
-                            'inv_priority' => 2,
                             'params' => null,
                         ],
                     ],
@@ -70,7 +69,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'type' => 'documents',
                         '_joinData' => [
                             'priority' => 2,
-                            'inv_priority' => 1,
                             'params' => null,
                         ],
                     ],
@@ -86,7 +84,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'type' => 'profiles',
                         '_joinData' => [
                             'priority' => 1,
-                            'inv_priority' => 1,
                             'params' => null,
                         ],
                     ],
@@ -102,7 +99,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'type' => 'documents',
                         '_joinData' => [
                             'priority' => 1,
-                            'inv_priority' => 1,
                             'params' => null,
                         ],
                         'categories' => [],
@@ -111,8 +107,7 @@ class ListRelatedObjectsActionTest extends TestCase
                         'id' => 2,
                         'type' => 'documents',
                         '_joinData' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
+                            'priority' => 2,
                             'params' => null,
                         ],
                         'categories' => [
@@ -161,7 +156,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'publish_end' => null,
                         '_joinData' => [
                             'priority' => 1,
-                            'inv_priority' => 1,
                             'params' => null,
                         ],
                     ],
@@ -177,8 +171,7 @@ class ListRelatedObjectsActionTest extends TestCase
                         'id' => 2,
                         'type' => 'documents',
                         '_joinData' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
+                            'priority' => 2,
                             'params' => null,
                         ],
                         'categories' => [
@@ -214,7 +207,6 @@ class ListRelatedObjectsActionTest extends TestCase
                         'type' => 'profiles',
                         '_joinData' => [
                             'priority' => 1,
-                            'inv_priority' => 2,
                             'params' => null,
                         ],
                     ],
