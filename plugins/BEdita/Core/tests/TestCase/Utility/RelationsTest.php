@@ -85,6 +85,42 @@ class RelationsTest extends TestCase
     }
 
     /**
+     * Test `addRelationType` method.
+     *
+     * @covers ::addRelationType()
+     */
+    public function testAddRelationType()
+    {
+        Relations::create($this->relations);
+
+        Relations::addRelationType('poster', 'profiles', 'left');
+        $leftTypes = TableRegistry::getTableLocator()
+            ->get('RelationTypes')
+            ->find()
+            ->where(['relation_id' => 4, 'side' => 'left'])
+            ->toArray();
+        static::assertEquals(3, count($leftTypes));
+    }
+
+    /**
+     * Test `removeRelationType` method.
+     *
+     * @covers ::removeRelationType()
+     */
+    public function testRemoveRelationType()
+    {
+        Relations::create($this->relations);
+
+        Relations::removeRelationType('poster', 'documents', 'left');
+        $leftTypes = TableRegistry::getTableLocator()
+            ->get('RelationTypes')
+            ->find()
+            ->where(['relation_id' => 4, 'side' => 'left'])
+            ->toArray();
+        static::assertEquals(1, count($leftTypes));
+    }
+
+    /**
      * Test `validate` failure.
      *
      * @covers ::validate()
