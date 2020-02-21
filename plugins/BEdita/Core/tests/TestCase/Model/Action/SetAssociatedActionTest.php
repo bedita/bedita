@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -176,7 +176,7 @@ class SetAssociatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception Expected result.
+     * @param bool|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $entity Entity to update relations for.
@@ -339,5 +339,77 @@ class SetAssociatedActionTest extends TestCase
 
             throw $e;
         }
+    }
+
+    /**
+     * Data provider for testInvocationOKWithJoinData
+     *
+     * @return array
+     */
+    public function joinDataProvider()
+    {
+        return [
+            'entity' => [
+                1,
+                2,
+                true,
+            ],
+            'array' => [
+                1,
+                2,
+                false,
+            ],
+        ];
+    }
+
+    /**
+     * Test that saving an assocation with an entity in `_joinData` works rightly.
+     *
+     * @param int $articleId Article entity id.
+     * @param int $tagId Tag entity id.
+     * @param bool $joinDataAsEntity It says if join data is to treat as entity.
+     * @return void
+     *
+     * @dataProvider joinDataProvider()
+     */
+    public function testInvocationOKWithJoinData($articleId, $tagId, $joinDataAsEntity)
+    {
+        $expected = 'Coffee please!';
+
+        $table = TableRegistry::getTableLocator()->get('FakeArticles');
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
+        $association = $table->getAssociation('FakeTags');
+        $entity = $table->get($articleId);
+
+        $joinData = ['fake_params' => $expected];
+        if ($joinDataAsEntity) {
+            $joinData = $association->junction()->newEntity($joinData);
+        }
+
+        // replace associations
+        $relatedEntities = [
+            $association->getTarget()
+                ->get($tagId)
+                ->set('_joinData', $joinData),
+        ];
+
+        $action = new SetAssociatedAction(compact('association'));
+        $action(compact('entity', 'relatedEntities'));
+
+        $joinEntity = $association->junction()
+            ->find()
+            ->where([
+                'fake_article_id' => $articleId,
+                'fake_tag_id' => $tagId,
+                ])
+            ->first();
+
+        $countAssociations = $association->junction()
+            ->find()
+            ->where(['fake_article_id' => $articleId])
+            ->count();
+
+        static::assertSame(1, $countAssociations);
+        static::assertSame($expected, $joinEntity->get('fake_params'));
     }
 }
