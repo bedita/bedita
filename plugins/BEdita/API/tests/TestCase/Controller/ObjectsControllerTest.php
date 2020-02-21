@@ -1370,6 +1370,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'modified_by' => 1,
                         'relation' => [
                             'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => null,
                         ],
                     ],
@@ -1458,6 +1459,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => null,
                         ],
                     ],
@@ -1497,6 +1499,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 2,
+                            'inv_priority' => 1,
                             'params' => null,
                         ],
                     ],
@@ -1662,6 +1665,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => [
                                 'gustavo' => 'supporto',
                             ],
@@ -1682,6 +1686,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'meta' => [
                     'relation' => [
                         'priority' => 1,
+                        'inv_priority' => 2,
                         'params' => [
                             'gustavo' => 'supporto',
                         ],
@@ -1741,6 +1746,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => [
                                 'gustavo' => 'supporto',
                             ],
@@ -1761,6 +1767,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'meta' => [
                     'relation' => [
                         'priority' => 1,
+                        'inv_priority' => 2,
                         'params' => [
                             'gustavo' => 'supporto',
                         ],
@@ -1773,6 +1780,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'meta' => [
                     'relation' => [
                         'priority' => 1,
+                        'inv_priority' => 2,
                         'params' => [
                             'gustavo' => 'supporto',
                         ],
@@ -1931,6 +1939,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'meta' => [
                         'relation' => [
                             'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => [
                                 'gustavo' => 'supporto',
                             ],
@@ -1951,6 +1960,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'meta' => [
                     'relation' => [
                         'priority' => 1,
+                        'inv_priority' => 2,
                         'params' => [
                             'gustavo' => 'supporto',
                         ],
