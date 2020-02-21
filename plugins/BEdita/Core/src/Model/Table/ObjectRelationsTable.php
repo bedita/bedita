@@ -144,44 +144,4 @@ class ObjectRelationsTable extends Table
 
         return $schema;
     }
-
-    /**
-     * Set default `priority` and `inv_priority` values if not set.
-     *
-     * @param \Cake\Event\Event $event Event fired
-     * @param \Cake\Datasource\EntityInterface $entity Entity to be saved
-     * @return void
-     * @throws ImmutableResourceException
-     */
-    public function beforeSave(Event $event, EntityInterface $entity): void
-    {
-        if (empty($entity->get('priority'))) {
-            $max = $this->maxPriority('priority', $entity);
-            $entity->set('priority', $max + 1);
-        }
-        if (empty($entity->get('inv_priority'))) {
-            $max = $this->maxPriority('inv_priority', $entity);
-            $entity->set('inv_priority', $max + 1);
-        }
-    }
-
-    /**
-     * Get current max priority on an object relation
-     *
-     * @param string $priority Priority field name: 'priority' or 'inv_priority'
-     * @param EntityInterface $entity Entity being saved
-     * @return int
-     */
-    protected function maxPriority(string $priority, EntityInterface $entity): int
-    {
-        $ids = ['priority' => 'left_id', 'inv_priority' => 'right_id'];
-        $query = $this->find()
-            ->where([
-                $this->aliasField($ids[$priority]) => (int)$entity->get($ids[$priority]),
-                $this->aliasField('relation_id') => (int)$entity->get('relation_id'),
-            ]);
-        $query->select(['max_value' => $query->func()->max($this->aliasField($priority))]);
-
-        return (int)Hash::get($query->toArray(), '0.max_value');
-    }
 }
