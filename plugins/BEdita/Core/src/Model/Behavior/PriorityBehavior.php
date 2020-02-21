@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -107,6 +106,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Event\Event $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
+     * @codeCoverageIgnore
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {

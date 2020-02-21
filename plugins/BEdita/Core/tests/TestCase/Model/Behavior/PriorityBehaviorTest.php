@@ -108,6 +108,7 @@ class PriorityBehaviorTest extends TestCase
      * @return void
      *
      * @covers ::beforeSave()
+     * @covers ::maxValue()
      */
     public function testBeforeSave()
     {
