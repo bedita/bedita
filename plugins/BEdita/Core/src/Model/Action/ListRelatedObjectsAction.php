@@ -13,10 +13,12 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectRelation;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 
@@ -82,5 +84,24 @@ class ListRelatedObjectsAction extends ListAssociatedAction
         }
 
         return $query;
+    }
+
+    /**
+     * Prepare `joinData` entity on ObjectRelation associations.
+     * If relation is inverse switch between `priority`/`inv_priority`.
+     *
+     * @param \Cake\Datasource\EntityInterface $joinData Join data entity.
+     * @return void
+     */
+    protected function prepareJoinEntity(EntityInterface $joinData): void
+    {
+        if (!$joinData instanceof ObjectRelation || $this->Association->getForeignKey() !== 'right_id') {
+            return;
+        }
+
+        $invPriority = $joinData->get('priority');
+        $priority = $joinData->get('inv_priority');
+        $joinData->set('priority', $priority);
+        $joinData->set('inv_priority', $invPriority);
     }
 }

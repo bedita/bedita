@@ -229,7 +229,7 @@ class ListAssociatedAction extends BaseAction
                     $entity->setHidden([$inverseAssociation->getProperty()], true);
 
                     if (!empty($joinData)) {
-                        $this->setupPriority($joinData);
+                        $this->prepareJoinEntity($joinData);
                         $entity->set('_joinData', $joinData);
                     }
 
@@ -239,22 +239,14 @@ class ListAssociatedAction extends BaseAction
     }
 
     /**
-     * Setup `priority` on `joinData` on ObjectRelation associations:
-     *   - if relation is direct unset `inv_priority`
-     *   - if relation is inverse display `inv_priority` as `priority` and don't display `inv_priority`
+     * Prepare `joinData` entity.
      *
      * @param \Cake\Datasource\EntityInterface $joinData Join data entity.
      * @return void
+     * @codeCoverageIgnore
      */
-    protected function setupPriority(EntityInterface $joinData): void
+    protected function prepareJoinEntity(EntityInterface $joinData): void
     {
-        if (!$joinData instanceof ObjectRelation) {
-            return;
-        }
-        if ($this->Association->getForeignKey() === 'right_id') {
-            $joinData->set('priority', $joinData->get('inv_priority'));
-        }
-        $joinData->unsetProperty('inv_priority');
     }
 
     /**
