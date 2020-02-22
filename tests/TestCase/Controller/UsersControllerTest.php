@@ -575,7 +575,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->delete('/users/5');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
 
         $this->configRequestHeaders();
         $this->get('/users/5');

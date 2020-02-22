@@ -919,7 +919,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->delete('/model/object_types/5');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         $this->assertFalse(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['id' => 5]));
     }
 }

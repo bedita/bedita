@@ -148,13 +148,13 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete("/$type/$lastId");
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
 
         // EMPTY TRASH
         $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
     }
 
     /**
