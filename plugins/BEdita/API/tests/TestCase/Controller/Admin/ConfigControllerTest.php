@@ -142,7 +142,7 @@ class ConfigControllerTest extends IntegrationTestCase
         $this->delete('/admin/config/Name2');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         static::assertFalse(TableRegistry::getTableLocator()->get('Config')->exists(['name' => 'Name2']));
     }
 }

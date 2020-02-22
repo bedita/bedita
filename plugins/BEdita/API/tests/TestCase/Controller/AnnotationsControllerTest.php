@@ -231,7 +231,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/annotations/1');
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         $this->assertFalse(TableRegistry::getTableLocator()->get('Annotations')->exists(['id' => 1]));
     }
 
