@@ -1254,7 +1254,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->delete('/documents/3');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
 
         $this->configRequestHeaders();
         $this->get('/documents/3');
@@ -1827,7 +1827,6 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
@@ -1893,7 +1892,6 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
@@ -2048,7 +2046,6 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
