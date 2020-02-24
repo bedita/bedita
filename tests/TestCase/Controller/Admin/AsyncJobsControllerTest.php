@@ -518,7 +518,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         $this->delete('/admin/async_jobs/d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         static::assertFalse(TableRegistry::getTableLocator()->get('AsyncJobs')->exists(['uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c']));
     }
 }

@@ -500,7 +500,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         $this->delete('/model/properties/1');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         static::assertFalse(TableRegistry::getTableLocator()->get('Properties')->exists(['id' => 1]));
     }
 }

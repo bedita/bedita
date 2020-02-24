@@ -368,7 +368,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
         $this->delete('/admin/applications/2');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         static::assertFalse(TableRegistry::getTableLocator()->get('Applications')->exists(['id' => 2]));
     }
 }

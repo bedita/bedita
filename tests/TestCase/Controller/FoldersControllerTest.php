@@ -472,7 +472,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->delete($endpoint);
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
 
         $this->configRequestHeaders();
         $this->get($endpoint);

@@ -216,7 +216,6 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
@@ -320,7 +319,6 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
@@ -423,7 +421,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/3/relationships/users', json_encode(compact('data')));
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
     }
 
     /**
@@ -469,7 +467,6 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
         $this->assertResponseEmpty();
     }
 
