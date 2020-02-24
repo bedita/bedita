@@ -49,6 +49,9 @@ class Resources
             'parent' => 'objects',
             'enabled' => 1,
         ],
+        'property_types' => [
+            'core_type' => 0,
+        ]
     ];
 
     /**
@@ -58,8 +61,19 @@ class Resources
      */
     protected static $allowed = [
         'applications',
+        'property_types',
         'object_types',
         'roles',
+    ];
+
+    /**
+     * Types map for classes handling other resources
+     *
+     * @var array
+     */
+    protected static $otherTypesMap = [
+        'properties' => Properties::class,
+        'relations' => Relations::class,
     ];
 
     /**
@@ -125,6 +139,52 @@ class Resources
             $entity = $Table->patchEntity($entity, $item);
 
             $Table->saveOrFail($entity);
+        }
+    }
+
+    /**
+     * Save resources
+     *
+     *
+     *  'create' => [
+     *      'roles' => [
+     *          [
+     *              'name' => 'new-role',
+     *          ]
+     *      ]
+     *  ]
+     *
+     * @param array $resources Resources array.
+     * @param array $options Table locator options.
+     * @return void
+     */
+    public static function save(array $resources, array $options = []): void
+    {
+        foreach ($resources as $action => $params) {
+            if (!is_string($action) || !in_array($action, ['create', 'remove', 'update'])) {
+                throw new BadRequestException(
+                    __d('bedita', 'Save action "{0}" not allowed', $action)
+                );
+            }
+            $params = (array)$params;
+            foreach ($params as $type => $details) {
+                if (
+                    !is_string($type) ||
+                    (!in_array($type, static::$allowed) && !in_array($type, array_keys(static::$otherTypesMap)))
+                ) {
+                    throw new BadRequestException(
+                        __d('bedita', 'Resource type "{0}" not supported', $type)
+                    );
+                }
+                if (in_array($type, static::$allowed)) {
+                    $class = static::class;
+                    $args = [$type, $details, $options];
+                } else {
+                    $class = static::$otherTypesMap[$type];
+                    $args = [$details, $options];
+                }
+                call_user_func_array([$class, $action], $args);
+            }
         }
     }
 

@@ -41,6 +41,7 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.RolesUsers',
@@ -254,5 +255,98 @@ class ResourcesTest extends TestCase
         static::expectExceptionMessage('Missing mandatory fields "id" or "name"');
 
         Resources::remove('applications', [['key' => 'value']]);
+    }
+
+    /**
+     * Data provider for `testSave`
+     *
+     * @return array
+     */
+    public function saveProvider(): array
+    {
+        return [
+            'simple' => [
+                [
+                    'create' => [
+                        'roles' => [
+                            [
+                                'name' => 'supporter',
+                                'description' => 'some text here...',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'remove simple' => [
+                [
+                    'remove' => [
+                        'relations' => [
+                            [
+                                'name' => 'test_abstract',
+                                'left' => ['events'],
+                                'right' => ['media'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'bad action' => [
+                [
+                    'assign' => [
+                        'roles' => []
+                    ],
+                ],
+                new BadRequestException('Save action "assign" not allowed'),
+            ],
+            'bad type' => [
+                [
+                    'remove' => [
+                        'questions' => [
+                            []
+                        ],
+                    ],
+                ],
+                new BadRequestException('Resource type "questions" not supported'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `save` method.
+     *
+     * @param array $resources Resource save input data.
+     * @param \Exception|null $exception Expected expection.
+     * @return void
+     *
+     * @covers ::save()
+     * @dataProvider saveProvider
+     */
+    public function testSave(array $resources, ?\Exception $exception = null): void
+    {
+        if ($exception) {
+            static::expectException(get_class($exception));
+            static::expectExceptionMessage($exception->getMessage());
+        }
+
+        Resources::save($resources);
+
+        foreach ($resources as $action => $data) {
+            foreach ($data as $type => $details) {
+                $entities = TableRegistry::getTableLocator()
+                    ->get(Inflector::camelize($type))
+                    ->find()
+                    ->where(['name IN' => Hash::extract($details, '{n}.name')])
+                    ->toArray();
+
+                if ($action === 'remove') {
+                    static::assertEmpty($entities);
+                } else {
+                    $entity = $entities[0];
+                    foreach ($details[0] as $name => $val) {
+                        static::assertEquals($val, $entity->get($name));
+                    }
+                }
+            }
+        }
     }
 }
