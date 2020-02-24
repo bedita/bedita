@@ -368,7 +368,7 @@ class EndpointsControllerTest extends IntegrationTestCase
         $this->delete('/admin/endpoints/2');
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         static::assertFalse(TableRegistry::getTableLocator()->get('Endpoints')->exists(['id' => 2]));
     }
 }

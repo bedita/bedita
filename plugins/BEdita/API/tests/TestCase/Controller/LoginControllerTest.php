@@ -402,10 +402,9 @@ class LoginControllerTest extends IntegrationTestCase
         ];
 
         $this->post('/auth/change', json_encode($data));
-        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(204);
-        $this->assertEmpty($result);
+        $this->assertResponseEmpty();
     }
 
     /**

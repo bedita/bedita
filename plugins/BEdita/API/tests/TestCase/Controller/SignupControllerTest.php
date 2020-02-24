@@ -396,10 +396,8 @@ class SignupControllerTest extends IntegrationTestCase
         ]);
         $this->post('/signup/activation', json_encode($activationData));
 
-        $result = json_decode((string)$this->_response->getBody(), true);
-
         $this->assertResponseCode(204);
-        static::assertNull($result);
+        $this->assertResponseEmpty();
     }
 
     /**

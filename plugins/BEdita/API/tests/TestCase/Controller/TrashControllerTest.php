@@ -295,12 +295,14 @@ class TrashControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch("/trash/$id", json_encode(compact('data')));
         $this->assertResponseCode($expected);
-        $this->assertContentType('application/vnd.api+json');
 
         // if restored
         if ($this->_response->getStatusCode() === 204) {
+            $this->assertResponseEmpty();
             $trash = $this->Objects->get($id);
             $this->assertFalse($trash['deleted']);
+        } else {
+            $this->assertContentType('application/vnd.api+json');
         }
     }
 
@@ -320,7 +322,7 @@ class TrashControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/trash/7');
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         $notFound = false;
         try {
             $this->Objects->get(7);
