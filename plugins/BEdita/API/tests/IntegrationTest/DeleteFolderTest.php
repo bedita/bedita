@@ -47,7 +47,7 @@ class DeleteFolderTest extends IntegrationTestCase
         $this->delete(sprintf('/folders/%s', $folderId));
 
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
 
         foreach ($expectedChildren['data'] as $child) {
             $id = $child['id'];
@@ -86,7 +86,7 @@ class DeleteFolderTest extends IntegrationTestCase
         $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch(sprintf('/trash/%s', $folderId), json_encode(compact('data')));
         $this->assertResponseCode(204);
-        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
         $trash = TableRegistry::getTableLocator()->get('Objects')->get($folderId);
         $this->assertFalse($trash['deleted']);
 
