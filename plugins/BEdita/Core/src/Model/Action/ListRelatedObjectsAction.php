@@ -95,7 +95,10 @@ class ListRelatedObjectsAction extends ListAssociatedAction
      */
     protected function prepareJoinEntity(EntityInterface $joinData): void
     {
-        if (!$joinData instanceof ObjectRelation || $this->Association->getForeignKey() !== 'right_id') {
+        if (
+            !$joinData instanceof ObjectRelation ||
+            ($this->Association instanceof RelatedTo && !$this->Association->isInverse())
+        ) {
             return;
         }
 

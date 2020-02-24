@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Utility\Hash;
 
 /**
@@ -78,7 +79,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      */
     protected function setupPriority(array &$data): void
     {
-        if ($this->Association->getForeignKey() !== 'right_id') {
+        if (!$this->Association instanceof RelatedTo || !$this->Association->isInverse()) {
             return;
         }
 
