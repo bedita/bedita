@@ -36,6 +36,8 @@ class SetRelatedObjectsActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -132,12 +134,12 @@ class SetRelatedObjectsActionTest extends TestCase
                 ],
             ],
             'update' => [
-                [4],
-                'Documents',
-                'test',
-                3,
+                [2, 3],
+                'Profiles',
+                'inverse_test',
+                4,
                 [
-                    4 => [
+                    3 => [
                         'priority' => 1,
                         'inv_priority' => 1,
                         'params' => [

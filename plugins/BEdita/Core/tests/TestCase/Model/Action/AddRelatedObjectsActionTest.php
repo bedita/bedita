@@ -95,12 +95,12 @@ class AddRelatedObjectsActionTest extends TestCase
                 ],
             ],
             'update' => [
-                [4],
-                'Documents',
-                'test',
-                3,
+                [3],
+                'Profiles',
+                'inverse_test',
+                4,
                 [
-                    4 => [
+                    3 => [
                         'priority' => 1,
                         'inv_priority' => 1,
                         'params' => [
