@@ -75,8 +75,8 @@ class RelationshipsPriorityTest extends IntegrationTestCase
             'inverse' => [
                 [
                     [
-                        'priority' => 2,
-                        'inv_priority' => 3,
+                        'priority' => 3,
+                        'inv_priority' => 2,
                     ],
                 ],
                 '/documents/3/relationships/inverse_test',
@@ -86,7 +86,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
                         'type' => 'documents',
                         'meta' => [
                             'relation' => [
-                                'inv_priority' => 3,
+                                'priority' => 3,
                             ]
                         ]
                     ],
