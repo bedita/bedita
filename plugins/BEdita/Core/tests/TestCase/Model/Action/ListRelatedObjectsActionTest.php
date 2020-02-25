@@ -111,8 +111,8 @@ class ListRelatedObjectsActionTest extends TestCase
                         'id' => 2,
                         'type' => 'documents',
                         '_joinData' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
+                            'priority' => 2,
+                            'inv_priority' => 1,
                             'params' => null,
                         ],
                         'categories' => [
@@ -177,8 +177,8 @@ class ListRelatedObjectsActionTest extends TestCase
                         'id' => 2,
                         'type' => 'documents',
                         '_joinData' => [
-                            'priority' => 1,
-                            'inv_priority' => 2,
+                            'priority' => 2,
+                            'inv_priority' => 1,
                             'params' => null,
                         ],
                         'categories' => [

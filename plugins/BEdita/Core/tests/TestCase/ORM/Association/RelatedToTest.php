@@ -185,4 +185,60 @@ class RelatedToTest extends TestCase
         $relatedTo->setTarget(TableRegistry::getTableLocator()->get($table));
         static::assertSame($expected, $relatedTo->isTargetAbstract());
     }
+
+    /**
+     * Data provider for testIsInverse()
+     *
+     * @return array
+     */
+    public function isInverseProvider(): array
+    {
+        return [
+            'direct' => [
+                false,
+                [
+                    'foreignKey' => 'left_id',
+                ],
+            ],
+            'inverse' => [
+                true,
+                [
+                    'foreignKey' => 'right_id',
+                ],
+            ],
+            'inverseCustom' => [
+                true,
+                [
+                    'foreignKey' => 'left_id',
+                    'inverseKey' => 'left_id',
+                ],
+            ],
+            'inverseMultiCustom' => [
+                true,
+                [
+                    'foreignKey' => ['left_id', 'custom_key'],
+                    'inverseKey' => ['left_id', 'custom_key'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test if related association is inverse.
+     *
+     * @param bool $expected The value expected.
+     * @param array $options The options for the association.
+     * @return void
+     *
+     * @dataProvider isInverseProvider()
+     * @covers ::isInverse()
+     * @covers ::_options()
+     * @covers ::setInverseKey()
+     * @covers ::getInverseKey()
+     */
+    public function testIsInverse($expected, $options): void
+    {
+        $relatedTo = new RelatedTo('Alias', $options);
+        static::assertEquals($expected, $relatedTo->isInverse());
+    }
 }
