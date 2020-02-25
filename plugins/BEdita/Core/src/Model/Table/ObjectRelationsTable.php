@@ -3,11 +3,8 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
