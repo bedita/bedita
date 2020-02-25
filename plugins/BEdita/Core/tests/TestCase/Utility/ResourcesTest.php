@@ -41,6 +41,9 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -80,6 +83,18 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'prop types' => [
+                'property_types',
+                [
+                    [
+                        'name' => 'my_type',
+                        'params' => [
+                            'type' => 'string',
+                            'enum' => ['A', 'B'],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -96,15 +111,8 @@ class ResourcesTest extends TestCase
      */
     public function testCreate(string $type, array $data): void
     {
-        Resources::create($type, $data);
-
-        $newResources = TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type))
-            ->find()
-            ->where(['name IN' => Hash::extract($data, '{n}.name')])
-            ->toArray();
-
-        static::assertEquals(count($data), count($newResources));
+        $result = Resources::create($type, $data);
+        static::assertEquals(count($data), count($result));
     }
 
     /**
@@ -136,6 +144,14 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'news',
+                    ],
+                ],
+            ],
+            'prop types' => [
+                'property_types',
+                [
+                    [
+                        'name' => 'unused property type',
                     ],
                 ],
             ],
@@ -200,6 +216,15 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'prop types' => [
+                'property_types',
+                [
+                    [
+                        'name' => 'unused property type',
+                        'params' => ['type' => 'object'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -216,7 +241,8 @@ class ResourcesTest extends TestCase
      */
     public function testUpdate(string $type, array $data): void
     {
-        Resources::update($type, $data);
+        $result = Resources::update($type, $data);
+        static::assertEquals(count($data), count($result));
 
         $resources = TableRegistry::getTableLocator()
             ->get(Inflector::camelize($type))

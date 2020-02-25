@@ -82,19 +82,24 @@ class Resources
      * @param string $type Resource type name
      * @param array $data Resource data
      * @param array $options Table locator options
-     * @return void
+     * @return array
      */
-    public static function create(string $type, array $data, array $options = []): void
+    public static function create(string $type, array $data, array $options = []): array
     {
         $Table = static::getTable($type, $options);
+        $result = [];
 
         foreach ($data as $item) {
             $resource = $Table->newEntity();
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
-            $resource = $Table->patchEntity($resource, $item);
-            $Table->saveOrFail($resource);
+            foreach ($item as $k => $v) {
+                $resource->set($k, $v);
+            }
+            $result[] = $Table->saveOrFail($resource);
         }
+
+        return $result;
     }
 
     /**
@@ -125,21 +130,26 @@ class Resources
      * @param string $type Resource type name
      * @param array $data Resource data
      * @param array $options Table locator options
-     * @return void
+     * @return array
      */
-    public static function update(string $type, array $data, array $options = []): void
+    public static function update(string $type, array $data, array $options = []): array
     {
         $Table = static::getTable($type, $options);
+        $result = [];
 
         foreach ($data as $item) {
             $condition = static::findCondition($item);
             $entity = $Table->find()
                 ->where($condition)
                 ->firstOrFail();
-            $entity = $Table->patchEntity($entity, $item);
-
-            $Table->saveOrFail($entity);
+            // $entity = $Table->patchEntity($entity, $item);
+            foreach ($item as $k => $v) {
+                $entity->set($k, $v);
+            }
+            $result[] = $Table->saveOrFail($entity);
         }
+
+        return $result;
     }
 
     /**
