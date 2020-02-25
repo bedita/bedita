@@ -1369,8 +1369,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'relation' => [
-                            'priority' => 2,
-                            'inv_priority' => 1,
+                            'priority' => 1,
+                            'inv_priority' => 2,
                             'params' => null,
                         ],
                     ],
