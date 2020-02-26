@@ -24,6 +24,18 @@ use Cake\TestSuite\TestCase;
  */
 class PriorityBehaviorTest extends TestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.ObjectRelations',
+    ];
 
     /**
      * Data provider for `testInitialize` test case.
@@ -39,7 +51,6 @@ class PriorityBehaviorTest extends TestCase
             'simple' => [
                 [
                     'priority' => [
-                        'startFrom' => 0,
                         'scope' => false,
                     ],
                 ],
@@ -50,22 +61,18 @@ class PriorityBehaviorTest extends TestCase
             'advanced' => [
                 [
                     'priority' => [
-                        'startFrom' => 1,
                         'scope' => false,
                     ],
                     'scoped_priority' => [
-                        'startFrom' => 5,
                         'scope' => ['scoping_field'],
                     ],
                 ],
                 [
                     'fields' => [
                         '_all' => [
-                            'startFrom' => 1,
                         ],
                         'priority',
                         'scoped_priority' => [
-                            'startFrom' => 5,
                             'scope' => ['scoping_field'],
                         ],
                     ],
@@ -96,33 +103,31 @@ class PriorityBehaviorTest extends TestCase
     }
 
     /**
-     * Test setting of priority before entity is saved.
+     * Test setting of priority before entity is saved using `ObjectRelations` table
      *
      * @return void
      *
      * @covers ::beforeSave()
+     * @covers ::maxValue()
      */
     public function testBeforeSave()
     {
-        $table = TableRegistry::getTableLocator()->get('MyTable', ['className' => Table::class]);
-        $table->addBehavior('BEdita/Core.Priority', [
-            'fields' => [
-                '_all' => [
-                    'startFrom' => 1,
-                ],
-                'priority',
-                'scoped_priority' => [
-                    'startFrom' => 5,
-                    'scope' => ['scoping_field'],
-                ],
-            ],
-        ]);
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
         $entity = $table->newEntity();
-        $entity->set('priority', 99);
+        $entity->set([
+            'left_id' => 9,
+            'relation_id' => 3,
+            'right_id' => 10,
+        ]);
         $table->dispatchEvent('Model.beforeSave', [$entity]);
+        static::assertSame(1, $entity->get('priority'));
+        static::assertSame(1, $entity->get('inv_priority'));
 
-        static::assertSame(99, $entity->get('priority'));
-        static::assertSame(5, $entity->get('scoped_priority'));
+        // use explicit priority
+        $entity->set('priority', 5);
+        $table->dispatchEvent('Model.beforeSave', [$entity]);
+        static::assertSame(5, $entity->get('priority'));
+        static::assertSame(1, $entity->get('inv_priority'));
     }
 }
