@@ -22,10 +22,14 @@ use Cake\Utility\Inflector;
 /**
  * Utility class to resources creation/update/removal in migrations, shell scripts and similar scenarios
  *
- * Provides static methods to create and remove resources like applications, object_types, roles....
- * using an array format
+ * Provides static methods to create and remove resources like applications, object_types, property_types, roles
+ * and potentially many other using an array format.
  *
- * Example:
+ * Every resource must have a unique field like `name` to be used as index in environment agnostic way:
+ * in different environments same resources will have a different `id` (or other primary key) but should have a unique
+ * `name`.
+ *
+ * Array example for object_types:
  *   [
  *     [
  *       'name' => 'custom_objects',
@@ -33,7 +37,7 @@ use Cake\Utility\Inflector;
  *       'parent' => 'objects', // optional
  *       'description' => 'my custom description', // optional
  *     ],
- *   ]
+ *   ],
  */
 class Resources
 {
@@ -152,16 +156,34 @@ class Resources
     }
 
     /**
-     * Save resources
+     * Generic save on resources grouped by `action` with possible values: `create`, `update` and `remove`.
      *
+     * Supported resources: resources in static::$allowed + `relations` and `properties`.
      *
-     *  'create' => [
+     * Array example where a role is created, an object type is updated and an application is removed.
+     *
+     * 'create' => [
      *      'roles' => [
      *          [
      *              'name' => 'new-role',
-     *          ]
-     *      ]
-     *  ]
+     *          ],
+     *      ],
+     *  ],
+     * 'update' => [
+     *      'object_types' => [
+     *          [
+     *              'name' => 'news',
+     *              'hidden' => '["description"]',
+     *          ],
+     *      ],
+     *  ],
+     * 'remove' => [
+     *      'applications' => [
+     *          [
+     *              'name' => 'frontend-app',
+     *          ],
+     *      ],
+     *  ],
      *
      * @param array $resources Resources array.
      * @param array $options Table locator options.
