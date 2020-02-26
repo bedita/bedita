@@ -142,7 +142,6 @@ class Resources
             $entity = $Table->find()
                 ->where($condition)
                 ->firstOrFail();
-            // $entity = $Table->patchEntity($entity, $item);
             foreach ($item as $k => $v) {
                 $entity->set($k, $v);
             }
@@ -166,10 +165,11 @@ class Resources
      *
      * @param array $resources Resources array.
      * @param array $options Table locator options.
-     * @return void
+     * @return array
      */
-    public static function save(array $resources, array $options = []): void
+    public static function save(array $resources, array $options = []): array
     {
+        $result = [];
         foreach ($resources as $action => $params) {
             if (!is_string($action) || !in_array($action, ['create', 'remove', 'update'])) {
                 throw new BadRequestException(
@@ -177,25 +177,48 @@ class Resources
                 );
             }
             $params = (array)$params;
-            foreach ($params as $type => $details) {
-                if (
-                    !is_string($type) ||
-                    (!in_array($type, static::$allowed) && !in_array($type, array_keys(static::$otherTypesMap)))
-                ) {
-                    throw new BadRequestException(
-                        __d('bedita', 'Resource type "{0}" not supported', $type)
-                    );
-                }
-                if (in_array($type, static::$allowed)) {
-                    $class = static::class;
-                    $args = [$type, $details, $options];
-                } else {
-                    $class = static::$otherTypesMap[$type];
-                    $args = [$details, $options];
-                }
-                call_user_func_array([$class, $action], $args);
+            foreach ($params as $type => $data) {
+                $result[$action][$type] = static::saveType($action, $type, $data, $options);
             }
         }
+
+        return $result;
+    }
+
+    /**
+     * Save action on a resource type.
+     *
+     * @param string $action Save acttion.
+     * @param string $type Resource type.
+     * @param array $data Data array.
+     * @param array $options Table locator options.
+     * @return array
+     */
+    protected static function saveType(string $action, string $type, array $data, array $options = []): array
+    {
+        if (
+            !in_array($type, static::$allowed) &&
+            !in_array($type, array_keys(static::$otherTypesMap))
+        ) {
+            throw new BadRequestException(
+                __d('bedita', 'Resource type "{0}" not supported', $type)
+            );
+        }
+
+        if (in_array($type, static::$allowed)) {
+            $class = static::class;
+            $args = [$type, $data, $options];
+        } else {
+            $class = static::$otherTypesMap[$type];
+            $args = [$data, $options];
+        }
+
+        $res = call_user_func_array([$class, $action], $args);
+        if (!is_array($res)) {
+            return [];
+        }
+
+        return $res;
     }
 
     /**
