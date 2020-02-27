@@ -60,6 +60,23 @@ class Relations
     }
 
     /**
+     * Add relation type to relation
+     *
+     * @param string $relation Relation name or ID
+     * @param string $type Object type name
+     * @param string $side Relation side, 'left' or 'right'
+     * @param array $options Table locator options
+     * @return void
+     */
+    public static function addRelationType(string $relation, string $type, string $side, array $options = []): void
+    {
+        $relation = TableRegistry::getTableLocator()
+            ->get('Relations', $options)
+            ->get($relation);
+        static::addTypes($relation->get('id'), [$type], $side, $options);
+    }
+
+    /**
      * Add relation types to relation
      *
      * @param string|int $relationId Relation id
@@ -135,6 +152,23 @@ class Relations
 
             $RelationTypes->deleteOrFail($relationType);
         }
+    }
+
+    /**
+     * Remove relation type from relation
+     *
+     * @param string $relation Relation name or ID
+     * @param string $type Object type name
+     * @param string $side Relation side, 'left' or 'right'
+     * @param array $options Table locator options
+     * @return void
+     */
+    public static function removeRelationType(string $relation, string $type, string $side, array $options = []): void
+    {
+        $relation = TableRegistry::getTableLocator()
+            ->get('Relations', $options)
+            ->get($relation);
+        static::removeTypes($relation->get('id'), [$type], $side, $options);
     }
 
     /**
