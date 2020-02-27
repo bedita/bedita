@@ -69,20 +69,28 @@ class Application extends BaseApplication
      */
     protected function loadFromConfig(): void
     {
-        $plugins = Configure::read('Plugins');
-        if ($plugins) {
-            $_defaults = [
-                'debugOnly' => false,
-                'autoload' => false,
-                'bootstrap' => false,
-                'routes' => false,
-                'ignoreMissing' => false
-            ];
-            foreach ($plugins as $plugin => $options) {
-                $options = array_merge($_defaults, $options);
-                if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
-                    $this->addPlugin($plugin, $options);
-                }
+        $plugins = (array)Configure::read('Plugins');
+        if (empty($plugins)) {
+            return;
+        }
+
+        $_defaults = [
+            'debugOnly' => false,
+            'autoload' => false,
+            'bootstrap' => true,
+            'routes' => true,
+            'ignoreMissing' => true
+        ];
+        foreach ($plugins as $plugin => $options) {
+            if (!is_string($plugin) && is_string($options)) {
+                // plugin listed not in form 'PluginName' => [....]
+                // but as non associative array like 0 => 'PluginName'
+                $plugin = $options;
+                $options = [];
+            }
+            $options = array_merge($_defaults, $options);
+            if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
+                $this->addPlugin($plugin, $options);
             }
         }
     }
