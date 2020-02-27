@@ -345,6 +345,7 @@ class ResourcesTest extends TestCase
      * @return void
      *
      * @covers ::save()
+     * @covers ::saveType()
      * @dataProvider saveProvider
      */
     public function testSave(array $resources, ?\Exception $exception = null): void
