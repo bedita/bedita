@@ -130,7 +130,7 @@ class AppController extends Controller
             if (empty($apiKey)) {
                 $apiKey = (string)$this->request->getQuery('api_key');
             }
-            if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps'))) {
+            if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps', true))) {
                 return;
             }
 
