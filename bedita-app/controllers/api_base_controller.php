@@ -500,7 +500,7 @@ abstract class ApiBaseController extends FrontendController {
         if ($this->publication['authorized']) {
             return true;
         }
-        if ($this->params['pass']['0'] == 'auth' && $this->requestMethod == 'post' && in_array('auth', $this->endPoints)) {
+        if (!empty($this->params['pass']) && $this->params['pass']['0'] == 'auth' && $this->requestMethod == 'post' && in_array('auth', $this->endPoints)) {
             return null;
         }
 
