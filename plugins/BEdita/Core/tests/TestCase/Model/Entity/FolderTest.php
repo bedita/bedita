@@ -143,6 +143,42 @@ class FolderTest extends TestCase
     }
 
     /**
+     * Test getter for `parent_uname`
+     *
+     * @return void
+     *
+     * @covers ::_getParentUname()
+     */
+    public function testGetParentUname()
+    {
+        $folder = new Folder();
+        static::assertNull($folder->parent_uname);
+
+        $folder->parents = [$this->Folders->get(13)];
+        static::assertEquals('another-root-folder', $folder->parent_uname);
+    }
+
+    /**
+     * Test setter for `parent_uname`
+     *
+     * @return void
+     *
+     * @covers ::_setParentUname()
+     */
+    public function testSetParentUname()
+    {
+        $folder = new Folder([], ['source' => 'Folders']);
+        $folder->parent_uname = 'another-root-folder';
+        $parent = $this->Folders->get(13);
+        static::assertEquals($parent, $folder->parent);
+        static::assertEquals([$parent], $folder->parents);
+
+        $folder->parent_uname = null;
+        static::assertEquals(null, $folder->parent);
+        static::assertEquals([], $folder->parents);
+    }
+
+    /**
      * Test for isParentSet()
      *
      * @return void

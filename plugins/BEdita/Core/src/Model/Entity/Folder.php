@@ -111,6 +111,39 @@ class Folder extends ObjectEntity
     }
 
     /**
+     * Getter for `parent_uname` virtual property
+     *
+     * @return string|null
+     */
+    protected function _getParentUname(): ?string
+    {
+        return Hash::get((array)$this->parents, '0.uname');
+    }
+
+    /**
+     * Setter for `parent_uname` virtual property.
+     *
+     * @param string|null $parentUname The parent uname to set
+     * @return void
+     */
+    protected function _setParentUname(?string $parentUname): void
+    {
+        if ($parentUname === null) {
+            $this->parent = null;
+
+            return;
+        }
+
+        $table = TableRegistry::getTableLocator()->get($this->getSource());
+        $this->parent = $table
+            ->find()
+            ->where([
+                $table->aliasField('uname') => $parentUname,
+            ])
+            ->firstOrFail();
+    }
+
+    /**
      * Getter for `path` virtual property
      *
      * @return string|null
