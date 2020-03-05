@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,6 @@ namespace BEdita\Core\Utility;
 
 use Cake\Console\Exception\StopException;
 use Cake\Datasource\EntityInterface;
-use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -37,12 +36,19 @@ class ObjectsHandler
      */
     protected static function checkEnvironment(): void
     {
-        if (PHP_SAPI !== 'cli') {
-            $detail = 'Operation avilable only in CLI environment';
-            Log::write('error', $detail);
-            throw new StopException(['title' => 'Not available',
-                'detail' => $detail]);
+        if (!static::isCli()) {
+            throw new StopException('Operation avilable only in CLI environment');
         }
+    }
+
+    /**
+     * Check if we are in CLI environment.
+     *
+     * @return bool
+     */
+    protected static function isCli(): bool
+    {
+       return (PHP_SAPI === 'cli');
     }
 
     /**
@@ -91,8 +97,7 @@ class ObjectsHandler
      * COMPLETELY and IRREVOCABLY remove an object from the database.
      *
      * @param int|string $id Object to remove ID or uname
-     * @throws \Cake\Console\Exception\StopException
-     * @return bool success or failure
+     * @return bool success
      */
     public static function remove($id): bool
     {
