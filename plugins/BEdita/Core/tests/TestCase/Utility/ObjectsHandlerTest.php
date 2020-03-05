@@ -82,13 +82,17 @@ class ObjectsHandlerTest extends TestCase
         $userId = $entity->id;
         $this->assertInternalType('integer', $userId);
 
-        $data = ['title' => 'a pragmatic title', 'description' => 'an agile descriptio'];
+        $data = [
+            'title' => 'a pragmatic title',
+            'description' => 'an agile description',
+            'uname' => 'agile-uname',
+        ];
         $entity = ObjectsHandler::save('documents', $data, ['id' => $userId]);
         $this->assertNotEmpty($entity);
         $docId = $entity->id;
         $this->assertInternalType('integer', $docId);
 
-        $result = ObjectsHandler::remove($docId);
+        $result = ObjectsHandler::remove('agile-uname');
         $this->assertTrue($result);
 
         $result = ObjectsHandler::remove($userId);
@@ -100,7 +104,7 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::save()
-     * @expectedException \Cake\Console\Exception\StopException
+     * @expectedException \Cake\ORM\Exception\PersistenceFailedException
      */
     public function testSaveException()
     {
