@@ -29,6 +29,7 @@ class ConsoleShell extends Shell
      * Start the shell and interactive console.
      *
      * @return int|null
+     * @codeCoverageIgnore
      */
     public function main()
     {
@@ -63,6 +64,7 @@ class ConsoleShell extends Shell
      * Display help for this console.
      *
      * @return \Cake\Console\ConsoleOptionParser
+     * @codeCoverageIgnore
      */
     public function getOptionParser()
     {

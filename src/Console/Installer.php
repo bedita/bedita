@@ -21,6 +21,8 @@ use Exception;
 /**
  * Provides installation hooks for when this application is installed via
  * composer. Customize this class to suit your needs.
+ *
+ * @codeCoverageIgnore
  */
 class Installer
 {

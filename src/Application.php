@@ -18,7 +18,6 @@ use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
-use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
@@ -29,6 +28,19 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  */
 class Application extends BaseApplication
 {
+    /**
+     * Default plugin options
+     *
+     * @var array
+     */
+    protected $pluginDefaults = [
+        'debugOnly' => false,
+        'autoload' => false,
+        'bootstrap' => true,
+        'routes' => true,
+        'ignoreMissing' => true
+    ];
+
     /**
      * {@inheritDoc}
      */
@@ -42,10 +54,10 @@ class Application extends BaseApplication
         }
 
         // Load more plugins here
-        $this->addPlugin('BEdita/Core', ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]);
-        $this->addPlugin('BEdita/API', ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]);
+        $this->addPlugin('BEdita/Core', ['bootstrap' => true]);
+        $this->addPlugin('BEdita/API', ['bootstrap' => true, 'routes' => true]);
 
-        $this->loadFromConfig();
+        $this->addConfigPlugins();
     }
 
     /**
@@ -63,27 +75,40 @@ class Application extends BaseApplication
     }
 
     /**
-     * Load plugins from 'Plugins' configuration
+     * Add plugins from 'Plugins' configuration
      *
      * @return void
      */
-    protected function loadFromConfig(): void
+    public function addConfigPlugins(): void
     {
-        $plugins = Configure::read('Plugins');
-        if ($plugins) {
-            $_defaults = [
-                'debugOnly' => false,
-                'autoload' => false,
-                'bootstrap' => false,
-                'routes' => false,
-                'ignoreMissing' => false
-            ];
-            foreach ($plugins as $plugin => $options) {
-                $options = array_merge($_defaults, $options);
-                if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
-                    $this->addPlugin($plugin, $options);
-                }
+        $plugins = (array)Configure::read('Plugins');
+        if (empty($plugins)) {
+            return;
+        }
+
+        foreach ($plugins as $plugin => $options) {
+            if (!is_string($plugin) && is_string($options)) {
+                // plugin listed not as assoc array 'PluginName' => [....]
+                // but as numeric array like 0 => 'PluginName'
+                $plugin = $options;
+                $options = [];
             }
+            $this->addConfigPlugin($plugin, $options);
+        }
+    }
+
+    /**
+     * Load configured plugin, using defaults and checking `debugOnly`
+     *
+     * @param string $plugin Plugin name.
+     * @param array $options Plugin options.
+     * @return void
+     */
+    protected function addConfigPlugin(string $plugin, array $options): void
+    {
+        $options = array_merge($this->pluginDefaults, $options);
+        if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
+            $this->addPlugin($plugin, $options);
         }
     }
 
@@ -99,9 +124,6 @@ class Application extends BaseApplication
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(ErrorHandlerMiddleware::class)
-
-            // Handle plugin/theme assets like CakePHP normally does.
-            ->add(AssetMiddleware::class)
 
             // Add routing middleware.
             ->add(new RoutingMiddleware($this));
