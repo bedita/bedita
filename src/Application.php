@@ -88,8 +88,8 @@ class Application extends BaseApplication
 
         foreach ($plugins as $plugin => $options) {
             if (!is_string($plugin) && is_string($options)) {
-                // plugin listed not in form 'PluginName' => [....]
-                // but as non associative array like 0 => 'PluginName'
+                // plugin listed not as assoc array 'PluginName' => [....]
+                // but as numeric array like 0 => 'PluginName'
                 $plugin = $options;
                 $options = [];
             }
