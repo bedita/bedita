@@ -19,7 +19,7 @@ use Cake\ORM\TableRegistry;
 
 /**
  * Utility operations on objects mainly for seeding and shell commands.
- * These operations are only available on CLI with 'debug' activated.
+ * These operations are only available on CLI environment.
  * *DON'T* use these methods in an API response: various important checks on permissions,
  * users and applications are missing.
  *
@@ -48,7 +48,7 @@ class ObjectsHandler
      */
     protected static function isCli(): bool
     {
-       return (PHP_SAPI === 'cli');
+        return (PHP_SAPI === 'cli');
     }
 
     /**
@@ -98,6 +98,8 @@ class ObjectsHandler
      *
      * @param int|string $id Object to remove ID or uname
      * @return bool success
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
+     * @throws \Cake\ORM\Exception\PersistenceFailedException
      */
     public static function remove($id): bool
     {

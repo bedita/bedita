@@ -151,7 +151,7 @@ class ObjectsHandlerTest extends TestCase
         $testClass = new class extends ObjectsHandler {
             protected static function isCli(): bool
             {
-               return false;
+                return false;
             }
         };
         $testClass::save('documents', []);
