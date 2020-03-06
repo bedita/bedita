@@ -415,6 +415,23 @@ class ObjectsTable extends Table
     }
 
     /**
+     * Finder to get an object by ID or 'uname'
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array with ID or uname as first element.
+     * @return \Cake\ORM\Query
+     */
+    protected function findUnameId(Query $query, array $options)
+    {
+        $id = (string)Hash::get($options, '0');
+        if (is_numeric($id)) {
+            return $query->where([$this->aliasField('id') => (int)$id]);
+        }
+
+        return $query->where([$this->aliasField('uname') => $id]);
+    }
+
+    /**
      * Finder for categories by name.
      *
      * @param \Cake\ORM\Query $query Query object instance.

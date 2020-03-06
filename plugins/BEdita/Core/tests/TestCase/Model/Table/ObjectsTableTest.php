@@ -700,4 +700,26 @@ class ObjectsTableTest extends TestCase
             ->toArray();
         static::assertSame(1, count($result));
     }
+
+    /**
+     * Test `findUnameId` method.
+     *
+     * @return void
+     *
+     * @covers ::findUnameId()
+     */
+    public function testFindUnameID()
+    {
+        $result = TableRegistry::getTableLocator()
+            ->get('Profiles')
+            ->find('unameId', ['gustavo-supporto'])
+            ->firstOrFail();
+        static::assertSame(4, $result->get('id'));
+
+        $result = TableRegistry::getTableLocator()
+            ->get('Profiles')
+            ->find('unameId', [4])
+            ->firstOrFail();
+        static::assertSame('gustavo-supporto', $result->get('uname'));
+    }
 }

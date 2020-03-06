@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,13 +14,12 @@
 namespace BEdita\Core\Utility;
 
 use Cake\Console\Exception\StopException;
-use Cake\Core\Configure;
-use Cake\Log\Log;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 
 /**
  * Utility operations on objects mainly for seeding and shell commands.
- * These operations are only available on CLI with 'debug' activated.
+ * These operations are only available on CLI environment.
  * *DON'T* use these methods in an API response: various important checks on permissions,
  * users and applications are missing.
  *
@@ -28,24 +27,28 @@ use Cake\ORM\TableRegistry;
  */
 class ObjectsHandler
 {
-
     /**
-     * Enable or disable operations - only
-     * Only on CLI with 'debug' class methods will be enabled.
+     * Check environment: operations allowed only in CLI.
+     * Otherwise a StopException is thrown.
      *
      * @return void
      * @throws \Cake\Console\Exception\StopException
      */
-    protected static function checkEnvironment()
+    protected static function checkEnvironment(): void
     {
-        $isCli = PHP_SAPI === 'cli';
-        $debug = Configure::read('debug');
-        if (!($isCli && $debug)) {
-            $detail = 'Operation avilable only in CLI environment in "debug" mode';
-            Log::write('error', $detail);
-            throw new StopException(['title' => 'Not available',
-                'detail' => $detail]);
+        if (!static::isCli()) {
+            throw new StopException('Operation avilable only in CLI environment');
         }
+    }
+
+    /**
+     * Check if we are in CLI environment.
+     *
+     * @return bool
+     */
+    protected static function isCli(): bool
+    {
+        return (PHP_SAPI === 'cli');
     }
 
     /**
@@ -62,10 +65,9 @@ class ObjectsHandler
      * @param string|int $type Object type name or id
      * @param array $data Input data array
      * @param array $user User performing action data
-     * @throws \Cake\Console\Exception\StopException
-     * @return \Cake\Datasource\EntityInterface|bool Entity saved or false on error
+     * @return \Cake\Datasource\EntityInterface Entity saved
      */
-    public static function save($type, $data, $user = [])
+    public static function save($type, $data, $user = []): EntityInterface
     {
         static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
@@ -83,11 +85,7 @@ class ObjectsHandler
         }
         $entity = $table->patchEntity($entity, $data);
         $entity->set('type', $objectType->name);
-        $saveResult = $table->save($entity);
-        if (!$saveResult) {
-            Log::write('error', 'Object creation failed  - ' . $type . ' - ' . json_encode($entity->getErrors()));
-            throw new StopException(['title' => 'Invalid data', 'detail' => [$entity->getErrors()]]);
-        }
+        $saveResult = $table->saveOrFail($entity);
 
         // restore current user
         LoggedUser::setUser($currentUser);
@@ -98,16 +96,17 @@ class ObjectsHandler
     /**
      * COMPLETELY and IRREVOCABLY remove an object from the database.
      *
-     * @param int $id Object to remove id
-     * @throws \Cake\Console\Exception\StopException
-     * @return bool success or failure
+     * @param int|string $id Object to remove ID or uname
+     * @return bool success
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
+     * @throws \Cake\ORM\Exception\PersistenceFailedException
      */
-    public static function remove($id)
+    public static function remove($id): bool
     {
         static::checkEnvironment();
         $objectsTable = TableRegistry::getTableLocator()->get('Objects');
-        $entity = $objectsTable->get($id);
+        $entity = $objectsTable->find('unameId', [$id])->firstOrFail();
 
-        return $objectsTable->delete($entity);
+        return $objectsTable->deleteOrFail($entity);
     }
 }
