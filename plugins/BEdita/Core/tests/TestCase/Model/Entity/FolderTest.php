@@ -172,10 +172,12 @@ class FolderTest extends TestCase
         $parent = $this->Folders->get(13);
         static::assertEquals($parent, $folder->parent);
         static::assertEquals([$parent], $folder->parents);
+        static::assertEquals('another-root-folder', $folder->get('parent_uname'));
 
         $folder->parent_uname = null;
         static::assertEquals(null, $folder->parent);
         static::assertEquals([], $folder->parents);
+        static::assertEquals(null, $folder->get('parent_uname'));
     }
 
     /**

@@ -95,7 +95,7 @@ class Folder extends ObjectEntity
      * @param int|null $parentId The parent id to set
      * @return int|null
      */
-    protected function _setParentId($parentId)
+    protected function _setParentId($parentId): ?int
     {
         if ($parentId === null) {
             $this->parent = null;
@@ -132,14 +132,14 @@ class Folder extends ObjectEntity
      * Setter for `parent_uname` virtual property.
      *
      * @param string|null $parentUname The parent uname to set
-     * @return void
+     * @return string|null
      */
-    protected function _setParentUname(?string $parentUname): void
+    protected function _setParentUname(?string $parentUname): ?string
     {
         if ($parentUname === null) {
             $this->parent = null;
 
-            return;
+            return null;
         }
 
         $table = TableRegistry::getTableLocator()->get($this->getSource());
@@ -149,6 +149,8 @@ class Folder extends ObjectEntity
                 $table->aliasField('uname') => $parentUname,
             ])
             ->firstOrFail();
+
+        return $parentUname;
     }
 
     /**
