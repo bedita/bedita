@@ -80,9 +80,13 @@ class Folder extends ObjectEntity
      *
      * @return int|null
      */
-    protected function _getParentId()
+    protected function _getParentId(): ?int
     {
-        return Hash::get((array)$this->parents, '0.id');
+        if (empty($this->parents)) {
+            return null;
+        }
+
+        return (int)Hash::get((array)$this->parents, '0.id');
     }
 
     /**
@@ -91,7 +95,7 @@ class Folder extends ObjectEntity
      * @param int|null $parentId The parent id to set
      * @return int|null
      */
-    protected function _setParentId($parentId)
+    protected function _setParentId($parentId): ?int
     {
         if ($parentId === null) {
             $this->parent = null;
@@ -108,6 +112,45 @@ class Folder extends ObjectEntity
             ->firstOrFail();
 
         return $parentId;
+    }
+
+    /**
+     * Getter for `parent_uname` virtual property
+     *
+     * @return string|null
+     */
+    protected function _getParentUname(): ?string
+    {
+        if (empty($this->parents)) {
+            return null;
+        }
+
+        return (string)Hash::get((array)$this->parents, '0.uname');
+    }
+
+    /**
+     * Setter for `parent_uname` virtual property.
+     *
+     * @param string|null $parentUname The parent uname to set
+     * @return string|null
+     */
+    protected function _setParentUname(?string $parentUname): ?string
+    {
+        if ($parentUname === null) {
+            $this->parent = null;
+
+            return null;
+        }
+
+        $table = TableRegistry::getTableLocator()->get($this->getSource());
+        $this->parent = $table
+            ->find()
+            ->where([
+                $table->aliasField('uname') => $parentUname,
+            ])
+            ->firstOrFail();
+
+        return $parentUname;
     }
 
     /**
