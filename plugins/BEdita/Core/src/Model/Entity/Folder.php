@@ -80,9 +80,13 @@ class Folder extends ObjectEntity
      *
      * @return int|null
      */
-    protected function _getParentId()
+    protected function _getParentId(): ?int
     {
-        return Hash::get((array)$this->parents, '0.id');
+        if (empty($this->parents)) {
+            return null;
+        }
+
+        return (int)Hash::get((array)$this->parents, '0.id');
     }
 
     /**
@@ -117,7 +121,11 @@ class Folder extends ObjectEntity
      */
     protected function _getParentUname(): ?string
     {
-        return Hash::get((array)$this->parents, '0.uname');
+        if (empty($this->parents)) {
+            return null;
+        }
+
+        return (string)Hash::get((array)$this->parents, '0.uname');
     }
 
     /**
