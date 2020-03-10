@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
@@ -251,6 +252,27 @@ class UsersTable extends Table
             }
 
             return $query;
+        });
+    }
+
+    /**
+     * Find users by role name.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Comma separated list of role names as first element
+     * @return \Cake\ORM\Query
+     */
+    protected function findRoles(Query $query, array $options)
+    {
+        if (empty($options)) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
+        }
+        $names = (array)explode(',', $options[0]);
+
+        return $query->innerJoinWith('Roles', function (Query $query) use ($names) {
+            return $query->where([
+                $this->Roles->aliasField('name') . ' IN' => $names,
+            ]);
         });
     }
 
