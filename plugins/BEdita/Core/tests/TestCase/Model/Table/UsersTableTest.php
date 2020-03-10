@@ -531,6 +531,41 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test `findRoles` method.
+     *
+     * @return void
+     *
+     * @covers ::findRoles()
+     */
+    public function testFindRoles()
+    {
+        $expected = [
+            5 => 5,
+        ];
+
+        $result = $this->Users->find('roles', ['second role'])
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `findRoles` failure method.
+     *
+     * @return void
+     *
+     * @expectedException \BEdita\Core\Exception\BadFilterException
+     * @expectedExceptionMessage Missing required parameter "roles"
+     * @covers ::findRoles()
+     */
+    public function testFindRolesFail()
+    {
+        $this->Users->find('roles', [])
+            ->toArray();
+    }
+
+    /**
      * Data provider for `beforeMarshal`
      *
      * @return array

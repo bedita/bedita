@@ -451,6 +451,13 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '5',
                 ],
             ],
+            'user roles' => [
+                '/users',
+                'filter[roles]=first role',
+                [
+                   '1',
+                ],
+            ],
             'status' => [
                 '/documents',
                 'filter[status]=off',
