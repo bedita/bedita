@@ -256,10 +256,10 @@ class UsersTable extends Table
     }
 
     /**
-     * Find users by role name.
+     * Find users by role name or id.
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Comma separated list of role names as first element
+     * @param array $options Array with role names or ids also as comma separated elements
      * @return \Cake\ORM\Query
      */
     protected function findRoles(Query $query, array $options)
@@ -267,13 +267,46 @@ class UsersTable extends Table
         if (empty($options)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
         }
-        $names = (array)explode(',', $options[0]);
 
-        return $query->innerJoinWith('Roles', function (Query $query) use ($names) {
-            return $query->where([
-                $this->Roles->aliasField('name') . ' IN' => $names,
-            ]);
+        return $query->innerJoinWith('Roles', function (Query $query) use ($options) {
+            $items = $this->rolesNamesIds($options);
+
+            return $query->where(function (QueryExpression $exp) use ($items) {
+                return $exp->or_(function (QueryExpression $exp) use ($items) {
+                    if (!empty($items['ids'])) {
+                        $exp->in($this->Roles->aliasField('id'), $items['ids']);
+                    }
+                    if (!empty($items['names'])) {
+                        $exp->in($this->Roles->aliasField('name'), $items['names']);
+                    }
+
+                    return $exp;
+                });
+            });
         });
+    }
+
+    /**
+     * Create assoc aarray separating `names` and `ids`
+     *
+     * @param array $options Options array
+     * @return array
+     */
+    protected function rolesNamesIds(array $options): array
+    {
+        $names = $ids = [];
+        foreach ($options as $opt) {
+            $items = (array)explode(',', $opt);
+            foreach ($items as $item) {
+                if (is_numeric($item)) {
+                    $ids[] = $item;
+                } else {
+                    $names[] = $item;
+                }
+            }
+        }
+
+        return compact('names', 'ids');
     }
 
     /**

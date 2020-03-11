@@ -536,14 +536,16 @@ class UsersTableTest extends TestCase
      * @return void
      *
      * @covers ::findRoles()
+     * @covers ::rolesNamesIds()
      */
     public function testFindRoles()
     {
         $expected = [
+            1 => 1,
             5 => 5,
         ];
 
-        $result = $this->Users->find('roles', ['second role'])
+        $result = $this->Users->find('roles', [1, 'second role'])
             ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
             ->toArray();
 
