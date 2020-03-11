@@ -287,7 +287,7 @@ class UsersTable extends Table
     }
 
     /**
-     * Create assoc aarray separating `names` and `ids`
+     * Create assoc array separating `names` and `ids`
      *
      * @param array $options Options array
      * @return array
