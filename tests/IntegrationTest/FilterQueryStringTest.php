@@ -250,17 +250,30 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '5',
                 ],
             ],
-            'usersFilterRole' => [
+            'filter role id' => [
                 '/users?filter[roles]=1',
                 [
                     '1',
                 ],
             ],
-            'usersFilterRoles' => [
+            'filter roles ids' => [
                 '/users?filter[roles][]=1&filter[roles][]=2',
                 [
                     '1',
                     '5',
+                ],
+            ],
+            'role name' => [
+                '/users?filter[roles]=first role',
+                [
+                   '1',
+                ],
+            ],
+            'role name' => [
+                '/users?filter[roles]=first role,second role',
+                [
+                   '1',
+                   '5',
                 ],
             ],
             'here2' => [
@@ -449,13 +462,6 @@ class FilterQueryStringTest extends IntegrationTestCase
                 'filter[email]=second.user@example.com',
                 [
                    '5',
-                ],
-            ],
-            'user roles' => [
-                '/users',
-                'filter[roles]=first role',
-                [
-                   '1',
                 ],
             ],
             'status' => [
