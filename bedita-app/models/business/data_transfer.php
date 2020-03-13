@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2014 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -24,7 +24,7 @@ class DataTransfer extends BEAppModel
     public $useTable = false;
 
     private $maxRelationLevels = 2;
-    
+
     protected $objDefaults = array(
         'status' => 'on',
         'user_created' => '1',
@@ -89,7 +89,7 @@ class DataTransfer extends BEAppModel
         'all' => true,
         'types' => null,
         'relations' => null,
-        
+
         'objectUnsetFields' => array(
             'user_created',
             'user_modified',
@@ -184,12 +184,12 @@ class DataTransfer extends BEAppModel
      *    'saveMode' => 0, // can be 0 (MERGE), 1 (NEW), 2 (OVERRIDE), 3 (IGNORE), 4 (UPDATE)
      *    'sourceMediaRoot' => '/media/source/path', // default /TMP/media-import
      * )
-     * 
+     *
      * 1. Validating input data
      * 2. Importing data to BEdita
      * 3. Return result object
      */
-    
+
     public function import(&$data, $options = array()) {
         $this->result = array();
         $this->logFile = 'import';
@@ -198,7 +198,7 @@ class DataTransfer extends BEAppModel
         // setting save mode - default NEW
         $this->import['saveMode'] = (!empty($options['saveMode'])) ? $options['saveMode'] : $this->saveModes['NEW'];
         // setting sourceMediaRoot - default TMP/media-import
-        
+
         if (!empty($options['sourceMediaRoot'])) { // media root
             $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
         } else if (!empty($options['sourceMediaUri'])) { // media url
@@ -237,7 +237,7 @@ class DataTransfer extends BEAppModel
                 foreach ($rootIds as $rootId) {
                     $rootData = $this->import['source']['data']['objects'][$rootId];
                     $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
-                    
+
                     // 2.2.1.1 save area(s) with policy 'NEW'
                     $this->trackDebug('2.2.1.1 save area/section(s) with policy (old id ' . $rootId . ') \'NEW\'');
                     // 2.2.1.2 save area(s) with other policies [TODO]
@@ -358,12 +358,12 @@ class DataTransfer extends BEAppModel
 
     /**
      * Export BEdita objects data to JSON, XML or other format
-     * 
+     *
      * @param  array &$objects  ids of root elements (publication|section) or ids of objects (document|event|...)
      * @param  array $options   export parameters
      * @return mixed object     json|array|xml|other (file?)
      * @see XmlJsonConverter::toXmlString()
-     * 
+     *
      * $options = array(
      *    'logDebug' => true, // can be true|false
      *    'destMediaRoot' => '/media/dest/path', // default TMP/media-export
@@ -409,7 +409,7 @@ class DataTransfer extends BEAppModel
             if ($this->export['relations'] != NULL) { // specific relations
                 $this->export['relations'] = explode(',', $this->export['relations']);
             }
-            
+
             $objModel = ClassRegistry::init('BEObject');
             if (empty($objects) && ($this->export['all'] === true) ) {
                 $objModel->create();
@@ -702,16 +702,16 @@ class DataTransfer extends BEAppModel
 
     /**
      * Get last import/export operation result
-     * 
+     *
      * @return array, with result info (errors, warnings, stats...)
      */
     public function getResult() {
         return $this->result;
     }
-    
+
     /**
      * Validation of data and related objects and semantics
-     * 
+     *
      * 1 if data is a string
      * 1.1 if data is a string: not empty
      * 1.2a if data is a JSON string: valid (json_decode / json_last_error)
@@ -972,6 +972,7 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
+        $noParents = false;
         if (!$noParents) {
             // 4.1 tree not empty
             if (empty($this->import['source']['data']['tree'])) {
@@ -1382,7 +1383,7 @@ class DataTransfer extends BEAppModel
                 if (!empty($tagListString)) {
                     $tagListString = substr($tagListString, 0, strlen($tagListString)-1);
                     $tags = $this->saveTags($tagListString);
-                    $object['Category'] = array_merge($object['Category'], $tags);    
+                    $object['Category'] = array_merge($object['Category'], $tags);
                 }
             }
             $newObject = array_merge($this->objDefaults, $object);
@@ -1562,7 +1563,7 @@ class DataTransfer extends BEAppModel
                         return ($item1['priority'] === $item2['priority']) ? 0 : ($item1['priority'] > $item2['priority']);
                     });
                     $this->import['treeLevels']['level-' . $level] = Set::combine($this->import['treeLevels']['level-' . $level], '{n}.id', '{n}');
-                }                
+                }
             }
 
             $this->updateTreeForImport($level+1);
@@ -1705,10 +1706,10 @@ class DataTransfer extends BEAppModel
 
     /**
      * clean object and prepare relation data
-     * 
+     *
      * remove empty data (or null)
      * remove meaningless data for export (i.e. user, stats, etc. @see $this->export['objectUnsetFields'])
-     * 
+     *
      * @param  array $object data
      * @param  int $level, recursion level
      * @return array $object data
@@ -1734,7 +1735,7 @@ class DataTransfer extends BEAppModel
             unset($object['relatedObjectIds']);
         }
         $this->export['destination']['byType']['ARRAY']['objects'][$object['id']] = $object;
-        
+
         // check recursion level for relations
         if ($level < $this->maxRelationLevels) {
             $nextLevel = $level + 1;
@@ -1773,7 +1774,7 @@ class DataTransfer extends BEAppModel
         } else {
             $this->trackDebug('... related objects not loaded - recursion level ' . $level);
         }
-        // 5 set media uris        
+        // 5 set media uris
         if (!empty($object['uri'])) { // map object id with media uri
             $this->export['media'][$object['id']] = $object['uri'];
         }
@@ -1950,7 +1951,7 @@ class DataTransfer extends BEAppModel
 
     /**
      * Copy $source (from $sourceBasePath) to $destBasePath, creating subfolders if necessary
-     * 
+     *
      * @param  string $sourceBasePath folder
      * @param  string $destBasePath folder
      * @param  string $source path to file (file name included)

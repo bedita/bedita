@@ -1,0 +1,2732 @@
+{
+    "config": {
+        "customProperties": [
+            {
+                "name": "customstyle",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "palette",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "zanichelli_stats_UA",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "zanichelli_stats_ISBN",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "materia",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "warning",
+                "objectType": "area",
+                "dataType": "text"
+            },
+            {
+                "name": "gruppi_editoriali_default",
+                "objectType": "area",
+                "dataType": "text"
+            }
+        ]
+    },
+    "tree": {
+        "roots": [
+            3013453
+        ],
+        "sections": [
+            {
+                "id": 3025702,
+                "parent": 3013453,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 1
+            },
+            {
+                "id": 3025705,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 1
+            },
+            {
+                "id": 3025739,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 1
+            },
+            {
+                "id": 3025749,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 1
+            },
+            {
+                "id": 3025706,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 2
+            },
+            {
+                "id": 3025703,
+                "parent": 3013453,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 2
+            },
+            {
+                "id": 3025741,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 2
+            },
+            {
+                "id": 3025750,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 2
+            },
+            {
+                "id": 3025707,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 3
+            },
+            {
+                "id": 3025743,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 3
+            },
+            {
+                "id": 3025704,
+                "parent": 3013453,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 3
+            },
+            {
+                "id": 3025753,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 3
+            },
+            {
+                "id": 3025708,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 4
+            },
+            {
+                "id": 3025744,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 4
+            },
+            {
+                "id": 3025755,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 4
+            },
+            {
+                "id": 3025709,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 5
+            },
+            {
+                "id": 3025745,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 5
+            },
+            {
+                "id": 3025756,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 5
+            },
+            {
+                "id": 3025710,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 6
+            },
+            {
+                "id": 3025746,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 6
+            },
+            {
+                "id": 3025757,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 6
+            },
+            {
+                "id": 3025711,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 7
+            },
+            {
+                "id": 3025747,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 7
+            },
+            {
+                "id": 3025758,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 7
+            },
+            {
+                "id": 3025712,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 8
+            },
+            {
+                "id": 3025748,
+                "parent": 3025703,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 8
+            },
+            {
+                "id": 3025759,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 8
+            },
+            {
+                "id": 3025726,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 9
+            },
+            {
+                "id": 3025760,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 9
+            },
+            {
+                "id": 3025727,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 10
+            },
+            {
+                "id": 3025762,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 10
+            },
+            {
+                "id": 3025728,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 11
+            },
+            {
+                "id": 3025763,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 11
+            },
+            {
+                "id": 3025729,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 12
+            },
+            {
+                "id": 3025764,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 12
+            },
+            {
+                "id": 3025730,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 13
+            },
+            {
+                "id": 3025765,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 13
+            },
+            {
+                "id": 3025731,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 14
+            },
+            {
+                "id": 3025766,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 14
+            },
+            {
+                "id": 3025732,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 15
+            },
+            {
+                "id": 3025767,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 15
+            },
+            {
+                "id": 3025736,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 16
+            },
+            {
+                "id": 3032920,
+                "parent": 3025704,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 16
+            },
+            {
+                "id": 3025737,
+                "parent": 3025702,
+                "priority_order": "asc",
+                "syndicate": "off",
+                "priority": 17
+            }
+        ]
+    },
+    "objects": {
+        "3013453": {
+            "id": 3013453,
+            "public_name": "Agenda per l'educazione civica",
+            "status": "on",
+            "created": "2019-12-02 08:31:27",
+            "modified": "2019-12-16 14:52:14",
+            "title": "Agenda per l'educazione civica",
+            "nickname": "agenda-zanichelli",
+            "description": "Agenda per l'educazione civica",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "area"
+        },
+        "3025702": {
+            "id": 3025702,
+            "status": "on",
+            "created": "2019-12-16 14:52:48",
+            "modified": "2019-12-16 14:52:48",
+            "title": "Agenda 2030",
+            "nickname": "goal-agenda",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025705": {
+            "id": 3025705,
+            "status": "on",
+            "created": "2019-12-16 14:54:14",
+            "modified": "2019-12-16 15:46:40",
+            "title": "Sconfiggere la povert\u00e0",
+            "nickname": "sconfiggere-la-poverta",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025771": {
+            "id": 3025771,
+            "status": "on",
+            "created": "2019-12-16 15:46:12",
+            "modified": "2019-12-16 15:46:12",
+            "title": "SDG-icon-IT--01.svg",
+            "nickname": "sdg-icon-it-01-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/6f\/b5\/sdg-icon-it-01.svg",
+            "name": "sdg-icon-it-01.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 8108,
+            "hash_file": "1c1ce54bbce3b883e579e15688303939",
+            "original_name": "SDG-icon-IT--01.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025739": {
+            "id": 3025739,
+            "status": "on",
+            "created": "2019-12-16 15:36:09",
+            "modified": "2019-12-16 15:36:09",
+            "title": "Costituzione e istituzioni",
+            "nickname": "costituzione-e-istituzioni",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025749": {
+            "id": 3025749,
+            "status": "on",
+            "created": "2019-12-16 15:41:27",
+            "modified": "2019-12-16 16:09:31",
+            "title": "Storia",
+            "nickname": "storia-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025706": {
+            "id": 3025706,
+            "status": "on",
+            "created": "2019-12-16 14:54:38",
+            "modified": "2019-12-16 15:46:54",
+            "title": "Sconfiggere la fame",
+            "nickname": "sconfiggere-la-fame",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025770": {
+            "id": 3025770,
+            "status": "on",
+            "created": "2019-12-16 15:46:12",
+            "modified": "2019-12-16 15:46:12",
+            "title": "SDG-icon-IT--02.svg",
+            "nickname": "sdg-icon-it-02-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/9e\/38\/sdg-icon-it-02.svg",
+            "name": "sdg-icon-it-02.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 4946,
+            "hash_file": "8db79fe97a6f7b42757ff8560dfcdfb9",
+            "original_name": "SDG-icon-IT--02.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025703": {
+            "id": 3025703,
+            "status": "on",
+            "created": "2019-12-16 14:53:27",
+            "modified": "2019-12-16 14:53:27",
+            "title": "Educazione civica",
+            "nickname": "temi-educazione-civica",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025741": {
+            "id": 3025741,
+            "status": "on",
+            "created": "2019-12-16 15:39:00",
+            "modified": "2019-12-16 15:53:03",
+            "title": "Agenda 2030",
+            "nickname": "agenda-2030-tema",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025750": {
+            "id": 3025750,
+            "status": "on",
+            "created": "2019-12-16 15:41:55",
+            "modified": "2019-12-16 16:09:39",
+            "title": "Diritto",
+            "nickname": "diritto-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025707": {
+            "id": 3025707,
+            "status": "on",
+            "created": "2019-12-16 14:55:02",
+            "modified": "2019-12-16 15:47:07",
+            "title": "Salute e benessere",
+            "nickname": "salute-e-benessere",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025773": {
+            "id": 3025773,
+            "status": "on",
+            "created": "2019-12-16 15:46:14",
+            "modified": "2019-12-16 15:46:14",
+            "title": "SDG-icon-IT--03.svg",
+            "nickname": "sdg-icon-it-03-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/db\/a8\/sdg-icon-it-03.svg",
+            "name": "sdg-icon-it-03.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 4782,
+            "hash_file": "41fe958d3b22f561988aa7cb9c64e290",
+            "original_name": "SDG-icon-IT--03.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025743": {
+            "id": 3025743,
+            "status": "on",
+            "created": "2019-12-16 15:39:19",
+            "modified": "2019-12-16 15:39:19",
+            "title": "Cittadinanza digitale",
+            "nickname": "cittadinanza-digitale",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025704": {
+            "id": 3025704,
+            "status": "on",
+            "created": "2019-12-16 14:53:54",
+            "modified": "2019-12-16 14:53:54",
+            "title": "Materie",
+            "nickname": "materie",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025753": {
+            "id": 3025753,
+            "status": "on",
+            "created": "2019-12-16 15:42:12",
+            "modified": "2019-12-16 16:09:52",
+            "title": "Biologia",
+            "nickname": "biologia-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025708": {
+            "id": 3025708,
+            "status": "on",
+            "created": "2019-12-16 14:55:20",
+            "modified": "2019-12-16 15:47:21",
+            "title": "Istruzione di qualit\u00e0",
+            "nickname": "istruzione-di-qualita",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025772": {
+            "id": 3025772,
+            "status": "on",
+            "created": "2019-12-16 15:46:13",
+            "modified": "2019-12-16 15:46:13",
+            "title": "SDG-icon-IT--04.svg",
+            "nickname": "sdg-icon-it-04-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/9e\/d6\/sdg-icon-it-04.svg",
+            "name": "sdg-icon-it-04.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 4456,
+            "hash_file": "619b73c7e43fe98bbf8d4fcf62c14344",
+            "original_name": "SDG-icon-IT--04.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025744": {
+            "id": 3025744,
+            "status": "on",
+            "created": "2019-12-16 15:39:40",
+            "modified": "2019-12-16 15:39:40",
+            "title": "Elementi di diritto",
+            "nickname": "elementi-di-diritto",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025755": {
+            "id": 3025755,
+            "status": "on",
+            "created": "2019-12-16 15:42:26",
+            "modified": "2019-12-16 16:10:03",
+            "title": "Chimica",
+            "nickname": "chimica-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025709": {
+            "id": 3025709,
+            "status": "on",
+            "created": "2019-12-16 14:55:42",
+            "modified": "2019-12-16 15:51:48",
+            "title": "Parit\u00e0 di genere",
+            "nickname": "parita-genere",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025774": {
+            "id": 3025774,
+            "status": "on",
+            "created": "2019-12-16 15:46:14",
+            "modified": "2019-12-16 15:46:14",
+            "title": "SDG-icon-IT--05.svg",
+            "nickname": "sdg-icon-it-05-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/89\/3b\/sdg-icon-it-05.svg",
+            "name": "sdg-icon-it-05.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 3815,
+            "hash_file": "c3f0df8d34999e6d8174afbda1b6552d",
+            "original_name": "SDG-icon-IT--05.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025745": {
+            "id": 3025745,
+            "status": "on",
+            "created": "2019-12-16 15:39:58",
+            "modified": "2019-12-16 15:55:02",
+            "title": "Educazione ambientale",
+            "nickname": "educazione-ambientale-tema",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025756": {
+            "id": 3025756,
+            "status": "on",
+            "created": "2019-12-16 15:42:50",
+            "modified": "2019-12-16 16:10:12",
+            "title": "Scienze della Terra",
+            "nickname": "scienze-della-terra-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025710": {
+            "id": 3025710,
+            "status": "on",
+            "created": "2019-12-16 14:56:01",
+            "modified": "2019-12-16 15:47:50",
+            "title": "Acqua pulita e servizi igienico-sanitari",
+            "nickname": "acqua-pulita-e-servizi-igienico-sanitari",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025775": {
+            "id": 3025775,
+            "status": "on",
+            "created": "2019-12-16 15:46:14",
+            "modified": "2019-12-16 15:46:14",
+            "title": "SDG-icon-IT--06.svg",
+            "nickname": "sdg-icon-it-06-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/f5\/66\/sdg-icon-it-06.svg",
+            "name": "sdg-icon-it-06.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 7723,
+            "hash_file": "edddb9593b2c152f771bed8ffd678219",
+            "original_name": "SDG-icon-IT--06.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025746": {
+            "id": 3025746,
+            "status": "on",
+            "created": "2019-12-16 15:40:16",
+            "modified": "2019-12-16 15:40:16",
+            "title": "Educazione alla legalit\u00e0",
+            "nickname": "educazione-alla-legalita",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025757": {
+            "id": 3025757,
+            "status": "on",
+            "created": "2019-12-16 15:43:15",
+            "modified": "2019-12-16 16:10:21",
+            "title": "Italiano",
+            "nickname": "italiano-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025711": {
+            "id": 3025711,
+            "status": "on",
+            "created": "2019-12-16 14:56:22",
+            "modified": "2019-12-16 15:48:05",
+            "title": "Energia pulita e accessibile",
+            "nickname": "energia-pulita-e-accessibile",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025777": {
+            "id": 3025777,
+            "status": "on",
+            "created": "2019-12-16 15:46:15",
+            "modified": "2019-12-16 15:46:15",
+            "title": "SDG-icon-IT--07.svg",
+            "nickname": "sdg-icon-it-07-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/7f\/98\/sdg-icon-it-07.svg",
+            "name": "sdg-icon-it-07.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 7409,
+            "hash_file": "bb95e40ec715d0fd2d3edc14deb8a1c2",
+            "original_name": "SDG-icon-IT--07.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025747": {
+            "id": 3025747,
+            "status": "on",
+            "created": "2019-12-16 15:40:43",
+            "modified": "2019-12-16 15:40:43",
+            "title": "Educazione al rispetto del patrimonio culturale",
+            "nickname": "educazione-al-rispetto-del-patrimonio-culturale",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025758": {
+            "id": 3025758,
+            "status": "on",
+            "created": "2019-12-16 15:43:31",
+            "modified": "2019-12-16 16:10:31",
+            "title": "Storia dell\u2019arte",
+            "nickname": "storia-dell-arte-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025712": {
+            "id": 3025712,
+            "status": "on",
+            "created": "2019-12-16 14:56:53",
+            "modified": "2019-12-16 15:48:21",
+            "title": "Lavoro dignitoso e crescita economica",
+            "nickname": "lavoro-dignitoso-e-crescita-economica",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025776": {
+            "id": 3025776,
+            "status": "on",
+            "created": "2019-12-16 15:46:15",
+            "modified": "2019-12-16 15:46:15",
+            "title": "SDG-icon-IT--08.svg",
+            "nickname": "sdg-icon-it-08-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/e6\/21\/sdg-icon-it-08.svg",
+            "name": "sdg-icon-it-08.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 8868,
+            "hash_file": "bcb57d09cca3d235d1f165b4eaea50c5",
+            "original_name": "SDG-icon-IT--08.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025748": {
+            "id": 3025748,
+            "status": "on",
+            "created": "2019-12-16 15:40:59",
+            "modified": "2019-12-16 15:40:59",
+            "title": "Protezione Civile",
+            "nickname": "protezione-civile",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025759": {
+            "id": 3025759,
+            "status": "on",
+            "created": "2019-12-16 15:43:46",
+            "modified": "2019-12-16 16:10:39",
+            "title": "Scienze umane",
+            "nickname": "scienze-umane-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025726": {
+            "id": 3025726,
+            "status": "on",
+            "created": "2019-12-16 15:26:30",
+            "modified": "2019-12-16 15:48:35",
+            "title": "Imprese, innovazione e infrastrutture",
+            "nickname": "imprese-innovazione-e-infrastrutture",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025778": {
+            "id": 3025778,
+            "status": "on",
+            "created": "2019-12-16 15:46:16",
+            "modified": "2019-12-16 15:46:16",
+            "title": "SDG-icon-IT--09.svg",
+            "nickname": "sdg-icon-it-09-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/0b\/e6\/sdg-icon-it-09.svg",
+            "name": "sdg-icon-it-09.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 7091,
+            "hash_file": "c5f272149128ac14b22f470b117f897b",
+            "original_name": "SDG-icon-IT--09.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025760": {
+            "id": 3025760,
+            "status": "on",
+            "created": "2019-12-16 15:44:00",
+            "modified": "2019-12-16 16:10:47",
+            "title": "Matematica",
+            "nickname": "matematica-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025727": {
+            "id": 3025727,
+            "status": "on",
+            "created": "2019-12-16 15:26:54",
+            "modified": "2019-12-16 15:49:14",
+            "title": "Ridurre le disuguaglianze",
+            "nickname": "ridurre-le-disuguaglianze",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025779": {
+            "id": 3025779,
+            "status": "on",
+            "created": "2019-12-16 15:46:16",
+            "modified": "2019-12-16 15:46:16",
+            "title": "SDG-icon-IT--10.svg",
+            "nickname": "sdg-icon-it-10-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/83\/ba\/sdg-icon-it-10.svg",
+            "name": "sdg-icon-it-10.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 5954,
+            "hash_file": "0272222d3f986c786e31a5b96dc2ba0d",
+            "original_name": "SDG-icon-IT--10.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025762": {
+            "id": 3025762,
+            "status": "on",
+            "created": "2019-12-16 15:44:14",
+            "modified": "2019-12-16 16:10:56",
+            "title": "Fisica",
+            "nickname": "fisica-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025728": {
+            "id": 3025728,
+            "status": "on",
+            "created": "2019-12-16 15:27:17",
+            "modified": "2019-12-16 15:49:27",
+            "title": "Citt\u00e0 e comunit\u00e0 sostenibili",
+            "nickname": "citta-e-comunita-sostenibili",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025781": {
+            "id": 3025781,
+            "status": "on",
+            "created": "2019-12-16 15:46:17",
+            "modified": "2019-12-16 15:46:17",
+            "title": "SDG-icon-IT--11.svg",
+            "nickname": "sdg-icon-it-11-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/c1\/7d\/sdg-icon-it-11.svg",
+            "name": "sdg-icon-it-11.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 9515,
+            "hash_file": "125d7415b189e450a945da73422d500c",
+            "original_name": "SDG-icon-IT--11.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025763": {
+            "id": 3025763,
+            "status": "on",
+            "created": "2019-12-16 15:44:30",
+            "modified": "2019-12-16 16:11:05",
+            "title": "Filosofia",
+            "nickname": "filosofia-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025729": {
+            "id": 3025729,
+            "status": "on",
+            "created": "2019-12-16 15:27:40",
+            "modified": "2019-12-16 15:52:27",
+            "title": "Consumo e produzione responsabili",
+            "nickname": "consumo-produzione-responsabili",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025780": {
+            "id": 3025780,
+            "status": "on",
+            "created": "2019-12-16 15:46:17",
+            "modified": "2019-12-16 15:46:17",
+            "title": "SDG-icon-IT--12.svg",
+            "nickname": "sdg-icon-it-12-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/d1\/33\/sdg-icon-it-12.svg",
+            "name": "sdg-icon-it-12.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 9827,
+            "hash_file": "34c731fa2b4ea5506a936754cd529a37",
+            "original_name": "SDG-icon-IT--12.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025764": {
+            "id": 3025764,
+            "status": "on",
+            "created": "2019-12-16 15:44:44",
+            "modified": "2019-12-16 16:11:16",
+            "title": "Inglese",
+            "nickname": "inglese-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025730": {
+            "id": 3025730,
+            "status": "on",
+            "created": "2019-12-16 15:28:00",
+            "modified": "2019-12-16 15:49:57",
+            "title": "Lotta contro il cambiamento climatico",
+            "nickname": "lotta-contro-il-cambiamento-climatico",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025783": {
+            "id": 3025783,
+            "status": "on",
+            "created": "2019-12-16 15:46:18",
+            "modified": "2019-12-16 15:46:18",
+            "title": "SDG-icon-IT--13.svg",
+            "nickname": "sdg-icon-it-13-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/df\/95\/sdg-icon-it-13.svg",
+            "name": "sdg-icon-it-13.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 9865,
+            "hash_file": "d2d65c4d773fcd14301e67bbd616eefa",
+            "original_name": "SDG-icon-IT--13.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025765": {
+            "id": 3025765,
+            "status": "on",
+            "created": "2019-12-16 15:44:55",
+            "modified": "2019-12-16 16:11:26",
+            "title": "Tedesco",
+            "nickname": "tedesco-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025731": {
+            "id": 3025731,
+            "status": "on",
+            "created": "2019-12-16 15:28:23",
+            "modified": "2019-12-16 15:50:13",
+            "title": "Vita sott'acqua",
+            "nickname": "vita-sott-acqua",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025782": {
+            "id": 3025782,
+            "status": "on",
+            "created": "2019-12-16 15:46:18",
+            "modified": "2019-12-16 15:46:18",
+            "title": "SDG-icon-IT--14.svg",
+            "nickname": "sdg-icon-it-14-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/39\/92\/sdg-icon-it-14.svg",
+            "name": "sdg-icon-it-14.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 5763,
+            "hash_file": "47581d350157308d7e68ac9ce5065d5a",
+            "original_name": "SDG-icon-IT--14.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025766": {
+            "id": 3025766,
+            "status": "on",
+            "created": "2019-12-16 15:45:10",
+            "modified": "2019-12-16 16:11:34",
+            "title": "Spagnolo",
+            "nickname": "spagnolo-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025732": {
+            "id": 3025732,
+            "status": "on",
+            "created": "2019-12-16 15:28:40",
+            "modified": "2019-12-16 15:50:26",
+            "title": "Vita sulla terra",
+            "nickname": "vita-sulla-terra",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025785": {
+            "id": 3025785,
+            "status": "on",
+            "created": "2019-12-16 15:46:19",
+            "modified": "2019-12-16 15:46:19",
+            "title": "SDG-icon-IT--15.svg",
+            "nickname": "sdg-icon-it-15-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/f1\/49\/sdg-icon-it-15.svg",
+            "name": "sdg-icon-it-15.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 5626,
+            "hash_file": "79c4eef494450d0d182a5766efbb244f",
+            "original_name": "SDG-icon-IT--15.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3025767": {
+            "id": 3025767,
+            "status": "on",
+            "created": "2019-12-16 15:45:29",
+            "modified": "2019-12-16 16:11:42",
+            "title": "Francese",
+            "nickname": "francese-materia",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025736": {
+            "id": 3025736,
+            "status": "on",
+            "created": "2019-12-16 15:34:25",
+            "modified": "2019-12-16 15:50:43",
+            "title": "Pace, giustizia e istituzioni forti",
+            "nickname": "pace-giustizia-e-istituzioni-forti",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025784": {
+            "id": 3025784,
+            "status": "on",
+            "created": "2019-12-16 15:46:19",
+            "modified": "2019-12-16 15:46:19",
+            "title": "SDG-icon-IT--16.svg",
+            "nickname": "sdg-icon-it-16-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/0f\/7e\/sdg-icon-it-16.svg",
+            "name": "sdg-icon-it-16.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 8722,
+            "hash_file": "6e473a443d343e30791aef6ef413a43b",
+            "original_name": "SDG-icon-IT--16.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032920": {
+            "id": 3032920,
+            "status": "on",
+            "created": "2020-01-08 17:12:52",
+            "modified": "2020-01-08 17:12:52",
+            "title": "Tecnologia",
+            "nickname": "tecnologia-4",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025737": {
+            "id": 3025737,
+            "status": "on",
+            "created": "2019-12-16 15:34:53",
+            "modified": "2019-12-16 15:50:57",
+            "title": "Partnership per gli obiettivi",
+            "nickname": "partnership-per-gli-obiettivi",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "note": "{\"size\":0}",
+            "comments": "off",
+            "menu": 1,
+            "objectType": "section"
+        },
+        "3025786": {
+            "id": 3025786,
+            "status": "on",
+            "created": "2019-12-16 15:46:19",
+            "modified": "2019-12-16 15:46:19",
+            "title": "SDG-icon-IT--17.svg",
+            "nickname": "sdg-icon-it-17-svg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/ee\/6c\/sdg-icon-it-17.svg",
+            "name": "sdg-icon-it-17.svg",
+            "mime_type": "image\/svg+xml",
+            "file_size": 6154,
+            "hash_file": "5030c4cbb590c6a57f42141a95392637",
+            "original_name": "SDG-icon-IT--17.svg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "drawing",
+                    "label": "Drawing"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032855": {
+            "id": 3032855,
+            "body": "<p>Come tutti gli Stati democratici, anche l'Italia basa la sua politica sul principio della separazione dei poteri. Al governo spetta il potere esecutivo e lo esercita attraverso il consiglio dei ministri. I minitseri hanno per\u00f2 un potere soggetto ad alcuni limiti: dal rispetto delle gerarchie all\u2019autorit\u00e0 di regioni e enti locali. Nonostante questa spartizione dei poteri, tutti i ministeri hanno sede nella capitale.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 16:12:07",
+            "modified": "2020-01-09 16:41:41",
+            "title": "I ministeri della Repubblica italiana",
+            "nickname": "i-ministeri-della-repubblica-italiana-lo-stato-in-azione",
+            "description": "<p>lo Stato in azione<\/p>\r\n",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025736,
+                    "priority": 4
+                },
+                {
+                    "id": 3025739,
+                    "priority": 2
+                },
+                {
+                    "id": 3025749,
+                    "priority": 4
+                },
+                {
+                    "id": 3025750,
+                    "priority": 4
+                }
+            ]
+        },
+        "3033344": {
+            "id": 3033344,
+            "width": 1254,
+            "height": 836,
+            "status": "on",
+            "created": "2020-01-09 16:35:31",
+            "modified": "2020-01-09 16:35:31",
+            "title": "I ministeri della Repubblica italiana",
+            "nickname": "02_ministeri_istock-91248515-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/12\/3b\/02_ministeri_istock-91248515.jpg",
+            "name": "02_ministeri_istock-91248515.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 856392,
+            "hash_file": "5d47ef3dffcc35c664035fd039dabc95",
+            "original_name": "02_ministeri_iStock-91248515.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032883": {
+            "id": 3032883,
+            "uri": "\/f1\/a2\/ministeri_repubblica_italiana_scheda_np_002d.pdf",
+            "name": "ministeri_repubblica_italiana_scheda_np_002d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 412454,
+            "hash_file": "f6cbf0322cbda307a4ee74635e4ed648",
+            "original_name": "ministeri_repubblica_italiana_scheda_NP_002D.pdf",
+            "status": "on",
+            "created": "2020-01-08 16:39:03",
+            "modified": "2020-01-09 16:35:48",
+            "title": "ministeri_repubblica_italiana_scheda_np_002d",
+            "nickname": "ministeri_repubblica_italiana_scheda_np_002d-pdf",
+            "description": "Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032884": {
+            "id": 3032884,
+            "uri": "\/7c\/7c\/ministeri_repubblica_italiana_scheda_np_002s.pdf",
+            "name": "ministeri_repubblica_italiana_scheda_np_002s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 289699,
+            "hash_file": "74ff462b597c9678e3ba7ef158709287",
+            "original_name": "ministeri_repubblica_italiana_scheda_NP_002S.pdf",
+            "status": "on",
+            "created": "2020-01-08 16:39:49",
+            "modified": "2020-01-09 16:35:48",
+            "title": "ministeri_repubblica_italiana_scheda_np_002s",
+            "nickname": "ministeri_repubblica_italiana_scheda_np_002s-pdf",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032945": {
+            "id": 3032945,
+            "body": "<p>La Costituzione ci dice che \u201cla sovranit\u00e0 appartiene al popolo\u201d, ma quali sono gli strumenti attraverso cui i cittadini esercitano i propri diritti? Dal voto, che rappresenta anche un dovere, una responsabilit\u00e0, al referendum, esercizio di democrazia diretta, passando per l\u2019associazionismo (di partito) e la petizione, ciascuno di noi pu\u00f2 partecipare attivamente al miglioramento della cosa pubblica, perfino con l\u2019iniziativa legislativa popolare.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 17:23:18",
+            "modified": "2020-01-09 17:11:13",
+            "title": "La sovranit\u00e0, il popolo che decide",
+            "nickname": "la-sovranita-il-popolo-che-decide",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025736,
+                    "priority": 6
+                },
+                {
+                    "id": 3025739,
+                    "priority": 4
+                },
+                {
+                    "id": 3025749,
+                    "priority": 6
+                },
+                {
+                    "id": 3025750,
+                    "priority": 6
+                }
+            ]
+        },
+        "3033368": {
+            "id": 3033368,
+            "width": 1254,
+            "height": 836,
+            "status": "on",
+            "created": "2020-01-09 17:10:08",
+            "modified": "2020-01-09 17:10:08",
+            "title": "La sovranit\u00e0 appartiene al popolo",
+            "nickname": "04-sovranita_istock-921583802-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/a3\/24\/04-sovranita_istock-921583802.jpg",
+            "name": "04-sovranita_istock-921583802.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 316455,
+            "hash_file": "7d64f7476b58cd6208665d52946c7c47",
+            "original_name": "04.Sovranita_iStock-921583802.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032953": {
+            "id": 3032953,
+            "uri": "\/49\/2a\/la-sovranita_scheda_np_004d.pdf",
+            "name": "la-sovranita_scheda_np_004d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 369975,
+            "hash_file": "1cea41fb23050a1b6e915dbfb27dd85a",
+            "original_name": "la sovranita_scheda_NP_004D.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:28:23",
+            "modified": "2020-01-09 17:11:13",
+            "title": "la-sovranita_scheda_np_004d",
+            "nickname": "la-sovranita_scheda_np_004d-pdf",
+            "description": "Una scheda di lavoro riservata ai docenti, con un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032954": {
+            "id": 3032954,
+            "uri": "\/63\/e5\/la-sovranita_scheda_np_004s.pdf",
+            "name": "la-sovranita_scheda_np_004s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 243496,
+            "hash_file": "f61d6a3d6245d991f7d008574e18ea6d",
+            "original_name": "la sovranita_scheda_NP_004S.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:29:05",
+            "modified": "2020-01-09 17:11:13",
+            "title": "la-sovranita_scheda_np_004s",
+            "nickname": "la-sovranita_scheda_np_004s-pdf",
+            "description": "Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3027474": {
+            "id": 3027474,
+            "body": "<p>Ci sono scienziati che lasciano il segno partorendo un\u2019idea che contribuisce a cambiare il modo in cui l\u2019umanit\u00e0 guarda il mondo. Altri che, invece, devono mettere la mani in pasta, sporcarsele e toccare. Mary Anning appartiene sicuramente al secondo tipo, ed \u00e8 probabilmente la pi\u00f9 importante (o la meno ricordata) di tutti i raccoglitori nella storia della paleontologia.<\/p>\r\n",
+            "status": "on",
+            "created": "2019-12-18 16:43:49",
+            "modified": "2020-01-09 18:58:30",
+            "title": "Mary Anning, la \u00abPrincipessa della paleontologia\u00bb",
+            "nickname": "mary-anning-la-principessa-della-paleontologia",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025709,
+                    "priority": 2
+                },
+                {
+                    "id": 3025732,
+                    "priority": 4
+                },
+                {
+                    "id": 3025749,
+                    "priority": 2
+                },
+                {
+                    "id": 3025756,
+                    "priority": 6
+                }
+            ]
+        },
+        "3027479": {
+            "id": 3027479,
+            "url": "https:\/\/aulascienze.scuola.zanichelli.it\/ieri-oggi-scienza\/mary-anning-la-principessa-della-paleontologia\/",
+            "http_code": "HTTP\/1.0 200 OK",
+            "http_response_date": "2020-01-09 18:58:30",
+            "status": "on",
+            "created": "2019-12-18 16:47:54",
+            "modified": "2020-01-09 18:58:30",
+            "title": "Mary Anning, la \u00abPrincipessa della paleontologia\u00bb",
+            "nickname": "mary-anning-la-principessa-della-paleontologia-1",
+            "description": "<p>Un articolo dalle Aule Zanichelli, per approfondire un tema e individuare nuovi spunti didattici.<\/p>\r\n",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "link",
+            "parents": [
+
+            ]
+        },
+        "3033458": {
+            "id": 3033458,
+            "width": 512,
+            "height": 704,
+            "status": "on",
+            "created": "2020-01-09 18:58:19",
+            "modified": "2020-01-09 18:58:19",
+            "title": "Mary Anning",
+            "nickname": "03-mary_anning_512px-mary_anning_painting-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/5b\/70\/03-mary_anning_512px-mary_anning_painting.jpg",
+            "name": "03-mary_anning_512px-mary_anning_painting.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 101196,
+            "hash_file": "6e03a8195777f8bab54a6d2fcabbc273",
+            "original_name": "03.Mary_Anning_512px-Mary_Anning_painting.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3026548": {
+            "id": 3026548,
+            "body": "<p>Dal 1945 l'Unesco \u00e8 l'agenzia ONU che ha come obiettivo quello di consolidare la pace attraverso la promozione dell\u2019educazione, della conoscenza scientifica, della cultura, della libera comunicazione e dell\u2019informazione. Tra i suoi tanti progetti va menzionato l\u2019aggiornamento della <em>World Heritage List<\/em> che raccoglie e protegge i siti dichiarati patrimonio dell\u2019umanit\u00e0.<\/p>\r\n",
+            "status": "on",
+            "created": "2019-12-17 15:51:28",
+            "modified": "2020-01-09 16:32:15",
+            "title": "L'UNESCO",
+            "nickname": "l-unesco",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025736,
+                    "priority": 2
+                },
+                {
+                    "id": 3025737,
+                    "priority": 2
+                },
+                {
+                    "id": 3025745,
+                    "priority": 4
+                },
+                {
+                    "id": 3025750,
+                    "priority": 2
+                }
+            ]
+        },
+        "3026551": {
+            "id": 3026551,
+            "uri": "\/fd\/e9\/unesco_scheda_np_006d.pdf",
+            "name": "unesco_scheda_np_006d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 424406,
+            "hash_file": "2fc34c5d838976111c853fa0a9ead800",
+            "original_name": "unesco_scheda_NP_006D.pdf",
+            "status": "on",
+            "created": "2019-12-17 15:52:38",
+            "modified": "2020-01-09 16:32:15",
+            "title": "unesco_scheda_NP_006D.pdf",
+            "nickname": "unesco_scheda_np_006d-pdf",
+            "description": "<p>Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.<\/p>\r\n",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3033340": {
+            "id": 3033340,
+            "width": 1264,
+            "height": 830,
+            "status": "on",
+            "created": "2020-01-09 16:31:45",
+            "modified": "2020-01-09 16:31:45",
+            "title": "UNESCO",
+            "nickname": "06-unesco_istock-1084060906-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/83\/bb\/06-unesco_istock-1084060906.jpg",
+            "name": "06-unesco_istock-1084060906.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 882496,
+            "hash_file": "bc3acdbfa05d21f6873c6d88fd7b430d",
+            "original_name": "06.Unesco_iStock-1084060906.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3026552": {
+            "id": 3026552,
+            "uri": "\/d5\/53\/unesco_scheda_np_006s.pdf",
+            "name": "unesco_scheda_np_006s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 292022,
+            "hash_file": "939254ea4a31e3da631338ccc2e7bc7b",
+            "original_name": "unesco_scheda_NP_006S.pdf",
+            "status": "on",
+            "created": "2019-12-17 15:52:38",
+            "modified": "2019-12-17 15:52:38",
+            "title": "unesco_scheda_NP_006S.pdf",
+            "nickname": "unesco_scheda_np_006s-pdf",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032958": {
+            "id": 3032958,
+            "body": "<p>Quando la criminalit\u00e0 organizzata gestisce attivit\u00e0 illecite a danno di ambienti ed ecosistemi, si parla di ecomafia. Tra Napoli e Caserta, da decenni la Camorra scarica i rifiuti nocivi delle imprese nazionali. Grazie ai rapporti di <em>Legambiente<\/em>, alle indagini di polizia e magistratura e all\u2019impegno dei cittadini, questi crimini sono sempre pi\u00f9 puniti dalle istituzioni e sono sempre pi\u00f9 presenti nella sensibilit\u00e0 comune.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 17:34:04",
+            "modified": "2020-01-09 17:16:17",
+            "title": "La mafia e la \u00abterra dei fuochi\u00bb",
+            "nickname": "la-mafia-e-la-terra-dei-fuochi",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025707,
+                    "priority": 4
+                },
+                {
+                    "id": 3025728,
+                    "priority": 6
+                },
+                {
+                    "id": 3025736,
+                    "priority": 8
+                },
+                {
+                    "id": 3025746,
+                    "priority": 2
+                },
+                {
+                    "id": 3025750,
+                    "priority": 8
+                },
+                {
+                    "id": 3025757,
+                    "priority": 2
+                }
+            ]
+        },
+        "3033377": {
+            "id": 3033377,
+            "width": 1254,
+            "height": 836,
+            "status": "on",
+            "created": "2020-01-09 17:15:52",
+            "modified": "2020-01-09 17:15:52",
+            "title": "La mafia e la \u00abterra dei fuochi\u00bb",
+            "nickname": "05-terradeifuochi_istock-1154602269-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/13\/5f\/05-terradeifuochi_istock-1154602269.jpg",
+            "name": "05-terradeifuochi_istock-1154602269.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 496931,
+            "hash_file": "bad58307d5e88003aa8990b73b10e6f7",
+            "original_name": "05.TerradeiFuochi_iStock-1154602269.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032960": {
+            "id": 3032960,
+            "uri": "\/23\/14\/terra-dei-fuochi_scheda_np_005s.pdf",
+            "name": "terra-dei-fuochi_scheda_np_005s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 365347,
+            "hash_file": "0e3ba08e62d3bdbbebeb600e8b1e5c7b",
+            "original_name": "terra dei fuochi_scheda_NP_005S.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:35:52",
+            "modified": "2020-01-09 17:14:39",
+            "title": "terra-dei-fuochi_scheda_np_005s",
+            "nickname": "terra-dei-fuochi_scheda_np_005s-pdf",
+            "description": "Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032961": {
+            "id": 3032961,
+            "uri": "\/1b\/cf\/terra_dei_fuochi_scheda_np_005d.pdf",
+            "name": "terra_dei_fuochi_scheda_np_005d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 492932,
+            "hash_file": "e25b2e2c865e97b52de5e6274072eb14",
+            "original_name": "terra_dei_fuochi_scheda_NP_005D.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:36:04",
+            "modified": "2020-01-09 17:14:39",
+            "title": "terra_dei_fuochi_scheda_np_005d",
+            "nickname": "terra_dei_fuochi_scheda_np_005d-pdf",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3026516": {
+            "id": 3026516,
+            "body": "<p>Nella nostra societ\u00e0, le plastiche costituiscono una componente onnipresente e, se non smaltite correttamente, diventano rifiuti dispersi nell'ambiente, nei mari e negli oceani dove entrano nella catena alimentare. La generazione di microplastiche pu\u00f2 avvenire anche nei momenti pi\u00f9 impensati della vita quotidiana e trovare soluzioni sostenibili per degradare e riciclare questi materiali \u00e8 fondamentale.<\/p>\r\n",
+            "status": "on",
+            "created": "2019-12-17 15:15:55",
+            "modified": "2020-01-09 16:18:24",
+            "title": "Le microplastiche",
+            "nickname": "le-microplastiche",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025707,
+                    "priority": 2
+                },
+                {
+                    "id": 3025729,
+                    "priority": 2
+                },
+                {
+                    "id": 3025731,
+                    "priority": 2
+                },
+                {
+                    "id": 3025745,
+                    "priority": 8
+                },
+                {
+                    "id": 3025753,
+                    "priority": 2
+                },
+                {
+                    "id": 3025755,
+                    "priority": 2
+                }
+            ]
+        },
+        "3026522": {
+            "id": 3026522,
+            "uri": "\/e6\/91\/microplastiche_scheda_np_008d.pdf",
+            "name": "microplastiche_scheda_np_008d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 423183,
+            "hash_file": "36a87e2ab9257000c91bd91c7285c025",
+            "original_name": "microplastiche_scheda_NP_008D.pdf",
+            "status": "on",
+            "created": "2019-12-17 15:20:14",
+            "modified": "2020-01-09 16:18:24",
+            "title": "microplastiche_scheda_NP_008D.pdf",
+            "nickname": "microplastiche_scheda_np_008d-pdf",
+            "description": "<p>Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.<\/p>\r\n",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3033336": {
+            "id": 3033336,
+            "width": 1288,
+            "height": 814,
+            "status": "on",
+            "created": "2020-01-09 16:17:16",
+            "modified": "2020-01-09 16:17:42",
+            "title": "Microplastiche",
+            "nickname": "08-microplastiche_istock-1150805328-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/2e\/a1\/08-microplastiche_istock-1150805328.jpg",
+            "name": "08-microplastiche_istock-1150805328.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 567312,
+            "hash_file": "2508cfcec6ac561ebca4b00637e2f6a4",
+            "original_name": "08.microplastiche_iStock-1150805328.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3026523": {
+            "id": 3026523,
+            "uri": "\/98\/5d\/microplastiche_scheda_np_008s.pdf",
+            "name": "microplastiche_scheda_np_008s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 297043,
+            "hash_file": "ef3456641f1b6bdca67609afebcbe7da",
+            "original_name": "microplastiche_scheda_NP_008S.pdf",
+            "status": "on",
+            "created": "2019-12-17 15:20:14",
+            "modified": "2019-12-17 15:30:24",
+            "title": "microplastiche_scheda_NP_008S.pdf",
+            "nickname": "microplastiche_scheda_np_008s-pdf",
+            "description": "Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032917": {
+            "id": 3032917,
+            "body": "<p>Dagli anni Cinquanta la produzione e l\u2019utilizzo di materiali plastici interessano tutto il mondo. Purtroppo per\u00f2 l\u2019impegno per uno smaltimento corretto \u00e8 iniziato solo di recente e ha portato l\u2019Europa a pianificare il divieto di plastica usa e getta entro il 2021. Il mare in generale e il Mediterraneo in particolare contengono enormi quantit\u00e0 di plastiche e microplastiche, che finiscono nella catena alimentare dei pesci di cui anche noi ci cbiamo. Ma forse \u00e8 ripulire gli oceani \u00e8 possibile, e in modo del tutto sostenibile.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 17:11:26",
+            "modified": "2020-01-09 16:46:09",
+            "title": "Oceani di plastica",
+            "nickname": "oceani-di-plastica-i-rifiuti-nella-catena-alimentare",
+            "description": "<p>i rifiuti nella catena alimentare<\/p>\r\n",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025726,
+                    "priority": 2
+                },
+                {
+                    "id": 3025729,
+                    "priority": 4
+                },
+                {
+                    "id": 3025731,
+                    "priority": 4
+                },
+                {
+                    "id": 3025745,
+                    "priority": 10
+                },
+                {
+                    "id": 3025753,
+                    "priority": 4
+                },
+                {
+                    "id": 3032920,
+                    "priority": 2
+                }
+            ]
+        },
+        "3033350": {
+            "id": 3033350,
+            "width": 836,
+            "height": 1255,
+            "status": "on",
+            "created": "2020-01-09 16:44:32",
+            "modified": "2020-01-09 16:44:32",
+            "title": "Oceani di plastica",
+            "nickname": "03-oceani_plastica_istock-1139362506-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/43\/13\/03-oceani_plastica_istock-1139362506.jpg",
+            "name": "03-oceani_plastica_istock-1139362506.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 658837,
+            "hash_file": "aa1de425ea6087b4380411aae017cc64",
+            "original_name": "03.Oceani_plastica_iStock-1139362506.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032964": {
+            "id": 3032964,
+            "body": "<p>Un modello virtuoso di economia esiste e parte dal settore primario. La bioeconomia punta a una produzione maggiore e di maggiore qualit\u00e0 attraverso processi biologici e riguarda soprattutto il settore agroalimentare e forestale. A partire dalle biomasse, la bioeconomia arriva fino alla produzione industriale. Ma i suoi vantaggi derivano anche dalla salvaguardia del territorio e dalla riduzione di rifiuti inquinanti.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 17:41:11",
+            "modified": "2020-01-09 17:21:29",
+            "title": "Cambiare prospettiva",
+            "nickname": "cambiare-prospettiva-verso-la-bioeconomia",
+            "description": "<p>verso la bioeconomia<\/p>\r\n",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025729,
+                    "priority": 6
+                },
+                {
+                    "id": 3025730,
+                    "priority": 6
+                },
+                {
+                    "id": 3025745,
+                    "priority": 12
+                },
+                {
+                    "id": 3025753,
+                    "priority": 6
+                },
+                {
+                    "id": 3025755,
+                    "priority": 4
+                }
+            ]
+        },
+        "3033380": {
+            "id": 3033380,
+            "width": 1254,
+            "height": 836,
+            "status": "on",
+            "created": "2020-01-09 17:20:34",
+            "modified": "2020-01-09 17:20:34",
+            "title": "Bioeconomia",
+            "nickname": "07-bioeconomia_istock-157648683-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/f2\/56\/07-bioeconomia_istock-157648683.jpg",
+            "name": "07-bioeconomia_istock-157648683.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 1074513,
+            "hash_file": "aed6b9ae47786087cb5d997bd2f31805",
+            "original_name": "07.Bioeconomia_iStock-157648683.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032967": {
+            "id": 3032967,
+            "uri": "\/57\/a7\/bioeconomia_scheda_np_007d.pdf",
+            "name": "bioeconomia_scheda_np_007d.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 316532,
+            "hash_file": "bb694c996c1046375057dc0bbc8616bf",
+            "original_name": "bioeconomia_scheda_NP_007D.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:46:46",
+            "modified": "2020-01-09 17:20:53",
+            "title": "bioeconomia_scheda_np_007d",
+            "nickname": "bioeconomia_scheda_np_007d-pdf",
+            "description": "Una scheda di lavoro con testo ed esercizi per integrare le lezioni in classe o approfondire un argomento. La versione per il docente comprende un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032968": {
+            "id": 3032968,
+            "uri": "\/02\/f9\/bioeconomia_scheda_np_007s.pdf",
+            "name": "bioeconomia_scheda_np_007s.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 190164,
+            "hash_file": "79ff7d68ee1346a5c5e66d2c3de86204",
+            "original_name": "bioeconomia_scheda_NP_007S.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:47:00",
+            "modified": "2020-01-09 17:20:53",
+            "title": "bioeconomia_scheda_np_007s",
+            "nickname": "bioeconomia_scheda_np_007s-pdf",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032970": {
+            "id": 3032970,
+            "body": "<p>C\u2019\u00e8 un nuovo approccio alla chimica, responsabile e sostenibile, che ha messo in discussione gli obiettivi della ricerca e dell\u2019industria di questo settore. La Green Chemistry si basa su dodici principi fondamentali, tra i quali prevenzione, efficienza energetica e utilizzo di materie prime rinnovabili. La chimica sostenibile ha l\u2019obiettivo di offrire crescita e sviluppo senza compromettere la sicurezza dell\u2019uomo e dell\u2019ambiente.<\/p>\r\n",
+            "status": "on",
+            "created": "2020-01-08 17:51:40",
+            "modified": "2020-01-09 18:22:20",
+            "title": "La chimica sostenibile (i principi della Green Chemistry)",
+            "nickname": "la-chimica-sostenibile-i-principi-della-green-chemistry",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025712,
+                    "priority": 2
+                },
+                {
+                    "id": 3025729,
+                    "priority": 8
+                },
+                {
+                    "id": 3025730,
+                    "priority": 8
+                },
+                {
+                    "id": 3025745,
+                    "priority": 14
+                },
+                {
+                    "id": 3025755,
+                    "priority": 6
+                }
+            ]
+        },
+        "3033419": {
+            "id": 3033419,
+            "width": 878,
+            "height": 1195,
+            "status": "on",
+            "created": "2020-01-09 18:20:40",
+            "modified": "2020-01-09 18:20:40",
+            "title": "Green chemistry",
+            "nickname": "09-greenchemistry_istock-155758295-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/86\/0d\/09-greenchemistry_istock-155758295.jpg",
+            "name": "09-greenchemistry_istock-155758295.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 571250,
+            "hash_file": "b018eec6fb9fa9bd8866b760625c7b2f",
+            "original_name": "09.GreenChemistry_iStock-155758295.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3032973": {
+            "id": 3032973,
+            "uri": "\/cd\/d1\/chimica_sostenibile_scheda_np_009sd.pdf",
+            "name": "chimica_sostenibile_scheda_np_009sd.pdf",
+            "mime_type": "application\/pdf",
+            "file_size": 327582,
+            "hash_file": "5712ddf0198388c9df1f944136f9efcd",
+            "original_name": "chimica_sostenibile_scheda_NP_009SD.pdf",
+            "status": "on",
+            "created": "2020-01-08 17:55:55",
+            "modified": "2020-01-09 17:24:06",
+            "title": "chimica_sostenibile_scheda_np_009sd",
+            "nickname": "chimica_sostenibile_scheda_np_009sd-pdf",
+            "description": "Una scheda di lavoro riservata ai docenti, con un compito di realt\u00e0 per allenare le competenze in classe e una rubrica di valutazione.",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "b_e_file",
+            "categories": [
+                {
+                    "name": "text",
+                    "label": "Text"
+                }
+            ],
+            "parents": [
+
+            ]
+        },
+        "3027368": {
+            "id": 3027368,
+            "body": "<p>Il recente riscaldamento globale sta provocando molti cambiamenti in tutte le componenti del sistema climatico terrestre, dall\u2019atmosfera agli oceani, dai ghiacci alla vegetazione ai suoli. In questa catena di cambiamenti vengono ridefiniti anche molti aspetti del clima che prima si ritenevamo fissi e immutabili, come il concetto stesso di fascia climatica.<\/p>\r\n",
+            "status": "on",
+            "created": "2019-12-18 16:09:11",
+            "modified": "2020-01-09 18:57:27",
+            "title": "Viaggio nelle fasce climatiche",
+            "nickname": "viaggio-nelle-fasce-climatiche-1",
+            "lang": "ita",
+            "comments": "off",
+            "objectType": "document",
+            "parents": [
+                {
+                    "id": 3025711,
+                    "priority": 4
+                },
+                {
+                    "id": 3025728,
+                    "priority": 4
+                },
+                {
+                    "id": 3025730,
+                    "priority": 4
+                },
+                {
+                    "id": 3025745,
+                    "priority": 6
+                },
+                {
+                    "id": 3025756,
+                    "priority": 4
+                }
+            ]
+        },
+        "3026534": {
+            "id": 3026534,
+            "url": "https:\/\/aulascienze.scuola.zanichelli.it\/come-te-lo-spiego\/2019\/02\/08\/viaggio-nelle-fasce-climatiche\/",
+            "http_code": "HTTP\/1.0 200 OK",
+            "http_response_date": "2020-01-09 18:57:27",
+            "status": "on",
+            "created": "2019-12-17 15:41:36",
+            "modified": "2020-01-09 18:57:27",
+            "title": "Viaggio nelle fasce climatiche",
+            "nickname": "viaggio-nelle-fasce-climatiche",
+            "description": "<p>Un articolo dalle Aule Zanichelli, per approfondire un tema e individuare nuovi spunti didattici.<\/p>\r\n",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "objectType": "link",
+            "parents": [
+
+            ]
+        },
+        "3033455": {
+            "id": 3033455,
+            "width": 1209,
+            "height": 867,
+            "status": "on",
+            "created": "2020-01-09 18:57:14",
+            "modified": "2020-01-09 18:57:14",
+            "title": "Fasce climatiche",
+            "nickname": "02_fasceclimatiche_istock-1040975032-jpg",
+            "lang": "ita",
+            "publisher": "Zanichelli",
+            "comments": "off",
+            "uri": "\/6e\/13\/02_fasceclimatiche_istock-1040975032.jpg",
+            "name": "02_fasceclimatiche_istock-1040975032.jpg",
+            "mime_type": "image\/jpeg",
+            "file_size": 1318654,
+            "hash_file": "f4d559d54b0b9af70aaae358777aef00",
+            "original_name": "02_fasceclimatiche_iStock-1040975032.jpg",
+            "objectType": "image",
+            "categories": [
+                {
+                    "name": "image",
+                    "label": "Image"
+                }
+            ],
+            "parents": [
+
+            ]
+        }
+    },
+    "relations": {
+        "poster": [
+            {
+                "idLeft": 3025705,
+                "idRight": 3025771,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025706,
+                "idRight": 3025770,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025707,
+                "idRight": 3025773,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025708,
+                "idRight": 3025772,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025709,
+                "idRight": 3025774,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025710,
+                "idRight": 3025775,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025711,
+                "idRight": 3025777,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025712,
+                "idRight": 3025776,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025726,
+                "idRight": 3025778,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025727,
+                "idRight": 3025779,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025728,
+                "idRight": 3025781,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025729,
+                "idRight": 3025780,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025730,
+                "idRight": 3025783,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025731,
+                "idRight": 3025782,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025732,
+                "idRight": 3025785,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025736,
+                "idRight": 3025784,
+                "priority": 1
+            },
+            {
+                "idLeft": 3025737,
+                "idRight": 3025786,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032855,
+                "idRight": 3033344,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032945,
+                "idRight": 3033368,
+                "priority": 1
+            },
+            {
+                "idLeft": 3027474,
+                "idRight": 3033458,
+                "priority": 1
+            },
+            {
+                "idLeft": 3026548,
+                "idRight": 3033340,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032958,
+                "idRight": 3033377,
+                "priority": 1
+            },
+            {
+                "idLeft": 3026516,
+                "idRight": 3033336,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032917,
+                "idRight": 3033350,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032964,
+                "idRight": 3033380,
+                "priority": 1
+            },
+            {
+                "idLeft": 3032970,
+                "idRight": 3033419,
+                "priority": 1
+            },
+            {
+                "idLeft": 3027368,
+                "idRight": 3033455,
+                "priority": 1
+            }
+        ],
+        "download": [
+            {
+                "idLeft": 3032855,
+                "idRight": 3032883,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032855,
+                "idRight": 3032884,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032945,
+                "idRight": 3032953,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032945,
+                "idRight": 3032954,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3026548,
+                "idRight": 3026551,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3026548,
+                "idRight": 3026552,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032958,
+                "idRight": 3032960,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032958,
+                "idRight": 3032961,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3026516,
+                "idRight": 3026522,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3026516,
+                "idRight": 3026523,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032964,
+                "idRight": 3032967,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032964,
+                "idRight": 3032968,
+                "priority": 2,
+                "params": {
+                    "label": ""
+                }
+            },
+            {
+                "idLeft": 3032970,
+                "idRight": 3032973,
+                "priority": 1,
+                "params": {
+                    "label": ""
+                }
+            }
+        ],
+        "link": [
+            {
+                "idLeft": 3027474,
+                "idRight": 3027479,
+                "priority": 1
+            },
+            {
+                "idLeft": 3027368,
+                "idRight": 3026534,
+                "priority": 1
+            }
+        ]
+    }
+}
