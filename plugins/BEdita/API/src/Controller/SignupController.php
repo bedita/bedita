@@ -62,12 +62,15 @@ class SignupController extends AppController
     }
 
     /**
-     * Create requested action class, looking in configuration for custom class.
-     * You can set a custom class in configuration like:
+     * Create action class, looking in configuration for custom class.
+     *
+     * You can set a custom class in configuration like this:
      *
      * ```
      * Configure::write('Signup.signupUserAction', '\MyPlugin\Model\Action\MySignupAction')
      * ```
+     *
+     * Or same setting in `config/app.php` (recommended)
      * Custom class must extend BaseAction.
      *
      * @param string $name Configuration name to look for
