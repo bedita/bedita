@@ -12,8 +12,11 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\BaseAction;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
+use Cake\Core\Configure;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/signup` endpoint.
@@ -49,13 +52,34 @@ class SignupController extends AppController
 
         $data = $this->request->getData();
 
-        $action = new SignupUserAction();
-        $user = $action->execute(compact('data'));
+        $action = $this->createAction('SignupUserAction', SignupUserAction::class);
+        $user = $action(compact('data'));
 
         $this->response = $this->response->withStatus(202);
 
         $this->set('data', $user);
         $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * Create requested action class, looking in configuration for custom class.
+     * You can set a custom class in configuration like:
+     *
+     * ```
+     * Configure::write('Signup.signupUserAction', '\MyPlugin\Model\Action\MySignupAction')
+     * ```
+     * Custom class must extend BaseAction.
+     *
+     * @param string $name Configuration name to look for
+     * @param string $default Default action class to use
+     * @return \BEdita\Core\Model\Action\BaseAction
+     */
+    protected function createAction(string $name, string $default): BaseAction
+    {
+        $config = sprintf('Signup.%s', Inflector::variable($name));
+        $actionName = Configure::read($config, $default);
+
+        return new $actionName();
     }
 
     /**
@@ -67,7 +91,10 @@ class SignupController extends AppController
     {
         $this->request->allowMethod('post');
 
-        $action = new SignupUserActivationAction();
+        $action = $this->createAction(
+            'SignupUserActivationAction',
+            SignupUserActivationAction::class
+        );
         $action(['uuid' => $this->request->getData('uuid')]);
 
         return $this->response->withStatus(204);
