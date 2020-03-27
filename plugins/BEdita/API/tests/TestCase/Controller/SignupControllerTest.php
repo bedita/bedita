@@ -458,4 +458,56 @@ class SignupControllerTest extends IntegrationTestCase
         $this->assertResponseCode(409);
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Test `createAction` method
+     *
+     * @return void
+     *
+     * @covers ::createAction()
+     */
+    public function testCreateAction()
+    {
+        Configure::write('Signup.signupUserAction', '\BEdita\Core\Model\Action\SignupUserAction');
+        $this->testActivationOk();
+    }
+
+    /**
+     * Test `createAction` failure
+     *
+     * @return void
+     *
+     * @covers ::createAction()
+     */
+    public function testCreateActionFail()
+    {
+        Configure::write('Signup.signupUserAction', '\Some\Class');
+
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/json'
+        ]);
+        $data = [
+            'username' => 'gustavo',
+            'password' => 'password',
+            'email' => 'gus.sup@channelweb.it',
+            'activation_url' => 'http://example.com',
+        ];
+        $this->post('/signup', json_encode($data));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        unset($result['error']['meta']);
+
+        $expected = [
+            'error' => [
+                'status' => '500',
+                'title' => "Class '\Some\Class' not found",
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/signup',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $this->assertResponseCode(500);
+        static::assertEquals($expected, $result);
+    }
 }
