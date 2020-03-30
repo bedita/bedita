@@ -530,6 +530,15 @@ return [
     ],
 
     /**
+     * Uncomment to define Custom actions to load
+     * This way some action beahavior can be overridden
+     */
+    // 'Actions' => [
+    //     'signupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
+    //     'signupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
+    // ],
+
+    /**
      * Default values per object type
      * object type names as keys (lower case), default property names and values as value
      */
