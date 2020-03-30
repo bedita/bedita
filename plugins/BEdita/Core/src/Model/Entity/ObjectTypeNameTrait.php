@@ -21,6 +21,10 @@ use Cake\ORM\TableRegistry;
  * Trait implementing virtual object type getter/setter via its name.
  *
  * @since 4.0.0
+ *
+ * @property int $object_type_id
+ * @property string $object_type_name
+ * @property \BEdita\Core\Model\Entity\ObjectType $object_type
  */
 trait ObjectTypeNameTrait
 {
@@ -31,7 +35,7 @@ trait ObjectTypeNameTrait
      */
     protected function _getObjectTypeName(): ?string
     {
-        if (!$this->object_type) {
+        if (empty($this->object_type)) {
             try {
                 $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($this->object_type_id);
             } catch (RecordNotFoundException $e) {
