@@ -530,7 +530,7 @@ return [
     ],
 
     /**
-     * Uncomment to define Custom actions to load
+     * Uncomment to define custom actions to load
      * This way some action beahavior can be overridden
      */
     // 'Actions' => [
