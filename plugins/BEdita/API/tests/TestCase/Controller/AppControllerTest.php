@@ -177,6 +177,25 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test default behavior on missing 'Security.blockAnonymousApps' key
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testGetApplicationDefault()
+    {
+        static::expectException(ForbiddenException::class);
+        static::expectExceptionMessage('Missing API key');
+
+        Configure::delete('Security.blockAnonymousApps');
+        CurrentApplication::getInstance()->set(null);
+        $environment = ['HTTP_ACCEPT' => 'application/json'];
+        $request = new ServerRequest(compact('environment'));
+        $controller = new AppController($request);
+        $controller->dispatchEvent('Controller.initialize');
+    }
+
+    /**
      * Test included resources.
      *
      * @return void
