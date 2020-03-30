@@ -110,14 +110,24 @@ abstract class CategoriesTagsBaseTable extends Table
      */
     protected function removeFields(Query $query)
     {
-        $query->formatResults(function (CollectionInterface $results) {
-            return $results->map(function ($row) {
+        $remove = [
+            'id',
+            'object_type_id',
+            'object_type_name',
+            'parent_id',
+            'tree_left',
+            'tree_right',
+            'enabled',
+            'created',
+            'modified'
+        ];
+        $query->formatResults(function (CollectionInterface $results) use ($remove) {
+            return $results->map(function ($row) use ($remove) {
                 if (!empty($row['_joinData'])) {
                     $row['params'] = $row['_joinData']['params'];
                 }
-                $keys = ['id', 'object_type_id', 'parent_id', 'tree_left', 'tree_right', 'enabled', 'created', 'modified'];
-                foreach ($keys as $k) {
-                    unset($row[$k]);
+                if (empty(!$row)) {
+                    $row->unsetProperty($remove);
                 }
 
                 return $row;

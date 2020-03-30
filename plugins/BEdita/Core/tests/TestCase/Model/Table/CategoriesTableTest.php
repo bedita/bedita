@@ -76,7 +76,7 @@ class CategoriesTableTest extends TestCase
         $category = $this->Categories->get(1)->toArray();
         $expected = [
             'id' => 1,
-            'object_type_id' => 2,
+            'object_type_name' => 'documents',
             'name' => 'first-cat',
             'label' => 'First category',
             'parent_id' => null,
