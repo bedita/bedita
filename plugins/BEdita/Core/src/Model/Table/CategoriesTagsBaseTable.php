@@ -108,9 +108,9 @@ abstract class CategoriesTagsBaseTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @return void
      */
-    protected function removeFields(Query $query)
+    protected function hideFields(Query $query)
     {
-        $remove = [
+        $hidden = [
             'id',
             'object_type_id',
             'object_type_name',
@@ -121,13 +121,13 @@ abstract class CategoriesTagsBaseTable extends Table
             'created',
             'modified'
         ];
-        $query->formatResults(function (CollectionInterface $results) use ($remove) {
-            return $results->map(function ($row) use ($remove) {
+        $query->formatResults(function (CollectionInterface $results) use ($hidden) {
+            return $results->map(function ($row) use ($hidden) {
                 if (!empty($row['_joinData'])) {
                     $row['params'] = $row['_joinData']['params'];
                 }
                 if (empty(!$row)) {
-                    $row->unsetProperty($remove);
+                    $row->setHidden($hidden, true);
                 }
 
                 return $row;

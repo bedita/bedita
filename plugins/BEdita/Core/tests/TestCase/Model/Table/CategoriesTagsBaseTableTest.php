@@ -41,12 +41,12 @@ class CategoriesTagsBaseTableTest extends TestCase
     ];
 
     /**
-     * Test `removeFields` method
+     * Test `hideFields` method
      *
      * @return void
-     * @covers ::removeFields()
+     * @covers ::hideFields()
      */
-    public function testRemoveFields()
+    public function testHideFields()
     {
         $document = TableRegistry::getTableLocator()->get('Documents')
             ->get(2, ['contain' => ['Categories']])
