@@ -45,6 +45,7 @@ use Cake\Utility\Inflector;
 class Property extends Entity implements JsonApiSerializable
 {
     use JsonApiModelTrait;
+    use ObjectTypeNameTrait;
 
     /**
      * {@inheritDoc}
