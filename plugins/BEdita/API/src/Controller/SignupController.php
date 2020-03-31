@@ -13,8 +13,6 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\ActionTrait;
-use BEdita\Core\Model\Action\SignupUserAction;
-use BEdita\Core\Model\Action\SignupUserActivationAction;
 
 /**
  * Controller for `/signup` endpoint.
@@ -52,7 +50,7 @@ class SignupController extends AppController
 
         $data = $this->request->getData();
 
-        $action = $this->createAction(SignupUserAction::class);
+        $action = $this->createAction('SignupUserAction');
         $user = $action(compact('data'));
 
         $this->response = $this->response->withStatus(202);
@@ -70,7 +68,7 @@ class SignupController extends AppController
     {
         $this->request->allowMethod('post');
 
-        $action = $this->createAction(SignupUserActivationAction::class);
+        $action = $this->createAction('SignupUserActivationAction');
         $action(['uuid' => $this->request->getData('uuid')]);
 
         return $this->response->withStatus(204);

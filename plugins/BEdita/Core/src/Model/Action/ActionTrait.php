@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Utility\Inflector;
 
@@ -26,50 +27,60 @@ trait ActionTrait
     /**
      * Create action class with options, load custom actions via configuration.
      *
-     * You can override an action via configuration like this:
+     * Action creation rules:
      *
-     *  - if `$config` is set a custom class is searched in `$config` key
-     *  - otherwise a custom class is searched in in `Actions.{actionName}` where `{actionName}`
-     *      is the variable inflected class name, after namespace removal
-     *  - if no custom class is found `$action` class is created
+     *  - if passed class is in namespaced format like '\MyNamespace\MyClass' class is created
+     *  - a custom class is searched in in `Actions.{$class}` configuration, if set this class is loaded
+     *      in namespaced or plugin syntax format
+     *  - otherwise class is searched using plugin syntax with 'BEdita/Core` as default in `Model\Action` namespace
      *
      * Examples:
      * ```
-     *  // `SignupUserAction` loaded looking in `Actions.signupUserAction' for a custom class
-     *  $this->createAction(SignupUserAction::class);
+     *  // `SignupUserAction` from `\BEdita\Core\Model\Action\` is created, with no other check
+     *  $this->createAction('\BEdita\Core\Model\Action\SignupUserAction');
      *
-     *  // `ListObjectsAction` loaded looking in `Actions.sistObjectsAction' for a custom class,
-     *  // ['table' => $this->Table] passed to constructor
-     *  $this->createAction(ListObjectsAction::class, ['table' => $this->Table]);
+     *  // First we look in `Actions.ListObjectsAction` config for a custom class,
+     *  // if nothing is found `BEdita/Core.ListObjectsAction` is used, looking om `Model\Action` namespace
+     *  // ['table' => $this->Table] is passed to constructor
+     *  $this->createAction('ListObjectsAction', ['table' => $this->Table]);
      *
-     *  // `SignupUserAction` loaded looking in `Signup.signupUserAction' for a custom class
-     *  $this->createAction(SignupUserAction::class, [], 'Signup.signupUserAction');
+     *  // Same as above, but if nothing is found in `Actions.SignupUserAction`
+     *  // `MyPLugin.SignupUserAction` is used, looking om `Model\Action` namespace
+     *  $this->createAction('SignupUserAction', [], 'MyPlugin');
      * ```
      *
-     * Configuration example of default action override
+     * Configuration examples of default action override
      *
      * ```
      *  'Actions ' => [
-     *   'signupUserAction', '\MyPlugin\Model\Action\MySignupAction',
+     *   'SignupUserAction' => '\MyPlugin\Model\Action\MySignupAction',
+     *   'ListObjectsAction' => 'MyPlugin.MyListAction',
      *  ],
      * ```
      *
      * Custom class must extend BaseAction.
      *
-     * @param string $action Action class to create
+     * @param string $class Action class to create
      * @param array $options Action options
-     * @param string $config Configuration key to use
+     * @param string $prefix Prefix to use, defaults to 'BEdita/Core'
      * @return \BEdita\Core\Model\Action\BaseAction
      */
-    protected function createAction(string $action, array $options = [], ?string $config = null): BaseAction
+    protected function createAction(string $class, array $options = [], $prefix = 'BEdita/Core'): BaseAction
     {
-        if (empty($config)) {
-            $path = explode('\\', $action);
-            $name = (string)end($path);
-            $config = sprintf('Actions.%s', Inflector::variable($name));
+        // instantiate class in namespaced format like '\MyNamespace\MyClass'
+        $className = App::className($class);
+        if ($className !== false) {
+            return new $className($options);
         }
-        $action = (string)Configure::read($config, $action);
 
-        return new $action($options);
+        // look in `Actions.{$class}` config or use prefix
+        $defaultClass = sprintf('%s.%s', $prefix, $class);
+        $class = Configure::read(sprintf('Actions.%s', $class), $defaultClass);
+        $className = App::className($class, 'Model/Action');
+        if ($className === false) {
+            throw new \RuntimeException(__d('bedita', 'Unable to find class "{0}"', $class));
+        }
+
+        return new $className($options);
     }
 }

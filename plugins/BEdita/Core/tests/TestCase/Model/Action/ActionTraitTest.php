@@ -29,6 +29,26 @@ class ActionTraitTest extends TestCase
     use ActionTrait;
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        Configure::write('Actions.ListObjectsAction', 'MyPlugin.MyListAction');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        Configure::delete('Actions');
+    }
+
+    /**
      * Fixtures
      *
      * @var array
@@ -52,40 +72,48 @@ class ActionTraitTest extends TestCase
                 'BEdita\Core\Model\Action\SignupUserAction',
                 SignupUserAction::class,
             ],
-            'override' => [
+            'syntax' => [
                 'BEdita\Core\Model\Action\SignupUserAction',
-                SignupUserAction::class,
+                'SignupUserAction',
             ],
-            'fail' => [
-                new \Error("Class '\My\Class' not found"),
-                SignupUserAction::class,
+            'prefix' => [
+                'BEdita\Core\Model\Action\GetObjectAction',
+                'GetObjectAction',
                 [],
-                ['Signup.myAction' => '\My\Class'],
+                'BEdita/Core',
+            ],
+            'fail with config' => [
+                new \RuntimeException('Unable to find class "MyPlugin.MyListAction"'),
+                'ListObjectsAction',
+            ],
+            'direct fail' => [
+                new \Error("Class '\My\Class' not found"),
+                '\My\Class',
             ],
         ];
     }
 
     /**
-     * Test getter for meta.
+     * Test `createAction` method
      *
      * @return void
+     *
+     * @param string|\Exception $expected Expected result
+     * @param string $class Class name
+     * @param array $options Class options
+     * @param string $prefix Class prefix
      *
      * @dataProvider createActionProvider
      * @covers ::createAction()
      */
-    public function testCreateAction($expected, string $action, array $options = [], ?array $config = null)
+    public function testCreateAction($expected, string $class, array $options = [], string $prefix = 'BEdita/Core')
     {
-        if (!empty($config)) {
-            Configure::write($config);
-            $config = key($config);
-        }
-
         if ($expected instanceof \Throwable) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $action = $this->createAction($action, $options, $config);
-        static::assertEquals($expected, get_class($action));
+        $class = $this->createAction($class, $options, $prefix);
+        static::assertEquals($expected, get_class($class));
     }
 }
