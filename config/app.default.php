@@ -534,8 +534,8 @@ return [
      * This way some action beahavior can be overridden
      */
     // 'Actions' => [
-    //     'signupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
-    //     'signupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
+    //     'SignupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
+    //     'SignupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
     // ],
 
     /**
