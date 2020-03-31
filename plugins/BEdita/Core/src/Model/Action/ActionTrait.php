@@ -15,10 +15,9 @@ namespace BEdita\Core\Model\Action;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Utility\Inflector;
 
 /**
- * Trait to create actions with possible
+ * Trait to create actions allowing custom actions load svia configuration.
  *
  * @since 4.2.0
  */
@@ -40,7 +39,7 @@ trait ActionTrait
      *  $this->createAction('\BEdita\Core\Model\Action\SignupUserAction');
      *
      *  // First we look in `Actions.ListObjectsAction` config for a custom class,
-     *  // if nothing is found `BEdita/Core.ListObjectsAction` is used, looking om `Model\Action` namespace
+     *  // if nothing is found `BEdita/Core.ListObjectsAction` is used, looking in `Model\Action` namespace
      *  // ['table' => $this->Table] is passed to constructor
      *  $this->createAction('ListObjectsAction', ['table' => $this->Table]);
      *
