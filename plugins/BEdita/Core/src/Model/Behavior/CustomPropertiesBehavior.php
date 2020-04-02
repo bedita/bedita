@@ -212,13 +212,11 @@ class CustomPropertiesBehavior extends Behavior
     {
         $allProperties = $entity;
         if ($entity instanceof EntityInterface) {
-            $hidden = $entity->getHidden();
-            try {
-                $entity->setHidden([]);
-                $allProperties = $entity->toArray();
-            } finally {
-                $entity->setHidden($hidden);
-            }
+            $allProperties = array_flip(array_merge(
+                $entity->getHidden(),
+                $entity->getVisible(),
+                $entity->getVirtual()
+            ));
         }
 
         return array_key_exists($field, $allProperties);
