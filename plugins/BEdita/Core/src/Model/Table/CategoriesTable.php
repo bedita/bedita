@@ -130,7 +130,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
     }
 
     /**
-     * Add `object_typ_id` condition and hide some fields when retrieved as association.
+     * Add `object_type_id` condition and hide some fields when retrieved as association.
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
