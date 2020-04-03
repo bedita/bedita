@@ -559,4 +559,27 @@ class ObjectEntityTest extends TestCase
         static::assertArrayHasKey('included', $entity);
         static::assertEquals(1, count($entity['included']));
     }
+
+    /**
+     * Test `hasProperty` method
+     *
+     * @covers ::hasProperty()
+     * @return bool
+     */
+    public function testHasProperty()
+    {
+        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2);
+
+        // core property
+        static::assertTrue($entity->hasProperty('title'));
+        // custom property
+        static::assertTrue($entity->hasProperty('another_title'));
+        // missing property
+        static::assertFalse($entity->hasProperty('some_property'));
+        // hidden property
+        static::assertTrue($entity->hasProperty('deleted'));
+        static::assertFalse($entity->hasProperty('deleted', false));
+        // virtual property
+        static::assertTrue($entity->hasProperty('type', false, true));
+    }
 }

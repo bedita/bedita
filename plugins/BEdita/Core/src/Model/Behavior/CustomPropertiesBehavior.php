@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -177,7 +178,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
      */
-    protected function demoteProperties(EntityInterface $entity)
+    protected function demoteProperties(EntityInterface $entity): void
     {
         $field = $this->getConfig('field');
         $value = (array)$entity->get($field);
@@ -186,7 +187,7 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($available as $property) {
             $propertyName = $property->name;
-            if (!$entity->isDirty($propertyName) || !$this->isFieldSet($entity, $propertyName)) {
+            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
                 continue;
             }
 
@@ -208,16 +209,12 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field The field being looked for.
      * @return bool
      */
-    protected function isFieldSet($entity, $field)
+    protected function isFieldSet($entity, $field): bool
     {
-        $allProperties = $entity;
-        if ($entity instanceof EntityInterface) {
-            $allProperties = array_flip(array_merge(
-                $entity->getHidden(),
-                $entity->getVisible()
-            ));
+        if ($entity instanceof ObjectEntity) {
+            return $entity->hasProperty($field);
         }
 
-        return array_key_exists($field, (array)$allProperties);
+        return array_key_exists($field, (array)$entity);
     }
 }
