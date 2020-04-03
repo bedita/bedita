@@ -106,7 +106,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * Options to exclude hidden properties and to include virtual properties.
      *
      * @param string $property Property name
-     * @param bool $hidden Include hidden (default false)
+     * @param bool $hidden Include hidden (default true)
      * @param bool $virtual Include virtual (default false)
      * @return bool
      */
