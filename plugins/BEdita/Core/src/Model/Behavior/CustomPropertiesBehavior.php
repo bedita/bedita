@@ -186,7 +186,7 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($available as $property) {
             $propertyName = $property->name;
-            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
+            if (!$entity->isDirty($propertyName) || !$this->isFieldSet($entity, $propertyName)) {
                 continue;
             }
 
@@ -214,11 +214,10 @@ class CustomPropertiesBehavior extends Behavior
         if ($entity instanceof EntityInterface) {
             $allProperties = array_flip(array_merge(
                 $entity->getHidden(),
-                $entity->getVisible(),
-                $entity->getVirtual()
+                $entity->getVisible()
             ));
         }
 
-        return array_key_exists($field, $allProperties);
+        return array_key_exists($field, (array)$allProperties);
     }
 }
