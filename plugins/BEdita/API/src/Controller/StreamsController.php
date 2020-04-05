@@ -13,13 +13,9 @@
 
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\GetEntityAction;
-use BEdita\Core\Model\Action\SaveEntityAction;
-use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
-use Zend\Diactoros\Stream;
 
 /**
  * Controller for `/streams` endpoint.
@@ -27,6 +23,7 @@ use Zend\Diactoros\Stream;
  * @since 4.0.0
  *
  * @property \BEdita\Core\Model\Table\StreamsTable $Table
+ * @property \BEdita\API\Controller\Component\UploadComponent $Upload
  */
 class StreamsController extends ResourcesController
 {
@@ -57,34 +54,11 @@ class StreamsController extends ResourcesController
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
 
+        if ($this->request->getParam('action') === 'upload') {
+            $this->loadComponent('BEdita/API.Upload');
+        }
+
         parent::initialize();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function beforeFilter(Event $event)
-    {
-        if ($this->request->getParam('action') !== 'upload') {
-            return parent::beforeFilter($event);
-        }
-
-        // avoid that RequestHandler tries to parse body
-        $this->RequestHandler->setConfig('inputTypeMap', [], false);
-
-        // Decode base64-encoded body.
-        if ($this->request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
-            // Append filter to stream.
-            $body = $this->request->getBody();
-
-            $stream = $body->detach();
-            stream_filter_append($stream, 'convert.base64-decode', STREAM_FILTER_READ);
-
-            $body = new Stream($stream, 'r');
-            $this->request = $this->request->withBody($body);
-        }
-
-        return parent::beforeFilter($event);
     }
 
     /**
@@ -93,23 +67,12 @@ class StreamsController extends ResourcesController
      * @param string $fileName Original file name.
      * @return void
      */
-    public function upload($fileName)
+    public function upload($fileName): void
     {
-        $this->request->allowMethod(['post']);
+        $data = $this->Upload->upload($fileName);
 
-        // Add a new entity.
-        $entity = $this->Table->newEntity();
-        $action = new SaveEntityAction(['table' => $this->Table]);
-
-        $data = [
-            'file_name' => $fileName,
-            'mime_type' => $this->request->contentType(),
-            'contents' => $this->request->getBody(),
-        ];
-        $data = $action(compact('entity', 'data'));
-
-        $action = new GetEntityAction(['table' => $this->Table]);
-        $data = $action(['primaryKey' => $data->get($this->Table->getPrimaryKey())]);
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
 
         $this->response = $this->response
             ->withStatus(201)
@@ -124,9 +87,6 @@ class StreamsController extends ResourcesController
                     true
                 )
             );
-
-        $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
     }
 
     /**
