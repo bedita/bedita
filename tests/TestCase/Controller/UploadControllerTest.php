@@ -49,9 +49,8 @@ class UploadControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test upload method.
+     * Test `upload` method.
      *
-     * @param array $data The file data.
      * @return void
      *
      * @covers ::upload()
@@ -62,18 +61,6 @@ class UploadControllerTest extends IntegrationTestCase
         $fileName = 'gustavo.json';
         $contents = '{"name":"Gustavo","surname":"Supporto"}';
         $contentType = 'application/json';
-
-        $attributes = [
-            'file_name' => $fileName,
-            'mime_type' => $contentType,
-        ];
-        $meta = [
-            'version' => 1,
-            'file_size' => strlen($contents),
-            'hash_md5' => md5($contents),
-            'hash_sha1' => sha1($contents),
-            'url' => null,
-        ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
         $this->post(sprintf('/files/upload/%s', $fileName), $contents);
@@ -90,5 +77,35 @@ class UploadControllerTest extends IntegrationTestCase
         static::assertEquals($fileName, $response['data']['attributes']['title']);
 
         $this->assertHeader('Location', $url);
+    }
+
+    /**
+     * Test `upload` failure.
+     *
+     * @return void
+     *
+     * @covers ::upload()
+     */
+    public function testUploadFail()
+    {
+        $fileName = 'gustavo.json';
+        $contents = '{"name":"Gustavo","surname":"Supporto"}';
+        $contentType = 'application/json';
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/documents/upload/%s', $fileName), $contents);
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            'error' => [
+                'status' => '403',
+                'title' => 'You are not allowed to upload streams on "documents"',
+            ],
+        ];
+        unset($response['links'], $response['error']['meta']);
+        static::assertEquals($expected, $response);
     }
 }
