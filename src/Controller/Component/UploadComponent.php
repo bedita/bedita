@@ -37,14 +37,10 @@ class UploadComponent extends Component
      */
     public function beforeFilter(Event $event): void
     {
-        $request = $this->getController()->getRequest();
-        if ($request->getParam('action') !== 'upload') {
-            return;
-        }
-
         // avoid that RequestHandler tries to parse body
         $this->getController()->RequestHandler->setConfig('inputTypeMap', [], false);
 
+        $request = $this->getController()->getRequest();
         // Decode base64-encoded body.
         if ($request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
             // Append filter to stream.
