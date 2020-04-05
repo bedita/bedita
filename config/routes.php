@@ -219,6 +219,13 @@ Router::plugin(
             ['_name' => 'history:index']
         );
 
+        // Direct media object upload
+        $routes->connect(
+            '/:object_type/upload/:fileName',
+            ['controller' => 'Upload', 'action' => 'upload'],
+            ['_name' => 'upbjects:upload', 'pass' => ['fileName']]
+        );
+
         // Objects.
         $routes->connect(
             '/:object_type',
