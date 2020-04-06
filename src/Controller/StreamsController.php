@@ -82,7 +82,7 @@ class StreamsController extends ResourcesController
                     [
                         '_name' => 'api:resources:resource',
                         'controller' => $this->name,
-                        'id' => $data->uuid,
+                        'id' => $data->get('uuid'),
                     ],
                     true
                 )
