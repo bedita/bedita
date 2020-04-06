@@ -56,6 +56,8 @@ trait TestFilesystemTrait
      * Setup test filesystem.
      * Call this method in test `tearDown()`
      * or after tests involving filesystem.
+     *
+     * @return void
      */
     protected function filesystemCleanup(): void
     {
