@@ -25,7 +25,6 @@ use Zend\Diactoros\Stream;
  *
  * @since 4.2.0
  *
- * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
 class UploadComponent extends Component
