@@ -101,6 +101,33 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * See if a property has been set in an entity.
+     * Could be set in `_properties` array or a virtual one.
+     * Options to exclude hidden properties and to include virtual properties.
+     *
+     * @param string $property Property name
+     * @param bool $hidden Include hidden (default true)
+     * @param bool $virtual Include virtual (default false)
+     * @return bool
+     */
+    public function hasProperty(string $property, bool $hidden = true, bool $virtual = false)
+    {
+        if ($hidden && !$virtual) {
+            return array_key_exists($property, $this->_properties);
+        }
+
+        $properties = array_keys($this->_properties);
+        if (!$hidden) {
+            $properties = array_diff($properties, $this->_hidden);
+        }
+        if ($virtual) {
+            $properties = array_merge($properties, $this->_virtual);
+        }
+
+        return in_array($property, $properties);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getTable()
