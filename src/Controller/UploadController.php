@@ -44,13 +44,6 @@ class UploadController extends ObjectsController
      */
     public function upload($fileName)
     {
-        $stream = $this->Upload->upload($fileName);
-        $this->request = $this->request
-            ->withData('title', $fileName)
-            ->withData('type', Inflector::underscore($this->Table->getAlias()));
-        // create media object from POST request
-        $this->index();
-
         $associations = (array)Hash::get($this->objectType, 'associations');
         if (!in_array('Streams', $associations)) {
             throw new ForbiddenException(__d(
@@ -59,6 +52,14 @@ class UploadController extends ObjectsController
                 $this->objectType->get('name')
             ));
         };
+
+        $stream = $this->Upload->upload($fileName);
+        $this->request = $this->request
+            ->withData('title', $fileName)
+            ->withData('type', Inflector::underscore($this->Table->getAlias()));
+        // create media object from POST request
+        $this->index();
+
         // update object_id in stream resource
         $stream->set('object_id', Hash::get($this->viewVars, 'data.id'));
         TableRegistry::getTableLocator()->get('Streams')->saveOrFail($stream);
