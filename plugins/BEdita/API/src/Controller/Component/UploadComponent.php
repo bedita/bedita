@@ -57,9 +57,10 @@ class UploadComponent extends Component
      * Upload a new stream and return entity.
      *
      * @param string $fileName Original file name.
+     * @param int|null $objectId Object id.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function upload($fileName): EntityInterface
+    public function upload($fileName, int $objectId = null): EntityInterface
     {
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post']);
@@ -74,6 +75,7 @@ class UploadComponent extends Component
             'mime_type' => $request->contentType(),
             'contents' => $request->getBody(),
         ];
+        $entity->set('object_id', $objectId);
         $data = $action(compact('entity', 'data'));
         $action = new GetEntityAction(['table' => $this->Streams]);
 

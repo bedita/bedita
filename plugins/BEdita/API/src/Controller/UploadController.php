@@ -53,15 +53,13 @@ class UploadController extends ObjectsController
             ));
         };
 
-        $stream = $this->Upload->upload($fileName);
         $this->request = $this->request
             ->withData('title', $fileName)
             ->withData('type', Inflector::underscore($this->Table->getAlias()));
         // create media object from POST request
         $this->index();
 
-        // update object_id in stream resource
-        $stream->set('object_id', Hash::get($this->viewVars, 'data.id'));
-        TableRegistry::getTableLocator()->get('Streams')->saveOrFail($stream);
+        $objectId = (int)Hash::get($this->viewVars, 'data.id');
+        $this->Upload->upload($fileName, $objectId);
     }
 }
