@@ -433,14 +433,12 @@ class BEAppModel extends AppModel {
 
         $afterFilter = $this->Behaviors->BuildFilter->prepareAfterFilter($filter, $order);
 
-        $size = null;
         $rankOrder = null;
 
-        // listen if search engine was used and eventually update $size and $rankOrder
+        // listen if search engine was used and eventually update $rankOrder
         BeLib::eventManager()->bind(
             'buildFindObjects.searchEngineResult',
-            function ($data) use (&$size, &$rankOrder) {
-                $size = $data['count'];
+            function ($data) use (&$rankOrder) {
                 $rankOrder = $data['order'];
                 return $data;
             }
@@ -466,12 +464,10 @@ class BEAppModel extends AppModel {
             throw new BeditaException(__('Error finding objects', true));
         }
 
-        if ($size === null) {
-            $size = $this->findObjectsCount(array(
-                'joins' => $clauses['joins'],
-                'conditions' => $clauses['conditions']
-            ));
-        }
+        $size = $this->findObjectsCount(array(
+            'joins' => $clauses['joins'],
+            'conditions' => $clauses['conditions']
+        ));
 
         $recordset = array(
             'items'	=> array(),
