@@ -50,6 +50,7 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -240,7 +241,6 @@ class ProfilesTableTest extends TestCase
             'missing' => [
                 [
                     'email' => null,
-                    'title' => null,
                 ],
                 [
                     'name' => 'Gustavo',
@@ -255,7 +255,6 @@ class ProfilesTableTest extends TestCase
                 [
                     'name' => 'Gustavo',
                     'surname' => 'Supporto',
-                    'title' => '',
                 ],
             ],
             'null title' => [
@@ -269,7 +268,7 @@ class ProfilesTableTest extends TestCase
             ],
             'no title' => [
                 [
-                    'title' => null,
+                    'title' => 'Gustavo',
                 ],
                 [
                     'name' => 'Gustavo',
@@ -290,8 +289,24 @@ class ProfilesTableTest extends TestCase
                     'title' => 'Supporto',
                 ],
                 [
-                    'title' => '',
                     'surname' => 'Supporto',
+                ],
+            ],
+            'company only' => [
+                [
+                    'title' => 'Supporto Inc.',
+                ],
+                [
+                    'company_name' => 'Supporto Inc.',
+                ],
+            ],
+            'existing profile' => [
+                [
+                    'title' => 'Luciano Supporto',
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Luciano',
                 ],
             ],
         ];
@@ -305,10 +320,16 @@ class ProfilesTableTest extends TestCase
      * @return void
      * @dataProvider beforeSaveProvider
      * @covers ::beforeSave()
+     * @covers ::titleValue()
      */
     public function testBeforeSave(array $expected, array $data)
     {
-        $profile = $this->Profiles->newEntity($data);
+        if (empty($data['id'])) {
+            $profile = $this->Profiles->newEntity($data);
+        } else {
+            $profile = $this->Profiles->get($data['id']);
+            $profile = $this->Profiles->patchEntity($profile, $data);
+        }
         $profile->type = 'profiles';
         $success = $this->Profiles->save($profile);
         static::assertTrue((bool)$success);

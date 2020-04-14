@@ -80,7 +80,8 @@ class ProfilesTable extends Table
     /**
      * Before save actions:
      *  - if `email` is empty set it to NULL to avoid unique constraint errors
-     *  - if `title` is blank use `name` `surname` as default
+     *  - if `title` was not modified and one of `name`, `surname` or `company_name` was
+     *      update `title` accordingly
      *
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
@@ -91,9 +92,33 @@ class ProfilesTable extends Table
         if (empty($entity->get('email'))) {
             $entity->set('email', null);
         }
-        if ($entity->get('title') === '' && (!empty($entity->get('name')) || !empty($entity->get('surname')))) {
-            $title = sprintf('%s %s', (string)Hash::get($entity, 'name', ''), (string)Hash::get($entity, 'surname', ''));
-            $entity->set('title', trim($title));
+
+        if (
+            $entity->isDirty('title') ||
+            (!$entity->isDirty('name') && !$entity->isDirty('surname') && !$entity->isDirty('company_name'))
+        ) {
+            return;
         }
+        $entity->set('title', $this->titleValue($entity));
+    }
+
+    /**
+     * Create profile title from `name` and `surname` or `company_name`
+     *
+     * @param EntityInterface $entity Saved entity
+     * @return string
+     */
+    protected function titleValue(EntityInterface $entity): string
+    {
+        $title = trim(sprintf(
+            '%s %s',
+            (string)Hash::get($entity, 'name'),
+            (string)Hash::get($entity, 'surname')
+        ));
+        if (empty($title) && !empty($entity->get('company_name'))) {
+            $title = (string)$entity->get('company_name');
+        }
+
+        return $title;
     }
 }
