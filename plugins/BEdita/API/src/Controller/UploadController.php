@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,7 +14,6 @@
 namespace BEdita\API\Controller;
 
 use Cake\Http\Exception\ForbiddenException;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -53,13 +52,15 @@ class UploadController extends ObjectsController
             ));
         };
 
-        $this->request = $this->request
-            ->withData('title', $fileName)
-            ->withData('type', Inflector::underscore($this->Table->getAlias()));
-        // create media object from POST request
-        $this->index();
+        $this->Table->getConnection()->transactional(function () use ($fileName) {
+            $this->request = $this->request
+                ->withData('title', $fileName)
+                ->withData('type', Inflector::underscore($this->Table->getAlias()));
+            // create media object from POST request
+            $this->index();
 
-        $objectId = (int)Hash::get($this->viewVars, 'data.id');
-        $this->Upload->upload($fileName, $objectId);
+            $objectId = (int)Hash::get($this->viewVars, 'data.id');
+            $this->Upload->upload($fileName, $objectId);
+        });
     }
 }
