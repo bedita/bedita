@@ -270,7 +270,6 @@ available options:
 		<div class="formbuttons">
 			<input type="submit" id="searchButton" value=" {t}find it{/t} ">
 			<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">
-			DEBUG
 		</div>
 
 	</div>
