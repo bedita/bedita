@@ -10,6 +10,7 @@ available options:
 	'treeDescendants' => true,
 	'type' => true,
 	'language' => true,
+	'user' => true,
 	'customProp' => false,
 	'categories' => true or array('label' => 'myLabel'),
 	'mediaType' => false,
@@ -81,6 +82,15 @@ available options:
 					{/foreach}
 				</select>
 			</div>
+		{/if}
+
+		{if !empty($filters.user)}
+		{$createdbyme = $view->SessionFilter->read('user_created') == $BEAuthUser.id}
+		<div class="cell">
+			<label>{t}created by{/t}:</label>
+			<input type="radio" name="filter[user_created]" value="{$BEAuthUser.id}" {if $createdbyme}checked="checked"{/if} />{$BEAuthUser.userid} (you)
+			<input type="radio" name="filter[user_created]" value="" {if !$createdbyme}checked="checked"{/if} />{t}anybody{/t}
+		</div>
 		{/if}
 
 		{if !empty($filters.tree)}
@@ -260,6 +270,7 @@ available options:
 		<div class="formbuttons">
 			<input type="submit" id="searchButton" value=" {t}find it{/t} ">
 			<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">
+			DEBUG
 		</div>
 
 	</div>
