@@ -140,52 +140,18 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Upload data provider for testUpload()
+     * Test `upload` method.
      *
-     * @return array
-     */
-    public function uploadProvider()
-    {
-        return [
-            'javascript' => [
-                [
-                    'fileName' => 'synapse.js',
-                    'contents' => 'exports.synapse = Promise.resolve();',
-                    'contentType' => 'text/javascript',
-                ],
-            ],
-            'xml' => [
-                [
-                    'fileName' => 'gustavo.xml',
-                    'contents' => '<?xml version="1.0" encoding="utf-8"?><items><item>one</item><item>two</item></items>',
-                    'contentType' => 'text/xml',
-                ],
-            ],
-            'json' => [
-                [
-                    'fileName' => 'gustavo.json',
-                    'contents' => '{"name":"Gustavo","surname":"Supporto"}',
-                    'contentType' => 'application/json',
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Test upload method.
-     *
-     * @param array $data The file data.
      * @return void
      *
-     * @dataProvider uploadProvider
      * @covers ::upload()
-     * @covers ::beforeFilter()
+     * @covers ::initialize()
      */
-    public function testUpload($data)
+    public function testUpload()
     {
-        $fileName = Hash::get($data, 'fileName');
-        $contents = Hash::get($data, 'contents');
-        $contentType = Hash::get($data, 'contentType');
+        $fileName = 'gustavo.json';
+        $contents = '{"name":"Gustavo","surname":"Supporto"}';
+        $contentType = 'application/json';
 
         $attributes = [
             'file_name' => $fileName,
@@ -206,69 +172,11 @@ class StreamsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         $response = json_decode((string)$this->_response->getBody(), true);
-
         static::assertArrayHasKey('data', $response);
-        static::assertArrayHasKey('id', $response['data']);
-        static::assertArrayHasKey('type', $response['data']);
-        static::assertArrayHasKey('attributes', $response['data']);
-        static::assertArrayHasKey('meta', $response['data']);
-        static::assertArrayHasKey('links', $response);
 
         $id = $response['data']['id'];
         $url = sprintf('http://api.example.com/streams/%s', $id);
         $meta['url'] = sprintf('https://static.example.org/files/%s-%s', $id, $fileName);
-        static::assertTrue(Validation::uuid($id));
-        static::assertSame('streams', $response['data']['type']);
-        static::assertEquals($attributes, $response['data']['attributes']);
-        static::assertArraySubset($meta, $response['data']['meta']);
-
-        $this->assertHeader('Location', $url);
-    }
-
-    /**
-     * Test upload method.
-     *
-     * @return void
-     *
-     * @covers ::upload()
-     * @covers ::beforeFilter()
-     */
-    public function testUploadBase64()
-    {
-        $fileName = 'synapse.js';
-        $contents = 'exports.synapse = Promise.resolve();';
-        $contentType = 'text/javascript';
-
-        $attributes = [
-            'file_name' => $fileName,
-            'mime_type' => $contentType,
-        ];
-        $meta = [
-            'version' => 1,
-            'file_size' => strlen($contents),
-            'hash_md5' => md5($contents),
-            'hash_sha1' => sha1($contents),
-            'url' => null,
-        ];
-
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType, 'Content-Transfer-Encoding' => 'base64']);
-        $this->post(sprintf('/streams/upload/%s', $fileName), base64_encode($contents));
-
-        $this->assertResponseCode(201);
-        $this->assertContentType('application/vnd.api+json');
-
-        $response = json_decode((string)$this->_response->getBody(), true);
-
-        static::assertArrayHasKey('data', $response);
-        static::assertArrayHasKey('id', $response['data']);
-        static::assertArrayHasKey('type', $response['data']);
-        static::assertArrayHasKey('attributes', $response['data']);
-        static::assertArrayHasKey('meta', $response['data']);
-        static::assertArrayHasKey('links', $response);
-
-        $id = $response['data']['id'];
-        $url = sprintf('http://api.example.com/streams/%s', $id);
-        $meta['url'] = sprintf('https://static.example.org/files/%s-synapse.js', $id);
         static::assertTrue(Validation::uuid($id));
         static::assertSame('streams', $response['data']['type']);
         static::assertEquals($attributes, $response['data']['attributes']);
