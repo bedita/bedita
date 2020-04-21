@@ -103,34 +103,35 @@ class CacheableBehavior extends ModelBehavior {
      */
     public function getObjectsToCleanById(&$model, $objectId, array $excludeIds = array()) {
         // get parents to clean
-        $tree = ClassRegistry::init('Tree');
-        $treeConditions = array('id' => $objectId);
-        if (!empty($excludeIds)) {
-            $treeConditions['NOT'] = array('parent_id' => $excludeIds);
+        $parents = array();
+        // if destination data, use it instead of calling a tree->find
+        if (!empty($model->data['BEObject']['destination'])) {
+            // use $model->data['BEObject']['destination'], excluding $excludeIds
+            $parents = array_unique(array_diff((array)$model->data['BEObject']['destination'], $excludeIds));
         }
-        $parents = $tree->find('list', array(
-            'fields' => array('parent_id'),
-            'conditions' => $treeConditions
-        ));
-        // handle first save in tree (object still not in tree, but parent is in destination data)
-        if (!empty($model->data['BEObject']['destination']) && !in_array($model->data['BEObject']['destination'], $excludeIds)) {
-            $parents = array_merge($parents, $model->data['BEObject']['destination']);
+        if (empty($parents)) { // call tree->find
+            $treeConditions = array('id' => $objectId);
+            if (!empty($excludeIds)) {
+                $treeConditions['NOT'] = array('parent_id' => $excludeIds);
+            }
+            $parents = ClassRegistry::init('Tree')->find('list', array(
+                'fields' => array('parent_id'),
+                'conditions' => $treeConditions
+            ));
         }
 
         // get related object to clean
-        $objectRelation = ClassRegistry::init('ObjectRelation');
         $relConditions = array('id' => $objectId);
         if (!empty($excludeIds)) {
             $relConditions['NOT'] = array('object_id' => $excludeIds);
         }
-        $relatedObjects = $objectRelation->find('list', array(
+        $relatedObjects = ClassRegistry::init('ObjectRelation')->find('list', array(
             'fields' => array('object_id', 'id'),
             'conditions' => $relConditions
         ));
         $relatedObjects = array_keys($relatedObjects);
 
-        $objectIdsToClean = array_merge(array($objectId), $parents, $relatedObjects);
-        return $objectIdsToClean;
+        return array_merge(array($objectId), $parents, $relatedObjects);
     }
 
     /**
