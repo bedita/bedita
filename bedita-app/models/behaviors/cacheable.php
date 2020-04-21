@@ -112,6 +112,10 @@ class CacheableBehavior extends ModelBehavior {
             'fields' => array('parent_id'),
             'conditions' => $treeConditions
         ));
+        // handle first save in tree (object still not in tree, but parent is in destination data)
+        if (!empty($model->data['BEObject']['destination']) && !in_array($model->data['BEObject']['destination'], $excludeIds)) {
+            $parents = array_merge($parents, $model->data['BEObject']['destination']);
+        }
 
         // get related object to clean
         $objectRelation = ClassRegistry::init('ObjectRelation');
