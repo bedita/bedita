@@ -49,7 +49,6 @@ class SearchText extends BEAppModel
 	 * @return boolean
 	 */
 	public function createSearchText($model) {
-
 		$bviorCompactResults = null;
 		if (isset($model->bviorCompactResults)) {
 			$bviorCompactResults = $model->bviorCompactResults ;
@@ -70,7 +69,8 @@ class SearchText extends BEAppModel
 		if ($this->indexModel) {
 			$parents = array();
 			if (!empty($model->data[$model->alias]['destination'])) {
-				$parents = $model->data[$model->alias]['destination'];
+				$excludeIds = (array)Configure::read('excludeFromTreeIds');
+				$parents = array_unique(array_diff((array)$model->data[$model->alias]['destination'], $excludeIds));
 			}
 			$res = $this->indexModel->indexObject($searchFields, $data, $parents);
 			if(!empty($res["error"])) {
