@@ -57,4 +57,5 @@ return [
     'tree_parent_nodes',
     'type',
     'types',
+    'upload',
 ];

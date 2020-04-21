@@ -219,6 +219,13 @@ Router::plugin(
             ['_name' => 'history:index']
         );
 
+        // Upload file and create object.
+        $routes->connect(
+            '/:object_type/upload/:fileName',
+            ['controller' => 'Upload', 'action' => 'upload'],
+            ['_name' => 'objects:upload', 'pass' => ['fileName']]
+        );
+
         // Objects.
         $routes->connect(
             '/:object_type',
