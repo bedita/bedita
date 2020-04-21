@@ -49,7 +49,7 @@ class SearchText extends BEAppModel
 	 * @return boolean
 	 */
 	public function createSearchText($model) {
-		
+
 		$bviorCompactResults = null;
 		if (isset($model->bviorCompactResults)) {
 			$bviorCompactResults = $model->bviorCompactResults ;
@@ -71,7 +71,7 @@ class SearchText extends BEAppModel
 			$parents = array();
 			if (!empty($model->data[$model->alias]['destination'])) {
 				$parents = $model->data[$model->alias]['destination'];
-			}	
+			}
 			$res = $this->indexModel->indexObject($searchFields, $data, $parents);
 			if(!empty($res["error"])) {
 			    throw new BeditaException("crete object index error: " . 
