@@ -604,7 +604,7 @@ class BeToolbarHelper extends AppHelper {
     public function pagePagination() {
         $cells = '';
         $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
-        if ($moduleModify === "1" && empty($_noitem)) {
+        if ($moduleModify === "1" && empty($this->_noitem)) {
             $title = __('Create new', true) . '&nbsp;';
             if (!empty($this->_itemName)) {
                 $title.= __($this->_itemName, true);
