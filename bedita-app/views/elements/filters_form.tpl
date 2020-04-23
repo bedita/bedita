@@ -88,8 +88,16 @@ available options:
 		{$createdbyme = $view->SessionFilter->read('user_created') == $BEAuthUser.id}
 		<div class="cell">
 			<label>{t}created by{/t}:</label>
-			<input type="radio" name="filter[user_created]" value="{$BEAuthUser.id}" {if $createdbyme}checked="checked"{/if} />{$BEAuthUser.userid} (you)
-			<input type="radio" name="filter[user_created]" value="" {if !$createdbyme}checked="checked"{/if} />{t}anybody{/t}
+			<select name="filter[user_created]" id="user_created">
+				{strip}
+				<option value="" {if !$createdbyme}selected="selected"{/if}>
+					{t}anybody{/t}
+				</option>
+				<option value="{$BEAuthUser.id}" {if $createdbyme}selected="selected"{/if}>
+					{$BEAuthUser.userid} (you)
+				</option>
+				{/strip}
+			</select>
 		</div>
 		{/if}
 
