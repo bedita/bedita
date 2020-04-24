@@ -994,6 +994,7 @@ class BuildFilterBehavior extends ModelBehavior {
         $this->from .= ", {$s}users{$e} AS {$s}User{$e}";
         $this->conditions[] = "{$s}User{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}user_created{$e}";
         if (!empty($value)) {
+            $value = Sanitize::escape($value);
             $this->conditions[] = "{$s}BEObject{$e}.{$s}user_created{$e}={$value}";
         }
         $this->group .= $locFields;
