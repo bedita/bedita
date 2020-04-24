@@ -86,19 +86,19 @@ available options:
 
 		{if !empty($filters.user)}
 		{$createdbyme = $view->SessionFilter->read('user_created') == $BEAuthUser.id}
-		<div class="cell">
-			<label>{t}created by{/t}:</label>
-			<select name="filter[user_created]" id="user_created">
-				{strip}
-				<option value="" {if !$createdbyme}selected="selected"{/if}>
-					{t}anybody{/t}
-				</option>
-				<option value="{$BEAuthUser.id}" {if $createdbyme}selected="selected"{/if}>
-					{$BEAuthUser.userid} (you)
-				</option>
-				{/strip}
-			</select>
-		</div>
+			<div class="cell">
+				<label>{t}created by{/t}:</label>
+				<select name="filter[user_created]" id="user_created">
+					{strip}
+					<option value="" {if !$createdbyme}selected="selected"{/if}>
+						{t}anybody{/t}
+					</option>
+					<option value="{$BEAuthUser.id}" {if $createdbyme}selected="selected"{/if}>
+						{$BEAuthUser.userid} ({t}you{/t})
+					</option>
+					{/strip}
+				</select>
+			</div>
 		{/if}
 
 		{if !empty($filters.tree)}

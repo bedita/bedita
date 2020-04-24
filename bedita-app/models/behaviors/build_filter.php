@@ -986,14 +986,15 @@ class BuildFilterBehavior extends ModelBehavior {
      *
      * @param string $s, start quote sql
      * @param string $e, end quote sql
+     * @param string|null $value The value of field
      */
-    protected function user_createdFilter($s, $e) {
+    protected function user_createdFilter($s, $e, $value) {
         $locFields = ", {$s}User{$e}.{$s}userid{$e}, {$s}User{$e}.{$s}realname{$e}";
         $this->fields .= $locFields;
         $this->from .= ", {$s}users{$e} AS {$s}User{$e}";
         $this->conditions[] = "{$s}User{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}user_created{$e}";
-        if (!empty($this->filter['user_created'])) {
-            $this->conditions[] = "{$s}BEObject{$e}.{$s}user_created{$e}={$this->filter['user_created']}";
+        if (!empty($value)) {
+            $this->conditions[] = "{$s}BEObject{$e}.{$s}user_created{$e}={$value}";
         }
         $this->group .= $locFields;
     }
