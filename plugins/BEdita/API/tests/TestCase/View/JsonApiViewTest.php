@@ -260,21 +260,47 @@ class JsonApiViewTest extends TestCase
             'included' => [
                 json_encode([
                     'data' => [
-                        'id' => '1',
-                        'type' => 'roles',
-                        'relationships' => [
-                            'users' => [
-                                'data' => [
-                                   [
-                                        'id' => '1',
-                                        'type' => 'users'
-                                   ],
-                                ],
-                                'links' => [
-                                    'related' => '/roles/1/users',
-                                    'self' => '/roles/1/relationships/users'
-                                ]
-                             ],
+                        [
+                            'id' => '1',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/1',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '1',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/1/users',
+                                        'self' => '/roles/1/relationships/users'
+                                    ]
+                                 ],
+                            ],
+                        ],
+                        [
+                            'id' => '2',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/2',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '1',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/2/users',
+                                        'self' => '/roles/2/relationships/users'
+                                    ]
+                                 ],
+                            ],
                         ],
                     ],
                     'meta' => [
@@ -293,16 +319,16 @@ class JsonApiViewTest extends TestCase
                                 'self' => '/users/1'
                             ],
                             'relationships' => [
-                                'roles' => [
-                                    'links' => [
-                                        'related' => '/users/1/roles',
-                                        'self' => '/users/1/relationships/roles'
-                                    ]
-                                ],
                                 'another_test' => [
                                     'links' => [
                                         'related' => '/users/1/another_test',
                                         'self' => '/users/1/relationships/another_test'
+                                    ]
+                                ],
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/1/roles',
+                                        'self' => '/users/1/relationships/roles'
                                     ]
                                 ],
                                 'parents' => [
@@ -323,7 +349,10 @@ class JsonApiViewTest extends TestCase
                 ]),
                 function (Table $Table) {
                     return [
-                        'object' => $Table->get(1, ['contain' => 'Users']),
+                        'objects' => [
+                            $Table->get(1, ['contain' => 'Users']),
+                            $Table->get(1, ['contain' => 'Users'])->set('id', 2),
+                        ],
                         '_serialize' => true,
                         '_fields' => [
                             'roles' => '',
