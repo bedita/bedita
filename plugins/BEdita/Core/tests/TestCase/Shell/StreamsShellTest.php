@@ -1,13 +1,10 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Shell;
 
-use BEdita\Core\Filesystem\FilesystemRegistry;
-use BEdita\Core\Model\Entity\EndpointPermission;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Console\Shell;
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
-use Cake\Utility\Inflector;
 
 /**
  * \BEdita\Core\Shell\StreamsShell Test Case
@@ -16,6 +13,8 @@ use Cake\Utility\Inflector;
  */
 class StreamsShellTest extends ConsoleIntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * Fixtures
      *
@@ -30,33 +29,13 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * List of files to keep in test filesystem, and their contents.
-     *
-     * @var \Cake\Collection\Collection
-     */
-    private $keep = [];
-
-    /**
      * {@inheritDoc}
      */
     public function setUp()
     {
         parent::setUp();
-
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->filesystemSetup(true, true);
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
-
-        $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('default://'))
-            ->map(function (array $object) use ($mountManager) {
-                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
-                $contents = fopen('php://memory', 'wb+');
-                fwrite($contents, $mountManager->read($path));
-                fseek($contents, 0);
-
-                return compact('contents', 'path');
-            })
-            ->compile();
     }
 
     /**
@@ -64,28 +43,8 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      */
     public function tearDown()
     {
-        // Cleanup test filesystem.
-        $mountManager = FilesystemRegistry::getMountManager();
-        $keep = $this->keep
-            ->each(function (array $object) use ($mountManager) {
-                $mountManager->putStream($object['path'], $object['contents']);
-            })
-            ->map(function (array $object) {
-                return $object['path'];
-            })
-            ->toList();
-        collection($mountManager->listContents('default://'))
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
-            })
-            ->reject(function ($uri) use ($keep) {
-                return in_array($uri, $keep);
-            })
-            ->each([$mountManager, 'delete']);
-
+        $this->filesystemRestore();
         unset($this->Streams);
-        FilesystemRegistry::dropAll();
-
         parent::tearDown();
     }
 
