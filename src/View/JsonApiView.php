@@ -86,11 +86,32 @@ class JsonApiView extends JsonView
 
         if (!empty($included)) {
             $included = JsonApi::formatData($included, $options, $fields);
+            $this->includedUnique($included);
             unset($included['_schema']);
             $res += compact('included');
         }
 
         return $res;
+    }
+
+    /**
+     * Make sure included items are unique.
+     *
+     * @param array $included Included items.
+     * @return void
+     */
+    protected function includedUnique(array &$included): void
+    {
+        $idx = [];
+        foreach ($included as $k => $item) {
+            $id = Hash::get($item, 'id');
+            $type = Hash::get($item, 'type');
+            if (!empty($idx[$type][$id])) {
+                unset($included[$k]);
+            } else {
+                $idx[$type][$id] = 1;
+            }
+        }
     }
 
     /**
