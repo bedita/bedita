@@ -13,10 +13,14 @@
 
 namespace BEdita\Core\State;
 
+use BadMethodCallException;
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\SingletonTrait;
 use Cake\Core\Configure;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -139,5 +143,37 @@ class CurrentApplication
     public static function loadApplicationConfiguration($context)
     {
         static::getInstance()->loadConfiguration($context);
+    }
+
+    /**
+     * Set current application from request header.
+     * This is done primarily with an API_KEY header like 'X-Api-Key',
+     * alternatively `api_key` query string is used (not recommended)
+     * This method will be deprecated: applications should use JWT tokens now.
+     *
+     * @param ServerRequest $request The request.
+     * @return void
+     */
+    public static function setFromRequest(ServerRequest $request): void
+    {
+        if (static::getApplication() !== null) {
+            return;
+        }
+
+        $apiKey = $request->getHeaderLine('X-Api-Key');
+        if (empty($apiKey)) {
+            $apiKey = (string)$request->getQuery('api_key');
+        }
+        if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps', true))) {
+            return;
+        }
+
+        try {
+            static::setFromApiKey($apiKey);
+        } catch (BadMethodCallException $e) {
+            throw new ForbiddenException(__d('bedita', 'Missing API key'));
+        } catch (RecordNotFoundException $e) {
+            throw new ForbiddenException(__d('bedita', 'Invalid API key'));
+        }
     }
 }

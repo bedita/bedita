@@ -63,8 +63,6 @@ class AppController extends Controller
 
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
-        $this->getApplication();
-
         $this->loadComponent('Paginator', (array)Configure::read('Pagination', $this->defaultPagination));
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
@@ -113,35 +111,6 @@ class AppController extends Controller
         }
 
         return null;
-    }
-
-    /**
-     * Get application from request.
-     * This is done primarily with an API_KEY header like 'X-Api-Key',
-     * alternatively `api_key` query string is used (not recommended)
-     *
-     * @return void
-     * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
-     */
-    protected function getApplication()
-    {
-        if (CurrentApplication::getApplication() === null) {
-            $apiKey = $this->request->getHeaderLine('X-Api-Key');
-            if (empty($apiKey)) {
-                $apiKey = (string)$this->request->getQuery('api_key');
-            }
-            if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps', true))) {
-                return;
-            }
-
-            try {
-                CurrentApplication::setFromApiKey($apiKey);
-            } catch (BadMethodCallException $e) {
-                throw new ForbiddenException(__d('bedita', 'Missing API key'));
-            } catch (RecordNotFoundException $e) {
-                throw new ForbiddenException(__d('bedita', 'Invalid API key'));
-            }
-        }
     }
 
     /**

@@ -158,23 +158,23 @@ class AppControllerTest extends IntegrationTestCase
      * @dataProvider getApplicationProvider()
      * @covers ::getApplication()
      */
-    public function testGetApplication($expected, array $environment, array $query = [], $blockAnonymous = false)
-    {
-        if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
-        }
+    // public function testGetApplication($expected, array $environment, array $query = [], $blockAnonymous = false)
+    // {
+    //     if ($expected instanceof \Exception) {
+    //         static::expectException(get_class($expected));
+    //         static::expectExceptionMessage($expected->getMessage());
+    //     }
 
-        Configure::write('Security.blockAnonymousApps', $blockAnonymous);
-        CurrentApplication::getInstance()->set(null);
-        $environment += ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment', 'query'));
+    //     Configure::write('Security.blockAnonymousApps', $blockAnonymous);
+    //     CurrentApplication::getInstance()->set(null);
+    //     $environment += ['HTTP_ACCEPT' => 'application/json'];
+    //     $request = new ServerRequest(compact('environment', 'query'));
 
-        $controller = new AppController($request);
-        $controller->dispatchEvent('Controller.initialize');
+    //     $controller = new AppController($request);
+    //     $controller->dispatchEvent('Controller.initialize');
 
-        static::assertEquals($expected, CurrentApplication::getApplicationId());
-    }
+    //     static::assertEquals($expected, CurrentApplication::getApplicationId());
+    // }
 
     /**
      * Test default behavior on missing 'Security.blockAnonymousApps' key
@@ -182,18 +182,18 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testGetApplicationDefault()
-    {
-        static::expectException(ForbiddenException::class);
-        static::expectExceptionMessage('Missing API key');
+    // public function testGetApplicationDefault()
+    // {
+    //     static::expectException(ForbiddenException::class);
+    //     static::expectExceptionMessage('Missing API key');
 
-        Configure::delete('Security.blockAnonymousApps');
-        CurrentApplication::getInstance()->set(null);
-        $environment = ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment'));
-        $controller = new AppController($request);
-        $controller->dispatchEvent('Controller.initialize');
-    }
+    //     Configure::delete('Security.blockAnonymousApps');
+    //     CurrentApplication::getInstance()->set(null);
+    //     $environment = ['HTTP_ACCEPT' => 'application/json'];
+    //     $request = new ServerRequest(compact('environment'));
+    //     $controller = new AppController($request);
+    //     $controller->dispatchEvent('Controller.initialize');
+    // }
 
     /**
      * Test included resources.
