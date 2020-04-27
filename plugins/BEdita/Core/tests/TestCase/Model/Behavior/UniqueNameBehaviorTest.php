@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\UniqueNameBehavior;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -41,6 +42,7 @@ class UniqueNameBehaviorTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -317,7 +319,7 @@ class UniqueNameBehaviorTest extends TestCase
         $document->set('uname', '');
         $document->set('title', '');
         $behavior->uniqueName($document);
-        static::assertContains('documents_', $document->get('uname'));
+        static::assertContains('documents-', $document->get('uname'));
     }
 
     /**
@@ -342,5 +344,29 @@ class UniqueNameBehaviorTest extends TestCase
         });
 
         $Documents->save($entity);
+    }
+
+    /**
+     * Test unique name max lenght
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testUniqueNameMaxLen()
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+
+        // check internal uname generation lenght
+        $data = ['title' => str_repeat('new title', 100)];
+        $document = $Documents->newEntity($data);
+        $behavior->uniqueName($document);
+        $this->assertEquals(strlen($document->get('uname')), UniqueNameBehavior::UNAME_MAX_LENGTH);
+
+        // limit explicit uname set lenght
+        $document->set('uname', str_repeat('new-uname', 100));
+        $behavior->uniqueName($document);
+        $this->assertEquals(strlen($document->get('uname')), UniqueNameBehavior::UNAME_MAX_LENGTH);
     }
 }
