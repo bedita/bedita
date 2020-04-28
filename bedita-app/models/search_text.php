@@ -68,11 +68,14 @@ class SearchText extends BEAppModel
 		
 		$this->checkIndexModel();
 		if ($this->indexModel) {
-			$res = $this->indexModel->indexObject($searchFields, $data);
-			$parents = array();
-			if (!empty($model->data[$model->alias]['destination'])) {
+			$parents = null;
+			if (isset($model->data[$model->alias]['destination'])) {
+				$destination = array();
+				if (!empty($model->data[$model->alias]['destination'])) {
+					$destination = (array)$model->data[$model->alias]['destination'];
+				}
 				$excludeIds = (array)Configure::read('excludeFromTreeIds');
-				$parents = array_unique(array_diff((array)$model->data[$model->alias]['destination'], $excludeIds));
+				$parents = array_unique(array_diff($destination, $excludeIds));
 			}
 			$res = $this->indexModel->indexObject($searchFields, $data, $parents);
 			if (!empty($res['error'])) {
