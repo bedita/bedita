@@ -67,7 +67,6 @@ class SearchText extends BEAppModel
 		
 		$this->checkIndexModel();
 		if($this->indexModel) {
-			if ($this->indexModel) {
 			$res = $this->indexModel->indexObject($searchFields, $data);
 			if(!empty($res["error"])) {
 			    throw new BeditaException("crete object index error: " . 
