@@ -291,13 +291,34 @@ class JsonApiViewTest extends TestCase
                                 'users' => [
                                     'data' => [
                                        [
-                                            'id' => '1',
+                                            'id' => '5',
                                             'type' => 'users'
                                        ],
                                     ],
                                     'links' => [
                                         'related' => '/roles/2/users',
                                         'self' => '/roles/2/relationships/users'
+                                    ]
+                                 ],
+                            ],
+                        ],
+                        [
+                            'id' => '3',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/3',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '1',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/3/users',
+                                        'self' => '/roles/3/relationships/users'
                                     ]
                                  ],
                             ],
@@ -341,6 +362,39 @@ class JsonApiViewTest extends TestCase
                                     'links' => [
                                         'related' => '/users/1/translations',
                                         'self' => '/users/1/relationships/translations'
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'id' => '5',
+                            'type' => 'users',
+                            'links' => [
+                                'self' => '/users/5'
+                            ],
+                            'relationships' => [
+                                'another_test' => [
+                                    'links' => [
+                                        'related' => '/users/5/another_test',
+                                        'self' => '/users/5/relationships/another_test'
+                                    ]
+                                ],
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/5/roles',
+                                        'self' => '/users/5/relationships/roles'
+                                    ]
+                                ],
+                                'parents' => [
+                                    'links' => [
+                                        'related' => '/users/5/parents',
+                                        'self' => '/users/5/relationships/parents'
+                                    ]
+                                ],
+                                'translations' => [
+                                    'links' => [
+                                        'related' => '/users/5/translations',
+                                        'self' => '/users/5/relationships/translations'
                                     ]
                                 ]
                             ]
@@ -351,7 +405,8 @@ class JsonApiViewTest extends TestCase
                     return [
                         'objects' => [
                             $Table->get(1, ['contain' => 'Users']),
-                            $Table->get(1, ['contain' => 'Users'])->set('id', 2),
+                            $Table->get(2, ['contain' => 'Users']),
+                            $Table->get(1, ['contain' => 'Users'])->set('id', 3),
                         ],
                         '_serialize' => true,
                         '_fields' => [
