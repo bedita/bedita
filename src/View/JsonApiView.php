@@ -85,8 +85,8 @@ class JsonApiView extends JsonView
         $res = compact('data') + array_filter(compact('links', 'meta'));
 
         if (!empty($included)) {
+            $included = $this->includedUnique($included);
             $included = JsonApi::formatData($included, $options, $fields);
-            $this->includedUnique($included);
             unset($included['_schema']);
             $res += compact('included');
         }
@@ -98,20 +98,17 @@ class JsonApiView extends JsonView
      * Make sure included items are unique.
      *
      * @param array $included Included items.
-     * @return void
+     * @return array
      */
-    protected function includedUnique(array &$included): void
+    protected function includedUnique(array $included): array
     {
-        $idx = [];
-        foreach ($included as $k => $item) {
-            $id = Hash::get($item, 'id');
-            $type = Hash::get($item, 'type');
-            if (!empty($idx[$type][$id])) {
-                unset($included[$k]);
-            } else {
-                $idx[$type][$id] = 1;
-            }
+        $includedType = Hash::combine($included, '{n}.id', '{n}', '{n}.type');
+        $unique = [];
+        foreach ($includedType as $inc) {
+            $unique = array_merge($unique, array_values($inc));
         }
+
+        return $unique;
     }
 
     /**
