@@ -90,7 +90,7 @@ trait TestFilesystemTrait
     }
 
     /**
-     * Restore original filesystem content amd remove new files.
+     * Restore original filesystem content and remove new files.
      * Call this method in test `tearDown()`
      * or after tests involving filesystem.
      *
