@@ -85,8 +85,8 @@ class JsonApiView extends JsonView
         $res = compact('data') + array_filter(compact('links', 'meta'));
 
         if (!empty($included)) {
-            $included = $this->includedUnique($included);
             $included = JsonApi::formatData($included, $options, $fields);
+            $included = $this->includedUnique($included);
             unset($included['_schema']);
             $res += compact('included');
         }
