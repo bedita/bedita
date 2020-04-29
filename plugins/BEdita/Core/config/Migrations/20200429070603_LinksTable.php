@@ -9,9 +9,6 @@ class LinksTable extends AbstractMigration
      */
     public function up()
     {
-        $columnTypes = $this->getAdapter()->getColumnTypes();
-        $enum = in_array('enum', $columnTypes) ? 'enum' : 'string';
-
         // links
         $this->table('links', ['id' => false])
             ->addColumn('id', 'integer', [
