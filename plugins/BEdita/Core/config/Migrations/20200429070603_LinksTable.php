@@ -18,6 +18,12 @@ class LinksTable extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
+            ->addColumn('url', 'string', [
+                'comment' => 'Url',
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addColumn('http_status', 'string', [
                 'comment' => 'HTTP status',
                 'default' => null,
@@ -55,6 +61,8 @@ class LinksTable extends AbstractMigration
                             'description' => 'Links model',
                             'plugin' => 'BEdita/Core',
                             'model' => 'Links',
+                            'core_type' => 1,
+                            'enabled' => 0,
                         ],
                     ],
                 ],
