@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\LinksTable} Test Case
@@ -76,5 +77,44 @@ class LinksTableTest extends TestCase
     public function testInitialize()
     {
         $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Data provider for `testValidation` test case.
+     *
+     * @return array
+     */
+    public function validationProvider()
+    {
+        return [
+            'ok' => [
+                [],
+                [
+                    'title' => 'gustavo link',
+                    'url' => 'https://www.gustavo.com',
+                    'http_status' => '200 OK',
+                    'last_update' => '2020-04-29 16:15:00'
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test validation.
+     *
+     * @param string[] $expected Expected errors.
+     * @param array $data Data.
+     * @return void
+     *
+     * @dataProvider validationProvider()
+     * @coversNothing
+     */
+    public function testValidation(array $expected, array $data)
+    {
+        $entity = $this->Links->newEntity();
+        $entity = $this->Links->patchEntity($entity, $data);
+        $errors = array_keys(Hash::flatten($entity->getErrors()));
+
+        static::assertEquals($expected, $errors);
     }
 }
