@@ -13,7 +13,7 @@ class LinksTable extends AbstractMigration
                 'description' => 'Links model',
                 'plugin' => 'BEdita/Core',
                 'model' => 'Links',
-                //'core_type' => 1,
+                'core_type' => 1,
                 'enabled' => 0,
             ],
         ],
@@ -83,7 +83,17 @@ class LinksTable extends AbstractMigration
             ->save();
 
         Resources::save(
-            ['remove' => $this->create],
+            [
+                'update' => [
+                    'object_types' => [
+                        [
+                            'name' => 'links',
+                            'core_type' => 0,
+                        ],
+                    ],
+                ],
+                'remove' => $this->create
+            ],
             ['connection' => $this->getAdapter()->getCakeConnection()]
         );
     }
