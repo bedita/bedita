@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2019-08-27 09:51:56\n"
+"POT-Creation-Date: 2020-04-29 15:31:44\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1864,6 +1864,9 @@ msgid "Title & Description"
 msgstr ""
 
 msgid "Title is required"
+msgstr ""
+
+msgid "To search for an exact match, put a word or phrase between quotation marks. For example: \"tallest building\""
 msgstr ""
 
 msgid "To unsubscribe"

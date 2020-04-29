@@ -65,7 +65,7 @@ available options:
 					placeholder="{t}search word{/t}" name="filter[query]" id="search" value="{$view->SessionFilter->read('query')}"
 				/>&nbsp;
 				{if $conf->searchEngine === 'ElasticSearch'}
-					<span class="elastictooltiptext">{t}Per cercare una corrispondenza esatta, metti una parola o una frase tra virgolette. Ad esempio: "edificio più alto"{/t}</span>
+					<span class="elastictooltiptext">{t}To search for an exact match, put a word or phrase between quotation marks. For example: "tallest building"{/t}</span>
 				{/if}
 				<input type="checkbox" 
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
