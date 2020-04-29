@@ -1,9 +1,10 @@
 <?php
+use Cake\ORM\TableRegistry;
 use Migrations\AbstractMigration;
-use BEdita\Core\Utility\Resources;
 
 class LinksTable extends AbstractMigration
 {
+
     /**
      * {@inheritDoc}
      */
@@ -51,24 +52,26 @@ class LinksTable extends AbstractMigration
             )
             ->update();
 
-        Resources::save(
-            [
-                'create' => [
-                    'object_types' => [
-                        [
-                            'name' => 'links',
-                            'singular' => 'link',
-                            'description' => 'Links model',
-                            'plugin' => 'BEdita/Core',
-                            'model' => 'Links',
-                            'core_type' => 1,
-                            'enabled' => 0,
-                        ],
+        $objectTypeId = TableRegistry::getTableLocator()->get('ObjectTypes')
+            ->find()
+            ->where(['name' => 'links'])
+            ->first();
+        // core type not deletable... it could be already in object_types (migration rollback doesn't delete it)
+        if ($objectTypeId === null) {
+            $this->table('object_types')
+                ->insert([
+                    [
+                        'name' => 'links',
+                        'singular' => 'link',
+                        'description' => 'Links model',
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Links',
+                        'core_type' => 1,
+                        'enabled' => 0,
                     ],
-                ],
-            ],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+                ])
+                ->save();
+        }
     }
 
     /**
