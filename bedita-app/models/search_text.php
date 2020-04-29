@@ -67,11 +67,19 @@ class SearchText extends BEAppModel
 		}
 		
 		$this->checkIndexModel();
-		if($this->indexModel) {
-			$res = $this->indexModel->indexObject($searchFields, $data);
-			if(!empty($res["error"])) {
-			    throw new BeditaException("crete object index error: " . 
-			            $res["error"]);
+		if ($this->indexModel) {
+			$parents = null;
+			if (isset($model->data[$model->alias]['destination'])) {
+				$destination = array();
+				if (!empty($model->data[$model->alias]['destination'])) {
+					$destination = (array)$model->data[$model->alias]['destination'];
+				}
+				$excludeIds = (array)Configure::read('excludeFromTreeIds');
+				$parents = array_unique(array_diff($destination, $excludeIds));
+			}
+			$res = $this->indexModel->indexObject($searchFields, $data, $parents);
+			if (!empty($res['error'])) {
+			    throw new BeditaException(sprintf('create object index error: %s', $res['error']));
 			}
 		} else {
 			$this->saveSearchTexts($searchFields, $data);
