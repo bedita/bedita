@@ -1,9 +1,23 @@
 <?php
-use Cake\ORM\Table;
+use BEdita\Core\Utility\Resources;
 use Migrations\AbstractMigration;
 
 class LinksTable extends AbstractMigration
 {
+
+    protected $create = [
+        'object_types' => [
+            [
+                'name' => 'links',
+                'singular' => 'link',
+                'description' => 'Links model',
+                'plugin' => 'BEdita/Core',
+                'model' => 'Links',
+                //'core_type' => 1,
+                'enabled' => 0,
+            ],
+        ],
+    ];
 
     /**
      * {@inheritDoc}
@@ -52,19 +66,11 @@ class LinksTable extends AbstractMigration
             )
             ->update();
 
-        $this->table('object_types')
-            ->insert([
-                [
-                    'name' => 'links',
-                    'singular' => 'link',
-                    'description' => 'Links model',
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Links',
-                    'core_type' => 1,
-                    'enabled' => 0,
-                ],
-            ])
-            ->save();
+        Resources::save(
+            ['create' => $this->create],
+            ['connection' => $this->getAdapter()->getCakeConnection()]
+        );
+
     }
 
     /**
@@ -76,10 +82,9 @@ class LinksTable extends AbstractMigration
             ->drop()
             ->save();
 
-        $table = new Table([
-            'table' => 'object_types',
-            'connection' => $this->getAdapter()->getCakeConnection(),
-        ]);
-        $table->delete($table->find()->where(['name' => 'links'])->firstOrFail());
+        Resources::save(
+            ['remove' => $this->create],
+            ['connection' => $this->getAdapter()->getCakeConnection()]
+        );
     }
 }
