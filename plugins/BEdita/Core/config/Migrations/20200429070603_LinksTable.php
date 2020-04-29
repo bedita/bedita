@@ -1,5 +1,5 @@
 <?php
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
 class LinksTable extends AbstractMigration
@@ -52,26 +52,19 @@ class LinksTable extends AbstractMigration
             )
             ->update();
 
-        $objectTypeId = TableRegistry::getTableLocator()->get('ObjectTypes')
-            ->find()
-            ->where(['name' => 'links'])
-            ->first();
-        // core type not deletable... it could be already in object_types (migration rollback doesn't delete it)
-        if ($objectTypeId === null) {
-            $this->table('object_types')
-                ->insert([
-                    [
-                        'name' => 'links',
-                        'singular' => 'link',
-                        'description' => 'Links model',
-                        'plugin' => 'BEdita/Core',
-                        'model' => 'Links',
-                        'core_type' => 1,
-                        'enabled' => 0,
-                    ],
-                ])
-                ->save();
-        }
+        $this->table('object_types')
+            ->insert([
+                [
+                    'name' => 'links',
+                    'singular' => 'link',
+                    'description' => 'Links model',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Links',
+                    'core_type' => 1,
+                    'enabled' => 0,
+                ],
+            ])
+            ->save();
     }
 
     /**
@@ -82,5 +75,11 @@ class LinksTable extends AbstractMigration
         $this->table('links')
             ->drop()
             ->save();
+
+        $table = new Table([
+            'table' => 'object_types',
+            'connection' => $this->getAdapter()->getCakeConnection(),
+        ]);
+        $table->delete($table->find()->where(['name' => 'links'])->firstOrFail());
     }
 }
