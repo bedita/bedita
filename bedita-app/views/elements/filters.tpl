@@ -26,6 +26,7 @@
     'relations' => true,
     'type' => false,
     'language' => true,
+    'user' => true,
     'customProp' => ['showObjectTypes' => false],
     'categories' => true,
     'mediaTypes' => false,

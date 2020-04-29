@@ -10,6 +10,7 @@ available options:
 	'treeDescendants' => true,
 	'type' => true,
 	'language' => true,
+	'user' => true,
 	'customProp' => false,
 	'categories' => true or array('label' => 'myLabel'),
 	'mediaType' => false,
@@ -87,6 +88,23 @@ available options:
 						</option>
 						{/strip}
 					{/foreach}
+				</select>
+			</div>
+		{/if}
+
+		{if !empty($filters.user)}
+		{$createdbyme = $view->SessionFilter->read('user_created') == $BEAuthUser.id}
+			<div class="cell">
+				<label>{t}created by{/t}:</label>
+				<select name="filter[user_created]" id="user_created">
+					{strip}
+					<option value="" {if !$createdbyme}selected="selected"{/if}>
+						{t}anybody{/t}
+					</option>
+					<option value="{$BEAuthUser.id}" {if $createdbyme}selected="selected"{/if}>
+						{$BEAuthUser.userid} ({t}you{/t})
+					</option>
+					{/strip}
 				</select>
 			</div>
 		{/if}
