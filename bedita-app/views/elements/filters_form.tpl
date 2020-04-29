@@ -58,7 +58,15 @@ available options:
 		{if !empty($filters.word)}
 			<div class="cell word">
 				<label>{t}search word{/t}:</label>
-				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" value="{$view->SessionFilter->read('query')}"/>&nbsp;
+				<input type="text" 
+					{if $conf->searchEngine === 'ElasticSearch'}
+						class="elastictooltip"
+					{/if}
+					placeholder="{t}search word{/t}" name="filter[query]" id="search" value="{$view->SessionFilter->read('query')}"
+				/>&nbsp;
+				{if $conf->searchEngine === 'ElasticSearch'}
+					<span class="elastictooltiptext">{t}Per cercare una corrispondenza esatta, metti una parola o una frase tra virgolette. Ad esempio: "edificio più alto"{/t}</span>
+				{/if}
 				<input type="checkbox" 
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
 						checked="checked"

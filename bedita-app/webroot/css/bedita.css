@@ -2128,6 +2128,23 @@ A.BEbutton.golink:before {
 	max-width:436px;
 }
 
+.filters .cell:hover .elastictooltiptext {
+    visibility: visible;
+}
+
+.filters .cell .elastictooltiptext {
+    visibility: hidden;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 5px;
+	position: absolute;
+	z-index: 1;
+    bottom: 96%;
+    margin-left: -390px;
+}
+
 .filters .formbuttons {
 	margin-top:5px;
 	padding:10px 5px 10px 5px;
@@ -2147,6 +2164,8 @@ A.BEbutton.golink:before {
 	background-color: #F2F2F2;
 	color:#666;
 }
+
+
 
 /*...........................................    
 
