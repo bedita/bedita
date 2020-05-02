@@ -60,6 +60,9 @@ class LinksTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->allowEmptyString('url');
+
+        $validator
             ->allowEmptyString('http_status');
 
         $validator
