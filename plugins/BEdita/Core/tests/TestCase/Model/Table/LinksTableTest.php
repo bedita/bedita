@@ -39,8 +39,6 @@ class LinksTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Links',
     ];
