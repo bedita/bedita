@@ -34,10 +34,8 @@ class LinksTable extends Table
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -50,10 +48,8 @@ class LinksTable extends Table
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->nonNegativeInteger('id')

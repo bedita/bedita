@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class LinksTableTest extends TestCase
 {
-
     /**
      * Test subject
      *
@@ -33,38 +32,17 @@ class LinksTableTest extends TestCase
     public $Links;
 
     /**
-     * setUp method
+     * Fixtures
      *
-     * @return void
+     * @var array
      */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->Links = TableRegistry::getTableLocator()->get('Links');
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->Links);
-
-        parent::tearDown();
-    }
-
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+    public $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Links', // temporary fixture, not suitable for actual save/get operations
+    ];
 
     /**
      * Data provider for `testValidation` test case.
@@ -94,10 +72,13 @@ class LinksTableTest extends TestCase
      * @return void
      *
      * @dataProvider validationProvider()
-     * @coversNothing
+     *
+     * @covers ::initialize()
+     * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
+        $this->Links = TableRegistry::getTableLocator()->get('Links');
         $entity = $this->Links->newEntity();
         $entity = $this->Links->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
