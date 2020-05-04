@@ -44,7 +44,7 @@ class UploadControllerTest extends IntegrationTestCase
      */
     public function tearDown()
     {
-        $this->filesystemCleanup();
+        $this->filesystemRestore();
         parent::tearDown();
     }
 

@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
-use Cake\Core\Configure;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -26,6 +26,7 @@ use Cake\Utility\Hash;
  */
 class GlideGeneratorTest extends TestCase
 {
+    use TestFilesystemTrait;
 
     /**
      * Fixtures.
@@ -54,39 +55,18 @@ class GlideGeneratorTest extends TestCase
     protected $Streams;
 
     /**
-     * List of files to keep in test filesystem, and their contents.
-     *
-     * @var \Cake\Collection\Collection
-     */
-    protected $keep;
-
-    /**
      * {@inheritDoc}
      */
     public function setUp()
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->filesystemSetup(false, true);
+
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $this->generator = new GlideGenerator();
         $this->generator->initialize([]);
-
-        $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('thumbnails://', true))
-            ->reject(function (array $object) {
-                return $object['type'] === 'dir';
-            })
-            ->map(function (array $object) use ($mountManager) {
-                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
-                $contents = fopen('php://memory', 'wb+');
-                fwrite($contents, $mountManager->read($path));
-                fseek($contents, 0);
-
-                return compact('contents', 'path');
-            })
-            ->compile();
     }
 
     /**
@@ -94,30 +74,8 @@ class GlideGeneratorTest extends TestCase
      */
     public function tearDown()
     {
-        // Cleanup test filesystem.
-        $mountManager = FilesystemRegistry::getMountManager();
-        $keep = $this->keep
-            ->each(function (array $object) use ($mountManager) {
-                $mountManager->putStream($object['path'], $object['contents']);
-            })
-            ->map(function (array $object) {
-                return $object['path'];
-            })
-            ->toList();
-        collection($mountManager->listContents('thumbnails://', true))
-            ->reject(function (array $object) {
-                return $object['type'] === 'dir';
-            })
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
-            })
-            ->reject(function ($uri) use ($keep) {
-                return in_array($uri, $keep);
-            })
-            ->each([$mountManager, 'delete']);
-
+        $this->filesystemRestore();
         unset($this->generator, $this->Streams);
-        FilesystemRegistry::dropAll();
 
         parent::tearDown();
     }
