@@ -33,17 +33,6 @@ class LinksTableTest extends TestCase
     public $Links;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Links',
-    ];
-
-    /**
      * setUp method
      *
      * @return void
