@@ -1,24 +1,10 @@
 <?php
 use BEdita\Core\Utility\Resources;
+use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
 class LinksTable extends AbstractMigration
 {
-
-    protected $create = [
-        'object_types' => [
-            [
-                'name' => 'links',
-                'singular' => 'link',
-                'description' => 'Links model',
-                'plugin' => 'BEdita/Core',
-                'model' => 'Links',
-                'core_type' => 1,
-                'enabled' => 0,
-            ],
-        ],
-    ];
-
     /**
      * {@inheritDoc}
      */
@@ -66,11 +52,23 @@ class LinksTable extends AbstractMigration
             )
             ->update();
 
-        Resources::save(
-            ['create' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+            $this->table('object_types')
+                ->insert([
+                    [
+                        'name' => 'links',
+                        'singular' => 'link',
+                        'description' => 'Links model',
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Links',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified' => date('Y-m-d H:i:s'),
+                        'parent_id' => 1,
+                        'core_type' => 1,
+                    ],
+                ])
+                ->save();
 
+            $this->recoverTree();
     }
 
     /**
@@ -82,19 +80,27 @@ class LinksTable extends AbstractMigration
             ->drop()
             ->save();
 
-        Resources::save(
-            [
-                'update' => [
-                    'object_types' => [
-                        [
-                            'name' => 'links',
-                            'core_type' => 0,
-                        ],
-                    ],
-                ],
-                'remove' => $this->create
-            ],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+        $this->query("DELETE FROM object_types WHERE name = 'links'");
+        $this->recoverTree();
+    }
+
+    /**
+     * Recover `object_types` tree
+     *
+     * @return void
+     */
+    protected function recoverTree(): void
+    {
+        $table = new Table([
+            'table' => 'object_types',
+            'connection' => $this->getAdapter()->getCakeConnection(),
+        ]);
+        $table->addBehavior('BEdita/Core.Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+        ]);
+        /* @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
+        $tree = $table->behaviors()->get('Tree');
+        $tree->nonAtomicRecover();
     }
 }
