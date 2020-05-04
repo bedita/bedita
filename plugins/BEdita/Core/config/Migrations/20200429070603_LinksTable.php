@@ -45,7 +45,7 @@ class LinksTable extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('last_update', 'date', [
+            ->addColumn('last_update', 'timestamp', [
                 'comment' => 'Last update date',
                 'default' => null,
                 'limit' => null,
