@@ -1,5 +1,4 @@
 <?php
-use BEdita\Core\Utility\Resources;
 use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
