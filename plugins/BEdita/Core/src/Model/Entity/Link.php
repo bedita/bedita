@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Entity;
  *
  * @property int $id
  * @property string|null $http_status
+ * @property string|null $url
  * @property \Cake\I18n\Date|null $last_update
  */
 class Link extends ObjectEntity
