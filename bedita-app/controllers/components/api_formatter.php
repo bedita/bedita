@@ -1039,7 +1039,7 @@ class ApiFormatterComponent extends Object {
                                         $relInfoArr = explode('|', $relInfo);
                                         $v[$relInfoArr[0]] = (!empty($relInfoArr[1])) ? $relInfoArr[1] : 1;
                                     }
-                                } else {
+                                } elseif (!is_array($v)) {
                                     $v = trim($v, $separator);
                                     if (strpos($v, $separator) !== false) {
                                         $v = explode($separator, $v);
