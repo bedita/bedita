@@ -61,6 +61,36 @@ $(document).ready(function(){
         $("#formObject").submit() ;
     });
 
+    $("#changeLanguageSelected").click( function() {
+        if (count_check_selected() < 1) {
+            alert(no_items_checked_msg);
+            return false;
+        }
+
+        $("#formObject").prop("action", urls['changeLanguageSelected']) ;
+        $("#formObject").submit() ;
+    });
+
+    $("#changeRightsSelected").click( function() {
+        if (count_check_selected() < 1) {
+            alert(no_items_checked_msg);
+            return false;
+        }
+
+        $("#formObject").prop("action", urls['changeRightsSelected']) ;
+        $("#formObject").submit() ;
+    });
+
+    $("#assignPermissionSelected").click( function() {
+        if (count_check_selected() < 1) {
+            alert(no_items_checked_msg);
+            return false;
+        }
+
+        $("#formObject").prop("action", urls['assignPermissionSelected']) ;
+        $("#formObject").submit() ;
+    });
+
     $(".opButton").click( function() {
         if(count_check_selected()==0) {
             alert(no_items_checked_msg);

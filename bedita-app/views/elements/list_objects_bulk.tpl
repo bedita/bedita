@@ -49,7 +49,7 @@
 
 		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />
 		&nbsp;<input id="assocObjects" type="button" value=" ok " />
-		
+
 		{if !empty($sectionSel.id)}
 			<hr />
 			{assign var='filter_section_id' value=$sectionSel.id}
@@ -77,17 +77,44 @@
 		{/if}
 	{/if}
 
+	{if isset($bulk_language) && $bulk_language==true}
+		<hr />
+		{t}main language{/t}:&nbsp;
+		<select id="newLang" name="data[lang]" placeholder='{t}select a language{/t}' data-placeholder='{t}select a language{/t}'>
+			<option></option>
+			{html_options options=$conf->langOptions}
+			{html_options options=$conf->langsIso}
+		</select>
+		&nbsp;
+		<input id="changeLanguageSelected" type="button" value=" ok " />
+	{/if}
+
+	{if isset($bulk_rights) && $bulk_rights==true}
+		<hr />
+		&copy; {t}rights{/t}:&nbsp;
+		<input id="newRights" name="data[rights]" type="text" />
+		&nbsp;
+		<input id="changeRightsSelected" type="button" value=" ok " />
+	{/if}
+
+	{if isset($bulk_permission) && $bulk_permission}
+		<hr />
+		{$view->element('form_permissions', [])}
+		&nbsp;
+		<input id="assignPermissionSelected" type="button" value=" {t}add permissions{/t} " />
+	{/if}
+
 	<hr />
 
 	{if !isset($bulk_hide_delete) || $bulk_hide_delete==false}
 		<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 	{/if}
-	
+
 	{if isset($bulk_tags) && $bulk_tags==true}
 	<hr />
 	<textarea name="addtaglist" id="addtaglist"></textarea>
 	<p style="margin-top:5px">
-	<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/> 
+	<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/>
 	&nbsp;{t}Add comma separated words{/t}
 	</p>
 	{/if}
