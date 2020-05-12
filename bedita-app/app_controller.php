@@ -1284,34 +1284,11 @@ abstract class ModulesController extends AppController {
     public function addPermissionsObjects() {
         if (!empty($this->params['form']['objects_selected'])) {
             $objectIds = $this->params['form']['objects_selected'];
-            $beObject = ClassRegistry::init('BEObject');
             $this->Transaction->begin();
 
             foreach ($objectIds as $id) {
-                // $type = $beObject->getType($id);
-                $data = ClassRegistry::init('BEObject')->find(array(
-                    'BEObject.id' => $id,
-                ));
-                $data['Permission'] = $this->data['Permission'];
-                $beObject->save(
-                    $data,
-                    true,
-                    array('Permission')
-                );
-
-                /*
-                $oldData = $this->data;
-                $this->data = array(
-                    'id' => $id,
-                    'Permission' => $this->data['Permission'],
-                );
-                $this->saveObject($model, array(
-                    'handleTagList' => false,
-                    'emptyPermission' => false,
-                    'saveTree' => false,
-                ));
-                $this->data = $oldData;
-                */
+                $permission = ClassRegistry::init('Permission');
+                $permission->add($id, $this->data['Permission']);
             }
 
             $this->Transaction->commit();
