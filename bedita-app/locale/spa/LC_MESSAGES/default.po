@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-04-29 15:31:44\n"
+"POT-Creation-Date: 2020-05-12 17:00:12\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2236,6 +2236,9 @@ msgstr "todos los webmarks"
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "anybody"
+msgstr ""
+
 msgid "associate"
 msgstr "asociar"
 
@@ -3219,6 +3222,9 @@ msgstr ""
 msgid "save draft"
 msgstr "guardar borrador"
 
+msgid "save permission"
+msgstr ""
+
 msgid "save profile"
 msgstr "guardar perfil"
 
@@ -3259,6 +3265,9 @@ msgid "select a category"
 msgstr ""
 
 msgid "select a group"
+msgstr ""
+
+msgid "select a language"
 msgstr ""
 
 msgid "select a permission"
@@ -3540,6 +3549,9 @@ msgstr "x"
 
 msgid "yes"
 msgstr "Si"
+
+msgid "you"
+msgstr ""
 
 msgid "you have no recent items"
 msgstr "No hay artículos recientes"

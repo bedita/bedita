@@ -77,6 +77,35 @@
 		{/if}
 	{/if}
 
+	{if isset($bulk_language) && $bulk_language==true}
+		<hr />
+		{t}main language{/t}:&nbsp;
+		<select id="newLang" name="data[lang]" placeholder='{t}select a language{/t}' data-placeholder='{t}select a language{/t}'>
+			<option></option>
+			{html_options options=$conf->langOptions}
+			{html_options options=$conf->langsIso}
+		</select>
+		&nbsp;
+		<input id="changeLanguageSelected" type="button" value=" ok " />
+	{/if}
+
+	{if isset($bulk_rights) && $bulk_rights==true}
+		<hr />
+		&copy; {t}rights{/t}:&nbsp;
+		<input id="newRights" name="data[rights]" type="text" />
+		&nbsp;
+		<input id="changeRightsSelected" type="button" value=" ok " />
+	{/if}
+
+	{if isset($bulk_permission) && $bulk_permission}
+		<hr />
+		<h3>{t}Permissions{/t}</h3>
+		&nbsp;
+		{$view->element('form_permissions', ['removeTab' => true])}
+		&nbsp;
+		<input id="assignPermissionSelected" type="button" value=" {t}save permission{/t} " />
+	{/if}
+
 	<hr />
 
 	{if !isset($bulk_hide_delete) || $bulk_hide_delete==false}

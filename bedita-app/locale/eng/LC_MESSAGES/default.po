@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-04-29 15:31:44\n"
+"POT-Creation-Date: 2020-05-12 17:00:12\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2217,6 +2217,9 @@ msgstr ""
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "anybody"
+msgstr ""
+
 msgid "associate"
 msgstr ""
 
@@ -3198,6 +3201,9 @@ msgstr ""
 msgid "save draft"
 msgstr ""
 
+msgid "save permission"
+msgstr ""
+
 msgid "save profile"
 msgstr ""
 
@@ -3238,6 +3244,9 @@ msgid "select a category"
 msgstr ""
 
 msgid "select a group"
+msgstr ""
+
+msgid "select a language"
 msgstr ""
 
 msgid "select a permission"
@@ -3516,6 +3525,9 @@ msgid "x"
 msgstr ""
 
 msgid "yes"
+msgstr ""
+
+msgid "you"
 msgstr ""
 
 msgid "you have no recent items"

@@ -1238,6 +1238,82 @@ abstract class ModulesController extends AppController {
         $this->setSessionForObjectDetail($objects['items']);
     }
 
+    /**
+     * Change "lang" field in bulk to objects.
+     *
+     * Used by "list_objects_bulk.tpl" view element.
+     */
+    public function changeLanguageObjects()
+    {
+        if (!empty($this->params['form']['objects_selected'])) {
+            $objectsToModify = $this->params['form']['objects_selected'];
+            $this->changeBulkObjects($objectsToModify, 'lang', $this->data['lang']);
+        }
+    }
+
+    /**
+     * Change "rights" field in bulk to objects.
+     *
+     * Used by "list_objects_bulk.tpl" view element.
+     */
+    public function changeRightsObjects()
+    {
+        if (!empty($this->params['form']['objects_selected'])) {
+            $objectsToModify = $this->params['form']['objects_selected'];
+            $this->changeBulkObjects($objectsToModify, 'rights', $this->data['rights']);
+        }
+    }
+
+    /**
+     * Change objects field value in bulk.
+     *
+     * @param integer[] $objectIds - IDs of the objects to change
+     * @param string    $field     - name of the field to change
+     * @param string    $value     - new value for the field
+     *
+     * @throws BeditaException
+     */
+    protected function changeBulkObjects($objectIds, $field, $value)
+    {
+        $beObject = ClassRegistry::init('BEObject');
+        $this->Transaction->begin();
+
+        foreach ($objectIds as $id) {
+            $this->checkObjectWritePermission($id);
+
+            if ($beObject->isFixed($id)) {
+                throw new BeditaException(sprintf(__('Error: changing %s to a fixed object!', true), $field));
+            }
+
+            $beObject->id = $id;
+
+            if (!$beObject->saveField($field, $value)) {
+                throw new BeditaException(sprintf(__('Error saving %s for item: %s', true), $field, $id));
+            }
+        }
+
+        $this->Transaction->commit();
+    }
+
+    /**
+     * Add multiple permissions in bulk to objects.
+     *
+     * Used by "list_objects_bulk.tpl" view element.
+     */
+    public function addPermissionsObjects()
+    {
+        if (!empty($this->params['form']['objects_selected'])) {
+            $objectIds = $this->params['form']['objects_selected'];
+            $this->Transaction->begin();
+
+            foreach ($objectIds as $id) {
+                $permission = ClassRegistry::init('Permission');
+                $permission->add($id, $this->data['Permission']);
+            }
+
+            $this->Transaction->commit();
+        }
+    }
 
     public function changeStatusObjects($modelName=null) {
         $objectsToModify = array();
@@ -2005,6 +2081,18 @@ abstract class ModulesController extends AppController {
                         'ERROR' => $categoriesUrl
                 ),
                 'changeStatusObjects'   =>  array(
+                        'OK'    => $this->referer(),
+                        'ERROR' => $this->referer()
+                ),
+                'changeLanguageObjects'   =>  array(
+                        'OK'    => $this->referer(),
+                        'ERROR' => $this->referer()
+                ),
+                'changeRightsObjects'   =>  array(
+                        'OK'    => $this->referer(),
+                        'ERROR' => $this->referer()
+                ),
+                'addPermissionsObjects'   =>  array(
                         'OK'    => $this->referer(),
                         'ERROR' => $this->referer()
                 ),
