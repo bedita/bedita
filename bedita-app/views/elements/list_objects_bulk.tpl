@@ -101,7 +101,7 @@
 		<hr />
 		{$view->element('form_permissions', [])}
 		&nbsp;
-		<input id="assignPermissionSelected" type="button" value=" {t}add permissions{/t} " />
+		<input id="assignPermissionSelected" type="button" value=" {t}add permission{/t} " />
 	{/if}
 
 	<hr />

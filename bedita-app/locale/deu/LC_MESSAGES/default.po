@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-04-29 15:31:44\n"
+"POT-Creation-Date: 2020-05-12 12:57:26\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -2271,6 +2271,9 @@ msgstr "alle Lesezeichen"
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "anybody"
+msgstr ""
+
 msgid "associate"
 msgstr "verknüpfen"
 
@@ -3297,6 +3300,9 @@ msgstr ""
 msgid "select a group"
 msgstr ""
 
+msgid "select a language"
+msgstr ""
+
 msgid "select a permission"
 msgstr ""
 
@@ -3574,6 +3580,9 @@ msgstr "x"
 
 msgid "yes"
 msgstr "Ja"
+
+msgid "you"
+msgstr ""
 
 msgid "you have no recent items"
 msgstr "du hast keine letzten Elemente"

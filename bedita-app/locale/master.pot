@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-29 15:31:44\n"
+"POT-Creation-Date: 2020-05-12 12:57:26\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -2181,6 +2181,9 @@ msgstr ""
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "anybody"
+msgstr ""
+
 msgid "associate"
 msgstr ""
 
@@ -3204,6 +3207,9 @@ msgstr ""
 msgid "select a group"
 msgstr ""
 
+msgid "select a language"
+msgstr ""
+
 msgid "select a permission"
 msgstr ""
 
@@ -3478,6 +3484,9 @@ msgid "x"
 msgstr ""
 
 msgid "yes"
+msgstr ""
+
+msgid "you"
 msgstr ""
 
 msgid "you have no recent items"
