@@ -1242,8 +1242,6 @@ abstract class ModulesController extends AppController {
      * Change "lang" field in bulk to objects.
      *
      * Used by "list_objects_bulk.tpl" view element.
-     *
-     * @throws BeditaException
      */
     public function changeLanguageObjects()
     {
@@ -1257,8 +1255,6 @@ abstract class ModulesController extends AppController {
      * Change "rights" field in bulk to objects.
      *
      * Used by "list_objects_bulk.tpl" view element.
-     *
-     * @throws BeditaException
      */
     public function changeRightsObjects()
     {
