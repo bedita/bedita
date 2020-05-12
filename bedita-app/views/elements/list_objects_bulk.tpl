@@ -99,7 +99,7 @@
 
 	{if isset($bulk_permission) && $bulk_permission}
 		<hr />
-		<h2>{t}Permissions{/t}</h2>
+		<h3>{t}Permissions{/t}</h3>
 		&nbsp;
 		{$view->element('form_permissions', ['removeTab' => true])}
 		&nbsp;
