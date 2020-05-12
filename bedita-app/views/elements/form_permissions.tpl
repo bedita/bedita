@@ -3,6 +3,7 @@ https://dev.channelweb.it/bedita/ticket/156
 https://dev.channelweb.it/bedita/ticket/157
 *}
 
+{$removeTab = $removeTab|default:false}
 <script type="text/javascript">
 var urlLoad = "{$html->url('/pages/loadUsersGroupsAjax')}";
 var permissionLoaded = false;
@@ -13,16 +14,19 @@ var permissions = new Array();
 {/foreach}
 
 $(document).ready(function(){
+	{if $removeTab==true}
+		loadUserGroupAjax(urlLoad);
+	{else}
+		$("#permissionsTab").click(function() {
+			if (!permissionLoaded) {
+				loadUserGroupAjax(urlLoad);
+			}
+		});
 	
-	$("#permissionsTab").click(function() {
-		if (!permissionLoaded) {
+		if ($("#permissionsTab h2").hasClass("open")) {
 			loadUserGroupAjax(urlLoad);
 		}
-	});
-
-	if ($("#permissionsTab h2").hasClass("open")) {
-		loadUserGroupAjax(urlLoad);
-	}
+	{/if}
 	
 	$("#cmdAddGroupPerm").click(function() {
 		var name = $("#inputAddPermGroup").val();
@@ -73,12 +77,14 @@ function loadUserGroupAjax(url) {
  {$el = $object|default:[]}
 {/if}
 
-{$relcount = $el.Permission|@count|default:0}
-<div class="tab" id="permissionsTab">
-	<h2 {if $relcount == 0}class="empty"{/if}>
-		{t}Permissions{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
-	</h2>
-</div>
+{if $removeTab==false}
+	{$relcount = $el.Permission|@count|default:0}
+	<div class="tab" id="permissionsTab">
+		<h2 {if $relcount == 0}class="empty"{/if}>
+			{t}Permissions{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
+		</h2>
+	</div>
+{/if}
 
 <fieldset id="permissions">
 <div class="loader" id="loaderug"></div>

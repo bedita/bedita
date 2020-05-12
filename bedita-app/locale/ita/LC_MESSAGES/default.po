@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-12 12:57:26\n"
+"POT-Creation-Date: 2020-05-12 17:00:12\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -3252,6 +3252,9 @@ msgstr "salva tutto"
 
 msgid "save draft"
 msgstr "salva bozza"
+
+msgid "save permission"
+msgstr "salva permesso"
 
 msgid "save profile"
 msgstr "salva profilo"

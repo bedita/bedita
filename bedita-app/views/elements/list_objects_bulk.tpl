@@ -99,9 +99,11 @@
 
 	{if isset($bulk_permission) && $bulk_permission}
 		<hr />
-		{$view->element('form_permissions', [])}
+		<h2>{t}Permissions{/t}</h2>
 		&nbsp;
-		<input id="assignPermissionSelected" type="button" value=" {t}add permission{/t} " />
+		{$view->element('form_permissions', ['removeTab' => true])}
+		&nbsp;
+		<input id="assignPermissionSelected" type="button" value=" {t}save permission{/t} " />
 	{/if}
 
 	<hr />

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-05-12 12:57:26\n"
+"POT-Creation-Date: 2020-05-12 17:00:12\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -3163,6 +3163,9 @@ msgid "save all"
 msgstr ""
 
 msgid "save draft"
+msgstr ""
+
+msgid "save permission"
 msgstr ""
 
 msgid "save profile"
