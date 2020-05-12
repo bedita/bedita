@@ -49,7 +49,7 @@
 
 		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />
 		&nbsp;<input id="assocObjects" type="button" value=" ok " />
-
+		
 		{if !empty($sectionSel.id)}
 			<hr />
 			{assign var='filter_section_id' value=$sectionSel.id}
@@ -109,12 +109,12 @@
 	{if !isset($bulk_hide_delete) || $bulk_hide_delete==false}
 		<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 	{/if}
-
+	
 	{if isset($bulk_tags) && $bulk_tags==true}
 	<hr />
 	<textarea name="addtaglist" id="addtaglist"></textarea>
 	<p style="margin-top:5px">
-	<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/>
+	<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/> 
 	&nbsp;{t}Add comma separated words{/t}
 	</p>
 	{/if}
