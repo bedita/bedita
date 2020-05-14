@@ -172,9 +172,8 @@ class ChildrenRelationshipTest extends IntegrationTestCase
     public function testChildrenMeta()
     {
         $this->configRequestHeaders();
-        $this->get(sprintf('/folders/12/children'));
+        $this->get('/folders/12/children');
         $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals(1, count($result['data']));
