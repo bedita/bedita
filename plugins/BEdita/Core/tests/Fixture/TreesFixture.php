@@ -40,7 +40,7 @@ class TreesFixture extends TestFixture
             'tree_right' => 5,
             'depth_level' => 1,
             'menu' => 1,
-            'canonical' => 0,
+            'canonical' => 1,
         ],
 
         // document in root folder
