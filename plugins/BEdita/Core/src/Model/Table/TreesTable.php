@@ -109,8 +109,7 @@ class TreesTable extends Table
             ->notEmpty('menu');
 
         $validator
-            ->boolean('canonical')
-            ->allowEmpty('canonical');
+            ->boolean('canonical');
 
         return $validator;
     }
