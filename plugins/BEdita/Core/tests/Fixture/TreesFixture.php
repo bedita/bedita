@@ -26,7 +26,8 @@ class TreesFixture extends TestFixture
             'tree_left' => 1,
             'tree_right' => 8,
             'depth_level' => 0,
-            'menu' => 0
+            'menu' => 0,
+            'canonical' => 0,
         ],
 
         // sub folder
@@ -38,7 +39,8 @@ class TreesFixture extends TestFixture
             'tree_left' => 2,
             'tree_right' => 5,
             'depth_level' => 1,
-            'menu' => 1
+            'menu' => 1,
+            'canonical' => 0,
         ],
 
         // document in root folder
@@ -50,7 +52,8 @@ class TreesFixture extends TestFixture
             'tree_left' => 6,
             'tree_right' => 7,
             'depth_level' => 1,
-            'menu' => 1
+            'menu' => 1,
+            'canonical' => 1,
         ],
 
         // profile in sub folder
@@ -62,7 +65,8 @@ class TreesFixture extends TestFixture
             'tree_left' => 3,
             'tree_right' => 4,
             'depth_level' => 2,
-            'menu' => 1
+            'menu' => 1,
+            'canonical' => 1,
         ],
 
         // another root folder
@@ -74,7 +78,8 @@ class TreesFixture extends TestFixture
             'tree_left' => 9,
             'tree_right' => 10,
             'depth_level' => 0,
-            'menu' => 1
+            'menu' => 1,
+            'canonical' => 0,
         ],
     ];
 }
