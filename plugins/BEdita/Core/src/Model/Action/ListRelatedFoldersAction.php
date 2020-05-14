@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\Tree;
+use Cake\Datasource\EntityInterface;
+
 /**
  * Command to list associated objects for folders.
  *
@@ -35,5 +38,26 @@ class ListRelatedFoldersAction extends ListRelatedObjectsAction
         }
 
         return $result;
+    }
+
+    /**
+     * Remove unnecessary fields from `Tree` entity.
+     *
+     * @param \Cake\Datasource\EntityInterface $joinData Join data entity.
+     * @return void
+     */
+    protected function prepareJoinEntity(EntityInterface $joinData): void
+    {
+        if ($joinData instanceof Tree) {
+            $joinData->unsetProperty([
+                'id',
+                'parent_id',
+                'object_id',
+                'root_id',
+                'parent_node_id',
+                'tree_left',
+                'tree_right',
+            ]);
+        }
     }
 }

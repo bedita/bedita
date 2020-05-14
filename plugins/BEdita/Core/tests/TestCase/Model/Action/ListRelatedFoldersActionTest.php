@@ -48,7 +48,7 @@ class ListRelatedFoldersActionTest extends TestCase
      * @return void
      *
      * @covers ::execute()
-     * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction::initialize()
+     * @covers ::prepareJoinEntity()
      */
     public function testExecuteParents()
     {
@@ -57,6 +57,13 @@ class ListRelatedFoldersActionTest extends TestCase
         $result = $action(['primaryKey' => 12]);
         static::assertInstanceOf(Folder::class, $result);
         static::assertEquals(11, $result->get('id'));
+        $joinData = $result->get('_joinData')->toArray();
+        $expected = [
+            'depth_level' => 1,
+            'menu' => true,
+            'canonical' => true,
+        ];
+        static::assertEquals($expected, $joinData);
     }
 
     /**
@@ -65,7 +72,7 @@ class ListRelatedFoldersActionTest extends TestCase
      * @return void
      *
      * @covers ::execute()
-     * @covers ::initialize()
+     * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction::initialize()
      */
     public function testExecuteChildren()
     {
