@@ -206,15 +206,36 @@ trait JsonApiTrait
         if (!empty($extraProperties)) {
             $meta['extra'] = $this->extract($extraProperties);
         }
-        $joinData = $this->get('_joinData');
-        if ($joinData instanceof \JsonSerializable) {
-            $joinData = $joinData->jsonSerialize();
-            if (!empty($joinData)) {
-                $meta['relation'] = $joinData;
-            }
-        }
+        $meta += array_filter(['relation' => $this->joinData()]);
 
         return $meta;
+    }
+
+    /**
+     * Retrieve internal `_joinData` to be added as `meta.relation`
+     *
+     * @return array
+     */
+    protected function joinData(): array
+    {
+        $joinData = $this->get('_joinData');
+        if (!$joinData instanceof \JsonSerializable) {
+            return [];
+        }
+
+        if ($joinData instanceof Tree) {
+            $joinData->unsetProperty([
+                'id',
+                'parent_id',
+                'object_id',
+                'root_id',
+                'parent_node_id',
+                'tree_left',
+                'tree_right',
+            ]);
+        }
+
+        return (array)$joinData->jsonSerialize();
     }
 
     /**
