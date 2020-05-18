@@ -161,4 +161,28 @@ class ChildrenRelationshipTest extends IntegrationTestCase
             ->order(['tree_left' => 'ASC'])
             ->toList();
     }
+
+    /**
+     * Test `meta.relation` content in GET `children` response
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testChildrenMeta()
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/12/children');
+        $this->assertResponseCode(200);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['data']));
+
+        $expected = [
+            'depth_level' => 2,
+            'menu' => true,
+            'canonical' => true,
+        ];
+        static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
+    }
 }

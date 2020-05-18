@@ -413,4 +413,38 @@ class TreesTableTest extends TestCase
 
         static::assertSame($expected, $currentPosition);
     }
+
+    /**
+     * Test set canonical `true`
+     *
+     * @covers ::afterSave()
+     */
+    public function testSetCanonical()
+    {
+        $entity = $this->Trees->newEntity(
+            [
+                'object_id' => 2,
+                'parent_id' => 12,
+                'root_id' => 11,
+                'parent_node_id' => 2,
+            ]
+        );
+        $entity = $this->Trees->saveOrFail($entity);
+        static::assertTrue((bool)$entity);
+
+        $entity = $this->Trees->get($entity->get('id'));
+        static::assertFalse($entity->get('canonical'));
+
+        // get other record for the same object
+        $other = $this->Trees->get(3);
+        static::assertTrue($other->get('canonical'));
+
+        // change canonical in subfolder
+        $entity->set('canonical', true);
+        $entity = $this->Trees->save($entity);
+        static::assertTrue($entity->get('canonical'));
+        // other record must have canonical false now
+        $other = $this->Trees->get(3);
+        static::assertFalse($other->get('canonical'));
+    }
 }

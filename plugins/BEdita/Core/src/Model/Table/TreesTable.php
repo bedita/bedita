@@ -108,6 +108,9 @@ class TreesTable extends Table
             ->boolean('menu')
             ->notEmpty('menu');
 
+        $validator
+            ->boolean('canonical');
+
         return $validator;
     }
 
@@ -197,6 +200,17 @@ class TreesTable extends Table
             if ($this->moveAt($entity, $entity->get('position')) === false) {
                 throw new BadRequestException(__d('bedita', 'Invalid position'));
             }
+        }
+
+        // if canonical set to `true` => set to `false` other `canonical` occurrences
+        if ($entity->isDirty('canonical') && $entity->get('canonical')) {
+            $this->updateAll(
+                ['canonical' => false],
+                [
+                    'object_id' => $entity->object_id,
+                    'id !=' => $entity->id,
+                ]
+            );
         }
 
         if ($entity->isNew()) {

@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -455,6 +454,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @covers ::getMeta()
+     * @covers ::joinData()
      */
     public function testGetMetaEmptyJoinData()
     {
@@ -479,6 +479,39 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($user, 'meta', []));
 
         static::assertEquals($expected, $meta, '', 0, 10, true);
+    }
+
+    /**
+     * Test `tree` join data.
+     *
+     * @return void
+     *
+     * @covers ::joinData()
+     */
+    public function testTreeJoinData(): void
+    {
+        $folder = TableRegistry::getTableLocator()->get('Folders')->get(12, ['contain' => ['Children']]);
+        $child = $folder->children[0]->jsonApiSerialize();
+
+        $expected = [
+            'depth_level' => 2,
+            'menu' => true,
+            'canonical' => true,
+        ];
+        static::assertEquals($expected, Hash::get($child, 'meta.relation'));
+    }
+
+    /**
+     * Test missing join data.
+     *
+     * @return void
+     *
+     * @covers ::joinData()
+     */
+    public function testMissingJoinData(): void
+    {
+        $role = $this->Roles->get(1)->jsonApiSerialize();
+        static::assertEmpty(Hash::get($role, 'meta.relation'));
     }
 
     /**
