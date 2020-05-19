@@ -13,13 +13,14 @@
 namespace BEdita\Core\Model\Entity;
 
 /**
- * Link Entity
+ * Publication Entity
  *
  * @property int $id
- * @property string|null $http_status
- * @property string|null $url
- * @property \Cake\I18n\Date|null $last_update
+ * @property string|null $public_name
+ * @property string|null $public_url
+ * @property string|null $staging_url
+ * @property string|null $stats_code
  */
-class Link extends ObjectEntity
+class Publication extends ObjectEntity
 {
 }
