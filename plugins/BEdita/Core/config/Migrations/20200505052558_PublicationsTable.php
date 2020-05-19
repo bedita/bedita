@@ -1,8 +1,9 @@
 <?php
+use BEdita\Core\Utility\Resources;
 use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
-class LinksTable extends AbstractMigration
+class PublicationsTable extends AbstractMigration
 {
     /**
      * {@inheritDoc}
@@ -10,7 +11,7 @@ class LinksTable extends AbstractMigration
     public function up()
     {
         // links
-        $this->table('links', ['id' => false])
+        $this->table('publications', ['id' => false])
             ->addColumn('id', 'integer', [
                 'default' => null,
                 'limit' => 10,
@@ -18,33 +19,39 @@ class LinksTable extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('url', 'string', [
-                'comment' => 'Url',
+            ->addColumn('public_name', 'string', [
+                'comment' => 'the public name',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('http_status', 'string', [
-                'comment' => 'HTTP status',
+            ->addColumn('public_url', 'string', [
+                'comment' => 'the public url',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('last_update', 'timestamp', [
-                'comment' => 'Last update date',
+            ->addColumn('staging_url', 'string', [
+                'comment' => 'the staging url',
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('stats_code', 'string', [
+                'comment' => 'the code for statistics',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
             ->create();
 
-        $this->table('links')
+        $this->table('publications')
             ->addForeignKey(
                 'id',
                 'objects',
                 'id',
                 [
-                    'constraint' => 'links_id_fk',
+                    'constraint' => 'publications_id_fk',
                     'update' => 'NO_ACTION',
                     'delete' => 'CASCADE'
                 ]
@@ -54,11 +61,11 @@ class LinksTable extends AbstractMigration
             $this->table('object_types')
                 ->insert([
                     [
-                        'name' => 'links',
-                        'singular' => 'link',
-                        'description' => 'Links model',
+                        'name' => 'publications',
+                        'singular' => 'publication',
+                        'description' => 'Publications model',
                         'plugin' => 'BEdita/Core',
-                        'model' => 'Links',
+                        'model' => 'Publications',
                         'created' => date('Y-m-d H:i:s'),
                         'modified' => date('Y-m-d H:i:s'),
                         'parent_id' => 1,
@@ -75,11 +82,11 @@ class LinksTable extends AbstractMigration
      */
     public function down()
     {
-        $this->table('links')
+        $this->table('publications')
             ->drop()
             ->save();
 
-        $this->query("DELETE FROM object_types WHERE name = 'links'");
+        $this->query("DELETE FROM object_types WHERE name = 'publications'");
         $this->recoverTree();
     }
 
