@@ -30,7 +30,7 @@ class StreamsUriLimit extends AbstractMigration
             ->changeColumn('uri', 'string', [
                 'comment' => 'Path where physical file is stored',
                 'default' => '',
-                'limit' => 2048,
+                'limit' => 767,
                 'null' => false,
             ])
             ->update();
