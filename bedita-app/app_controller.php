@@ -1304,14 +1304,39 @@ abstract class ModulesController extends AppController {
     {
         if (!empty($this->params['form']['objects_selected'])) {
             $objectIds = $this->params['form']['objects_selected'];
+            /**
+             * [objectID][permissionName]
+             */
+            $duplicatePermissions = array();
             $this->Transaction->begin();
 
-            foreach ($objectIds as $id) {
+            foreach ($objectIds as $objectId) {
                 $permission = ClassRegistry::init('Permission');
-                $permission->add($id, $this->data['Permission']);
+                
+                foreach ($this->data['Permission'] as $permissionData) {
+                    if ($permission->isPermissionSet($objectId, $permissionData)) {
+                        if (!array_key_exists($objectId, $duplicatePermissions)) {
+                            $duplicatePermissions[$objectId] = array();
+                        }
+                        
+                        $duplicatePermissions[$objectId][] = $permissionData['name'];
+                    } else {
+                        $permission->add($objectId, array($permissionData));
+                    }
+                }
             }
 
             $this->Transaction->commit();
+            
+            // throw error with duplicate permissions AFTER writing to DB those that worked
+            if (!empty($duplicatePermissions)) {
+                $errorDetails = array_map(function ($permissionNames, $objectId) {
+                    return sprintf("object: %s, skipped: %s", $objectId, implode(', ', $permissionNames));
+                }, $duplicatePermissions, array_keys($duplicatePermissions));
+                
+                throw new BeditaException(__("Some permissions where already set and have been skipped", true),
+                    implode(" - ", $errorDetails));
+            }
         }
     }
 
