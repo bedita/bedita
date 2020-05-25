@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-05-12 17:00:12\n"
+"POT-Creation-Date: 2020-05-25 12:01:28\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1723,6 +1723,9 @@ msgid "Smtp Options"
 msgstr ""
 
 msgid "Software"
+msgstr ""
+
+msgid "Some permissions were set already and have been skipped"
 msgstr ""
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"

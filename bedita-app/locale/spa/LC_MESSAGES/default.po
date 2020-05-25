@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-12 17:00:12\n"
+"POT-Creation-Date: 2020-05-25 12:01:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1760,6 +1760,9 @@ msgstr "Opciones Smtp"
 
 msgid "Software"
 msgstr "Software"
+
+msgid "Some permissions were set already and have been skipped"
+msgstr ""
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr "Algo parece andar mal. No se encuentra bedita_module_setup.php"

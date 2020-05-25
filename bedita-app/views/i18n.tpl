@@ -100,4 +100,7 @@ Strings to translate not present in .tpl/.php files
 {t}recipient{/t}
 {t}mail body{/t}
 {t}log level{/t}
+
+// permissions bulk edit error message
+{t}Some permissions were set already and have been skipped{/t}
 *}

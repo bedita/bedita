@@ -1334,7 +1334,7 @@ abstract class ModulesController extends AppController {
                     return sprintf("object: %s, skipped: %s", $objectId, implode(', ', $permissionNames));
                 }, $duplicatePermissions, array_keys($duplicatePermissions));
                 
-                throw new BeditaException(__("Some permissions where already set and have been skipped", true),
+                throw new BeditaException(__("Some permissions were set already and have been skipped", true),
                     implode(" - ", $errorDetails));
             }
         }
