@@ -1304,38 +1304,44 @@ abstract class ModulesController extends AppController {
     {
         if (!empty($this->params['form']['objects_selected'])) {
             $objectIds = $this->params['form']['objects_selected'];
-            /**
-             * [objectID][permissionName]
-             */
-            $duplicatePermissions = array();
-            $this->Transaction->begin();
+            $permission = ClassRegistry::init('Permission');
+            $group = ClassRegistry::init('Group');
+            $errors = array();
 
             foreach ($objectIds as $objectId) {
-                $permission = ClassRegistry::init('Permission');
-                
                 foreach ($this->data['Permission'] as $permissionData) {
-                    if ($permission->isPermissionSet($objectId, $permissionData)) {
-                        if (!array_key_exists($objectId, $duplicatePermissions)) {
-                            $duplicatePermissions[$objectId] = array();
-                        }
-                        
-                        $duplicatePermissions[$objectId][] = $permissionData['name'];
-                    } else {
+                    $ugid = $group->field('id', array('name' => $permissionData['name']));
+                    $countPermission = $permission->find('count', array(
+                        'conditions' => array(
+                            'object_id' => $objectId,
+                            'switch' => 'group',
+                            'ugid' => $ugid,
+                            'flag' => $permissionData['flag'],
+                        ),
+                    ));
+                    if ($countPermission > 0) {
+                        $errors[$objectId][] = sprintf(__("permission '%s' already set", true), $permissionData['name']);
+                        continue;
+                    }
+
+                    try {
                         $permission->add($objectId, array($permissionData));
+                    } catch (Exception $e) {
+                        $errors[$objectId][] = sprintf(__("error adding permission '%s': %s", true), $e->getMessage());
+                        // TODO: write to log
                     }
                 }
             }
 
-            $this->Transaction->commit();
-            
-            // throw error with duplicate permissions AFTER writing to DB those that worked
-            if (!empty($duplicatePermissions)) {
-                $errorDetails = array_map(function ($permissionNames, $objectId) {
-                    return sprintf("object: %s, skipped: %s", $objectId, implode(', ', $permissionNames));
-                }, $duplicatePermissions, array_keys($duplicatePermissions));
+            if (!empty($errors)) {
+                $errorDetails = array_map(function ($errorMessage, $objectId) {
+                    return sprintf("object: %s\n  %s", $objectId, implode("\n  ", $errorMessage));
+                }, $errors, array_keys($errors));
                 
-                throw new BeditaException(__("Some permissions were set already and have been skipped", true),
-                    implode(" - ", $errorDetails));
+                $this->userWarnMessage(__("Not all permissions have been added", true), 'message', array(
+                    'class' => 'warn',
+                    'detail' => implode("\n\n", $errorDetails),
+                ));
             }
         }
     }

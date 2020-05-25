@@ -24,7 +24,7 @@
 	
 {if !empty($detail)}
 <div class="messageDetail shadow" style="display:none">	
-	<p style="font-family:monospace;">{$detail|escape}</p>
+	<p style="font-family:monospace; white-space: pre-wrap;">{$detail|escape}</p>
 	<hr />
 	<a class="closemessage" href="javascript:void(0)">
 		{t}close{/t}</a>	
