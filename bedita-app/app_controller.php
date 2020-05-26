@@ -1320,15 +1320,15 @@ abstract class ModulesController extends AppController {
                         ),
                     ));
                     if ($countPermission > 0) {
-                        $errors[$objectId][] = sprintf(__("permission '%s' already set", true), $permissionData['name']);
+                        $errors[$objectId][] = sprintf(__("permission for '%s' already set", true), $permissionData['name']);
                         continue;
                     }
 
                     try {
                         $permission->add($objectId, array($permissionData));
                     } catch (Exception $e) {
-                        $errors[$objectId][] = sprintf(__("error adding permission '%s': %s", true), $e->getMessage());
-                        // TODO: write to log
+                        $errors[$objectId][] = sprintf(__("error adding permission for '%s': %s", true), $e->getMessage());
+                        $this->log(sprintf("Error adding permission '%s' to object %s: %s", $permissionData['name'], $objectId, $e->getMessage()), 'error');
                     }
                 }
             }

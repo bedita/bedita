@@ -102,5 +102,7 @@ Strings to translate not present in .tpl/.php files
 {t}log level{/t}
 
 // permissions bulk edit error message
-{t}Some permissions were set already and have been skipped{/t}
+{t}Not all permissions have been added{/t}
+{t}permission for '%s' already set{/t}
+{t}error adding permission for '%s': %s{/t}
 *}

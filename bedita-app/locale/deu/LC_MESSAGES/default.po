@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-25 12:01:28\n"
+"POT-Creation-Date: 2020-05-26 09:30:51\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1465,6 +1465,9 @@ msgstr ""
 msgid "Not Authorized"
 msgstr "Nicht autorisiert"
 
+msgid "Not all permissions have been added"
+msgstr ""
+
 msgid "Notes"
 msgstr "Notizen"
 
@@ -1778,9 +1781,6 @@ msgstr ""
 
 msgid "Software"
 msgstr "Software"
-
-msgid "Some permissions were set already and have been skipped"
-msgstr ""
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr ""
@@ -2562,6 +2562,9 @@ msgstr ""
 msgid "end"
 msgstr "Ende"
 
+msgid "error adding permission for '%s': %s"
+msgstr ""
+
 msgid "events"
 msgstr "Ereignisse"
 
@@ -3095,6 +3098,9 @@ msgstr "wartenden Emails"
 
 msgid "permission"
 msgstr "Erlaubnis"
+
+msgid "permission for '%s' already set"
+msgstr ""
 
 msgid "permission type"
 msgstr ""

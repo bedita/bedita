@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-25 12:01:28\n"
+"POT-Creation-Date: 2020-05-26 09:30:51\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1446,6 +1446,9 @@ msgstr ""
 msgid "Not Authorized"
 msgstr "No autorizado"
 
+msgid "Not all permissions have been added"
+msgstr ""
+
 msgid "Notes"
 msgstr "Notas"
 
@@ -1760,9 +1763,6 @@ msgstr "Opciones Smtp"
 
 msgid "Software"
 msgstr "Software"
-
-msgid "Some permissions were set already and have been skipped"
-msgstr ""
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr "Algo parece andar mal. No se encuentra bedita_module_setup.php"
@@ -2527,6 +2527,9 @@ msgstr "vacíar logs"
 msgid "end"
 msgstr "final"
 
+msgid "error adding permission for '%s': %s"
+msgstr ""
+
 msgid "events"
 msgstr "eventos"
 
@@ -3059,6 +3062,9 @@ msgstr "pendiente"
 
 msgid "permission"
 msgstr "permisos"
+
+msgid "permission for '%s' already set"
+msgstr ""
 
 msgid "permission type"
 msgstr ""
