@@ -1304,14 +1304,45 @@ abstract class ModulesController extends AppController {
     {
         if (!empty($this->params['form']['objects_selected'])) {
             $objectIds = $this->params['form']['objects_selected'];
-            $this->Transaction->begin();
+            $permission = ClassRegistry::init('Permission');
+            $group = ClassRegistry::init('Group');
+            $errors = array();
 
-            foreach ($objectIds as $id) {
-                $permission = ClassRegistry::init('Permission');
-                $permission->add($id, $this->data['Permission']);
+            foreach ($objectIds as $objectId) {
+                foreach ($this->data['Permission'] as $permissionData) {
+                    $ugid = $group->field('id', array('name' => $permissionData['name']));
+                    $countPermission = $permission->find('count', array(
+                        'conditions' => array(
+                            'object_id' => $objectId,
+                            'switch' => 'group',
+                            'ugid' => $ugid,
+                            'flag' => $permissionData['flag'],
+                        ),
+                    ));
+                    if ($countPermission > 0) {
+                        $errors[$objectId][] = sprintf(__("permission for '%s' already set", true), $permissionData['name']);
+                        continue;
+                    }
+
+                    try {
+                        $permission->add($objectId, array($permissionData));
+                    } catch (Exception $e) {
+                        $errors[$objectId][] = sprintf(__("error adding permission for '%s': %s", true), $e->getMessage());
+                        $this->log(sprintf("Error adding permission '%s' to object %s: %s", $permissionData['name'], $objectId, $e->getMessage()), 'error');
+                    }
+                }
             }
 
-            $this->Transaction->commit();
+            if (!empty($errors)) {
+                $errorDetails = array_map(function ($errorMessage, $objectId) {
+                    return sprintf("object: %s\n  %s", $objectId, implode("\n  ", $errorMessage));
+                }, $errors, array_keys($errors));
+                
+                $this->userWarnMessage(__("Not all permissions have been added", true), 'message', array(
+                    'class' => 'warn',
+                    'detail' => implode("\n\n", $errorDetails),
+                ));
+            }
         }
     }
 

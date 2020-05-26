@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-12 17:00:12\n"
+"POT-Creation-Date: 2020-05-26 09:30:51\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1433,6 +1433,9 @@ msgstr ""
 msgid "Not Authorized"
 msgstr ""
 
+msgid "Not all permissions have been added"
+msgstr ""
+
 msgid "Notes"
 msgstr ""
 
@@ -2505,6 +2508,9 @@ msgstr ""
 msgid "end"
 msgstr ""
 
+msgid "error adding permission for '%s': %s"
+msgstr ""
+
 msgid "events"
 msgstr ""
 
@@ -3034,6 +3040,9 @@ msgid "pending"
 msgstr ""
 
 msgid "permission"
+msgstr ""
+
+msgid "permission for '%s' already set"
 msgstr ""
 
 msgid "permission type"

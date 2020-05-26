@@ -2009,14 +2009,14 @@ A.BEbutton.golink:before {
 
 .messageDetail {
 	width:340px; 
-	min-height:136px; 
+	min-height:140px; 
 	padding:10px;
 	background-color:#FFF;
 	color:#000;
 	position: absolute !important;
 	max-height: 100%;
 	overflow-y: auto;
-	left: 140px;
+	left: 300px;
 	top: 0px;
 }
 

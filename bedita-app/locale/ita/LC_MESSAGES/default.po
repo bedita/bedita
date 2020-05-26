@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2020-05-12 17:00:12\n"
+"POT-Creation-Date: 2020-05-26 09:30:51\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1460,6 +1460,9 @@ msgstr "Nessuno"
 msgid "Not Authorized"
 msgstr "Non Autorizzato"
 
+msgid "Not all permissions have been added"
+msgstr "Non tutti i permessi sono stati aggiunti"
+
 msgid "Notes"
 msgstr "Note"
 
@@ -2551,6 +2554,9 @@ msgstr "svuotare log"
 msgid "end"
 msgstr "fine"
 
+msgid "error adding permission for '%s': %s"
+msgstr "errore durante l'aggiunta dell'autorizzazione per '%s': %s"
+
 msgid "events"
 msgstr "eventi"
 
@@ -3084,6 +3090,9 @@ msgstr "in attesa"
 msgid "permission"
 msgstr "permesso"
 
+msgid "permission for '%s' already set"
+msgstr "autorizzazione per '%s' già impostata"
+
 msgid "permission type"
 msgstr "tipo di permesso"
 
@@ -3593,6 +3602,9 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+#~ msgid "Some permissions were set already and have been skipped"
+#~ msgstr "Alcuni permessi erano già presenti e sono stati ignorati"
 
 #~ msgid "all areas"
 #~ msgstr "tutte le pubblicazioni"
