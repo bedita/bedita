@@ -173,7 +173,7 @@ class Relations
     }
 
     /**
-     * Update relation array.
+     * Update relations in `relations` and  related `relation_types` tables using an array
      *
      * @param array $data Relation data
      * @param array $options Table locator options
