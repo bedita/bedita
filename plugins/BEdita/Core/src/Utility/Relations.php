@@ -183,12 +183,13 @@ class Relations
     {
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
 
+        $result = [];
         foreach ($data as $r) {
             $relation = $Relations->find()
                 ->where(['name' => Hash::get($r, 'name')])
                 ->contain(['LeftObjectTypes', 'RightObjectTypes'])
                 ->firstOrFail();
-            static::updateTypes($relation, $r, $options);
+            static::updateTypes($relation, (array)$r, $options);
             foreach ($r as $k => $v) {
                 $relation->set($k, $v);
             }
@@ -201,7 +202,7 @@ class Relations
     /**
      * Update relation types of relation
      *
-     * @param EntityInterace $relation Relation entity
+     * @param \Cake\Datasource\EntityInterface $relation Relation entity
      * @param array $data Relation data
      * @param array $options Table locator options
      * @return void
