@@ -720,4 +720,26 @@ class FilterQueryStringTest extends IntegrationTestCase
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'));
     }
+
+    /**
+     * Test `/model/categories?filter[type]={type}`.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testCategoriesTypeFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/model/categories?filter[type]=documents');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals(3, count($result['data']));
+
+        $this->configRequestHeaders();
+        $this->get('/model/categories?filter[type]=locations');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(0, count($result['data']));
+    }
 }
