@@ -135,10 +135,13 @@ class CategoriesTableTest extends TestCase
      */
     public function testFindCategoriesType()
     {
-        $categories = $this->Categories->find('type', ['documents'])->toArray();
+        $order = [
+            $this->Categories->aliasField('id') => 'ASC',
+        ];
+        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
         static::assertEquals([1, 2, 3], Hash::extract($categories, '{n}.id'));
 
-        $categories = $this->Categories->find('type', ['news'])->toArray();
+        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
         static::assertEquals([], $categories);
     }
 
