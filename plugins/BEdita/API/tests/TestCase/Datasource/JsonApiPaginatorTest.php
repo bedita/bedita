@@ -17,6 +17,7 @@ use BEdita\API\Datasource\JsonApiPaginator;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Datasource\JsonApiPaginator
@@ -155,5 +156,24 @@ class JsonApiPaginatorTest extends TestCase
         $options = $paginator->validateSort($repository, compact('sort'));
 
         static::assertEquals($expected, $options['order']);
+    }
+
+    /**
+     * Test `paginate()` method.
+     *
+     * @covers ::paginate()
+     */
+    public function testPaginate()
+    {
+        $paginator = new JsonApiPaginator();
+
+        $query = TableRegistry::getTableLocator()->get('Roles')->find()->order('id');
+        $params = ['sort' => '-name'];
+        $res = $paginator->paginate($query, $params);
+
+        // using 'id' order we should have 'first role', 'second role'
+        // but '-name' order must prevail and invert above items
+        $names = Hash::extract($res->toArray(), '{n}.name');
+        static::assertEquals(['second role', 'first role'], $names);
     }
 }
