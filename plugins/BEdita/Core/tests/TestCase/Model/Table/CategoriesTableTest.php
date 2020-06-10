@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -124,5 +125,37 @@ class CategoriesTableTest extends TestCase
     {
         $categories = $this->Categories->find('enabled')->toArray();
         static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
+    }
+
+    /**
+     * Test find categories by type
+     *
+     * @return void
+     * @covers ::findType()
+     */
+    public function testFindCategoriesType()
+    {
+        $order = [
+            $this->Categories->aliasField('id') => 'ASC',
+        ];
+        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
+        static::assertEquals([1, 2, 3], Hash::extract($categories, '{n}.id'));
+
+        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
+        static::assertEquals([], $categories);
+    }
+
+    /**
+     * Test find categories by type failure
+     *
+     * @return void
+     * @covers ::findType()
+     */
+    public function testFindCategoriesTypeFail(): void
+    {
+        $this->expectException(BadFilterException::class);
+        $this->expectExceptionMessage('Missing required parameter "type"');
+
+        $this->Categories->find('type')->toArray();
     }
 }

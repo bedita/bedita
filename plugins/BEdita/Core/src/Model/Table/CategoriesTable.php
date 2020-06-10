@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -145,5 +146,24 @@ class CategoriesTable extends CategoriesTagsBaseTable
             return;
         }
         $this->hideFields($query);
+    }
+
+    /**
+     * Find categories by object type name
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @throws BadFilterException
+     */
+    public function findType(Query $query, array $options): Query
+    {
+        if (empty($options[0])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'type'));
+        }
+
+        return $query->innerJoinWith('ObjectTypes', function (Query $query) use ($options) {
+            return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
+        });
     }
 }
