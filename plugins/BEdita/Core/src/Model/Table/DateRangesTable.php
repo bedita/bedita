@@ -19,6 +19,7 @@ use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -127,19 +128,59 @@ class DateRangesTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
+        $options = array_intersect_key($options, array_flip(['start_date', 'end_date', 'date']));
+        if (empty($options)) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'start_date or end_date or date parameter missing',
+            ]);
+        }
+
+        $query = $this->customDateFilter($query, $options);
+        unset($options['date']);
+
+        // create filter with `start_date` and `end_date` if present in options
         $options = array_combine(
             array_map([$this, 'aliasField'], array_keys($options)),
             array_values($options)
         );
 
-        if (empty($options)) {
+        return $this->fieldsFilter($query, $options);
+    }
+
+    protected function customDateFilter(Query $query, array $options): Query
+    {
+        $custom = (string)Hash::get($options, 'date');
+        if (empty($custom)) {
+            return $query;
+        }
+        $method = sprintf('%sCustomFilter', $custom);
+        if (!method_exists($this, $method)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'start_date or end_date parameter missing',
+                'detail' => __d('bedita', 'Custom date filter "{0}" not available', $custom)
             ]);
         }
 
-        return $this->fieldsFilter($query, $options);
+        return $this->{$method}($query);
+    }
+
+    protected function todayCustomFilter(Query $query): Query
+    {
+        $today = date('Y-m-d');
+
+        return $query->where([$this->aliasField('start_date') => $today])
+            ->orWhere([
+                $this->aliasField('start_date') . ' <' => $today,
+                $this->aliasField('end_date') . ' >=' => $today,
+            ]);
+    }
+
+    protected function futureCustomFilter(Query $query): Query
+    {
+        $today = date('Y-m-d');
+
+        return $query->where([$this->aliasField('start_date') . ' >=' => $today])
+            ->orWhere([$this->aliasField('end_date') . ' >=' => $today]);
     }
 }
