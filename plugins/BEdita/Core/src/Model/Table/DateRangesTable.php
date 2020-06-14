@@ -17,6 +17,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
+use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -164,6 +165,29 @@ class DateRangesTable extends Table
     }
 
     /**
+     * Create Time object from $time string
+     *
+     * @param string $time Input time.
+     * @return null|\Cake\I18n\Time
+     */
+    protected function getTime(string $time): ?Time
+    {
+        if (empty($time)) {
+            return null;
+        }
+        try {
+            $res = new Time($time);
+        } catch (\Exception $e) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => __d('bedita', 'Wrong date time format "{0}"', $time),
+            ]);
+        }
+
+        return $res;
+    }
+
+    /**
      * Modify query object with `from_date`and `to_date` params
      *
      * @param \Cake\ORM\Query $query Query object instance.
@@ -172,8 +196,8 @@ class DateRangesTable extends Table
      */
     protected function fromToDateFilter(Query $query, array $options): Query
     {
-        $from = (string)Hash::get($options, 'from_date');
-        $to = (string)Hash::get($options, 'to_date');
+        $from = $this->getTime((string)Hash::get($options, 'from_date'));
+        $to = $this->getTime((string)Hash::get($options, 'to_date'));
         if (empty($from) && empty($to)) {
             return $query;
         }
@@ -192,10 +216,10 @@ class DateRangesTable extends Table
      * Add `from_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param string $from From date.
+     * @param Time $from From date.
      * @return \Cake\ORM\Query
      */
-    protected function fromDateFilter(Query $query, string $from): Query
+    protected function fromDateFilter(Query $query, Time $from): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from) {
                 return $exp->or_([
@@ -212,10 +236,10 @@ class DateRangesTable extends Table
      * Add `to_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param string $to To date.
+     * @param Time $to To date.
      * @return \Cake\ORM\Query
      */
-    protected function toDateFilter(Query $query, string $to): Query
+    protected function toDateFilter(Query $query, Time $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($to) {
                 return $exp->or_([
@@ -232,11 +256,11 @@ class DateRangesTable extends Table
      * Add `from_date`/`to_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param string $from From date.
-     * @param string $to To date.
+     * @param Time $from From date.
+     * @param Time $to To date.
      * @return \Cake\ORM\Query
      */
-    protected function betweenDatesFilter(Query $query, string $from, string $to): Query
+    protected function betweenDatesFilter(Query $query, Time $from, Time $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
             return $exp->or_([
