@@ -205,7 +205,7 @@ class DateRangesTable extends Table
                     $q->newExpr()
                         ->gte($this->aliasField('end_date'), $from),
                 ]);
-            });
+        });
     }
 
     /**
@@ -225,7 +225,7 @@ class DateRangesTable extends Table
                     $q->newExpr()
                         ->lte($this->aliasField('end_date'), $to),
                 ]);
-            });
+        });
     }
 
     /**
