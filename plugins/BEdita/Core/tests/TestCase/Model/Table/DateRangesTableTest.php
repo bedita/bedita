@@ -238,6 +238,7 @@ class DateRangesTableTest extends TestCase
      *
      * @dataProvider fromToDateFilterProvider
      * @covers ::fromToDateFilter()
+     * @covers ::getTime()
      * @covers ::fromDateFilter()
      * @covers ::toDateFilter()
      * @covers ::betweenDatesFilter()
@@ -247,5 +248,17 @@ class DateRangesTableTest extends TestCase
         $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
+    }
+
+    /**
+     * Test `getTime` failure.
+     *
+     * @covers ::getTime()
+     */
+    public function testGetTimeFailure()
+    {
+        $conditions = ['from_date' => 'gustavo'];
+        $this->expectException('BEdita\Core\Exception\BadFilterException');
+        $this->DateRanges->find('dateRanges', $conditions)->toArray();
     }
 }
