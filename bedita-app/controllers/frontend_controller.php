@@ -1034,7 +1034,6 @@ abstract class FrontendController extends AppController {
                 'title' => $obj['title'], 
                 'description' => $description,
                 'pubDate' => $obj['created'], 
-                'location' => 'diocc', 
                 'location' => $locationTitle.'. '.$location, 
                 'link' => $link
             );
