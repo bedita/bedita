@@ -1001,7 +1001,6 @@ abstract class FrontendController extends AppController {
             }
         }
         $this->set('items', $rssItems);
-
         $this->view = 'View';
         // add RSS helper if not present
         if (!in_array('Rss', $this->helpers)) {
@@ -1024,14 +1023,21 @@ abstract class FrontendController extends AppController {
         $description = $obj['description'];
         if (!empty($obj['abstract'])) {
             $description .= "<hr/>" .  $obj['abstract'];
-        }
-        if (!empty($obj['body'])) {
+        } elseif (!empty($obj['body'])) {
             $description .= "<hr/>" .  $obj['body'];
         }
         $link = !empty($canonicalPath) ? ($canonicalPath ."/". $obj['nickname']) :
             (!empty($obj['canonicalPath']) ? $obj['canonicalPath'] : $obj['nickname']);
-        return array( 'title' => $obj['title'], 'description' => $description,
-                        'pubDate' => $obj['created'], 'link' => $link);
+            $locationTitle = !empty($obj['GeoTag'][0]['title']) ? $obj['GeoTag'][0]['title'] : '';
+            $location = !empty($obj['GeoTag'][0]['address']) ? $obj['GeoTag'][0]['address'] : '';
+            return array( 
+                'title' => $obj['title'], 
+                'description' => $description,
+                'pubDate' => $obj['created'], 
+                'location' => 'diocc', 
+                'location' => $locationTitle.'. '.$location, 
+                'link' => $link
+            );
     }
 
 
