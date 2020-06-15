@@ -316,6 +316,19 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'update relation' => [
+                [
+                    'update' => [
+                        'relations' => [
+                            [
+                                'name' => 'test_abstract',
+                                'left' => ['documents'],
+                                'right' => ['files'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
             'bad action' => [
                 [
                     'assign' => [
@@ -370,7 +383,9 @@ class ResourcesTest extends TestCase
                 } else {
                     $entity = $entities[0];
                     foreach ($details[0] as $name => $val) {
-                        static::assertEquals($val, $entity->get($name));
+                        if ($type != 'relations' || !in_array($name, ['left', 'right'])) {
+                            static::assertEquals($val, $entity->get($name));
+                        }
                     }
                 }
             }

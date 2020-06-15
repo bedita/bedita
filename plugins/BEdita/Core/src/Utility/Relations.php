@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -169,6 +170,55 @@ class Relations
             ->get('Relations', $options)
             ->get($relation);
         static::removeTypes($relation->get('id'), [$type], $side, $options);
+    }
+
+    /**
+     * Update relations in `relations` and  related `relation_types` tables using an array
+     *
+     * @param array $data Relation data
+     * @param array $options Table locator options
+     * @return array
+     */
+    public static function update(array $data, array $options = []): array
+    {
+        $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
+
+        $result = [];
+        foreach ($data as $r) {
+            $relation = $Relations->find()
+                ->where(['name' => Hash::get($r, 'name')])
+                ->contain(['LeftObjectTypes', 'RightObjectTypes'])
+                ->firstOrFail();
+            static::updateTypes($relation, (array)$r, $options);
+            foreach ($r as $k => $v) {
+                $relation->set($k, $v);
+            }
+            $result[] = $Relations->saveOrFail($relation);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update relation types of relation
+     *
+     * @param \Cake\Datasource\EntityInterface $relation Relation entity
+     * @param array $data Relation data
+     * @param array $options Table locator options
+     * @return void
+     */
+    protected static function updateTypes(EntityInterface $relation, array $data, array $options): void
+    {
+        $id = $relation->get('id');
+        foreach (['left', 'right'] as $side) {
+            $newTypes = (array)Hash::get($data, $side);
+            if (!empty($newTypes)) {
+                $currTypes = (array)Hash::extract($relation, sprintf('%s_object_types.{n}.name', $side));
+                static::removeTypes($id, array_diff($currTypes, $newTypes), $side, $options);
+                static::addTypes($id, array_diff($newTypes, $currTypes), $side, $options);
+            }
+        }
+        $relation->unsetProperty(['left_object_types', 'right_object_types']);
     }
 
     /**
