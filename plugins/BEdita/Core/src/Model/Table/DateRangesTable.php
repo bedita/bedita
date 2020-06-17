@@ -161,7 +161,7 @@ class DateRangesTable extends Table
             array_values($options)
         );
 
-        return $this->fieldsFilter($query, $options);
+        return $this->fieldsFilter($query, (array)$options);
     }
 
     /**
@@ -176,15 +176,13 @@ class DateRangesTable extends Table
             return null;
         }
         try {
-            $res = new Time($time);
+            return new Time($time);
         } catch (\Exception $e) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => __d('bedita', 'Wrong date time format "{0}"', $time),
             ]);
         }
-
-        return $res;
     }
 
     /**
