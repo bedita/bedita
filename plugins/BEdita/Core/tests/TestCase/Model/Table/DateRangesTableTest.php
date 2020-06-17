@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -157,6 +157,7 @@ class DateRangesTableTest extends TestCase
      *
      * @dataProvider findDateProvider
      * @covers ::findDateRanges()
+     * @covers ::fromToDateFilter()
      */
     public function testFindDate($conditions, $numExpected)
     {
@@ -174,8 +175,90 @@ class DateRangesTableTest extends TestCase
     {
         $conditions = ['what_date' => ['lt' => '2017-01-01']];
 
-        static::expectException('BEdita\Core\Exception\BadFilterException');
+        $this->expectException('BEdita\Core\Exception\BadFilterException');
 
+        $this->DateRanges->find('dateRanges', $conditions)->toArray();
+    }
+
+    /**
+     * Data provider for `testFromToDateFilter` test case.
+     *
+     * @return array
+     */
+    public function fromToDateFilterProvider()
+    {
+        return [
+            'from ok' => [
+                [
+                    'from_date' => '2017-01-01',
+                ],
+                1,
+            ],
+            'from not' => [
+                [
+                    'from_date' => '2017-08-01',
+                ],
+                0,
+            ],
+            'to ok' => [
+                [
+                    'to_date' => '2018-01-01',
+                ],
+                1,
+            ],
+            'to not' => [
+                [
+                    'to_date' => '2017-01-01',
+                ],
+                0,
+            ],
+            'between ok' => [
+                [
+                    'from_date' => '2017-03-07 08:00:00',
+                    'to_date' => '2017-03-07 12:40:20',
+                ],
+                1,
+            ],
+            'between not' => [
+                [
+                    'from_date' => '2018-01-01',
+                    'to_date' => '2018-12-31',
+                ],
+                0,
+            ],
+        ];
+    }
+
+    /**
+     * Test `dateRanges` finder with `from_date` and `to_date`
+     *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
+     * @return void
+     *
+     * @dataProvider fromToDateFilterProvider
+     * @covers ::fromToDateFilter()
+     * @covers ::getTime()
+     * @covers ::fromDateFilter()
+     * @covers ::toDateFilter()
+     * @covers ::betweenDatesFilter()
+     */
+    public function testFromToDateFilter($conditions, $numExpected)
+    {
+        $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
+
+        static::assertEquals($numExpected, count($result));
+    }
+
+    /**
+     * Test `getTime` failure.
+     *
+     * @covers ::getTime()
+     */
+    public function testGetTimeFailure()
+    {
+        $conditions = ['from_date' => 'gustavo'];
+        $this->expectException('BEdita\Core\Exception\BadFilterException');
         $this->DateRanges->find('dateRanges', $conditions)->toArray();
     }
 }

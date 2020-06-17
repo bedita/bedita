@@ -47,11 +47,23 @@ class FilterQueryStringTest extends IntegrationTestCase
                'filter[date_ranges][start_date][gt]=2017-01-01',
                1
             ],
-            'none' => [
+            'simple 2' => [
+                'filter[date_ranges][from_date]=2017-01-01T14:00:00',
+                1
+             ],
+             'simple 3' => [
+                'filter[date_ranges][from_date]=2017-03-08T21:41:00',
+                0
+             ],
+             'none' => [
                'filter[date_ranges][end_date][le]=2017-01-01',
                0
             ],
-            'combined' => [
+            'none 2' => [
+                'filter[date_ranges][to_date]=2017-01-01',
+                0
+             ],
+             'combined' => [
                'filter[date_ranges][start_date][gt]=2017-01-01&filter[date_ranges][end_date][lt]=2017-04-01',
                1
             ],
