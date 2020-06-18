@@ -98,56 +98,56 @@ class SpecShell extends Shell
     /**
      * Deep merge YAML spec file for OpenAPI 2.
      *
-     * @param array $data
-     * @param array $result
+     * @param array $data    The new file data
+     * @param array $current The current data
      * @return array
      */
-    protected function mergeDeepOpenApi2($data, $result)
+    protected function mergeDeepOpenApi2($data, $current)
     {
-        $result = array_merge($data, $result);
+        $current = array_merge($data, $current);
 
         if (!empty($data['paths'])) {
-            $result['paths'] += $data['paths'];
+            $current['paths'] += $data['paths'];
         }
 
         if (!empty($data['definitions'])) {
-            if (!array_key_exists('definitions', $result)) {
-                $result['definitions'] = [];
+            if (!array_key_exists('definitions', $current)) {
+                $current['definitions'] = [];
             }
 
-            $result['definitions'] = array_merge($data['definitions'], $result['definitions']);
+            $current['definitions'] = array_merge($data['definitions'], $current['definitions']);
         }
 
-        return $result;
+        return $current;
     }
 
     /**
      * Deep merge YAML spec file for OpenAPI 3.
      *
-     * @param array $data
-     * @param array $result
+     * @param array $data    The new file data
+     * @param array $current The current data
      * @return array
      */
-    protected function mergeDeepOpenApi3($data, $result)
+    protected function mergeDeepOpenApi3($data, $current)
     {
-        $result = array_merge($data, $result);
+        $current = array_merge($data, $current);
 
         if (!empty($data['paths'])) {
-            $result['paths'] += $data['paths'];
+            $current['paths'] += $data['paths'];
         }
 
         if (!empty($data['components'])) {
-            if (!array_key_exists('components', $result)) {
-                $result['components'] = [];
+            if (!array_key_exists('components', $current)) {
+                $current['components'] = [];
             }
 
-            $result['components'] = array_merge($data['components'], $result['components']);
+            $current['components'] = array_merge($data['components'], $current['components']);
 
             if (!empty($data['components']['schemas'])) {
-                $result['components']['schemas'] = array_merge($data['components']['schemas'], $result['components']['schemas']);
+                $current['components']['schemas'] = array_merge($data['components']['schemas'], $current['components']['schemas']);
             }
         }
 
-        return $result;
+        return $current;
     }
 }
