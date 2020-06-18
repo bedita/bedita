@@ -13,6 +13,7 @@
 namespace BEdita\API\Shell;
 
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
@@ -35,30 +36,24 @@ class SpecShell extends Shell
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('generate', [
-            'help' => 'Generate global YAML OpenAPI 2 file.',
+            'help' => 'Generate global YAML OpenAPI 2/3 file.',
             'parser' => [
                 'description' => [
-                    'This command to generates a single YAML OpenAPI 2 spec file.',
+                    'This command to generates a single YAML OpenAPI 2/3 spec file.',
                     'File is built merging yaml files in /spec folder.',
                 ],
                 'options' => [
-                    'openapi' => [
-                        'help' => 'OpenAPI version (either 2 or 3, default to 2)',
-                        'short' => 'a',
-                        'required' => false,
-                        'default' => 2,
-                    ],
-                    'spec' => [
-                        'help' => 'Path where spec files are located',
+                    'subdir' => [
+                        'help' => 'Subdirectory of the plugin to search for documentation files',
                         'short' => 's',
                         'required' => false,
-                        'default' => Plugin::path('BEdita/API') . 'spec' . DS,
+                        'default' => 'spec/',
                     ],
                     'output' => [
-                        'help' => 'Specify output file path',
+                        'help' => 'Specify output file name',
                         'short' => 'o',
                         'required' => false,
-                        'default' => Plugin::path('BEdita/API') . 'spec' . DS . 'be4.yaml',
+                        'default' => 'be4.yaml',
                     ],
                 ],
             ],
@@ -74,16 +69,57 @@ class SpecShell extends Shell
      */
     public function generate()
     {
-        $output = new File($this->param('output'));
-        $dir = new Folder($this->param('spec'));
-        $openApiVersion = $this->param('openapi');
+        $pluginLoaded = Plugin::loaded();
+        $pluginFolders = Configure::read('App.paths.plugins');
+
+        foreach ($pluginLoaded as $plugin) {
+            $pluginPath = Plugin::path($plugin);
+
+            // check if plugin is in any 'App.paths.plugins' folder, to exclude core plugins
+            foreach ($pluginFolders as $pluginFolder) {
+                if ($pluginFolder === mb_substr($pluginPath, 0, mb_strlen($pluginFolder))) {
+                    $path = $this->generatePluginDocs($plugin, $this->param('subdir'), $this->param('output'));
+
+                    if (!$path) {
+                        $this->warn("Could not generate docs for '$plugin' plugin");
+                        continue;
+                    }
+
+                    $this->success("Generated documentation for '$plugin' plugin in $path");
+                }
+            }
+        }
+    }
+
+    /**
+     * Generate a single documentation file for a plugin.
+     *
+     * Note that the output file will be written in the source directory (default to 'spec/' in the plugin directory)
+     *
+     * @param string $pluginName Name of the plugin
+     * @param string $docSubDir Subdirectory of the plugin to search for documentation files (default to 'spec/')
+     * @param string $outputFile Output documentation file name (default to 'be4.yaml')
+     * @return bool|string The output file absolute path, or `false` on failure
+     */
+    protected function generatePluginDocs($pluginName, $docSubDir = 'spec' . DS, $outputFile = 'be4.yaml')
+    {
+        $files = $this->getPluginDocFiles($pluginName, $docSubDir);
+
+        if (empty($files)) {
+            return false;
+        }
+
+        $outputDir = dirname($files[0]);
+        $outputPath = rtrim($outputDir, DS) . DS . $outputFile;
+        $openApiVersion = $this->getFileOpenApiVersion($files[0]);
+        echo "\nGot API version $openApiVersion for file $files[0]\n";
         $mergeFunction = "mergeDeepOpenApi$openApiVersion";
-        $files = $dir->find('.*\.yaml', true);
         $result = ['paths' => []];
 
-        foreach ($files as $file) {
-            $file = new File($dir->realpath($file));
-            if ($file->path === $output->path) {
+        foreach ($files as $filePath) {
+            $file = new File($filePath);
+
+            if ($file->path === $outputPath) {
                 continue;
             }
 
@@ -92,7 +128,54 @@ class SpecShell extends Shell
         }
 
         $result = Yaml::dump($result, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
-        $this->createFile($output->path, $result);
+
+        if (!$this->createFile($outputPath, $result)) {
+            return false;
+        }
+
+        return $outputPath;
+    }
+
+    /**
+     * Get a list of plugin documentation files.
+     *
+     * @param string $pluginName Name of the plugin
+     * @param string $docSubDir Subdirectory of the plugin to search for documentation files (default to 'spec/')
+     * @return string[] An array of absolute paths to files. Empty array if none found
+     */
+    protected function getPluginDocFiles($pluginName, $docSubDir = 'spec' . DS)
+    {
+        $path = Plugin::path($pluginName);
+        $dir = new Folder(rtrim($path, DS) . DS . $docSubDir);
+        $files = $dir->find('.*\.(yaml|yml)', true);
+
+        return array_reduce($files, function ($result, $file) use ($dir) {
+            $result[] = $dir->realpath($file);
+
+            return $result;
+        }, []);
+    }
+
+    /**
+     * Find OpenAPI version from a file.
+     *
+     * @param string $filePath Absolute path of the file
+     * @return bool|string The API version, or `false` if unknown
+     */
+    protected function getFileOpenApiVersion($filePath)
+    {
+        $file = new File($filePath);
+        $data = Yaml::parse($file->read());
+
+        if (!empty($data['openapi'])) {
+            return explode('.', $data['openapi'])[0];
+        }
+
+        if (!empty($data['swagger'])) {
+            return explode('.', $data['swagger'])[0];
+        }
+
+        return false;
     }
 
     /**
@@ -111,7 +194,7 @@ class SpecShell extends Shell
         }
 
         if (!empty($data['definitions'])) {
-            if (!array_key_exists('definitions', $current)) {
+            if (!array_key_exists('definitions', $current) || $current['definitions'] === null) {
                 $current['definitions'] = [];
             }
 
