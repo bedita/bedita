@@ -411,7 +411,7 @@ class ObjectsTable extends Table
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
 
-        return $query->where(['deleted' => 0]);
+        return $query->where([$this->aliasField('deleted') => 0]);
     }
 
     /**
