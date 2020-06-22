@@ -364,4 +364,41 @@ class RelationshipsParamsTest extends IntegrationTestCase
         ]);
         static::assertTrue($existing);
     }
+
+    /**
+     * Test patch relationships.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testPatch()
+    {
+        $data = [
+            [
+                'id' => '5',
+                'type' => 'users',
+                'meta' => [
+                    'relation' => [
+                        'params' => [
+                            'name' => 'Gustavo',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $endpoint = sprintf('/locations/8/relationships/inverse_another_test');
+        $this->patch($endpoint, json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+
+        $existing = $this->ObjectRelations->exists([
+            'left_id' => 5,
+            'right_id' => 8,
+            'relation_id' => 2,
+        ]);
+        static::assertTrue($existing);
+    }
 }
