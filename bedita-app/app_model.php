@@ -434,14 +434,33 @@ class BEAppModel extends AppModel {
         $afterFilter = $this->Behaviors->BuildFilter->prepareAfterFilter($filter, $order);
 
         $rankOrder = null;
-        $size = null;
+        $countClauseConditions = null;
 
-        // listen if search engine was used and eventually update $rankOrder and $size
+        // listen if search engine was used and eventually update $rankOrder
         BeLib::eventManager()->bind(
             'buildFindObjects.searchEngineResult',
-            function ($data) use (&$rankOrder, &$size) {
+            function ($data, $options) use (&$rankOrder, &$countClauseConditions) {
+
+                // search all results
+                $options['searchOptions']['dim'] = 10000; // high number to get all results
+                $options['searchOptions']['all'] = true;
+                $searchEngineResult = $this->Behaviors->BuildFilter->searchEngineResult(
+                    Configure::read('searchEngine'),
+                    $options['searchOptions']
+                );
+
+                // prepare conditions for item count
+                if ($searchEngineResult !== false) {
+                    $s = $this->getStartQuote();
+                    $e = $this->getEndQuote();
+                    $options['conditions'][] = array("{$s}BEObject{$e}.{$s}id{$e}" => $searchEngineResult['result']['ids']);
+
+                    $db = ConnectionManager::getDataSource($this->useDbConfig);
+                    $countClauseConditions = $db->conditions($options['conditions'], true, true);
+                }
+
                 $rankOrder = $data['order'];
-                $size = $data['count'];
+
                 return $data;
             }
         );
@@ -465,6 +484,15 @@ class BEAppModel extends AppModel {
         if ($tmp === false) {
             throw new BeditaException(__('Error finding objects', true));
         }
+
+        if (!empty($countClauseConditions)) {
+            $clauses['conditions'] = $countClauseConditions;
+        }
+
+        $size = $this->findObjectsCount(array(
+            'joins' => $clauses['joins'],
+            'conditions' => $clauses['conditions']
+        ));
 
         $recordset = array(
             'items'	=> array(),
@@ -629,24 +657,13 @@ class BEAppModel extends AppModel {
 
         // search filter
         $this->Behaviors->BuildFilter->prepareSearchFilter($filter);
+        $searchOptions = compact('id', 'userid', 'status', 'filter', 'page', 'dim', 'all', 'order');
         $searchEngineResult = $this->Behaviors->BuildFilter->searchEngineResult(
             Configure::read('searchEngine'),
-            array(
-                'id' => $id,
-                'userid' => $userid,
-                'status' => $status,
-                'filter' => $filter,
-                'page' => $page,
-                'dim' => $dim,
-                'all' => $all,
-                'order' => $order
-            )
+            $searchOptions
         );
         if ($searchEngineResult !== false) {
             unset($filter['query']);
-            $limitPage = 1;
-            $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $searchEngineResult['result']['ids']);
-            BeLib::eventManager()->trigger('buildFindObjects.searchEngineResult', array($searchEngineResult));
         }
 
         // setup filter to get only allowed objects
@@ -713,6 +730,16 @@ class BEAppModel extends AppModel {
         if ((empty($order) || !preg_match('/^[a-z0-9`., _-]+$/i', trim($order))) && empty($filter['query'])) {
             $order = "{$s}BEObject{$e}.{$s}id{$e}";
             $dir = false;
+        }
+
+        // add search conditions
+        if ($searchEngineResult !== false) {
+            $limitPage = 1;
+            BeLib::eventManager()->trigger('buildFindObjects.searchEngineResult', array(
+                $searchEngineResult,
+                compact('searchOptions', 'conditions'),
+            ));
+            $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $searchEngineResult['result']['ids']);
         }
 
         // build sql conditions
