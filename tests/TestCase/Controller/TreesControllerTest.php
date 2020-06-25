@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  */
 class TreesControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test `index` method.
      *
@@ -31,8 +30,9 @@ class TreesControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::loadObject()
+     * @covers ::getContain()
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $this->configRequestHeaders();
         $this->get('/trees/root-folder/sub-folder');
@@ -111,7 +111,7 @@ class TreesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function treesProvider()
+    public function treesProvider(): array
     {
         $error = [
             'status' => '404',
@@ -165,7 +165,7 @@ class TreesControllerTest extends IntegrationTestCase
      * @covers ::objectUname()
      * @covers ::parents()
      */
-    public function testTrees($expected, $path)
+    public function testTrees($expected, $path): void
     {
         $this->configRequestHeaders();
         $this->get(sprintf('/trees%s', $path));
@@ -184,5 +184,56 @@ class TreesControllerTest extends IntegrationTestCase
             $unamePath = Hash::get($response, 'data.meta.extra.uname_path');
             static::assertEquals($expected, $unamePath);
         }
+    }
+
+    /**
+     * Test `include` query string.
+     *
+     * @return void
+     *
+     * @covers ::getContain()
+     * @covers ::findAssociation()
+     */
+    public function testInclude(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/trees/root-folder/title-one?include=test');
+
+        $this->assertResponseCode(200);
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+
+        $included = Hash::get($response, 'included');
+        static::assertNotEmpty($included);
+        static::assertEquals(2, count($included));
+
+        $relData = Hash::get($response, 'data.relationships.test.data');
+        static::assertNotEmpty($relData);
+        static::assertEquals(2, count($relData));
+    }
+
+    /**
+     * Test `include` failure.
+     *
+     * @return void
+     *
+     * @covers ::findAssociation()
+     */
+    public function testIncludeFail(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/trees/root-folder?include=has_gustavo');
+
+        $this->assertResponseCode(400);
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        unset($response['error']['meta']);
+        unset($response['links']);
+
+        $error = [
+            'status' => '400',
+            'title' => 'Invalid "include" query parameter (Relationship "has_gustavo" does not exist)',
+        ];
+        static::assertEquals(compact('error'), $response);
     }
 }
