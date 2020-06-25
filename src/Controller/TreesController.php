@@ -54,6 +54,8 @@ class TreesController extends AppController
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize()
     {
@@ -194,28 +196,24 @@ class TreesController extends AppController
     /**
      * Load object entity
      *
-     * @param string $id ID or unique name
+     * @param int $id Object ID
      * @return EntityInterface
      */
-    protected function loadObject($id): EntityInterface
+    protected function loadObject(int $id): EntityInterface
     {
-        $contain = $this->prepareInclude($this->request->getQuery('include'));
-
-        $res = $this->Objects->find('unameId', [$id])
-            ->select([
-                $this->Objects->aliasField('object_type_id'),
-                $this->Objects->aliasField('id'),
-            ])
+        $res = $this->Objects->find()->where(compact('id'))
+            ->select([$this->Objects->aliasField('object_type_id')])
             ->enableHydration(false)
             ->firstOrFail();
 
         $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($res['object_type_id']);
         $table = TableRegistry::getTableLocator()->get($objectType->get('alias'));
+        $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(compact('table', 'objectType'));
 
         return $action([
-            'primaryKey' => $res['id'],
+            'primaryKey' => $id,
             'contain' => $contain,
             'lang' => $this->request->getQuery('lang'),
         ]);
