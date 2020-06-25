@@ -86,6 +86,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'sort' => ['start_date' => 'ASC'],
             'saveStrategy' => 'replace',
         ]);
         $this->belongsTo('CreatedByUsers', [
