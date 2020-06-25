@@ -127,6 +127,10 @@ class TreesControllerTest extends IntegrationTestCase
                 '/root-folder/sub-folder/gustavo-supporto',
                 '/root-folder/sub-folder/gustavo-supporto',
             ],
+            'simple folder' => [
+                '/root-folder/sub-folder',
+                '/root-folder/12',
+            ],
             'invalid 1' => [
                 compact('error'),
                 '/4',
