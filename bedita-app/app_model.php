@@ -444,6 +444,7 @@ class BEAppModel extends AppModel {
                 // search all results
                 $options['searchOptions']['dim'] = 10000; // high number to get all results
                 $options['searchOptions']['all'] = true;
+                unset($options['searchOptions']['page']);
                 $searchEngineResult = $this->Behaviors->BuildFilter->searchEngineResult(
                     Configure::read('searchEngine'),
                     $options['searchOptions']
