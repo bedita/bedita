@@ -54,8 +54,6 @@ class TreesController extends AppController
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize()
     {
@@ -80,8 +78,8 @@ class TreesController extends AppController
 
         $parents = $this->parents();
 
-        $objectId = end((array_values($this->idList)));
-        $entity = $this->loadObject($objectId);
+        $ids = array_values($this->idList);
+        $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
 
