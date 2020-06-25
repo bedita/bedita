@@ -219,6 +219,13 @@ Router::plugin(
             ['_name' => 'history:index']
         );
 
+        // Trees.
+        $routes->connect(
+            '/trees/**',
+            ['controller' => 'Trees', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'trees:index']
+        );
+
         // Upload file and create object.
         $routes->connect(
             '/:object_type/upload/:fileName',
