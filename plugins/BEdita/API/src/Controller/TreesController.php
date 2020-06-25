@@ -13,6 +13,8 @@
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Entity\ObjectType;
+use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
@@ -24,6 +26,8 @@ use Cake\ORM\TableRegistry;
  */
 class TreesController extends AppController
 {
+    use InstanceConfigTrait;
+
     /**
      * Objects Table.
      *
@@ -39,6 +43,13 @@ class TreesController extends AppController
     protected $Trees;
 
     /**
+     * Request object Table.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsBaseTable
+     */
+    protected $Table;
+
+    /**
      * Path ID list
      *
      * @var array
@@ -51,6 +62,16 @@ class TreesController extends AppController
      * @var array
      */
     protected $unameList;
+
+    /**
+     * Available configurations are:
+     *  - `allowedAssociations`: array of relationships of the loaded object
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [],
+    ];
 
     /**
      * {@inheritDoc}
@@ -137,7 +158,7 @@ class TreesController extends AppController
         foreach ($pathList as $p) {
             if (is_numeric($p)) {
                 $this->idList[] = (int)$p;
-                $this->unameList[] = $this->objectUname($p);
+                $this->unameList[] = $this->objectUname((int)$p);
             } else {
                 $this->idList[] = $this->Objects->getId($p);
                 $this->unameList[] = (string)$p;
@@ -198,16 +219,54 @@ class TreesController extends AppController
             ->enableHydration(false)
             ->firstOrFail();
 
+        /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
         $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($res['object_type_id']);
-        $table = TableRegistry::getTableLocator()->get($objectType->get('alias'));
-        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $this->Table = TableRegistry::getTableLocator()->get($objectType->get('alias'));
 
-        $action = new GetObjectAction(compact('table', 'objectType'));
+        $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $objectType]);
 
         return $action([
             'primaryKey' => $id,
-            'contain' => $contain,
+            'contain' => $this->getContain($objectType),
             'lang' => $this->request->getQuery('lang'),
         ]);
+    }
+
+    /**
+     * Retrieve `contain` associations array
+     *
+     * @param ObjectType $objectType Object type entity
+     * @return array
+     */
+    protected function getContain(ObjectType $objectType): array
+    {
+        $include = $this->request->getQuery('include');
+        if (empty($include)) {
+            return [];
+        }
+
+        $relations = array_keys($objectType->getRelations());
+        $this->setConfig('allowedAssociations', $relations);
+
+        return $this->prepareInclude($include);
+    }
+
+    /**
+     * Find the association corresponding to the relationship name.
+     *
+     * @param string $relationship Relationship name.
+     * @return \Cake\ORM\Association
+     * @throws \Cake\Http\Exception\NotFoundException Throws an exception if no association could be found.
+     */
+    protected function findAssociation($relationship)
+    {
+        if (in_array($relationship, $this->getConfig('allowedAssociations'))) {
+            $association = $this->Table->associations()->getByProperty($relationship);
+            if ($association !== null) {
+                return $association;
+            }
+        }
+
+        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }
 }
