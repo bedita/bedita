@@ -1,12 +1,25 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\Tree;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\RulesChecker;
+use Cake\ORM\Query;
 use Cake\ORM\Rule\IsUnique;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -267,5 +280,35 @@ class TreesTable extends Table
             $this->Objects->aliasField('object_type_id') => $foldersType,
             $this->Objects->aliasField('id') => $id,
         ]);
+    }
+
+    /**
+     * Find path nodes from object id.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array with object id as first element.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPathNodes(Query $query, array $options)
+    {
+        if (empty($options)) {
+            throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'object id'));
+        }
+
+        $node = $this->find()
+            ->select([
+                $this->aliasField('tree_left'),
+                $this->aliasField('tree_right'),
+            ])
+            ->where(['object_id' => $options[0]])
+            ->firstOrFail();
+
+        $query = $query->where(function (QueryExpression $exp) use ($node) {
+            return $exp
+                ->lte($this->aliasField('tree_left'), $node->get('tree_left'))
+                ->gte($this->aliasField('tree_right'), $node->get('tree_right'));
+        });
+
+        return $query->order([$this->aliasField('tree_left') => 'ASC']);
     }
 }
