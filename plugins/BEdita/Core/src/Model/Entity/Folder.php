@@ -166,7 +166,8 @@ class Folder extends ObjectEntity
         }
 
         try {
-            $path = $this->Trees->find('pathNodes', [$this->id])
+            $path = TableRegistry::getTableLocator()->get('Trees')
+                ->find('pathNodes', [$this->id])
                 ->find('list', [
                     'keyField' => 'id',
                     'valueField' => 'object_id',
