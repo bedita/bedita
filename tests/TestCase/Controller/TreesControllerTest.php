@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use Cake\Utility\Hash;
 
 /**
@@ -101,7 +101,7 @@ class TreesControllerTest extends IntegrationTestCase
                     ],
                 ],
             ]
-    ];
+        ];
 
         static::assertEquals($expected, $response);
     }
