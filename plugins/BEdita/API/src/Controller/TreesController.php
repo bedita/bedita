@@ -85,6 +85,9 @@ class TreesController extends AppController
 
         $this->checkPath($entity, $parents);
 
+        $entity->set('uname_path', sprintf('/%s', implode('/', $this->unameList)));
+        $entity->setAccess('uname_path', false);
+
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
@@ -102,13 +105,13 @@ class TreesController extends AppController
     protected function checkPath(EntityInterface $entity, array $parents): void
     {
         if (empty($parents) && $entity->get('type') !== 'folders') {
-            throw new NotFoundException('');
+            throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
 
         if ($entity->get('type') === 'folders') {
             $idPath = sprintf('/%s', implode('/', $this->idList));
             if ($entity->get('path') !== $idPath) {
-                throw new NotFoundException('');
+                throw new NotFoundException(__d('bedita', 'Invalid path'));
             }
 
             return;
@@ -117,7 +120,7 @@ class TreesController extends AppController
         $pathFound = array_values($parents);
         $pathFound[] = (int)$entity->get('id');
         if ($this->idList !== $pathFound) {
-            throw new NotFoundException('');
+            throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
     }
 
@@ -173,24 +176,15 @@ class TreesController extends AppController
         $parentId = $this->idList[$count - 2];
         $parentCondition = ['object_id' => $id, 'parent_id' => $parentId];
         if (!$this->Trees->exists($parentCondition)) {
-            throw new NotFoundException('');
+            throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
 
-        $node = $this->Trees->find()
-            ->where(['object_id' => $parentId])
-            ->firstOrFail();
-
-        $path = $this->Trees->find('list', [
+        return $this->Trees->find('pathNodes', [$parentId])
+            ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'object_id',
             ])
-            ->where([
-                'tree_left <=' => $node->get('tree_left'),
-                'tree_right >=' => $node->get('tree_right'),
-            ])
-            ->order(['tree_left' => 'ASC']);
-
-        return $path->toArray();
+            ->toArray();
     }
 
     /**
