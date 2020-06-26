@@ -479,7 +479,7 @@ class BEAppModel extends AppModel {
         ));
 
         $query = $this->buildQueryStatement($clauses);
-debug($query);
+
         $tmp = $this->query($query);
         if ($tmp === false) {
             throw new BeditaException(__('Error finding objects', true));
@@ -554,8 +554,7 @@ debug($query);
         if (!$executeQuery) {
             return $queryCount;
         }
-        debug($queryCount);
-        exit;
+
         $count = $this->query($queryCount);
         if ($count === false) {
             throw new BeditaException(__('Error counting objects', true));
