@@ -15,6 +15,8 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -233,6 +235,62 @@ class TreesControllerTest extends IntegrationTestCase
         $error = [
             'status' => '400',
             'title' => 'Invalid "include" query parameter (Relationship "has_gustavo" does not exist)',
+        ];
+        static::assertEquals(compact('error'), $response);
+    }
+
+    /**
+     * Test failure when parent folder is in trashcan.
+     *
+     * @return void
+     *
+     * @covers ::pathDetails()
+     */
+    public function testParentDeleted(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Folders');
+        $folder = $table->get(12);
+        $folder->set('deleted', true);
+        $table->saveOrFail($folder);
+
+        $this->configRequestHeaders();
+        $this->get('/trees/root-folder/sub-folder/gustavo-supporto');
+        $this->assertResponseCode(404);
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        unset($response['error']['meta'], $response['links']);
+        $error = [
+            'status' => '404',
+            'title' => 'Invalid path',
+        ];
+        static::assertEquals(compact('error'), $response);
+    }
+
+    /**
+     * Test failure when parent folder has unavailable status.
+     *
+     * @return void
+     *
+     * @covers ::pathDetails()
+     */
+    public function testParentStatus(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Folders');
+        $folder = $table->get(12);
+        $folder->set('status', 'draft');
+        $table->saveOrFail($folder);
+
+        Configure::write('Status.level', 'on');
+
+        $this->configRequestHeaders();
+        $this->get('/trees/root-folder/sub-folder/gustavo-supporto');
+        $this->assertResponseCode(404);
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        unset($response['error']['meta'], $response['links']);
+        $error = [
+            'status' => '404',
+            'title' => 'Invalid path',
         ];
         static::assertEquals(compact('error'), $response);
     }
