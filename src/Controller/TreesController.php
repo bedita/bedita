@@ -50,18 +50,15 @@ class TreesController extends AppController
     protected $Table;
 
     /**
-     * Path ID list
+     * Path information with ID, object type and uname of each object
+     * Associative array having keys:
+     *  - 'ids': ID path list
+     *  - 'unames': uname path list
+     *  - 'types': object types id list
      *
      * @var array
      */
-    protected $idList;
-
-    /**
-     * Path uname list
-     *
-     * @var array
-     */
-    protected $unameList;
+    protected $pathInfo;
 
     /**
      * Available configurations are:
@@ -82,6 +79,7 @@ class TreesController extends AppController
 
         $this->Objects = TableRegistry::getTableLocator()->get('Objects');
         $this->Trees = TableRegistry::getTableLocator()->get('Trees');
+        $this->pathInfo = ['ids' => [], 'unames' => [], 'types' => []];
     }
 
     /**
@@ -99,12 +97,12 @@ class TreesController extends AppController
 
         $parents = $this->parents();
 
-        $ids = array_values($this->idList);
+        $ids = array_values($this->pathInfo['ids']);
         $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
 
-        $entity->set('uname_path', sprintf('/%s', implode('/', $this->unameList)));
+        $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
         $entity->setAccess('uname_path', false);
 
         $this->set('_fields', $this->request->getQuery('fields', []));
@@ -128,7 +126,7 @@ class TreesController extends AppController
         }
 
         if ($entity->get('type') === 'folders') {
-            $idPath = sprintf('/%s', implode('/', $this->idList));
+            $idPath = sprintf('/%s', implode('/', $this->pathInfo['ids']));
             if ($entity->get('path') !== $idPath) {
                 throw new NotFoundException(__d('bedita', 'Invalid path'));
             }
@@ -138,45 +136,48 @@ class TreesController extends AppController
 
         $pathFound = array_values($parents);
         $pathFound[] = (int)$entity->get('id');
-        if ($this->idList !== $pathFound) {
+        if ($this->pathInfo['ids'] !== $pathFound) {
             throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
     }
 
     /**
-     * Calculate path details:
-     *  - idList: ID based path list
-     *  - unameList: uname based path list
+     * Populate $pathInfo with path details on ID, uname and type:
      *
      * @param string $path Requesed object path
      * @return void
      */
     protected function pathDetails(string $path): void
     {
-        $this->unameList = $this->idList = [];
         $pathList = explode('/', $path);
         foreach ($pathList as $p) {
             if (is_numeric($p)) {
-                $this->idList[] = (int)$p;
-                $this->unameList[] = $this->objectUname((int)$p);
+                $item = $this->objectDetails(['id' => (int)$p]);
             } else {
-                $this->idList[] = $this->Objects->getId($p);
-                $this->unameList[] = (string)$p;
+                $item = $this->objectDetails(['uname' => (string)$p]);
             }
+            if (empty($item)) {
+                throw new NotFoundException(__d('bedita', 'Invalid path'));
+            }
+            $this->pathInfo['ids'][] = $item['id'];
+            $this->pathInfo['unames'][] = $item['uname'];
+            $this->pathInfo['types'][] = $item['object_type_id'];
         }
     }
 
     /**
-     * Get object uname
+     * Get object main fields
      *
-     * @param int $id Object ID
+     * @param array $condition Query conditions
      * @return string
      */
-    protected function objectUname(int $id): string
+    protected function objectDetails(array $condition): array
     {
-        return (string)$this->Objects->find('list', ['valueField' => 'uname'])
-            ->where(compact('id'))
-            ->firstOrFail();
+        return (array)$this->Objects->find('available')
+            ->where($condition)
+            ->select(['id', 'uname', 'object_type_id'])
+            ->disableHydration()
+            ->first();
     }
 
     /**
@@ -186,13 +187,13 @@ class TreesController extends AppController
      */
     protected function parents(): array
     {
-        $count = count($this->idList);
+        $count = count($this->pathInfo['ids']);
         if ($count === 1) {
             return [];
         }
 
-        $id = $this->idList[$count - 1];
-        $parentId = $this->idList[$count - 2];
+        $id = $this->pathInfo['ids'][$count - 1];
+        $parentId = $this->pathInfo['ids'][$count - 2];
         $parentCondition = ['object_id' => $id, 'parent_id' => $parentId];
         if (!$this->Trees->exists($parentCondition)) {
             throw new NotFoundException(__d('bedita', 'Invalid path'));
@@ -214,13 +215,9 @@ class TreesController extends AppController
      */
     protected function loadObject(int $id): EntityInterface
     {
-        $res = $this->Objects->find()->where(compact('id'))
-            ->select([$this->Objects->aliasField('object_type_id')])
-            ->enableHydration(false)
-            ->firstOrFail();
-
+        $types = array_values($this->pathInfo['types']);
         /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
-        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($res['object_type_id']);
+        $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get(end($types));
         $this->Table = TableRegistry::getTableLocator()->get($objectType->get('alias'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $objectType]);
