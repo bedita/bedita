@@ -164,7 +164,7 @@ class TreesControllerTest extends IntegrationTestCase
      * @dataProvider treesProvider()
      * @covers ::checkPath()
      * @covers ::pathDetails()
-     * @covers ::objectUname()
+     * @covers ::objectDetails()
      * @covers ::parents()
      */
     public function testTrees($expected, $path): void
