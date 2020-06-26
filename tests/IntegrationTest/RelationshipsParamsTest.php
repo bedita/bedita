@@ -394,11 +394,13 @@ class RelationshipsParamsTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
 
-        $existing = $this->ObjectRelations->exists([
-            'left_id' => 5,
-            'right_id' => 8,
-            'relation_id' => 2,
-        ]);
-        static::assertTrue($existing);
+        $related = $this->ObjectRelations->find()
+            ->where([
+                'relation_id' => 2,
+                'right_id' => 8,
+            ])
+            ->toArray();
+        static::assertEquals(1, count($related));
+        static::assertEquals(5, $related[0]->get('left_id'));
     }
 }
