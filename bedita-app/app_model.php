@@ -443,7 +443,6 @@ class BEAppModel extends AppModel {
 
                 // search all results
                 $options['searchOptions']['dim'] = 10000; // high number to get all results
-                $options['searchOptions']['all'] = true;
                 unset($options['searchOptions']['page']);
                 $searchEngineResult = $this->Behaviors->BuildFilter->searchEngineResult(
                     Configure::read('searchEngine'),
@@ -480,7 +479,7 @@ class BEAppModel extends AppModel {
         ));
 
         $query = $this->buildQueryStatement($clauses);
-
+debug($query);
         $tmp = $this->query($query);
         if ($tmp === false) {
             throw new BeditaException(__('Error finding objects', true));
@@ -555,7 +554,8 @@ class BEAppModel extends AppModel {
         if (!$executeQuery) {
             return $queryCount;
         }
-
+        debug($queryCount);
+        exit;
         $count = $this->query($queryCount);
         if ($count === false) {
             throw new BeditaException(__('Error counting objects', true));
