@@ -473,7 +473,7 @@ class TreesTableTest extends TestCase
     }
 
     /**
-     * Test that a children's position is updated.
+     * Test `findPathNodes` method.
      *
      * @param array|\Exception $expected Expected array path or exception.
      * @param array $options Finder options.
