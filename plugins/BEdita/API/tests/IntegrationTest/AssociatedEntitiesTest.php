@@ -16,6 +16,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Test CRUD operations on objects with associated entities
@@ -43,11 +44,11 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                     'title' => 'My Event',
                     'date_ranges' => [
                         [
-                            'start_date' => '2017-03-01 12:12:12',
-                            'end_date' => '2017-04-01 12:12:12',
+                            'start_date' => '2017-04-01T00:00:00+00:00',
                         ],
                         [
-                            'start_date' => '2017-04-01T00:00:00+00:00',
+                            'start_date' => '2017-03-01 12:12:12',
+                            'end_date' => '2017-04-01 12:12:12',
                         ],
                     ],
                 ],
@@ -121,7 +122,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         $resultDates = $result['data']['attributes']['date_ranges'];
-        $expectedDates = $attributes['date_ranges'];
+        $expectedDates = Hash::sort($attributes['date_ranges'], '{n}.start_date', 'asc');
         static::assertEquals(count($resultDates), count($expectedDates));
         $count = count($expectedDates);
         for ($i = 0; $i < $count; $i++) {
