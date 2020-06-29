@@ -82,6 +82,9 @@ class UniqueNameBehavior extends Behavior
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         }
+        else {
+            $uname = Text::slug($uname, $this->_defaultConfig['replacement']);
+        }
         $count = 0;
         while (
             $this->uniqueNameExists($uname, $entity->get('id'))
