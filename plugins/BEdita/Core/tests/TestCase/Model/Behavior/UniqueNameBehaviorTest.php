@@ -83,6 +83,10 @@ class UniqueNameBehaviorTest extends TestCase
                 'Oèù yahìì',
                 'user-oeu-yahii',
             ],
+            'underscore' => [
+                'Guy_Dude',
+                'user-guy_dude',
+            ],
             'others' => [
                 '¬5654@-BIG STRING',
                 'user-5654-big-string',
@@ -265,6 +269,12 @@ class UniqueNameBehaviorTest extends TestCase
                     'hashlength' => 6,
                 ],
                 true
+            ],
+            'underscoreValue' => [
+                'test this_value',
+                'test-this_value',
+                [],
+                false,
             ],
         ];
     }
