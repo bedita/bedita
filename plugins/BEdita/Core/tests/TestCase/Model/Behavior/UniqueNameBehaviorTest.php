@@ -17,6 +17,7 @@ use BEdita\Core\Model\Behavior\UniqueNameBehavior;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -83,7 +84,7 @@ class UniqueNameBehaviorTest extends TestCase
                 'Oèù yahìì',
                 'user-oeu-yahii',
             ],
-            'underscore' => [
+            'preserveUnderscore' => [
                 'Guy_Dude',
                 'user-guy_dude',
             ],
@@ -115,6 +116,48 @@ class UniqueNameBehaviorTest extends TestCase
         $Users->save($user);
 
         $this->assertEquals($user['uname'], $uname);
+    }
+
+    /**
+     * Data provider for `testUniqueName` test case.
+     *
+     * @return array
+     */
+    public function uniqueNameProvider()
+    {
+        return [
+            'mix' => [
+                'Amazing test! 100% gluten-free!',
+                'amazing-test-100-gluten-free',
+            ],
+            'preserveUnderscore' => [
+                '@Guy_Dude made this test',
+                'guy_dude-made-this-test',
+            ],
+            'accents' => [
+                'àéì òù',
+                'aei-ou',
+            ],
+        ];
+    }
+
+    /**
+     * testUniqueName method
+     *
+     * @param string $value Original uname.
+     * @param string $expected Expected sanitized uname.
+     * @return void
+     *
+     * @dataProvider uniqueNameProvider
+     * @covers ::uniqueName()
+     */
+    public function testUniqueName($value, $expected)
+    {
+        $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
+        $entity = new Entity(['uname' => $value]);
+        $behavior->uniqueName($entity);
+
+        $this->assertEquals($expected, $entity->get('uname'));
     }
 
     /**

@@ -85,10 +85,10 @@ class UniqueNameBehavior extends Behavior
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         } else {
-            $uname = Text::slug($uname, [
+            $uname = strtolower(Text::slug($uname, [
                 'replacement' => $config['replacement'],
                 'preserve' => $config['preserve'],
-            ]);
+            ]));
         }
         $count = 0;
         while (
