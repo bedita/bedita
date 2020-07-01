@@ -35,6 +35,7 @@ return [
     'null',
     'object_type',
     'object_types',
+    'path',
     'parent',
     'properties',
     'property',
@@ -57,5 +58,7 @@ return [
     'tree_parent_nodes',
     'type',
     'types',
+    'uname',
+    'uname_path',
     'upload',
 ];

@@ -165,26 +165,19 @@ class Folder extends ObjectEntity
             return null;
         }
 
-        $trees = TableRegistry::getTableLocator()->get('Trees');
         try {
-            $node = $trees->find()
-                ->where(['object_id' => $this->id])
-                ->firstOrFail();
+            $path = TableRegistry::getTableLocator()->get('Trees')
+                ->find('pathNodes', [$this->id])
+                ->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'object_id',
+                ])
+                ->toArray();
         } catch (RecordNotFoundException $previous) {
             throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }
 
-        $path = $trees->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'object_id',
-            ])
-            ->where([
-                'tree_left <=' => $node->get('tree_left'),
-                'tree_right >=' => $node->get('tree_right'),
-            ])
-            ->order(['tree_left' => 'ASC']);
-
-        return sprintf('/%s', implode('/', $path->toArray()));
+        return sprintf('/%s', implode('/', $path));
     }
 
     /**
