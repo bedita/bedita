@@ -58,7 +58,11 @@ class TreesController extends AppController
      *
      * @var array
      */
-    protected $pathInfo;
+    protected $pathInfo = [
+        'ids' => [],
+        'unames' => [],
+        'types' => [],
+    ];
 
     /**
      * Available configurations are:
@@ -79,7 +83,6 @@ class TreesController extends AppController
 
         $this->Objects = TableRegistry::getTableLocator()->get('Objects');
         $this->Trees = TableRegistry::getTableLocator()->get('Trees');
-        $this->pathInfo = ['ids' => [], 'unames' => [], 'types' => []];
     }
 
     /**
