@@ -161,12 +161,16 @@ class Resources
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
         if ($Table->hasFinder('name')) {
-            return $Table->find('name', $item)->firstOrFail();
+            /** @var EntityInterface $entity */
+            $entity = $Table->find('name', $item)->firstOrFail();
+        } else {
+            /** @var EntityInterface $entity */
+            $entity = $Table->find()
+                ->where(static::findCondition($item))
+                ->firstOrFail();
         }
 
-        return $Table->find()
-            ->where(static::findCondition($item))
-            ->firstOrFail();
+        return $entity;
     }
 
     /**

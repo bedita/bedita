@@ -24,6 +24,19 @@ use Cake\Validation\Validator;
 /**
  * Config Model - used to handle configuration data in DB
  *
+ * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
+ *
+ * @method \BEdita\Core\Model\Entity\Config get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ *
  * @since 4.0.0
  */
 class ConfigTable extends Table
