@@ -87,4 +87,20 @@ class ConfigTest extends TestCase
         $this->assertEquals('group2', $config->context);
         $this->assertEquals('14', $config->content);
     }
+
+    /**
+     * Test `_setApplication` method
+     *
+     * @return void
+     * @covers ::_setApplication()
+     */
+    public function testSetApplication()
+    {
+        $config = $this->Config->get('Name2');
+        $config->set('application', null);
+        static::assertNull($config->get('application_id'));
+
+        $config->set('application', 'First app');
+        static::assertEquals(1, $config->get('application_id'));
+    }
 }
