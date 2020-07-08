@@ -52,7 +52,7 @@ class ConfigTable extends Table
         parent::initialize($config);
 
         $this->setTable('config');
-        $this->setPrimaryKey(['name', 'application_id']);
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp', [
             'events' => [
