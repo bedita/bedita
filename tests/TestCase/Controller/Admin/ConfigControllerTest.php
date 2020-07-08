@@ -42,16 +42,17 @@ class ConfigControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/admin/config/Name1',
+                'self' => 'http://api.example.com/admin/config/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
-                'id' => 'Name1',
+                'id' => '1',
                 'type' => 'config',
                 'attributes' => [
                     'context' => 'group1',
                     'content' => 'data',
                     'application_id' => null,
+                    'name' => 'Name1',
                 ],
                 'meta' => [
                     'created' => '2016-06-16T12:34:56+00:00',
@@ -61,7 +62,7 @@ class ConfigControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get('/admin/config/Name1');
+        $this->get('/admin/config/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -81,7 +82,6 @@ class ConfigControllerTest extends IntegrationTestCase
     public function testAdd()
     {
         $data = [
-            'id' => 'NewConfig',
             'type' => 'config',
             'attributes' => [
                 'name' => 'NewConfig',
@@ -97,7 +97,7 @@ class ConfigControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->assertHeader('Location', 'http://api.example.com/admin/config/' . $data['id']);
+        $this->assertHeader('Location', 'http://api.example.com/admin/config/13');
     }
 
     /**
@@ -111,7 +111,7 @@ class ConfigControllerTest extends IntegrationTestCase
     public function testEdit()
     {
         $data = [
-            'id' => 'Name1',
+            'id' => '1',
             'type' => 'config',
             'attributes' => [
                 'content' => 'data2',
@@ -119,12 +119,12 @@ class ConfigControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/admin/config/Name1', json_encode(compact('data')));
+        $this->patch('/admin/config/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
-        $entity = TableRegistry::getTableLocator()->get('Config')->get('Name1');
+        $entity = TableRegistry::getTableLocator()->get('Config')->get(1);
         static::assertEquals('data2', $entity->get('content'));
     }
 
@@ -139,7 +139,7 @@ class ConfigControllerTest extends IntegrationTestCase
     public function testDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/admin/config/Name2');
+        $this->delete('/admin/config/2');
 
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
