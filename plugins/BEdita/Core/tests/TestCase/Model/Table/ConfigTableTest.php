@@ -72,7 +72,7 @@ class ConfigTableTest extends TestCase
     {
         $this->Config->initialize([]);
         $this->assertEquals('config', $this->Config->getTable());
-        $this->assertEquals('name', $this->Config->getPrimaryKey());
+        $this->assertEquals('id', $this->Config->getPrimaryKey());
     }
 
     /**
