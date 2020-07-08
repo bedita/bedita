@@ -45,6 +45,13 @@ class ConfigChangePrimaryKey extends AbstractMigration
                 'autoIncrement' => true,
                 'signed' => false,
             ])
+            ->changeColumn('name', 'string', [
+                'after' => 'id',
+                'comment' => 'configuration key',
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
             ->update();
 
         // restore config values
