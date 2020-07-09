@@ -1,4 +1,6 @@
 <?php
+
+use Aws\MediaPackageVod\Exception\MediaPackageVodException;
 use Migrations\AbstractMigration;
 
 class ConfigChangePrimaryKey extends AbstractMigration
@@ -6,25 +8,121 @@ class ConfigChangePrimaryKey extends AbstractMigration
     /**
      * {@inheritDoc}
      */
+    public $autoId = false;
+
+    /**
+     * Config rows to keep
+     *
+     * @var array
+     */
+    protected $configRows = [];
+
+    /**
+     * {@inheritDoc}
+     */
     public function up()
     {
-        // store current rows and restore them at the end
-        $configRows = $this->fetchAll("SELECT name, content, context, created, modified, application_id FROM config");
-        // remove unwanted array items
-        foreach ($configRows as &$row) {
-            unset($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
-        }
-        $this->table('config')->truncate();
+        $this->loadConfigRows();
+        $this->table('config')->drop()->save();
 
         $this->table('config')
             ->addColumn('id', 'integer', [
-                'after' => 'name',
+                'autoIncrement' => true,
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
                 'signed' => false,
             ])
-            ->changePrimaryKey('id')
+            ->addPrimaryKey(['id'])
+            ->addColumn('name', 'string', [
+                'comment' => 'configuration key',
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->create();
+
+        $this->commonColumns();
+        $this->restoreConfigRows();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function down()
+    {
+        $this->loadConfigRows();
+        $this->table('config')->drop()->save();
+
+        $this->table('config')
+            ->addColumn('name', 'string', [
+                'comment' => 'configuration key',
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->addPrimaryKey('name')
+            ->create();
+
+        $this->commonColumns();
+        $this->restoreConfigRows();
+    }
+
+    /**
+     * Add common columns
+     *
+     * @return void
+     */
+    protected function commonColumns(): void
+    {
+        $this->table('config')
+            ->addColumn('context', 'string', [
+                'comment' => 'group name of configuration parameters',
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->addColumn('content', 'text', [
+                'comment' => 'configuration data as string or JSON',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('created', 'datetime', [
+                'comment' => 'creation date',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'comment' => 'last modification date',
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('application_id', 'integer', [
+                'comment' => 'link to applications.id - may be null',
+                'default' => null,
+                'limit' => 5,
+                'null' => true,
+                'signed' => false,
+            ])
+            ->addIndex(
+                [
+                    'context',
+                ],
+                [
+                    'name' => 'config_context_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'application_id',
+                ],
+                [
+                    'name' => 'config_applicationid_idx',
+                ]
+            )
             ->addIndex(
                 [
                     'name',
@@ -38,47 +136,40 @@ class ConfigChangePrimaryKey extends AbstractMigration
             ->update();
 
         $this->table('config')
-            ->changeColumn('id', 'integer', [
-                'default' => null,
-                'limit' => 10,
-                'null' => false,
-                'autoIncrement' => true,
-                'signed' => false,
-            ])
-            ->changeColumn('name', 'string', [
-                'after' => 'id',
-                'comment' => 'configuration key',
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
+            ->addForeignKey(
+                'application_id',
+                'applications',
+                'id',
+                [
+                    'constraint' => 'config_applicationid_fk',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'RESTRICT',
+                ]
+            )
             ->update();
-
-        // restore config values
-        $this->table('config')->insert($configRows)->save();
     }
 
     /**
-     * {@inheritDoc}
+     * Store config table rows
+     *
+     * @return void
      */
-    public function down()
+    protected function loadConfigRows(): void
     {
-        $this->table('config')
-            ->changeColumn('id', 'integer', [
-                'default' => null,
-                'limit' => 10,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->update();
+        $this->configRows = $this->fetchAll("SELECT name, content, context, created, modified, application_id FROM config");
+        // remove unwanted array items
+        foreach ($this->configRows as &$row) {
+            unset($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+        }
+    }
 
-        $this->table('config')
-            ->changePrimaryKey('name')
-            ->update();
-
-        $this->table('config')
-            ->removeIndexByName('config_nameapplicationid_uq')
-            ->removeColumn('id')
-            ->update();
+    /**
+     * Restore config table rows
+     *
+     * @return void
+     */
+    protected function restoreConfigRows(): void
+    {
+        $this->table('config')->insert($this->configRows)->save();
     }
 }
