@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -151,5 +152,76 @@ class ConfigTableTest extends TestCase
         $names = Hash::extract($config, '{n}.name');
         // `appVal` must be present
         static::assertTrue(in_array('appVal', $names));
+    }
+
+    /**
+     * Data provider for `testValidation` test case.
+     *
+     * @return array
+     */
+    public function findNameProvider()
+    {
+        return [
+            'simple' => [
+                1,
+                [
+                    'name' => 'appVal',
+                ],
+            ],
+            'app' => [
+                1,
+                [
+                    'name' => 'appVal',
+                    'application_id' => 1,
+                ],
+            ],
+            'app name' => [
+                1,
+                [
+                    'name' => 'appVal',
+                    'application' => 'First app',
+                ],
+            ],
+            'not found' => [
+                0,
+                [
+                    'name' => 'appVal',
+                    'application' => 'New app',
+                ],
+            ],
+            'none' => [
+                0,
+                [
+                    'name' => 'KeyName',
+                ],
+            ],
+            'bad' => [
+                new BadRequestException('Missing mandatory option "name"'),
+                [
+                    'gustavo' => 'KeyName',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `name` finder
+     *
+     * @dataProvider findNameProvider
+     * @covers ::findName()
+     *
+     * @param int|\Exception $expected Result number or Exception.
+     * @param array $data Find options.
+     * @return void
+     */
+    public function testFindName($expected, array $data)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $config = $this->Config->find('name', $data)->toArray();
+        static::assertEquals($expected, count($config));
     }
 }
