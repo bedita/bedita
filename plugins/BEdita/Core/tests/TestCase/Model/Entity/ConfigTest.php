@@ -68,7 +68,7 @@ class ConfigTest extends TestCase
      */
     public function testEntity()
     {
-        $config = $this->Config->get('Name2');
+        $config = $this->Config->findByName('Name2')->firstOrFail();
         $this->assertEquals('group1', $config->context);
         $this->assertEquals('true', $config->content);
 
@@ -78,12 +78,12 @@ class ConfigTest extends TestCase
         $config = $this->Config->patchEntity($config, $data);
         $this->assertEquals('true', $config->content);
 
-        $config = $this->Config->get('Key2');
+        $config = $this->Config->findByName('Key2')->firstOrFail();
         $this->assertEquals('group1', $config->context);
         $config->content = json_decode($config->content, true);
         $this->assertEquals('some data', $config->content['test1']);
 
-        $config = $this->Config->get('IntVal');
+        $config = $this->Config->findByName('IntVal')->firstOrFail();
         $this->assertEquals('group2', $config->context);
         $this->assertEquals('14', $config->content);
     }
@@ -96,7 +96,7 @@ class ConfigTest extends TestCase
      */
     public function testSetApplication()
     {
-        $config = $this->Config->get('Name2');
+        $config = $this->Config->findByName('Name2')->firstOrFail();
         $config->set('application', null);
         static::assertNull($config->get('application_id'));
 

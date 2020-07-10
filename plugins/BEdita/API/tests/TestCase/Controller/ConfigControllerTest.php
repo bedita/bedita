@@ -32,19 +32,20 @@ class ConfigControllerTest extends IntegrationTestCase
         $expected = [
             'data' => [
                 [
-                    'id' => 'appVal',
+                    'id' => 11,
                     'type' => 'config',
                     'attributes' => [
                         'context' => 'core',
                         'content' => '{"val": 42}',
                         'application_id' => 1,
+                        'name' => 'appVal',
                     ],
                     'meta' => [
                         'created' => '2018-05-16T12:34:56+00:00',
                         'modified' => '2018-05-16T12:38:02+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/admin/config/appVal'
+                        'self' => 'http://api.example.com/admin/config/11'
                     ]
                 ],
             ],

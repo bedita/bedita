@@ -300,6 +300,7 @@ class ResourcesTest extends TestCase
      * @return void
      *
      * @covers ::update()
+     * @covers ::loadEntity()
      * @covers ::findCondition()
      * @dataProvider updateProvider
      */
