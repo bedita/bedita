@@ -104,6 +104,14 @@ class ProfilesValidatorTest extends TestCase
                     'email' => 'first.user@example.com',
                 ],
             ],
+            'URL without protocol' => [
+                [
+                    'website.url',
+                ],
+                [
+                    'website' => 'www.example.com/without/protocol.txt?shouldBeValid=no',
+                ],
+            ],
         ];
     }
 

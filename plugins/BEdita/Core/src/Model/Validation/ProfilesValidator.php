@@ -13,8 +13,6 @@
 
 namespace BEdita\Core\Model\Validation;
 
-use Cake\ORM\TableRegistry;
-
 /**
  * Validator for profiles.
  *
@@ -69,7 +67,10 @@ class ProfilesValidator extends ObjectsValidator
 
             ->allowEmpty('phone')
 
-            ->url('website')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('website', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmpty('website')
 
             ->allowEmpty('national_id_number')

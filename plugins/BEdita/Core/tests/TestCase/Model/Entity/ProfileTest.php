@@ -39,6 +39,8 @@ class ProfileTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
@@ -84,5 +86,52 @@ class ProfileTest extends TestCase
         }
 
         $this->assertEquals(4, $profile->id);
+    }
+
+    /**
+     * Data provider for `testSetUrl` test case.
+     *
+     * @return array
+     */
+    public function setUrlProvider()
+    {
+        return [
+            'ok' => [
+                'https://www.example.com/?gustavo=supporto',
+                'https://www.example.com/?gustavo=supporto',
+            ],
+            'non-standard' => [
+                'http://www.example.com/hello/world.html',
+                'www.example.com/hello/world.html'
+            ],
+            'not valid' => [
+                'I am not a valid URL',
+                'I am not a valid URL',
+            ],
+            'not a string' => [
+                123,
+                123,
+            ],
+        ];
+    }
+
+    /**
+     * Test that Website URL is correctly standardized.
+     *
+     * @param string $expected Expected result.
+     * @param string $website Website value.
+     * @return void
+     *
+     * @dataProvider setUrlProvider()
+     * @covers ::_setWebsite()
+     */
+    public function testSetUrl($expected, $website)
+    {
+        $profile = $this->Profiles->newEntity();
+        $profile->website = $website;
+
+        $actual = $profile->website;
+
+        static::assertSame($expected, $actual);
     }
 }

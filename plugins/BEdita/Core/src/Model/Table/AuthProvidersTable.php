@@ -13,9 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Collection\Collection;
+use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\App;
-use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -30,13 +29,13 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  *
- * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
+ * @method AuthProvider get($primaryKey, $options = [])
+ * @method AuthProvider newEntity($data = null, array $options = [])
+ * @method AuthProvider[] newEntities(array $data, array $options = [])
+ * @method AuthProvider|bool save(EntityInterface $entity, $options = [])
+ * @method AuthProvider patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method AuthProvider[] patchEntities($entities, array $data, array $options = [])
+ * @method AuthProvider findOrCreate($search, callable $callback = null, $options = [])
  *
  * @since 4.0.0
  */
@@ -79,7 +78,10 @@ class AuthProvidersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmpty('name')
 
-            ->url('url')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('url', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmpty('url', 'create')
 
             ->allowEmpty('params');
