@@ -57,6 +57,7 @@ class TreesControllerTest extends IntegrationTestCase
                     'lang' => 'en',
                     'publish_start' => null,
                     'publish_end' => null,
+                    'menu' => true,
                 ],
                 'meta' => [
                     'locked' => false,
@@ -166,6 +167,7 @@ class TreesControllerTest extends IntegrationTestCase
      * @covers ::pathDetails()
      * @covers ::objectDetails()
      * @covers ::parents()
+     * @covers ::loadTreesNode()
      */
     public function testTrees($expected, $path): void
     {
