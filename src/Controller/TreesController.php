@@ -110,7 +110,7 @@ class TreesController extends AppController
         $this->loadTreesNode();
         $parents = $this->parents();
 
-        $ids = array_values($this->pathInfo['ids']);
+        $ids = array_values((array)$this->pathInfo['ids']);
         $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
@@ -227,11 +227,13 @@ class TreesController extends AppController
         $parentId = Hash::get($this->pathInfo['ids'], $count - 2);
         $parentCondition = array_filter(['object_id' => $id, 'parent_id' => $parentId]);
 
-        /** @var Tree $this->treesNode */
-        $this->treesNode = $this->Trees->find()->where($parentCondition)->first();
-        if (empty($this->treesNode)) {
+        /** @var Tree $node */
+        $node = $this->Trees->find()->where($parentCondition)->first();
+        if (empty($node)) {
             throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
+
+        $this->treesNode = $node;
     }
 
     /**
