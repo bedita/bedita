@@ -154,6 +154,10 @@ class TreesControllerTest extends IntegrationTestCase
                 compact('error'),
                 '/11/4',
             ],
+            'root' => [
+                '/root-folder',
+                '/11',
+            ],
         ];
     }
 
