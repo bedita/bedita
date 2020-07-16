@@ -30,6 +30,7 @@ return [
     'folder',
     'folders',
     'history',
+    'menu',
     'model',
     'models',
     'null',

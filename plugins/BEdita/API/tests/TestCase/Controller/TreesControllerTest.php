@@ -57,6 +57,7 @@ class TreesControllerTest extends IntegrationTestCase
                     'lang' => 'en',
                     'publish_start' => null,
                     'publish_end' => null,
+                    'menu' => true,
                 ],
                 'meta' => [
                     'locked' => false,
@@ -153,6 +154,10 @@ class TreesControllerTest extends IntegrationTestCase
                 compact('error'),
                 '/11/4',
             ],
+            'root' => [
+                '/root-folder',
+                '/11',
+            ],
         ];
     }
 
@@ -166,6 +171,7 @@ class TreesControllerTest extends IntegrationTestCase
      * @covers ::pathDetails()
      * @covers ::objectDetails()
      * @covers ::parents()
+     * @covers ::loadTreesNode()
      */
     public function testTrees($expected, $path): void
     {
@@ -284,6 +290,40 @@ class TreesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders();
         $this->get('/trees/root-folder/sub-folder/gustavo-supporto');
+        $this->assertResponseCode(404);
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        unset($response['error']['meta'], $response['links']);
+        $error = [
+            'status' => '404',
+            'title' => 'Invalid path',
+        ];
+        static::assertEquals(compact('error'), $response);
+    }
+
+    /**
+     * Test check path failure on folders.
+     *
+     * @return void
+     *
+     * @covers ::checkPath()
+     */
+    public function testcheckPathFolderFail(): void
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch(
+            '/folders/13/relationships/parent',
+            json_encode([
+                'data' => [
+                    'type' => 'folders',
+                    'id' => '12',
+                ],
+            ])
+        );
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/trees/sub-folder/another-root-folder');
         $this->assertResponseCode(404);
 
         $response = json_decode((string)$this->_response->getBody(), true);

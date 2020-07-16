@@ -14,10 +14,12 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Entity\Tree;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Controller for `/trees` endpoint.
@@ -75,6 +77,13 @@ class TreesController extends AppController
     ];
 
     /**
+     * Trees node entity.
+     *
+     * @var \BEdita\Core\Model\Entity\Tree
+     */
+    protected $treesNode;
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
@@ -98,15 +107,17 @@ class TreesController extends AppController
         // populate idList, unameList
         $this->pathDetails($path);
 
+        $this->loadTreesNode();
         $parents = $this->parents();
 
-        $ids = array_values($this->pathInfo['ids']);
+        $ids = array_values((array)$this->pathInfo['ids']);
         $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
 
         $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
         $entity->setAccess('uname_path', false);
+        $entity->set('menu', (bool)$this->treesNode->get('menu'));
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
@@ -124,10 +135,6 @@ class TreesController extends AppController
      */
     protected function checkPath(EntityInterface $entity, array $parents): void
     {
-        if (empty($parents) && $entity->get('type') !== 'folders') {
-            throw new NotFoundException(__d('bedita', 'Invalid path'));
-        }
-
         if ($entity->get('type') === 'folders') {
             $idPath = sprintf('/%s', implode('/', $this->pathInfo['ids']));
             if ($entity->get('path') !== $idPath) {
@@ -190,16 +197,9 @@ class TreesController extends AppController
      */
     protected function parents(): array
     {
-        $count = count($this->pathInfo['ids']);
-        if ($count === 1) {
+        $parentId = $this->treesNode->get('parent_id');
+        if (empty($parentId)) {
             return [];
-        }
-
-        $id = $this->pathInfo['ids'][$count - 1];
-        $parentId = $this->pathInfo['ids'][$count - 2];
-        $parentCondition = ['object_id' => $id, 'parent_id' => $parentId];
-        if (!$this->Trees->exists($parentCondition)) {
-            throw new NotFoundException(__d('bedita', 'Invalid path'));
         }
 
         return $this->Trees->find('pathNodes', [$parentId])
@@ -208,6 +208,32 @@ class TreesController extends AppController
                 'valueField' => 'object_id',
             ])
             ->toArray();
+    }
+
+    /**
+     * Load trees table node of path object.
+     *
+     * @return void
+     */
+    protected function loadTreesNode(): void
+    {
+        $count = count($this->pathInfo['ids']);
+
+        $id = Hash::get($this->pathInfo['ids'], $count - 1);
+        $parentId = Hash::get($this->pathInfo['ids'], $count - 2);
+
+        /** @var Tree $node */
+        $node = $this->Trees->find()
+            ->where([
+                'object_id' => $id,
+                'parent_id IS' => $parentId,
+            ])
+            ->first();
+        if (empty($node)) {
+            throw new NotFoundException(__d('bedita', 'Invalid path'));
+        }
+
+        $this->treesNode = $node;
     }
 
     /**
