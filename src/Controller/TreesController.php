@@ -135,10 +135,6 @@ class TreesController extends AppController
      */
     protected function checkPath(EntityInterface $entity, array $parents): void
     {
-        if (empty($parents) && $entity->get('type') !== 'folders') {
-            throw new NotFoundException(__d('bedita', 'Invalid path'));
-        }
-
         if ($entity->get('type') === 'folders') {
             $idPath = sprintf('/%s', implode('/', $this->pathInfo['ids']));
             if ($entity->get('path') !== $idPath) {
