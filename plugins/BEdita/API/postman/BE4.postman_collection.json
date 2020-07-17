@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "db2d4f21-e049-4b86-b545-0b95493210f2",
+		"_postman_id": "13af6637-6ab9-4f7c-9d43-3f76ef92b77e",
 		"name": "BE4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -54,7 +54,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -113,7 +114,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n    \"grant_type\": \"otp_request\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n    \"grant_type\": \"otp_request\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -174,7 +176,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n\t\"grant_type\": \"otp\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n\t\"grant_type\": \"otp\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -234,7 +237,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -296,7 +300,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -368,7 +373,8 @@
 									"value": "{{password}}",
 									"type": "text"
 								}
-							]
+							],
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -415,7 +421,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"johannadoe\",\n    \"password\": \"j0h4nn4d0e\",\n    \"email\": \"johannadoe@nowhere.xx\",\n\t\"activation_url\": \"http://myactivationsys.xx?dum=my\",\n\t\"redirect_url\": \"app://xx?dum=my\"\n}"
+							"raw": "{\n\t\"username\": \"johannadoe\",\n    \"password\": \"j0h4nn4d0e\",\n    \"email\": \"johannadoe@nowhere.xx\",\n\t\"activation_url\": \"http://myactivationsys.xx?dum=my\",\n\t\"redirect_url\": \"app://xx?dum=my\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup",
@@ -462,7 +469,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}"
+							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup",
@@ -514,7 +522,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"uuid\": \"{{uuid}}\"\n}"
+							"raw": "{\n    \"uuid\": \"{{uuid}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup/activation",
@@ -567,7 +576,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contact\": \"{{profileEmail}}\",\n\t\"change_url\": \"http://example.com/change\"\n}"
+							"raw": "{\n\t\"contact\": \"{{profileEmail}}\",\n\t\"change_url\": \"http://example.com/change\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/change",
@@ -634,7 +644,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"uuid\": \"{{uuid}}\",\n    \"password\": \"a-brand-new password\",\n    \"login\": true\n}"
+							"raw": "{\n\t\"uuid\": \"{{uuid}}\",\n    \"password\": \"a-brand-new password\",\n    \"login\": true\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/change",
@@ -735,7 +746,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Gustavo\"\n}"
+							"raw": "{\n\t\"name\": \"Gustavo\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/user",
@@ -751,7 +763,8 @@
 					"response": []
 				}
 			],
-			"description": "Authorization & Signup"
+			"description": "Authorization & Signup",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "2. Home & Status",
@@ -924,7 +937,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "3. Model",
@@ -1028,7 +1042,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\": \"cats\",\n            \"singular\": \"cat\",\n            \"description\": \"This is a cat\",\n            \"table\": \"BEdita/Core.Objects\",\n            \"parent_name\": \"objects\",\n            \"is_abstract\": false\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\": \"cats\",\n            \"singular\": \"cat\",\n            \"description\": \"This is a cat\",\n            \"table\": \"BEdita/Core.Objects\",\n            \"parent_name\": \"objects\",\n            \"is_abstract\": false\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types",
@@ -1129,7 +1144,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"another dummy description\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"another dummy description\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types/{{objectTypeId}}",
@@ -1147,6 +1163,7 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1199,7 +1216,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"property_types\",\n        \"attributes\": {\n\t\t\t\"name\": \"myprop\",\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"A\",\n                  \"B\",\n                  \"C\"\n              ]\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"property_types\",\n        \"attributes\": {\n\t\t\t\"name\": \"myprop\",\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"A\",\n                  \"B\",\n                  \"C\"\n              ]\n            }\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/property_types",
@@ -1344,7 +1362,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyTypeId}}\",\n        \"type\": \"property_types\",\n        \"attributes\": {\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"E\",\n                  \"F\",\n                  \"G\"\n              ]\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyTypeId}}\",\n        \"type\": \"property_types\",\n        \"attributes\": {\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"E\",\n                  \"F\",\n                  \"G\"\n              ]\n            }\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/property_types/{{propertyTypeId}}",
@@ -1361,6 +1380,7 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1412,7 +1432,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n\t\t\t\"description\":\"Profile nickname\",\n\t\t\t\"property_type_name\":\"string\",\n\t\t\t\"object_type_name\":\"profiles\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n\t\t\t\"description\":\"Profile nickname\",\n\t\t\t\"property_type_name\":\"string\",\n\t\t\t\"object_type_name\":\"profiles\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties",
@@ -1608,7 +1629,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyId}}\",\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n            \"description\": \"This is a new description\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyId}}\",\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n            \"description\": \"This is a new description\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties/{{propertyId}}",
@@ -1625,6 +1647,7 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1730,7 +1753,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"name\": \"owner_of\",\n            \"label\": \"Owner of\",\n            \"inverse_name\": \"belongs_to\",\n            \"inverse_label\": \"Belongs to\",\n            \"description\": \"Cat owner relation\",\n            \"params\": {\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"name\": \"owner_of\",\n            \"label\": \"Owner of\",\n            \"inverse_name\": \"belongs_to\",\n            \"inverse_label\": \"Belongs to\",\n            \"description\": \"Cat owner relation\",\n            \"params\": {\n            }\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations",
@@ -1836,7 +1860,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n    \t\"id\": \"{{relationId}}\",\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"label\": \"Shared with\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n    \t\"id\": \"{{relationId}}\",\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"label\": \"Shared with\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}",
@@ -1889,7 +1914,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"3\"\n\t    },\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"2\"\n\t    }\n\t]\n}"
+									"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"3\"\n\t    },\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"2\"\n\t    }\n\t]\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/left_object_types",
@@ -1990,7 +2016,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n\t    \"id\": \"3\"\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n\t    \"id\": \"3\"\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/right_object_types",
@@ -2091,7 +2118,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"object_types\",\n\t    \t\"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
+									"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"object_types\",\n\t    \t\"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/right_object_types",
@@ -2112,6 +2140,7 @@
 						}
 					],
 					"description": "relations endpoint",
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -2216,6 +2245,7 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -2268,7 +2298,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/categories",
@@ -2378,6 +2411,56 @@
 							"response": []
 						},
 						{
+							"name": "GET categories by type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "55b0016a-65da-4a95-8487-f01e6169c8ec",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/categories?filter[type]={{objectTypeName}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "filter[type]",
+											"value": "{{objectTypeName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Modify category",
 							"event": [
 								{
@@ -2414,7 +2497,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
@@ -2506,7 +2592,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/categories",
@@ -2652,7 +2741,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
@@ -2694,7 +2786,8 @@
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "4. Objects",
@@ -2790,7 +2883,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"a cat\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"a cat\"\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}",
@@ -2874,7 +2970,9 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/vnd.api+json"
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "Accept",
@@ -2891,7 +2989,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
@@ -2943,7 +3044,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"{{objectTypeName}}\",\n        \t\"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"{{objectTypeName}}\",\n        \t\"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/1/relationships/{{relationName}}",
@@ -3054,7 +3156,8 @@
 					"response": []
 				}
 			],
-			"description": "objects endpoint: Object management"
+			"description": "objects endpoint: Object management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "5. Users & Roles",
@@ -3148,7 +3251,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users",
@@ -3249,7 +3353,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}",
@@ -3354,7 +3459,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"animal\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"animal\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles",
@@ -3454,7 +3560,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n        \t\"name\": \"animal\",\n            \"description\": \"a very important description of this role\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n        \t\"name\": \"animal\",\n            \"description\": \"a very important description of this role\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}",
@@ -3506,7 +3613,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}/relationships/roles",
@@ -3605,7 +3713,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}/relationships/users",
@@ -3704,7 +3813,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}/relationships/roles",
@@ -3723,7 +3833,8 @@
 					"response": []
 				}
 			],
-			"description": "Roles management"
+			"description": "Roles management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "6. Streams & Images",
@@ -3774,7 +3885,8 @@
 							"mode": "file",
 							"file": {
 								"src": ""
-							}
+							},
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
@@ -3836,7 +3948,8 @@
 							"mode": "file",
 							"file": {
 								"src": ""
-							}
+							},
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
@@ -3941,7 +4054,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"data\": {\n\t\t\"type\": \"images\",\n\t\t\"attributes\": {\n\t\t\t\"title\": \"My media\"\n\t\t}\n\t}\n}"
+							"raw": "{\n\t\"data\": {\n\t\t\"type\": \"images\",\n\t\t\"attributes\": {\n\t\t\t\"title\": \"My media\"\n\t\t}\n\t}\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/images",
@@ -3990,7 +4104,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"data\": {\n\t\t\"id\": \"{{imageId}}\",\n\t\t\"type\": \"images\"\n\t}\n}"
+							"raw": "{\n\t\"data\": {\n\t\t\"id\": \"{{imageId}}\",\n\t\t\"type\": \"images\"\n\t}\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/{{streamUuid}}/relationships/object",
@@ -4228,7 +4343,10 @@
 						],
 						"body": {
 							"mode": "file",
-							"file": {}
+							"file": {},
+							"options": {
+								"file": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/images/upload/other-file.jpg",
@@ -4244,11 +4362,65 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "7. Folders",
 			"item": [
+				{
+					"name": "Trees",
+					"item": [
+						{
+							"name": "Get path on trees",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d4ec4dc4-de0c-408b-be3f-1f2b72133891",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/trees/{{rootFolderId}}/{{subFolderId}}/{{objectId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"trees",
+										"{{rootFolderId}}",
+										"{{subFolderId}}",
+										"{{objectId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
 				{
 					"name": "Create root folder",
 					"event": [
@@ -4293,7 +4465,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
@@ -4434,7 +4607,7 @@
 							"query": [
 								{
 									"key": "filter[roots]",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -4485,7 +4658,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
@@ -4535,7 +4709,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/parent",
@@ -4597,16 +4772,17 @@
 					"response": []
 				},
 				{
-					"name": "Add folder children",
+					"name": "Add folder children (root folder)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "7255b36f-4882-4faf-8453-3ecfbdcef08e",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4632,16 +4808,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{subFolderId}}",
+								"{{rootFolderId}}",
 								"relationships",
 								"children"
 							]
@@ -4655,11 +4834,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "65e8e2ee-fc26-4655-8a8f-9fca3c28a179",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4680,13 +4860,127 @@
 							}
 						],
 						"url": {
-							"raw": "{{be4Url}}/folders/{{subFolderId}}/children",
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{subFolderId}}",
+								"{{rootFolderId}}",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change children positions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1a1e3247-751a-4ceb-8958-e02956f0b8ce",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"folders\",\n\t        \"id\": \"{{subFolderId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"position\":2\n\t        \t}\n\t        }\n    \t},\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"position\":1\n\t        \t}\n\t        }\n    \t}\n    ]\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{rootFolderId}}",
+								"relationships",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change children canonical & menu flag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7a44f04e-e82d-4249-bc21-05d9b37a6d53",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"canonical\": true,\n\t\t\t\t\t\"menu\": false\n\t        \t}\n\t        }\n    \t}\n    ]\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{rootFolderId}}",
+								"relationships",
 								"children"
 							]
 						}
@@ -4729,7 +5023,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
@@ -4872,7 +5167,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{subFolderId}}",
@@ -4920,7 +5216,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{rootFolderId}}",
@@ -4936,7 +5233,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "8. Translations",
@@ -5174,7 +5472,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"título uno\",\n                \"description\": \"descripción uno\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"título uno\",\n                \"description\": \"descripción uno\"\n            }\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations",
@@ -5225,7 +5524,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
@@ -5273,7 +5573,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
@@ -5321,7 +5622,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{translationId}}",
@@ -5338,7 +5640,8 @@
 					"response": []
 				}
 			],
-			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
+			"description": "Translations endpoint: i18n management (add, remove, modify a translation).",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "9. Annotations",
@@ -5487,7 +5790,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"annotations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"description\": \"a note\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"annotations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"description\": \"a note\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations",
@@ -5538,7 +5842,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{annotationId}}\",\n        \"type\": \"annotations\",\n        \"attributes\": {\n            \"description\": \"another note\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{annotationId}}\",\n        \"type\": \"annotations\",\n        \"attributes\": {\n            \"description\": \"another note\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations/{{annotationId}}",
@@ -5586,7 +5891,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations/{{annotationId}}",
@@ -5634,7 +5940,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{annotationId}}",
@@ -5651,7 +5958,8 @@
 					"response": []
 				}
 			],
-			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
+			"description": "Translations endpoint: i18n management (add, remove, modify a translation).",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "10. Trash",
@@ -5734,7 +6042,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
@@ -5834,7 +6143,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"objects\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"objects\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
@@ -5851,7 +6161,8 @@
 					"response": []
 				}
 			],
-			"description": "Trash management"
+			"description": "Trash management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "11. Admin",
@@ -5901,7 +6212,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"my-very-first-app\",\n            \"description\": \"My first app\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"my-very-first-app\",\n            \"description\": \"My first app\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications",
@@ -6043,7 +6355,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"new-app-name\",\n            \"description\": \"New application description\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"new-app-name\",\n            \"description\": \"New application description\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications/{{adminResourceId}}",
@@ -6092,7 +6405,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications/{{adminResourceId}}",
@@ -6152,7 +6466,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"service\": \"dummy\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"service\": \"dummy\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs",
@@ -6294,7 +6609,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"priority\": 2\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"priority\": 2\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
@@ -6343,7 +6659,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
@@ -6403,7 +6720,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n    \t\"id\": \"TestConf\",\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"TestConf\",\n            \"content\": \"config content\",\n            \"context\": \"config-context\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n    \t\"id\": \"TestConf\",\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"TestConf\",\n            \"content\": \"config content\",\n            \"context\": \"config-context\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config",
@@ -6546,7 +6864,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"context\": \"another-context\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"context\": \"another-context\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config/{{adminResourceId}}",
@@ -6595,7 +6914,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config/{{adminResourceId}}",
@@ -6655,7 +6975,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"name\": \"my_endpoint\",\n            \"description\": \"My first endpoint\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"name\": \"my_endpoint\",\n            \"description\": \"My first endpoint\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints",
@@ -6798,7 +7119,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"description\": \"New endpoint description\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"description\": \"New endpoint description\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
@@ -6847,7 +7169,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
@@ -6863,7 +7186,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "12. History",
@@ -7135,7 +7459,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"categories\": [\n            \t{\n            \t\t\"name\": \"profile-2\"\n            \t}\n            ]\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"categories\": [\n            \t{\n            \t\t\"name\": \"profile-2\"\n            \t}\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
@@ -7189,7 +7516,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{subFolderId}}",
@@ -7237,7 +7565,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{rootFolderId}}",
@@ -7286,7 +7615,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}",
@@ -7337,7 +7667,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"{{objectTypeName}}\",\n\t\t    \"id\": \"{{objectId}}\"\n\t    }\n    ] \n}"
+							"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"{{objectTypeName}}\",\n\t\t    \"id\": \"{{objectId}}\"\n\t    }\n    ] \n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/1/relationships/{{relationName}}",
@@ -7389,7 +7720,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/relations/{{relationId}}",
@@ -7438,7 +7770,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{objectId}}",
@@ -7486,7 +7819,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
@@ -7535,7 +7869,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/properties/{{propertyId}}",
@@ -7586,7 +7921,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/property_types/{{propertyTypeId}}",
@@ -7637,7 +7973,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/object_types/{{objectTypeName}}",
@@ -7686,7 +8023,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}",
@@ -7734,7 +8072,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{userId}}",
@@ -7750,7 +8089,9 @@
 					"response": []
 				}
 			],
-			"description": "Remove all objects and resources created"
+			"description": "Remove all objects and resources created",
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
