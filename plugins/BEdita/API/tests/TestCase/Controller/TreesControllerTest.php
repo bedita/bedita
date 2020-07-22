@@ -31,6 +31,7 @@ class TreesControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::addTreeProperties()
      * @covers ::loadObject()
      * @covers ::getContain()
      */
