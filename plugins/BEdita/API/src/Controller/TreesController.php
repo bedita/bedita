@@ -106,7 +106,9 @@ class TreesController extends AppController
         $this->set('_fields', $this->request->getQuery('fields', []));
 
         if (empty($path)) {
-            return $this->loadRoots();
+            $this->loadRoots();
+
+            return null;
         }
 
         // populate idList, unameList
@@ -119,10 +121,7 @@ class TreesController extends AppController
         $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
-
-        $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
-        $entity->setAccess('uname_path', false);
-        $entity->set('menu', (bool)$this->treesNode->get('menu'));
+        $this->addTreeProperties($entity);
 
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
@@ -133,9 +132,9 @@ class TreesController extends AppController
     /**
      * Load trees roots
      *
-     * @return null
+     * @return void
      */
-    protected function loadRoots()
+    protected function loadRoots(): void
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
         $roots = $Folders->find('available')
@@ -151,15 +150,25 @@ class TreesController extends AppController
             $this->pathInfo['ids'] = [$id];
             $this->loadTreesNode();
             $entity = $this->loadObject($id);
-            $entity->set('uname_path', sprintf('/%s', $entity->get('uname')));
-            $entity->setAccess('uname_path', false);
-            $entity->set('menu', (bool)$this->treesNode->get('menu'));
+            $this->pathInfo['unames'] = [$entity->get('uname')];
+            $this->addTreeProperties($entity);
             $data[] = $entity;
         }
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
+    }
 
-        return null;
+    /**
+     * Add tree properties to $entity.
+     *
+     * @param EntityInterface $entity The entity.
+     * @return void
+     */
+    protected function addTreeProperties(EntityInterface $entity): void
+    {
+        $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
+        $entity->setAccess('uname_path', false);
+        $entity->set('menu', (bool)$this->treesNode->get('menu'));
     }
 
     /**
