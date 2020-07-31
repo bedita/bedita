@@ -33,7 +33,7 @@ use Cake\Utility\Inflector;
  * @property string $model
  * @property string $table
  * @property array $associations
- * @property string $hidden
+ * @property array $hidden
  * @property string[] $relations
  * @property bool $is_abstract
  * @property int $parent_id
@@ -358,16 +358,15 @@ class ObjectType extends Entity implements JsonApiSerializable
     {
         /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
         $allProperties = TableRegistry::getTableLocator()->get('Properties')
-        ->find('objectType', [$this->id])
+            ->find('objectType', [$this->id])
             ->toArray();
         $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
-        $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
         $required = [];
         $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
-            if (in_array($property->name, $typeHidden)) {
+            if (in_array($property->name, (array)$this->hidden)) {
                 continue;
             }
             $accessMode = null;
