@@ -603,8 +603,39 @@ class ObjectTypeTest extends TestCase
                                 ],
                             ],
                         ],
+                        'categories' => [
+                            '$id' => '/properties/categories',
+                            'title' => 'Categories',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null'
+                                ],
+                                [
+                                    'type' => 'array',
+                                    'uniqueItems' => true,
+                                    'items' => [
+                                        'type' => 'object'
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'required' => [],
+                    'associations' => [
+                        'Categories'
+                    ],
+                    'relations' => [
+                        'inverse_test' => [
+                            'label' => 'Inverse test relation',
+                            'params' => null,
+                            'types' => ['documents'],
+                        ],
+                        'test' => [
+                            'label' => 'Test relation',
+                            'params' => null,
+                            'types' => ['documents', 'profiles'],
+                        ],
+                    ],
                 ],
                 'documents',
             ],
@@ -620,6 +651,8 @@ class ObjectTypeTest extends TestCase
      *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
+     * @covers ::objectTypeRelations()
+     * @covers ::associationProperties()
      */
     public function testGetSchema($expected, $name)
     {
@@ -671,6 +704,7 @@ class ObjectTypeTest extends TestCase
      * @return void
      *
      * @covers ::_getSchema()
+     * @covers ::objectTypeProperties()
      */
     public function testGetSchemaHiddenProperties()
     {
