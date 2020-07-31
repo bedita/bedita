@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\API\Test\TestConstants;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Cache\Cache;
@@ -152,6 +153,7 @@ class JsonSchemaTest extends TestCase
                         'another_description',
                         'another_title',
                         'body',
+                        'categories',
                         'created',
                         'created_by',
                         'description',
@@ -227,8 +229,12 @@ class JsonSchemaTest extends TestCase
         } else {
             static::assertNotEmpty($result);
 
-            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'revision'];
-            static::assertEquals($keys, array_keys($result), '', 0, 10, true);
+            $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'associations', 'relations', 'revision'];
+            if (!in_array($name, ['roles', 'streams'])) {
+                $keys = array_merge($keys, ['associations', 'relations']);
+            }
+            $found = array_keys($result);
+            static::assertEquals(sort($keys), sort($found));
             static::assertEquals($expected['properties'], array_keys($result['properties']), '', 0, 10, true);
             static::assertEquals($expected['required'], $result['required'], '', 0, 10, true);
         }
@@ -301,7 +307,7 @@ class JsonSchemaTest extends TestCase
             ],
             'documents' => [
                 'documents',
-                '3090683659',
+                TestConstants::SCHEMA_REVISIONS['documents'],
             ],
         ];
     }

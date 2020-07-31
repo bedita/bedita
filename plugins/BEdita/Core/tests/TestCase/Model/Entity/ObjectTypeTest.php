@@ -719,4 +719,19 @@ class ObjectTypeTest extends TestCase
         $properties = Hash::extract($schema, 'properties');
         static::assertArrayNotHasKey('body', $properties);
     }
+
+    /**
+     * Test `objectTypeProperties` method whith required properties.
+     *
+     * @return void
+     *
+     * @covers ::objectTypeProperties()
+     */
+    public function testGetSchemaRequired()
+    {
+        $objectType = $this->ObjectTypes->get('users');
+        $schema = $objectType->schema;
+        $required = Hash::extract($schema, 'required');
+        static::assertEquals(['username'], $required);
+    }
 }
