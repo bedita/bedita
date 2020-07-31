@@ -18,6 +18,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -31,7 +32,7 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property string $associations
+ * @property array $associations
  * @property string $hidden
  * @property string[] $relations
  * @property bool $is_abstract
@@ -55,6 +56,27 @@ class ObjectType extends Entity implements JsonApiSerializable
     use JsonApiModelTrait {
         listAssociations as protected jsonApiListAssociations;
     }
+
+    /**
+     * JSON Schema definition of nullable objects array.
+     * Basic schema for categories, tags, date_ranges and other properties.
+     *
+     * @var array
+     */
+    public const NULLABLE_OBJECT_ARRAY = [
+        'oneOf' => [
+            [
+                'type' => 'null'
+            ],
+            [
+                'type' => 'array',
+                'uniqueItems' => true,
+                'items' => [
+                    'type' => 'object'
+                ],
+            ],
+        ],
+    ];
 
     /**
      * {@inheritDoc}
@@ -287,15 +309,63 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
+        $associations = (array)$this->associations;
+        $relations = static::objectTypeRelations($this->right_relations, 'right') +
+            static::objectTypeRelations($this->left_relations, 'left');
+
+        return $this->objectTypeProperties() + compact('associations', 'relations');
+    }
+
+    /**
+     * Retrieve relation information as associative array:
+     *  * relation name as key, direct or inverse
+     *  * label, params and related types as values
+     *
+     * @param array $relations Relations array
+     * @param string $side Relation side, 'left' or 'right'
+     * @return array
+     */
+    protected static function objectTypeRelations(array $relations, string $side): array
+    {
+        if ($side === 'left') {
+            $name = 'name';
+            $label = 'label';
+            $types = 'right_object_types';
+        } else {
+            $name = 'inverse_name';
+            $label = 'inverse_label';
+            $types = 'left_object_types';
+        }
+
+        $res = [];
+        foreach ($relations as $relation) {
+            $res[$relation->get($name)] = [
+                'label' => $relation->get($label),
+                'params' => $relation->params,
+                'types' => Hash::extract((array)$relation->get($types), '{n}.name'),
+            ];
+        }
+
+        return $res;
+    }
+
+    /**
+     * Return object type properties in JSON SCHEMA format
+     *
+     * @return array
+     */
+    protected function objectTypeProperties(): array
+    {
         /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
         $allProperties = TableRegistry::getTableLocator()->get('Properties')
-            ->find('objectType', [$this->id])
+        ->find('objectType', [$this->id])
             ->toArray();
         $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
         $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
-        $properties = $required = [];
+        $required = [];
+        $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
             if (in_array($property->name, $typeHidden)) {
                 continue;
@@ -314,5 +384,26 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         return compact('properties', 'required');
+    }
+
+    /**
+     * Add internal associations as properties
+     *
+     * @return array
+     */
+    protected function associationProperties(): array
+    {
+        $associations = ['Tags', 'Categories', 'DateRanges'];
+        $assocProps = array_intersect($associations, (array)$this->associations);
+        $res = [];
+        foreach ($assocProps as $assoc) {
+            $name = Inflector::delimit($assoc);
+            $res[$name] = self::NULLABLE_OBJECT_ARRAY + [
+                '$id' => sprintf('/properties/%s', $name),
+                'title' => $assoc,
+            ];
+        }
+
+        return $res;
     }
 }
