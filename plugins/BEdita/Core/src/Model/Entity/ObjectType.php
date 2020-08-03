@@ -330,16 +330,16 @@ class ObjectType extends Entity implements JsonApiSerializable
         if ($side === 'left') {
             $name = 'name';
             $label = 'label';
-            $types = 'right_object_types';
+            $relTypes = 'right_object_types';
         } else {
             $name = 'inverse_name';
             $label = 'inverse_label';
-            $types = 'left_object_types';
+            $relTypes = 'left_object_types';
         }
 
         $res = [];
         foreach ($relations as $relation) {
-            $types = (array)Hash::extract((array)$relation->get($types), '{n}.name');
+            $types = (array)Hash::extract((array)$relation->get($relTypes), '{n}.name');
             sort($types);
             $res[$relation->get($name)] = [
                 'label' => $relation->get($label),
