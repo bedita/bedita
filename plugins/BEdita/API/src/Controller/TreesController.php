@@ -97,12 +97,19 @@ class TreesController extends AppController
     /**
      * Display object on a given path
      *
-     * @param string $path Trees path
+     * @param string|null $path Trees path
      * @return \Cake\Http\Response|null
      */
-    public function index(string $path)
+    public function index(?string $path = null)
     {
         $this->request->allowMethod(['get']);
+        $this->set('_fields', $this->request->getQuery('fields', []));
+
+        if (empty($path)) {
+            $this->loadRoots();
+
+            return null;
+        }
 
         // populate idList, unameList
         $this->pathDetails($path);
@@ -114,16 +121,54 @@ class TreesController extends AppController
         $entity = $this->loadObject(end($ids));
 
         $this->checkPath($entity, $parents);
+        $this->addTreeProperties($entity);
 
-        $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
-        $entity->setAccess('uname_path', false);
-        $entity->set('menu', (bool)$this->treesNode->get('menu'));
-
-        $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
         $this->set('_serialize', ['entity']);
 
         return null;
+    }
+
+    /**
+     * Load trees roots
+     *
+     * @return void
+     */
+    protected function loadRoots(): void
+    {
+        $Folders = TableRegistry::getTableLocator()->get('Folders');
+        $roots = $Folders->find('available')
+                ->find('roots')
+                ->select([$Folders->aliasField('id')])
+                ->enableHydration(false)
+                ->toArray();
+
+        $roots = Hash::extract($roots, '{n}.id');
+        $this->pathInfo['types'] = ['folders'];
+        $data = [];
+        foreach ($roots as $id) {
+            $this->pathInfo['ids'] = [$id];
+            $this->loadTreesNode();
+            $entity = $this->loadObject($id);
+            $this->pathInfo['unames'] = [$entity->get('uname')];
+            $this->addTreeProperties($entity);
+            $data[] = $entity;
+        }
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * Add tree properties to $entity.
+     *
+     * @param EntityInterface $entity The entity.
+     * @return void
+     */
+    protected function addTreeProperties(EntityInterface $entity): void
+    {
+        $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
+        $entity->setAccess('uname_path', false);
+        $entity->set('menu', (bool)$this->treesNode->get('menu'));
     }
 
     /**
