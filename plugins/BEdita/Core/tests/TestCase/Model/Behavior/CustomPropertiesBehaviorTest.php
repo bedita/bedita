@@ -361,4 +361,26 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         static::assertSame($expected, $result);
     }
+
+    /**
+     * Test that custom properties are not dirty getting object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     * @covers ::promoteProperties()
+     * @covers ::isFieldSet()
+     */
+    public function testCustomPropertyNotDirty(): void
+    {
+        $user = TableRegistry::getTableLocator()->get('Users')->get(5);
+        static::assertFalse($user->isDirty('another_username'));
+        static::assertFalse($user->isDirty('another_email'));
+        static::assertFalse($user->isDirty('another_email'));
+
+        $user->set('another_username', 'blablabla');
+        $user->set('another_email', 'xyz@example.com');
+        static::assertTrue($user->isDirty('another_username'));
+        static::assertTrue($user->isDirty('another_email'));
+    }
 }
