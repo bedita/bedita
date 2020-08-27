@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,7 +41,27 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Streams',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        FilesystemRegistry::dropAll();
+        parent::tearDown();
+    }
 
     /**
      * Test initialization.
@@ -226,6 +248,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ->enableHydration($hydrate)
             ->first();
         if ($hydrate) {
+            static::assertFalse($result->isDirty());
             $result = $result->toArray();
         }
 

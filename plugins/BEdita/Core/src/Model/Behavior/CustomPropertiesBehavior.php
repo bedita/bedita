@@ -152,11 +152,7 @@ class CustomPropertiesBehavior extends Behavior
         }
         $entity[$field] = $entity[$field] + $this->getDefaultValues();
 
-        if (empty($entity[$field])) {
-            return $entity;
-        }
-
-        $customProps = $entity[$field];
+        $customProps = $entity[$field] ?? [];
         if ($entity instanceof EntityInterface) {
             $entity->setHidden([$field], true);
         } else {
