@@ -186,9 +186,11 @@ class RestClientModel extends BEAppModel {
 				$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 			}
 		} else {
-			$headers = array();
+			$headers = array(
+				'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
+			);
 			foreach ($this->callHeaders as $headerKey => $headerVal) {
-				$headers[] = $headerKey . ':' . $headerVal;
+				$headers[] = $headerKey . ': ' . $headerVal;
 			}
 			curl_setopt($this->client, CURLOPT_HTTPHEADER, $headers); 
 		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "POST");
@@ -207,9 +209,6 @@ class RestClientModel extends BEAppModel {
 				$httpQuery = $params;
 			}
 			curl_setopt($this->client, CURLOPT_POSTFIELDS, $httpQuery);
-			curl_setopt($this->client, CURLOPT_HTTPHEADER , array(
-			     'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
-			));			
 			curl_setopt($this->client, CURLOPT_URL, $uri);
 					if(Configure::read('debug') > 0) {
 				curl_setopt($this->client, CURLINFO_HEADER_OUT, true);
