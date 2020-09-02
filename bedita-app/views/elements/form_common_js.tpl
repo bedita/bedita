@@ -410,7 +410,11 @@ function updateEditors() {
 	var submitUrl = "{$html->url('/pages/updateEditor/')}"+"{$object.id|default:''}";
 	
 	
-	$("#concurrenteditors").load(submitUrl);
+	$("#concurrenteditors").load(submitUrl, function(response, status, xhr) {
+		if (status === 'error') {
+			$("#concurrenteditors").html(response);
+		}
+	});
 	chatTimer=setTimeout(updateEditors,checkTime);	
 }
 
