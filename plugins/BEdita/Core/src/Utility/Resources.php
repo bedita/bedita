@@ -276,6 +276,7 @@ class Resources
                 __d('bedita', 'Resource type not allowed "{0}"', $type)
             );
         }
+        TableRegistry::getTableLocator()->clear();
 
         return TableRegistry::getTableLocator()
             ->get(Inflector::camelize($type), $options);
