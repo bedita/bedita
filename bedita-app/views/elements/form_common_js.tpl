@@ -337,7 +337,7 @@ function autoSave() {
 
 	var optionsForm = {
 		target: '#messagesDiv',
-		error: function() { switchAutosave('disable', false) }
+		error: function() { switchAutosave('off', false) }
 	};
 
 	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
