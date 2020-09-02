@@ -335,7 +335,10 @@ function autoSave() {
 	var submitUrl = "{$html->url('/')}{$view->params.controller}/autosave/";
 	
 
-	var optionsForm = { target: '#messagesDiv' };
+	var optionsForm = {
+		target: '#messagesDiv',
+		error: function() { switchAutosave('enable', false) }
+	};
 
 	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
 
