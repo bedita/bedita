@@ -17,6 +17,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchema;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -103,6 +104,18 @@ class DateRangesTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->setColumnType('params', 'json');
+
+        return $schema;
     }
 
     /**

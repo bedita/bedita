@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -65,6 +66,8 @@ class Resources
      */
     protected static $allowed = [
         'applications',
+        'auth_providers',
+        'config',
         'property_types',
         'object_types',
         'roles',
@@ -119,11 +122,7 @@ class Resources
         $Table = static::getTable($type, $options);
 
         foreach ($data as $item) {
-            $condition = static::findCondition($item);
-            $entity = $Table->find()
-                ->where($condition)
-                ->firstOrFail();
-
+            $entity = static::loadEntity($item, $Table);
             $Table->deleteOrFail($entity);
         }
     }
@@ -142,10 +141,7 @@ class Resources
         $result = [];
 
         foreach ($data as $item) {
-            $condition = static::findCondition($item);
-            $entity = $Table->find()
-                ->where($condition)
-                ->firstOrFail();
+            $entity = static::loadEntity($item, $Table);
             foreach ($item as $k => $v) {
                 $entity->set($k, $v);
             }
@@ -153,6 +149,28 @@ class Resources
         }
 
         return $result;
+    }
+
+    /**
+     * Load single resource entity using `name` or `id` fields condition or `name` finder if set
+     *
+     * @param array $item Single resource data
+     * @param Table $Table Resource table class
+     * @return EntityInterface
+     */
+    protected static function loadEntity(array $item, Table $Table): EntityInterface
+    {
+        if ($Table->hasFinder('name')) {
+            /** @var EntityInterface $entity */
+            $entity = $Table->find('name', $item)->firstOrFail();
+        } else {
+            /** @var EntityInterface $entity */
+            $entity = $Table->find()
+                ->where(static::findCondition($item))
+                ->firstOrFail();
+        }
+
+        return $entity;
     }
 
     /**
@@ -258,6 +276,7 @@ class Resources
                 __d('bedita', 'Resource type not allowed "{0}"', $type)
             );
         }
+        TableRegistry::getTableLocator()->clear();
 
         return TableRegistry::getTableLocator()
             ->get(Inflector::camelize($type), $options);

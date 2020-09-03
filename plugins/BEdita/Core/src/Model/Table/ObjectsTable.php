@@ -86,6 +86,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'sort' => ['start_date' => 'ASC'],
             'saveStrategy' => 'replace',
         ]);
         $this->belongsTo('CreatedByUsers', [
@@ -411,7 +412,7 @@ class ObjectsTable extends Table
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
 
-        return $query->where(['deleted' => 0]);
+        return $query->where([$this->aliasField('deleted') => 0]);
     }
 
     /**

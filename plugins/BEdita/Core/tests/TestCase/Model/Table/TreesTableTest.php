@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
@@ -446,5 +447,58 @@ class TreesTableTest extends TestCase
         // other record must have canonical false now
         $other = $this->Trees->get(3);
         static::assertFalse($other->get('canonical'));
+    }
+
+    /**
+     * Data provider for `testFindPathNodes` test case.
+     *
+     * @return array
+     */
+    public function findPathNodesProvider()
+    {
+        return [
+            'first' => [
+                [11, 12, 4],
+                [4],
+            ],
+            'invalid' => [
+                new RecordNotFoundException('Record not found in table "trees"'),
+                [3],
+            ],
+            'bad' => [
+                new BadRequestException('Missing required parameter "object id"'),
+                [],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findPathNodes` method.
+     *
+     * @param array|\Exception $expected Expected array path or exception.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @dataProvider findPathNodesProvider()
+     * @covers ::findPathNodes()
+     *
+     * @return void
+     */
+    public function testFindPathNodes($expected, array $options): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $path = $this->Trees->find('pathNodes', $options)
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'object_id',
+            ])
+            ->toArray();
+
+        static::assertSame($expected, array_values($path));
     }
 }

@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -22,6 +23,19 @@ use Cake\Validation\Validator;
 
 /**
  * Config Model - used to handle configuration data in DB
+ *
+ * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
+ *
+ * @method \BEdita\Core\Model\Entity\Config get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
  * @since 4.0.0
  */
@@ -38,7 +52,7 @@ class ConfigTable extends Table
         parent::initialize($config);
 
         $this->setTable('config');
-        $this->setPrimaryKey('name');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp', [
             'events' => [
@@ -104,6 +118,35 @@ class ConfigTable extends Table
 
                 return $exp->isNull($this->aliasField('application_id'));
             });
+        });
+    }
+
+    /**
+     * Finder for configuration by name and optional application name or id.
+     * Options array MUST have `name` and optionally `application` (application name) or `application_id`
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     */
+    protected function findName(Query $query, array $options): Query
+    {
+        if (empty($options['name'])) {
+            throw new BadRequestException(__d('bedita', 'Missing mandatory option "name"'));
+        }
+        $query = $query->where([$this->aliasField('name') => $options['name']]);
+        if (empty($options['application']) && empty($options['application_id'])) {
+            return $query;
+        }
+
+        return $query->innerJoinWith('Applications', function (Query $query) use ($options) {
+            if (!empty($options['application'])) {
+                $conditions = [$this->Applications->aliasField('name') => $options['application']];
+            } else {
+                $conditions = [$this->Applications->aliasField('id') => $options['application_id']];
+            }
+
+            return $query->where($conditions);
         });
     }
 }

@@ -34,8 +34,10 @@ class ResourcesTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -45,6 +47,7 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.RolesUsers',
@@ -71,6 +74,31 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'new app',
+                    ],
+                ],
+            ],
+            'auth prov' => [
+                'auth_providers',
+                [
+                    [
+                        'name' => 'oauthsome',
+                        'auth_class' => 'BEdita/API.OAuth2',
+                        'url' => 'https://some.example.com/oauth2',
+                        'params' => [
+                            'provider_username_field' => 'owner_id',
+                        ],
+                        'enabled' => true,
+                    ],
+                ],
+            ],
+            'config' => [
+                'config',
+                [
+                    [
+                        'name' => 'Status',
+                        'context' => 'core',
+                        'content' => '{"level":"on"}',
+                        'application' => 'First app',
                     ],
                 ],
             ],
@@ -136,6 +164,22 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'Disabled app',
+                    ],
+                ],
+            ],
+            'auth prov' => [
+                'auth_providers',
+                [
+                    [
+                        'name' => 'linkedout',
+                    ],
+                ],
+            ],
+            'config' => [
+                'config',
+                [
+                    [
+                        'name' => 'appVal',
                     ],
                 ],
             ],
@@ -207,6 +251,26 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'auth prov' => [
+                'auth_providers',
+                [
+                    [
+                        'name' => 'linkedout',
+                        'params' => [
+                            'provider_username_field' => 'another_id',
+                        ],
+                    ],
+                ],
+            ],
+            'config' => [
+                'config',
+                [
+                    [
+                        'name' => 'appVal',
+                        'content' => '{"val": 50}',
+                    ],
+                ],
+            ],
             'objects' => [
                 'object_types',
                 [
@@ -236,6 +300,7 @@ class ResourcesTest extends TestCase
      * @return void
      *
      * @covers ::update()
+     * @covers ::loadEntity()
      * @covers ::findCondition()
      * @dataProvider updateProvider
      */

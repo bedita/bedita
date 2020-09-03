@@ -53,6 +53,7 @@ class UniqueNameBehavior extends Behavior
      *  - 'sourceField' field value to use for unique name creation
      *  - 'prefix' constant prefix to use
      *  - 'replacement' character replacement for space
+     *  - 'preserve' non-word character to preserve when creating slug
      *  - 'separator' hash suffix separator
      *  - 'hashlength' hash suffix length
      *  - 'generator' callable function for unique name generation, if set all other keys are ignored
@@ -63,6 +64,7 @@ class UniqueNameBehavior extends Behavior
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',
+        'preserve' => '_',
         'separator' => '-',
         'hashlength' => 6,
         'generator' => null,
@@ -78,9 +80,15 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueName(EntityInterface $entity)
     {
+        $config = $this->getConfig();
         $uname = $entity->get('uname');
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
+        } else {
+            $uname = strtolower(Text::slug($uname, [
+                'replacement' => $config['replacement'],
+                'preserve' => $config['preserve'],
+            ]));
         }
         $count = 0;
         while (
@@ -131,7 +139,11 @@ class UniqueNameBehavior extends Behavior
     public function uniqueNameFromValue($value, $regenerate = false, array $cfg = [])
     {
         $config = array_merge($this->getConfig(), $cfg);
-        $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
+        $slug = Text::slug($value, [
+            'replacement' => $config['replacement'],
+            'preserve' => $config['preserve'],
+        ]);
+        $uname = $config['prefix'] . $slug;
         if ($regenerate) {
             $hash = Text::uuid();
             $hash = str_replace('-', '', $hash);
