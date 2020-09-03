@@ -167,6 +167,7 @@ class PropertiesTableTest extends TestCase
                 [
                     'another_birthdate',
                     'another_surname',
+                    'street_address',
                 ],
                 ['profiles'],
             ],
