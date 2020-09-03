@@ -287,10 +287,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
-        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
-        $allProperties = TableRegistry::getTableLocator()->get('Properties')
-            ->find('objectType', [$this->id])
-            ->toArray();
+        $allProperties = $this->fetchAllProperties();
         $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
         $typeHidden = !empty($this->hidden) ? $this->hidden : [];
@@ -314,5 +311,32 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         return compact('properties', 'required');
+    }
+
+    /**
+     * Fetch all properties for this type id.
+     * Static properties at the beginning and dynamic properties at the end.
+     * This way we can override defatul property type of a static property.
+     *
+     * @return array
+     */
+    protected function fetchAllProperties(): array
+    {
+        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
+        $allProperties = TableRegistry::getTableLocator()->get('Properties')
+            ->find('objectType', [$this->id])
+            ->toArray();
+        usort($allProperties, function ($a, $b) {
+            if ($a instanceof Property && $b instanceof StaticProperty) {
+                return 1;
+            };
+            if ($a instanceof StaticProperty && $b instanceof Property) {
+                return -1;
+            };
+
+            return 0;
+        });
+
+        return $allProperties;
     }
 }
