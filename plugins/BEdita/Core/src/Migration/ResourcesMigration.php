@@ -13,9 +13,11 @@
 namespace BEdita\Core\Migration;
 
 use BEdita\Core\Utility\Resources;
+use Cake\Database\Connection;
 use Cake\Utility\Hash;
 use Migrations\AbstractMigration;
 use ReflectionClass;
+use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
 abstract class ResourcesMigration extends AbstractMigration
@@ -31,7 +33,7 @@ abstract class ResourcesMigration extends AbstractMigration
         $path = (new ReflectionClass($this))->getFileName();
         $file = str_replace('.php', '.yml', $path);
         if (!file_exists($file)) {
-            return [];
+            throw new RuntimeException(__d('bedita', 'YAML file not found'));
         }
 
         $data = (array)Yaml::parse(file_get_contents($file));
@@ -48,22 +50,34 @@ abstract class ResourcesMigration extends AbstractMigration
     /**
      * {@inheritDoc}
      */
-    public function up()
+    public function up(): void
     {
         Resources::save(
             $this->readData(),
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $this->getConnection()]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function down()
+    public function down(): void
     {
         Resources::save(
             $this->readData(false),
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $this->getConnection()]
         );
+    }
+
+    /**
+     * Retrieve Db Connection
+     *
+     * @return Connection
+     *
+     * @codeCoverageIgnore
+     */
+    protected function getConnection(): Connection
+    {
+        return $this->getAdapter()->getCakeConnection();
     }
 }
