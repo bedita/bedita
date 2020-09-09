@@ -88,6 +88,7 @@ class Relations
      */
     protected static function addTypes($relationId, array $types, string $side, array $options = []): void
     {
+        TableRegistry::getTableLocator()->clear();
         $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
 
@@ -137,6 +138,7 @@ class Relations
      */
     protected static function removeTypes($relationId, array $types, string $side, array $options = []): void
     {
+        TableRegistry::getTableLocator()->clear();
         $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
 
