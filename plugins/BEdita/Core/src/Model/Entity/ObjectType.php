@@ -287,9 +287,11 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
-        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
+        // Fetch all properties, properties with `is_static` true at the end.
+        // This way we can override default property type of a static property.
         $allProperties = TableRegistry::getTableLocator()->get('Properties')
             ->find('objectType', [$this->id])
+            ->order(['is_static' => 'ASC'])
             ->toArray();
         $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();

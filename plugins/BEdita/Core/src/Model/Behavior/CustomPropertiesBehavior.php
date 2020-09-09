@@ -84,7 +84,7 @@ class CustomPropertiesBehavior extends Behavior
             $objectType = $this->objectType($this->getTable()->getAlias());
             $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
                 ->find('objectType', [$objectType->id])
-                ->where(['enabled' => true])
+                ->where(['enabled' => true, 'is_static' => false])
                 ->all();
         } catch (RecordNotFoundException $e) {
             return [];
