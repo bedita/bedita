@@ -287,6 +287,8 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
+        // Fetch all properties, properties with `is_static` true at the end.
+        // This way we can override default property type of a static property.
         $allProperties = TableRegistry::getTableLocator()->get('Properties')
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
