@@ -692,7 +692,6 @@ class ObjectTypeTest extends TestCase
      * @return void
      *
      * @covers ::_getSchema()
-     * @covers ::fetchAllProperties()
      */
     public function testSchemaOverride()
     {
