@@ -708,7 +708,7 @@ class ObjectTypeTest extends TestCase
         ];
         static::assertEquals($expected, $oneOf);
 
-        // // remove override property type of `street_address`
+        // remove override property type of `street_address`
         $Properties = TableRegistry::getTableLocator()->get('Properties');
         $entity = $Properties->get(10);
         $Properties->delete($entity);
