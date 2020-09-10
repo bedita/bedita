@@ -38,11 +38,12 @@ abstract class ResourcesMigration extends AbstractMigration
 
         $data = (array)Yaml::parse(file_get_contents($file));
         if ($up) {
-            return $data;
+            return array_intersect_key($data, array_flip(['create', 'update', 'remove']));
         }
 
         return array_filter([
-            'remove' => array_reverse(Hash::get($data, 'create')),
+            'create' => array_reverse((array)Hash::get($data, 'remove')),
+            'remove' => array_reverse((array)Hash::get($data, 'create')),
             'update' => (array)Hash::get($data, 'restore'),
         ]);
     }
