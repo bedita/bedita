@@ -35,10 +35,12 @@ abstract class ResourcesMigration extends AbstractMigration
         if (!file_exists($file)) {
             throw new RuntimeException(__d('bedita', 'YAML file not found'));
         }
+
         $data = (array)Yaml::parse(file_get_contents($file));
         if ($up) {
-            return array_intersect_key($data, ['create', 'update', 'remove']);
+            return array_intersect_key($data, array_flip(['create', 'update', 'remove']));
         }
+
         return array_filter([
             'create' => array_reverse((array)Hash::get($data, 'remove')),
             'remove' => array_reverse((array)Hash::get($data, 'create')),
