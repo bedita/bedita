@@ -120,7 +120,7 @@ abstract class ResourcesMigration extends AbstractMigration
         foreach ($data as $action => &$value) {
             $path = 'properties.{n}[is_column=true]';
             $res[$action] = Hash::extract($value, $path);
-            $value = Hash::remove($value, $path);
+            $value = Hash::remove((array)$value, $path);
         }
 
         return $res;
@@ -180,7 +180,7 @@ abstract class ResourcesMigration extends AbstractMigration
      * Get Migrations table object from object type name.
      *
      * @param string $object Object type name.
-     * @return Table
+     * @return \Migrations\Table
      */
     protected function migrationTable(string $object): Table
     {
