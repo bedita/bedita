@@ -108,6 +108,18 @@ abstract class ResourcesMigration extends AbstractMigration
     }
 
     /**
+     * Retrieve Column Types
+     *
+     * @return array
+     *
+     * @codeCoverageIgnore
+     */
+    protected function columnTypes(): array
+    {
+        return $this->getAdapter()->getColumnTypes();
+    }
+
+    /**
      * Extracts column related actions from migration data.
      * Removes column actions from migration data.
      *
@@ -197,7 +209,17 @@ abstract class ResourcesMigration extends AbstractMigration
      */
     protected function getColumnType(string $property): string
     {
-        return $property;
+        $columnTypes = $this->columnTypes();
+        if (in_array($property, $columnTypes)) {
+            return $property;
+        }
+        // look in fallback definitions or return 'string' as default
+        $fallback = [
+            'enum' => 'string',
+            'json' => 'text',
+        ];
+
+        return (string)Hash::get($fallback, $property, 'string');
     }
 
     /**
