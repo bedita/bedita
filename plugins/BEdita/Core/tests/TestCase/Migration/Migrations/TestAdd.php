@@ -1,5 +1,5 @@
 <?php
-namespace BEdita\Core\Test\TestCase\Migration;
+namespace BEdita\Core\Test\TestCase\Migration\Migrations;
 
 use BEdita\Core\Migration\ResourcesMigration;
 use Cake\Database\Connection;

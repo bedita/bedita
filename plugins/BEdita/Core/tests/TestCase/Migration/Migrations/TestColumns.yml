@@ -14,6 +14,20 @@ create:
       property: integer
       description: Another prop
       is_column: true
+    - name: json_prop
+      object: foos
+      property: json
+      is_column: true
+      column_attributes:
+        default: '{}'
+        comment: Column comment
+    - name: enum_prop
+      object: foos
+      property: enum
+      is_column: true
+      column_attributes:
+        values: ['a', 'b', 'c']
+        default: 'b'
 
 update:
 

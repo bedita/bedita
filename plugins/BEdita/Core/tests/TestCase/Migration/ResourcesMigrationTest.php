@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Migration;
 
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestAdd;
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestColumns;
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestMissing;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
@@ -123,6 +126,22 @@ class ResourcesMigrationTest extends TestCase
                         'comment' => 'Another prop',
                     ],
                 ],
+                [
+                    'json_prop',
+                    'text',
+                    [
+                        'default' => '{}',
+                        'comment' => 'Column comment',
+                    ],
+                ],
+                [
+                    'enum_prop',
+                    'string',
+                    [
+                        'default' => 'b',
+                        'values' => ['a', 'b', 'c'],
+                    ],
+                ],
             ],
             'changeColumn' => [
                 [
@@ -172,6 +191,12 @@ class ResourcesMigrationTest extends TestCase
                 ],
                 [
                     'another_prop',
+                ],
+                [
+                    'json_prop',
+                ],
+                [
+                    'enum_prop',
                 ],
             ],
         ];
