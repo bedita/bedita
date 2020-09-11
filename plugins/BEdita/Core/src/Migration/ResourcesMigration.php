@@ -69,9 +69,10 @@ abstract class ResourcesMigration extends AbstractMigration
     }
 
     /**
-     * Extract column related data from array, then:
-     *  - perform internal resources migration
-     *  - update table columns
+     * Extract column related data from input array, then:
+     *  - perform table columns removal
+     *  - perform internal resources migrations
+     *  - perform table columns creation/change
      *
      * @param array $data Migration data
      * @return void
@@ -80,9 +81,9 @@ abstract class ResourcesMigration extends AbstractMigration
     {
         $columnActions = $this->tableColumnsActions($data);
         // first perform column removal
-        $removeColumns = array_filter([
-            'remove' => Hash::get($columnActions, 'remove')
-        ]);
+        $removeColumns = array_filter(
+            array_intersect_key($columnActions, ['remove' => ''])
+        );
         $this->updateColumns($removeColumns);
         unset($columnActions['remove']);
 
