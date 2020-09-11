@@ -14,8 +14,10 @@ namespace BEdita\Core\Migration;
 
 use BEdita\Core\Utility\Resources;
 use Cake\Database\Connection;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Migrations\AbstractMigration;
+use Migrations\Table;
 use ReflectionClass;
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
@@ -53,10 +55,8 @@ abstract class ResourcesMigration extends AbstractMigration
      */
     public function up(): void
     {
-        Resources::save(
-            $this->readData(),
-            ['connection' => $this->getConnection()]
-        );
+        $data = $this->readData();
+        $this->executeMigration($data);
     }
 
     /**
@@ -64,10 +64,36 @@ abstract class ResourcesMigration extends AbstractMigration
      */
     public function down(): void
     {
+        $data = $this->readData(false);
+        $this->executeMigration($data);
+    }
+
+    /**
+     * Extract column related data from input array, then:
+     *  - perform table columns removal
+     *  - perform internal resources migrations
+     *  - perform table columns creation/change
+     *
+     * @param array $data Migration data
+     * @return void
+     */
+    protected function executeMigration(array $data): void
+    {
+        $columnActions = $this->tableColumnsActions($data);
+        // first perform column removal
+        $removeColumns = array_filter(
+            array_intersect_key($columnActions, ['remove' => ''])
+        );
+        $this->updateColumns($removeColumns);
+        unset($columnActions['remove']);
+
+        // then perform resources operations
         Resources::save(
-            $this->readData(false),
+            $data,
             ['connection' => $this->getConnection()]
         );
+        // finally columns creation + change
+        $this->updateColumns($columnActions);
     }
 
     /**
@@ -80,5 +106,134 @@ abstract class ResourcesMigration extends AbstractMigration
     protected function getConnection(): Connection
     {
         return $this->getAdapter()->getCakeConnection();
+    }
+
+    /**
+     * Retrieve Column Types
+     *
+     * @return array
+     *
+     * @codeCoverageIgnore
+     */
+    protected function columnTypes(): array
+    {
+        return $this->getAdapter()->getColumnTypes();
+    }
+
+    /**
+     * Extracts column related actions from migration data.
+     * Removes column actions from migration data.
+     *
+     * @param array $data Migration data.
+     * @return array
+     */
+    protected function tableColumnsActions(array &$data): array
+    {
+        $res = [];
+        foreach ($data as $action => &$value) {
+            $path = 'properties.{n}[is_column=true]';
+            $res[$action] = Hash::extract($value, $path);
+            $value = Hash::remove((array)$value, $path);
+        }
+
+        return $res;
+    }
+
+    /**
+     * Perform schema change actions on columns.
+     *
+     * @param array $data Column actions data
+     * @return void
+     */
+    protected function updateColumns(array $data): void
+    {
+        foreach ($data as $action => $items) {
+            array_walk(
+                $items,
+                function ($item) use ($action) {
+                    $this->columnAction($action, $item);
+                }
+            );
+        }
+    }
+
+    /**
+     * Perform schema operation on a single table column.
+     *
+     * @param string $action Column action ('create', 'update' or 'remove' actions)
+     * @param array $data Action data.
+     * @return void
+     */
+    protected function columnAction(string $action, array $data): void
+    {
+        $table = $this->migrationTable($data['object']);
+        $column = $data['name'];
+
+        if ($action === 'remove') {
+            $table->removeColumn($column)->update();
+
+            return;
+        }
+
+        $type = $this->getColumnType($data['property']);
+        $options = $this->getColumnOptions($data);
+
+        if ($action === 'create') {
+            $table->addColumn($column, $type, $options)
+                ->update();
+
+                return;
+        }
+
+        $table->changeColumn($column, $type, $options)
+            ->update();
+    }
+
+    /**
+     * Get Migrations table object from object type name.
+     *
+     * @param string $object Object type name.
+     * @return \Migrations\Table
+     */
+    protected function migrationTable(string $object): Table
+    {
+        $name = TableRegistry::getTableLocator()->get($object)->getTable();
+
+        return $this->table($name);
+    }
+
+    /**
+     * Retrieve column type options from property name.
+     *
+     * @param string $property Property name.
+     * @return string
+     */
+    protected function getColumnType(string $property): string
+    {
+        $columnTypes = $this->columnTypes();
+        if (in_array($property, $columnTypes)) {
+            return $property;
+        }
+        // look in fallback definitions or return 'string' as default
+        $fallback = [
+            'enum' => 'string',
+            'json' => 'text',
+        ];
+
+        return (string)Hash::get($fallback, $property, 'string');
+    }
+
+    /**
+     * Retrieve table column options from property data.
+     *
+     * @param array $propData Property data.
+     * @return array
+     */
+    protected function getColumnOptions(array $propData): array
+    {
+        $attributes = (array)Hash::get($propData, 'column_attributes');
+        $comment = Hash::get($propData, 'description');
+
+        return $attributes + array_filter(compact('comment'));
     }
 }

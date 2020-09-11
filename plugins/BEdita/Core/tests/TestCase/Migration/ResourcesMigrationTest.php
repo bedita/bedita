@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Migration;
 
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestAdd;
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestColumns;
+use BEdita\Core\Test\TestCase\Migration\Migrations\TestMissing;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
@@ -43,8 +46,9 @@ class ResourcesMigrationTest extends TestCase
      *
      * @covers ::up()
      * @covers ::readData()
+     * @covers ::executeMigration()
      */
-    public function testUp()
+    public function testUp(): void
     {
         $migration = new TestAdd('test', 1);
 
@@ -60,7 +64,7 @@ class ResourcesMigrationTest extends TestCase
      * @covers ::down()
      * @covers ::readData()
      */
-    public function testDown()
+    public function testDown(): void
     {
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $objectType = $ObjectTypes->newEntity(['name' => 'foos', 'singular' => 'foo']);
@@ -79,12 +83,123 @@ class ResourcesMigrationTest extends TestCase
      *
      * @covers ::readData()
      */
-    public function testMissing()
+    public function testMissing(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('YAML file not found');
 
         $migration = new TestMissing('test', 1);
         $migration->up();
+    }
+
+    /**
+     * Test columns migration.
+     *
+     * @covers ::tableColumnsActions()
+     * @covers ::updateColumns()
+     * @covers ::columnAction()
+     * @covers ::migrationTable()
+     * @covers ::getColumnType()
+     * @covers ::getColumnOptions()
+     */
+    public function testColumnsUp(): void
+    {
+        MockMigrationsTable::$calls = [];
+
+        $migration = new TestColumns('test', 1);
+        $migration->up();
+
+        $expected = [
+            'addColumn' => [
+                [
+                    'new_prop',
+                    'text',
+                    [
+                        'default' => null,
+                        'comment' => 'New prop',
+                    ],
+                ],
+                [
+                    'another_prop',
+                    'integer',
+                    [
+                        'comment' => 'Another prop',
+                    ],
+                ],
+                [
+                    'json_prop',
+                    'text',
+                    [
+                        'default' => '{}',
+                        'comment' => 'Column comment',
+                    ],
+                ],
+                [
+                    'enum_prop',
+                    'string',
+                    [
+                        'default' => 'b',
+                        'values' => ['a', 'b', 'c'],
+                    ],
+                ],
+            ],
+            'changeColumn' => [
+                [
+                    'new_prop',
+                    'text',
+                    [
+                        'default' => null,
+                        'comment' => 'New prop',
+                    ],
+                ],
+            ],
+        ];
+        static::assertEquals($expected, MockMigrationsTable::$calls);
+    }
+
+    /**
+     * Test columns rollback.
+     *
+     * @covers ::tableColumnsActions()
+     * @covers ::updateColumns()
+     * @covers ::columnAction()
+     * @covers ::migrationTable()
+     * @covers ::getColumnType()
+     * @covers ::getColumnOptions()
+     */
+    public function testColumnsDown(): void
+    {
+        MockMigrationsTable::$calls = [];
+
+        $migration = new TestColumns('test', 1);
+        $migration->down();
+
+        $expected = [
+            'changeColumn' => [
+                [
+                    'new_prop',
+                    'text',
+                    [
+                        'default' => null,
+                        'comment' => 'New prop',
+                    ],
+                ],
+            ],
+            'removeColumn' => [
+                [
+                    'new_prop',
+                ],
+                [
+                    'another_prop',
+                ],
+                [
+                    'json_prop',
+                ],
+                [
+                    'enum_prop',
+                ],
+            ],
+        ];
+        static::assertEquals($expected, MockMigrationsTable::$calls);
     }
 }
