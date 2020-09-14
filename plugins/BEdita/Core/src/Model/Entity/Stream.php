@@ -163,7 +163,10 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function createStream($source)
     {
-        rewind($source);
+        $info = stream_get_meta_data($source);
+        if ($info['seekable'] === true) {
+            rewind($source);
+        }
 
         $resource = fopen('php://temp', 'wb+');
         stream_copy_to_stream($source, $resource);
