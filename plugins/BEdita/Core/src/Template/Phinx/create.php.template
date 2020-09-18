@@ -1,0 +1,42 @@
+<?php
+use BEdita\Core\Migration\ResourcesMigration;
+
+/**
+ * Create a yaml file, with the same basename of your migration.
+ * Edit yaml file properly. Example follows at the end of this class
+ *
+ * {@inheritDoc}
+ */
+class $className extends ResourcesMigration
+{
+}
+
+# create:
+#   relations:
+#     - name: my_relation
+#       label: My relation
+#       inverse_name: my_relation
+#       inverse_label: My relation
+#       description: A description
+#       left:
+#         - cats
+#         - dogs
+#       right:
+#         - animals
+# update:
+#   relations:
+#     - name: my_relation
+#       left:
+#         - cats
+#         - dogs
+#         - wolves
+#       right:
+#         - animals
+# restore:
+#   relations:
+#     - name: my_relation
+#       left:
+#         - cats
+#         - dogs
+#       right:
+#         - animals
