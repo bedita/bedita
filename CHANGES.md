@@ -20,7 +20,6 @@
 
 ### Core changes (4.2.0)
 
-* [#1683](https://github.com/bedita/bedita/pull/1683) Links (model, table, entity)
 * [#1602](https://github.com/bedita/bedita/pull/1602) CustomProperties behavior recursion problem
 * [#1550](https://github.com/bedita/bedita/pull/1550) Entity `isDirty()` not working on custom properties
 * [#1654](https://github.com/bedita/bedita/pull/1654) Default priority on relations: max + 1
@@ -30,27 +29,25 @@
 * [#1662](https://github.com/bedita/bedita/pull/1662) Allow non assoc array configuration in `Plugins`
 * [#1692](https://github.com/bedita/bedita/pull/1692) Column streams.uri increase limit
 * [#1684](https://github.com/bedita/bedita/pull/1684) `Links` core object type
-* [#1681](https://github.com/bedita/bedita/pull/1681) Limit uname max length
+* [#1681](https://github.com/bedita/bedita/pull/1681) Limit `uname` max length
 * [#1670](https://github.com/bedita/bedita/pull/1670) Custom Signup action
-* [#1667](https://github.com/bedita/bedita/pull/1667) Virtual methods to get/set parent by uname
-* [#1659](https://github.com/bedita/bedita/pull/1659) Max + 1 as default priority
-* [#1657](https://github.com/bedita/bedita/pull/1657) Inverse relation priority
-* [#1722](https://github.com/bedita/bedita/pull/1722) fix: rewind stream only if seekable
+* [#1667](https://github.com/bedita/bedita/pull/1667) Virtual methods to get/set parent folder by uname
+* [#1659](https://github.com/bedita/bedita/pull/1659) Max + 1 as default priority on new relation
 * [#1716](https://github.com/bedita/bedita/pull/1716) Override static property schema definition
 * [#1709](https://github.com/bedita/bedita/pull/1709) Increase `extra` to 16MB on MySQL
 * [#1707](https://github.com/bedita/bedita/pull/1707) Add `trees.menu`
+* [#1706](https://github.com/bedita/bedita/pull/1706) Enable multi application config
 * [#1704](https://github.com/bedita/bedita/pull/1704) Set `DateRanges.params` column type as JSON
-* [#1703](https://github.com/bedita/bedita/pull/1703) Sanitize uname
+* [#1703](https://github.com/bedita/bedita/pull/1703) Sanitize `uname`
 * [#1711](https://github.com/bedita/bedita/pull/1711) Ensure entity not marked as dirty promoting empty custom prop
 * [#1699](https://github.com/bedita/bedita/pull/1699) fix: use `available` finder on `relatedTo` assoc
+* [#1722](https://github.com/bedita/bedita/pull/1722) fix: rewind stream only if seekable
 
 ### Integration changes (4.2.0)
 
-* [#1706](https://github.com/bedita/bedita/pull/1706) Enable multi application config
 * [#1705](https://github.com/bedita/bedita/pull/1705) Add `config` and `auth_providers` to Resources utility
 * [#1680](https://github.com/bedita/bedita/pull/1680) Refactor tests on `default://` and `thumbnails://` filesystems
 * [#1666](https://github.com/bedita/bedita/pull/1666) Improve objects handler
-* [#1661](https://github.com/bedita/bedita/pull/1661) test: empty response and no content type on 204
 * [#1660](https://github.com/bedita/bedita/pull/1660) New Resources utility
 * [#1721](https://github.com/bedita/bedita/pull/1721) YAML column properties migrations
 * [#1720](https://github.com/bedita/bedita/pull/1720) fix: yml migrations rollback (restore field)
