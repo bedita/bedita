@@ -4,19 +4,19 @@
 
 ### API changes (4.2.0)
 
-* [#1551](https://github.com/bedita/bedita/pull/1551) Create media object with stream in one request Priority
-* [#1690] (https://github.com/bedita/bedita/pull/1690) Add `canonical` meta property on `children` relation
-* [#1524] (https://github.com/bedita/bedita/pull/1524) PATCH /folders/:id/relationships/children fails with meta.relation.position present
-* [#1695] (https://github.com/bedita/bedita/pull/1695) Categories type finder + filter
-* [#1679] (https://github.com/bedita/bedita/pull/1679) Avoid `included` repetitions
-* [#1651] (https://github.com/bedita/bedita/pull/1651) Fix pagination `maxLimit` configuration
-* [#1691] (https://github.com/bedita/bedita/pull/1691) Handle `canonical` meta #1690
-* [#1671] (https://github.com/bedita/bedita/pull/1671) Categories object type name
-* [#1668] (https://github.com/bedita/bedita/pull/1668) User roles filter/finder
-* [#1663] (https://github.com/bedita/bedita/pull/1663) Block anonymous apps as default
-* [#1652] (https://github.com/bedita/bedita/pull/1652) Populate `meta.media_url` always for media objects
-* [#1702] (https://github.com/bedita/bedita/pull/1702) DateRanges order via `sort` query string
-* [#1697] (https://github.com/bedita/bedita/pull/1697) New `from_date` and `to_date` filters on `DateRanges`
+* [#1551](https://github.com/bedita/bedita/pull/1551) Create media object with stream in one request
+* [#1690](https://github.com/bedita/bedita/pull/1690) Add `canonical` meta property on `children` relation
+* [#1524](https://github.com/bedita/bedita/pull/1524) PATCH /folders/:id/relationships/children fails with meta.relation.position present
+* [#1695](https://github.com/bedita/bedita/pull/1695) Categories type finder + filter
+* [#1679](https://github.com/bedita/bedita/pull/1679) Avoid `included` repetitions
+* [#1651](https://github.com/bedita/bedita/pull/1651) Fix pagination `maxLimit` configuration
+* [#1691](https://github.com/bedita/bedita/pull/1691) Handle `canonical` meta #1690
+* [#1671](https://github.com/bedita/bedita/pull/1671) Categories object type name
+* [#1668](https://github.com/bedita/bedita/pull/1668) User roles filter/finder
+* [#1663](https://github.com/bedita/bedita/pull/1663) Block anonymous apps as default
+* [#1652](https://github.com/bedita/bedita/pull/1652) Populate `meta.media_url` always for media objects
+* [#1702](https://github.com/bedita/bedita/pull/1702) DateRanges order via `sort` query string
+* [#1697](https://github.com/bedita/bedita/pull/1697) New `from_date` and `to_date` filters on `DateRanges`
 
 ### Core changes (4.2.0)
 
@@ -32,7 +32,6 @@
 * [#1681](https://github.com/bedita/bedita/pull/1681) Limit `uname` max length
 * [#1670](https://github.com/bedita/bedita/pull/1670) Custom Signup action
 * [#1667](https://github.com/bedita/bedita/pull/1667) Virtual methods to get/set parent folder by uname
-* [#1659](https://github.com/bedita/bedita/pull/1659) Max + 1 as default priority on new relation
 * [#1716](https://github.com/bedita/bedita/pull/1716) Override static property schema definition
 * [#1709](https://github.com/bedita/bedita/pull/1709) Increase `extra` to 16MB on MySQL
 * [#1707](https://github.com/bedita/bedita/pull/1707) Add `trees.menu`
