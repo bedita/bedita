@@ -110,10 +110,10 @@ class Tree extends Entity
         $parentId = null;
         if ($folder !== null) {
             $parentId = $folder->id;
+            // set join data if present (`menu` and `canonical`)
+            $this->set((array)$folder->get('_joinData'));
         }
         $this->parent_id = $parentId;
-        // set join data if present (`menu` and `canonical`)
-        $this->set((array)$folder->get('_joinData'));
 
         return $folder;
     }
