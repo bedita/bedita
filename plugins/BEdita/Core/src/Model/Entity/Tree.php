@@ -112,6 +112,8 @@ class Tree extends Entity
             $parentId = $folder->id;
         }
         $this->parent_id = $parentId;
+        // set join data if present (`menu` and `canonical`)
+        $this->set((array)$folder->get('_joinData'));
 
         return $folder;
     }
