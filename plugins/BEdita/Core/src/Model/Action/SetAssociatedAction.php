@@ -123,15 +123,30 @@ class SetAssociatedAction extends UpdateAssociatedAction
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
-        } elseif ($relatedEntity !== null && $this->Association->getName() !== 'ParentObjects') {
+        }
+        $joinData = [];
+        if ($relatedEntity !== null) {
             $bindingKey = (array)$this->Association->getBindingKey();
+            // We use `_joinData` between Tree and Folder in `ParentObjects` association
+            // if '_joinData` are not set (common case) or not changed save is not performed
+            $joinData = (array)$relatedEntity->get('_joinData');
+            $diff = array_diff_assoc(
+                $joinData,
+                $entity->extract(array_keys($joinData))
+            );
 
-            if ($existing !== null && $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey)) {
+            if (
+                $existing !== null &&
+                $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey) &&
+                empty($diff)
+            ) {
                 return 0;
             }
         }
 
         $entity->set($this->Association->getProperty(), $relatedEntity);
+        // set join data anyway, if empty no properties are set
+        $entity->set($joinData);
 
         return $this->Association->getSource()->save($entity) ? 1 : false;
     }
