@@ -123,6 +123,12 @@ class SetAssociatedAction extends UpdateAssociatedAction
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
+        } elseif ($relatedEntity !== null && $this->Association->getName() !== 'ParentObjects') {
+            $bindingKey = (array)$this->Association->getBindingKey();
+
+            if ($existing !== null && $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey)) {
+                return 0;
+            }
         }
 
         $entity->set($this->Association->getProperty(), $relatedEntity);
