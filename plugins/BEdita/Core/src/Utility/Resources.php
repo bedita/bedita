@@ -71,6 +71,7 @@ class Resources
         'property_types',
         'object_types',
         'roles',
+        'endpoints',
     ];
 
     /**

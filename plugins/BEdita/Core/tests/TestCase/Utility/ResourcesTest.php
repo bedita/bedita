@@ -123,6 +123,15 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'endpoints' => [
+                'endpoints',
+                [
+                    [
+                        'name' => 'pets',
+                        'description' => 'handle pets with care',
+                    ]
+                ],
+            ],
         ];
     }
 
@@ -196,6 +205,14 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'unused property type',
+                    ],
+                ],
+            ],
+            'endpoints' => [
+                'endpoints',
+                [
+                    [
+                        'name' => 'disabled',
                     ],
                 ],
             ],
@@ -287,6 +304,15 @@ class ResourcesTest extends TestCase
                         'name' => 'unused property type',
                         'params' => ['type' => 'object'],
                     ],
+                ],
+            ],
+            'endpoints' => [
+                'endpoints',
+                [
+                    [
+                        'name' => 'disabled',
+                        'enabled' => 1,
+                    ]
                 ],
             ],
         ];
