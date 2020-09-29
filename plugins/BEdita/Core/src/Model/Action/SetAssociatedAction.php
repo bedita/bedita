@@ -119,34 +119,21 @@ class SetAssociatedAction extends UpdateAssociatedAction
      */
     protected function belongsTo(EntityInterface $entity, EntityInterface $relatedEntity = null)
     {
+        // `Tree` Entity can be dirty as join data are set in `ParentObjects`
+        $dirty = $entity->isDirty();
         $existing = $this->existing($entity);
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
-        }
-        $joinData = [];
-        if ($relatedEntity !== null) {
+        } elseif (!$dirty && $relatedEntity !== null) {
             $bindingKey = (array)$this->Association->getBindingKey();
-            // We use `_joinData` between Tree and Folder in `ParentObjects` association
-            // if '_joinData` are not set (common case) or not changed save is not performed
-            $joinData = (array)$relatedEntity->get('_joinData');
-            $diff = array_diff_assoc(
-                $joinData,
-                $entity->extract(array_keys($joinData))
-            );
 
-            if (
-                $existing !== null &&
-                $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey) &&
-                empty($diff)
-            ) {
+            if ($existing !== null && $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey)) {
                 return 0;
             }
         }
 
         $entity->set($this->Association->getProperty(), $relatedEntity);
-        // set join data anyway, if empty no properties are set
-        $entity->set($joinData);
 
         return $this->Association->getSource()->save($entity) ? 1 : false;
     }
