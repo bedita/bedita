@@ -593,6 +593,20 @@ class FoldersControllerTest extends IntegrationTestCase
                     'id' => 11,
                 ],
             ],
+            'patch + meta' => [
+                200,
+                'PATCH',
+                [
+                    'type' => 'folders',
+                    'id' => 11,
+                    'meta' => [
+                        'relation' => [
+                            'menu' => 'false',
+                            'canonical' => 'false',
+                        ],
+                    ],
+                ],
+            ],
             'patch conflict' => [
                 409,
                 'PATCH',
@@ -675,6 +689,65 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $path = Hash::get($result, 'data.meta.path');
         static::assertEquals('/13/12', $path);
+    }
+
+    /**
+     * Test patch `parent` relationship with metadata
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testPatchParentMeta()
+    {
+        // create new folder and set parent
+        $data = [
+            'type' => 'folders',
+            'attributes' => [
+                'title' => 'New folder',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/folders', json_encode(compact('data')));
+        $folderId = $this->lastObjectId();
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data = [
+            'type' => 'folders',
+            'id' => 12,
+            'meta' => [
+                'relation' => [
+                    'menu' => false,
+                ],
+            ],
+        ];
+        $this->patch(sprintf('/folders/%d/relationships/parent', $folderId), json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            'links' => [
+                'self' => sprintf('http://api.example.com/folders/%d/relationships/parent', $folderId),
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+        static::assertEquals($expected, $result);
+
+        // Read `menu` from Trees
+        $Trees = TableRegistry::getTableLocator()->get('Trees');
+        $menu = $Trees->find('list', ['valueField' => 'menu'])
+            ->where(['object_id' => $folderId])
+            ->first();
+        static::assertFalse($menu);
+
+        // change flag with anoter `PATCH`
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data['meta']['relation']['menu'] = true;
+        $this->patch(sprintf('/folders/%d/relationships/parent', $folderId), json_encode(compact('data')));
+        $this->assertResponseCode(200);
+        $menu = $Trees->find('list', ['valueField' => 'menu'])
+            ->where(['object_id' => $folderId])
+            ->first();
+        static::assertTrue($menu);
     }
 
     /**
