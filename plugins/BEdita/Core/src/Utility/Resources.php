@@ -72,6 +72,7 @@ class Resources
         'object_types',
         'roles',
         'endpoints',
+        'endpoint_permissions',
     ];
 
     /**
@@ -153,7 +154,7 @@ class Resources
     }
 
     /**
-     * Load single resource entity using `name` or `id` fields condition or `name` finder if set
+     * Load single resource entity using `name` or `id` fields condition or `resource` finder if set
      *
      * @param array $item Single resource data
      * @param Table $Table Resource table class
@@ -161,17 +162,13 @@ class Resources
      */
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
-        if ($Table->hasFinder('name')) {
-            /** @var EntityInterface $entity */
-            $entity = $Table->find('name', $item)->firstOrFail();
-        } else {
-            /** @var EntityInterface $entity */
-            $entity = $Table->find()
-                ->where(static::findCondition($item))
-                ->firstOrFail();
+        if ($Table->hasFinder('resource')) {
+            return $Table->find('resource', $item)->firstOrFail();
         }
 
-        return $entity;
+        return $Table->find()
+            ->where(static::findCondition($item))
+            ->firstOrFail();
     }
 
     /**
