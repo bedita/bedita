@@ -43,11 +43,25 @@ use Cake\Utility\Inflector;
 class Resources
 {
     /**
-     * Resource defaults in creation
+     * Default options array with following keys:
+     *
+     *  - 'save': default options performing `Table::save()`
+     *  - 'delete': default options performing `Table::delete()`
+     *  - 'object_types': default options on object types
+     *  - 'property_types': default options on property types
      *
      * @var array
      */
     protected static $defaults = [
+        // since default usage is in migrations
+        // don't commit transactions but let migrations do it
+        'save' => [
+            'atomic' => false,
+        ],
+        'delete' => [
+            'atomic' => false,
+        ],
+
         'object_types' => [
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
@@ -104,7 +118,7 @@ class Resources
             foreach ($item as $k => $v) {
                 $resource->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($resource);
+            $result[] = $Table->saveOrFail($resource, static::$defaults['save']);
         }
 
         return $result;
@@ -124,7 +138,7 @@ class Resources
 
         foreach ($data as $item) {
             $entity = static::loadEntity($item, $Table);
-            $Table->deleteOrFail($entity);
+            $Table->deleteOrFail($entity, static::$defaults['delete']);
         }
     }
 
@@ -146,7 +160,7 @@ class Resources
             foreach ($item as $k => $v) {
                 $entity->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($entity);
+            $result[] = $Table->saveOrFail($entity, static::$defaults['save']);
         }
 
         return $result;
