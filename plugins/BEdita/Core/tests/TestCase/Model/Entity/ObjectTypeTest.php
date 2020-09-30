@@ -685,4 +685,38 @@ class ObjectTypeTest extends TestCase
         $properties = Hash::extract($schema, 'properties');
         static::assertArrayNotHasKey('body', $properties);
     }
+
+    /**
+     * Test static properties override in `schema`.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testSchemaOverride()
+    {
+        $objectType = $this->ObjectTypes->get('profiles');
+        $schema = $objectType->schema;
+        $oneOf = Hash::extract($schema, 'properties.street_address.oneOf');
+        $expected = [
+            [
+                'type' => 'null',
+            ],
+            [
+                'type' => 'string',
+            ],
+        ];
+        static::assertEquals($expected, $oneOf);
+
+        // remove override property type of `street_address`
+        $Properties = TableRegistry::getTableLocator()->get('Properties');
+        $entity = $Properties->get(10);
+        $Properties->delete($entity);
+
+        $schema = $objectType->schema;
+        $oneOf = Hash::extract($schema, 'properties.street_address.oneOf');
+
+        $expected[1]['contentMediaType'] = 'text/html';
+        static::assertEquals($expected, $oneOf);
+    }
 }

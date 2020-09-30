@@ -119,11 +119,13 @@ class SetAssociatedAction extends UpdateAssociatedAction
      */
     protected function belongsTo(EntityInterface $entity, EntityInterface $relatedEntity = null)
     {
+        // `Tree` Entity can be dirty as join data are set in `ParentObjects`
+        $dirty = $entity->isDirty();
         $existing = $this->existing($entity);
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
-        } elseif ($relatedEntity !== null) {
+        } elseif (!$dirty && $relatedEntity !== null) {
             $bindingKey = (array)$this->Association->getBindingKey();
 
             if ($existing !== null && $relatedEntity->extract($bindingKey) == $existing->extract($bindingKey)) {
