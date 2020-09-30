@@ -275,7 +275,7 @@ class EndpointPermission extends Entity
     /**
      * Setter for `application` virtual property.
      *
-     * @param string $name The role name
+     * @param string $name The application name
      * @return string|null
      */
     protected function _setApplication(?string $name): ?string
