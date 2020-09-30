@@ -101,6 +101,7 @@ class Properties
             static::validate($p);
             $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
 
+            /** @var \Cake\Datasource\EntityInterface $property */
             $property = $Properties->find()
                 ->where([
                     'name' => $p['name'],

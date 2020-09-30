@@ -137,6 +137,7 @@ class Relations
         $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
         foreach ($relations as $r) {
             static::validate($r);
+            /** @var \Cake\Datasource\EntityInterface $relation */
             $relation = $Relations->find()
                 ->where(['name' => Hash::get($r, 'name')])
                 ->firstOrFail();
@@ -166,6 +167,7 @@ class Relations
         foreach ($types as $name) {
             $objectType = $ObjectTypes->get(Inflector::camelize($name));
 
+            /** @var \Cake\Datasource\EntityInterface $relationType */
             $relationType = $RelationTypes->find()
                 ->where([
                     'relation_id' => $relationId,
@@ -208,6 +210,7 @@ class Relations
 
         $result = [];
         foreach ($data as $r) {
+            /** @var \Cake\Datasource\EntityInterface $relation */
             $relation = $Relations->find()
                 ->where(['name' => Hash::get($r, 'name')])
                 ->contain(['LeftObjectTypes', 'RightObjectTypes'])
