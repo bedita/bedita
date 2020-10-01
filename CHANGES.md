@@ -1,5 +1,17 @@
 # ChangeLog
 
+## Version 4.2.1 - Cactus
+
+### API changes (4.2.1)
+
+* [#1727](https://github.com/bedita/bedita/pull/1727) Save relation metadata in `PATCH /folders/{id}/parent`
+
+### Core changes (4.2.1)
+
+* [#1728](https://github.com/bedita/bedita/pull/1728) Add endpoints to handled resources in migrations
+* [#1729](https://github.com/bedita/bedita/pull/1729) Add endpoint_permissions to resource utility
+* [#1729](https://github.com/bedita/bedita/pull/1729) Perform non atomic changes in `Resources` - fix official docker image
+
 ## Version 4.2.0 - Cactus
 
 ### API changes (4.2.0)
