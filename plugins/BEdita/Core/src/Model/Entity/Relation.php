@@ -99,4 +99,24 @@ class Relation extends Entity implements JsonApiSerializable
     {
         return Inflector::camelize($this->inverse_name);
     }
+
+    /**
+     * Magic setter for params.
+     *
+     * @param array $params Relation params.
+     * @return array
+     */
+    protected function _setParams($params)
+    {
+        if (is_array($params) && !empty($params)) {
+            $params = array_merge(
+                [
+                    'definitions' => new \stdClass(),
+                    '$schema' => 'http://json-schema.org/draft-06/schema#',
+                    'type' => 'object',
+                ], $params);
+        }
+
+        return $params;
+    }
 }
