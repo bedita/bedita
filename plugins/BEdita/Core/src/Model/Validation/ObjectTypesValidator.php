@@ -37,11 +37,11 @@ class ObjectTypesValidator extends Validator
 
         $this
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $this
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             // `name` must contain at least a letter (avoid conflicts with ids)
             ->regex('name', '/^([a-zA-Z]+)/')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
@@ -49,7 +49,7 @@ class ObjectTypesValidator extends Validator
 
         $this
             ->requirePresence('singular', 'create')
-            ->notEmpty('singular')
+            ->notEmptyString('singular')
             // `singular` must contain at least a letter (avoid conflicts with ids)
             ->regex('singular', '/^([a-zA-Z]+)/')
             ->add('singular', 'notSameAs', [
@@ -66,13 +66,13 @@ class ObjectTypesValidator extends Validator
             ->add('singular', 'notReserved', ['rule' => 'notReserved', 'provider' => 'bedita']);
 
         $this
-            ->allowEmpty('description');
+            ->allowEmptyString('description');
 
         $this
-            ->allowEmpty('associations');
+            ->allowEmptyString('associations');
 
         $this
-            ->allowEmpty('hidden');
+            ->allowEmptyString('hidden');
 
         return $this;
     }

@@ -56,11 +56,11 @@ class ObjectPropertiesTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('property_value', 'create')
-            ->notEmpty('property_value');
+            ->notEmptyString('property_value');
 
         return $validator;
     }

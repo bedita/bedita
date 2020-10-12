@@ -82,19 +82,19 @@ class ApplicationsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', 'create')
 
-            ->notEmpty('api_key')
+            ->notEmptyString('api_key')
             ->add('api_key', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
             ->boolean('enabled')
-            ->notEmpty('enabled');
+            ->notEmptyString('enabled');
 
         return $validator;
     }

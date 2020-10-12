@@ -83,32 +83,32 @@ class UserTokensTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->scalar('client_token')
             ->maxLength('client_token', 255)
             ->requirePresence('client_token', 'create')
-            ->notEmpty('client_token');
+            ->notEmptyString('client_token');
 
         $validator
             ->scalar('secret_token')
             ->maxLength('secret_token', 255)
-            ->allowEmpty('secret_token');
+            ->allowEmptyString('secret_token');
 
         $validator
             ->scalar('token_type')
             ->inList('token_type', $this->getTokenTypes())
             ->requirePresence('token_type', 'create')
-            ->notEmpty('token_type');
+            ->notEmptyString('token_type');
 
         $validator
             ->dateTime('expires')
-            ->allowEmpty('expires');
+            ->allowEmptyDateTime('expires');
 
         $validator
             ->dateTime('used')
-            ->allowEmpty('used');
+            ->allowEmptyDateTime('used');
 
         return $validator;
     }

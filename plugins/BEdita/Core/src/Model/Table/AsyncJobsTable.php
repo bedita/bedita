@@ -76,38 +76,38 @@ class AsyncJobsTable extends Table
     {
         $validator
             ->uuid('uuid')
-            ->allowEmpty('uuid', 'create');
+            ->allowEmptyString('uuid', 'create');
 
         $validator
             ->requirePresence('service', 'create')
-            ->notEmpty('service');
+            ->notEmptyString('service');
 
         $validator
             ->naturalNumber('priority')
-            ->allowEmpty('priority');
+            ->allowEmptyString('priority');
 
         $validator
-            ->allowEmpty('payload');
+            ->allowEmptyString('payload');
 
         $validator
             ->add('scheduled_from', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('scheduled_from');
+            ->allowEmptyDateTime('scheduled_from');
 
         $validator
             ->add('expires', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('expires');
+            ->allowEmptyDateTime('expires');
 
         $validator
             ->naturalNumber('max_attempts')
-            ->notEmpty('max_attempts');
+            ->notEmptyString('max_attempts');
 
         $validator
             ->add('locked_until', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('locked_until');
+            ->allowEmptyDateTime('locked_until');
 
         $validator
             ->add('completed', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('completed');
+            ->allowEmptyDateTime('completed');
 
         return $validator;
     }

@@ -76,12 +76,12 @@ class ExternalAuthTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', 'create')
 
             ->requirePresence('provider_username')
-            ->notEmpty('provider_username')
+            ->notEmptyString('provider_username')
 
-            ->allowEmpty('params');
+            ->allowEmptyArray('params');
 
         return $validator;
     }

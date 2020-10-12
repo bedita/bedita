@@ -84,19 +84,19 @@ class RolesTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', 'create')
 
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->requirePresence('name')
-            ->notEmpty('name')
+            ->notEmptyString('name')
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
             ->boolean('unchangeable')
-            ->allowEmpty('unchangeable')
+            ->allowEmptyString('unchangeable')
 
             ->boolean('backend_auth')
-            ->allowEmpty('backend_auth');
+            ->allowEmptyString('backend_auth');
 
         return $validator;
     }

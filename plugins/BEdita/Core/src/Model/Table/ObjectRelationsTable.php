@@ -80,7 +80,7 @@ class ObjectRelationsTable extends Table
             ->nonNegativeInteger('inv_priority');
 
         $validator
-            ->allowEmpty('params', function ($context) {
+            ->allowEmptyArray('params', function ($context) {
                 return static::jsonSchema(null, $context) === true;
             })
             ->requirePresence('params', function ($context) {

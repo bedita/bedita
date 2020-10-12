@@ -100,25 +100,25 @@ class RelationsTable extends Table
             ->setProvider('bedita', Validation::class)
 
             ->integer('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', 'create')
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->requirePresence('label', 'create')
-            ->notEmpty('label')
+            ->notEmptyString('label')
 
             ->requirePresence('inverse_name', 'create')
-            ->notEmpty('inverse_name')
+            ->notEmptyString('inverse_name')
             ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->requirePresence('inverse_label', 'create')
-            ->notEmpty('inverse_label')
+            ->notEmptyString('inverse_label')
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
-            ->allowEmpty('params')
+            ->allowEmptyArray('params')
             ->add('params', 'valid', [
                 'rule' => ['jsonSchema', 'http://json-schema.org/draft-06/schema#'],
                 'provider' => 'bedita',

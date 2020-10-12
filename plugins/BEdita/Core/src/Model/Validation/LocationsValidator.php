@@ -37,17 +37,17 @@ class LocationsValidator extends ObjectsValidator
                 'rule' => 'checkWkt',
                 'provider' => 'locations',
             ])
-            ->allowEmpty('coords')
+            ->allowEmptyString('coords')
 
-            ->allowEmpty('address')
+            ->allowEmptyString('address')
 
-            ->allowEmpty('locality')
+            ->allowEmptyString('locality')
 
-            ->allowEmpty('postal_code')
+            ->allowEmptyString('postal_code')
 
-            ->allowEmpty('country_name')
+            ->allowEmptyString('country_name')
 
-            ->allowEmpty('region');
+            ->allowEmptyString('region');
     }
 
     /**

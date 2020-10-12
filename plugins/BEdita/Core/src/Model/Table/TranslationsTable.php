@@ -81,28 +81,28 @@ class TranslationsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->integer('object_id')
             ->requirePresence('object_id', 'create')
-            ->notEmpty('object_id');
+            ->notEmptyString('object_id');
 
         $validator
             ->add('lang', 'scalar', ['rule' => 'isScalar', 'last' => true])
             ->maxLength('lang', 64)
             ->requirePresence('lang', 'create')
-            ->notEmpty('lang');
+            ->notEmptyString('lang');
 
         $validator
             ->add('status', 'scalar', ['rule' => 'isScalar', 'last' => true])
             ->inList('status', ['on', 'off', 'draft'])
             ->requirePresence('status', 'create')
-            ->notEmpty('status');
+            ->notEmptyString('status');
 
         $validator
             ->isArray('translated_fields')
-            ->allowEmpty('translated_fields');
+            ->allowEmptyArray('translated_fields');
 
         return $validator;
     }

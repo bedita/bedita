@@ -33,7 +33,7 @@ use Cake\Validation\Validator;
  * $validator->setProvider('type', 'index');
  *
  * $symbol = 'my_index_name';
- * $errors = $validator->errors(compact('symbol'));
+ * $errors = $validator->validate(compact('symbol'));
  * ```
  *
  * Validating a column can be achieved in a similar way. Also, `allColumns` provider can be a list of
@@ -45,7 +45,7 @@ use Cake\Validation\Validator;
  * $validator->setProvider('allColumns', ['my_column' => 'table_one', 'my_other_column' => 'table_two']);
  *
  * $symbol = 'my_column_name';
- * $errors = $validator->errors(compact('symbol'));
+ * $errors = $validator->validate(compact('symbol'));
  * ```
  *
  * @since 4.0.0

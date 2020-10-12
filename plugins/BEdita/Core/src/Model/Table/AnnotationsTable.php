@@ -83,18 +83,18 @@ class AnnotationsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->integer('object_id')
             ->requirePresence('object_id', 'create')
-            ->notEmpty('object_id');
+            ->notEmptyString('object_id');
 
         $validator
-            ->allowEmpty('description');
+            ->allowEmptyString('description');
 
         $validator
-            ->allowEmpty('params');
+            ->allowEmptyArray('params');
 
         return $validator;
     }
