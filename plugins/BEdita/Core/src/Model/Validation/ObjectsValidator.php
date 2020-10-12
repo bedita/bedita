@@ -37,7 +37,7 @@ class ObjectsValidator extends Validator
 
         $this
             ->naturalNumber('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
             ->requirePresence('id', 'update')
 
             ->inList('status', ['on', 'off', 'draft'])

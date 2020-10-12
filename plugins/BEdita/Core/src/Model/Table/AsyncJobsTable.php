@@ -76,7 +76,7 @@ class AsyncJobsTable extends Table
     {
         $validator
             ->uuid('uuid')
-            ->allowEmptyString('uuid', 'create');
+            ->allowEmptyString('uuid', null, 'create');
 
         $validator
             ->requirePresence('service', 'create')

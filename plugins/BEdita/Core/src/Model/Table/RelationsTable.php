@@ -100,7 +100,7 @@ class RelationsTable extends Table
             ->setProvider('bedita', Validation::class)
 
             ->integer('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')

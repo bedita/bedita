@@ -76,14 +76,14 @@ class StreamsTable extends Table
         $validator
             ->uuid('uuid')
             ->add('uuid', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->allowEmptyString('uuid', 'create');
+            ->allowEmptyString('uuid', null, 'create');
 
         $validator
             ->naturalNumber('version')
-            ->allowEmptyString('version', 'create');
+            ->allowEmptyString('version', null, 'create');
 
         $validator
-            ->allowEmptyString('uri', 'create');
+            ->allowEmptyString('uri', null, 'create');
 
         $validator
             ->requirePresence('file_name', 'create')
@@ -95,15 +95,15 @@ class StreamsTable extends Table
 
         $validator
             ->naturalNumber('file_size')
-            ->allowEmptyString('file_size', 'create');
+            ->allowEmptyString('file_size', null, 'create');
 
         $validator
             ->ascii('hash_md5')
-            ->allowEmptyString('hash_md5', 'create');
+            ->allowEmptyString('hash_md5', null, 'create');
 
         $validator
             ->ascii('hash_sha1')
-            ->allowEmptyString('hash_sha1', 'create');
+            ->allowEmptyString('hash_sha1', null, 'create');
 
         $validator
             ->naturalNumber('width')

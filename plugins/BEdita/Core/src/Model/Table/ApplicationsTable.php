@@ -82,7 +82,7 @@ class ApplicationsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->notEmptyString('api_key')
             ->add('api_key', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])

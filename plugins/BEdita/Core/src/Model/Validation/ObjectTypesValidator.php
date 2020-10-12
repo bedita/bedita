@@ -37,7 +37,7 @@ class ObjectTypesValidator extends Validator
 
         $this
             ->integer('id')
-            ->allowEmptyString('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $this
             ->requirePresence('name', 'create')

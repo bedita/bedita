@@ -89,7 +89,7 @@ class PropertiesTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name')
             ->notEmptyString('name')

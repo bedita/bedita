@@ -73,14 +73,14 @@ class AuthProvidersTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
 
             ->url('url')
-            ->allowEmptyString('url', 'create')
+            ->allowEmptyString('url', null, 'create')
 
             ->allowEmptyArray('params');
 

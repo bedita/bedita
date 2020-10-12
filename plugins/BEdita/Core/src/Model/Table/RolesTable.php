@@ -84,7 +84,7 @@ class RolesTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmptyString('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->requirePresence('name')
