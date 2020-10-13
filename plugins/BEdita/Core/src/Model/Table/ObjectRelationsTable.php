@@ -83,7 +83,7 @@ class ObjectRelationsTable extends Table
             ->allowEmptyArray('params', null, function ($context) {
                 return static::jsonSchema(null, $context) === true;
             })
-            ->requirePresence('params', null, function ($context) {
+            ->requirePresence('params', function ($context) {
                 return $context['newRecord'] && static::jsonSchema(null, $context) !== true;
             })
             ->add('params', 'valid', [
