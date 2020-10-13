@@ -314,7 +314,7 @@ class ListEntitiesActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new ListEntitiesAction(compact('table'));
 
-        static::expectException('BEdita\Core\Exception\BadFilterException');
+        $this->expectException('BEdita\Core\Exception\BadFilterException');
 
         $action(['filter' => 'really_cool_filter']);
     }

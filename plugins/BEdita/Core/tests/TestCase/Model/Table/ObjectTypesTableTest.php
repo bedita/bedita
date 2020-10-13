@@ -383,7 +383,7 @@ class ObjectTypesTableTest extends TestCase
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $entity = $this->ObjectTypes->get($primaryKey);
@@ -521,8 +521,8 @@ class ObjectTypesTableTest extends TestCase
     public function testFindByRelation($expected, array $options)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->ObjectTypes

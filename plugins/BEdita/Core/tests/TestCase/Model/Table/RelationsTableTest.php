@@ -176,8 +176,8 @@ class RelationsTableTest extends TestCase
     public function testFindByName($expected, array $options)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->Relations
@@ -286,8 +286,8 @@ class RelationsTableTest extends TestCase
     public function testGet($expected, $search)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $relation = $this->Relations->get($search);

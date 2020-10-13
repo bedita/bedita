@@ -263,8 +263,8 @@ class ListRelatedObjectsActionTest extends TestCase
     public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null, $statusLevel = null)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         Configure::write('Status.level', $statusLevel);

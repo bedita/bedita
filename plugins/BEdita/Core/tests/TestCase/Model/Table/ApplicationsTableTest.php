@@ -265,8 +265,8 @@ class ApplicationsTableTest extends TestCase
     public function testFindApiKey($expected, $apiKey)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $count = $this->Applications->find('apiKey', compact('apiKey'))->count();

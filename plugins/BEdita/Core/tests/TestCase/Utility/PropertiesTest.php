@@ -98,8 +98,8 @@ class PropertiesTest extends TestCase
      */
     public function testValidate()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Missing mandatory property data "name"');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Missing mandatory property data "name"');
 
         unset($this->properties[0]['name']);
         Properties::create($this->properties);

@@ -724,8 +724,8 @@ class DateRangeTest extends TestCase
     public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         if ($marshal) {
