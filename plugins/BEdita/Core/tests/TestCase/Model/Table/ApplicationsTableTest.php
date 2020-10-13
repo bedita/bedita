@@ -123,6 +123,34 @@ class ApplicationsTableTest extends TestCase
                     'description' => 'Where is app name?',
                 ],
             ],
+            'enabledOk' => [
+                true,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => true,
+                ],
+            ],
+            'enabledKo' => [
+                false,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => 'hello',
+                ],
+            ],
+            'enabledEmptyString' => [
+                false,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => '',
+                ],
+            ],
+            'enabledZero' => [
+                true,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => 0,
+                ],
+            ],
         ];
     }
 
