@@ -8,6 +8,10 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
+env:
+  global:
+    - COMPOSER_VERSION=1.10.16
+
 stages:
   - name: minimal
   - name: complete
@@ -119,6 +123,8 @@ jobs:
     - env: "RUN=phpstan"
 
 before_install:
+  # If specified install that composer version
+  - if [ ! -z "$COMPOSER_VERSION" ]; then composer self-update ${COMPOSER_VERSION}; fi
   # Use GitHub OAuth token with Composer to increase API limits.
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
   # upgrade to MySQL 8 if requested
