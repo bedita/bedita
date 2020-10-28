@@ -80,22 +80,16 @@ class User extends Profile
             return null;
         }
 
-        $result = $this->getTableLocator()
+        return $this->getTableLocator()
             ->get('ExternalAuth')
-            ->find('user', ['user' => $this->id]);
-
-        if (!$result) {
-            return null;
-        }
-
-        $extAuth = $result->map(function (ExternalAuth $item) {
-            return [
-                'provider' => $item->auth_provider->name,
-                'username' => $item->provider_username,
-            ];
-        });
-
-        return $extAuth->toArray();
+            ->find('user', ['user' => $this->id])
+            ->map(function (ExternalAuth $item) {
+                return [
+                    'provider' => $item->auth_provider->name,
+                    'username' => $item->provider_username,
+                ];
+            })
+            ->toArray();
     }
 
     /**
