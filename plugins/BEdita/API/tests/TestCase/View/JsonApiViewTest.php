@@ -51,6 +51,8 @@ class JsonApiViewTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
     ];
 
     /**
@@ -336,6 +338,14 @@ class JsonApiViewTest extends TestCase
                         [
                             'id' => '1',
                             'type' => 'users',
+                            'meta' => [
+                                'external_auth' => [
+                                    [
+                                        'provider' => 'example',
+                                        'username' => 'first_user',
+                                    ],
+                                ],
+                            ],
                             'links' => [
                                 'self' => '/users/1'
                             ],
@@ -369,6 +379,14 @@ class JsonApiViewTest extends TestCase
                         [
                             'id' => '5',
                             'type' => 'users',
+                            'meta' => [
+                                'external_auth' => [
+                                    [
+                                        'provider' => 'uuid',
+                                        'username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d'
+                                    ],
+                                ],
+                            ],
                             'links' => [
                                 'self' => '/users/5'
                             ],
