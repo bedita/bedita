@@ -17,7 +17,8 @@ use BEdita\Core\Utility\JsonSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Exception\PersistenceFailedException;
+use RuntimeException;
 
 /**
  * Placeholders behavior
@@ -31,7 +32,7 @@ class PlaceholdersBehavior extends Behavior
      *
      * @var string
      */
-    protected static $regex = '/<!--\s+BE-PLACEHOLDER\.(\d+)\.([A-Za-z0-9+=-]+)\s+-->/';
+    const REGEX = '/<!--\s+BE-PLACEHOLDER\.(?P<id>\d+)\.(?P<params>[A-Za-z0-9+=-]+)\s+-->/';
 
     /**
      * Add associations using placeholder relation.
@@ -40,33 +41,40 @@ class PlaceholdersBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function afterSave(Event $event, EntityInterface $entity)
     {
         $properties = $this->getHTMLProperties($entity);
-        $placeholders = [];
 
-        foreach ($properties as $prop) {
-            $placeholders += $this->extractPlaceholders($entity[$prop]);
+        $placeholders = array_unique(array_reduce(
+            $properties,
+            function (array $placeholders, string $property) use ($entity): array {
+                return array_merge($placeholders, static::extractPlaceholders($entity->get($property)));
+            },
+            []
+        ));
+
+        $relatedEntities = array_map(function (int $id): array {
+            return compact('id');
+        }, $placeholders);
+        $Association = $this->getTable()->getAssociation('Placeholder');
+        if (!$Association->replaceLinks($entity, $relatedEntities)) {
+            throw new PersistenceFailedException($entity, __d('bedita', 'Could not save placeholder relations'));
         }
-
-        // @TODO save associations
     }
 
     /**
      * Parse HTML content and extracts media references.
      *
      * @param string $content The content to parse.
-     * @return array A list of ids.
+     * @return int[] A list of ids.
      */
-    private function extractPlaceholders(string $content)
+    private static function extractPlaceholders(string $content): array
     {
-        try {
-            $ids = [];
-            // @TODO
-            return $ids;
-        } catch (Excpetion $error) {
-            return [];
+        if (preg_match_all(static::REGEX, $content, $matches) === false) {
+            throw new RuntimeException('Error extracting placeholders');
         }
+
+        return $matches['id'];
     }
 
     /**
