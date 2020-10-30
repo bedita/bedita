@@ -27,11 +27,11 @@ use Cake\ORM\TableRegistry;
 class PlaceholdersBehavior extends Behavior
 {
     /**
-     * The name of the attribute to use for link between HTML nodes and objects.
+     * The regex to use to interpolate placeholders data.
      *
      * @var string
      */
-    protected static $unameAttribute = 'data-bedita-uname';
+    protected static $regex = '/<!--\s+BE-PLACEHOLDER\.(\d+)\.([A-Za-z0-9+=-]+)\s+-->/';
 
     /**
      * Add associations using placeholder relation.
@@ -117,4 +117,3 @@ class PlaceholdersBehavior extends Behavior
         return $propertySchema['contentMediaType'] === 'text/html';
     }
 }
-
