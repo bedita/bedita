@@ -35,6 +35,7 @@ class PlaceholdersBehaviorTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Profiles',
@@ -62,11 +63,11 @@ class PlaceholdersBehaviorTest extends TestCase
                 [],
             ],
             'with placeholders' => [
-                '<p>This is a text</p><!-- BE-PLACEHOLDER { "id": 10 } -->',
+                '<p>This is a text</p><!-- BE-PLACEHOLDER 10 eyAiZm9vIjogImJhciIgfQ== -->',
                 'Documents',
                 2,
                 [
-                    'body' => '<p>This is a text</p><!-- BE-PLACEHOLDER { "id": 10 } -->',
+                    'body' => '<p>This is a text</p><!-- BE-PLACEHOLDER 10 eyAiZm9vIjogImJhciIgfQ== -->',
                 ],
                 [
                     [
