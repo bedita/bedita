@@ -854,6 +854,20 @@ class BEAppModel extends AppModel {
         }
     }
 
+    /**
+     * Validate email with an up-to-date regex.
+     * 
+     * @param array $rule - An array with rule name as key (email) and value to validate
+     * @return bool
+     */
+    public function email(array $rule)
+    {
+        $Validation =& Validation::getInstance();
+        $hostnameRegex = "(?:[_\p{L}0-9][-_\p{L}0-9]*\.)*(?:[\p{L}0-9][-\p{L}0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,})";
+        $emailRegex = "/^[\p{L}0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[\p{L}0-9!#$%&\'*+\/=?^_`{|}~-]+)*@" . $hostnameRegex . "$/i";
+
+        return $Validation->email($rule['email'], false, $emailRegex);
+    }
 }
 
 ///////////////////////////////////////////////////////////////
