@@ -185,4 +185,34 @@ class ExternalAuthTable extends Table
             $this->aliasField($this->AuthProviders->getForeignKey()) => $authProvider,
         ]);
     }
+
+    /**
+     * Find enabled external auth by user.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException If missing `$options` data
+     */
+    protected function findUser(Query $query, array $options = []): Query
+    {
+        if (empty($options['user'])) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => '"user" parameter missing',
+            ]);
+        }
+
+        $user = $options['user'];
+        if (!empty($user['id'])) {
+            $user = $user['id'];
+        }
+
+        return $query
+            ->contain('AuthProviders')
+            ->innerJoinWith('AuthProviders', function (Query $q) {
+                return $q->where(['AuthProviders.enabled' => true]);
+            })
+            ->where(['ExternalAuth.user_id' => $user]);
+    }
 }

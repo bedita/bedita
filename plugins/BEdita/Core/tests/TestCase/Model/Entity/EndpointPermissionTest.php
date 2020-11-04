@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\EndpointPermission;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -362,5 +363,140 @@ class EndpointPermissionTest extends TestCase
         $write = $entity->get('write');
 
         static::assertSame($expected, $write);
+    }
+
+    /**
+     * Data provder for `testSetEndpoint()`
+     *
+     * @return array
+     */
+    public function setEndpointProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                2,
+                'home',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "endpoints"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for endpoint.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The endpoint name
+     * @return void
+     *
+     * @covers ::_setEndpoint()
+     * @dataProvider setEndpointProvider()
+     */
+    public function testSetEndpoint($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('endpoint', $name);
+        static::assertEquals($expected, $entity->get('endpoint_id'));
+    }
+
+    /**
+     * Data provder for `testSetRole()`
+     *
+     * @return array
+     */
+    public function setRoleProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                2,
+                'second role',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "roles"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for role.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The role name
+     * @return void
+     *
+     * @covers ::_setRole()
+     * @dataProvider setRoleProvider()
+     */
+    public function testSetRole($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('role', $name);
+        static::assertEquals($expected, $entity->get('role_id'));
+    }
+
+    /**
+     * Data provder for `testSetApplication()`
+     *
+     * @return array
+     */
+    public function setApplicationProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                1,
+                'First app',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "applications"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for application.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The application name
+     * @return void
+     *
+     * @covers ::_setApplication()
+     * @dataProvider setApplicationProvider()
+     */
+    public function testSetApplication($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('application', $name);
+        static::assertEquals($expected, $entity->get('application_id'));
     }
 }

@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use Cake\Log\Log;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * EndpointPermission Entity
@@ -225,5 +226,71 @@ class EndpointPermission extends Entity
         $this->permission = compact('write');
 
         return $this->write;
+    }
+
+    /**
+     * Setter for `endpoint` virtual property.
+     *
+     * @param string $name The endpoint name
+     * @return string|null
+     */
+    protected function _setEndpoint(?string $name): ?string
+    {
+        if ($name === null) {
+            $this->endpoint_id = null;
+
+            return null;
+        }
+
+        $this->endpoint_id = TableRegistry::getTableLocator()->get('Endpoints')
+            ->find('list', ['valueField' => 'id'])
+            ->where(['name' => $name])
+            ->firstOrFail();
+
+        return $name;
+    }
+
+    /**
+     * Setter for `role` virtual property.
+     *
+     * @param string $name The role name
+     * @return string|null
+     */
+    protected function _setRole(?string $name): ?string
+    {
+        if ($name === null) {
+            $this->role_id = null;
+
+            return null;
+        }
+
+        $this->role_id = TableRegistry::getTableLocator()->get('Roles')
+            ->find('list', ['valueField' => 'id'])
+            ->where(['name' => $name])
+            ->firstOrFail();
+
+        return $name;
+    }
+
+    /**
+     * Setter for `application` virtual property.
+     *
+     * @param string $name The application name
+     * @return string|null
+     */
+    protected function _setApplication(?string $name): ?string
+    {
+        if ($name === null) {
+            $this->application_id = null;
+
+            return null;
+        }
+
+        $this->application_id = TableRegistry::getTableLocator()->get('Applications')
+            ->find('list', ['valueField' => 'id'])
+            ->where(['name' => $name])
+            ->firstOrFail();
+
+        return $name;
     }
 }

@@ -327,4 +327,96 @@ class ExternalAuthTableTest extends TestCase
 
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for  `testFindUser()`
+     *
+     * @return array
+     */
+    public function findByUserProvider(): array
+    {
+        return [
+            'bad data' => [
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => '"user" parameter missing',
+                ]),
+                null,
+            ],
+            'userId' => [
+                [
+                    [
+                        'id' => 2,
+                        'user_id' => 5,
+                        'auth_provider_id' => 2,
+                        'params' => null,
+                        'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
+                        'created' => new Time('2018-04-07 12:51:27'),
+                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'auth_provider' => [
+                            'id' => 2,
+                            'name' => 'uuid',
+                            'auth_class' => 'BEdita/API.Uuid',
+                            'url' => null,
+                            'params' => null,
+                            'enabled' => true,
+                            'created' => new Time('2018-04-07 12:51:27'),
+                            'modified' => new Time('2018-04-07 12:51:27'),
+                        ],
+                    ],
+                ],
+                5,
+            ],
+            'user as array' => [
+                [
+                    [
+                        'id' => 2,
+                        'user_id' => 5,
+                        'auth_provider_id' => 2,
+                        'params' => null,
+                        'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
+                        'created' => new Time('2018-04-07 12:51:27'),
+                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'auth_provider' => [
+                            'id' => 2,
+                            'name' => 'uuid',
+                            'auth_class' => 'BEdita/API.Uuid',
+                            'url' => null,
+                            'params' => null,
+                            'enabled' => true,
+                            'created' => new Time('2018-04-07 12:51:27'),
+                            'modified' => new Time('2018-04-07 12:51:27'),
+                        ],
+                    ],
+                ],
+                ['id' => 5],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by user.
+     *
+     * @param mixed $expected The expected result
+     * @param mixed $user The finder option
+     * @return void
+     *
+     * @covers ::findUser()
+     * @dataProvider findByUserProvider()
+     */
+    public function testFindByUser($expected, $user): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $options = compact('user');
+        $result = $this->ExternalAuth
+            ->find('user', $options)
+            ->enableHydration(false)
+            ->toArray();
+
+        static::assertEquals($expected, $result);
+    }
 }

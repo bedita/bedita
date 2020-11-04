@@ -43,11 +43,25 @@ use Cake\Utility\Inflector;
 class Resources
 {
     /**
-     * Resource defaults in creation
+     * Default options array with following keys:
+     *
+     *  - 'save': default options performing `Table::save()`
+     *  - 'delete': default options performing `Table::delete()`
+     *  - 'object_types': default options on object types
+     *  - 'property_types': default options on property types
      *
      * @var array
      */
     protected static $defaults = [
+        // since default usage is in migrations
+        // don't commit transactions but let migrations do it
+        'save' => [
+            'atomic' => false,
+        ],
+        'delete' => [
+            'atomic' => false,
+        ],
+
         'object_types' => [
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
@@ -72,6 +86,7 @@ class Resources
         'object_types',
         'roles',
         'endpoints',
+        'endpoint_permissions',
     ];
 
     /**
@@ -104,7 +119,7 @@ class Resources
             foreach ($item as $k => $v) {
                 $resource->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($resource);
+            $result[] = $Table->saveOrFail($resource, static::$defaults['save']);
         }
 
         return $result;
@@ -124,7 +139,7 @@ class Resources
 
         foreach ($data as $item) {
             $entity = static::loadEntity($item, $Table);
-            $Table->deleteOrFail($entity);
+            $Table->deleteOrFail($entity, static::$defaults['delete']);
         }
     }
 
@@ -146,14 +161,14 @@ class Resources
             foreach ($item as $k => $v) {
                 $entity->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($entity);
+            $result[] = $Table->saveOrFail($entity, static::$defaults['save']);
         }
 
         return $result;
     }
 
     /**
-     * Load single resource entity using `name` or `id` fields condition or `name` finder if set
+     * Load single resource entity using `name` or `id` fields condition or `resource` finder if set
      *
      * @param array $item Single resource data
      * @param Table $Table Resource table class
@@ -161,17 +176,13 @@ class Resources
      */
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
-        if ($Table->hasFinder('name')) {
-            /** @var EntityInterface $entity */
-            $entity = $Table->find('name', $item)->firstOrFail();
-        } else {
-            /** @var EntityInterface $entity */
-            $entity = $Table->find()
-                ->where(static::findCondition($item))
-                ->firstOrFail();
+        if ($Table->hasFinder('resource')) {
+            return $Table->find('resource', $item)->firstOrFail();
         }
 
-        return $entity;
+        return $Table->find()
+            ->where(static::findCondition($item))
+            ->firstOrFail();
     }
 
     /**

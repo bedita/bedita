@@ -57,6 +57,10 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
@@ -462,6 +466,7 @@ class JsonApiTraitTest extends TestCase
             'blocked',
             'created',
             'created_by',
+            'external_auth',
             'last_login',
             'last_login_err',
             'locked',
@@ -527,6 +532,7 @@ class JsonApiTraitTest extends TestCase
             'blocked',
             'created',
             'created_by',
+            'external_auth',
             'last_login',
             'last_login_err',
             'locked',

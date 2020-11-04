@@ -149,4 +149,18 @@ class ConfigTable extends Table
             return $query->where($conditions);
         });
     }
+
+    /**
+     * Alias for `name` finder.
+     * Used to load entity in `BEdita\Core\Utility\Resources`
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @codeCoverageIgnore
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        return $query->find('name', $options);
+    }
 }

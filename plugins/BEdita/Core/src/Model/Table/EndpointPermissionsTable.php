@@ -193,4 +193,49 @@ class EndpointPermissionsTable extends Table
             });
         });
     }
+
+    /**
+     * Find permissions by role, application and endpoint name.
+     *
+     * This finder accepts three options:
+     * - `endpoint``: the endpoint name
+     * - `role`: the role name
+     * - `application`: the application name
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        $endpoint = Hash::get($options, 'endpoint');
+        $role = Hash::get($options, 'role');
+        $application = Hash::get($options, 'application');
+
+        if ($endpoint === null) {
+            $query = $query->whereNull('endpoint_id');
+        } else {
+            $query = $query->innerJoinWith('Endpoints', function (Query $query) use ($endpoint) {
+                return $query->where(['Endpoints.name' => $endpoint]);
+            });
+        }
+
+        if ($role === null) {
+            $query = $query->whereNull('role_id');
+        } else {
+            $query = $query->innerJoinWith('Roles', function (Query $query) use ($role) {
+                return $query->where(['Roles.name' => $role]);
+            });
+        }
+
+        if ($application === null) {
+            $query = $query->whereNull('application_id');
+        } else {
+            $query = $query->innerJoinWith('Applications', function (Query $query) use ($application) {
+                return $query->where(['Applications.name' => $application]);
+            });
+        }
+
+        return $query;
+    }
 }

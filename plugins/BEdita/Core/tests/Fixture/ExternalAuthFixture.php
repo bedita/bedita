@@ -46,5 +46,13 @@ class ExternalAuthFixture extends TestFixture
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
         ],
+        [
+            'user_id' => 5,
+            'auth_provider_id' => 3,
+            'params' => null,
+            'provider_username' => 'disabled_auth_provider',
+            'created' => '2020-10-26 17:16:27',
+            'modified' => '2020-10-26 17:16:27',
+        ],
     ];
 }

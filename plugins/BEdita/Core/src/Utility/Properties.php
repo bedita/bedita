@@ -41,6 +41,25 @@ use Cake\Utility\Inflector;
 class Properties
 {
     /**
+     * Default options array with following keys:
+     *
+     *  - 'save': default options performing `Table::save()`
+     *  - 'delete': default options performing `Table::delete()`
+     *
+     * @var array
+     */
+    protected static $defaults = [
+        // since default usage is in migrations
+        // don't commit transactions but let migrations do it
+        'save' => [
+            'atomic' => false,
+        ],
+        'delete' => [
+            'atomic' => false,
+        ],
+    ];
+
+    /**
      * Create new properties in `properties` table using input `$properties` array
      *
      * @param array $properties Properties data
@@ -49,6 +68,7 @@ class Properties
      */
     public static function create(array $properties, array $options = []): void
     {
+        TableRegistry::getTableLocator()->clear();
         $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
 
         foreach ($properties as $p) {
@@ -60,7 +80,7 @@ class Properties
                 'description' => Hash::get($p, 'description'),
             ]);
 
-            $Properties->saveOrFail($property);
+            $Properties->saveOrFail($property, static::$defaults['save']);
         }
     }
 
@@ -73,6 +93,7 @@ class Properties
      */
     public static function remove(array $properties, array $options = []): void
     {
+        TableRegistry::getTableLocator()->clear();
         $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
 
@@ -80,6 +101,7 @@ class Properties
             static::validate($p);
             $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
 
+            /** @var \Cake\Datasource\EntityInterface $property */
             $property = $Properties->find()
                 ->where([
                     'name' => $p['name'],
@@ -87,7 +109,7 @@ class Properties
                 ])
                 ->firstOrFail();
 
-            $Properties->deleteOrFail($property);
+            $Properties->deleteOrFail($property, static::$defaults['delete']);
         }
     }
 

@@ -25,6 +25,7 @@ class AuthProvidersFixture extends TestFixture
      * {@inheritDoc}
      */
     public $records = [
+        // 1
         [
             'name' => 'example',
             'auth_class' => 'BEdita/API.OAuth2',
@@ -34,6 +35,7 @@ class AuthProvidersFixture extends TestFixture
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
         ],
+        // 2
         [
             'name' => 'uuid',
             'auth_class' => 'BEdita/API.Uuid',
@@ -43,6 +45,7 @@ class AuthProvidersFixture extends TestFixture
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
         ],
+        // 3
         [
             'name' => 'linkedout',
             'auth_class' => 'BEdita/API.OAuth2',
@@ -52,6 +55,7 @@ class AuthProvidersFixture extends TestFixture
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
         ],
+        // 4
         [
             'name' => 'otp',
             'auth_class' => 'BEdita/API.OTP',

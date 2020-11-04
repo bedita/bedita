@@ -132,6 +132,50 @@ class ResourcesTest extends TestCase
                     ]
                 ],
             ],
+            'endpoint_permissions' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'endpoint' => 'home',
+                        'application' => 'First app',
+                        'role' => 'first role',
+                        'permission' => 12,
+                    ],
+                ],
+            ],
+            'endpoint_permissions with app null' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'endpoint' => 'home',
+                        'application' => null,
+                        'role' => 'first role',
+                        'permission' => 12,
+                    ],
+                ],
+            ],
+            'endpoint_permissions with role null' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'endpoint' => 'home',
+                        'application' => 'First app',
+                        'role' => null,
+                        'permission' => 12,
+                    ],
+                ],
+            ],
+            'endpoint_permissions with endpoint null' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'endpoint' => null,
+                        'application' => 'First app',
+                        'role' => 'first role',
+                        'permission' => 12,
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -216,6 +260,21 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'endpoint_permissions' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'application' => 'Disabled app',
+                        'endpoint' => 'home',
+                        'role' => 'second role',
+                    ],
+                    [
+                        'application' => 'First app',
+                        'endpoint' => null,
+                        'role' => null,
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -233,13 +292,21 @@ class ResourcesTest extends TestCase
     {
         Resources::remove($type, $data);
 
-        $resources = TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type))
-            ->find()
-            ->where(['name IN' => Hash::extract($data, '{n}.name')])
-            ->toArray();
+        $Table = TableRegistry::getTableLocator()->get(Inflector::camelize($type));
+        if (!$Table->hasFinder('resource')) {
+            $resources = $Table
+                ->find()
+                ->where(['name IN' => Hash::extract($data, '{n}.name')])
+                ->toArray();
 
-        static::assertEmpty($resources);
+            static::assertEmpty($resources);
+
+            return;
+        }
+
+        foreach ($data as $options) {
+            static::assertCount(0, $Table->find('resource', $options));
+        }
     }
 
     /**
@@ -315,6 +382,17 @@ class ResourcesTest extends TestCase
                     ]
                 ],
             ],
+            'endpoint_permissions' => [
+                'endpoint_permissions',
+                [
+                    [
+                        'application' => 'Disabled app',
+                        'endpoint' => 'home',
+                        'role' => 'first role',
+                        'permission' => 0b1111,
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -335,16 +413,24 @@ class ResourcesTest extends TestCase
         $result = Resources::update($type, $data);
         static::assertEquals(count($data), count($result));
 
-        $resources = TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type))
-            ->find()
-            ->where(['name IN' => Hash::extract($data, '{n}.name')])
-            ->toArray();
+        $Table = TableRegistry::getTableLocator()->get(Inflector::camelize($type));
+        if (!$Table->hasFinder('resource')) {
+            $resources = $Table
+                ->find()
+                ->where(['name IN' => Hash::extract($data, '{n}.name')])
+                ->toArray();
+        } else {
+            $resources = $Table->find('resource', $data[0])->toArray();
+        }
 
         static::assertEquals(count($data), count($resources));
+        /** @var \Cake\ORM\Entity $entity */
         $entity = $resources[0];
+        $properties = array_merge($entity->getVisible(), $entity->getHidden());
         foreach ($data[0] as $name => $val) {
-            static::assertEquals($val, $entity->get($name));
+            if (in_array($name, $properties)) { // check against real entity properties
+                static::assertEquals($val, $entity->get($name));
+            }
         }
     }
 
