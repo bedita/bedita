@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * User Entity.
@@ -33,6 +34,7 @@ use Cake\Auth\DefaultPasswordHasher;
  */
 class User extends Profile
 {
+    use LocatorAwareTrait;
 
     /**
      * {@inheritDoc}
@@ -43,6 +45,51 @@ class User extends Profile
 
         $this->setHidden(['password_hash', 'external_auth'], true);
         $this->setAccess(['blocked', 'last_login', 'last_login_err', 'num_login_err', 'verified'], false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Add `external_auth` info to user meta.
+     */
+    protected function getMeta()
+    {
+        $meta = parent::getMeta();
+        $meta['external_auth'] = $this->getExternalAuthMeta();
+
+        return $meta;
+    }
+
+    /**
+     * Get external auth info as
+     *
+     * ```
+     * [
+     *     [
+     *         'provider' => 'the provider name',
+     *         'username' => 'username used for that provider',
+     *     ],
+     * ]
+     * ```
+     *
+     * @return array|null
+     */
+    protected function getExternalAuthMeta(): ?array
+    {
+        if (empty($this->id)) {
+            return null;
+        }
+
+        return $this->getTableLocator()
+            ->get('ExternalAuth')
+            ->find('user', ['user' => $this->id])
+            ->map(function (ExternalAuth $item) {
+                return [
+                    'provider' => $item->auth_provider->name,
+                    'username' => $item->provider_username,
+                ];
+            })
+            ->toArray();
     }
 
     /**
