@@ -13,10 +13,13 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use Swaggest\JsonSchema\Schema;
 
 /**
@@ -32,6 +35,9 @@ class RelationsBehavior extends Behavior
         'implementedMethods' => [
             'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',
+        ],
+        'implementedFinders' => [
+            'related' => 'findRelated',
         ],
     ];
 
@@ -184,5 +190,65 @@ class RelationsBehavior extends Behavior
     public function getRelations()
     {
         return $this->objectType()->getRelations();
+    }
+
+    /**
+     * Finder for objects related to a certain object or list of objects.
+     *
+     * Accepted options: an associative array having as key the relation name (using snake case convention) and as value:
+     *   - id of the related object
+     *   - comma separated string of related object ids
+     *   - an array of object ids
+     *
+     * ### Examples
+     *
+     * ```php
+     * // Find objects that are related via `attach` relation to specific id.
+     * $table->find('related', ['attach' => 123]);
+     *
+     * // Find objects that are related via `attach` relation to more object ids.
+     * $table->find('related', ['attach' => '123,456']);
+     * $table->find('related', ['attach' => [123, 456]]);
+     *
+     * // Find objects that are related via `attach` and `belongs_to` relation.
+     * $table->find('related', ['attach' => '123,456', 'belongs_to' => 789]);
+     * ```
+     * @param Query $query Query object instance.
+     * @param array $options Finder options
+     * @return \Cake\ORM\Query
+     */
+    public function findRelated(Query $query, array $options)
+    {
+        if (empty($options)) {
+            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'related'));
+        }
+
+        foreach ($options as $relation => $objectId) {
+            $alias = Inflector::camelize($relation);
+            $assoc = $this->getTable()->associations()->get($alias);
+            if (empty($assoc) || !($assoc instanceof RelatedTo)) {
+                throw new BadFilterException(__d('bedita', 'Bad relation "{0}"', $relation));
+            }
+            $assoc->setFinder('all');
+            $through = TableRegistry::getTableLocator()->get(
+                $alias . 'ObjectRelations',
+                ['className' => 'ObjectRelations']
+            );
+
+            $field = $through->aliasField('right_id');
+            if ($assoc->isInverse()) {
+                $field = $through->aliasField('left_id');
+            }
+
+            $query = $query->innerJoinWith($alias, function (Query $query) use ($objectId, $field) {
+                if (!is_array($objectId)) {
+                    $objectId = explode(',', $objectId);
+                }
+
+                return $query->where([$field . ' IN' => $objectId]);
+            });
+        }
+
+        return $query;
     }
 }
