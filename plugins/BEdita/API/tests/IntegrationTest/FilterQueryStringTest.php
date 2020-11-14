@@ -754,4 +754,23 @@ class FilterQueryStringTest extends IntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals(0, count($result['data']));
     }
+
+    /**
+     * Test `filter[related][{relation}]={id}`.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testRelatedFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents?filter[related][test]=4');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
+        // assert documents id 2 and 3 are found
+        $found = Hash::extract($result, 'data.{n}.id');
+        static::assertEquals([2, 3], $found);
+    }
 }

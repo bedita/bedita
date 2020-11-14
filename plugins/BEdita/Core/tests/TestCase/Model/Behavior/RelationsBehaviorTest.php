@@ -13,10 +13,12 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\Relation;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\RelationsBehavior} Test Case
@@ -33,11 +35,15 @@ class RelationsBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Users',
     ];
 
     /**
@@ -122,5 +128,97 @@ class RelationsBehaviorTest extends TestCase
         foreach ($relations as $relation) {
             static::assertInstanceOf(Relation::class, $relation);
         }
+    }
+
+    /**
+     * Data provider for `testFindRelated` test case.
+     *
+     * @return array
+     */
+    public function findRelatedProvider()
+    {
+        return [
+            'test 3' => [
+                'Documents',
+                [
+                    'test' => 3,
+                ],
+                [2],
+            ],
+            'inverse' => [
+                'Locations',
+                [
+                    'inverse_another_test' => [1, 5],
+                ],
+                [8],
+            ],
+            'inverse 2' => [
+                'Profiles',
+                [
+                    'inverse_test' => '1,2',
+                ],
+                [4],
+            ],
+        ];
+    }
+
+    /**
+     * Test findRelated finder method.
+     *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
+     * @return void
+     *
+     * @dataProvider findRelatedProvider
+     * @covers ::findRelated()
+     */
+    public function testFindRelated(string $type, array $options, array $expected): void
+    {
+        $table = TableRegistry::getTableLocator()->get($type);
+        $result = $table->find('related', $options)->order([$table->aliasField('id') => 'ASC'])->toArray();
+        $found = Hash::extract($result, '{n}.id');
+        static::assertEquals($expected, $found);
+    }
+
+    /**
+     * Data provider for `testBadRelated` test case.
+     *
+     * @return array
+     */
+    public function badRelatedProvider()
+    {
+        return [
+            'empty' => [
+                'Profiles',
+                [],
+                new BadFilterException('Invalid options for finder "related"')
+            ],
+            'not exist' => [
+                'Documents',
+                [
+                    'some_relation' => 999,
+                ],
+                new BadFilterException('Bad relation "some_relation"')
+            ],
+        ];
+    }
+
+    /**
+     * Test finder error.
+     *
+     * @param string $type Object type.
+     * @param array $options Filter options.
+     * @return void
+     *
+     * @dataProvider badRelatedProvider
+     * @covers ::findRelated()
+     */
+    public function testBadRelated(string $type, array $options, $expected)
+    {
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+
+        $table = TableRegistry::getTableLocator()->get($type);
+        $table->find('related', $options)->toArray();
     }
 }
