@@ -230,10 +230,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             return __d('bedita', 'Roles are not allowed on signup');
         }
 
-        $adminRoleName = TableRegistry::getTableLocator()
-            ->get('Roles')
-            ->get(RolesTable::ADMIN_ROLE)
-            ->get('name');
+        $adminRoleName = $this->Roles->get(RolesTable::ADMIN_ROLE)->get('name');
 
         $roles = (array)$roles;
         $message = '{0} not allowed on signup';
