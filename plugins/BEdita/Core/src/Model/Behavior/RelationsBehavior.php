@@ -229,6 +229,8 @@ class RelationsBehavior extends Behavior
             if (empty($assoc) || !($assoc instanceof RelatedTo)) {
                 throw new BadFilterException(__d('bedita', 'Bad relation "{0}"', $relation));
             }
+            // Using default `available` finder in RelatedTo `through` class may cause an SQL error with this condition
+            // Example: if $objectId type is `Profiles` we may get => "no such column: {$alias}.deleted"
             $assoc->setFinder('all');
             $through = TableRegistry::getTableLocator()->get(
                 $alias . 'ObjectRelations',
