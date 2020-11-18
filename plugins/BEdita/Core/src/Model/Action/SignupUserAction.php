@@ -96,6 +96,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         if (Configure::check('Signup.activationUrl') && empty($data['data']['activation_url'])) {
             $data['data']['activation_url'] = Router::url(Configure::read('Signup.activationUrl'));
         }
+        $signupRoles = (array)Hash::get($data, 'data.roles', Configure::read('Signup.defaultRoles'));
+        if (!empty($signupRoles)) {
+            $data['data']['roles'] = $signupRoles;
+        }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
             throw new BadRequestException([
@@ -181,7 +185,51 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 'provider' => 'bedita',
             ]);
 
+        if (!empty(Configure::read('Signup.roles'))) {
+            $validator->requirePresence('roles');
+        }
+
+        $validator->add('roles', 'validateRoles', [
+            'rule' => [$this, 'validateRoles'],
+        ]);
+
         return $validator->errors($data);
+    }
+
+    /**
+     * Validate roles against allowed signup roles configured.
+     * In addtion roles can't contain ADMIN_ROLE.
+     *
+     * @param string|array $roles The roles to check
+     * @return true|string
+     */
+    public static function validateRoles($roles)
+    {
+        $allowedRoles = (array)Configure::read('Signup.roles');
+        if (empty($allowedRoles) && !empty($roles)) {
+            return __d('bedita', 'Roles are not allowed on signup');
+        }
+
+        $adminRoleName = TableRegistry::getTableLocator()
+            ->get('Roles')
+            ->get(RolesTable::ADMIN_ROLE)
+            ->get('name');
+
+        $roles = (array)$roles;
+        $message = '{0} not allowed on signup';
+        if (in_array($adminRoleName, $roles)) {
+            return __d('bedita', $message, [$adminRoleName]);
+        }
+
+
+        $valid = array_intersect($roles, $allowedRoles);
+        if (empty(array_diff($roles, $valid))) {
+            return true;
+        }
+
+        $rolesNotAllowed = array_diff($roles, $allowedRoles);
+
+        return __d('bedita', $message, [implode(', ', $rolesNotAllowed)]);
     }
 
     /**
@@ -309,35 +357,28 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function addRoles(User $entity, array $data)
     {
-        $signupRoles = Hash::get($data, 'roles', Configure::read('Signup.defaultRoles'));
+        $signupRoles = Hash::get($data, 'roles');
         if (empty($signupRoles)) {
             return;
         }
         $roles = $this->loadRoles($signupRoles);
+
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
         $association = $this->Users->associations()->getByProperty('roles');
         $association->link($entity, $roles);
     }
 
     /**
-     * Load requested roles entities with validation
+     * Load requested roles.
      *
      * @param array $roles Requested role names
      * @return \BEdita\Core\Model\Entity\Role[] requested role entities
-     * @throws \Cake\Http\Exception\BadRequestException When role validation fails
      */
     protected function loadRoles(array $roles)
     {
-        $entities = [];
-        $allowed = (array)Configure::read('Signup.roles');
-        foreach ($roles as $name) {
-            $role = $this->Roles->find()->where(compact('name'))->first();
-            if (RolesTable::ADMIN_ROLE === $role->get('id') || !in_array($name, $allowed)) {
-                throw new BadRequestException(__d('bedita', 'Role "{0}" not allowed on signup', [$name]));
-            }
-            $entities[] = $role;
-        }
-
-        return $entities;
+        return $this->Roles->find()
+            ->where(['name IN' => $roles])
+            ->toList();
     }
 
     /**

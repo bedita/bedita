@@ -468,7 +468,7 @@ class SignupUserActionTest extends TestCase
     public function rolesProvider()
     {
         return [
-            'admin' => [
+            'roleAsFromConfig' => [
                 true,
                 [
                     'data' => [
@@ -484,8 +484,16 @@ class SignupUserActionTest extends TestCase
                     'roles' => ['second role'],
                 ],
             ],
+            // fail when no conf for roles is present and role are passed
             'failNoRoles' => [
-                new BadRequestException('Role "second role" not allowed on signup'),
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => [
+                        'roles' => [
+                            'validateRoles' => 'Roles are not allowed on signup',
+                        ],
+                    ],
+                ]),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -500,7 +508,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail beacause admin role not allowed in signup
             'failAdminRole' => [
-                new BadRequestException('Role "first role" not allowed on signup'),
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => [
+                        'roles' => [
+                            'validateRoles' => 'first role not allowed on signup',
+                        ],
+                    ],
+                ]),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -530,6 +545,77 @@ class SignupUserActionTest extends TestCase
                     'defaultRoles' => ['second role'],
                 ],
             ],
+            // fail because roles is not set with signup roles conf present
+            'failRoleNotSetWithAllowed' => [
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => [
+                        'roles' => [
+                            '_required' => 'This field is required'
+                        ],
+                    ],
+                ]),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                    ],
+                ],
+                [
+                    'roles' => ['second role'],
+                ],
+            ],
+            // fail because roles is an empty array with signup roles conf present
+            'failEmptyRoleWithAllowed' => [
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => [
+                        'roles' => [
+                            '_empty' => 'This field cannot be left empty',
+                        ],
+                    ],
+                ]),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                        'roles' => [],
+                    ],
+                ],
+                [
+                    'roles' => ['second role'],
+                ],
+            ],
+            // fail two not allowed roles
+            'failEmptyRoleWithAllowed' => [
+                new BadRequestException([
+                    'title' => 'Invalid data',
+                    'detail' => [
+                        'roles' => [
+                            'validateRoles' => 'third_role, fourth_role not allowed on signup',
+                        ],
+                    ],
+                ]),
+                [
+                    'data' => [
+                        'username' => 'testsignup',
+                        'password' => 'testsignup',
+                        'email' => 'test.signup@example.com',
+                        'activation_url' => 'http://sample.com?confirm=true',
+                        'redirect_url' => 'http://sample.com/ok',
+                        'roles' => ['third_role', 'fourth_role'],
+                    ],
+                ],
+                [
+                    'roles' => ['second role'],
+                ],
+            ],
         ];
     }
 
@@ -547,13 +633,19 @@ class SignupUserActionTest extends TestCase
     {
         Configure::write('Signup', $config);
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
-            static::expectExceptionCode($expected->getCode());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
         }
 
-        $action = new SignupUserAction();
-        $result = $action($data);
+        try {
+            $action = new SignupUserAction();
+            $result = $action($data);
+        } catch (CakeException $e) {
+            static::assertInstanceOf(CakeException::class, $expected); // Ensure we're expecting an exception of the same kind.
+            static::assertEquals($expected->getAttributes(), $e->getAttributes());
+
+            throw $e;
+        }
 
         static::assertTrue((bool)$result);
         $roles = Hash::get($data, 'data.roles', Configure::read('Signup.defaultRoles'));
