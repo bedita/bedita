@@ -23,7 +23,6 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\UnauthorizedException;
-use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -56,6 +55,7 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
