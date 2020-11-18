@@ -19,6 +19,8 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
+use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -39,6 +41,16 @@ class JsonApiPaginator extends Paginator
     ];
 
     /**
+     * Associated sort fields whitelist
+     *
+     * @var array
+     */
+    protected $sortWhitelist = [
+        'DateRanges.start_date',
+        'DateRanges.end_date',
+    ];
+
+    /**
      * Max limit per pagination items.
      *
      * @var int
@@ -55,6 +67,7 @@ class JsonApiPaginator extends Paginator
         if ($object instanceof QueryInterface && !empty($params['sort'])) {
             $object->order([], Query::OVERWRITE);
         }
+        $this->setConfig('filter', (array)Hash::get($params, 'filter'));
 
         return parent::paginate($object, $params, $settings);
     }
@@ -82,11 +95,7 @@ class JsonApiPaginator extends Paginator
         $sortedRequest = false;
         if (!empty($options['sort'])) {
             $sortedRequest = true;
-            if (substr($options['sort'], 0, 1) == '-') {
-                $options['sort'] = substr($options['sort'], 1);
-                $options['direction'] = 'desc';
-            }
-            unset($options['order']);
+            $this->updateSortOptions($options);
         }
 
         $options = parent::validateSort($object, $options);
@@ -96,5 +105,31 @@ class JsonApiPaginator extends Paginator
         }
 
         return $options;
+    }
+
+    /**
+     * Update `sort` related options array
+     *
+     * @param array $options Options array
+     * @return void
+     */
+    protected function updateSortOptions(array &$options): void
+    {
+        unset($options['order']);
+        if (substr($options['sort'], 0, 1) == '-') {
+            $options['sort'] = substr($options['sort'], 1);
+            $options['direction'] = 'desc';
+        }
+        if (strpos($options['sort'], '.') !== false) {
+            $parts = explode('.', $options['sort'], 2);
+            // sort on associated fields available only
+            // if a matching filter query string is set
+            if (empty($this->getConfig('filter.' . $parts[0]))) {
+                return;
+            };
+            $parts[0] = Inflector::camelize($parts[0]);
+            $options['sort'] = implode('.', $parts);
+            $options['sortWhitelist'] = $this->sortWhitelist;
+        }
     }
 }
