@@ -52,7 +52,7 @@ class SortQueryStringTest extends IntegrationTestCase
                 200,
                 '/roles',
                 'name'
-            ]
+            ],
         ];
     }
 
@@ -92,5 +92,49 @@ class SortQueryStringTest extends IntegrationTestCase
             $sortedFields = array_reverse($sortedFields);
             $this->assertEquals($fields, $sortedFields);
         }
+    }
+
+    /**
+     * Provider for testDateRangesSort()
+     *
+     * @return array
+     */
+    public function dateRangesSortProvider()
+    {
+        return [
+            'date ranges start' => [
+                200,
+                '/events?filter[date_ranges][from_date]=2016-12-01&sort=date_ranges.start_date',
+            ],
+            'date ranges end' => [
+                200,
+                '/events?filter[date_ranges][from_date]=2018-12-01&sort=-date_ranges.end_date',
+            ],
+            'date ranges fail' => [
+                400,
+                '/events?sort=date_ranges.end_date',
+            ],
+            'not applicable' => [
+                400,
+                '/profiles?sort=date_ranges.end_date',
+            ],
+        ];
+    }
+
+    /**
+     * Test sort on different endpoints
+     *
+     * @param mixed $expected Expected result
+     * @param string $url Request URL
+     * @return void
+     *
+     * @dataProvider dateRangesSortProvider
+     * @coversNothing
+     */
+    public function testDateRangesSort($expected, $url): void
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $this->assertResponseCode($expected);
     }
 }

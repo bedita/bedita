@@ -141,6 +141,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @dataProvider validateSortProvider()
      * @covers ::validateSort()
+     * @covers ::updateSortOptions()
      */
     public function testValidateSort($expected, $sort = null)
     {
@@ -155,6 +156,26 @@ class JsonApiPaginatorTest extends TestCase
 
         $options = $paginator->validateSort($repository, compact('sort'));
 
+        static::assertEquals($expected, $options['order']);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     *
+     * @covers ::updateSortOptions()
+     */
+    public function testAssocSort(): void
+    {
+        $paginator = new JsonApiPaginator();
+        $repository = TableRegistry::getTableLocator()->get('Roles')->find()->getRepository();
+        $sort = 'date_ranges.start_date';
+        $paginator->setConfig('filter', ['date_ranges' => 1]);
+
+        $options = $paginator->validateSort($repository, compact('sort'));
+
+        $expected = ['DateRanges.start_date' => 'asc'];
         static::assertEquals($expected, $options['order']);
     }
 

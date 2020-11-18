@@ -71,6 +71,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.DateRanges',
     ];
 
     /**
