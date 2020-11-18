@@ -261,8 +261,7 @@ class ObjectsTable extends Table
             ->distinct([$this->aliasField($this->getPrimaryKey())])
             ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
                 return $query->find('dateRanges', $options);
-            })
-            ->group($this->aliasField('id'));
+            });
     }
 
     /**
@@ -364,7 +363,7 @@ class ObjectsTable extends Table
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
-        $level = $options[0];
+        $level = reset($options);
         switch ($level) {
             case 'on':
                 return $query->where([
