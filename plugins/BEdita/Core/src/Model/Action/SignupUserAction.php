@@ -241,7 +241,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             return __d('bedita', $message, [$adminRoleName]);
         }
 
-
         $valid = array_intersect($roles, $allowedRoles);
         if (empty(array_diff($roles, $valid))) {
             return true;
