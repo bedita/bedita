@@ -156,7 +156,6 @@ class DateRangesTable extends Table
             'end_date',
             'from_date',
             'to_date',
-            'order_date',
         ]);
         $options = array_intersect_key($options, $allowed);
         if (empty($options)) {
@@ -165,8 +164,6 @@ class DateRangesTable extends Table
                 'detail' => 'start_date or end_date or date parameter missing',
             ]);
         }
-        $query = $this->orderFilter($query, $options);
-        unset($options['order_date']);
 
         $query = $this->fromToDateFilter($query, $options);
         unset($options['from_date'], $options['to_date']);
@@ -264,23 +261,6 @@ class DateRangesTable extends Table
                         ->lte($this->aliasField('end_date'), $to),
                 ]);
         });
-    }
-
-    /**
-     * Add an order query condition
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array of conditions.
-     * @return \Cake\ORM\Query
-     */
-    protected function orderFilter(Query $query, array $options): Query
-    {
-        $order = (string)Hash::get($options, 'order_date');
-        if (empty($order)) {
-            return $query;
-        }
-
-        return $query->order([$this->aliasField('start_date') => $order]);
     }
 
     /**
