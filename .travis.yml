@@ -128,7 +128,7 @@ before_install:
   # Use GitHub OAuth token with Composer to increase API limits.
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
   # upgrade to MySQL 8 if requested
-  - if [ "$DB" = 'mysql8' ]; then wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb; sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb; sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 8C718D3B5072E1F5; sudo apt-get update -q; sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server; sudo systemctl restart mysql; sudo mysql_upgrade; mysql --version ; fi
+  - if [ "$DB" = 'mysql8' ]; then wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb; sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb; sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 8C718D3B5072E1F5; sudo apt-get update -q; sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server; sudo systemctl restart mysql; sudo mysql_upgrade; fi
 
 install:
   # Install Composer dependencies.
@@ -139,7 +139,7 @@ before_script:
   - set +H
 
   # Set up and configure databases.
-  - if [ "$DB" = 'mysql' ] || [ "$DB" = 'mysql8' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; fi
+  - if [ "$DB" = 'mysql' ] || [ "$DB" = 'mysql8' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; mysql -u root -e 'SHOW DATABASES;'; mysql -u root -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))"; mysql --version; fi
   - if [ "$DB" = 'mariadb' ]; then sudo mysql -e 'CREATE DATABASE bedita_test;'; sudo mysql -e "SET Password=PASSWORD('travis');"; sudo mysql -e 'SHOW DATABASES;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
   - if [ "$DB" = 'pgsql' ] && [ "$DB_POSTGIS" = '1' ]; then psql -c 'CREATE EXTENSION postgis;' -U postgres; fi
