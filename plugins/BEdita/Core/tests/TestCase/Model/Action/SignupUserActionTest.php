@@ -56,6 +56,7 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Categories',
     ];
 
     /**
