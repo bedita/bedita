@@ -2951,6 +2951,50 @@
 					"response": []
 				},
 				{
+					"name": "GET objects index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4899d210-8c96-4b14-928a-f12cbb66f456",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/{{objectTypeName}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"{{objectTypeName}}"
+							]
+						},
+						"description": "Get objects list"
+					},
+					"response": []
+				},
+				{
 					"name": "Modify object",
 					"event": [
 						{
@@ -4369,59 +4413,6 @@
 			"name": "7. Folders",
 			"item": [
 				{
-					"name": "Trees",
-					"item": [
-						{
-							"name": "Get path on trees",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "d4ec4dc4-de0c-408b-be3f-1f2b72133891",
-										"exec": [
-											"tests[\"Status code is 200\"] = responseCode.code === 200;",
-											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/vnd.api+json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Bearer {{jwt}}"
-									},
-									{
-										"key": "X-Api-Key",
-										"value": "{{apiKey}}"
-									}
-								],
-								"url": {
-									"raw": "{{be4Url}}/trees/{{rootFolderId}}/{{subFolderId}}/{{objectId}}",
-									"host": [
-										"{{be4Url}}"
-									],
-									"path": [
-										"trees",
-										"{{rootFolderId}}",
-										"{{subFolderId}}",
-										"{{objectId}}"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
-				},
-				{
 					"name": "Create root folder",
 					"event": [
 						{
@@ -4681,7 +4672,7 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Status code is 200 or 204\"] = (responseCode.code === 200 || responseCode.code === 204);",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
 								]
 							}
@@ -4709,7 +4700,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}",
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\",\n        \"meta\": {\n            \"relation\": {\n                \"menu\": false,\n                \"canonical\": false\n            }\n        }\n    }\n}",
 							"options": {}
 						},
 						"url": {
@@ -4968,10 +4959,10 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"canonical\": true,\n\t\t\t\t\t\"menu\": false\n\t        \t}\n\t        }\n    \t}\n    ]\n}\n",
-							"options": {
-								"raw": {}
-							}
-						},
+                            "options": {
+                                "raw": {}
+                            }
+                        },
 						"url": {
 							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
 							"host": [
@@ -4982,6 +4973,61 @@
 								"{{rootFolderId}}",
 								"relationships",
 								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set parents folders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "330def70-e268-4d2b-abc4-9c1be8e50918",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n        {\n            \"type\": \"folders\",\n            \"id\": \"{{rootFolderId}}\",\n            \"meta\": {\n\t            \"relation\": {\n\t        \t\t\"canonical\": true,\n\t\t\t\t\t\"menu\": true\n\t        \t}\n\t        }\n        },\n        {\n            \"type\": \"folders\",\n            \"id\": \"{{subFolderId}}\"\n        }\n    ] \n}",
+							"options": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}/relationships/parents",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"{{objectTypeName}}",
+								"{{objectId}}",
+								"relationships",
+								"parents"
 							]
 						}
 					},
@@ -7482,7 +7528,748 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "14. Remove All",
+			"name": "14. Trees",
+			"item": [
+				{
+					"name": "Get path on trees",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d4ec4dc4-de0c-408b-be3f-1f2b72133891",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/trees/{{rootFolderId}}/{{subFolderId}}/{{objectId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trees",
+								"{{rootFolderId}}",
+								"{{subFolderId}}",
+								"{{objectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get path on subfolder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "034ee11a-95e9-41a5-a408-8e8ae41e3729",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/trees/{{rootFolderId}}/{{subFolderId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trees",
+								"{{rootFolderId}}",
+								"{{subFolderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get trees (roots)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fc8e853a-9b30-478f-8733-73b8e9420322",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/trees",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trees"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "15. Filters",
+			"item": [
+				{
+					"name": "Date Ranges",
+					"item": [
+						{
+							"name": "GET events + start date filter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0acc0a0c-0a24-499b-bc58-d8547e97ba23",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][start_date][gt]={{startDate}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][start_date][gt]",
+											"value": "{{startDate}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET events + end date filter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0e47f94c-166b-48f2-bd11-fce4270a2626",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][end_date][le]={{endDate}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][end_date][le]",
+											"value": "{{endDate}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET events + from date filter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c42e1e23-8962-4667-8624-f946f38b39b5",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][from_date]={{startDate}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][from_date]",
+											"value": "{{startDate}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET events + to date filter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "70bf3cf8-773a-4607-8323-1ee00718c07b",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][to_date]={{endDate}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][to_date]",
+											"value": "{{endDate}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET events + from date/to date filters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "93bd94be-7a7d-43b9-9a7e-a9310c24fd58",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][from_date]={{startDate}}&filter[date_ranges][to_date]={{endDate}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][from_date]",
+											"value": "{{startDate}}"
+										},
+										{
+											"key": "filter[date_ranges][to_date]",
+											"value": "{{endDate}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET events + from date filter + sort date_ranges.start_date",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cace3779-474c-4207-977b-92a9e4e389b5",
+										"exec": [
+											"var schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"data\": {",
+											"            \"type\": \"array\",",
+											"            \"properties\": {",
+											"                \"id\": {\"type\": \"string\"},",
+											"                \"type\": {\"type\": \"string\"},",
+											"                \"attributes\": {\"type\": \"object\"},",
+											"            },",
+											"            \"required\": [\"id\", \"type\", \"attributes\"]",
+											"        },",
+											"        \"links\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+											"            },",
+											"            \"required\": [\"self\", \"home\"]",
+											"        },",
+											"        \"meta\": {",
+											"            \"type\": \"object\",",
+											"            \"properties\": {",
+											"                \"pagination\": {",
+											"                    \"type\": \"object\",",
+											"                    \"properties\": {",
+											"                        \"count\": {\"type\": \"number\"},",
+											"                        \"page\": {\"type\": \"number\"},",
+											"                        \"page_count\": {\"type\": \"number\"},",
+											"                        \"page_items\": {\"type\": \"number\"},",
+											"                        \"page_size\": {\"type\": \"number\"}",
+											"                    },",
+											"                    \"required\": [\"count\",\"page\",\"page_count\",\"page_items\",\"page_size\"]",
+											"                }",
+											"            },",
+											"            \"required\": [\"pagination\"]",
+											"        }",
+											"    },",
+											"    \"required\": [\"data\",\"links\",\"meta\"]",
+											"};",
+											"var responseJSON;",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody); ",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/events?filter[date_ranges][from_date]={{startDate}}&sort=date_ranges.start_date&fields=title,date_ranges",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "filter[date_ranges][from_date]",
+											"value": "{{startDate}}"
+										},
+										{
+											"key": "sort",
+											"value": "date_ranges.start_date"
+										},
+										{
+											"key": "fields",
+											"value": "title,date_ranges"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "16. Remove All",
 			"item": [
 				{
 					"name": "Remove sub folder permanently",
@@ -8090,6 +8877,28 @@
 				}
 			],
 			"description": "Remove all objects and resources created",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1a17a11e-cc7f-4eb7-b3ad-ceec1af735a1",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3571ab85-2508-4393-8619-bb60deac624c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
 			"protocolProfileBehavior": {}
 		}
 	],
