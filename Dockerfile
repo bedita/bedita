@@ -16,6 +16,10 @@ RUN curl -o /wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for
     && echo "[PHP]\noutput_buffering = 4096\nmemory_limit = -1" > /usr/local/etc/php/php.ini
 COPY docker-entrypoint.sh /usr/local/bin/
 
+# Set composer version until v2 is supported
+ENV COMPOSER_VERSION='1.10.16'
+RUN composer self-update $COMPOSER_VERSION
+
 # Copy files and set user to `www-data`
 COPY . /var/www/html
 WORKDIR /var/www/html
