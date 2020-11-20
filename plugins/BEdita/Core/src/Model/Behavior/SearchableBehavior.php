@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
-use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
@@ -133,8 +132,8 @@ class SearchableBehavior extends Behavior
             function ($word) {
                 return str_replace(
                     ['%', '_', '\\'],
-                    ['\\%', '\\_', '\\\\'],
-                    mb_strtolower($word)
+                    ['\\%', '_', '\\\\'],
+                    $word
                 );
             },
             array_filter( // Filter out words that are too short.
@@ -171,15 +170,18 @@ class SearchableBehavior extends Behavior
             $fields[] = ' '; // Add a spacer.
         }
         array_pop($fields); // Remove last spacer.
-        $field = new FunctionExpression('LOWER', [$query->func()->concat($fields)]);
+        $field = $query->func()->concat($fields);
+        if (count($fields) === 1) {
+            $field = $fields[0];
+        }
 
         // Build query conditions.
         return $query
-            ->where(function (QueryExpression $exp) use ($field, $words) {
+            ->where(function (QueryExpression $exp) use ($query, $field, $words) {
                 foreach ($words as $word) {
                     $exp->like(
                         $field,
-                        sprintf('%%%s%%', $word)
+                        new QueryExpression(sprintf('\'%%%s%%\'', $word))
                     );
                 }
 

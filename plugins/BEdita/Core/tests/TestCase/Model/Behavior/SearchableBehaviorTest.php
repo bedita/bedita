@@ -35,6 +35,7 @@ class SearchableBehaviorTest extends TestCase
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
+        'plugin.BEdita/Core.FakeSearches',
     ];
 
     /**
@@ -191,6 +192,25 @@ class SearchableBehaviorTest extends TestCase
                 ]),
                 'this query string contains too many words thus will be rejected to avoid denial of service',
             ],
+            'search hyphen' => [
+                [
+                    1 => 'hippo-tiger',
+                ],
+                'hippo-tiger',
+                'FakeSearches',
+            ],
+            'search underscore' => [
+                [
+                    2 => 'lion_snake',
+                ],
+                'lion_snake',
+                'FakeSearches',
+            ],
+            // 'search underscore 2' => [
+            //     [],
+            //     'li_n',
+            //     'FakeSearches',
+            // ],
         ];
     }
 
