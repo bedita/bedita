@@ -1,5 +1,21 @@
 # ChangeLog
 
+## Version 4.3.0 - Cactus
+
+### API changes (4.3.0)
+
+* [#1735](https://github.com/bedita/bedita/pull/1735) Add `external_auth` info in users meta
+* [#1742](https://github.com/bedita/bedita/pull/1742) Fix signup when user has no roles but conf require roles
+
+### Core changes (4.3.0)
+
+* [#1731](https://github.com/bedita/bedita/pull/1731) Handle JSON-SCHEMA defaults in relation `params` setting
+
+### Integration changes (4.3.0)
+
+* [#1738](https://github.com/bedita/bedita/pull/1738) Update composer to use plugin-installer ^1.3
+* [#1734](https://github.com/bedita/bedita/pull/1734) Allow to use specific composer version in CI
+
 ## Version 4.2.1 - Cactus
 
 ### API changes (4.2.1)
