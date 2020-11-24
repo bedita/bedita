@@ -37,13 +37,13 @@ class UsersValidator extends ProfilesValidator
         $this
             ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])
             ->requirePresence('username', 'create')
-            ->notEmpty('username')
+            ->notEmptyString('username')
 
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])
 
-            ->allowEmpty('password_hash')
+            ->allowEmptyString('password_hash')
 
             ->boolean('blocked')
-            ->allowEmpty('blocked');
+            ->allowEmptyString('blocked');
     }
 }

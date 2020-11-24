@@ -60,11 +60,11 @@ class EndpointPermissionsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->integer('permission')
-            ->notEmpty('permission');
+            ->notEmptyString('permission');
 
         return $validator;
     }

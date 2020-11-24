@@ -613,8 +613,8 @@ class UsersTableTest extends TestCase
         Configure::write('Auth.passwordPolicy.rule', $passwdRule);
         Configure::write('Auth.passwordPolicy.message', $passwdMessage);
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $user = $this->Users->newEntity();

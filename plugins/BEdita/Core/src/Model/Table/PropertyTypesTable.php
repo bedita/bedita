@@ -70,10 +70,10 @@ class PropertyTypesTable extends Table
             ->setProvider('bedita', Validation::class)
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->alphaNumeric('name')
 
-            ->allowEmpty('params')
+            ->allowEmptyArray('params')
             ->add('params', 'valid', [
                 'rule' => ['jsonSchema', 'http://json-schema.org/draft-06/schema#'],
                 'provider' => 'bedita',

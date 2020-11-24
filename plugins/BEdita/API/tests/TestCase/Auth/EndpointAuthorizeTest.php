@@ -24,8 +24,8 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Laminas\Diactoros\Uri;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\Uri;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\EndpointAuthorize
@@ -106,8 +106,8 @@ class EndpointAuthorizeTest extends TestCase
     public function testGetEndpoint($expected, UriInterface $uri)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         CurrentApplication::setFromApiKey(API_KEY);
@@ -219,8 +219,8 @@ class EndpointAuthorizeTest extends TestCase
     public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));

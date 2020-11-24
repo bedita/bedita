@@ -161,8 +161,8 @@ class AppControllerTest extends IntegrationTestCase
     public function testGetApplication($expected, array $environment, array $query = [], $blockAnonymous = false)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         Configure::write('Security.blockAnonymousApps', $blockAnonymous);
@@ -184,8 +184,8 @@ class AppControllerTest extends IntegrationTestCase
      */
     public function testGetApplicationDefault()
     {
-        static::expectException(ForbiddenException::class);
-        static::expectExceptionMessage('Missing API key');
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage('Missing API key');
 
         Configure::delete('Security.blockAnonymousApps');
         CurrentApplication::getInstance()->set(null);

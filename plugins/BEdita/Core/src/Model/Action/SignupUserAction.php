@@ -187,7 +187,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
             $validator
                 ->requirePresence('username')
-                ->notEmpty('username');
+                ->notEmptyString('username');
         } else {
             $validator
                 ->requirePresence('provider_username')
@@ -213,7 +213,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             'rule' => [$this, 'validateRoles'],
         ]);
 
-        return $validator->errors($data);
+        return $validator->validate($data);
     }
 
     /**

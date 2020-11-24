@@ -206,7 +206,7 @@ class SignupUserActionTest extends TestCase
         });
 
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
+            $this->expectException(get_class($expected));
         }
 
         try {
@@ -298,8 +298,8 @@ class SignupUserActionTest extends TestCase
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $eventDispatched = 0;

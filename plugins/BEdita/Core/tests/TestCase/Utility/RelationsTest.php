@@ -128,8 +128,8 @@ class RelationsTest extends TestCase
      */
     public function testValidate()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Missing left/right relation types');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Missing left/right relation types');
 
         unset($this->relations[0]['left']);
         Relations::create($this->relations);

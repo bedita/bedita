@@ -441,8 +441,8 @@ class ResourcesTest extends TestCase
      */
     public function testGetTableFail()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Resource type not allowed "cats"');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Resource type not allowed "cats"');
 
         Resources::create('cats', []);
     }
@@ -454,8 +454,8 @@ class ResourcesTest extends TestCase
      */
     public function testFindConditionFail()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Missing mandatory fields "id" or "name"');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Missing mandatory fields "id" or "name"');
 
         Resources::remove('applications', [['key' => 'value']]);
     }
@@ -541,8 +541,8 @@ class ResourcesTest extends TestCase
     public function testSave(array $resources, ?\Exception $exception = null): void
     {
         if ($exception) {
-            static::expectException(get_class($exception));
-            static::expectExceptionMessage($exception->getMessage());
+            $this->expectException(get_class($exception));
+            $this->expectExceptionMessage($exception->getMessage());
         }
 
         Resources::save($resources);
