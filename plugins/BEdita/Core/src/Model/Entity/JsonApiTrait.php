@@ -190,7 +190,7 @@ trait JsonApiTrait
         $virtual = $this->getVirtual();
 
         $properties = array_filter(
-            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
+            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData', '_countData']),
             function ($property) {
                 return !$this->isAccessible($property);
             }
