@@ -16,9 +16,13 @@ namespace BEdita\API\Test\TestCase\Utility;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JsonApi
@@ -725,5 +729,65 @@ class JsonApiTest extends TestCase
     {
         $result = JsonApi::schemaInfo($type);
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `JsonApi.beforeFormat` event.
+     *
+     * @return void
+     */
+    public function testBeforeFormatEvent(): void
+    {
+        $dispatchedEvent = 0;
+        EventManager::instance()->on('JsonApi.beforeFormat', function (Event $event, $items) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.beforeFormat');
+            $dispatchedEvent++;
+            $item = $items[0];
+
+            static::assertInstanceOf(EntityInterface::class, $item);
+            static::assertEquals('on', $item->get('status'));
+
+            $item->set('status', 'off');
+
+            return $items;
+        });
+
+        $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
+        $result = JsonApi::formatData($document);
+
+        static::assertEquals(1, $dispatchedEvent);
+        static::assertEquals('off', Hash::get($result, 'attributes.status'));
+    }
+
+    /**
+     * Test `afterFormat` event.
+     *
+     * @return void
+     */
+    public function testAfterFormatEvent(): void
+    {
+        $dispatchedEvent = 0;
+        EventManager::instance()->on('JsonApi.afterFormat', function (Event $event, $data) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.afterFormat');
+            $dispatchedEvent++;
+
+            foreach ($data as $d) {
+                static::assertEquals('documents', Hash::get($d, 'type'));
+            }
+
+            $data = Hash::insert($data, '{n}.meta.after_format', true);
+
+            return $data;
+        });
+
+        $document = TableRegistry::getTableLocator()->get('Documents')
+            ->find('type', ['documents'])
+            ->limit(2)
+            ->all();
+
+        $result = JsonApi::formatData($document);
+        $expected = [true, true];
+        static::assertEquals(1, $dispatchedEvent);
+        static::assertEquals($expected, Hash::extract($result, '{n}.meta.after_format'));
     }
 }
