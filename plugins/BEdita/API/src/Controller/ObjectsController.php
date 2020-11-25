@@ -14,6 +14,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\CountRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
@@ -236,6 +237,11 @@ class ObjectsController extends ResourcesController
             'lang' => $this->request->getQuery('lang'),
         ]);
 
+        if ($this->request->is('get') && !empty($this->request->getQuery('count'))) {
+            $action = new CountRelatedObjectsAction();
+            $action(['entities' => [$entity], 'count' => $this->request->getQuery('count')]);
+        }
+
         if ($this->request->is('delete')) {
             // Delete an entity.
             $action = new DeleteObjectAction(['table' => $this->Table]);
@@ -297,6 +303,11 @@ class ObjectsController extends ResourcesController
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
+        }
+
+        if (!empty($this->request->getQuery('count'))) {
+            $action = new CountRelatedObjectsAction();
+            $action(['entities' => $objects->toArray(), 'count' => $this->request->getQuery('count')]);
         }
 
         $this->set('_fields', $this->request->getQuery('fields', []));
