@@ -15,6 +15,8 @@ namespace BEdita\API\Utility;
 use BEdita\Core\Utility\JsonApiSerializable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
@@ -59,6 +61,12 @@ class JsonApi
             $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
+        $event = new Event('JsonApi.beforeFormat', null, compact('items'));
+        EventManager::instance()->dispatch($event);
+        if (is_array($event->getResult())) {
+            $items = $event->getResult();
+        }
+
         $data = $types = [];
         foreach ($items as $item) {
             if (!$item instanceof JsonApiSerializable) {
@@ -84,6 +92,12 @@ class JsonApi
             if (!empty($item['attributes']) && !empty($item['type'])) {
                 $types[] = $item['type'];
             }
+        }
+
+        $event = new Event('JsonApi.afterFormat', null, compact('data'));
+        EventManager::instance()->dispatch($event);
+        if (is_array($event->getResult())) {
+            $data = $event->getResult();
         }
 
         $data = $single ? $data[0] : $data;
