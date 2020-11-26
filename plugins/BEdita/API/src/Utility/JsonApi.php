@@ -65,7 +65,7 @@ class JsonApi
             $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
-        $items = static::dispatchEvent('JsonApi.beforeFormatData', $items);
+        $items = (array)static::dispatchEvent('JsonApi.beforeFormatData', $items);
 
         $data = $types = [];
         foreach ($items as $item) {
@@ -94,7 +94,7 @@ class JsonApi
             }
         }
 
-        $data = static::dispatchEvent('JsonApi.afterFormatData', $data);
+        $data = (array)static::dispatchEvent('JsonApi.afterFormatData', $data);
 
         $data = $single ? $data[0] : $data;
         $schema = static::metaSchema(array_filter(array_unique($types)));
