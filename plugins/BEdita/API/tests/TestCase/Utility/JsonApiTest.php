@@ -474,8 +474,9 @@ class JsonApiTest extends TestCase
      * @return void
      *
      * @dataProvider formatDataProvider
-     * @covers ::formatData
-     * @covers ::metaSchema
+     * @covers ::formatData()
+     * @covers ::metaSchema()
+     * @covers ::dispatchEvent()
      */
     public function testFormatData($expected, callable $items, $options = 0)
     {
@@ -732,15 +733,18 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * Test `JsonApi.beforeFormat` event.
+     * Test `JsonApi.beforeFormatData` event.
      *
      * @return void
+     *
+     * @covers ::formatData()
+     * @covers ::dispatchEvent()
      */
     public function testBeforeFormatEvent(): void
     {
         $dispatchedEvent = 0;
-        EventManager::instance()->on('JsonApi.beforeFormat', function (Event $event, $items) use (&$dispatchedEvent) {
-            EventManager::instance()->off('JsonApi.beforeFormat');
+        EventManager::instance()->on('JsonApi.beforeFormatData', function (Event $event, $items) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.beforeFormatData');
             $dispatchedEvent++;
             $item = $items[0];
 
@@ -760,15 +764,18 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * Test `afterFormat` event.
+     * Test `JsonApi.afterFormatData` event.
      *
      * @return void
+     *
+     * @covers ::formatData()
+     * @covers ::dispatchEvent()
      */
-    public function testAfterFormatEvent(): void
+    public function testAfterFormatDataEvent(): void
     {
         $dispatchedEvent = 0;
-        EventManager::instance()->on('JsonApi.afterFormat', function (Event $event, $data) use (&$dispatchedEvent) {
-            EventManager::instance()->off('JsonApi.afterFormat');
+        EventManager::instance()->on('JsonApi.afterFormatData', function (Event $event, $data) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.afterFormatData');
             $dispatchedEvent++;
 
             foreach ($data as $d) {
