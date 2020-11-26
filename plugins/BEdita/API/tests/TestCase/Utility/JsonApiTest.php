@@ -790,4 +790,19 @@ class JsonApiTest extends TestCase
         static::assertEquals(1, $dispatchedEvent);
         static::assertEquals($expected, Hash::extract($result, '{n}.meta.after_format'));
     }
+
+    /**
+     * Test that ana exception was raised if the some item was not serializabile.
+     *
+     * @return void
+     *
+     * @covers ::formatData()
+     */
+    public function testNotJsonSerializabile(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
+
+        JsonApi::formatData(['name' => 'Gustavo']);
+    }
 }
