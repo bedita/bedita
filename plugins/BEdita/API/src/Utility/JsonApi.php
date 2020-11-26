@@ -33,7 +33,7 @@ class JsonApi
      * Format single or multiple data items in JSON API format.
      *
      * Two events will be dispacthed:
-     * - `beforeFormatData` dispacthed before the formatting of `$items`
+     * - `beforeFormatData` dispatched before the formatting of `$items`
      * - `afterFormatData` dispatched after the formatting of `$items`
      *
      * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[]|null $items Items to be formatted.
