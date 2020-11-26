@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -32,6 +32,10 @@ class JsonApi
     /**
      * Format single or multiple data items in JSON API format.
      *
+     * Two events will be dispacthed:
+     * - `beforeFormatData` dispacthed before the formatting of `$items`
+     * - `afterFormatData` dispatched after the formatting of `$items`
+     *
      * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[]|null $items Items to be formatted.
      * @param int $options Serializer options.
      * @param array $fields Selected fields to view in `attributes` and `meta`, if empty (default) all fields are serialized
@@ -61,11 +65,7 @@ class JsonApi
             $options |= JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS;
         }
 
-        $event = new Event('JsonApi.beforeFormat', null, compact('items'));
-        EventManager::instance()->dispatch($event);
-        if (is_array($event->getResult())) {
-            $items = $event->getResult();
-        }
+        $items = static::dispatchEvent('JsonApi.beforeFormatData', $items);
 
         $data = $types = [];
         foreach ($items as $item) {
@@ -94,11 +94,7 @@ class JsonApi
             }
         }
 
-        $event = new Event('JsonApi.afterFormat', null, compact('data'));
-        EventManager::instance()->dispatch($event);
-        if (is_array($event->getResult())) {
-            $data = $event->getResult();
-        }
+        $data = static::dispatchEvent('JsonApi.afterFormatData', $data);
 
         $data = $single ? $data[0] : $data;
         $schema = static::metaSchema(array_filter(array_unique($types)));
@@ -107,6 +103,25 @@ class JsonApi
         }
 
         return $data;
+    }
+
+    /**
+     * Create and dispatch an event.
+     * Return `$data` if the event result is null.
+     *
+     * @param string $eventName The event name
+     * @param array $data Data dispatched with the event
+     * @return mixed
+     */
+    protected static function dispatchEvent(string $eventName, array $data)
+    {
+        $event = new Event($eventName, null, compact('data'));
+        EventManager::instance()->dispatch($event);
+        if ($event->getResult() === null) {
+            return $data;
+        }
+
+        return $event->getResult();
     }
 
     /**
