@@ -32,7 +32,7 @@ class JsonApi
     /**
      * Format single or multiple data items in JSON API format.
      *
-     * Two events will be dispacthed:
+     * Two events will be dispatched:
      * - `beforeFormatData` dispatched before the formatting of `$items`
      * - `afterFormatData` dispatched after the formatting of `$items`
      *
