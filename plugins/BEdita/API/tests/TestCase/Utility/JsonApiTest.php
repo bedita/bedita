@@ -799,13 +799,13 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * Test that ana exception was raised if the some item was not serializabile.
+     * Test that an exception was raised if some item was not serializable.
      *
      * @return void
      *
      * @covers ::formatData()
      */
-    public function testNotJsonSerializabile(): void
+    public function testNotJsonSerializable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
