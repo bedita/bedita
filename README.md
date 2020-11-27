@@ -99,7 +99,7 @@ You may of course choose whatever name you like for the generated image instead 
 
 ### Run
 
-Run a Docker image setting an initial API KEY and admin username and password like this:
+Run a Docker image setting an initial API KEY and admin username and password, like this:
 
 ```bash
  docker run -p 8090:80 --env BEDITA_API_KEY=1029384756 \
