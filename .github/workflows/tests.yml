@@ -36,62 +36,30 @@ jobs:
         php:
           - '7.3'
           - '7.4'
-        db_dsn:
-          - 'sqlite://tmp/test.sql'
-          - 'mysql://bedita:bedita@mysql56/bedita'
-          - 'mysql://bedita:bedita@mysql57/bedita'
-          # - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
-          - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
-          - 'postgres://bedita:bedita@postgres/bedita'
+        db:
+          - '{"vendor": "SQLite", "dsn": "sqlite://tmp/test.sql", "image": "busybox"}'
+          - '{"vendor": "MySQL 5.6", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6"}'
+          - '{"vendor": "MySQL 5.7", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7"}'
+          # - '{"vendor": "MySQL 8.0", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0"}'
+          - '{"vendor": "MariaDB", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10"}'
+          - '{"vendor": "PostgreSQL", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
-      db_dsn: '${{ matrix.db_dsn }}'
+      DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
+      db_dsn: '${{ fromJson(matrix.db).dsn }}'
 
     services:
-      mysql56:
-        image: 'mysql:5.6'
+      db:
+        image: '${{ fromJson(matrix.db).image }}'
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
           MYSQL_USER: 'bedita'
           MYSQL_PASSWORD: 'bedita'
           MYSQL_DATABASE: 'bedita'
-        ports:
-          - '3306:3306'
-      mysql57:
-        image: 'mysql:5.7'
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-          MYSQL_USER: 'bedita'
-          MYSQL_PASSWORD: 'bedita'
-          MYSQL_DATABASE: 'bedita'
-        ports:
-          - '3307:3306'
-      # mysql80:
-      #   image: 'mysql:8.0'
-      #   env:
-      #     MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      #     MYSQL_USER: 'bedita'
-      #     MYSQL_PASSWORD: 'bedita'
-      #     MYSQL_DATABASE: 'bedita'
-      #   ports:
-      #     - '3308:3306'
-      mariadb:
-        image: 'mariadb:10'
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-          MYSQL_USER: 'bedita'
-          MYSQL_PASSWORD: 'bedita'
-          MYSQL_DATABASE: 'bedita'
-        ports:
-          - '3310:3306'
-      postgres:
-        image: 'postgres:13'
-        env:
+
           POSTGRES_USER: 'bedita'
           POSTGRES_PASSWORD: 'bedita'
           POSTGRES_DB: 'bedita'
-        ports:
-          - '5432:5432'
 
     steps:
       - name: 'Checkout current revision'
