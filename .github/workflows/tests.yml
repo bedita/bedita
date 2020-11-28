@@ -10,9 +10,14 @@ jobs:
     name: 'Check coding style'
     runs-on: 'ubuntu-latest'
     container: 'chialab/php:7.4'
+
     steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction'
+
       - name: 'Run PHP CodeSniffer'
         run: |
           vendor/bin/phpcs -n -p --extensions=php \
@@ -24,6 +29,7 @@ jobs:
     if: "!contains(github.event.commits[0].message, 'skip ci')"
     runs-on: 'ubuntu-latest'
     container: 'chialab/php-dev:${{ matrix.php }}'
+
     strategy:
       matrix:
         php:
@@ -39,6 +45,7 @@ jobs:
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_DSN: '${{ matrix.db_dsn }}'
+
     services:
       mysql56:
         image: 'mysql:5.6'
@@ -84,11 +91,17 @@ jobs:
           POSTGRES_DB: 'bedita'
         ports:
           - '5432:5432'
+
     steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction'
+
       - name: 'Run PHPUnit'
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
+
       - name: 'Export coverage results'
         uses: 'codecov/codecov-action@v1'
         with:
