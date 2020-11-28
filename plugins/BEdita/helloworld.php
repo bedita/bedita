@@ -1,1 +1,1 @@
-<?= 'hello world with local temp dir' ?>
+<?= 'hello world with just sqlite' ?>

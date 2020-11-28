@@ -37,11 +37,11 @@ jobs:
           - '7.4'
         db_dsn:
           - 'sqlite://tmp/test.sql'
-          - 'mysql://bedita:bedita@mysql56/bedita'
-          - 'mysql://bedita:bedita@mysql57/bedita'
-          - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
-          - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
-          - 'postgres://bedita:bedita@postgres/bedita'
+          # - 'mysql://bedita:bedita@mysql56/bedita'
+          # - 'mysql://bedita:bedita@mysql57/bedita'
+          # - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
+          # - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
+          # - 'postgres://bedita:bedita@postgres/bedita'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_DSN: '${{ matrix.db_dsn }}'
