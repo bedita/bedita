@@ -1,1 +1,1 @@
-<?= 'hello world with just sqlite' ?>
+<?= 'hello world with lowercase' ?>

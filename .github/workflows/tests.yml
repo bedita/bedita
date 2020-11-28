@@ -37,14 +37,14 @@ jobs:
           - '7.4'
         db_dsn:
           - 'sqlite://tmp/test.sql'
-          # - 'mysql://bedita:bedita@mysql56/bedita'
-          # - 'mysql://bedita:bedita@mysql57/bedita'
-          # - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
-          # - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
-          # - 'postgres://bedita:bedita@postgres/bedita'
+          - 'mysql://bedita:bedita@mysql56/bedita'
+          - 'mysql://bedita:bedita@mysql57/bedita'
+          - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
+          - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
+          - 'postgres://bedita:bedita@postgres/bedita'
     env:
       PHP_VERSION: '${{ matrix.php }}'
-      DB_DSN: '${{ matrix.db_dsn }}'
+      db_dsn: '${{ matrix.db_dsn }}'
 
     services:
       mysql56:
@@ -106,4 +106,4 @@ jobs:
       #   uses: 'codecov/codecov-action@v1'
       #   with:
       #     file: './clover.xml'
-      #     env_vars: PHP,DB_DSN
+      #     env_vars: PHP,db_dsn
