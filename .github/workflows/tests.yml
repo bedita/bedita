@@ -28,7 +28,7 @@ jobs:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, 'skip ci')"
     runs-on: 'ubuntu-latest'
-    container: 'chialab/php-dev:${{ matrix.php }}'
+    container: 'chialab/php:${{ matrix.php }}'
 
     strategy:
       matrix:
@@ -100,10 +100,10 @@ jobs:
         run: 'composer1 install --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit'
-        run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
+        run: 'vendor/bin/phpunit' # --coverage-clover=clover.xml'
 
-      - name: 'Export coverage results'
-        uses: 'codecov/codecov-action@v1'
-        with:
-          file: './clover.xml'
-          env_vars: PHP,DB_DSN
+      # - name: 'Export coverage results'
+      #   uses: 'codecov/codecov-action@v1'
+      #   with:
+      #     file: './clover.xml'
+      #     env_vars: PHP,DB_DSN
