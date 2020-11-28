@@ -1,1 +1,1 @@
-<?= 'hello world without coverage' ?>
+<?= 'hello world with fixed hosts and paths' ?>
