@@ -31,6 +31,7 @@ jobs:
     container: 'chialab/php:${{ matrix.php }}'
 
     strategy:
+      fail-fast: false
       matrix:
         php:
           - '7.3'
@@ -39,7 +40,7 @@ jobs:
           - 'sqlite://tmp/test.sql'
           - 'mysql://bedita:bedita@mysql56/bedita'
           - 'mysql://bedita:bedita@mysql57/bedita'
-          - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
+          # - 'mysql://bedita:bedita@mysql80/bedita?realVendor=mysql8'
           - 'mysql://bedita:bedita@mariadb/bedita?realVendor=mariadb'
           - 'postgres://bedita:bedita@postgres/bedita'
     env:
@@ -65,15 +66,15 @@ jobs:
           MYSQL_DATABASE: 'bedita'
         ports:
           - '3307:3306'
-      mysql80:
-        image: 'mysql:8.0'
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-          MYSQL_USER: 'bedita'
-          MYSQL_PASSWORD: 'bedita'
-          MYSQL_DATABASE: 'bedita'
-        ports:
-          - '3308:3306'
+      # mysql80:
+      #   image: 'mysql:8.0'
+      #   env:
+      #     MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      #     MYSQL_USER: 'bedita'
+      #     MYSQL_PASSWORD: 'bedita'
+      #     MYSQL_DATABASE: 'bedita'
+      #   ports:
+      #     - '3308:3306'
       mariadb:
         image: 'mariadb:10'
         env:

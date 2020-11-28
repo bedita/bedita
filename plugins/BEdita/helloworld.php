@@ -1,1 +1,1 @@
-<?= 'hello world with lowercase' ?>
+<?= 'hello world without mysql8 and fail-fast' ?>
