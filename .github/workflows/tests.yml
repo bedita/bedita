@@ -1,0 +1,96 @@
+name: 'Run tests'
+
+on:
+  push:
+    paths:
+      - '**/*.php'
+
+jobs:
+  cs:
+    name: 'Check coding style'
+    runs-on: 'ubuntu-latest'
+    container: 'chialab/php:7.4'
+    steps:
+      - name: 'Install dependencies with Composer'
+        run: 'composer1 install --prefer-dist --no-interaction'
+      - name: 'Run PHP CodeSniffer'
+        run: |
+          vendor/bin/phpcs -n -p --extensions=php \
+            --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
+            ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
+
+  unit:
+    name: 'Run unit tests'
+    if: "!contains(github.event.commits[0].message, 'skip ci')"
+    runs-on: 'ubuntu-latest'
+    container: 'chialab/php-dev:${{ matrix.php }}'
+    strategy:
+      matrix:
+        php:
+          - '7.3'
+          - '7.4'
+        db_dsn:
+          - 'sqlite:///tmp/test.sql'
+          - 'mysql://bedita:bedita@127.0.0.1:3306/bedita'
+          - 'mysql://bedita:bedita@127.0.0.1:3307/bedita'
+          - 'mysql://bedita:bedita@127.0.0.1:3308/bedita?realVendor=mysql8'
+          - 'mysql://bedita:bedita@127.0.0.1:3310/bedita?realVendor=mariadb'
+          - 'postgres://bedita:bedita@127.0.0.1:5432/bedita'
+    env:
+      PHP_VERSION: '${{ matrix.php }}'
+      DB_DSN: '${{ matrix.db_dsn }}'
+    services:
+      mysql56:
+        image: 'mysql:5.6'
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_USER: 'bedita'
+          MYSQL_PASSWORD: 'bedita'
+          MYSQL_DATABASE: 'bedita'
+        ports:
+          - '3306:3306'
+      mysql57:
+        image: 'mysql:5.7'
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_USER: 'bedita'
+          MYSQL_PASSWORD: 'bedita'
+          MYSQL_DATABASE: 'bedita'
+        ports:
+          - '3307:3306'
+      mysql80:
+        image: 'mysql:8.0'
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_USER: 'bedita'
+          MYSQL_PASSWORD: 'bedita'
+          MYSQL_DATABASE: 'bedita'
+        ports:
+          - '3308:3306'
+      mariadb:
+        image: 'mariadb:10'
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_USER: 'bedita'
+          MYSQL_PASSWORD: 'bedita'
+          MYSQL_DATABASE: 'bedita'
+        ports:
+          - '3310:3306'
+      postgres:
+        image: 'postgres:13'
+        env:
+          POSTGRES_USER: 'bedita'
+          POSTGRES_PASSWORD: 'bedita'
+          POSTGRES_DB: 'bedita'
+        ports:
+          - '5432:5432'
+    steps:
+      - name: 'Install dependencies with Composer'
+        run: 'composer1 install --prefer-dist --no-interaction'
+      - name: 'Run PHPUnit'
+        run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
+      - name: 'Export coverage results'
+        uses: 'codecov/codecov-action@v1'
+        with:
+          file: './clover.xml'
+          env_vars: PHP,DB_DSN

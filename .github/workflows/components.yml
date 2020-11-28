@@ -1,0 +1,65 @@
+name: 'Publish components'
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'plugins/BEdita/**'
+
+jobs:
+  filter-tree:
+    name: 'Filter components tree and push'
+    runs-on: 'ubuntu-latest'
+
+    continue-on-error: yes
+    strategy:
+      matrix:
+        include:
+          - repo: 'api'
+            path: 'plugins/BEdita/API'
+          - repo: 'core'
+            path: 'plugins/BEdita/Core'
+
+    steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Filter tree'
+        run: |
+          git filter-branch --prune-empty --subdirectory-filter ${{ matrix.path }} --tag-name-filter cat HEAD
+
+      - name: 'Push to component repository'
+        env:
+          REMOTE: "${{ format('https://github.com/{0}/{1}.git', github.repository_owner, matrix.repo) }}"
+        run: |
+          git push --force --tags ${REMOTE} HEAD
+
+
+  build-test-push:
+    name: Build, test and push
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.commits[0].message, 'skip ci')"
+    strategy:
+      matrix:
+        version: [ '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+        flavor: [ '', '-apache', '-fpm' ]
+        include:
+          - version: 'latest'
+            flavor: ''
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build images
+        run: |
+          make build VERSION=${VERSION}
+          make -C dev build VERSION=${VERSION}
+        env:
+          VERSION: ${{ format('{0}{1}', matrix.version, matrix.flavor) }}
+
+      - name: Test images
+        run: |
+          make test VERSION=${VERSION}
+          make -C dev test VERSION=${VERSION}
+        env:
+          VERSION: ${{ format('{0}{1}', matrix.version, matrix.flavor) }}
