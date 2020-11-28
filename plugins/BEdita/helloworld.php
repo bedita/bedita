@@ -1,1 +1,1 @@
-<?= 'hello world with fixed hosts and paths' ?>
+<?= 'hello world with local temp dir' ?>
