@@ -1,1 +1,1 @@
-<?= 'hello world with swapped single and double quotes' ?>
+<?= 'hello world with PHP 7.2 and XDebug' ?>

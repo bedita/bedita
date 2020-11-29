@@ -71,14 +71,15 @@ jobs:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, 'skip ci')"
     runs-on: 'ubuntu-latest'
-    container: 'chialab/php-dev:${{ matrix.php }}'
+    container: '${{ fromJson(matrix.php).image }}'
 
     strategy:
       fail-fast: false
       matrix:
         php:
-          - '7.3'
-          - '7.4'
+          - '{"version": "7.2", "image": "chialab/php-dev:7.2", "coverage": true}'
+          - '{"version": "7.3", "image": "chialab/php:7.3", "coverage": false}'
+          - '{"version": "7.4", "image": "chialab/php:7.4", "coverage": false}'
         db:
           - '{"vendor": "SQLite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": ""}'
           - '{"vendor": "MySQL 5.6", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
@@ -87,7 +88,7 @@ jobs:
           - '{"vendor": "MariaDB", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - '{"vendor": "PostgreSQL", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
-      PHP_VERSION: '${{ matrix.php }}'
+      PHP_VERSION: '${{ fromJson(matrix.php).version }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
       db_dsn: '${{ fromJson(matrix.db).dsn }}'
 
@@ -117,19 +118,25 @@ jobs:
         uses: 'actions/cache@v2'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
-          key: "composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
+          key: "composer-${{ fromJson(matrix.php).version }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: |
-            composer-${{ matrix.php }}-
+            composer-${{ fromJson(matrix.php).version }}-
             composer-
 
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit'
+        if: '!fromJson(matrix.php).coverage'
+        run: 'vendor/bin/phpunit'
+
+      - name: 'Run PHPUnit with coverage'
+        if: 'fromJson(matrix.php).coverage'
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
-      # - name: 'Export coverage results'
-      #   uses: 'codecov/codecov-action@v1'
-      #   with:
-      #     file: './clover.xml'
-      #     env_vars: PHP,db_dsn
+      - name: 'Export coverage results'
+        if: 'fromJson(matrix.php).coverage'
+        uses: 'codecov/codecov-action@v1'
+        with:
+          file: './clover.xml'
+          env_vars: PHP,db_dsn
