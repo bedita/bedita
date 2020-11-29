@@ -1,1 +1,1 @@
-<?= 'hello world with updated db_dsn' ?>
+<?= 'hello world with fixed phpstan path and busybox entrypoint' ?>

@@ -79,7 +79,7 @@ jobs:
 
       - name: 'Run PHP STAN'
         run: |
-          vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
+          phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
 
   unit:
     name: 'Run unit tests'
@@ -94,7 +94,7 @@ jobs:
           - '7.3'
           - '7.4'
         db:
-          - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": "--health-cmd \"/bin/true\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": "--entrypoint tail --health-cmd \"/bin/true\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - '{"vendor": "MySQL 5.6", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           # - '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
