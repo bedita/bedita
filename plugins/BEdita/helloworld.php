@@ -1,1 +1,1 @@
-<?= 'hello world with ugly JSON in matrix' ?>
+<?= 'hello world with cache' ?>
