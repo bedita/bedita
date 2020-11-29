@@ -15,6 +15,19 @@ jobs:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
 
+      - name: 'Discover Composer cache directory'
+        id: 'cachedir'
+        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+
+      - name: 'Share Composer cache across runs'
+        uses: 'actions/cache@v2'
+        with:
+          path: '${{ steps.cachedir.outputs.path }}'
+          key: 'composer-${{ github.job }}-${{ hashFiles("**/composer.json") }}'
+          restore-keys: |
+            composer-${{ github.job }}-
+            composer-
+
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction'
 
@@ -33,6 +46,19 @@ jobs:
     steps:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
+
+      - name: 'Discover Composer cache directory'
+        id: 'cachedir'
+        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+
+      - name: 'Share Composer cache across runs'
+        uses: 'actions/cache@v2'
+        with:
+          path: '${{ steps.cachedir.outputs.path }}'
+          key: 'composer-${{ github.job }}-${{ hashFiles("**/composer.json") }}'
+          restore-keys: |
+            composer-${{ github.job }}-
+            composer-
 
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction && composer1 require --dev phpstan/phpstan'
@@ -82,6 +108,19 @@ jobs:
     steps:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
+
+      - name: 'Discover Composer cache directory'
+        id: 'cachedir'
+        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+
+      - name: 'Share Composer cache across runs'
+        uses: 'actions/cache@v2'
+        with:
+          path: '${{ steps.cachedir.outputs.path }}'
+          key: 'composer-${{ matrix.php }}-${{ hashFiles("**/composer.json") }}'
+          restore-keys: |
+            composer-${{ matrix.php }}-
+            composer-
 
       - name: 'Install dependencies with Composer'
         run: 'composer1 install --prefer-dist --no-interaction'
