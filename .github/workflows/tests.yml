@@ -8,16 +8,23 @@ on:
 jobs:
   cs:
     name: 'Check coding style'
-    runs-on: 'ubuntu-latest'
-    container: 'chialab/php:7.4'
+    runs-on: 'ubuntu-18.04'
 
     steps:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
 
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '7.4'
+          tools: 'composer:v1'
+          extensions: 'mbstring, intl'
+          coverage: 'pcov'
+
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v2'
@@ -29,7 +36,7 @@ jobs:
             composer-
 
       - name: 'Install dependencies with Composer'
-        run: 'composer1 install --prefer-dist --no-interaction'
+        run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHP CodeSniffer'
         run: |
@@ -39,17 +46,24 @@ jobs:
 
   stan:
     name: 'Static code analyzer'
-    runs-on: 'ubuntu-latest'
-    container: 'chialab/php:7.4'
+    runs-on: 'ubuntu-18.04'
     continue-on-error: true
 
     steps:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
 
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '7.4'
+          tools: 'composer:v1, phpstan'
+          extensions: 'mbstring, intl'
+          coverage: 'pcov'
+
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v2'
@@ -61,7 +75,7 @@ jobs:
             composer-
 
       - name: 'Install dependencies with Composer'
-        run: 'composer1 install --prefer-dist --no-interaction && composer1 require --dev phpstan/phpstan'
+        run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHP STAN'
         run: |
@@ -70,25 +84,24 @@ jobs:
   unit:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, 'skip ci')"
-    runs-on: 'ubuntu-latest'
-    container: '${{ fromJson(matrix.php).image }}'
+    runs-on: 'ubuntu-18.04'
 
     strategy:
       fail-fast: false
       matrix:
         php:
-          - '{"version": "7.2", "image": "chialab/php-dev:7.2", "coverage": true}'
-          - '{"version": "7.3", "image": "chialab/php:7.3", "coverage": false}'
-          - '{"version": "7.4", "image": "chialab/php:7.4", "coverage": false}'
+          - '7.2'
+          - '7.3'
+          - '7.4'
         db:
-          - '{"vendor": "SQLite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": ""}'
-          - '{"vendor": "MySQL 5.6", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "MySQL 5.7", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          # - '{"vendor": "MySQL 8.0", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "MariaDB", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "PostgreSQL", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": "--no-healthcheck"}'
+          - '{"vendor": "MySQL 5.6", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          # - '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MariaDB", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "PostgreSQL", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
-      PHP_VERSION: '${{ fromJson(matrix.php).version }}'
+      PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
       db_dsn: '${{ fromJson(matrix.db).dsn }}'
 
@@ -110,32 +123,34 @@ jobs:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
 
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+          tools: 'composer:v1, phpstan'
+          extensions: 'mbstring, intl, pdo_${{ fromJson(matrix.db).pdo }}'
+          coverage: 'pcov'
+
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer1 global config cache-dir)"'
+        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v2'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
-          key: "composer-${{ fromJson(matrix.php).version }}-${{ hashFiles('**/composer.json') }}"
+          key: "composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: |
-            composer-${{ fromJson(matrix.php).version }}-
+            composer-${{ matrix.php }}-
             composer-
 
       - name: 'Install dependencies with Composer'
-        run: 'composer1 install --prefer-dist --no-interaction'
-
-      - name: 'Run PHPUnit'
-        if: '!fromJson(matrix.php).coverage'
-        run: 'vendor/bin/phpunit'
+        run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit with coverage'
-        if: 'fromJson(matrix.php).coverage'
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
       - name: 'Export coverage results'
-        if: 'fromJson(matrix.php).coverage'
         uses: 'codecov/codecov-action@v1'
         with:
           file: './clover.xml'

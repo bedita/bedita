@@ -1,1 +1,1 @@
-<?= 'hello world with PHP 7.2 and XDebug' ?>
+<?= 'hello world without our docker images' ?>
