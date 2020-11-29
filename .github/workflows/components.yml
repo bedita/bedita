@@ -25,11 +25,12 @@ jobs:
         uses: 'actions/checkout@v2'
 
       - name: 'Filter tree'
-        run: |
-          git filter-branch --prune-empty --subdirectory-filter ${{ matrix.path }} --tag-name-filter cat HEAD
+        run: 'git filter-branch --prune-empty --subdirectory-filter "${{ matrix.path }}" --tag-name-filter cat HEAD'
+
+      - name: 'Output last 10 commits'
+        run: 'git log -n 10'
 
       - name: 'Push to component repository'
         env:
           REMOTE: "${{ format('https://{2}@github.com/{0}/{1}.git', github.repository_owner, matrix.repo, secrets.PERSONAL_ACCESS_TOKEN) }}"
-        run: |
-          git push --force --tags "${REMOTE}" HEAD
+        run: 'echo "${REMOTE}" | head -c18; git push --force --tags "${REMOTE}" HEAD'
