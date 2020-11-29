@@ -1,1 +1,1 @@
-<?= 'hello world with cache' ?>
+<?= 'hello world with swapped single and double quotes' ?>

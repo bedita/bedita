@@ -23,7 +23,7 @@ jobs:
         uses: 'actions/cache@v2'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
-          key: 'composer-${{ github.job }}-${{ hashFiles("**/composer.json") }}'
+          key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: |
             composer-${{ github.job }}-
             composer-
@@ -55,7 +55,7 @@ jobs:
         uses: 'actions/cache@v2'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
-          key: 'composer-${{ github.job }}-${{ hashFiles("**/composer.json") }}'
+          key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: |
             composer-${{ github.job }}-
             composer-
@@ -117,7 +117,7 @@ jobs:
         uses: 'actions/cache@v2'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
-          key: 'composer-${{ matrix.php }}-${{ hashFiles("**/composer.json") }}'
+          key: "composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: |
             composer-${{ matrix.php }}-
             composer-
