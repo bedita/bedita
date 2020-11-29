@@ -20,7 +20,7 @@ jobs:
           php-version: '7.4'
           tools: 'composer:v1'
           extensions: 'mbstring, intl'
-          coverage: 'pcov'
+          coverage: 'none'
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
@@ -59,7 +59,7 @@ jobs:
           php-version: '7.4'
           tools: 'composer:v1, phpstan'
           extensions: 'mbstring, intl'
-          coverage: 'pcov'
+          coverage: 'none'
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
@@ -91,7 +91,6 @@ jobs:
       matrix:
         php:
           - '7.4'
-          - '7.3'
         db:
           - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
           - '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
@@ -99,6 +98,10 @@ jobs:
           - '{"vendor": "MariaDB", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - '{"vendor": "PostgreSQL", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@127.0.0.1:5432/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
         include:
+          - php: '7.3'
+            db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
+          - php: '7.3'
+            db: '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - php: '7.2'
             db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
           - php: '7.2'
@@ -156,6 +159,9 @@ jobs:
 
       - name: 'Install dependencies with Composer'
         run: 'composer install --prefer-dist --no-interaction'
+
+      - name: 'Setup PCOV clobber'
+        run: 'composer require pcov/clobber && vendor/bin/pcov clobber'
 
       - name: 'Run PHPUnit with coverage'
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
