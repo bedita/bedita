@@ -170,4 +170,4 @@ jobs:
         uses: 'codecov/codecov-action@v1'
         with:
           file: './clover.xml'
-          env_vars: PHP,db_dsn
+          env_vars: PHP_VERSION,DB_VENDOR
