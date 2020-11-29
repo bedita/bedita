@@ -24,11 +24,28 @@ jobs:
             --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
             ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
 
+  stan:
+    name: 'Static code analyzer'
+    runs-on: 'ubuntu-latest'
+    container: 'chialab/php:7.4'
+    continue-on-error: true
+
+    steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Install dependencies with Composer'
+        run: 'composer1 install --prefer-dist --no-interaction && composer1 require --dev phpstan/phpstan'
+
+      - name: 'Run PHP STAN'
+        run: |
+          vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
+
   unit:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, 'skip ci')"
     runs-on: 'ubuntu-latest'
-    container: 'chialab/php:${{ matrix.php }}'
+    container: 'chialab/php-dev:${{ matrix.php }}'
 
     strategy:
       fail-fast: false
@@ -37,12 +54,12 @@ jobs:
           - '7.3'
           - '7.4'
         db:
-          - '{"vendor": "SQLite", "dsn": "sqlite://tmp/test.sql", "image": "busybox"}'
-          - '{"vendor": "MySQL 5.6", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6"}'
-          - '{"vendor": "MySQL 5.7", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7"}'
-          # - '{"vendor": "MySQL 8.0", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0"}'
-          - '{"vendor": "MariaDB", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10"}'
-          - '{"vendor": "PostgreSQL", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13"}'
+          - '{"vendor": "SQLite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": ""}'
+          - '{"vendor": "MySQL 5.6", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MySQL 5.7", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          # - '{"vendor": "MySQL 8.0", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MariaDB", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "PostgreSQL", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
@@ -60,6 +77,7 @@ jobs:
           POSTGRES_USER: 'bedita'
           POSTGRES_PASSWORD: 'bedita'
           POSTGRES_DB: 'bedita'
+        options: '${{ fromJson(matrix.db).options }}'
 
     steps:
       - name: 'Checkout current revision'
@@ -69,7 +87,7 @@ jobs:
         run: 'composer1 install --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit'
-        run: 'vendor/bin/phpunit' # --coverage-clover=clover.xml'
+        run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
       # - name: 'Export coverage results'
       #   uses: 'codecov/codecov-action@v1'
