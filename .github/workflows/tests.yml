@@ -94,12 +94,12 @@ jobs:
           - '7.3'
           - '7.4'
         db:
-          - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": "--no-healthcheck"}'
-          - '{"vendor": "MySQL 5.6", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          # - '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "MariaDB", "pdo": "mysql", "dsn": "mysql://bedita:bedita@db/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - '{"vendor": "PostgreSQL", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@db/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "busybox", "options": "--health-cmd \"/bin/true\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MySQL 5.6", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.6", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          # - '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita?realVendor=mysql8", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "MariaDB", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - '{"vendor": "PostgreSQL", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@127.0.0.1:5432/bedita", "image": "postgres:13", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
@@ -117,6 +117,9 @@ jobs:
           POSTGRES_USER: 'bedita'
           POSTGRES_PASSWORD: 'bedita'
           POSTGRES_DB: 'bedita'
+        ports:
+          - '3306:3306'
+          - '5432:5432'
         options: '${{ fromJson(matrix.db).options }}'
 
     steps:

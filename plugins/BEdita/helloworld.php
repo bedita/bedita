@@ -1,1 +1,1 @@
-<?= 'hello world without our docker images' ?>
+<?= 'hello world with updated db_dsn' ?>
