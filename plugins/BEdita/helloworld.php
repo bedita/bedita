@@ -1,1 +1,1 @@
-<?= 'hello world with dangerous echo' ?>
+<?= 'hello world with correct credentials' ?>
