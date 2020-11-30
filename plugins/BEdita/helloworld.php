@@ -1,1 +1,1 @@
-<?= 'hello world without undesired interruptions' ?>
+<?= 'hello world with artifacts' ?>
