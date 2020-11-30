@@ -23,6 +23,9 @@ jobs:
     steps:
       - name: 'Checkout current revision'
         uses: 'actions/checkout@v2'
+        with:
+          token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+          fetch-depth: '0'
 
       - name: 'Filter tree'
         run: 'git filter-branch --prune-empty --subdirectory-filter "${{ matrix.path }}" --tag-name-filter cat HEAD'
@@ -32,5 +35,5 @@ jobs:
 
       - name: 'Push to component repository'
         env:
-          REMOTE: "${{ format('https://{2}:x-oauth-basic@github.com/{0}/{1}.git', github.repository_owner, matrix.repo, secrets.PERSONAL_ACCESS_TOKEN) }}"
+          REMOTE: "${{ format('https://github.com/{0}/{1}.git', github.repository_owner, matrix.repo) }}"
         run: 'git push --force --tags "${REMOTE}" HEAD'

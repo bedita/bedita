@@ -1,1 +1,1 @@
-<?= 'hello world with x-oauth-basic' ?>
+<?= 'hello token my old friend' ?>
