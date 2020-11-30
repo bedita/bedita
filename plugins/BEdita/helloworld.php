@@ -1,1 +1,1 @@
-<?= 'hello world with sane artifact name' ?>
+<?= 'hello world with fixed pcov directory' ?>

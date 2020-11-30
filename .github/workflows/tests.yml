@@ -140,9 +140,10 @@ jobs:
         uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '${{ matrix.php }}'
-          tools: 'composer:v1, phpstan'
+          tools: 'composer:v1'
           extensions: 'mbstring, intl, pdo_${{ fromJson(matrix.db).pdo }}'
           coverage: 'pcov'
+          ini-values: 'pcov.directory=., pcov.exclude="~vendor~"'
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
