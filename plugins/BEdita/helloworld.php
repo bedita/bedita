@@ -1,1 +1,1 @@
-<?= 'hello token my old friend' ?>
+<?= 'hello world without undesired interruptions' ?>
