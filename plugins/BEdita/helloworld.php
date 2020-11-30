@@ -1,1 +1,1 @@
-<?= 'hello world with correct credentials' ?>
+<?= 'hello world with x-oauth-basic' ?>

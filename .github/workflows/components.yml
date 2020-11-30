@@ -32,5 +32,5 @@ jobs:
 
       - name: 'Push to component repository'
         env:
-          REMOTE: "${{ format('https://{2}@github.com/{0}/{1}.git', github.repository_owner, matrix.repo, secrets.PERSONAL_ACCESS_TOKEN) }}"
+          REMOTE: "${{ format('https://{2}:x-oauth-basic@github.com/{0}/{1}.git', github.repository_owner, matrix.repo, secrets.PERSONAL_ACCESS_TOKEN) }}"
         run: 'git push --force --tags "${REMOTE}" HEAD'
