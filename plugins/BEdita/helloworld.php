@@ -1,1 +1,1 @@
-<?= 'hello world with artifacts' ?>
+<?= 'hello world with sane artifact name' ?>

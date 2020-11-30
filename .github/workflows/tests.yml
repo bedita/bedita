@@ -175,5 +175,5 @@ jobs:
       - name: 'Archive code coverage results'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: 'PHP ${{ matrix.php }} / ${{ fromJson(matrix.db).vendor }}'
+          name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
