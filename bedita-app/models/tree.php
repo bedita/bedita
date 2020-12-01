@@ -374,11 +374,13 @@ class Tree extends BEAppModel
 				"priority" => 1
 			);
 		} else {
-            $parentPath = $this->field("object_path", array("id" => $idParent));
-            if ($parentPath === false) {
-                $this->log('Error: object_path to use as parentPath not found for object id: ' . $idParent);
-                return false;
-            }
+			$parentPath = $this->field("object_path", array("id" => $idParent));
+			if ($parentPath === false) {
+				$this->log('Error: object_path to use as parentPath not found for object id: ' . $idParent);
+				$this->log('Tree->appendChildWorker(): no object_path for tree id ' . $idParent, 'tree');
+
+				return false;
+			}
 			$area_id = $this->getAreaIdByPath($parentPath);
             if (empty($priority)) {
     			$maxPriority = $this->field("priority", array("parent_id" => $idParent), "priority DESC");
