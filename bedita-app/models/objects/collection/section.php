@@ -102,9 +102,13 @@ class Section extends BeditaCollectionModel
 			return;
 		}
 		$tree = ClassRegistry::init('Tree');
+		$tree->create();
 
 		if (!isset($this->data[$this->name]['skipTreeUpdate']) || (isset($this->data[$this->name]['skipTreeUpdate']) && $this->data[$this->name]['skipTreeUpdate'] == false)) {
 			if ($tree->appendChild($this->id, $this->data[$this->name]['parent_id']) === false) {
+				$this->log('Error appendChild on Tree - id: ' . $this->id . ' parent_id: '  . $this->data[$this->name]['parent_id']);
+				$this->log('section->afterSave(): ' . json_encode($this->data), 'tree');
+
 				return false;
 			}
 			// save Tree.menu
