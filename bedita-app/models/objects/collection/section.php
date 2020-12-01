@@ -101,10 +101,12 @@ class Section extends BeditaCollectionModel
 		if (!$created) {
 			return;
 		}
-		$tree = ClassRegistry::init('Tree');
+        $tree = ClassRegistry::init('Tree');
+        $tree->create();
 
 		if (!isset($this->data[$this->name]['skipTreeUpdate']) || (isset($this->data[$this->name]['skipTreeUpdate']) && $this->data[$this->name]['skipTreeUpdate'] == false)) {
 			if ($tree->appendChild($this->id, $this->data[$this->name]['parent_id']) === false) {
+                $this->log('Error appendChild on Tree - id: ' . $this->id . ' parent_id: '  . $this->data[$this->name]['parent_id']);
 				return false;
 			}
 			// save Tree.menu
