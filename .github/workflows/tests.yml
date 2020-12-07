@@ -83,7 +83,7 @@ jobs:
 
   unit:
     name: 'Run unit tests'
-    if: "!contains(github.event.commits[0].message, 'skip ci')"
+    if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
     runs-on: 'ubuntu-18.04'
 
     strategy:
@@ -178,3 +178,41 @@ jobs:
         with:
           name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
+
+  unit-lowest:
+    name: 'Run unit tests with lowest-matching dependencies versions'
+    if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
+    runs-on: 'ubuntu-18.04'
+
+    env:
+      db_dsn: 'sqlite://tmp/test.sql'
+
+    steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '7.1'
+          tools: 'composer:v1'
+          extensions: 'mbstring, intl, pdo_sqlite'
+
+      - name: 'Discover Composer cache directory'
+        id: 'cachedir'
+        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
+
+      - name: 'Share Composer cache across runs'
+        uses: 'actions/cache@v2'
+        with:
+          path: '${{ steps.cachedir.outputs.path }}'
+          key: "composer-lowest-${{ hashFiles('**/composer.json') }}"
+          restore-keys: |
+            composer-lowest-
+            composer-
+
+      - name: 'Install dependencies with Composer'
+        run: 'composer update --prefer-lowest --prefer-dist --no-interaction'
+
+      - name: 'Run PHPUnit'
+        run: 'vendor/bin/phpunit'
