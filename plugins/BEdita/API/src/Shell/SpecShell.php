@@ -70,24 +70,16 @@ class SpecShell extends Shell
     public function generate()
     {
         $pluginLoaded = Plugin::loaded();
-        $pluginFolders = Configure::read('App.paths.plugins');
 
         foreach ($pluginLoaded as $plugin) {
-            $pluginPath = Plugin::path($plugin);
+            $path = $this->generatePluginDocs($plugin, $this->param('subdir'), $this->param('output'));
 
-            // check if plugin is in any 'App.paths.plugins' folder, to exclude core plugins
-            foreach ($pluginFolders as $pluginFolder) {
-                if ($pluginFolder === mb_substr($pluginPath, 0, mb_strlen($pluginFolder))) {
-                    $path = $this->generatePluginDocs($plugin, $this->param('subdir'), $this->param('output'));
-
-                    if (!$path) {
-                        $this->warn("Could not generate docs for '$plugin' plugin");
-                        continue;
-                    }
-
-                    $this->success("Generated documentation for '$plugin' plugin in $path");
-                }
+            if (!$path) {
+                $this->warn("Could not generate docs for '$plugin' plugin");
+                continue;
             }
+
+            $this->success("Generated documentation for '$plugin' plugin in $path");
         }
     }
 
