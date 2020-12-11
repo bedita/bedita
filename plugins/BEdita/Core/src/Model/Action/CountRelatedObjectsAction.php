@@ -108,6 +108,7 @@ class CountRelatedObjectsAction extends BaseAction
 
         if ($this->getConfig('hydrate') === true) {
             $this->hydrateCount($entities, $result);
+            $this->fillMissingCount($entities, $count);
         }
 
         return $result;
@@ -205,11 +206,11 @@ class CountRelatedObjectsAction extends BaseAction
     /**
      * Hydrate count result into entities.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectEntity $entities The collection of entities
+     * @param \BEdita\Core\Model\Entity\ObjectEntity[] $entities The collection of entities
      * @param array $countResult The count result
      * @return void
      */
-    protected function hydrateCount($entities, array $countResult): void
+    protected function hydrateCount(array $entities, array $countResult): void
     {
         $relations = array_unique(Hash::extract($countResult, '{n}.relation_name'));
         $groupById = Hash::combine($countResult, '{n}.relation_name', '{n}.count', '{n}.id');
@@ -222,6 +223,30 @@ class CountRelatedObjectsAction extends BaseAction
             }
 
             $object->set('_countData', $count);
+        }
+    }
+
+    /**
+     * Fill entities with count = 0 where missing, for the relationships passed.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity[] $entities The collection of entities
+     * @param array $relations The relations to fill
+     * @return void
+     */
+    protected function fillMissingCount(array $entities, array $relations)
+    {
+        $count = array_fill_keys($relations, 0);
+        foreach ($entities as $entity) {
+            $countData = (array)$entity->get('_countData');
+            $entity->set('_countData', $countData + $count);
+
+            foreach ($relations as $rel) {
+                if (!$entity->has($rel)) {
+                    continue;
+                }
+
+                $this->fillMissingCount((array)$entity->get($rel), $relations);
+            }
         }
     }
 
