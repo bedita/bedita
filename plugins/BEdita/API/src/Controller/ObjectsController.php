@@ -13,8 +13,8 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
-use BEdita\Core\Model\Action\CountRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
@@ -43,6 +43,7 @@ use Cake\Utility\Inflector;
  */
 class ObjectsController extends ResourcesController
 {
+    use ActionTrait;
 
     /**
      * {@inheritDoc}
@@ -199,6 +200,7 @@ class ObjectsController extends ResourcesController
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
+            $this->addCount($data->toArray());
         }
 
         $this->set(compact('data'));
@@ -237,10 +239,7 @@ class ObjectsController extends ResourcesController
             'lang' => $this->request->getQuery('lang'),
         ]);
 
-        if ($this->request->is('get') && !empty($this->request->getQuery('count'))) {
-            $action = new CountRelatedObjectsAction();
-            $action(['entities' => [$entity], 'count' => $this->request->getQuery('count')]);
-        }
+        $this->addCount([$entity]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -305,10 +304,7 @@ class ObjectsController extends ResourcesController
             $objects = $this->paginate($objects);
         }
 
-        if (!empty($this->request->getQuery('count'))) {
-            $action = new CountRelatedObjectsAction();
-            $action(['entities' => $objects->toArray(), 'count' => $this->request->getQuery('count')]);
-        }
+        $this->addCount($objects->toArray());
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
@@ -447,5 +443,23 @@ class ObjectsController extends ResourcesController
         }
 
         return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
+    }
+
+    /**
+     * Add count data to the entities when query string `count` is present.
+     *
+     * @param array|\Cake\Collection\CollectionInterface $entities List of entities
+     * @return void
+     */
+    protected function addCount($entities): void
+    {
+        $count = $this->request->getQuery('count');
+        if (empty($count)) {
+            return;
+        }
+
+        /** @var \BEdita\Core\Model\Action\CountRelatedObjectsAction $action */
+        $action = $this->createAction('CountRelatedObjectsAction');
+        $action(compact('entities', 'count'));
     }
 }
