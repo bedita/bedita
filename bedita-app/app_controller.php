@@ -357,13 +357,9 @@ class AppController extends Controller {
             return;
         }
 
-        // if params doesn't contain url.url, skip update history
-        if (Set::check($this->params, 'url.url') === false) {
-            return;
-        }
-
-        // if params.url.url is /, skip update history
-        if ($this->params['url']['url'] === '/') {
+        $url = Set::classicExtract($this->params, 'url.url');
+        if (empty($url) || $url === '/') {
+            // if params doesn't contain url.url, or url is /, skip update history
             return;
         }
 
