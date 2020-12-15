@@ -370,7 +370,7 @@ class AppController extends Controller {
 
         // update history
         $historyModel = ClassRegistry::init('History');
-        $this->historyItem['url'] = sprintf('/%s', ltrim($this->params['url']['url'], '/'); // Prepend slash without duplicating.
+        $this->historyItem['url'] = sprintf('/%s', ltrim($this->params['url']['url'], '/')); // Prepend slash without duplicating.
         $user = $this->BeAuth->getUserSession();
         if (!empty($user)) {
             $this->historyItem['user_id'] = $user['id'];
