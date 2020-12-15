@@ -1,0 +1,16 @@
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
+checks:
+  php: true
+
+filter:
+  paths:
+    - 'bedita-app/*'
+  dependency_paths:
+    - 'vendors/*'
+    - 'bedita-app/vendors/*'
