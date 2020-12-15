@@ -351,25 +351,40 @@ class AppController extends Controller {
     }
 
     protected function updateHistory() {
-        // save history if configured
-        if ($this->params['url']['url'] != '/') {
-            $historyConf = Configure::read('history');
-            if ( !empty($historyConf) && $this->historyItem !== null && !$this->RequestHandler->isAjax() && !$this->RequestHandler->isFlash()) {
-                $historyModel = ClassRegistry::init('History');
-                $this->historyItem['url'] = ($this->params['url']['url']{0} != '/')? '/' . $this->params['url']['url'] : $this->params['url']['url'];
-                $user = $this->BeAuth->getUserSession();
-                if (!empty($user)) {
-                    $this->historyItem['user_id'] = $user['id'];
-                    if (!$historyModel->save($this->historyItem)) {
-                        return;
-                    }
-                    $this->historyItem['id'] = $historyModel->id;
-                    $this->BeAuth->updateSessionHistory($this->historyItem, $historyConf);
-                } elseif (!empty($historyConf['trackNotLogged'])) {
-                    $historyModel->save($this->historyItem);
-                }
+        // if no history config, skip update history
+        $historyConf = Configure::read('history');
+        if (empty($historyConf) || empty($this->historyItem)) {
+            return;
+        }
 
+        // if params doesn't contain url.url, skip update history
+        if (Set::check($this->params, 'url.url') === false) {
+            return;
+        }
+
+        // if params.url.url is /, skip update history
+        if ($this->params['url']['url'] === '/') {
+            return;
+        }
+
+        // if ajax or flash request, skip update history
+        if ($this->RequestHandler->isAjax() || $this->RequestHandler->isFlash()) {
+            return;
+        }
+
+        // update history
+        $historyModel = ClassRegistry::init('History');
+        $this->historyItem['url'] = ($this->params['url']['url']{0} != '/')? '/' . $this->params['url']['url'] : $this->params['url']['url'];
+        $user = $this->BeAuth->getUserSession();
+        if (!empty($user)) {
+            $this->historyItem['user_id'] = $user['id'];
+            if (!$historyModel->save($this->historyItem)) {
+                return;
             }
+            $this->historyItem['id'] = $historyModel->id;
+            $this->BeAuth->updateSessionHistory($this->historyItem, $historyConf);
+        } elseif (!empty($historyConf['trackNotLogged'])) {
+            $historyModel->save($this->historyItem);
         }
     }
 
