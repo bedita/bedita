@@ -91,7 +91,29 @@ class CountRelatedObjectsAction extends BaseAction
      * - `count` a comma separated list of relations you want to count.
      *   Set to 'all' to count all relations.
      *
-     * The returned result will be an array with id as keys and containg count by relations as values.
+     * If the action is configured to hydrate entities (default) then the `_countData` property
+     * of every entity involved will be populated.
+     *
+     * The returned result will be an array with items compsed by id and count by relations.
+     *
+     * ```
+     * [
+     *     [
+     *         'id' => 5,
+     *         'count' => [
+     *             'relation_name_one' => 2,
+     *             'relation_name_two' => 8,
+     *         ],
+     *     ],
+     *     [
+     *         'id' => 9,
+     *         'count' => [
+     *             'relation_name_one' => 0,
+     *             'relation_name_two' => 3,
+     *         ],
+     *     ],
+     * ]
+     * ```
      */
     public function execute(array $data = []): array
     {
@@ -248,28 +270,32 @@ class CountRelatedObjectsAction extends BaseAction
      * Hydrate count result into entities.
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity[] $entities The collection of entities
-     * @param array $countById The count result by id
+     * @param array $countData The count data
      * @param array $properties A list of properties on which search
      * @return void
      */
-    protected function hydrateCount(array $entities, array $countById, array $properties = []): void
+    protected function hydrateCount(array $entities, array $countData, array $properties = []): void
     {
-        foreach ($countById as $id => $count) {
+        foreach ($countData as $data) {
+            if (!array_key_exists('id', $data) || !array_key_exists('count', $data)) {
+                continue;
+            }
+
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
-            $object = $this->searchEntityById($id, $entities, $properties);
+            $object = $this->searchEntityById($data['id'], $entities, $properties);
             if (!$object) {
                 continue;
             }
 
-            $object->set('_countData', $count);
+            $object->set('_countData', $data['count']);
         }
     }
 
     /**
      * Group count result by id and relation.
-     * All relations that missing from `$countData` will be filled to zero.
+     * All relations that missing from `$countData` will be filled with zero.
      *
-     * The count data as
+     * For example the count data as
      *
      * ```
      * [
@@ -290,10 +316,13 @@ class CountRelatedObjectsAction extends BaseAction
      *
      * ```
      * [
-     *     15 => [
-     *         'relation_one' => 2,
-     *         'relation_two' => 6,
-     *         'relation_three' => 0, // present in $relations but missing from count data
+     *     [
+     *         'id' => 15,
+     *         'count' => [
+     *             'relation_one' => 2,
+     *             'relation_two' => 6,
+     *             'relation_three' => 0, // present in $relations but missing from count data
+     *         ],
      *     ],
      * ]
      * ```
@@ -306,18 +335,20 @@ class CountRelatedObjectsAction extends BaseAction
     protected function groupResultCountById(array $ids, array $countData, array $relations): array
     {
         $countById = Hash::combine($countData, '{n}.relation_name', '{n}.count', '{n}.id');
-        $count = array_fill_keys($relations, 0);
+        $baseCount = array_fill_keys($relations, 0);
+        $countResult = [];
         foreach ($ids as $id) {
-            if (array_key_exists($id, $countById)) {
-                $countById[$id] += $count;
-
-                continue;
+            if (!array_key_exists($id, $countById)) {
+                $countById[$id] = [];
             }
 
-            $countById[$id] = $count;
+            $countResult[] = [
+                'id' => $id,
+                'count' => $countById[$id] + $baseCount,
+            ];
         }
 
-        return $countById;
+        return $countResult;
     }
 
     /**
