@@ -371,7 +371,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param int $id The entity id to look for
      * @param \Cake\Datasource\EntityInterface[] $entities The enitites on which search
      * @param array $properties A list of properties
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return array
      */
     protected function searchEntitiesById($id, $entities, array $properties): array
     {
