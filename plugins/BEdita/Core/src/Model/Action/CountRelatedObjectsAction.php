@@ -120,9 +120,9 @@ class CountRelatedObjectsAction extends BaseAction
         list($directCount, $inverseCount) = $this->filterCount(Hash::get($data, 'count'));
         $count = array_merge($directCount, $inverseCount);
         /** @var \BEdita\Core\Model\Entity\ObjectEntity[] $entities*/
-        $entities = (array)$data['entities'];
+        $entities = (array)Hash::get($data, 'entities');
         if (empty($entities) || empty($count)) {
-            return $entities;
+            return [];
         }
 
         $allRelations = $this->getRelationsList();
@@ -130,6 +130,9 @@ class CountRelatedObjectsAction extends BaseAction
 
         // extract all entity ids
         $ids = $this->extractIds($entities, $allRelations);
+        if (empty($ids)) {
+            return [];
+        }
 
         $directResult = $inverseResult = [];
         if (!empty($directCount)) {
@@ -140,7 +143,10 @@ class CountRelatedObjectsAction extends BaseAction
             $inverseResult = $this->countRelations($inverseCount, $ids, true)->toArray();
         }
 
-        $result = $this->groupResultCountById($ids, array_merge($directResult, $inverseResult), $count);
+        // the merge order here is important
+        // it ensures that $directResult wins in case of duplication
+        // for example if direct and inverse relation have the same name
+        $result = $this->groupResultCountById($ids, array_merge($inverseResult, $directResult), $count);
 
         if ($this->getConfig('hydrate') === true) {
             $this->hydrateCount($entities, $result, $allRelations);
@@ -184,10 +190,12 @@ class CountRelatedObjectsAction extends BaseAction
             return $this->relationsList;
         }
 
-        return $this->Relations->find('list', [
+        $this->relationsList = $this->Relations->find('list', [
             'keyField' => 'name',
             'valueField' => 'inverse_name',
         ])->toArray();
+
+        return $this->relationsList;
     }
 
     /**
@@ -202,6 +210,10 @@ class CountRelatedObjectsAction extends BaseAction
      */
     protected function filterCount($count): array
     {
+        if (empty($count)) {
+            return [[], []];
+        }
+
         $relations = $this->getRelationsList();
 
         if ($count === static::COUNT_ALL) {
@@ -210,9 +222,6 @@ class CountRelatedObjectsAction extends BaseAction
 
         if (is_string($count)) {
             $count = explode(',', $count);
-        }
-        if (empty($count)) {
-            return [];
         }
 
         $direct = array_intersect($count, array_flip($relations));
@@ -282,12 +291,14 @@ class CountRelatedObjectsAction extends BaseAction
             }
 
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
-            $object = $this->searchEntityById($data['id'], $entities, $properties);
-            if (!$object) {
+            $objects = $this->searchEntitiesById($data['id'], $entities, $properties);
+            if (empty($objects)) {
                 continue;
             }
 
-            $object->set('_countData', $data['count']);
+            foreach ($objects as $object) {
+                $object->set('_countData', $data['count']);
+            }
         }
     }
 
@@ -352,60 +363,52 @@ class CountRelatedObjectsAction extends BaseAction
     }
 
     /**
-     * Search an entity by `$id` from a collection of entities.
+     * Search entities by `$id` from a collection of entities.
      * The search is done in the passed `$properties` too.
+     *
+     * Return all entities with searched id.
      *
      * @param int $id The entity id to look for
      * @param \Cake\Datasource\EntityInterface[] $entities The enitites on which search
      * @param array $properties A list of properties
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function searchEntityById($id, $entities, array $properties): ?EntityInterface
+    protected function searchEntitiesById($id, $entities, array $properties): array
     {
+        $entitiesFound = [];
         foreach ($entities as $entity) {
             if ($entity->id === $id) {
-                return $entity;
+                $entitiesFound[] = $entity;
+
+                continue;
             }
 
-            $found = $this->searchEntityInProperties($id, $entity, $properties);
-            if ($found !== null) {
-                return $found;
-            }
+            $found = $this->searchEntitiesInProperties($id, $entity, $properties);
+            $entitiesFound = array_merge($entitiesFound, $found);
         }
 
-        return null;
+        return $entitiesFound;
     }
 
     /**
-     * Search an entity by id looking in passed `$entity` properties.
+     * Search entities by id looking in passed `$entity` properties.
      *
      * @param int $id The id to search
      * @param EntityInterface $entity The starting entity
      * @param array $properties A list of properties to look in
-     * @return EntityInterface|null
+     * @return array
      */
-    protected function searchEntityInProperties($id, EntityInterface $entity, array $properties): ?EntityInterface
+    protected function searchEntitiesInProperties($id, EntityInterface $entity, array $properties): array
     {
-        foreach ($properties as $prop) {
-            if (!$entity->has($prop)) {
-                continue;
-            }
+        return collection(array_filter($entity->extract($properties)))
+            ->unfold()
+            ->filter(function ($item) use ($id) {
+                if (!$item instanceof EntityInterface) {
+                    return false;
+                }
 
-            $found = collection($entity->get($prop))
-                ->filter(function ($item) use ($id) {
-                    if (!$item instanceof EntityInterface) {
-                        return false;
-                    }
-
-                    return $item->id === $id;
-                })
-                ->first();
-
-            if (!empty($found)) {
-                return $found;
-            }
-        }
-
-        return null;
+                return $item->id === $id;
+            })
+            ->toList();
     }
 }
