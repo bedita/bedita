@@ -43,6 +43,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::addCount()
      */
     public function testIndex()
     {
@@ -751,6 +752,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::addCount()
      */
     public function testSingle()
     {
@@ -1286,6 +1288,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::getAvailableUrl()
      * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
+     * @covers ::addCount()
      */
     public function testRelated()
     {
@@ -2680,5 +2683,24 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         static::assertNotEmpty($result['included']);
         static::assertEquals($expected, $result['included']);
+    }
+
+    /**
+     * Test addCount()
+     *
+     * @return void
+     *
+     * @covers ::addCount()
+     */
+    public function testAddCount(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents/2?count=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertEquals(2, Hash::get($result, 'data.relationships.test.meta.count'));
     }
 }
