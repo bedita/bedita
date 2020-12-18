@@ -20,7 +20,9 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\CountRelatedObjectsAction
+ * {@see \BEdita\Core\Model\Action\CountRelatedObjectsAction} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Action\CountRelatedObjectsAction
  */
 class CountRelatedObjectsActionTest extends TestCase
 {
@@ -352,6 +354,15 @@ class CountRelatedObjectsActionTest extends TestCase
      * @param mixed $count Relations to count
      * @return void
      *
+     * @covers ::execute()
+     * @covers ::extractIds()
+     * @covers ::getRelationsList()
+     * @covers ::filterCount()
+     * @covers ::countRelations()
+     * @covers ::hydrateCount()
+     * @covers ::groupResultCountById()
+     * @covers ::searchEntitiesById()
+     * @covers ::searchEntitiesInProperties()
      * @dataProvider executeProvider
      */
     public function testExecute(array $expected, array $contain, $count): void
@@ -403,6 +414,9 @@ class CountRelatedObjectsActionTest extends TestCase
      * it will return an empty array
      *
      * @return void
+     *
+     * @covers ::execute()
+     * @covers ::extractIds()
      */
     public function testNotObjectEntity(): void
     {
@@ -418,6 +432,9 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that passing empty count will return empty array.
      *
      * @return void
+     *
+     * @covers ::execute()
+     * @covers ::filterCount()
      */
     public function testEmptyCount(): void
     {
@@ -431,6 +448,8 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that setting `hydrate` to false the entity will be untouched.
      *
      * @return void
+     *
+     * @covers ::execute()
      */
     public function testNoHydrate(): void
     {
@@ -451,6 +470,9 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that the entities hydration was skipped if missing `id` or `count`.
      *
      * @return void
+     *
+     * @covers ::execute()
+     * @covers ::hydrateCount()
      */
     public function testHydrateCountNotValidCountData(): void
     {
@@ -490,6 +512,9 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that entity count won't be hydrated if id of count data is not found.
      *
      * @return void
+     *
+     * @covers ::hydrateCount()
+     * @covers ::searchEntitiesById()
      */
     public function testHydrateCountNotFoundObject(): void
     {

@@ -76,6 +76,7 @@ class CountRelatedObjectsAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     protected function initialize(array $config): void
     {
