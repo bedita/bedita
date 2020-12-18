@@ -302,9 +302,8 @@ class ObjectsController extends ResourcesController
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
+            $this->addCount($objects->toArray());
         }
-
-        $this->addCount($objects->toArray());
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
