@@ -365,7 +365,7 @@ trait JsonApiTrait
      * @param string $relationship The relationship name
      * @return int|null
      */
-    public function getRelationshipCount($relationship)
+    public function getRelationshipCount(string $relationship): ?int
     {
         $count = Hash::get((array)$this->get('_countData'), $relationship);
         if (is_numeric($count)) {

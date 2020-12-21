@@ -570,7 +570,7 @@ class ObjectEntityTest extends TestCase
      *
      * @covers ::getRelationships()
      */
-    public function testGetRelationshipsCount()
+    public function testGetRelationshipsCount(): void
     {
         $count = ['test' => 12];
         $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();

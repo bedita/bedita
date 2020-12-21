@@ -672,7 +672,7 @@ class JsonApiTraitTest extends TestCase
      * @covers ::getRelationshipCount()
      * @dataProvider metaCountProvider()
      */
-    public function testJsonApiSerializeCount($expected, $count)
+    public function testJsonApiSerializeCount($expected, $count): void
     {
         $role = $this->Roles->get(1);
         $role->set('_countData', ['users' => $count]);
