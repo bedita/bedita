@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -42,6 +43,7 @@ use Cake\Utility\Inflector;
  */
 class ObjectsController extends ResourcesController
 {
+    use ActionTrait;
 
     /**
      * {@inheritDoc}
@@ -198,6 +200,7 @@ class ObjectsController extends ResourcesController
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
+            $this->addCount($data->toArray());
         }
 
         $this->set(compact('data'));
@@ -235,6 +238,8 @@ class ObjectsController extends ResourcesController
             'contain' => $contain,
             'lang' => $this->request->getQuery('lang'),
         ]);
+
+        $this->addCount([$entity]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -297,6 +302,7 @@ class ObjectsController extends ResourcesController
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
+            $this->addCount($objects->toArray());
         }
 
         $this->set('_fields', $this->request->getQuery('fields', []));
@@ -436,5 +442,23 @@ class ObjectsController extends ResourcesController
         }
 
         return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
+    }
+
+    /**
+     * Add count data to the entities when query string `count` is present.
+     *
+     * @param array|\Cake\Collection\CollectionInterface $entities List of entities
+     * @return void
+     */
+    protected function addCount($entities): void
+    {
+        $count = $this->request->getQuery('count');
+        if (empty($count)) {
+            return;
+        }
+
+        /** @var \BEdita\Core\Model\Action\CountRelatedObjectsAction $action */
+        $action = $this->createAction('CountRelatedObjectsAction');
+        $action(compact('entities', 'count'));
     }
 }

@@ -237,6 +237,12 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                 $relationships[$relationship] += compact('data');
                 unset($data);
             }
+            $count = $this->getRelationshipCount($relationship);
+            if ($count !== null) {
+                $relationships[$relationship] += [
+                    'meta' => compact('count'),
+                ];
+            }
         }
 
         return [$relationships, $included];
