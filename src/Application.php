@@ -126,7 +126,7 @@ class Application extends BaseApplication
             ->add(ErrorHandlerMiddleware::class)
 
             // Add routing middleware.
-            ->add(new RoutingMiddleware($this));
+            ->add(new RoutingMiddleware($this, '_cake_core_'));
 
         return $middlewareQueue;
     }
