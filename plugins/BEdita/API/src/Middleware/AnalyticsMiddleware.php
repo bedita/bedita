@@ -14,6 +14,7 @@ namespace BEdita\API\Middleware;
 
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
+use BEdita\Core\Utility\Timer;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\Log;
 use Psr\Http\Message\ResponseInterface;
@@ -29,13 +30,6 @@ class AnalyticsMiddleware
     use EventDispatcherTrait;
 
     /**
-     * Request start time
-     *
-     * @var float
-     */
-    protected $startTime = null;
-
-    /**
      * Analytics data
      *
      * @var array
@@ -48,11 +42,6 @@ class AnalyticsMiddleware
      */
     public function __construct()
     {
-        $this->startTime = microtime(true);
-        if (defined('TIME_START')) {
-            $this->startTime = TIME_START;
-        }
-
         if (!in_array('analytics', Log::configured())) {
             Log::setConfig('analytics', [
                 'className' => 'File',
@@ -61,17 +50,6 @@ class AnalyticsMiddleware
                 'file' => 'analytics',
             ]);
         }
-    }
-
-    /**
-     * Getter for $startTime
-     *
-     * @return float
-     * @codeCoverageIgnore
-     */
-    public function getStartTime()
-    {
-        return $this->startTime;
     }
 
     /**
@@ -143,8 +121,9 @@ class AnalyticsMiddleware
             's' => $response->getStatusCode(),
             'c' => $this->getAppErrorCode($response),
             'x' => $this->readCustomData($request, $response),
+            'st' => Timer::calcSplitTimes(),
         ];
-        $this->data['e'] = round(microtime(true) - $this->startTime, 4, PHP_ROUND_HALF_EVEN);
+        $this->data['e'] = Timer::elapsed();
 
         Log::info(json_encode($this->data), 'analytics');
 
