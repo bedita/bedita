@@ -54,7 +54,10 @@ class StatusController extends AppController
             return $this->response;
         }
 
-        $status = System::status();
+        $status = [];
+        if (empty($this->request->getQuery('avoid-check'))) {
+            $status = System::status();
+        }
         $this->set('_meta', compact('status'));
         $this->set('_serialize', []);
 
