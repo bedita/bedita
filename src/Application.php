@@ -126,7 +126,7 @@ class Application extends BaseApplication
             ->add(ErrorHandlerMiddleware::class)
 
             // Add routing middleware.
-            ->add(new RoutingMiddleware($this, '_cake_core_'));
+            ->add(new RoutingMiddleware($this, '_bedita_core_'));
 
         return $middlewareQueue;
     }

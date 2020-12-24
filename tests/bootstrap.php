@@ -26,7 +26,7 @@ $app = new Application(dirname(__DIR__) . '/config');
 $app->bootstrap();
 $app->pluginBootstrap();
 
-TableRegistry::clear();
+TableRegistry::getTableLocator()->clear();
 
 if (getenv('db_dsn')) {
     ConnectionManager::drop('test');
@@ -38,6 +38,8 @@ if (!defined('API_KEY')) {
 
 Cache::drop('_bedita_object_types_');
 Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
+Cache::drop('_bedita_core_');
+Cache::setConfig('_bedita_core_', ['className' => 'Null']);
 
 if (getenv('DEBUG_LOG_QUERIES')) {
     ConnectionManager::get('test')->logQueries(true);
