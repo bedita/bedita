@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Configure\Engine;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception;
 use Cake\Database\Expression\QueryExpression;
@@ -32,6 +33,13 @@ use Cake\ORM\TableRegistry;
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
+    /**
+     * Cache config name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
+
     /**
      * Application id
      *
@@ -57,14 +65,33 @@ class DatabaseConfig implements ConfigEngineInterface
     }
 
     /**
-     * Read from DB (or cache) $key group of paramenters (see database `config.context`)
+     * Read `$key` parameters group from database using cache.
+     *
+     * @param string!null $key The group of parameters to read from database (see `config.context`).
+     * @return array Parsed configuration values.
+     */
+    public function read($key): array
+    {
+        $cacheKey = sprintf('db_conf_%s_%d', $key, $this->applicationId);
+
+        return (array)Cache::remember(
+            $cacheKey,
+            function () use ($key) {
+                return $this->fetchConfig($key);
+            },
+            self::CACHE_CONFIG
+        );
+    }
+
+    /**
+     * Read configuration from DB of `$key` parameters group (see database `config.context`)
      * and return the results as an array.
      *
-     * @param string $key The group of parameters to read from database (see `config.context`).
+     * @param string|null $key The group of parameters to read from database (see `config.context`).
      * @return array Parsed configuration values.
      * @throws \Cake\Core\Exception\Exception when parameter group is not found
      */
-    public function read($key = null)
+    protected function fetchConfig(?string $key): array
     {
         $values = [];
         $config = TableRegistry::getTableLocator()->get('Config');
@@ -77,7 +104,7 @@ class DatabaseConfig implements ConfigEngineInterface
         } else {
             $query->andWhere(['application_id IS' => null]);
         }
-        if ($key) {
+        if (!empty($key)) {
             $query->andWhere(['context' => $key]);
         }
         $results = $query->all();
