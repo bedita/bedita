@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\State;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -51,6 +52,7 @@ class CurrentApplicationTest extends TestCase
         parent::setUp();
 
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**
