@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -16,6 +16,7 @@ namespace BEdita\Core\State;
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\SingletonTrait;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
@@ -27,6 +28,13 @@ use Cake\ORM\TableRegistry;
 class CurrentApplication
 {
     use SingletonTrait;
+
+    /**
+     * Cache config name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * Current application entity.
@@ -121,12 +129,22 @@ class CurrentApplication
      *
      * @param string $apiKey API key.
      * @return void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
      */
     public static function setFromApiKey($apiKey)
     {
-        static::getInstance()->set(
-            TableRegistry::getTableLocator()->get('Applications')->find('apiKey', compact('apiKey'))->firstOrFail()
+        $app = Cache::remember(
+            'app_' . $apiKey,
+            function () use ($apiKey) {
+                return TableRegistry::getTableLocator()
+                    ->get('Applications')
+                    ->find('apiKey', compact('apiKey'))
+                    ->firstOrFail();
+            },
+            self::CACHE_CONFIG
         );
+
+        static::getInstance()->set($app);
     }
 
     /**
