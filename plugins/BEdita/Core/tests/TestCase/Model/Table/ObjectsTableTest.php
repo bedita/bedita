@@ -341,6 +341,28 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Test finder for edited objects.
+     *
+     * @return void
+     *
+     * @covers ::findEdited()
+     */
+    public function testFindEdited()
+    {
+        $expected = $this->Objects->find()
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->where(['OR' => ['created_by' => 5, 'modified_by' => 5]])
+            ->toArray();
+
+        LoggedUser::setUser(['id' => 5]);
+        $result = $this->Objects->find('edited')
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        static::assertEquals($expected, $result);
+    }
+
+    /**
      * Test save emojis in text fields.
      *
      * @return void
