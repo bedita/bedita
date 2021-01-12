@@ -13,7 +13,10 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Application;
+use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
+use BEdita\Core\Model\Entity\Role;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -366,11 +369,11 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * Data provder for `testSetEndpoint()`
+     * Data provder for `testSetEndpointName()`
      *
      * @return array
      */
-    public function setEndpointProvider(): array
+    public function setEndpointNameProvider(): array
     {
         return [
             'null' => [
@@ -389,16 +392,16 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * Test magic setter for endpoint.
+     * Test magic setter for endpoint_name.
      *
      * @param mixed $expected The expected data
      * @param string $name The endpoint name
      * @return void
      *
-     * @covers ::_setEndpoint()
-     * @dataProvider setEndpointProvider()
+     * @covers ::_setEndpointName()
+     * @dataProvider setEndpointNameProvider()
      */
-    public function testSetEndpoint($expected, ?string $name): void
+    public function testSetEndpointName($expected, ?string $name): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(RecordNotFoundException::class);
@@ -406,16 +409,26 @@ class EndpointPermissionTest extends TestCase
         }
 
         $entity = new EndpointPermission();
-        $entity->set('endpoint', $name);
-        static::assertEquals($expected, $entity->get('endpoint_id'));
+        $entity->set('endpoint_name', $name);
+        $endpoint = $entity->endpoint;
+        if ($expected === null) {
+            static::assertNull($endpoint);
+            static::assertNull($entity->endpoint_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Endpoint::class, $endpoint);
+        static::assertEquals($expected, $endpoint->id);
+        static::assertEquals($expected, $entity->endpoint_id);
     }
 
     /**
-     * Data provder for `testSetRole()`
+     * Data provder for `testSetRoleName()`
      *
      * @return array
      */
-    public function setRoleProvider(): array
+    public function setRoleNameProvider(): array
     {
         return [
             'null' => [
@@ -434,16 +447,16 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * Test magic setter for role.
+     * Test magic setter for role_name.
      *
      * @param mixed $expected The expected data
      * @param string $name The role name
      * @return void
      *
-     * @covers ::_setRole()
-     * @dataProvider setRoleProvider()
+     * @covers ::_setRoleName()
+     * @dataProvider setRoleNameProvider()
      */
-    public function testSetRole($expected, ?string $name): void
+    public function testSetRoleName($expected, ?string $name): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(RecordNotFoundException::class);
@@ -451,16 +464,26 @@ class EndpointPermissionTest extends TestCase
         }
 
         $entity = new EndpointPermission();
-        $entity->set('role', $name);
-        static::assertEquals($expected, $entity->get('role_id'));
+        $entity->set('role_name', $name);
+        $role = $entity->role;
+        if ($expected === null) {
+            static::assertNull($role);
+            static::assertNull($entity->role_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Role::class, $role);
+        static::assertEquals($expected, $role->id);
+        static::assertEquals($expected, $entity->role_id);
     }
 
     /**
-     * Data provder for `testSetApplication()`
+     * Data provder for `testSetApplicationName()`
      *
      * @return array
      */
-    public function setApplicationProvider(): array
+    public function setApplicationNameProvider(): array
     {
         return [
             'null' => [
@@ -479,16 +502,16 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * Test magic setter for application.
+     * Test magic setter for application_name.
      *
      * @param mixed $expected The expected data
      * @param string $name The application name
      * @return void
      *
-     * @covers ::_setApplication()
-     * @dataProvider setApplicationProvider()
+     * @covers ::_setApplicationName()
+     * @dataProvider setApplicationNameProvider()
      */
-    public function testSetApplication($expected, ?string $name): void
+    public function testSetApplicationName($expected, ?string $name): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(RecordNotFoundException::class);
@@ -496,7 +519,17 @@ class EndpointPermissionTest extends TestCase
         }
 
         $entity = new EndpointPermission();
-        $entity->set('application', $name);
-        static::assertEquals($expected, $entity->get('application_id'));
+        $entity->set('application_name', $name);
+        $application = $entity->application;
+        if ($expected === null) {
+            static::assertNull($application);
+            static::assertNull($entity->application_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Application::class, $application);
+        static::assertEquals($expected, $application->id);
+        static::assertEquals($expected, $entity->application_id);
     }
 }

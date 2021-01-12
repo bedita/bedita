@@ -27,6 +27,9 @@ use Cake\ORM\TableRegistry;
  * @property int $permission
  * @property bool|string $read
  * @property bool|string $write
+ * @property string $endpoint_name (virtual prop)
+ * @property string $application_name (virtual prop)
+ * @property string $role_name (virtual prop)
  *
  * @property \BEdita\Core\Model\Entity\Endpoint|null $endpoint
  * @property \BEdita\Core\Model\Entity\Application|null $application
@@ -229,67 +232,73 @@ class EndpointPermission extends Entity
     }
 
     /**
-     * Setter for `endpoint` virtual property.
+     * Setter for `endpoint_name` virtual property.
      *
      * @param string $name The endpoint name
      * @return string|null
      */
-    protected function _setEndpoint(?string $name): ?string
+    protected function _setEndpointName(?string $name): ?string
     {
         if ($name === null) {
-            $this->endpoint_id = null;
+            $this->endpoint_id = $this->endpoint = null;
 
             return null;
         }
 
-        $this->endpoint_id = TableRegistry::getTableLocator()->get('Endpoints')
-            ->find('list', ['valueField' => 'id'])
+        $this->endpoint = TableRegistry::getTableLocator()->get('Endpoints')
+            ->find()
             ->where(['name' => $name])
             ->firstOrFail();
+
+        $this->endpoint_id = $this->endpoint->id;
 
         return $name;
     }
 
     /**
-     * Setter for `role` virtual property.
+     * Setter for `role_name` virtual property.
      *
      * @param string $name The role name
      * @return string|null
      */
-    protected function _setRole(?string $name): ?string
+    protected function _setRoleName(?string $name): ?string
     {
         if ($name === null) {
-            $this->role_id = null;
+            $this->role_id = $this->role = null;
 
             return null;
         }
 
-        $this->role_id = TableRegistry::getTableLocator()->get('Roles')
-            ->find('list', ['valueField' => 'id'])
+        $this->role = TableRegistry::getTableLocator()->get('Roles')
+            ->find()
             ->where(['name' => $name])
             ->firstOrFail();
+
+        $this->role_id = $this->role->id;
 
         return $name;
     }
 
     /**
-     * Setter for `application` virtual property.
+     * Setter for `application_name` virtual property.
      *
      * @param string $name The application name
      * @return string|null
      */
-    protected function _setApplication(?string $name): ?string
+    protected function _setApplicationName(?string $name): ?string
     {
         if ($name === null) {
-            $this->application_id = null;
+            $this->application_id = $this->application = null;
 
             return null;
         }
 
-        $this->application_id = TableRegistry::getTableLocator()->get('Applications')
-            ->find('list', ['valueField' => 'id'])
+        $this->application = TableRegistry::getTableLocator()->get('Applications')
+            ->find()
             ->where(['name' => $name])
             ->firstOrFail();
+
+        $this->application_id = $this->application->id;
 
         return $name;
     }
