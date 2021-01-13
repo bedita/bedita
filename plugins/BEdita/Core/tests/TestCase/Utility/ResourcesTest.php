@@ -264,14 +264,14 @@ class ResourcesTest extends TestCase
                 'endpoint_permissions',
                 [
                     [
-                        'application' => 'Disabled app',
-                        'endpoint' => 'home',
-                        'role' => 'second role',
+                        'application_name' => 'Disabled app',
+                        'endpoint_name' => 'home',
+                        'role_name' => 'second role',
                     ],
                     [
-                        'application' => 'First app',
-                        'endpoint' => null,
-                        'role' => null,
+                        'application_name' => 'First app',
+                        'endpoint_name' => null,
+                        'role_name' => null,
                     ],
                 ],
             ],
@@ -386,9 +386,9 @@ class ResourcesTest extends TestCase
                 'endpoint_permissions',
                 [
                     [
-                        'application' => 'Disabled app',
-                        'endpoint' => 'home',
-                        'role' => 'first role',
+                        'application_name' => 'Disabled app',
+                        'endpoint_name' => 'home',
+                        'role_name' => 'first role',
                         'permission' => 0b1111,
                     ],
                 ],

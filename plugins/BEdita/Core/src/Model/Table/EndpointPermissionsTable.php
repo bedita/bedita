@@ -198,9 +198,9 @@ class EndpointPermissionsTable extends Table
      * Find permissions by role, application and endpoint name.
      *
      * This finder accepts three options:
-     * - `endpoint``: the endpoint name
-     * - `role`: the role name
-     * - `application`: the application name
+     * - `endpoint_name``: the endpoint name
+     * - `role_name`: the role name
+     * - `application_name`: the application name
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Additional options.
@@ -208,9 +208,9 @@ class EndpointPermissionsTable extends Table
      */
     protected function findResource(Query $query, array $options): Query
     {
-        $endpoint = Hash::get($options, 'endpoint');
-        $role = Hash::get($options, 'role');
-        $application = Hash::get($options, 'application');
+        $endpoint = Hash::get($options, 'endpoint_name');
+        $role = Hash::get($options, 'role_name');
+        $application = Hash::get($options, 'application_name');
 
         if ($endpoint === null) {
             $query = $query->whereNull('endpoint_id');
