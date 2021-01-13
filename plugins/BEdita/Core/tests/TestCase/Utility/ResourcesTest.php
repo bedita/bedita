@@ -131,6 +131,14 @@ class ResourcesTest extends TestCase
                         'description' => 'handle pets with care',
                     ]
                 ],
+                'endpoints with object type',
+                [
+                    [
+                        'name' => 'pets',
+                        'description' => 'handle pets with care',
+                        'object_type_name' => 'documents',
+                    ]
+                ],
             ],
             'endpoint_permissions' => [
                 'endpoint_permissions',
@@ -379,6 +387,13 @@ class ResourcesTest extends TestCase
                     [
                         'name' => 'disabled',
                         'enabled' => 1,
+                    ]
+                ],
+                'endpoints with object type',
+                [
+                    [
+                        'name' => 'disabled',
+                        'object_type_name' => 'documents',
                     ]
                 ],
             ],

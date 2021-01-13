@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Endpoint Entity
@@ -26,6 +27,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $modified
  * @property bool $enabled
  * @property int $object_type_id
+ * @property string $object_type_name (virtual prop)
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
@@ -45,4 +47,23 @@ class Endpoint extends Entity implements JsonApiSerializable
         'created' => false,
         'modified' => false,
     ];
+
+    /**
+     * Setter for `object_type_name` virtual property.
+     *
+     * @param string $name The object type name
+     * @return string|null
+     */
+    protected function _setObjectTypeName(?string $name): ?string
+    {
+        if ($name === null) {
+            $this->object_type_id = $this->object_type = null;
+
+            return null;
+        }
+
+        $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($name);
+
+        return $name;
+    }
 }
