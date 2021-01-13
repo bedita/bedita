@@ -43,6 +43,7 @@ class EndpointTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Endpoints',
     ];
