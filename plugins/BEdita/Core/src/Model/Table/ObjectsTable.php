@@ -257,11 +257,52 @@ class ObjectsTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        return $query
-            ->distinct([$this->aliasField($this->getPrimaryKey())])
-            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-                return $query->find('dateRanges', $options);
-            });
+        $query = $query->distinct([$this->aliasField($this->getPrimaryKey())]);
+        $join = $this->dateRangesSubQueryJoin($query, $options);
+        if (!empty($join)) {
+            return $join;
+        }
+
+        return $query->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+            return $query->find('dateRanges', $options);
+        });
+    }
+
+    /**
+     * Create a date ranges subquery join if a special sort field is set.
+     * Special date ranges sort fields are: DateRangesTable::SPECIAL_SORT_FIELDS
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return Query|null
+     */
+    protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
+    {
+        $minMaxField = key(
+            array_intersect_key(
+                $options,
+                array_flip(DateRangesTable::SPECIAL_SORT_FIELDS)
+            )
+        );
+        if (empty($minMaxField)) {
+            return null;
+        }
+        if (strpos($minMaxField, 'date_ranges_min_') === 0) {
+            $func = $query->func()->min(substr($minMaxField, 16));
+        } else {
+            $func = $query->func()->max(substr($minMaxField, 16));
+        }
+        $subQuery = $this->DateRanges->find('dateRanges', $options)
+            ->select([
+                'date_ranges_object_id' => 'object_id',
+                $minMaxField => $func,
+            ])
+            ->group('object_id');
+
+        return $query->innerJoin(
+            ['DateBoundaries' => $subQuery],
+            ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField('id')]
+        );
     }
 
     /**
@@ -363,7 +404,7 @@ class ObjectsTable extends Table
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
-        $level = reset($options);
+        $level = $options[0];
         switch ($level) {
             case 'on':
                 return $query->where([
