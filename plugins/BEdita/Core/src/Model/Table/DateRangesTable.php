@@ -43,6 +43,18 @@ class DateRangesTable extends Table
     use QueryFilterTrait;
 
     /**
+     * Special sort fields
+     *
+     * @var array
+     */
+    const SPECIAL_SORT_FIELDS = [
+        'date_ranges_min_start_date',
+        'date_ranges_max_start_date',
+        'date_ranges_min_end_date',
+        'date_ranges_max_end_date',
+    ];
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -155,7 +167,7 @@ class DateRangesTable extends Table
             'start_date',
             'end_date',
             'from_date',
-            'to_date'
+            'to_date',
         ]);
         $options = array_intersect_key($options, $allowed);
         if (empty($options)) {
