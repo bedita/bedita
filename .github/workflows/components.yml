@@ -29,7 +29,7 @@ jobs:
           fetch-depth: '0'
 
       - name: 'Filter tree'
-        run: 'git filter-branch --prune-empty --subdirectory-filter "${{ matrix.path }}" --tag-name-filter cat HEAD'
+        run: 'git filter-branch --prune-empty --subdirectory-filter "${{ matrix.path }}" --tag-name-filter cat -- --all'
 
       - name: 'Output last 10 commits'
         run: 'git log -n 10'
