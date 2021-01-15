@@ -62,6 +62,19 @@ class ObjectsTable extends Table
     protected $_validatorClass = ObjectsValidator::class;
 
     /**
+     * Special sort fields: virtual column names used for custom sort strategies
+     * Only related to `DateRanges` for now
+     *
+     * @var array
+     */
+    const DATERANGES_SORT_FIELDS = [
+        'date_ranges_min_start_date',
+        'date_ranges_max_start_date',
+        'date_ranges_min_end_date',
+        'date_ranges_max_end_date',
+    ];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -270,7 +283,6 @@ class ObjectsTable extends Table
 
     /**
      * Create a date ranges subquery join if a special sort field is set.
-     * Special date ranges sort fields are: DateRangesTable::SPECIAL_SORT_FIELDS
      *
      * @param Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
@@ -281,7 +293,7 @@ class ObjectsTable extends Table
         $minMaxField = key(
             array_intersect_key(
                 $options,
-                array_flip(DateRangesTable::SPECIAL_SORT_FIELDS)
+                array_flip(self::DATERANGES_SORT_FIELDS)
             )
         );
         if (empty($minMaxField)) {
@@ -292,7 +304,12 @@ class ObjectsTable extends Table
         } else {
             $func = $query->func()->max(substr($minMaxField, 16));
         }
-        $subQuery = $this->DateRanges->find('dateRanges', $options)
+        unset($options[$minMaxField]);
+        $finder = 'dateRanges';
+        if (empty($options)) {
+            $finder = 'all';
+        }
+        $subQuery = $this->DateRanges->find($finder, $options)
             ->select([
                 'date_ranges_object_id' => 'object_id',
                 $minMaxField => $func,
