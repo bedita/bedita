@@ -1,6 +1,9 @@
 name: 'Run tests'
 
 on:
+  pull_request:
+    paths:
+      - '**/*.php'
   push:
     paths:
       - '**/*.php'
