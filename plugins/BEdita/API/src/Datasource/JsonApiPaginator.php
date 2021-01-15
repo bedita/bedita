@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Datasource;
 
-use BEdita\Core\Model\Table\DateRangesTable;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\Paginator;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
@@ -37,7 +37,7 @@ class JsonApiPaginator extends Paginator
         'limit' => 20,
         'maxLimit' => 100,
         'whitelist' => ['page', 'page_size', 'sort'],
-        'sortWhitelist' => DateRangesTable::SPECIAL_SORT_FIELDS,
+        'sortWhitelist' => ObjectsTable::DATERANGES_SORT_FIELDS,
     ];
 
     /**

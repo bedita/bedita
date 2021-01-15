@@ -22,7 +22,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
-use BEdita\Core\Model\Table\DateRangesTable;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -479,7 +479,7 @@ class ObjectsController extends ResourcesController
         // Add date ranges special sort field to filter if found
         // It will be used in `ObjectsTable::findDateRanges`
         $sort = str_replace('-', '', $sort);
-        if (in_array($sort, DateRangesTable::SPECIAL_SORT_FIELDS)) {
+        if (in_array($sort, ObjectsTable::DATERANGES_SORT_FIELDS)) {
             $filter['date_ranges'][$sort] = true;
         }
 
