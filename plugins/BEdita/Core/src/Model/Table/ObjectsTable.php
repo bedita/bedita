@@ -299,11 +299,6 @@ class ObjectsTable extends Table
         if (empty($minMaxField)) {
             return null;
         }
-        if (strpos($minMaxField, 'date_ranges_min_') === 0) {
-            $func = $query->func()->min(substr($minMaxField, 16));
-        } else {
-            $func = $query->func()->max(substr($minMaxField, 16));
-        }
         unset($options[$minMaxField]);
         $finder = 'dateRanges';
         if (empty($options)) {
@@ -312,7 +307,10 @@ class ObjectsTable extends Table
         $subQuery = $this->DateRanges->find($finder, $options)
             ->select([
                 'date_ranges_object_id' => 'object_id',
-                $minMaxField => $func,
+                'date_ranges_min_start_date' => $query->func()->min('start_date'),
+                'date_ranges_max_start_date' => $query->func()->max('start_date'),
+                'date_ranges_min_end_date' => $query->func()->min('end_date'),
+                'date_ranges_max_end_date' => $query->func()->max('end_date'),
             ])
             ->group('object_id');
 
