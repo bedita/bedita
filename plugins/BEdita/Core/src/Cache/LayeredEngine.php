@@ -79,6 +79,10 @@ class LayeredEngine extends CacheEngine
 
             $instance = $registry->get($config);
 
+            if ($instance === $this) {
+                throw new Exception('Recursion detected, Layered cache engine is configured as persistent engine of itself');
+            }
+
             if (!$instance instanceof CacheEngine) {
                 throw new Exception("Cache engine alias {$config} is not an implementation of CacheEngine");
             }
