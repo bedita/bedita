@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\Core\Exception\Exception;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -114,7 +115,7 @@ class AddAssociatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception Expected result.
+     * @param int|\Exception Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $entity Entity to update relations for.
@@ -145,7 +146,32 @@ class AddAssociatedActionTest extends TestCase
                 ->toArray();
         }
 
+        $beforeSaveTriggered = $afterSaveTriggered = 0;
+        $action->getEventManager()->on('Associated.beforeSave', function (Event $event) use ($association, $entity, $relatedEntities, &$beforeSaveTriggered) {
+            $beforeSaveTriggered++;
+            static::assertSame('Associated.beforeSave', $event->getName());
+            static::assertSame('add', $event->getData('action'));
+            static::assertSame($association, $event->getData('association'));
+            static::assertSame($entity, $event->getData('entity'));
+            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
+            static::assertSameSize($rel, $event->getData('relatedEntities'));
+            for ($i = 0; $i < count($rel); $i++) {
+                static::assertSame($rel[$i], $event->getData('relatedEntities')[$i]);
+            }
+        });
+        $action->getEventManager()->on('Associated.afterSave', function (Event $event) use ($association, $entity, $expected, &$afterSaveTriggered) {
+            $afterSaveTriggered++;
+            static::assertSame('Associated.afterSave', $event->getName());
+            static::assertSame('add', $event->getData('action'));
+            static::assertSame($association, $event->getData('association'));
+            static::assertSame($entity, $event->getData('entity'));
+            static::assertCount($expected, $event->getData('relatedEntities'));
+        });
+
         $result = $action(compact('entity', 'relatedEntities'));
+        static::assertSame(1, $beforeSaveTriggered);
+        static::assertSame(1, $afterSaveTriggered);
 
         $count = 0;
         if ($related !== null) {

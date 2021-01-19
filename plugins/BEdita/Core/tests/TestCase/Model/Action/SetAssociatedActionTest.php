@@ -15,6 +15,9 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\Exception\Exception;
+use Cake\Event\Event;
+use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -176,7 +179,7 @@ class SetAssociatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception $expected Expected result.
+     * @param int|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $entity Entity to update relations for.
@@ -193,6 +196,7 @@ class SetAssociatedActionTest extends TestCase
         }
 
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
+        $toMany = $association instanceof BelongsToMany || $association instanceof HasMany;
         $action = new SetAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
@@ -212,7 +216,32 @@ class SetAssociatedActionTest extends TestCase
             }
         }
 
+        $beforeSaveTriggered = $afterSaveTriggered = 0;
+        $action->getEventManager()->on('Associated.beforeSave', function (Event $event) use ($association, $toMany, $entity, $relatedEntities, &$beforeSaveTriggered) {
+            $beforeSaveTriggered++;
+            static::assertSame('Associated.beforeSave', $event->getName());
+            static::assertSame('set', $event->getData('action'));
+            static::assertSame($association, $event->getData('association'));
+            static::assertSame($entity, $event->getData('entity'));
+            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            $rel = is_object($relatedEntities) || !$toMany ? [$relatedEntities] : (array)$relatedEntities;
+            static::assertSameSize($rel, $event->getData('relatedEntities'));
+            for ($i = 0; $i < count($rel); $i++) {
+                static::assertSame($rel[$i] ?: null, $event->getData('relatedEntities')[$i]);
+            }
+        });
+        $action->getEventManager()->on('Associated.afterSave', function (Event $event) use ($association, $toMany, $entity, $related, &$afterSaveTriggered) {
+            $afterSaveTriggered++;
+            static::assertSame('Associated.afterSave', $event->getName());
+            static::assertSame('set', $event->getData('action'));
+            static::assertSame($association, $event->getData('association'));
+            static::assertSame($entity, $event->getData('entity'));
+            static::assertSameSize($toMany ? (array)$related : [$related], $event->getData('relatedEntities'));
+        });
+
         $result = $action(compact('entity', 'relatedEntities'));
+        static::assertSame(1, $beforeSaveTriggered);
+        static::assertSame($expected === 0 && !$toMany ? 0 : 1, $afterSaveTriggered);
 
         $count = 0;
         if ($related !== null) {
