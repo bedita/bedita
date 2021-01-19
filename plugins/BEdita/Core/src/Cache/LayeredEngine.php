@@ -14,6 +14,7 @@ namespace BEdita\Core;
 
 use Cake\Cache\Cache;
 use Cake\Cache\CacheEngine;
+use Cake\Cache\Engine\ArrayEngine;
 use Exception;
 
 /**
@@ -55,7 +56,7 @@ class LayeredEngine extends CacheEngine
         parent::init($config);
 
         $this->_persistent = $this->getEngineInstance($this->getConfig('persistent'));
-        $this->_memory = $this->getEngineInstance(['className' => 'Array']);
+        $this->_memory = new ArrayEngine();
 
         return true;
     }
