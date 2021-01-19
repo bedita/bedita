@@ -86,12 +86,16 @@ class LayeredEngine extends CacheEngine
         }
 
         if (is_array($config)) {
-            $name = ($config['prefix'] ?? '') . $config['className'];
+            $name = $config['className'];
+
+            if (!empty($config['prefix'])) {
+                $name = $config['prefix'] . $name;
+            }
 
             return $registry->load($name, $config);
         }
 
-        throw new Exception("Unknown cache configuration");
+        throw new Exception('Unknown cache configuration');
     }
 
     /**
@@ -126,14 +130,10 @@ class LayeredEngine extends CacheEngine
      */
     public function increment($key, $offset = 1)
     {
-        if ($this->_memory->read($key) === false) {
-            $value = $this->_persistent->read($key);
-            $this->_memory->write($key, $value);
-        }
+        $value = $this->_persistent->increment($key, $offset);
+        $this->_memory->write($key, $value);
 
-        $this->_memory->increment($key, $offset);
-
-        return $this->_persistent->increment($key, $offset);
+        return $value;
     }
 
     /**
@@ -141,14 +141,10 @@ class LayeredEngine extends CacheEngine
      */
     public function decrement($key, $offset = 1)
     {
-        if ($this->_memory->read($key) === false) {
-            $value = $this->_persistent->read($key);
-            $this->_memory->write($key, $value);
-        }
+        $value = $this->_persistent->decrement($key, $offset);
+        $this->_memory->write($key, $value);
 
-        $this->_memory->increment($key, $offset);
-
-        return $this->_persistent->increment($key, $offset);
+        return $value;
     }
 
     /**
