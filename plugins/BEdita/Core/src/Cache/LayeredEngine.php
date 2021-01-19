@@ -25,16 +25,16 @@ class LayeredEngine extends CacheEngine
     /**
      * Persistent cache instance.
      *
-     * @var CacheEngine
+     * @var \Cake\Cache\CacheEngine
      */
-    protected $_persistent = null;
+    protected $persistent = null;
 
     /**
      * In-memory cache instance.
      *
-     * @var CacheEngine
+     * @var \Cake\Cache\Engine\ArrayEngine
      */
-    protected $_memory = null;
+    protected $memory = null;
 
     /**
      * The default config used unless overridden by runtime configuration
@@ -55,8 +55,8 @@ class LayeredEngine extends CacheEngine
     {
         parent::init($config);
 
-        $this->_persistent = $this->getEngineInstance($this->getConfig('persistent'));
-        $this->_memory = new ArrayEngine();
+        $this->persistent = $this->getEngineInstance($this->getConfig('persistent'));
+        $this->memory = new ArrayEngine();
 
         return true;
     }
@@ -104,9 +104,9 @@ class LayeredEngine extends CacheEngine
      */
     public function write($key, $value): bool
     {
-        $this->_memory->write($key, $value);
+        $this->memory->write($key, $value);
 
-        return $this->_persistent->write($key, $value);
+        return $this->persistent->write($key, $value);
     }
 
     /**
@@ -114,14 +114,14 @@ class LayeredEngine extends CacheEngine
      */
     public function read($key)
     {
-        $value = $this->_memory->read($key);
+        $value = $this->memory->read($key);
 
         if ($value !== false) {
             return $value;
         }
 
-        $value = $this->_persistent->read($key);
-        $this->_memory->write($key, $value);
+        $value = $this->persistent->read($key);
+        $this->memory->write($key, $value);
 
         return $value;
     }
@@ -131,8 +131,8 @@ class LayeredEngine extends CacheEngine
      */
     public function increment($key, $offset = 1)
     {
-        $value = $this->_persistent->increment($key, $offset);
-        $this->_memory->write($key, $value);
+        $value = $this->persistent->increment($key, $offset);
+        $this->memory->write($key, $value);
 
         return $value;
     }
@@ -142,8 +142,8 @@ class LayeredEngine extends CacheEngine
      */
     public function decrement($key, $offset = 1)
     {
-        $value = $this->_persistent->decrement($key, $offset);
-        $this->_memory->write($key, $value);
+        $value = $this->persistent->decrement($key, $offset);
+        $this->memory->write($key, $value);
 
         return $value;
     }
@@ -153,9 +153,9 @@ class LayeredEngine extends CacheEngine
      */
     public function delete($key): bool
     {
-        $this->_memory->delete($key);
+        $this->memory->delete($key);
 
-        return $this->_persistent->delete($key);
+        return $this->persistent->delete($key);
     }
 
     /**
@@ -163,8 +163,8 @@ class LayeredEngine extends CacheEngine
      */
     public function clear($check): bool
     {
-        $this->_memory->clear($check);
+        $this->memory->clear($check);
 
-        return $this->_persistent->clear($check);
+        return $this->persistent->clear($check);
     }
 }
