@@ -270,15 +270,15 @@ class ObjectsTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        $query = $query->distinct([$this->aliasField($this->getPrimaryKey())]);
         $join = $this->dateRangesSubQueryJoin($query, $options);
         if (!empty($join)) {
             return $join;
         }
 
-        return $query->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-            return $query->find('dateRanges', $options);
-        });
+        return $query->distinct([$this->aliasField($this->getPrimaryKey())])
+                ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                    return $query->find('dateRanges', $options);
+                });
     }
 
     /**
@@ -314,10 +314,14 @@ class ObjectsTable extends Table
             ])
             ->group('object_id');
 
-        return $query->innerJoin(
-            ['DateBoundaries' => $subQuery],
-            ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField('id')]
-        );
+        return $query->distinct([
+                $this->aliasField($this->getPrimaryKey()),
+                $minMaxField,
+            ])
+            ->innerJoin(
+                ['DateBoundaries' => $subQuery],
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField('id')]
+            );
     }
 
     /**
