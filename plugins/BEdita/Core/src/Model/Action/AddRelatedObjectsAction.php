@@ -35,6 +35,7 @@ class AddRelatedObjectsAction extends UpdateRelatedObjectsAction
     {
         if (!($this->Association instanceof RelatedTo)) {
             $action = new AddAssociatedAction($this->getConfig());
+            $action->setEventManager($this->getEventManager());
 
             return $action->execute(compact('entity', 'relatedEntities'));
         }
