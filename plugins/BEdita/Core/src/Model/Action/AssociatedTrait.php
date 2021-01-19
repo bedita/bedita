@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
 
@@ -26,6 +27,8 @@ use Cake\ORM\Association\BelongsToMany;
  */
 trait AssociatedTrait
 {
+
+    use EventDispatcherTrait;
 
     /**
      * Find entity among list of entities.

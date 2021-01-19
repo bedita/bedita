@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\EntityInterface;
 
@@ -38,11 +39,14 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
             return $action->execute(compact('entity', 'relatedEntities'));
         }
 
-        $relatedEntities = $this->diff($entity, $relatedEntities, true, $affectedEntities);
+        $relatedEntities = new ArrayObject($relatedEntities);
+        $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
 
+        $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), true, $affectedEntities);
         if (!$this->Association->replaceLinks($entity, $relatedEntities)) {
             return false;
         }
+        $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
 
         return collection($affectedEntities)
             ->extract($this->Association->getBindingKey())
