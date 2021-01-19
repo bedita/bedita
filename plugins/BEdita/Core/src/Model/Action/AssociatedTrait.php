@@ -27,7 +27,6 @@ use Cake\ORM\Association\BelongsToMany;
  */
 trait AssociatedTrait
 {
-
     use EventDispatcherTrait;
 
     /**

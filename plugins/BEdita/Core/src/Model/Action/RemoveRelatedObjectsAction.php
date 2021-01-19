@@ -25,7 +25,6 @@ use Cake\Event\EventDispatcherTrait;
  */
 class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
 {
-
     use EventDispatcherTrait;
 
     /**

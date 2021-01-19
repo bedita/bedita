@@ -155,7 +155,8 @@ class RemoveAssociatedActionTest extends TestCase
             static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
-            for ($i = 0; $i < count($rel); $i++) {
+            $n = count($rel);
+            for ($i = 0; $i < $n; $i++) {
                 static::assertSame($rel[$i], $event->getData('relatedEntities')[$i]);
             }
         });
