@@ -46,7 +46,6 @@ class LayeredEngine extends CacheEngine
         'persistent' => ['className' => 'File'],
     ];
 
-
     /**
      * {@inheritDoc}
      * @throws Exception If the configuration is wrong
