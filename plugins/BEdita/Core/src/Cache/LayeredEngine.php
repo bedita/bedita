@@ -17,8 +17,7 @@ use Cake\Cache\CacheEngine;
 use Exception;
 
 /**
- * This engine uses two layers of cache, one persistent and one in-memory for
- * faster lookup times.
+ * This engine uses two layers of cache, one persistent and one in-memory for faster lookup times.
  */
 class LayeredEngine extends CacheEngine
 {
@@ -40,13 +39,11 @@ class LayeredEngine extends CacheEngine
      * The default config used unless overridden by runtime configuration
      *
      * - `persistent` A cache configuration or an alias, to use as persistent cache
-     * - `memory` A cache configuration or an alias, to use as in-memory cache for faster lookups
      *
      * @var array
      */
     protected $_defaultConfig = [
         'persistent' => ['className' => 'File'],
-        'memory' => ['className' => 'Array'],
     ];
 
 
@@ -59,7 +56,7 @@ class LayeredEngine extends CacheEngine
         parent::init($config);
 
         $this->_persistent = $this->getEngineInstance($this->getConfig('persistent'));
-        $this->_memory = $this->getEngineInstance($this->getConfig('memory'));
+        $this->_memory = $this->getEngineInstance(['className' => 'Array']);
 
         return true;
     }
@@ -77,13 +74,13 @@ class LayeredEngine extends CacheEngine
 
         if (is_string($config)) {
             if (!$registry->has($config)) {
-                throw new Exception("Cache alias {$config} is not defined");
+                throw new Exception("Cache engine alias {$config} is not defined");
             }
 
             $instance = $registry->get($config);
 
             if (!$instance instanceof CacheEngine) {
-                throw new Exception("Cache alias {$config} is not an implementation of CacheEngine");
+                throw new Exception("Cache engine alias {$config} is not an implementation of CacheEngine");
             }
 
             return $instance;
@@ -127,8 +124,6 @@ class LayeredEngine extends CacheEngine
 
     /**
      * {@inheritDoc}
-     *
-     * @return int|false New incremented value, false otherwise
      */
     public function increment($key, $offset = 1)
     {
