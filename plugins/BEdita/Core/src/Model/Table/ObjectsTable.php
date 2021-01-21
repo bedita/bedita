@@ -320,7 +320,7 @@ class ObjectsTable extends Table
             ])
             ->innerJoin(
                 ['DateBoundaries' => $subQuery],
-                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField('id')]
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
             );
     }
 
