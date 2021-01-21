@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -190,7 +191,7 @@ class ObjectsController extends ResourcesController
                 );
         } else {
             // List existing entities.
-            $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+            $filter = $this->prepareFilter();
             $contain = $this->prepareInclude($this->request->getQuery('include'));
             $lang = $this->request->getQuery('lang');
 
@@ -292,7 +293,7 @@ class ObjectsController extends ResourcesController
         $relatedId = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
-        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+        $filter = $this->prepareFilter();
         $contain = $this->prepareInclude($this->request->getQuery('include'));
         $lang = $this->request->getQuery('lang');
 
@@ -338,7 +339,7 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
-                $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+                $filter = $this->prepareFilter();
 
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
@@ -459,5 +460,28 @@ class ObjectsController extends ResourcesController
         /** @var \BEdita\Core\Model\Action\CountRelatedObjectsAction $action */
         $action = $this->createAction('CountRelatedObjectsAction');
         $action(compact('entities', 'count'));
+    }
+
+    /**
+     * Prepare filter array from request.
+     *
+     * @return array
+     */
+    protected function prepareFilter(): array
+    {
+        $filter = (array)$this->request->getQuery('filter') +
+            array_filter(['query' => $this->request->getQuery('q')]);
+        $sort = $this->request->getQuery('sort');
+        if (empty($sort)) {
+            return $filter;
+        }
+        // Add date ranges special sort field to filter if found
+        // It will be used in `ObjectsTable::findDateRanges`
+        $sort = str_replace('-', '', $sort);
+        if (in_array($sort, ObjectsTable::DATERANGES_SORT_FIELDS)) {
+            $filter['date_ranges'][$sort] = true;
+        }
+
+        return $filter;
     }
 }

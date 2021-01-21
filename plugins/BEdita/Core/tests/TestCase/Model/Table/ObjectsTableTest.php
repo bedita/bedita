@@ -261,17 +261,51 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testFindDateRanges` test case.
+     *
+     * @return array
+     */
+    public function findDateRangesProvider()
+    {
+        return [
+            'simple' => [
+                [9],
+                [
+                    'start_date' => ['gt' => '2017-01-01'],
+                ],
+            ],
+            'sub1' => [
+                [],
+                [
+                    'date_ranges_min_start_date' => true,
+                    'from_date' => '2019-01-01',
+                ],
+            ],
+            'sub2' => [
+                [9],
+                [
+                    'date_ranges_max_start_date' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test object date ranges finder.
      * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
      *
+     * @param array $expected Expected results.
+     * @param array $options Finder options.
      * @return void
      *
+     * @dataProvider findDateRangesProvider
      * @covers ::findDateRanges()
+     * @covers ::dateRangesSubQueryJoin()
      */
-    public function testFindDateRanges()
+    public function testFindDateRanges(array $expected, array $options)
     {
-        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
-        $this->assertNotEmpty($result);
+        $result = $this->Objects->find('dateRanges', $options)->toArray();
+        $this->assertEquals($expected, Hash::extract($result, '{n}.id'));
     }
 
     /**

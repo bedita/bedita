@@ -33,6 +33,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Media',
     ];
 
@@ -44,6 +45,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::addCount()
+     * @covers ::prepareFilter()
      */
     public function testIndex()
     {
@@ -2702,5 +2704,21 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         static::assertEquals(2, Hash::get($result, 'data.relationships.test.meta.count'));
+    }
+
+    /**
+     * Test prepareFilter()
+     *
+     * @return void
+     *
+     * @covers ::prepareFilter()
+     */
+    public function testPrepareFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/events?sort=date_ranges_min_start_date');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        static::assertEquals(9, Hash::get($result, 'data.0.id'));
     }
 }
