@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
@@ -47,8 +48,10 @@ class AddAssociatedAction extends UpdateAssociatedAction
             }
 
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
-                $relatedEntities = $this->diff($entity, $relatedEntities, false);
+                $relatedEntities = new ArrayObject($relatedEntities);
+                $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
+                $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), false);
                 if (!$this->Association->link($entity, $relatedEntities, ['atomic' => false])) {
                     return false;
                 }
@@ -60,6 +63,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
                         ]);
                     }
                 }
+                $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
                 return count($relatedEntities);
             });
