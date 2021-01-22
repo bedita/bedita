@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core;
+namespace BEdita\Core\Cache\Engine;
 
 use Cake\Cache\Cache;
 use Cake\Cache\CacheEngine;
