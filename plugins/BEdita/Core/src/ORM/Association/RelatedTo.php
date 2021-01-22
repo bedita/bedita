@@ -14,6 +14,7 @@
 namespace BEdita\Core\ORM\Association;
 
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 
 /**
@@ -145,5 +146,15 @@ class RelatedTo extends BelongsToMany
     public function isInverse(): bool
     {
         return $this->getForeignKey() === $this->getInverseKey();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Force use of `objects` table as related object target table
+     */
+    public function attachTo(Query $query, array $options = [])
+    {
+        parent::attachTo($query, $options + ['table' => 'objects']);
     }
 }
