@@ -114,6 +114,13 @@ class RelationsTableTest extends TestCase
                     'params' => null,
                 ],
             ],
+            'simple' => [
+                true,
+                [
+                    'name' => 'some_relation',
+                    'inverse_name' => 'some_inverse_relation',
+                ],
+            ],
         ];
     }
 
@@ -213,6 +220,28 @@ class RelationsTableTest extends TestCase
         static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test before save callback.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave()
+    {
+        $entity = $this->Relations->get(1);
+        $entity = $this->Relations->patchEntity($entity, ['description' => 'New description']);
+        $this->Relations->save($entity);
+
+        $entity = $this->Relations->newEntity([
+            'name' => 'some_name',
+            'inverse_name' => 'some_inverse_name',
+        ]);
+        $entity = $this->Relations->save($entity);
+        static::assertEquals('Some Name', $entity->get('label'));
+        static::assertEquals('Some Inverse Name', $entity->get('inverse_label'));
     }
 
     /**
