@@ -207,7 +207,7 @@ class Table extends CakeTable
 
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable !== null) {
-            return $inheritedTable
+            return (clone $inheritedTable)
                 ->setAlias($this->getAlias())
                 ->callFinder($type, $query, $options);
         }
