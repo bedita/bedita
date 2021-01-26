@@ -109,7 +109,7 @@ class LayeredEngine extends CacheEngine
 
             if ($instance !== null) {
                 if (!($instance instanceof CacheEngine)) {
-                    throw new Exception("Another object is already registered with name '{$name}', and is not an implementation of CacheEngine");
+                    throw new Exception("Another object is already registered with alias '{$name}', and is not an implementation of CacheEngine");
                 }
 
                 return $instance;
