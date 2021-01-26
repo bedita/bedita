@@ -44,7 +44,14 @@ class LayeredEngine extends CacheEngine
      * @var array
      */
     protected $_defaultConfig = [
-        'persistent' => ['className' => 'File'],
+        'duration' => 3600,
+        'groups' => [],
+        'prefix' => 'cake_',
+        'probability' => 100,
+        'warnOnWriteFailures' => true,
+        'persistent' => [
+            'className' => 'File',
+        ],
     ];
 
     /**
@@ -57,6 +64,7 @@ class LayeredEngine extends CacheEngine
 
         $this->persistent = $this->getEngineInstance($this->getConfig('persistent'));
         $this->memory = new ArrayEngine();
+        $this->memory->setConfig($this->getConfig());
 
         return true;
     }
