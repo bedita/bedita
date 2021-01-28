@@ -32,7 +32,11 @@ class LayeredEngineTest extends TestCase
      */
     public $defaultConfig = [
         'className' => 'BEdita/Core.Layered',
-        'persistent' => ['className' => 'Array'],
+        'prefix' => 'test-layered-',
+        'persistent' => [
+            'className' => 'Array',
+            'prefix' => 'test-layered-persistent-',
+        ],
     ];
 
     /**
@@ -72,9 +76,11 @@ class LayeredEngineTest extends TestCase
 
     /**
      * Test cache init.
+     * Covers persistent engine config with prefix.
      *
      * @throws Exception
      * @covers ::init()
+     * @covers ::getEngineInstance()
      */
     public function testInit()
     {
