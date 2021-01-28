@@ -82,7 +82,7 @@ class LayeredEngine extends CacheEngine
 
         if (is_string($config)) {
             if (!$registry->has($config)) {
-                throw new Exception("Cache engine alias {$config} is not defined");
+                throw new Exception("Cache engine alias '{$config}' is not defined");
             }
 
             $instance = $registry->get($config);
@@ -92,7 +92,7 @@ class LayeredEngine extends CacheEngine
             }
 
             if (!($instance instanceof CacheEngine)) {
-                throw new Exception("Cache engine alias {$config} is not an implementation of CacheEngine");
+                throw new Exception("Cache engine alias '{$config}' is not an implementation of CacheEngine");
             }
 
             return $instance;
@@ -103,16 +103,6 @@ class LayeredEngine extends CacheEngine
 
             if (!empty($config['prefix'])) {
                 $name = $config['prefix'] . $name;
-            }
-
-            $instance = $registry->get($name);
-
-            if ($instance !== null) {
-                if (!($instance instanceof CacheEngine)) {
-                    throw new Exception("Another object is already registered with alias '{$name}', and is not an implementation of CacheEngine");
-                }
-
-                return $instance;
             }
 
             return $registry->load($name, $config);
