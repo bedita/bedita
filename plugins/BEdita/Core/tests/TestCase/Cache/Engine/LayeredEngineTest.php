@@ -32,11 +32,7 @@ class LayeredEngineTest extends TestCase
      */
     public $defaultConfig = [
         'className' => 'BEdita/Core.Layered',
-        'prefix' => 'test-layered-',
-        'persistent' => [
-            'className' => 'Array',
-            'prefix' => 'test-layered-persistent-',
-        ],
+        'persistent' => ['className' => 'Array'],
     ];
 
     /**
@@ -46,8 +42,6 @@ class LayeredEngineTest extends TestCase
     {
         parent::setUp();
         Cache::enable();
-        Cache::drop('layered');
-        Cache::setConfig('layered', $this->defaultConfig);
         Cache::clearAll();
     }
 
@@ -58,11 +52,20 @@ class LayeredEngineTest extends TestCase
     {
         parent::tearDown();
 
+        // remove registered cache engines (Array is the internal memory engine of Layered)
         foreach (Cache::configured() as $name) {
+            if (strpos($name, 'test-layered') !== 0 && $name !== 'Array') {
+                continue;
+            }
+
             Cache::drop($name);
         }
 
         foreach (Cache::getRegistry()->loaded() as $name) {
+            if (strpos($name, 'test-layered') !== 0 && $name !== 'Array') {
+                continue;
+            }
+
             Cache::getRegistry()->unload($name);
         }
     }
@@ -75,9 +78,12 @@ class LayeredEngineTest extends TestCase
      */
     public function testInit()
     {
-        $layered = Cache::getRegistry()->get('layered');
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'memory', $layered);
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'persistent', $layered);
+        Cache::setConfig('test-layered', $this->defaultConfig);
+        Cache::clear(false, 'test-layered');
+
+        $instance = Cache::getRegistry()->get('test-layered');
+        static::assertAttributeInstanceOf(ArrayEngine::class, 'memory', $instance);
+        static::assertAttributeInstanceOf(ArrayEngine::class, 'persistent', $instance);
     }
 
     /**
@@ -87,16 +93,16 @@ class LayeredEngineTest extends TestCase
      */
     public function testPersistentAlias()
     {
-        Cache::setConfig('array-alias', ['className' => 'Array']);
-        Cache::setConfig('layered-alias', array_merge(
+        Cache::setConfig('test-layered-persistent-alias', ['className' => 'Array']);
+        Cache::setConfig('test-layered-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'array-alias']
+            ['persistent' => 'test-layered-persistent-alias']
         ));
 
-        $result = Cache::write('secret', 42, 'array-alias');
+        $result = Cache::write('secret', 42, 'test-layered-persistent-alias');
         static::assertTrue($result);
 
-        $result = Cache::read('secret', 'layered-alias');
+        $result = Cache::read('secret', 'test-layered-alias');
         static::assertSame(42, $result);
     }
 
@@ -109,11 +115,11 @@ class LayeredEngineTest extends TestCase
     {
         static::expectException(Exception::class);
         static::expectExceptionMessage('Unknown cache configuration');
-        Cache::setConfig('layered-bad-persistent', array_merge(
+        Cache::setConfig('test-layered-bad-persistent', array_merge(
             $this->defaultConfig,
             ['persistent' => 1]
         ));
-        Cache::write('secret', 42, 'layered-bad-persistent');
+        Cache::clear(false, 'test-layered-bad-persistent');
     }
 
     /**
@@ -124,12 +130,12 @@ class LayeredEngineTest extends TestCase
     public function testPersistentMissingAlias()
     {
         static::expectException(Exception::class);
-        static::expectExceptionMessage("Cache engine alias 'this-does-not-exist' is not defined");
-        Cache::setConfig('layered-missing-alias', array_merge(
+        static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-missing' is not defined");
+        Cache::setConfig('test-layered-missing-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'this-does-not-exist']
+            ['persistent' => 'test-layered-persistent-missing']
         ));
-        Cache::write('secret', 42, 'layered-missing-alias');
+        Cache::clear(false, 'test-layered-missing-alias');
     }
 
     /**
@@ -140,11 +146,11 @@ class LayeredEngineTest extends TestCase
     public function testPersistentRecursive()
     {
         static::expectException(Exception::class);
-        Cache::setConfig('layered-recursive', array_merge(
+        Cache::setConfig('test-layered-recursive', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'layered-recursive']
+            ['persistent' => 'test-layered-recursive']
         ));
-        Cache::write('secret', 42, 'layered-recursive');
+        Cache::clear(false, 'test-layered-recursive');
     }
 
     /**
@@ -155,13 +161,13 @@ class LayeredEngineTest extends TestCase
     public function testPersistentWrongObject()
     {
         static::expectException(Exception::class);
-        static::expectExceptionMessage("Cache engine alias 'another-object' is not an implementation of CacheEngine");
-        Cache::getRegistry()->set('another-object', new \stdClass());
-        Cache::setConfig('layered-wrong-object', array_merge(
+        static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-wrong' is not an implementation of CacheEngine");
+        Cache::getRegistry()->set('test-layered-persistent-wrong', new \stdClass());
+        Cache::setConfig('test-layered-wrong-object', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'another-object']
-        ));;
-        Cache::write('secret', 42, 'layered-wrong-object');
+            ['persistent' => 'test-layered-persistent-wrong']
+        ));
+        Cache::clear(false, 'test-layered-wrong-object');
     }
 
     /**
@@ -172,10 +178,12 @@ class LayeredEngineTest extends TestCase
      */
     public function testWriteAndRead()
     {
-        $result = Cache::write('secret', 42, 'layered');
+        Cache::setConfig('test-layered', $this->defaultConfig);
+
+        $result = Cache::write('secret', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::read('secret', 'layered');
+        $result = Cache::read('secret', 'test-layered');
         static::assertSame(42, $result);
     }
 
@@ -186,16 +194,16 @@ class LayeredEngineTest extends TestCase
      */
     public function testMemoryCacheMiss()
     {
-        Cache::setConfig('array-miss', ['className' => 'Array']);
-        Cache::setConfig('layered-miss', array_merge(
+        Cache::setConfig('test-layered-persistent-miss', ['className' => 'Array']);
+        Cache::setConfig('test-layered-miss', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'array-miss']
+            ['persistent' => 'test-layered-persistent-miss']
         ));
 
-        $result = Cache::write('secret', 42, 'array-miss');
+        $result = Cache::write('secret', 42, 'test-layered-persistent-miss');
         static::assertTrue($result);
 
-        $result = Cache::read('secret', 'layered-miss');
+        $result = Cache::read('secret', 'test-layered-miss');
         static::assertSame(42, $result);
     }
 
@@ -206,19 +214,21 @@ class LayeredEngineTest extends TestCase
      */
     public function testIncrement()
     {
-        $result = Cache::write('increment', 42, 'layered');
+        Cache::setConfig('test-layered', $this->defaultConfig);
+
+        $result = Cache::write('increment', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::increment('increment', 1, 'layered');
+        $result = Cache::increment('increment', 1, 'test-layered');
         static::assertSame(43, $result);
 
-        $result = Cache::read('increment', 'layered');
+        $result = Cache::read('increment', 'test-layered');
         static::assertSame(43, $result);
 
-        $result = Cache::increment('increment', 2, 'layered');
+        $result = Cache::increment('increment', 2, 'test-layered');
         static::assertSame(45, $result);
 
-        $result = Cache::read('increment', 'layered');
+        $result = Cache::read('increment', 'test-layered');
         static::assertSame(45, $result);
     }
 
@@ -229,19 +239,21 @@ class LayeredEngineTest extends TestCase
      */
     public function testDecrement()
     {
-        $result = Cache::write('decrement', 42, 'layered');
+        Cache::setConfig('test-layered', $this->defaultConfig);
+
+        $result = Cache::write('decrement', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::decrement('decrement', 1, 'layered');
+        $result = Cache::decrement('decrement', 1, 'test-layered');
         static::assertSame(41, $result);
 
-        $result = Cache::read('decrement', 'layered');
+        $result = Cache::read('decrement', 'test-layered');
         static::assertSame(41, $result);
 
-        $result = Cache::decrement('decrement', 2, 'layered');
+        $result = Cache::decrement('decrement', 2, 'test-layered');
         static::assertSame(39, $result);
 
-        $result = Cache::read('decrement', 'layered');
+        $result = Cache::read('decrement', 'test-layered');
         static::assertSame(39, $result);
     }
 
@@ -252,13 +264,15 @@ class LayeredEngineTest extends TestCase
      */
     public function testDelete()
     {
-        $result = Cache::write('delete', 42, 'layered');
+        Cache::setConfig('test-layered', $this->defaultConfig);
+
+        $result = Cache::write('delete', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::delete('delete', 'layered');
+        $result = Cache::delete('delete', 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::read('delete', 'layered');
+        $result = Cache::read('delete', 'test-layered');
         static::assertFalse($result);
     }
 
@@ -269,13 +283,15 @@ class LayeredEngineTest extends TestCase
      */
     public function testClear()
     {
-        $result = Cache::write('clear', 42, 'layered');
+        Cache::setConfig('test-layered', $this->defaultConfig);
+
+        $result = Cache::write('clear', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::clear(false, 'layered');
+        $result = Cache::clear(false, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::read('clear', 'layered');
+        $result = Cache::read('clear', 'test-layered');
         static::assertFalse($result);
     }
 }
