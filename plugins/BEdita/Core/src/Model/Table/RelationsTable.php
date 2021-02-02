@@ -108,13 +108,15 @@ class RelationsTable extends Table
             ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->allowEmptyString('label')
+            ->allowEmptyString('label', null, 'create')
+            ->notEmptyString('label', null, 'update')
 
             ->requirePresence('inverse_name', 'create')
             ->notEmptyString('inverse_name')
             ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->allowEmptyString('inverse_label')
+            ->allowEmptyString('inverse_label', null, 'create')
+            ->notEmptyString('inverse_label', null, 'update')
 
             ->allowEmptyString('description')
 

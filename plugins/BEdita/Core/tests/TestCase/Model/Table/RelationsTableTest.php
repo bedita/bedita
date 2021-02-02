@@ -121,6 +121,14 @@ class RelationsTableTest extends TestCase
                     'inverse_name' => 'some_inverse_relation',
                 ],
             ],
+            'empty label' => [
+                false,
+                [
+                    'id' => 1,
+                    'inverse_name' => 'reverse_test',
+                    'inverse_label' => '',
+                ],
+            ],
         ];
     }
 
@@ -136,7 +144,11 @@ class RelationsTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->Relations->newEntity();
+        if (empty($data['id'])) {
+            $objectType = $this->Relations->newEntity();
+        } else {
+            $objectType = $this->Relations->get($data['id']);
+        }
         $this->Relations->patchEntity($objectType, $data);
 
         $success = $this->Relations->save($objectType);
