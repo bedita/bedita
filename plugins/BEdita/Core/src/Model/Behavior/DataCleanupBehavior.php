@@ -24,7 +24,7 @@ use Cake\Utility\Inflector;
  * Data cleanup operations on object creations to allow operations with `dirty` input data
  * and setting basic values per fields, per object type (from configuration 'DefaultValues')
  *
- * This Behavoir acts only on Model.beforeMarshal event
+ * This Behavior acts only on Model.beforeMarshal event
  *
  * @since 4.0.0
  */
@@ -57,17 +57,34 @@ class DataCleanupBehavior extends Behavior
         if (!empty($data['id'])) {
             return;
         }
-        $config = $this->getConfig();
-        $key = Inflector::underscore($this->_table->getAlias());
+
+        $type = Inflector::underscore($this->_table->getAlias());
         if ($this->_table->behaviors()->has('ObjectType') && $this->_table->objectType()) {
-             $key = $this->_table->objectType()->get('name');
+             $type = $this->_table->objectType()->get('name');
         }
-        $defaults = Configure::read(sprintf('DefaultValues.%s', $key), []);
-        $config['fields'] = array_merge($config['fields'], $defaults);
-        foreach ($config['fields'] as $key => $value) {
+        $fields = $this->defaultFields($type);
+        foreach ($fields as $key => $value) {
             if (!isset($data[$key]) || $data[$key] === null || $data[$key] === '') {
                 $data[$key] = $value;
             }
         }
+    }
+
+    /**
+     * Retrieve default fields reading from configuration.
+     *
+     * @param string $type Type name.
+     * @return array
+     */
+    protected function defaultFields(string $type): array
+    {
+        $fields = (array)$this->getConfig('fields');
+        // set default `on` if minimum level is `on`
+        if (Configure::read('Status.level') === 'on') {
+            $fields['status'] = 'on';
+        }
+        $defaults = Configure::read(sprintf('DefaultValues.%s', $type), []);
+
+        return array_merge($fields, $defaults);
     }
 }
