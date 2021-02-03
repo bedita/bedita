@@ -650,6 +650,67 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `checkStatus`.
+     *
+     * @return array
+     */
+    public function checkStatusProvider()
+    {
+        return [
+            'no conf' => [
+                'draft',
+                '',
+                [
+                    'status' => 'draft',
+                ],
+            ],
+            'error' => [
+                new BadRequestException('Status "draft" is not consistent with configured Status.level "on"'),
+                'on',
+                [
+                    'status' => 'draft',
+                ],
+            ],
+            'ok' => [
+                'draft',
+                'draft',
+                [
+                    'status' => 'draft',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkStatus()`.
+     *
+     * @param string|\Exception $expected Status value or Exception.
+     * @param string $config Status level config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkStatusProvider()
+     * @covers ::checkStatus()
+     */
+    public function testCheckStatus($expected, string $config, array $data): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        Configure::write('Status.level', $config);
+
+        $id = Hash::get($data, 'id', 2);
+        $object = $this->Objects->get($id);
+        unset($data['id']);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('status'));
+    }
+
+    /**
      * Test `findTranslations()`.
      *
      * @return void
