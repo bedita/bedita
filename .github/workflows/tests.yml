@@ -4,9 +4,11 @@ on:
   pull_request:
     paths:
       - '**/*.php'
+      - '.github/workflows/*'
   push:
     paths:
       - '**/*.php'
+      - '.github/workflows/*'
 
 jobs:
   cs:

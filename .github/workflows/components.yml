@@ -6,6 +6,7 @@ on:
       - '**'
     paths:
       - 'plugins/BEdita/**'
+      - '.github/workflows/*'
 
 jobs:
   filter-tree:
