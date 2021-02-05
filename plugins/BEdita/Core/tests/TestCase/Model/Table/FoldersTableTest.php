@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
@@ -51,6 +52,8 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -478,5 +481,32 @@ class FoldersTableTest extends TestCase
             $child->deleted = false;
             static::assertFalse($this->Folders->isFolderRestorable($child));
         }
+    }
+
+    /**
+     * Test that only available children are returned.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testChildrenAvailable(): void
+    {
+        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        static::assertNotEmpty($folder->children);
+
+        $firstChild = $folder->children[0];
+        $firstChild->status = 'off';
+        $this->Folders->Children->saveOrFail($firstChild);
+
+        Configure::write('Status.level', 'off');
+        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $childrenIds = Hash::extract($folder->children, '{*}.id');
+        static::assertContains($firstChild->id, $childrenIds);
+
+        Configure::write('Status.level', 'draft');
+        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $childrenIds = Hash::extract($folder->children, '{*}.id');
+        static::assertNotContains($firstChild->id, $childrenIds);
     }
 }
