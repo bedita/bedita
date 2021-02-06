@@ -18,7 +18,6 @@ use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
@@ -122,6 +121,30 @@ class EndpointAuthorizeTest extends TestCase
 
         static::assertAttributeEquals($expected, 'endpoint', $authorize);
     }
+
+    /**
+     * Test `getEndpoint` method, reloading same endpoint.
+     *
+     * @covers ::getEndpoint()
+     * @return void
+     */
+   public function testGetEndpointSame(): void
+   {
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
+        $expected = $Endpoints->get(2);
+
+        $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
+        $request = new ServerRequest(['uri' => new Uri('/home')]);
+
+        $authorize->authorize([], $request);
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+
+        $Endpoints->delete($expected);
+
+        $authorize->authorize([], $request);
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+    }
+
 
     /**
      * Data provider for `testAuthorize` test case.

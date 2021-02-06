@@ -13,8 +13,10 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -344,5 +346,37 @@ class HomeControllerTest extends IntegrationTestCase
         $resetExpect = Hash::insert($resetExpect, 'meta.resources./signup.hints.allow', ['POST']);
 
         $this->assertEquals($resetExpect, $result);
+    }
+
+    /**
+     * Test `/home` endpoint with blocked `/documents` endpoint
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::endpointFeatures()
+     */
+    public function testBlockedEndpoint(): void
+    {
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
+        $endpoint = $Endpoints->newEntity(['name' => 'documents']);
+        $endpoint = $Endpoints->saveOrFail($endpoint);
+
+        // setup new permission to block `/documents` endpoint
+        $EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
+        $EndpointPermissions->deleteAll([]);
+        $permission = $EndpointPermissions->newEntity();
+        $permission->permission = 0b0000;
+        $permission->application_id = 1;
+        $permission->role_id = 2;
+        $permission->endpoint_id = $endpoint->id;
+        $EndpointPermissions->saveOrFail($permission);
+
+        CurrentApplication::setFromApiKey(API_KEY);
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/home');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $auth = Hash::get($result, 'meta.resources./documents');
+        static::assertNull($auth);
     }
 }
