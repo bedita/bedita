@@ -52,6 +52,7 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.History',
     ];
