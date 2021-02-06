@@ -128,8 +128,8 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::getEndpoint()
      * @return void
      */
-   public function testGetEndpointSame(): void
-   {
+    public function testGetEndpointSame(): void
+    {
         $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $expected = $Endpoints->get(2);
 
@@ -144,7 +144,6 @@ class EndpointAuthorizeTest extends TestCase
         $authorize->authorize([], $request);
         static::assertAttributeEquals($expected, 'endpoint', $authorize);
     }
-
 
     /**
      * Data provider for `testAuthorize` test case.
