@@ -88,9 +88,7 @@ class EndpointAuthorize extends BaseAuthorize
         // For anonymous users performing write operations, use strict mode.
         $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
 
-        if (empty($this->endpoint)) {
-            $this->getEndpoint();
-        }
+        $this->getEndpoint();
 
         $permissions = $this->getPermissions($user, $strict)->toArray();
         $allPermissions = $this->getPermissions(false);
@@ -149,16 +147,19 @@ class EndpointAuthorize extends BaseAuthorize
     }
 
     /**
-     * Get endpoint for request.
+     * Load endpoint for request in $this->endpoint,
      *
-     * @return \BEdita\Core\Model\Entity\Endpoint
+     * @return void
      * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
      */
-    protected function getEndpoint()
+    protected function getEndpoint(): void
     {
         // endpoint name is the first part of URL path
         $path = array_values(array_filter(explode('/', $this->request->getPath())));
         $endpointName = Hash::get($path, '0', '');
+        if (!empty($this->endpoint) && $endpointName === $this->endpoint->name) {
+            return;
+        }
 
         $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
         $this->endpoint = $Endpoints->find()
@@ -180,8 +181,6 @@ class EndpointAuthorize extends BaseAuthorize
         if (!$this->endpoint->enabled) {
             throw new NotFoundException(__d('bedita', 'Resource not found.'));
         }
-
-        return $this->endpoint;
     }
 
     /**
