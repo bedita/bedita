@@ -90,6 +90,7 @@ class HomeController extends AppController
 
         $default = Hash::insert($this->defaultEndpoints, '{*}.object_type', false);
         $endPoints = array_merge($this->objectTypesEndpoints(), $default);
+        $resources = [];
         foreach ($endPoints as $e => $data) {
             $resources[$e] = $this->endpointFeatures($e, $data);
         }
