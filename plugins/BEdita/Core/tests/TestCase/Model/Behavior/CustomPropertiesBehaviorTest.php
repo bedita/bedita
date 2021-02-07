@@ -42,6 +42,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
