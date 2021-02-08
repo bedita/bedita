@@ -2456,7 +2456,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::prepareIncluded()
+     * @covers ::prepareInclude()
      */
     public function testRelatedInclude(): void
     {
