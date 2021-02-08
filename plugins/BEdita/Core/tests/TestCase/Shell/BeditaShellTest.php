@@ -63,6 +63,7 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
     public function tearDown()
     {
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
+        ConnectionManager::get('default')->getDriver()->disconnect();
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
