@@ -111,8 +111,10 @@ class RelationsBehavior extends Behavior
             }
 
             $className = 'BEdita/Core.Objects';
-            if (count($relation->right_object_types) === 1) {
+            $targetOT = null;
+            if ($relation->right_object_types !== null && count($relation->right_object_types) === 1) {
                 $className = $relation->right_object_types[0]->table;
+                $targetOT = $relation->right_object_types[0];
             }
 
             $through = TableRegistry::getTableLocator()->get(
@@ -136,6 +138,7 @@ class RelationsBehavior extends Behavior
                 'sort' => [
                     $through->aliasField('priority') => 'asc',
                 ],
+                'objectType' => $targetOT,
             ]);
         }
 
@@ -146,8 +149,10 @@ class RelationsBehavior extends Behavior
             }
 
             $className = 'BEdita/Core.Objects';
-            if (count($relation->left_object_types) === 1) {
+            $targetOT = null;
+            if ($relation->left_object_types !== null && count($relation->left_object_types) === 1) {
                 $className = $relation->left_object_types[0]->table;
+                $targetOT = $relation->left_object_types[0];
             }
 
             $through = TableRegistry::getTableLocator()->get(
@@ -171,6 +176,7 @@ class RelationsBehavior extends Behavior
                 'sort' => [
                     $through->aliasField('inv_priority') => 'asc',
                 ],
+                'objectType' => $targetOT,
             ]);
         }
     }
