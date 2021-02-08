@@ -2452,6 +2452,27 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `?include` query parameter on related endpoint.
+     *
+     * @return void
+     *
+     * @covers ::prepareIncluded()
+     */
+    public function testRelatedInclude(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/inverse_test?include=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertSame(['3', '2'], Hash::extract($result, 'data.{n}.id'));
+        static::assertSame(['4'], Hash::extract($result, 'data.0.relationships.test.data.{n}.id'));
+        static::assertSame(['4', '3'], Hash::extract($result, 'data.1.relationships.test.data.{n}.id'));
+    }
+
+    /**
      * Test listing streams for an object.
      *
      * @return void
