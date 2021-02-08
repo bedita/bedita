@@ -99,12 +99,14 @@ abstract class ResourcesController extends AppController
      */
     protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
+        $relationship = Inflector::underscore($relationship);
+        $allowed = true;
         if ($table === null) {
             $table = $this->Table;
+            $allowed = array_key_exists($relationship, $this->getConfig('allowedAssociations'));
         }
 
-        $relationship = Inflector::underscore($relationship);
-        if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
+        if ($allowed) {
             $association = $table->associations()->getByProperty($relationship);
             if ($association !== null) {
                 return $association;
