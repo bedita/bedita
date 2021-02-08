@@ -147,7 +147,8 @@ class EndpointAuthorize extends BaseAuthorize
     }
 
     /**
-     * Load endpoint for request in $this->endpoint,
+     * Load endpoint for request in $this->endpoint.
+     * Avoid reload if endpoint with same name has already been loaded.
      *
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled

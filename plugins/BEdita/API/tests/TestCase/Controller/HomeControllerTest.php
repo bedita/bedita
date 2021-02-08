@@ -376,7 +376,7 @@ class HomeControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);
-        $auth = Hash::get($result, 'meta.resources./documents');
-        static::assertNull($auth);
+        $meta = Hash::get($result, 'meta.resources./documents');
+        static::assertNull($meta);
     }
 }
