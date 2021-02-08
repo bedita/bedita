@@ -58,7 +58,7 @@ class RelatedTo extends BelongsToMany
     /**
      * Set target object type.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectType|null $objectType
+     * @param \BEdita\Core\Model\Entity\ObjectType|null $objectType Object type for the target table (if one exists).
      * @return $this
      */
     public function setObjectType(?ObjectType $objectType): self
