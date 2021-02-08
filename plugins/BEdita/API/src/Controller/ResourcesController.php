@@ -113,7 +113,7 @@ abstract class ResourcesController extends AppController
             }
         }
 
-        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist on table "{1}"', $relationship, $table->getTable()));
+        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }
 
     /**
