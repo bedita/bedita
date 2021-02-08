@@ -289,12 +289,8 @@ class TreesController extends AppController
      */
     protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
-        if ($table === null) {
-            $table = $this->Table;
-        }
-
         if (in_array($relationship, $this->getConfig('allowedAssociations'))) {
-            $association = $table->associations()->getByProperty($relationship);
+            $association = $this->Table->associations()->getByProperty($relationship);
             if ($association !== null) {
                 return $association;
             }
