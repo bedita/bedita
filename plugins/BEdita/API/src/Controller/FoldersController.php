@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -47,14 +48,15 @@ class FoldersController extends ObjectsController
      * `parent` relationship is valid and will return `parents` association.
      * `parents` relationship is not allowed.
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
-        if ($relationship === 'parents') {
-            throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
-        }
-
-        if ($relationship === 'parent') {
-            return $this->Table->getAssociation('Parents');
+        if ($table === null) {
+            switch ($relationship) {
+                case 'parents':
+                    throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+                case 'parent':
+                    return $this->Table->getAssociation('Parents');
+            }
         }
 
         return parent::findAssociation($relationship);

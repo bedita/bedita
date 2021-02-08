@@ -32,6 +32,7 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -92,20 +93,25 @@ abstract class ResourcesController extends AppController
      * Find the association corresponding to the relationship name.
      *
      * @param string $relationship Relationship name.
+     * @param \Cake\ORM\Table|null $table Table to consider.
      * @return \Cake\ORM\Association
      * @throws \Cake\Http\Exception\NotFoundException Throws an exception if no association could be found.
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
+        if ($table === null) {
+            $table = $this->Table;
+        }
+
         $relationship = Inflector::underscore($relationship);
         if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
-            $association = $this->Table->associations()->getByProperty($relationship);
+            $association = $table->associations()->getByProperty($relationship);
             if ($association !== null) {
                 return $association;
             }
         }
 
-        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist on table "{1}"', $relationship, $table->getTable()));
     }
 
     /**
@@ -244,7 +250,7 @@ abstract class ResourcesController extends AppController
 
         $association = $this->findAssociation($relationship);
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $contain = $this->prepareInclude($this->request->getQuery('include'), $association->getTarget());
 
         $action = $this->getAssociatedAction($association);
         $data = $action->execute(['primaryKey' => $relatedId] + compact('filter', 'contain'));
