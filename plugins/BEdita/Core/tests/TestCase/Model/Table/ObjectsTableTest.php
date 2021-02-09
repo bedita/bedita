@@ -761,4 +761,31 @@ class ObjectsTableTest extends TestCase
             ->firstOrFail();
         static::assertSame('gustavo-supporto', $result->get('uname'));
     }
+
+    /**
+     * Test that only available children are returned.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testParentsAvailable(): void
+    {
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        static::assertNotEmpty($object->parents);
+
+        $firstParent = $object->parents[0];
+        $firstParent->status = 'off';
+        $this->Objects->Parents->saveOrFail($firstParent);
+
+        Configure::write('Status.level', 'off');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertContains($firstParent->id, $childrenIds);
+
+        Configure::write('Status.level', 'draft');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertNotContains($firstParent->id, $childrenIds);
+    }
 }
