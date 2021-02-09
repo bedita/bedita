@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
@@ -110,13 +111,6 @@ class RelationsBehavior extends Behavior
                 continue;
             }
 
-            $className = 'BEdita/Core.Objects';
-            $targetOT = null;
-            if ($relation->right_object_types !== null && count($relation->right_object_types) === 1) {
-                $className = $relation->right_object_types[0]->table;
-                $targetOT = $relation->right_object_types[0];
-            }
-
             $through = TableRegistry::getTableLocator()->get(
                 $relation->alias . 'ObjectRelations',
                 ['className' => 'ObjectRelations']
@@ -125,9 +119,10 @@ class RelationsBehavior extends Behavior
                 'jsonSchema',
                 Schema::import($relation->has('params') ? $relation->params : true)
             );
+            $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->right_object_types);
 
             $this->relatedTo($relation->alias, [
-                'className' => $className,
+                'className' => $targetObjectType !== null ? $targetObjectType->table : 'BEdita/Core.Objects',
                 'through' => $through,
                 'foreignKey' => 'left_id',
                 'targetForeignKey' => 'right_id',
@@ -138,7 +133,7 @@ class RelationsBehavior extends Behavior
                 'sort' => [
                     $through->aliasField('priority') => 'asc',
                 ],
-                'objectType' => $targetOT,
+                'objectType' => $targetObjectType,
             ]);
         }
 
@@ -146,13 +141,6 @@ class RelationsBehavior extends Behavior
         foreach ($objectType->getRelations('right') as $relation) {
             if ($this->getTable()->hasAssociation($relation->inverse_alias) === true) {
                 continue;
-            }
-
-            $className = 'BEdita/Core.Objects';
-            $targetOT = null;
-            if ($relation->left_object_types !== null && count($relation->left_object_types) === 1) {
-                $className = $relation->left_object_types[0]->table;
-                $targetOT = $relation->left_object_types[0];
             }
 
             $through = TableRegistry::getTableLocator()->get(
@@ -163,9 +151,10 @@ class RelationsBehavior extends Behavior
                 'jsonSchema',
                 Schema::import($relation->has('params') ? $relation->params : true)
             );
+            $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->left_object_types);
 
             $this->relatedTo($relation->inverse_alias, [
-                'className' => $className,
+                'className' => $targetObjectType !== null ? $targetObjectType->table : 'BEdita/Core.Objects',
                 'through' => $through,
                 'foreignKey' => 'right_id',
                 'targetForeignKey' => 'left_id',
@@ -176,7 +165,7 @@ class RelationsBehavior extends Behavior
                 'sort' => [
                     $through->aliasField('inv_priority') => 'asc',
                 ],
-                'objectType' => $targetOT,
+                'objectType' => $targetObjectType,
             ]);
         }
     }
