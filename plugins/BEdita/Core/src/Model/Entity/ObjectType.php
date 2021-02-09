@@ -181,22 +181,38 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
+     * Get parent object type, if set.
+     *
+     * @return self|null
+     */
+    public function getParent(): ?self
+    {
+        if ($this->parent_id === null) {
+            return null;
+        }
+
+        if ($this->parent !== null) {
+            return $this->parent;
+        }
+
+        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
+        $table = $this->getTableLocator()->get($this->getSource());
+
+        return $table->get($this->parent_id);
+    }
+
+    /**
      * Iterate through full inheritance chain.
      *
      * @return \Generator|self[]
      */
     public function getFullInheritanceChain(): Generator
     {
-        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
-        $table = $this->getTableLocator()->get($this->getSource());
         $objectType = $this;
         while ($objectType !== null) {
             yield $objectType;
 
-            if ($objectType->parent_id !== null && $objectType->parent === null) {
-                $table->loadInto($objectType, ['Parent']);
-            }
-            $objectType = $objectType->parent;
+            $objectType = $objectType->getParent();
         }
     }
 
@@ -259,18 +275,12 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function _getParentName(): ?string
     {
-        if ($this->parent_id !== null && $this->parent === null) {
-            /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
-            $table = $this->getTableLocator()->get($this->getSource());
-
-            $table->loadInto($this, ['Parent']);
-        }
-
-        if ($this->parent === null) {
+        $parent = $this->getParent();
+        if ($parent === null) {
             return null;
         }
 
-        return $this->parent->name;
+        return $parent->name;
     }
 
     /**
@@ -362,7 +372,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     /**
      * Get the closest common parent object type for a set of object types.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectType ...$objectTypes
+     * @param \BEdita\Core\Model\Entity\ObjectType ...$objectTypes Object types to find common ancestor for.
      * @return static|null
      */
     public static function getClosestCommonAncestor(self ...$objectTypes): ?self

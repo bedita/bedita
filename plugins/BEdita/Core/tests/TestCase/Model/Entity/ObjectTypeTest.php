@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -322,6 +323,59 @@ class ObjectTypeTest extends TestCase
         static::assertArrayHasKey('left_relations', $result['relationships']);
         static::assertArrayHasKey('right_relations', $result['relationships']);
         static::assertArrayNotHasKey('relations', $result['relationships']);
+    }
+
+    /**
+     * Data provider for {@see ObjectTypeTest::testGetParent()} test case.
+     *
+     * @return array[]
+     */
+    public function getParentProvider(): array
+    {
+        return [
+            'no parent' => [
+                null,
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('objects');
+                },
+            ],
+            'parent needs to be loaded' => [
+                'objects',
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('documents');
+                },
+            ],
+            'parent, preloaded' => [
+                'objects',
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('locations', ['contain' => ['Parent']]);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Test {@see ObjectType::getParent()}.
+     *
+     * @param string|null $expected Expected parent.
+     * @param callable $subject Function that is expected to return an {@see ObjectType} entity.
+     * @return void
+     *
+     * @dataProvider getParentProvider()
+     * @covers ::getParent()
+     */
+    public function testGetParent(?string $expected, callable $subject): void
+    {
+        /** @var ObjectType $objectType */
+        $objectType = $subject($this->ObjectTypes);
+
+        $actual = $objectType->getParent();
+        if ($expected === null) {
+            static::assertNull($actual);
+        } else {
+            static::assertInstanceOf(ObjectType::class, $actual);
+            static::assertSame($expected, $actual->name);
+        }
     }
 
     /**
