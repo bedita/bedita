@@ -44,7 +44,6 @@ class UpdateRelatedActionTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
-        'plugin.BEdita/Core.ObjectProperties',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.History',
