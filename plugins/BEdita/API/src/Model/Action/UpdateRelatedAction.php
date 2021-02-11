@@ -24,7 +24,7 @@ use Cake\Utility\Hash;
 /**
  * Command to update relations between objects.
  *
- * @since 4.0.0
+ * @since 4.4.0
  */
 class UpdateRelatedAction extends UpdateAssociatedAction
 {
