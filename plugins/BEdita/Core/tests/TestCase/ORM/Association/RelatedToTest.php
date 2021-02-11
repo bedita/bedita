@@ -13,9 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Association;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -26,9 +28,9 @@ class RelatedToTest extends TestCase
 {
 
     /**
-     * Fixtures
+     * Fixtures.
      *
-     * @var array
+     * @var string[]
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
@@ -41,11 +43,11 @@ class RelatedToTest extends TestCase
     ];
 
     /**
-     * Data provider for `testGetSubQueryForMatching` test case.
+     * Data provider for {@see RelatedToTest::testGetSubQueryForMatching()} test case.
      *
-     * @return array
+     * @return array[]
      */
-    public function getSubQueryForMatchingProvider()
+    public function getSubQueryForMatchingProvider(): array
     {
         return [
             'simple' => [
@@ -104,7 +106,7 @@ class RelatedToTest extends TestCase
      * @dataProvider getSubQueryForMatchingProvider()
      * @covers ::getSubQueryForMatching()
      */
-    public function testGetSubQueryForMatching(array $expected, $table, $association, array $options = [])
+    public function testGetSubQueryForMatching(array $expected, string $table, string $association, array $options = []): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
         $association = $table->getAssociation($association);
@@ -128,11 +130,11 @@ class RelatedToTest extends TestCase
     }
 
     /**
-     * Data provider for `testIsSourceAbstract()`
+     * Data provider for {@see RelatedToTest::testIsSourceAbstract()} test case.
      *
-     * @return array
+     * @return array[]
      */
-    public function isAbstractProvider()
+    public function isAbstractProvider(): array
     {
         return [
             'abstract' => [
@@ -161,7 +163,7 @@ class RelatedToTest extends TestCase
      * @covers ::isSourceAbstract()
      * @covers ::isAbstract()
      */
-    public function testIsSourceAbstract($expected, $table)
+    public function testIsSourceAbstract(bool $expected, string $table): void
     {
         $relatedTo = new RelatedTo('SourceAbstract');
         $relatedTo->setSource(TableRegistry::getTableLocator()->get($table));
@@ -179,7 +181,7 @@ class RelatedToTest extends TestCase
      * @covers ::isTargetAbstract()
      * @covers ::isAbstract()
      */
-    public function testIsTargetAbstract($expected, $table)
+    public function testIsTargetAbstract(bool $expected, string $table): void
     {
         $relatedTo = new RelatedTo('SourceAbstract');
         $relatedTo->setTarget(TableRegistry::getTableLocator()->get($table));
@@ -187,9 +189,9 @@ class RelatedToTest extends TestCase
     }
 
     /**
-     * Data provider for testIsInverse()
+     * Data provider for {@see RelatedToTest::testIsInverse()} test case.
      *
-     * @return array
+     * @return array[]
      */
     public function isInverseProvider(): array
     {
@@ -236,9 +238,92 @@ class RelatedToTest extends TestCase
      * @covers ::setInverseKey()
      * @covers ::getInverseKey()
      */
-    public function testIsInverse($expected, $options): void
+    public function testIsInverse(bool $expected, array $options): void
     {
         $relatedTo = new RelatedTo('Alias', $options);
         static::assertEquals($expected, $relatedTo->isInverse());
+    }
+
+    /**
+     * Test setting and retrieving object type.
+     *
+     * @return void
+     *
+     * @covers ::_options()
+     * @covers ::setObjectType()
+     * @covers ::getObjectType()
+     */
+    public function testSetGetObjectTypeNull(): void
+    {
+        $relatedTo = new RelatedTo('Alias', ['objectType' => null]);
+        static::assertNull($relatedTo->getObjectType());
+    }
+
+    /**
+     * Test setting and retrieving object type.
+     *
+     * @return void
+     *
+     * @covers ::_options()
+     * @covers ::setObjectType()
+     * @covers ::getObjectType()
+     */
+    public function testSetGetObjectType(): void
+    {
+        $objectType = $this->getTableLocator()->get('ObjectTypes')
+            ->get(1);
+        $relatedTo = new RelatedTo('Alias', compact('objectType'));
+
+        static::assertSame($objectType, $relatedTo->getObjectType());
+    }
+
+    /**
+     * Data provider for {@see RelatedToTest::testGetTarget()} test case.
+     *
+     * @return array[]
+     */
+    public function getTargetProvider(): array
+    {
+        return [
+            'no object type set' => [null, [], 'BEdita/Core.Objects', null],
+            'not an object table' => [null, [], 'BEdita/Core.ObjectTypes', 'locations'],
+            'profiles' => ['profiles', ['inversetest'], 'BEdita/Core.Profiles', 'profiles'],
+            'override' => ['events', ['test', 'inversetest', 'testabstract'], null, 'events', 'Documents'],
+        ];
+    }
+
+    /**
+     * Test loading correct relations on target table.
+     *
+     * @param string|null $expectedOT Expected object type name on target table.
+     * @param string[] $expectedAssociations Expected associations set on target table.
+     * @param string|null $className Class name of the target table.
+     * @param string|null $objectType Object type to pass to association.
+     * @param string $alias Relation alias.
+     * @return void
+     *
+     * @dataProvider getTargetProvider()
+     * @covers ::getTarget()
+     */
+    public function testGetTarget(?string $expectedOT, array $expectedAssociations, ?string $className, ?string $objectType, string $alias = 'Alias'): void
+    {
+        $options = compact('className');
+        if ($objectType !== null) {
+            $options['objectType'] = $this->getTableLocator()->get('ObjectTypes')->get($objectType);
+        }
+        $relatedTo = new RelatedTo($alias, $options);
+
+        $target = $relatedTo->getTarget();
+        static::assertInstanceOf(Table::class, $target);
+
+        $actualAssociations = $target->associations()->keys();
+        foreach ($expectedAssociations as $expectedAssoc) {
+            static::assertContains($expectedAssoc, $actualAssociations);
+        }
+        if ($expectedOT !== null) {
+            $actualOT = $target->objectType();
+            static::assertInstanceOf(ObjectType::class, $actualOT);
+            static::assertSame($expectedOT, $actualOT->name);
+        }
     }
 }

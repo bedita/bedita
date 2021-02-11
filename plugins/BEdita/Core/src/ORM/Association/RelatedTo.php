@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM\Association;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
 
@@ -33,15 +34,66 @@ class RelatedTo extends BelongsToMany
     protected $inverseKey = 'right_id';
 
     /**
+     * Target object type.
+     *
+     * @var \BEdita\Core\Model\Entity\ObjectType|null
+     */
+    private $objectType = null;
+
+    /**
      * {@inheritDoc}
      */
-    protected function _options(array $options)
+    protected function _options(array $opts)
     {
-        parent::_options($options);
+        parent::_options($opts);
 
-        if (!empty($options['inverseKey'])) {
-            $this->setInverseKey($options['inverseKey']);
+        if (!empty($opts['objectType'])) {
+            $this->setObjectType($opts['objectType']);
         }
+        if (!empty($opts['inverseKey'])) {
+            $this->setInverseKey($opts['inverseKey']);
+        }
+    }
+
+    /**
+     * Set target object type.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType|null $objectType Object type for the target table (if one exists).
+     * @return $this
+     */
+    public function setObjectType(?ObjectType $objectType): self
+    {
+        $this->objectType = $objectType;
+
+        return $this;
+    }
+
+    /**
+     * Get target object type.
+     *
+     * @return \BEdita\Core\Model\Entity\ObjectType|null
+     */
+    public function getObjectType(): ?ObjectType
+    {
+        return $this->objectType;
+    }
+
+    /** @inheritDoc */
+    public function getTarget()
+    {
+        $targetOT = $this->getObjectType();
+        /** @var \Cake\ORM\Table&\BEdita\Core\Model\Behavior\ObjectTypeBehavior&\BEdita\Core\Model\Behavior\RelationsBehavior $target */
+        $target = parent::getTarget();
+        if ($targetOT === null || !$target->hasBehavior('ObjectType')) {
+            return $target;
+        }
+
+        $objectType = $target->objectType();
+        if ($objectType === null || $objectType->id !== $targetOT->id) {
+            $target->setupRelations($targetOT);
+        }
+
+        return $target;
     }
 
     /**
