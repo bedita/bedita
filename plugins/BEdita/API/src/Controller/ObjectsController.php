@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
@@ -359,7 +359,7 @@ class ObjectsController extends ResourcesController
                 return null;
         }
 
-        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $action = new UpdateRelatedAction(compact('action') + ['request' => $this->request]);
         $count = $action(['primaryKey' => $id]);
 
         if ($count === false) {
