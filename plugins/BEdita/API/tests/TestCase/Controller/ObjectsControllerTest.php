@@ -10,6 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\ObjectsController;
@@ -1700,7 +1701,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/placeholded',
                             ],
                         ],
-                'placeholded' => [
+                        'placeholded' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/placeholded',
                                 'self' => 'http://api.example.com/documents/3/relationships/placeholded',
@@ -1766,9 +1767,9 @@ class ObjectsControllerTest extends IntegrationTestCase
     /**
      * Test related method on folder related relationships.
      *
-     * @return void
      * @param string $expected Expected result
      * @param string $url Test URL
+     * @return void
      *
      * @dataProvider linksAvailableProvider
      * @covers ::getAvailableUrl()
@@ -1971,7 +1972,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
                             ],
                         ],
-                    'placeholded' => [
+                        'placeholded' => [
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/placeholded',
                                 'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
