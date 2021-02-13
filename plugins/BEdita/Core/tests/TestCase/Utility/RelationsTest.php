@@ -67,7 +67,7 @@ class RelationsTest extends TestCase
 
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
         static::assertEquals(5, count($allRelations));
-        static::assertEquals('poster', $allRelations[3]['name']);
+        static::assertEquals('poster', $allRelations[4]['name']);
     }
 
     /**

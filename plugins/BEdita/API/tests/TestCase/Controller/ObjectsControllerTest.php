@@ -1698,7 +1698,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'placeholder' => [
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/placeholder',
-                                'self' => 'http://api.example.com/documents/3/relationships/placeholded',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholder',
                             ],
                         ],
                         'placeholded' => [
@@ -1969,7 +1969,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'placeholder' => [
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/placeholder',
-                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
                             ],
                         ],
                         'placeholded' => [

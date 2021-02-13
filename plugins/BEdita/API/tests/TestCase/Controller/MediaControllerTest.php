@@ -430,8 +430,8 @@ class MediaControllerTest extends IntegrationTestCase
                         'name' => 'My media name',
                         'provider' => null,
                         'provider_uid' => null,
-                        'provider_url' => null,
-                        'provider_thumbnail' => null,
+                        'provider_url' => 'https://via.placeholder.com/150',
+                        'provider_thumbnail' => 'https://via.placeholder.com/150',
                         'provider_extra' => null,
                     ],
                     'meta' => [
