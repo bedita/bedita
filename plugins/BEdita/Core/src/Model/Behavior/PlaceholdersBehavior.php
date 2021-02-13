@@ -147,17 +147,22 @@ class PlaceholdersBehavior extends Behavior
      */
     public function afterSave(Event $event, EntityInterface $entity): void
     {
-        $fields = $this->getConfigOrFail('fields');
-        if (empty($fields)) {
+        $fields = $this->getConfig('fields', []);
+        $anyDirty = array_reduce(
+            $fields,
+            function (bool $isDirty, string $field) use ($entity): bool {
+                return $isDirty || $entity->isDirty($field);
+            },
+            false
+        );
+        if ($anyDirty === false) {
+            // Nothing to do.
             return;
         }
 
         $association = $this->getAssociation(true);
 
-        $extract = $this->getConfig('extract');
-        if (!isset($extract)) {
-            $extract = [static::class, 'extractPlaceholders'];
-        }
+        $extract = $this->getConfig('extract', [static::class, 'extractPlaceholders']);
         $placeholders = $extract($entity, $fields);
         $relatedEntities = $this->prepareEntities($association->getTarget(), $placeholders);
 
