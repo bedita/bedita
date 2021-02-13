@@ -172,6 +172,10 @@ class ObjectsTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
+        if (!$entity->isNew() && !$entity->has('type')) {
+            return true;
+        }
+
         $objectType = $this->ObjectTypes->get($entity->get('type'));
         if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
             // Cannot save objects of an abstract type.
