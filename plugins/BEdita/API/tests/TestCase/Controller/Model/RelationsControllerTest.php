@@ -43,10 +43,10 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 4,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 4,
                     'page_size' => 20,
                 ],
             ],
@@ -146,6 +146,35 @@ class RelationsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/relations/3/relationships/right_object_types',
                                 'related' => 'http://api.example.com/model/relations/3/right_object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '4',
+                    'type' => 'relations',
+                    'attributes' => [
+                        'name' => 'placeholder',
+                        'label' => 'Placeholder',
+                        'inverse_name' => 'placeholded',
+                        'inverse_label' => 'Placeholded in',
+                        'description' => 'Relation to link objects with other objects that appear in the body of the former.',
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/relations/4',
+                    ],
+                    'relationships' => [
+                        'left_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/4/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/4/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/4/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/4/right_object_types',
                             ],
                         ],
                     ],
@@ -494,7 +523,9 @@ class RelationsControllerTest extends IntegrationTestCase
                         'alias' => 'Documents',
                         'relations' => [
                             'test',
+                            'placeholder',
                             'inverse_test',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',

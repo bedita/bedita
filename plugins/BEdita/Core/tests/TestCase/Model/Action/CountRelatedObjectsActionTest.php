@@ -282,6 +282,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                     [
@@ -293,6 +295,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                     [
@@ -304,6 +308,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                     [
@@ -315,6 +321,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                     [
@@ -326,6 +334,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                     [
@@ -337,6 +347,8 @@ class CountRelatedObjectsActionTest extends TestCase
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,
                             'inverse_test_abstract' => 0,
+                            'placeholder' => 0,
+                            'placeholded' => 0,
                         ],
                     ],
                 ],

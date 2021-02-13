@@ -90,6 +90,18 @@ class TreesControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/folders/12/relationships/translations',
                         ],
                     ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/folders/12/placeholder',
+                            'self' => 'http://api.example.com/folders/12/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/folders/12/placeholded',
+                            'self' => 'http://api.example.com/folders/12/relationships/placeholded',
+                        ],
+                    ],
                 ],
             ],
             'links' => [

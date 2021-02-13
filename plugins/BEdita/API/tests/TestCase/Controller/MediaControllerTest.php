@@ -477,6 +477,18 @@ class MediaControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/files/10/relationships/inverse_test_abstract',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/placeholder',
+                                'self' => 'http://api.example.com/files/10/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/placeholded',
+                                'self' => 'http://api.example.com/files/10/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -541,6 +553,18 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/inverse_test_abstract',
                                 'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/placeholder',
+                                'self' => 'http://api.example.com/files/14/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/placeholded',
+                                'self' => 'http://api.example.com/files/14/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -703,6 +727,18 @@ class MediaControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/files/14/inverse_test_abstract',
                             'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
+                        ],
+                    ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/placeholder',
+                            'self' => 'http://api.example.com/files/14/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/files/14/placeholded',
+                            'self' => 'http://api.example.com/files/14/relationships/placeholded',
                         ],
                     ],
                 ],

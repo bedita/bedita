@@ -320,6 +320,18 @@ class AppControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholder',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholded',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
             ],

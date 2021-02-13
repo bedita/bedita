@@ -51,7 +51,7 @@ class RelationsTest extends TestCase
             'description' => 'Document or event has a poster file',
             'left' => ['documents', 'events'],
             'right' => ['files'],
-        ]
+        ],
     ];
 
     /**
@@ -66,7 +66,7 @@ class RelationsTest extends TestCase
         Relations::create($this->relations);
 
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
-        static::assertEquals(4, count($allRelations));
+        static::assertEquals(5, count($allRelations));
         static::assertEquals('poster', $allRelations[3]['name']);
     }
 
@@ -82,7 +82,7 @@ class RelationsTest extends TestCase
 
         Relations::remove($this->relations);
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
-        static::assertEquals(3, count($allRelations));
+        static::assertEquals(4, count($allRelations));
     }
 
     /**
@@ -98,7 +98,7 @@ class RelationsTest extends TestCase
         $leftTypes = TableRegistry::getTableLocator()
             ->get('RelationTypes')
             ->find()
-            ->where(['relation_id' => 4, 'side' => 'left'])
+            ->where(['relation_id' => 5, 'side' => 'left'])
             ->toArray();
         static::assertEquals(3, count($leftTypes));
     }

@@ -391,6 +391,8 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'inverse_test',
             'parents',
+            'placeholded',
+            'placeholder',
             'test',
             'translations',
         ];
@@ -426,6 +428,18 @@ class ObjectEntityTest extends TestCase
                 'links' => [
                     'related' => '/users/1/parents',
                     'self' => '/users/1/relationships/parents',
+                ],
+            ],
+            'placeholded' => [
+                'links' => [
+                    'related' => '/users/1/placeholded',
+                    'self' => '/users/1/relationships/placeholded',
+                ],
+            ],
+            'placeholder' => [
+                'links' => [
+                    'related' => '/users/1/placeholder',
+                    'self' => '/users/1/relationships/placeholder',
                 ],
             ],
             'roles' => [
@@ -465,6 +479,8 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'inverse_test',
             'parents',
+            'placeholded',
+            'placeholder',
             'translations',
         ];
 
@@ -492,6 +508,8 @@ class ObjectEntityTest extends TestCase
         $expected = [
             'children',
             'parent',
+            'placeholded',
+            'placeholder',
             'translations',
         ];
 

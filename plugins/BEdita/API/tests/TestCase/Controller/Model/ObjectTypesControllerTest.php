@@ -77,7 +77,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'alias' => 'Objects',
-                        'relations' => [],
+                        'relations' => [
+                            'placeholder',
+                            'placeholded',
+                        ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
@@ -124,7 +127,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'alias' => 'Documents',
                         'relations' => [
                             'test',
+                            'placeholder',
                             'inverse_test',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -171,7 +176,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Profiles',
                         'relations' => [
+                            'placeholder',
                             'inverse_test',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -219,6 +226,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'alias' => 'Users',
                         'relations' => [
                             'another_test',
+                            'placeholder',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -264,7 +273,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'alias' => 'News',
-                        'relations' => [],
+                        'relations' => [
+                            'placeholder',
+                            'placeholded',
+                        ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => false,
@@ -310,7 +322,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Locations',
                         'relations' => [
+                            'placeholder',
                             'inverse_another_test',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -357,7 +371,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Events',
                         'relations' => [
-                           'test_abstract',
+                            'test_abstract',
+                            'placeholder',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -404,7 +420,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Media',
                         'relations' => [
+                            'placeholder',
                             'inverse_test_abstract',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -451,7 +469,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'meta' => [
                         'alias' => 'Files',
                         'relations' => [
+                            'placeholder',
                             'inverse_test_abstract',
+                            'placeholded',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -497,7 +517,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'alias' => 'Folders',
-                        'relations' => [],
+                        'relations' => [
+                            'placeholder',
+                            'placeholded',
+                        ],
                         'created' => '2018-01-29T08:47:29+00:00',
                         'modified' => '2018-01-29T08:47:29+00:00',
                         'core_type' => true,
@@ -625,7 +648,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'alias' => 'Documents',
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'created' => '2017-11-10T09:27:23+00:00',
                     'modified' => '2017-11-10T09:27:23+00:00',
