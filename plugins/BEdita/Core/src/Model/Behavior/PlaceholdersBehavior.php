@@ -39,7 +39,7 @@ class PlaceholdersBehavior extends Behavior
      *
      * @var string
      */
-    const REGEX = '/<!--\s+BE-PLACEHOLDER\.(?P<id>\d+)(?:\.(?P<params>[A-Za-z0-9+=-]+))?\s+-->/';
+    const REGEX = '/<!--\s*BE-PLACEHOLDER\.(?P<id>\d+)(?:\.(?P<params>[A-Za-z0-9+=-]+))?\s*-->/';
 
     /**
      * Default configurations. Available configurations include:

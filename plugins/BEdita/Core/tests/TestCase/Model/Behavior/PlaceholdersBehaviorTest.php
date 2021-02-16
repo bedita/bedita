@@ -110,6 +110,44 @@ class PlaceholdersBehaviorTest extends TestCase
                     'body' => '<p>This is a text</p><!-- BE-PLACEHOLDER.10 -->',
                 ],
             ],
+            'simple, extra spaces' => [
+                [
+                    [
+                        'id' => 10,
+                        'params' => [
+                            'body' => [
+                                [
+                                    'offset' => 21,
+                                    'length' => 26,
+                                    'params' => null,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'body' => '<p>This is a text</p><!--  BE-PLACEHOLDER.10    -->',
+                ],
+            ],
+            'simple, no spaces' => [
+                [
+                    [
+                        'id' => 10,
+                        'params' => [
+                            'body' => [
+                                [
+                                    'offset' => 21,
+                                    'length' => 26,
+                                    'params' => null,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'body' => '<p>This is a text</p><!--BE-PLACEHOLDER.10-->',
+                ],
+            ],
             'simple, with params' => [
                 [
                     [
