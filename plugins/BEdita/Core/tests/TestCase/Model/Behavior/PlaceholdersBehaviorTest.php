@@ -118,7 +118,7 @@ class PlaceholdersBehaviorTest extends TestCase
                             'body' => [
                                 [
                                     'offset' => 21,
-                                    'length' => 26,
+                                    'length' => 30,
                                     'params' => null,
                                 ],
                             ],
@@ -137,7 +137,7 @@ class PlaceholdersBehaviorTest extends TestCase
                             'body' => [
                                 [
                                     'offset' => 21,
-                                    'length' => 26,
+                                    'length' => 24,
                                     'params' => null,
                                 ],
                             ],
