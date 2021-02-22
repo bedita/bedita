@@ -260,6 +260,7 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'second-cat',
+                        'object_type_name' => 'documents',
                     ],
                 ],
             ],
@@ -378,6 +379,7 @@ class ResourcesTest extends TestCase
                 [
                     [
                         'name' => 'second-cat',
+                        'object_type_name' => 'documents',
                         'label' => 'Another category',
                     ],
                 ],
