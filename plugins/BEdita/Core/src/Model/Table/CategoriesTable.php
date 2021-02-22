@@ -166,4 +166,25 @@ class CategoriesTable extends CategoriesTagsBaseTable
             return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
         });
     }
+
+    /**
+     * Find category resource by name and object type.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @throws BadFilterException
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        if (empty($options['name'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "name"'));
+        }
+        if (empty($options['object_type_name'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "object_type_name"'));
+        }
+
+        return $query->find('type', [$options['object_type_name']])
+            ->where([$this->aliasField('name') => $options['name']]);
+    }
 }
