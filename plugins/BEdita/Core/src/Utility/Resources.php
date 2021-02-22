@@ -81,6 +81,7 @@ class Resources
     protected static $allowed = [
         'applications',
         'auth_providers',
+        'categories',
         'config',
         'property_types',
         'object_types',
