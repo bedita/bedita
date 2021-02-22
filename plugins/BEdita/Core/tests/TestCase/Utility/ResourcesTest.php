@@ -37,6 +37,7 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
@@ -88,6 +89,16 @@ class ResourcesTest extends TestCase
                             'provider_username_field' => 'owner_id',
                         ],
                         'enabled' => true,
+                    ],
+                ],
+            ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'third-cat',
+                        'label' => 'Third category',
+                        'object_type_name' => 'documents',
                     ],
                 ],
             ],
@@ -244,6 +255,14 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'second-cat',
+                    ],
+                ],
+            ],
             'objects' => [
                 'object_types',
                 [
@@ -351,6 +370,15 @@ class ResourcesTest extends TestCase
                         'params' => [
                             'provider_username_field' => 'another_id',
                         ],
+                    ],
+                ],
+            ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'second-cat',
+                        'label' => 'Another category',
                     ],
                 ],
             ],
