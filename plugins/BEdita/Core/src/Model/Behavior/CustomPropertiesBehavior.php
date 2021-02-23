@@ -85,12 +85,12 @@ class CustomPropertiesBehavior extends Behavior
             return [];
         }
 
-        $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
+        $this->available = TableRegistry::getTableLocator()->get('Properties')
+            ->find('type', ['dynamic'])
             ->find('objectType', [$objectType->id])
             ->where(['enabled' => true, 'is_static' => false])
-            ->all();
-
-        $this->available = collection($properties)->indexBy('name')->toArray();
+            ->indexBy('name')
+            ->toArray();
 
         return $this->available;
     }

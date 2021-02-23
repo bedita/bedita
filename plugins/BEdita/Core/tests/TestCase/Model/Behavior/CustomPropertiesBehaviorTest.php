@@ -160,7 +160,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @covers ::getAvailable()
      * @covers ::objectType()
      */
-    public function testGetAvailableRelatedObject()
+    public function testGetAvailableRelatedObject(): void
     {
         $table = TableRegistry::getTableLocator()->get('Profiles')
             ->getAssociation('InverseTest')->getTarget();

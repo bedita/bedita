@@ -212,7 +212,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testRelated()
+    public function testRelated(): void
     {
         $this->configRequestHeaders();
         $this->get('/profiles/4/inverse_test');
