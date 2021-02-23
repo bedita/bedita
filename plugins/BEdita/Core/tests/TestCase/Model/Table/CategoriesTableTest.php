@@ -192,14 +192,14 @@ class CategoriesTableTest extends TestCase
     /**
      * Test custom finder `findResource()`.
      *
-     * @param mixed $expected The value expected
+     * @param int|\Exception $expected The value expected
      * @param array $options The options for the finder
      * @return void
      *
      * @covers ::findResource()
      * @dataProvider findResourceProvider()
      */
-    public function testFindResource($expected, $options)
+    public function testFindResource($expected, $options): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));

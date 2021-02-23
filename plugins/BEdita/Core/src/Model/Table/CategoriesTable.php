@@ -17,7 +17,6 @@ use BEdita\Core\Exception\BadFilterException;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -174,7 +173,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
      * @return \Cake\ORM\Query
-     * @throws BadFilterException
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     protected function findResource(Query $query, array $options): Query
     {
