@@ -153,6 +153,31 @@ class CustomPropertiesBehaviorTest extends TestCase
     }
 
     /**
+     * Test get available properties for related object.
+     *
+     * @return void
+     *
+     * @covers ::getAvailable()
+     * @covers ::objectType()
+     */
+    public function testGetAvailableRelatedObject(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Profiles')
+            ->getAssociation('InverseTest')->getTarget();
+
+        static::assertEquals('InverseTest', $table->getAlias());
+
+        $behavior = $table->behaviors()->get('CustomProperties');
+        $result = $behavior->getAvailable();
+
+        $expected = ['another_title', 'another_description']; // documents custom props
+        $result = array_keys($result);
+        sort($result);
+        sort($expected);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
      * Test get available when no object type is found
      *
      * @return void
