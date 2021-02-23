@@ -169,6 +169,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
 
     /**
      * Find category resource by name and object type.
+     * Options array argument MUST contain 'name' and 'object_type_name' keys.
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
@@ -178,10 +179,10 @@ class CategoriesTable extends CategoriesTagsBaseTable
     protected function findResource(Query $query, array $options): Query
     {
         if (empty($options['name'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "name"'));
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
         if (empty($options['object_type_name'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "object_type_name"'));
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
         }
 
         return $query->find('type', [$options['object_type_name']])
