@@ -1336,6 +1336,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
+                        'another_title' => null,
+                        'another_description' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/2',

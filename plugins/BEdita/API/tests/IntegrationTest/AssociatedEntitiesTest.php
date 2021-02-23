@@ -208,6 +208,20 @@ class AssociatedEntitiesTest extends IntegrationTestCase
     }
 
     /**
+     * Test that related objects correspond to the pagination count.
+     *
+     * @return void
+     */
+    public function testRelated()
+    {
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(2, $result['data']);
+        static::assertEquals(2, $result['meta']['pagination']['count']);
+    }
+
+    /**
      * Test that `?include` query parameter for `/events/:id` will contain all relevan media data.
      *
      * @return void
