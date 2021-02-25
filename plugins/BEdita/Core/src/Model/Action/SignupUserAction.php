@@ -357,11 +357,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response($url, $accessToken)
+    protected function getOAuth2Response($url, $accessToken): array
     {
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        return !empty($response->json) ? $response->json : [];
+        return (array)$response->getJson();
     }
 
     /**
