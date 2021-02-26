@@ -266,24 +266,25 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             LoggedUser::setUser(['id' => 1]);
         }
 
-        $status = 'draft';
+        $data['status'] = 'draft';
         if ($this->getConfig('requireActivation') === false) {
-            $status = 'on';
+            $data['status'] = 'on';
         }
-        unset($data['status']);
 
         if (empty($data['auth_provider'])) {
-            return $this->createUserEntity($data, $status, ['validate' => 'signup']);
+            return $this->createUserEntity($data, ['validate' => 'signup']);
         }
 
         $authProvider = $this->checkExternalAuth($data);
 
+        // Signup authorized by auth provider => set status `on` and `verified` date
         $data['verified'] = Time::now();
+        $data['status'] = 'on';
         $options = [
             'validate' => 'signupExternal',
             'accessibleFields' => ['verified' => true],
         ];
-        $user = $this->createUserEntity($data, 'on', $options);
+        $user = $this->createUserEntity($data, $options);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -300,11 +301,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Create User model entity.
      *
      * @param array $data The signup data
-     * @param string $status User `status`, `on` or `draft`
-     * @param array $options Entity options to use
+     * @param array $entityOptions Entity options to use
      * @return @return \BEdita\Core\Model\Entity\User The User entity created
      */
-    protected function createUserEntity(array $data, $status, $options)
+    protected function createUserEntity(array $data, array $entityOptions)
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -314,13 +314,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
-        $data['status'] = $status;
+        $entity = $this->Users->newEntity();
 
-        return $action([
-            'entity' => $this->Users->newEntity(),
-            'data' => $data,
-            'entityOptions' => $options,
-        ]);
+        return $action(compact('entity', 'data', 'entityOptions'));
     }
 
     /**
