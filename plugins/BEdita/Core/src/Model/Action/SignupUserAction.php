@@ -273,12 +273,17 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         unset($data['status']);
 
         if (empty($data['auth_provider'])) {
-            return $this->createUserEntity($data, $status, 'signup');
+            return $this->createUserEntity($data, $status, ['validate' => 'signup']);
         }
 
         $authProvider = $this->checkExternalAuth($data);
 
-        $user = $this->createUserEntity($data, 'on', 'signupExternal');
+        $data['verified'] = Time::now();
+        $options = [
+            'validate' => 'signupExternal',
+            'accessibleFields' => ['verified' => true],
+        ];
+        $user = $this->createUserEntity($data, 'on', $options);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -296,10 +301,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @param array $data The signup data
      * @param string $status User `status`, `on` or `draft`
-     * @param string $validate Validation options to use
+     * @param array $options Entity options to use
      * @return @return \BEdita\Core\Model\Entity\User The User entity created
      */
-    protected function createUserEntity(array $data, $status, $validate)
+    protected function createUserEntity(array $data, $status, $options)
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -314,9 +319,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         return $action([
             'entity' => $this->Users->newEntity(),
             'data' => $data,
-            'entityOptions' => [
-                'validate' => $validate,
-            ],
+            'entityOptions' => $options,
         ]);
     }
 
