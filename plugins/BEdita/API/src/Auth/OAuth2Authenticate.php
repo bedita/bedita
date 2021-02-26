@@ -104,12 +104,12 @@ class OAuth2Authenticate extends BaseAuthenticate
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response($url, $accessToken)
+    protected function getOAuth2Response($url, $accessToken): array
     {
         /** @var \Cake\Http\Client\Response $response */
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        return !empty($response->getJson()) ? $response->getJson() : [];
+        return (array)$response->getJson();
     }
 
     /**
