@@ -298,13 +298,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
-     * Create User model entity.
+     * Create User entity.
      *
      * @param array $data The signup data
      * @param array $entityOptions Entity options to use
-     * @return @return \BEdita\Core\Model\Entity\User The User entity created
+     * @return \BEdita\Core\Model\Entity\User The User entity created
      */
-    protected function createUserEntity(array $data, array $entityOptions)
+    protected function createUserEntity(array $data, array $entityOptions): User
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
