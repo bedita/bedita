@@ -266,25 +266,19 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             LoggedUser::setUser(['id' => 1]);
         }
 
-        $data['status'] = 'draft';
+        $status = 'draft';
         if ($this->getConfig('requireActivation') === false) {
-            $data['status'] = 'on';
+            $status = 'on';
         }
 
         if (empty($data['auth_provider'])) {
-            return $this->createUserEntity($data, ['validate' => 'signup']);
+            return $this->createUserEntity($data, $status, 'signup');
         }
 
         $authProvider = $this->checkExternalAuth($data);
 
-        // Signup authorized by auth provider => set status `on` and `verified` date
         $data['verified'] = Time::now();
-        $data['status'] = 'on';
-        $options = [
-            'validate' => 'signupExternal',
-            'accessibleFields' => ['verified' => true],
-        ];
-        $user = $this->createUserEntity($data, $options);
+        $user = $this->createUserEntity($data, 'on', 'signupExternal');
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -301,10 +295,12 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Create User entity.
      *
      * @param array $data The signup data
-     * @param array $entityOptions Entity options to use
+     * @param string $status User `status`, `on` or `draft`
+     * @param string $validate Validation options to use
      * @return \BEdita\Core\Model\Entity\User The User entity created
+     * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
-    protected function createUserEntity(array $data, array $entityOptions): User
+    protected function createUserEntity(array $data, $status, $validate)
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -314,7 +310,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
-        $entity = $this->Users->newEntity();
+        $entity = $this->Users->newEntity()->set(compact('status'));
+        $entityOptions = compact('validate');
+        if (!empty($data['verified'])) {
+            $entityOptions['accessibleFields'] = ['verified' => true];
+        }
 
         return $action(compact('entity', 'data', 'entityOptions'));
     }
