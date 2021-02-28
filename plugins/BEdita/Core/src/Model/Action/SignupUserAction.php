@@ -310,7 +310,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
-        $entity = $this->Users->newEntity()->set(compact('status'));
+
+        $data['status'] = $status;
+        $entity = $this->Users->newEntity();
         $entityOptions = compact('validate');
         if (!empty($data['verified'])) {
             $entityOptions['accessibleFields'] = ['verified' => true];
