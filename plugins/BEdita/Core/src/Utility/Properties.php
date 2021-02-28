@@ -14,7 +14,6 @@
 namespace BEdita\Core\Utility;
 
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -38,7 +37,7 @@ use Cake\Utility\Inflector;
  *     ],
  *   ]
  */
-class Properties
+class Properties extends ResourcesBase
 {
     /**
      * Default options array with following keys:
@@ -68,8 +67,7 @@ class Properties
      */
     public static function create(array $properties, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
+        $Properties = static::getTable('Properties', $options);
 
         foreach ($properties as $p) {
             static::validate($p);
@@ -93,9 +91,8 @@ class Properties
      */
     public static function remove(array $properties, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
-        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
+        $Properties = static::getTable('Properties', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
 
         foreach ($properties as $p) {
             static::validate($p);

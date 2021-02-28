@@ -206,7 +206,6 @@ class ResourcesTest extends TestCase
      * @return void
      *
      * @covers ::create()
-     * @covers ::getTable()
      * @dataProvider createProvider
      */
     public function testCreate(string $type, array $data): void
@@ -477,19 +476,6 @@ class ResourcesTest extends TestCase
                 static::assertEquals($val, $entity->get($name));
             }
         }
-    }
-
-    /**
-     * Test `getTable` method failure.
-     *
-     * @covers ::getTable()
-     */
-    public function testGetTableFail()
-    {
-        $this->expectException(BadRequestException::class);
-        $this->expectExceptionMessage('Resource type not allowed "cats"');
-
-        Resources::create('cats', []);
     }
 
     /**

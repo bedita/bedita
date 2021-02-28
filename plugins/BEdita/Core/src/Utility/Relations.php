@@ -15,7 +15,6 @@ namespace BEdita\Core\Utility;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -38,7 +37,7 @@ use Cake\Utility\Inflector;
  *     ],
  *    ]
  */
-class Relations
+class Relations extends ResourcesBase
 {
     /**
      * Default options array with following keys:
@@ -68,8 +67,7 @@ class Relations
      */
     public static function create(array $relations, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
+        $Relations = static::getTable('Relations', $options);
         foreach ($relations as $data) {
             static::validate($data);
             $relation = $Relations->newEntity($data);
@@ -91,8 +89,7 @@ class Relations
      */
     public static function addRelationType(string $relation, string $type, string $side, array $options = []): void
     {
-        $relation = TableRegistry::getTableLocator()
-            ->get('Relations', $options)
+        $relation = static::getTable('Relations', $options)
             ->get($relation);
         static::addTypes($relation->get('id'), [$type], $side, $options);
     }
@@ -108,9 +105,8 @@ class Relations
      */
     protected static function addTypes($relationId, array $types, string $side, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
-        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
+        $RelationTypes = static::getTable('RelationTypes', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
 
         foreach ($types as $name) {
             $objectType = $ObjectTypes->get(Inflector::camelize($name));
@@ -133,8 +129,7 @@ class Relations
      */
     public static function remove(array $relations, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
+        $Relations = static::getTable('Relations', $options);
         foreach ($relations as $r) {
             static::validate($r);
             /** @var \Cake\Datasource\EntityInterface $relation */
@@ -160,9 +155,8 @@ class Relations
      */
     protected static function removeTypes($relationId, array $types, string $side, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $RelationTypes = TableRegistry::getTableLocator()->get('RelationTypes', $options);
-        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
+        $RelationTypes = static::getTable('RelationTypes', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
 
         foreach ($types as $name) {
             $objectType = $ObjectTypes->get(Inflector::camelize($name));
@@ -191,8 +185,7 @@ class Relations
      */
     public static function removeRelationType(string $relation, string $type, string $side, array $options = []): void
     {
-        $relation = TableRegistry::getTableLocator()
-            ->get('Relations', $options)
+        $relation = static::getTable('Relations', $options)
             ->get($relation);
         static::removeTypes($relation->get('id'), [$type], $side, $options);
     }
@@ -206,7 +199,7 @@ class Relations
      */
     public static function update(array $data, array $options = []): array
     {
-        $Relations = TableRegistry::getTableLocator()->get('Relations', $options);
+        $Relations = static::getTable('Relations', $options);
 
         $result = [];
         foreach ($data as $r) {
