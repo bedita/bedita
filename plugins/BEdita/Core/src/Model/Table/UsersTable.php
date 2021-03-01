@@ -392,10 +392,9 @@ class UsersTable extends Table
         $entity->set('deleted', true);
         $entity->set('locked', true);
 
-        $condition = [$this->ExternalAuth->aliasField('user_id') => $entity->get('id')];
-        $extAuthList = $this->ExternalAuth->find()->where($condition)->toList();
+        $this->loadInto($entity, ['ExternalAuth']);
         array_walk(
-            $extAuthList,
+            $entity->external_auths,
             function ($item) {
                 $this->ExternalAuth->deleteOrFail($item);
             }
