@@ -394,7 +394,7 @@ class UsersTable extends Table
 
         $this->loadInto($entity, ['ExternalAuth']);
         array_walk(
-            $entity->external_auths,
+            $entity->external_auth,
             function ($item) {
                 $this->ExternalAuth->deleteOrFail($item);
             }
