@@ -46,11 +46,9 @@ abstract class ResourcesBase
                 __d('bedita', 'Resource type not allowed "{0}"', $type)
             );
         }
-
+        $type = Inflector::camelize($type);
         TableRegistry::getTableLocator()->remove($type);
 
-        return TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type), $options);
+        return TableRegistry::getTableLocator()->get($type, $options);
     }
 }
-
