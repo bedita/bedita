@@ -724,6 +724,8 @@ class UsersTableTest extends TestCase
         static::assertEquals('__deleted-5', $result->get('uname'));
         static::assertEquals(true, $result->get('locked'));
         static::assertNull($result->get('last_login'));
+        // verify external_auth records have been removed
+        static::assertFalse($this->Users->ExternalAuth->exists(['user_id' => 5]));
     }
 
     /**
@@ -749,6 +751,8 @@ class UsersTableTest extends TestCase
         static::assertEquals('__deleted-5', $result->get('uname'));
         static::assertEquals(true, $result->get('locked'));
         static::assertNull($result->get('last_login'));
+        // verify external_auth records have been removed
+        static::assertFalse($this->Users->ExternalAuth->exists(['user_id' => 5]));
     }
 
     /**

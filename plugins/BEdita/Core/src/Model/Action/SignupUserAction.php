@@ -270,7 +270,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         if ($this->getConfig('requireActivation') === false) {
             $status = 'on';
         }
-        unset($data['status']);
 
         if (empty($data['auth_provider'])) {
             return $this->createUserEntity($data, $status, 'signup');
@@ -278,7 +277,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         $authProvider = $this->checkExternalAuth($data);
 
-        $user = $this->createUserEntity($data, 'on', 'signupExternal');
+        $user = $this->createUserEntity($data, 'on', 'signupExternal', true);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -292,14 +291,17 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
-     * Create User model entity.
+     * Create User entity.
      *
      * @param array $data The signup data
      * @param string $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
-     * @return @return \BEdita\Core\Model\Entity\User The User entity created
+     * @param bool $verified Add `verified` value to entity
+     *
+     * @return \BEdita\Core\Model\Entity\User The User entity created
+     * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
-    protected function createUserEntity(array $data, $status, $validate)
+    protected function createUserEntity(array $data, $status, $validate, bool $verified = false)
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -309,15 +311,15 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
-        $data['status'] = $status;
 
-        return $action([
-            'entity' => $this->Users->newEntity(),
-            'data' => $data,
-            'entityOptions' => [
-                'validate' => $validate,
-            ],
-        ]);
+        $data['status'] = $status;
+        $entity = $this->Users->newEntity();
+        if ($verified === true) {
+            $entity->set('verified', Time::now());
+        }
+        $entityOptions = compact('validate');
+
+        return $action(compact('entity', 'data', 'entityOptions'));
     }
 
     /**
@@ -357,11 +359,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response($url, $accessToken)
+    protected function getOAuth2Response(string $url, string $accessToken): array
     {
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        return !empty($response->json) ? $response->json : [];
+        return (array)$response->getJson();
     }
 
     /**
