@@ -654,29 +654,29 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function checkStatusProvider()
+    public function checkStatusProvider(): array
     {
         return [
             'no conf' => [
                 'draft',
-                '',
                 [
                     'status' => 'draft',
                 ],
+                '',
             ],
             'error' => [
                 new BadRequestException('Status "draft" is not consistent with configured Status.level "on"'),
-                'on',
                 [
                     'status' => 'draft',
                 ],
+                'on',
             ],
             'ok' => [
                 'draft',
-                'draft',
                 [
                     'status' => 'draft',
                 ],
+                'draft',
             ],
         ];
     }
@@ -692,14 +692,16 @@ class ObjectsTableTest extends TestCase
      * @dataProvider checkStatusProvider()
      * @covers ::checkStatus()
      */
-    public function testCheckStatus($expected, string $config, array $data): void
+    public function testCheckStatus($expected, array $data, string $config = ''): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        Configure::write('Status.level', $config);
+        if (!empty($config)) {
+            Configure::write('Status.level', $config);
+        }
 
         $id = Hash::get($data, 'id', 2);
         $object = $this->Objects->get($id);
