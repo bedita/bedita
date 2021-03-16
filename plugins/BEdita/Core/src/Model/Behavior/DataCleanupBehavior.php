@@ -83,7 +83,7 @@ class DataCleanupBehavior extends Behavior
         if (Configure::read('Status.level') === 'on') {
             $fields['status'] = 'on';
         }
-        $defaults = Configure::read(sprintf('DefaultValues.%s', $type), []);
+        $defaults = (array)Configure::read(sprintf('DefaultValues.%s', $type));
 
         return array_merge($fields, $defaults);
     }

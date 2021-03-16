@@ -154,7 +154,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function statusLevelProvider()
+    public function statusLevelProvider(): array
     {
         return [
             'status' => [
@@ -203,7 +203,7 @@ class DataCleanupBehaviorTest extends TestCase
      * @dataProvider statusLevelProvider
      * @covers ::defaultFields()
      */
-    public function testStatusLevel(array $inputData, array $expected, string $level = '')
+    public function testStatusLevel(array $inputData, array $expected, string $level = ''): void
     {
         if (!empty($level)) {
             Configure::write('Status.level', $level);
