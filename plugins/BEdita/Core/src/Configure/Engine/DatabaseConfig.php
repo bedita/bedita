@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2020 ChannelWeb Srl, Chialab Srl
+ * Copyright 2016 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -67,7 +67,7 @@ class DatabaseConfig implements ConfigEngineInterface
     /**
      * Read `$key` parameters group from database using cache.
      *
-     * @param string!null $key The group of parameters to read from database (see `config.context`).
+     * @param string|null $key The group of parameters to read from database (see `config.context`).
      * @return array Parsed configuration values.
      */
     public function read($key): array
@@ -84,8 +84,8 @@ class DatabaseConfig implements ConfigEngineInterface
     }
 
     /**
-     * Read configuration from DB of `$key` parameters group (see database `config.context`)
-     * and return the results as an array.
+     * Read configuration from DB of `$key` parameters group and return the results as an array.
+     * Parameter group is mapped to database column `config.context`.
      *
      * @param string|null $key The group of parameters to read from database (see `config.context`).
      * @return array Parsed configuration values.
