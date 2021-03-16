@@ -111,10 +111,6 @@ jobs:
             db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
           - php: '7.2'
             db: '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - php: '7.1'
-            db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
-          - php: '7.1'
-            db: '{"vendor": "MySQL 5.7", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:5.7", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
@@ -199,7 +195,7 @@ jobs:
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
         with:
-          php-version: '7.1'
+          php-version: '7.2'
           tools: 'composer:v1'
           extensions: 'mbstring, intl, pdo_sqlite'
 
