@@ -14,6 +14,8 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Utility\Relations;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -201,10 +203,34 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      */
     public function testIncludedRelated()
     {
+        // Create temporary relation between documents and locations, link location #8 to document #2.
+        Relations::create([
+            [
+                'name' => 'foos',
+                'inverse_name' => 'oofs',
+                'left' => ['documents'],
+                'right' => ['locations'],
+            ],
+        ]);
+        $table = $this->getTableLocator()->get('Documents');
+        $association = $table->getAssociation('Foos');
+        $location = $association->get(8);
+
+        $action = new AddRelatedObjectsAction(compact('association'));
+        $action->execute([
+            'entity' => $table->get(2),
+            'relatedEntities' => [$location],
+        ]);
+
+        // Send request.
         $this->configRequestHeaders();
-        $this->get('/documents/3/inverse_test?include=test');
+        $this->get('/documents/3/inverse_test?include=foos');
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertCount(2, $result['included']);
+
+        $this->assertResponseCode(200);
+        static::assertCount(1, $result['included']);
+        static::assertSame('8', $result['included'][0]['id']);
+        static::assertArrayHasKey('coords', $result['included'][0]['attributes']);
     }
 
     /**

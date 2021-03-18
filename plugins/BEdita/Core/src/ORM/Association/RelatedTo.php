@@ -90,7 +90,10 @@ class RelatedTo extends BelongsToMany
 
         $objectType = $target->objectType();
         if ($objectType === null || $objectType->id !== $targetOT->id) {
-            $target->setupRelations($targetOT);
+            $target->setupRelations(
+                $this->getTableLocator()->get('ObjectTypes')
+                    ->get($targetOT->id)
+            );
         }
 
         return $target;

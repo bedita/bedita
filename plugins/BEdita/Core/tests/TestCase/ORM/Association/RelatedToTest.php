@@ -309,7 +309,15 @@ class RelatedToTest extends TestCase
     {
         $options = compact('className');
         if ($objectType !== null) {
-            $options['objectType'] = $this->getTableLocator()->get('ObjectTypes')->get($objectType);
+            $options['objectType'] = $this->getTableLocator()->get('ObjectTypes')
+                ->find()
+                ->clearContain()
+                ->where(['name' => $objectType])
+                ->firstOrFail();
+
+            // Ensure that relations aren't present in the ObjectType entity, to test that they will be loaded by RelatedTo::getTarget().
+            static::assertEmpty($options['objectType']['left_relations']);
+            static::assertEmpty($options['objectType']['right_relations']);
         }
         $relatedTo = new RelatedTo($alias, $options);
 
