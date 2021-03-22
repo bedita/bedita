@@ -176,6 +176,11 @@ Router::plugin(
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
                     ['_name' => 'schema', 'pass' => ['type']]
                 );
+                $routes->get(
+                    '/project',
+                    ['controller' => 'Project', 'action' => 'index'],
+                    'project'
+                );
             }
         );
 
