@@ -68,32 +68,61 @@ class CategoriesBehavior extends Behavior
             return;
         }
 
-        $ids = $this->retrieveIds($item, $entity, $objectType);
+        if ($item === 'categories') {
+            $ids = $this->categoryIds($entity, $objectType);
+        } else {
+            $ids = $this->tagIds($entity);
+        }
         $this->updateData($item, $entity, $ids);
     }
 
     /**
-     * Retrieve categories or tags ids from entity data
+     * Retrieve category ids from entity data
      *
-     * @param string $item Item type, 'tags' or 'categories'
      * @param EntityInterface $entity Entity data
      * @param EntityInterface $objectType Object type entity
      * @return array
      */
-    protected function retrieveIds(string $item, EntityInterface $entity, EntityInterface $objectType)
+    protected function categoryIds(EntityInterface $entity, EntityInterface $objectType)
     {
-        $data = (array)$entity->get($item);
-        $names = Hash::extract($data, '{n}.name');
-        $options = compact('names');
+        $data = (array)$entity->get('categories');
+        $options = [
+            'names' => Hash::extract($data, '{n}.name'),
+            'typeId' => (int)$objectType->get('id'),
+        ];
 
-        if ($item === 'categories') {
-            $options['typeId'] = (int)$objectType->get('id');
+        return TableRegistry::getTableLocator()->get('Categories')
+                ->find('ids', $options)
+                ->toArray();
+    }
+
+    /**
+     * Retrieve category ids from entity data
+     *
+     * @param EntityInterface $entity Entity data
+     * @return array
+     */
+    protected function tagIds(EntityInterface $entity): array
+    {
+        $data = (array)$entity->get('tags');
+        $Tags = TableRegistry::getTableLocator()->get('Tags');
+        $tagEntities = [];
+        foreach ($data as $item) {
+            $name = Hash::get($item, 'name');
+            $tag = $Tags->find()
+                ->where([$Tags->aliasField('name') => $name])
+                ->first();
+            if (!empty($tag) && $tag->get('enabled') === false) {
+                continue;
+            }
+            if (empty($tag)) {
+                $tag = $Tags->newEntity(compact('name'));
+                $tag = $Tags->saveOrFail($tag);
+            }
+            $tagEntities[] = $tag;
         }
 
-        // Invoke `ids` finder in `Categories` or `Tags` table
-        return TableRegistry::getTableLocator()->get(Inflector::humanize($item))
-            ->find('ids', $options)
-            ->toArray();
+        return $tagEntities;
     }
 
     /**
