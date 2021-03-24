@@ -1,6 +1,7 @@
 # BEdita, a back-end API
 
-[![Build Status](https://travis-ci.org/bedita/bedita.svg?branch=4-cactus)](https://travis-ci.org/bedita/bedita)
+[![Build Status](https://github.com/bedita/bedita/workflows/Run%20tests/badge.svg)](https://github.com/bedita/bedita/actions?query=workflow%3A%22Run+tests%22)
+[![Publish plugins](https://github.com/bedita/bedita/workflows/Publish%20components/badge.svg)](https://github.com/bedita/bedita/actions?query=workflow%3A%22Publish+components%22)
 [![Code Coverage](https://codecov.io/gh/bedita/bedita/branch/4-cactus/graph/badge.svg)](https://codecov.io/gh/bedita/bedita/branch/4-cactus)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=4-cactus)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=4-cactus)
 
@@ -99,7 +100,7 @@ You may of course choose whatever name you like for the generated image instead 
 
 ### Run
 
-Run a Docker image setting an initial API KEY and admin username and password like this:
+Run a Docker image setting an initial API KEY and admin username and password, like this:
 
 ```bash
  docker run -p 8090:80 --env BEDITA_API_KEY=1029384756 \

@@ -14,8 +14,11 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Utility\Relations;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Test CRUD operations on objects with associated entities
@@ -43,11 +46,11 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                     'title' => 'My Event',
                     'date_ranges' => [
                         [
-                            'start_date' => '2017-03-01 12:12:12',
-                            'end_date' => '2017-04-01 12:12:12',
+                            'start_date' => '2017-04-01T00:00:00+00:00',
                         ],
                         [
-                            'start_date' => '2017-04-01T00:00:00+00:00',
+                            'start_date' => '2017-03-01 12:12:12',
+                            'end_date' => '2017-04-01 12:12:12',
                         ],
                     ],
                 ],
@@ -121,7 +124,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         $resultDates = $result['data']['attributes']['date_ranges'];
-        $expectedDates = $attributes['date_ranges'];
+        $expectedDates = Hash::sort($attributes['date_ranges'], '{n}.start_date', 'asc');
         static::assertEquals(count($resultDates), count($expectedDates));
         $count = count($expectedDates);
         for ($i = 0; $i < $count; $i++) {
@@ -200,10 +203,48 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      */
     public function testIncludedRelated()
     {
+        // Create temporary relation between documents and locations, link location #8 to document #2.
+        Relations::create([
+            [
+                'name' => 'foos',
+                'inverse_name' => 'oofs',
+                'left' => ['documents'],
+                'right' => ['locations'],
+            ],
+        ]);
+        $table = $this->getTableLocator()->get('Documents');
+        $association = $table->getAssociation('Foos');
+        $location = $association->get(8);
+
+        $action = new AddRelatedObjectsAction(compact('association'));
+        $action->execute([
+            'entity' => $table->get(2),
+            'relatedEntities' => [$location],
+        ]);
+
+        // Send request.
         $this->configRequestHeaders();
-        $this->get('/documents/3/inverse_test?include=test');
+        $this->get('/documents/3/inverse_test?include=foos');
         $result = json_decode((string)$this->_response->getBody(), true);
-        static::assertCount(2, $result['included']);
+
+        $this->assertResponseCode(200);
+        static::assertCount(1, $result['included']);
+        static::assertSame('8', $result['included'][0]['id']);
+        static::assertArrayHasKey('coords', $result['included'][0]['attributes']);
+    }
+
+    /**
+     * Test that related objects correspond to the pagination count.
+     *
+     * @return void
+     */
+    public function testRelated(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertCount(2, $result['data']);
+        static::assertEquals(2, $result['meta']['pagination']['count']);
     }
 
     /**

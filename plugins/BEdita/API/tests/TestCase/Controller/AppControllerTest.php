@@ -161,8 +161,8 @@ class AppControllerTest extends IntegrationTestCase
     public function testGetApplication($expected, array $environment, array $query = [], $blockAnonymous = false)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         Configure::write('Security.blockAnonymousApps', $blockAnonymous);
@@ -174,6 +174,25 @@ class AppControllerTest extends IntegrationTestCase
         $controller->dispatchEvent('Controller.initialize');
 
         static::assertEquals($expected, CurrentApplication::getApplicationId());
+    }
+
+    /**
+     * Test default behavior on missing 'Security.blockAnonymousApps' key
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testGetApplicationDefault()
+    {
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage('Missing API key');
+
+        Configure::delete('Security.blockAnonymousApps');
+        CurrentApplication::getInstance()->set(null);
+        $environment = ['HTTP_ACCEPT' => 'application/json'];
+        $request = new ServerRequest(compact('environment'));
+        $controller = new AppController($request);
+        $controller->dispatchEvent('Controller.initialize');
     }
 
     /**
@@ -266,6 +285,12 @@ class AppControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'verified' => '2017-05-29T11:36:00+00:00',
+                        'external_auth' => [
+                            [
+                                'provider' => 'example',
+                                'username' => 'first_user'
+                            ],
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',

@@ -163,7 +163,7 @@ class SqlConventionsValidatorTest extends TestCase
             $validator->setProvider($key, $value);
         }
 
-        $errors = $validator->errors(compact('symbol'));
+        $errors = $validator->validate(compact('symbol'));
         $errors = Hash::flatten($errors);
 
         static::assertEquals($expected, $errors);

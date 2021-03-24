@@ -426,7 +426,8 @@ return [
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
      *      before being "activated"? If true upon creation user will have a `draft` status, otherwise `on`
      * - 'roles' - allowed role names on user signup (this config should be set normally at application level),
-     *      requested user roles MUST be included in this array
+     *      requested user roles MUST be included in this array.
+     *      Leave empty to allow signup only for users without roles.
      * - 'requireEmail' - require email upon signup (default: true)
      * - 'activationUrl' => default activation URL to use if not set by application
      * - 'requirePassword' - require password upon signup (default: true), can be false in some AUTH schemas like One Time Password
@@ -528,6 +529,15 @@ return [
         // default lang tag - may be null
         'default' => null,
     ],
+
+    /**
+     * Uncomment to define custom actions to load
+     * This way some action beahavior can be overridden
+     */
+    // 'Actions' => [
+    //     'SignupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
+    //     'SignupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
+    // ],
 
     /**
      * Default values per object type

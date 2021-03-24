@@ -41,6 +41,8 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**

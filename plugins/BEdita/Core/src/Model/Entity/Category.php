@@ -39,6 +39,7 @@ use Cake\ORM\Entity;
 class Category extends Entity implements JsonApiSerializable
 {
     use JsonApiModelTrait;
+    use ObjectTypeNameTrait;
 
     /**
      * {@inheritDoc}
@@ -53,6 +54,15 @@ class Category extends Entity implements JsonApiSerializable
      * {@inheritDoc}
      */
     protected $_hidden = [
+        'object_type_id',
+        'object_type',
         '_joinData',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_virtual = [
+        'object_type_name',
     ];
 }

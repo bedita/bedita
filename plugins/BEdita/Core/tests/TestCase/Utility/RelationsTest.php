@@ -17,6 +17,7 @@ use BEdita\Core\Utility\Relations;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Utility\Relations} Test Case
@@ -127,10 +128,37 @@ class RelationsTest extends TestCase
      */
     public function testValidate()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Missing left/right relation types');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Missing left/right relation types');
 
         unset($this->relations[0]['left']);
         Relations::create($this->relations);
+    }
+
+    /**
+     * Test `update` method.
+     *
+     * @covers ::update()
+     * @covers ::updateTypes()
+     */
+    public function testUpdate()
+    {
+        $update = [
+            [
+                'name' => 'test_abstract',
+                'description' => 'a new description',
+                'left' => ['events', 'documents'],
+            ],
+        ];
+
+        $res = Relations::update($update);
+        static::assertEquals('a new description', Hash::get($res, '0.description'));
+
+        $leftTypes = TableRegistry::getTableLocator()
+            ->get('RelationTypes')
+            ->find()
+            ->where(['relation_id' => 3, 'side' => 'left'])
+            ->toArray();
+        static::assertEquals(2, count($leftTypes));
     }
 }

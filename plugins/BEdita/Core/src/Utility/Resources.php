@@ -13,11 +13,10 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * Utility class to resources creation/update/removal in migrations, shell scripts and similar scenarios
@@ -39,14 +38,28 @@ use Cake\Utility\Inflector;
  *     ],
  *   ],
  */
-class Resources
+class Resources extends ResourcesBase
 {
     /**
-     * Resource defaults in creation
+     * Default options array with following keys:
+     *
+     *  - 'save': default options performing `Table::save()`
+     *  - 'delete': default options performing `Table::delete()`
+     *  - 'object_types': default options on object types
+     *  - 'property_types': default options on property types
      *
      * @var array
      */
     protected static $defaults = [
+        // since default usage is in migrations
+        // don't commit transactions but let migrations do it
+        'save' => [
+            'atomic' => false,
+        ],
+        'delete' => [
+            'atomic' => false,
+        ],
+
         'object_types' => [
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
@@ -65,9 +78,14 @@ class Resources
      */
     protected static $allowed = [
         'applications',
+        'auth_providers',
+        'categories',
+        'config',
         'property_types',
         'object_types',
         'roles',
+        'endpoints',
+        'endpoint_permissions',
     ];
 
     /**
@@ -100,7 +118,7 @@ class Resources
             foreach ($item as $k => $v) {
                 $resource->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($resource);
+            $result[] = $Table->saveOrFail($resource, static::$defaults['save']);
         }
 
         return $result;
@@ -119,12 +137,8 @@ class Resources
         $Table = static::getTable($type, $options);
 
         foreach ($data as $item) {
-            $condition = static::findCondition($item);
-            $entity = $Table->find()
-                ->where($condition)
-                ->firstOrFail();
-
-            $Table->deleteOrFail($entity);
+            $entity = static::loadEntity($item, $Table);
+            $Table->deleteOrFail($entity, static::$defaults['delete']);
         }
     }
 
@@ -142,17 +156,32 @@ class Resources
         $result = [];
 
         foreach ($data as $item) {
-            $condition = static::findCondition($item);
-            $entity = $Table->find()
-                ->where($condition)
-                ->firstOrFail();
+            $entity = static::loadEntity($item, $Table);
             foreach ($item as $k => $v) {
                 $entity->set($k, $v);
             }
-            $result[] = $Table->saveOrFail($entity);
+            $result[] = $Table->saveOrFail($entity, static::$defaults['save']);
         }
 
         return $result;
+    }
+
+    /**
+     * Load single resource entity using `name` or `id` fields condition or `resource` finder if set
+     *
+     * @param array $item Single resource data
+     * @param Table $Table Resource table class
+     * @return EntityInterface
+     */
+    protected static function loadEntity(array $item, Table $Table): EntityInterface
+    {
+        if ($Table->hasFinder('resource')) {
+            return $Table->find('resource', $item)->firstOrFail();
+        }
+
+        return $Table->find()
+            ->where(static::findCondition($item))
+            ->firstOrFail();
     }
 
     /**
@@ -241,26 +270,6 @@ class Resources
         }
 
         return $res;
-    }
-
-    /**
-     * Get resource table with type validation
-     *
-     * @param string $type Resource type name
-     * @param array $options Table locator options
-     * @return \Cake\ORM\Table
-     * @throws BadRequestException
-     */
-    protected static function getTable(string $type, array $options = []): Table
-    {
-        if (!in_array($type, static::$allowed)) {
-            throw new BadRequestException(
-                __d('bedita', 'Resource type not allowed "{0}"', $type)
-            );
-        }
-
-        return TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type), $options);
     }
 
     /**

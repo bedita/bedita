@@ -60,11 +60,11 @@ class EndpointPermissionsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->integer('permission')
-            ->notEmpty('permission');
+            ->notEmptyString('permission');
 
         return $validator;
     }
@@ -192,5 +192,50 @@ class EndpointPermissionsTable extends Table
                 return $expr;
             });
         });
+    }
+
+    /**
+     * Find permissions by role, application and endpoint name.
+     *
+     * This finder accepts three options:
+     * - `endpoint_name``: the endpoint name
+     * - `role_name`: the role name
+     * - `application_name`: the application name
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        $endpoint = Hash::get($options, 'endpoint_name');
+        $role = Hash::get($options, 'role_name');
+        $application = Hash::get($options, 'application_name');
+
+        if ($endpoint === null) {
+            $query = $query->whereNull('endpoint_id');
+        } else {
+            $query = $query->innerJoinWith('Endpoints', function (Query $query) use ($endpoint) {
+                return $query->where(['Endpoints.name' => $endpoint]);
+            });
+        }
+
+        if ($role === null) {
+            $query = $query->whereNull('role_id');
+        } else {
+            $query = $query->innerJoinWith('Roles', function (Query $query) use ($role) {
+                return $query->where(['Roles.name' => $role]);
+            });
+        }
+
+        if ($application === null) {
+            $query = $query->whereNull('application_id');
+        } else {
+            $query = $query->innerJoinWith('Applications', function (Query $query) use ($application) {
+                return $query->where(['Applications.name' => $application]);
+            });
+        }
+
+        return $query;
     }
 }

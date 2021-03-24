@@ -1,0 +1,52 @@
+
+create:
+
+  properties:
+    - name: new_prop
+      object: foos
+      property: text
+      description: New prop
+      is_column: true
+      column_attributes:
+        default: null
+    - name: another_prop
+      object: foos
+      property: integer
+      description: Another prop
+      is_column: true
+    - name: json_prop
+      object: foos
+      property: json
+      is_column: true
+      column_attributes:
+        default: '{}'
+        comment: Column comment
+    - name: enum_prop
+      object: foos
+      property: enum
+      is_column: true
+      column_attributes:
+        values: ['a', 'b', 'c']
+        default: 'b'
+
+update:
+
+  properties:
+    - name: new_prop
+      object: foos
+      property: text
+      description: New prop
+      is_column: true
+      column_attributes:
+        default: null
+
+restore:
+
+  properties:
+    - name: new_prop
+      object: foos
+      property: text
+      description: New prop
+      is_column: true
+      column_attributes:
+        default: null

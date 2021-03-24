@@ -65,16 +65,16 @@ class EndpointsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
             ->boolean('enabled')
-            ->notEmpty('enabled');
+            ->notEmptyString('enabled');
 
         return $validator;
     }

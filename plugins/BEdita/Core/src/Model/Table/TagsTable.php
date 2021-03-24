@@ -95,6 +95,6 @@ class TagsTable extends CategoriesTagsBaseTable
         if ($primary) {
             return;
         }
-        $this->removeFields($query);
+        $this->hideFields($query);
     }
 }

@@ -59,6 +59,13 @@ class Relation extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * Default JSON schema.
+     *
+     * @var string
+     */
+    const DEFAULT_SCHEMA = 'http://json-schema.org/draft-06/schema#';
+
+    /**
      * Magic setter for relation name.
      *
      * @param string $name Relation name.
@@ -98,5 +105,24 @@ class Relation extends Entity implements JsonApiSerializable
     protected function _getInverseAlias()
     {
         return Inflector::camelize($this->inverse_name);
+    }
+
+    /**
+     * Magic setter for params.
+     *
+     * @param array $params Relation params.
+     * @return array
+     */
+    protected function _setParams($params)
+    {
+        if (is_array($params) && !empty($params)) {
+            $params = array_merge([
+                'definitions' => new \stdClass(),
+                '$schema' => self::DEFAULT_SCHEMA,
+                'type' => 'object',
+            ], $params);
+        }
+
+        return $params;
     }
 }

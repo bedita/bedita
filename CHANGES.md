@@ -1,5 +1,88 @@
 # ChangeLog
 
+## Version 4.3.0 - Cactus
+
+### API changes (4.3.0)
+
+* [#1735](https://github.com/bedita/bedita/pull/1735) Add `external_auth` info in users meta
+* [#1742](https://github.com/bedita/bedita/pull/1742) Fix signup when user has no roles but conf require roles
+
+### Core changes (4.3.0)
+
+* [#1731](https://github.com/bedita/bedita/pull/1731) Handle JSON-SCHEMA defaults in relation `params` setting
+
+### Integration changes (4.3.0)
+
+* [#1738](https://github.com/bedita/bedita/pull/1738) Update composer to use plugin-installer ^1.3
+* [#1734](https://github.com/bedita/bedita/pull/1734) Allow to use specific composer version in CI
+
+## Version 4.2.1 - Cactus
+
+### API changes (4.2.1)
+
+* [#1727](https://github.com/bedita/bedita/pull/1727) Save relation metadata in `PATCH /folders/{id}/parent`
+
+### Core changes (4.2.1)
+
+* [#1728](https://github.com/bedita/bedita/pull/1728) Add endpoints to handled resources in migrations
+* [#1729](https://github.com/bedita/bedita/pull/1729) Add endpoint_permissions to resource utility
+* [#1729](https://github.com/bedita/bedita/pull/1729) Perform non atomic changes in `Resources` - fix official docker image
+
+## Version 4.2.0 - Cactus
+
+### API changes (4.2.0)
+
+* [#1551](https://github.com/bedita/bedita/pull/1551) Create media object with stream in one request
+* [#1690](https://github.com/bedita/bedita/pull/1690) Add `canonical` meta property on `children` relation
+* [#1524](https://github.com/bedita/bedita/pull/1524) PATCH /folders/:id/relationships/children fails with meta.relation.position present
+* [#1695](https://github.com/bedita/bedita/pull/1695) Categories type finder + filter
+* [#1679](https://github.com/bedita/bedita/pull/1679) Avoid `included` repetitions
+* [#1651](https://github.com/bedita/bedita/pull/1651) Fix pagination `maxLimit` configuration
+* [#1691](https://github.com/bedita/bedita/pull/1691) Handle `canonical` meta #1690
+* [#1671](https://github.com/bedita/bedita/pull/1671) Categories object type name
+* [#1668](https://github.com/bedita/bedita/pull/1668) User roles filter/finder
+* [#1663](https://github.com/bedita/bedita/pull/1663) Block anonymous apps as default
+* [#1652](https://github.com/bedita/bedita/pull/1652) Populate `meta.media_url` always for media objects
+* [#1702](https://github.com/bedita/bedita/pull/1702) DateRanges order via `sort` query string
+* [#1697](https://github.com/bedita/bedita/pull/1697) New `from_date` and `to_date` filters on `DateRanges`
+
+### Core changes (4.2.0)
+
+* [#1602](https://github.com/bedita/bedita/pull/1602) CustomProperties behavior recursion problem
+* [#1550](https://github.com/bedita/bedita/pull/1550) Entity `isDirty()` not working on custom properties
+* [#1654](https://github.com/bedita/bedita/pull/1654) Default priority on relations: max + 1
+* [#1687](https://github.com/bedita/bedita/pull/1687) `Publications` core object type
+* [#1672](https://github.com/bedita/bedita/pull/1672) Fix entity virtual props recursion
+* [#1669](https://github.com/bedita/bedita/pull/1669) Change `title` set rules on profiles/users
+* [#1662](https://github.com/bedita/bedita/pull/1662) Allow non assoc array configuration in `Plugins`
+* [#1692](https://github.com/bedita/bedita/pull/1692) Column streams.uri increase limit
+* [#1684](https://github.com/bedita/bedita/pull/1684) `Links` core object type
+* [#1681](https://github.com/bedita/bedita/pull/1681) Limit `uname` max length
+* [#1670](https://github.com/bedita/bedita/pull/1670) Custom Signup action
+* [#1667](https://github.com/bedita/bedita/pull/1667) Virtual methods to get/set parent folder by uname
+* [#1716](https://github.com/bedita/bedita/pull/1716) Override static property schema definition
+* [#1709](https://github.com/bedita/bedita/pull/1709) Increase `extra` to 16MB on MySQL
+* [#1707](https://github.com/bedita/bedita/pull/1707) Add `trees.menu`
+* [#1706](https://github.com/bedita/bedita/pull/1706) Enable multi application config
+* [#1704](https://github.com/bedita/bedita/pull/1704) Set `DateRanges.params` column type as JSON
+* [#1703](https://github.com/bedita/bedita/pull/1703) Sanitize `uname`
+* [#1711](https://github.com/bedita/bedita/pull/1711) Ensure entity not marked as dirty promoting empty custom prop
+* [#1699](https://github.com/bedita/bedita/pull/1699) fix: use `available` finder on `relatedTo` assoc
+* [#1722](https://github.com/bedita/bedita/pull/1722) fix: rewind stream only if seekable
+
+### Integration changes (4.2.0)
+
+* [#1705](https://github.com/bedita/bedita/pull/1705) Add `config` and `auth_providers` to Resources utility
+* [#1680](https://github.com/bedita/bedita/pull/1680) Refactor tests on `default://` and `thumbnails://` filesystems
+* [#1666](https://github.com/bedita/bedita/pull/1666) Improve objects handler
+* [#1660](https://github.com/bedita/bedita/pull/1660) New Resources utility
+* [#1721](https://github.com/bedita/bedita/pull/1721) YAML column properties migrations
+* [#1720](https://github.com/bedita/bedita/pull/1720) fix: yml migrations rollback (restore field)
+* [#1718](https://github.com/bedita/bedita/pull/1718) fix: clear registry before table reload w options
+* [#1717](https://github.com/bedita/bedita/pull/1717) Resources migrations via YAML
+* [#1550](https://github.com/bedita/bedita/pull/1550) test: add test for isDirty custom prop
+* [#1694](https://github.com/bedita/bedita/pull/1694) Feat add `Relations::update()`
+
 ## Version 4.1.0 - Cactus
 
 ### API changes (4.1.0)

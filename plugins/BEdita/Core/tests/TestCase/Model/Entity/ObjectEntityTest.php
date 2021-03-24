@@ -17,6 +17,7 @@ use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectEntity} Test Case
@@ -51,6 +52,8 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.AuthProviders',
     ];
 
     /**
@@ -558,5 +561,47 @@ class ObjectEntityTest extends TestCase
 
         static::assertArrayHasKey('included', $entity);
         static::assertEquals(1, count($entity['included']));
+    }
+
+    /**
+     * Test relationship count.
+     *
+     * @return void
+     *
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsCount(): void
+    {
+        $count = ['test' => 12];
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity->set('type', 'documents');
+        $entity->set('_countData', $count);
+        $entity = $entity->jsonApiSerialize();
+
+        $testCount = Hash::get($entity, 'relationships.test.meta.count');
+        static::assertEquals($count['test'], $testCount);
+    }
+
+    /**
+     * Test `hasProperty` method
+     *
+     * @covers ::hasProperty()
+     * @return bool
+     */
+    public function testHasProperty()
+    {
+        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2);
+
+        // core property
+        static::assertTrue($entity->hasProperty('title'));
+        // custom property
+        static::assertTrue($entity->hasProperty('another_title'));
+        // missing property
+        static::assertFalse($entity->hasProperty('some_property'));
+        // hidden property
+        static::assertTrue($entity->hasProperty('deleted'));
+        static::assertFalse($entity->hasProperty('deleted', false));
+        // virtual property
+        static::assertTrue($entity->hasProperty('type', false, true));
     }
 }

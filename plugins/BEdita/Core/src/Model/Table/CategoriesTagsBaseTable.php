@@ -108,16 +108,26 @@ abstract class CategoriesTagsBaseTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @return void
      */
-    protected function removeFields(Query $query)
+    protected function hideFields(Query $query)
     {
-        $query->formatResults(function (CollectionInterface $results) {
-            return $results->map(function ($row) {
+        $hidden = [
+            'id',
+            'object_type_id',
+            'object_type_name',
+            'parent_id',
+            'tree_left',
+            'tree_right',
+            'enabled',
+            'created',
+            'modified'
+        ];
+        $query->formatResults(function (CollectionInterface $results) use ($hidden) {
+            return $results->map(function ($row) use ($hidden) {
                 if (!empty($row['_joinData'])) {
                     $row['params'] = $row['_joinData']['params'];
                 }
-                $keys = ['id', 'object_type_id', 'parent_id', 'tree_left', 'tree_right', 'enabled', 'created', 'modified'];
-                foreach ($keys as $k) {
-                    unset($row[$k]);
+                if (empty(!$row)) {
+                    $row->setHidden($hidden, true);
                 }
 
                 return $row;

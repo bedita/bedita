@@ -89,18 +89,18 @@ class PropertiesTable extends Table
     {
         $validator
             ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name')
-            ->notEmpty('name')
+            ->notEmptyString('name')
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
             ->boolean('enabled')
-            ->notEmpty('enabled')
+            ->notEmptyString('enabled')
 
             ->boolean('multiple')
-            ->notEmpty('multiple');
+            ->notEmptyString('multiple');
 
         return $validator;
     }

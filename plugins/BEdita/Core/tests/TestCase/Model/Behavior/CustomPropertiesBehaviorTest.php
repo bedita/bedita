@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,7 +41,28 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.History',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        FilesystemRegistry::dropAll();
+        parent::tearDown();
+    }
 
     /**
      * Test initialization.
@@ -126,6 +149,31 @@ class CustomPropertiesBehaviorTest extends TestCase
         $result = $behavior->getAvailable();
         $result = array_keys($result);
         sort($result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test get available properties for related object.
+     *
+     * @return void
+     *
+     * @covers ::getAvailable()
+     * @covers ::objectType()
+     */
+    public function testGetAvailableRelatedObject(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Profiles')
+            ->getAssociation('InverseTest')->getTarget();
+
+        static::assertEquals('InverseTest', $table->getAlias());
+
+        $behavior = $table->behaviors()->get('CustomProperties');
+        $result = $behavior->getAvailable();
+
+        $expected = ['another_title', 'another_description']; // documents custom props
+        $result = array_keys($result);
+        sort($result);
+        sort($expected);
         static::assertEquals($expected, $result);
     }
 
@@ -226,6 +274,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ->enableHydration($hydrate)
             ->first();
         if ($hydrate) {
+            static::assertFalse($result->isDirty());
             $result = $result->toArray();
         }
 
@@ -337,5 +386,26 @@ class CustomPropertiesBehaviorTest extends TestCase
         ksort($result);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test that custom properties are not dirty getting object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     * @covers ::promoteProperties()
+     * @covers ::isFieldSet()
+     */
+    public function testCustomPropertyNotDirty(): void
+    {
+        $user = TableRegistry::getTableLocator()->get('Users')->get(5);
+        static::assertFalse($user->isDirty('another_username'));
+        static::assertFalse($user->isDirty('another_email'));
+
+        $user->set('another_username', 'blablabla');
+        $user->set('another_email', 'xyz@example.com');
+        static::assertTrue($user->isDirty('another_username'));
+        static::assertTrue($user->isDirty('another_email'));
     }
 }

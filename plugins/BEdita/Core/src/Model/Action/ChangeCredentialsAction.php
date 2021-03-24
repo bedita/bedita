@@ -61,13 +61,13 @@ class ChangeCredentialsAction extends BaseAction
     public function validate(array $data)
     {
         $validator = (new Validator())
-            ->notEmpty('uuid')
+            ->notEmptyString('uuid')
             ->requirePresence('uuid')
 
-            ->notEmpty('password')
+            ->notEmptyString('password')
             ->requirePresence('password');
 
-        $errors = $validator->errors($data);
+        $errors = $validator->validate($data);
         if (empty($errors)) {
             return true;
         }

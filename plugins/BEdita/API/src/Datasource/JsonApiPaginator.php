@@ -13,9 +13,13 @@
 
 namespace BEdita\API\Datasource;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\Paginator;
+use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\ORM\Query;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -41,6 +45,20 @@ class JsonApiPaginator extends Paginator
      * @var int
      */
     const MAX_LIMIT = 500;
+
+    /**
+     * Remove any other `order` clause if an explicit 'sort' is requested
+     *
+     * {@inheritDoc}
+     */
+    public function paginate($object, array $params = [], array $settings = []): ResultSetInterface
+    {
+        if ($object instanceof QueryInterface && !empty($params['sort'])) {
+            $object->order([], Query::OVERWRITE);
+        }
+
+        return parent::paginate($object, $params, $settings);
+    }
 
     /**
      * {@inheritDoc}
@@ -70,6 +88,9 @@ class JsonApiPaginator extends Paginator
                 $options['direction'] = 'desc';
             }
             unset($options['order']);
+            if (in_array($options['sort'], ObjectsTable::DATERANGES_SORT_FIELDS)) {
+                $options['sortWhitelist'] = [$options['sort']];
+            }
         }
 
         $options = parent::validateSort($object, $options);

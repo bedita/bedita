@@ -21,9 +21,9 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "cakephp/cakephp": "~3.8.1",
-        "cakephp/migrations": "~2.2.0",
+        "php": ">=7.2.0",
+        "cakephp/cakephp": "~3.9.3",
+        "cakephp/migrations": "^2.2.0",
         "league/flysystem": "^1.0.53",
         "league/glide": "^1.5",
         "swaggest/json-schema": "~0.12"

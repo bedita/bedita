@@ -127,4 +127,37 @@ class RelationTest extends TestCase
         static::assertEquals('bar_foo', $relation->inverse_name);
         static::assertEquals('BarFoo', $relation->inverse_alias);
     }
+
+    /**
+     * Test setter method for `params`.
+     *
+     * @return void
+     *
+     * @covers ::_setParams()
+     */
+    public function testSetParams()
+    {
+        $properties = [
+            'dummy' => [
+                'type' => 'string',
+                'description' => 'a dummy property'
+            ],
+        ];
+        $data = [
+            'name' => 'FooBar',
+            'params' => [
+                'properties' => $properties,
+            ],
+        ];
+        $relation = $this->Relations->newEntity($data);
+        if (!($relation instanceof Relation)) {
+            static::fail(sprintf('Unexpected entity class "%s"', get_class($relation)));
+        }
+
+        static::assertEquals($properties, $relation->params['properties']);
+        static::assertEquals(Relation::DEFAULT_SCHEMA, $relation->params['$schema']);
+        static::assertArrayHasKey('definitions', (array)$relation->params);
+        static::assertArrayHasKey('$schema', (array)$relation->params);
+        static::assertArrayHasKey('type', (array)$relation->params);
+    }
 }

@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -79,17 +80,17 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
-        try {
-            $objectType = $this->objectType($this->getTable()->getAlias());
-            $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
-                ->find('objectType', [$objectType->id])
-                ->where(['enabled' => true])
-                ->all();
-        } catch (RecordNotFoundException $e) {
+        $objectType = $this->objectType();
+        if ($objectType === null) {
             return [];
         }
 
-        $this->available = collection($properties)->indexBy('name')->toArray();
+        $this->available = TableRegistry::getTableLocator()->get('Properties')
+            ->find('type', ['dynamic'])
+            ->find('objectType', [$objectType->id])
+            ->where(['enabled' => true, 'is_static' => false])
+            ->indexBy('name')
+            ->toArray();
 
         return $this->available;
     }
@@ -151,11 +152,7 @@ class CustomPropertiesBehavior extends Behavior
         }
         $entity[$field] = $entity[$field] + $this->getDefaultValues();
 
-        if (empty($entity[$field])) {
-            return $entity;
-        }
-
-        $customProps = $entity[$field];
+        $customProps = $entity[$field] ?? [];
         if ($entity instanceof EntityInterface) {
             $entity->setHidden([$field], true);
         } else {
@@ -177,7 +174,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
      */
-    protected function demoteProperties(EntityInterface $entity)
+    protected function demoteProperties(EntityInterface $entity): void
     {
         $field = $this->getConfig('field');
         $value = (array)$entity->get($field);
@@ -208,19 +205,12 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field The field being looked for.
      * @return bool
      */
-    protected function isFieldSet($entity, $field)
+    protected function isFieldSet($entity, $field): bool
     {
-        $allProperties = $entity;
-        if ($entity instanceof EntityInterface) {
-            $hidden = $entity->getHidden();
-            try {
-                $entity->setHidden([]);
-                $allProperties = $entity->toArray();
-            } finally {
-                $entity->setHidden($hidden);
-            }
+        if ($entity instanceof ObjectEntity) {
+            return $entity->hasProperty($field);
         }
 
-        return array_key_exists($field, $allProperties);
+        return array_key_exists($field, (array)$entity);
     }
 }

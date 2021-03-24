@@ -16,9 +16,13 @@ namespace BEdita\API\Test\TestCase\Utility;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JsonApi
@@ -470,8 +474,9 @@ class JsonApiTest extends TestCase
      * @return void
      *
      * @dataProvider formatDataProvider
-     * @covers ::formatData
-     * @covers ::metaSchema
+     * @covers ::formatData()
+     * @covers ::metaSchema()
+     * @covers ::dispatchEvent()
      */
     public function testFormatData($expected, callable $items, $options = 0)
     {
@@ -725,5 +730,86 @@ class JsonApiTest extends TestCase
     {
         $result = JsonApi::schemaInfo($type);
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `JsonApi.beforeFormatData` event.
+     *
+     * @return void
+     *
+     * @covers ::formatData()
+     * @covers ::dispatchEvent()
+     */
+    public function testBeforeFormatEvent(): void
+    {
+        $dispatchedEvent = 0;
+        EventManager::instance()->on('JsonApi.beforeFormatData', function (Event $event, $items) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.beforeFormatData');
+            $dispatchedEvent++;
+            $item = $items[0];
+
+            static::assertInstanceOf(EntityInterface::class, $item);
+            static::assertEquals('on', $item->get('status'));
+
+            $item->set('status', 'off');
+
+            return $items;
+        });
+
+        $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
+        $result = JsonApi::formatData($document);
+
+        static::assertEquals(1, $dispatchedEvent);
+        static::assertEquals('off', Hash::get($result, 'attributes.status'));
+    }
+
+    /**
+     * Test `JsonApi.afterFormatData` event.
+     *
+     * @return void
+     *
+     * @covers ::formatData()
+     * @covers ::dispatchEvent()
+     */
+    public function testAfterFormatDataEvent(): void
+    {
+        $dispatchedEvent = 0;
+        EventManager::instance()->on('JsonApi.afterFormatData', function (Event $event, $data) use (&$dispatchedEvent) {
+            EventManager::instance()->off('JsonApi.afterFormatData');
+            $dispatchedEvent++;
+
+            foreach ($data as $d) {
+                static::assertEquals('documents', Hash::get($d, 'type'));
+            }
+
+            $data = Hash::insert($data, '{n}.meta.after_format', true);
+
+            return $data;
+        });
+
+        $document = TableRegistry::getTableLocator()->get('Documents')
+            ->find('type', ['documents'])
+            ->limit(2)
+            ->all();
+
+        $result = JsonApi::formatData($document);
+        $expected = [true, true];
+        static::assertEquals(1, $dispatchedEvent);
+        static::assertEquals($expected, Hash::extract($result, '{n}.meta.after_format'));
+    }
+
+    /**
+     * Test that an exception was raised if some item was not serializable.
+     *
+     * @return void
+     *
+     * @covers ::formatData()
+     */
+    public function testNotJsonSerializable(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
+
+        JsonApi::formatData(['name' => 'Gustavo']);
     }
 }

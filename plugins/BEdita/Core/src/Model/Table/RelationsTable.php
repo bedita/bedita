@@ -19,6 +19,8 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -100,25 +102,25 @@ class RelationsTable extends Table
             ->setProvider('bedita', Validation::class)
 
             ->integer('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->requirePresence('label', 'create')
-            ->notEmpty('label')
+            ->allowEmptyString('label', null, 'create')
+            ->notEmptyString('label', null, 'update')
 
             ->requirePresence('inverse_name', 'create')
-            ->notEmpty('inverse_name')
+            ->notEmptyString('inverse_name')
             ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->requirePresence('inverse_label', 'create')
-            ->notEmpty('inverse_label')
+            ->allowEmptyString('inverse_label', null, 'create')
+            ->notEmptyString('inverse_label', null, 'update')
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
-            ->allowEmpty('params')
+            ->allowEmptyArray('params')
             ->add('params', 'valid', [
                 'rule' => ['jsonSchema', 'http://json-schema.org/draft-06/schema#'],
                 'provider' => 'bedita',
@@ -198,6 +200,24 @@ class RelationsTable extends Table
                     ->eq($this->aliasField('inverse_name'), $name);
             });
         });
+    }
+
+    /**
+     * Populate default `label` and `inverse_label` properties if not set.
+     *
+     * {@inheritDoc}
+     */
+    public function beforeSave(Event $event, EntityInterface $entity): void
+    {
+        if (!$entity->isNew()) {
+            return;
+        }
+        if (empty($entity->get('label'))) {
+            $entity->set('label', Inflector::humanize((string)$entity->get('name')));
+        }
+        if (empty($entity->get('inverse_label'))) {
+            $entity->set('inverse_label', Inflector::humanize((string)$entity->get('inverse_name')));
+        }
     }
 
     /**

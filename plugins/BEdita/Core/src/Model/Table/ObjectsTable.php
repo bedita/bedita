@@ -62,6 +62,19 @@ class ObjectsTable extends Table
     protected $_validatorClass = ObjectsValidator::class;
 
     /**
+     * Special sort fields: virtual column names used for custom sort strategies
+     * Only related to `DateRanges` for now
+     *
+     * @var array
+     */
+    const DATERANGES_SORT_FIELDS = [
+        'date_ranges_min_start_date',
+        'date_ranges_max_start_date',
+        'date_ranges_min_end_date',
+        'date_ranges_max_end_date',
+    ];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -86,6 +99,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'sort' => ['start_date' => 'ASC'],
             'saveStrategy' => 'replace',
         ]);
         $this->belongsTo('CreatedByUsers', [
@@ -101,6 +115,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+            'finder' => 'available',
             'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('Categories', [
@@ -256,11 +271,58 @@ class ObjectsTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        return $query
-            ->distinct([$this->aliasField($this->getPrimaryKey())])
-            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-                return $query->find('dateRanges', $options);
-            });
+        $join = $this->dateRangesSubQueryJoin($query, $options);
+        if (!empty($join)) {
+            return $join;
+        }
+
+        return $query->distinct([$this->aliasField($this->getPrimaryKey())])
+                ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                    return $query->find('dateRanges', $options);
+                });
+    }
+
+    /**
+     * Create a date ranges subquery join if a special sort field is set.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return Query|null
+     */
+    protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
+    {
+        $minMaxField = key(
+            array_intersect_key(
+                $options,
+                array_flip(self::DATERANGES_SORT_FIELDS)
+            )
+        );
+        if (empty($minMaxField)) {
+            return null;
+        }
+        unset($options[$minMaxField]);
+        $finder = 'dateRanges';
+        if (empty($options)) {
+            $finder = 'all';
+        }
+        $subQuery = $this->DateRanges->find($finder, $options)
+            ->select([
+                'date_ranges_object_id' => 'object_id',
+                'date_ranges_min_start_date' => $query->func()->min('start_date'),
+                'date_ranges_max_start_date' => $query->func()->max('start_date'),
+                'date_ranges_min_end_date' => $query->func()->min('end_date'),
+                'date_ranges_max_end_date' => $query->func()->max('end_date'),
+            ])
+            ->group('object_id');
+
+        return $query->distinct([
+                $this->aliasField($this->getPrimaryKey()),
+                $minMaxField,
+            ])
+            ->innerJoin(
+                ['DateBoundaries' => $subQuery],
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
+            );
     }
 
     /**
@@ -362,7 +424,7 @@ class ObjectsTable extends Table
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
-        $level = reset($options);
+        $level = $options[0];
         switch ($level) {
             case 'on':
                 return $query->where([
@@ -411,7 +473,7 @@ class ObjectsTable extends Table
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
 
-        return $query->where(['deleted' => 0]);
+        return $query->where([$this->aliasField('deleted') => 0]);
     }
 
     /**

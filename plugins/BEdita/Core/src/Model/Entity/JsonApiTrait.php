@@ -170,7 +170,7 @@ trait JsonApiTrait
         $visible = $this->filterFields($this->getVisible());
 
         $properties = array_filter(
-            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
+            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData', '_countData']),
             [$this, 'isAccessible']
         );
 
@@ -190,7 +190,7 @@ trait JsonApiTrait
         $virtual = $this->getVirtual();
 
         $properties = array_filter(
-            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData']),
+            array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData', '_countData']),
             function ($property) {
                 return !$this->isAccessible($property);
             }
@@ -206,15 +206,36 @@ trait JsonApiTrait
         if (!empty($extraProperties)) {
             $meta['extra'] = $this->extract($extraProperties);
         }
-        $joinData = $this->get('_joinData');
-        if ($joinData instanceof \JsonSerializable) {
-            $joinData = $joinData->jsonSerialize();
-            if (!empty($joinData)) {
-                $meta['relation'] = $joinData;
-            }
-        }
+        $meta += array_filter(['relation' => $this->joinData()]);
 
         return $meta;
+    }
+
+    /**
+     * Retrieve internal `_joinData` to be added as `meta.relation`
+     *
+     * @return array
+     */
+    protected function joinData(): array
+    {
+        $joinData = $this->get('_joinData');
+        if (!$joinData instanceof \JsonSerializable) {
+            return [];
+        }
+
+        if ($joinData instanceof Tree) {
+            $joinData->unsetProperty([
+                'id',
+                'parent_id',
+                'object_id',
+                'root_id',
+                'parent_node_id',
+                'tree_left',
+                'tree_right',
+            ]);
+        }
+
+        return (array)$joinData->jsonSerialize();
     }
 
     /**
@@ -326,9 +347,32 @@ trait JsonApiTrait
             $relationships[$relationship] += [
                 'links' => compact('related', 'self'),
             ];
+
+            $count = $this->getRelationshipCount($relationship);
+            if ($count !== null) {
+                $relationships[$relationship] += [
+                    'meta' => compact('count'),
+                ];
+            }
         }
 
         return [$relationships, $included];
+    }
+
+    /**
+     * Get count of relationship searching in self::$relationshipsCount`.
+     *
+     * @param string $relationship The relationship name
+     * @return int|null
+     */
+    public function getRelationshipCount(string $relationship): ?int
+    {
+        $count = Hash::get((array)$this->get('_countData'), $relationship);
+        if (is_numeric($count)) {
+            return $count;
+        }
+
+        return null;
     }
 
     /**

@@ -272,6 +272,6 @@ class FolderTest extends TestCase
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
 
-        $this->Folders->get(12);
+        $this->Folders->get(12)->get('path');
     }
 }

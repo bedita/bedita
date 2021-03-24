@@ -354,4 +354,58 @@ class EndpointPermissionsTableTest extends TestCase
 
         static::assertSame($expected, $count);
     }
+
+    /**
+     * Data provider for `testFindResource()`.
+     *
+     * @return array
+     */
+    public function findResourceProvider(): array
+    {
+        return [
+            'application, endpoint, role' => [
+                0b1001,
+                [
+                    'application_name' => 'Disabled app',
+                    'endpoint_name' => 'home',
+                    'role_name' => 'first role',
+                ],
+            ],
+            'application=null, endpoint=null, role=null' => [
+                0,
+                [
+                    'application_name' => null,
+                    'endpoint_name' => null,
+                    'role_name' => null,
+                ],
+            ],
+            'application, endpoint=null, role=null' => [
+                0b1111,
+                [
+                    'application_name' => 'First app',
+                    'endpoint_name' => null,
+                    'role_name' => null,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findResource()`.
+     *
+     * @param int $expected The value expected
+     * @param array $options The options for the finder
+     * @return void
+     *
+     * @covers ::findResource()
+     * @dataProvider findResourceProvider()
+     */
+    public function testFindResource($expected, $options)
+    {
+        $query = $this->EndpointPermissions->find('resource', $options);
+        $entity = $query->first();
+
+        static::assertEquals(1, $query->count());
+        static::assertEquals($expected, $entity->permission);
+    }
 }

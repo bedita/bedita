@@ -26,6 +26,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'another_description',
@@ -37,6 +38,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => 'Brief description',
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'another_username',
@@ -48,6 +50,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'another_email',
@@ -59,6 +62,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'another_birthdate',
@@ -70,6 +74,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => 'Date of birth',
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'another_surname',
@@ -81,6 +86,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'disabled_property',
@@ -92,6 +98,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => false,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'media_property',
@@ -103,6 +110,7 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
         ],
         [
             'name' => 'files_property',
@@ -114,6 +122,19 @@ class PropertiesFixture extends TestFixture
             'enabled' => true,
             'label' => null,
             'is_nullable' => true,
+            'is_static' => false,
+        ],
+        [
+            'name' => 'street_address',
+            'property_type_id' => 1,
+            'object_type_id' => 3,
+            'created' => '2020-08-07 16:23:00',
+            'modified' => '2020-08-07 16:23:00',
+            'description' => null,
+            'enabled' => true,
+            'label' => null,
+            'is_nullable' => true,
+            'is_static' => true,
         ],
     ];
 }

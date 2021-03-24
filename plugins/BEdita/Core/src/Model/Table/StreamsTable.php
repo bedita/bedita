@@ -76,49 +76,49 @@ class StreamsTable extends Table
         $validator
             ->uuid('uuid')
             ->add('uuid', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->allowEmpty('uuid', 'create');
+            ->allowEmptyString('uuid', null, 'create');
 
         $validator
             ->naturalNumber('version')
-            ->allowEmpty('version', 'create');
+            ->allowEmptyString('version', null, 'create');
 
         $validator
-            ->allowEmpty('uri', 'create');
+            ->allowEmptyString('uri', null, 'create');
 
         $validator
             ->requirePresence('file_name', 'create')
-            ->notEmpty('file_name');
+            ->notEmptyString('file_name');
 
         $validator
             ->requirePresence('mime_type', 'create')
-            ->notEmpty('mime_type');
+            ->notEmptyString('mime_type');
 
         $validator
             ->naturalNumber('file_size')
-            ->allowEmpty('file_size', 'create');
+            ->allowEmptyString('file_size', null, 'create');
 
         $validator
             ->ascii('hash_md5')
-            ->allowEmpty('hash_md5', 'create');
+            ->allowEmptyString('hash_md5', null, 'create');
 
         $validator
             ->ascii('hash_sha1')
-            ->allowEmpty('hash_sha1', 'create');
+            ->allowEmptyString('hash_sha1', null, 'create');
 
         $validator
             ->naturalNumber('width')
-            ->allowEmpty('width');
+            ->allowEmptyString('width');
 
         $validator
             ->naturalNumber('height')
-            ->allowEmpty('height');
+            ->allowEmptyString('height');
 
         $validator
             ->naturalNumber('duration')
-            ->allowEmpty('duration');
+            ->allowEmptyString('duration');
 
         $validator
-            ->notEmpty('contents')
+            ->notEmptyString('contents')
             ->requirePresence('contents', 'create');
 
         return $validator;

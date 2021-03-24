@@ -30,7 +30,7 @@ class TestConstants
         'files' => '894208275',
         'folders' => '1906204265',
         'locations' => '1369205356',
-        'profiles' => '2907148967',
+        'profiles' => '593147109',
         'roles' => '2845943672',
         'users' => '1014664219',
     ];

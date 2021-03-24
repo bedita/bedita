@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c4778dd4-f0d0-43f9-b86f-e2c1152c1f5e",
+		"_postman_id": "13af6637-6ab9-4f7c-9d43-3f76ef92b77e",
 		"name": "BE4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -54,7 +54,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -66,6 +67,127 @@
 							]
 						},
 						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth OTP  request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80598f88-7a14-4de1-aa31-11f76f69a952",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON.meta) {",
+									"        if (responseJSON.meta.authorization_code) {",
+									"            postman.setEnvironmentVariable(\"authorizationCode\", responseJSON.meta.authorization_code);",
+									"        }",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n    \"grant_type\": \"otp_request\"\n}",
+							"options": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/auth",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"auth"
+							]
+						},
+						"description": "Perform authentication using application/json content type"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth OTP with tokens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON.meta) {",
+									"        if (responseJSON.meta.jwt) {",
+									"            postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+									"        }",
+									"        if (responseJSON.meta.renew) {",
+									"            postman.setEnvironmentVariable(\"renew\", responseJSON.meta.renew);",
+									"        }",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n\t\"grant_type\": \"otp\"\n}",
+							"options": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/auth",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
 					},
 					"response": []
 				},
@@ -115,7 +237,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -136,7 +259,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "5f7e7f2d-ab46-4a52-b18b-b296a0e9b0b4",
 								"exec": [
 									"var responseJSON;",
 									"try {",
@@ -154,7 +277,8 @@
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -166,21 +290,18 @@
 								"value": "application/vnd.api+json"
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
 								"key": "X-Api-Key",
 								"value": "{{apiKey}}"
 							},
 							{
 								"key": "Authorization",
-								"value": "{{renew}}"
+								"value": "Bearer {{renew}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -252,7 +373,8 @@
 									"value": "{{password}}",
 									"type": "text"
 								}
-							]
+							],
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth",
@@ -299,7 +421,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"johannadoe\",\n    \"password\": \"j0h4nn4d0e\",\n    \"email\": \"johannadoe@nowhere.xx\",\n\t\"activation_url\": \"http://myactivationsys.xx?dum=my\",\n\t\"redirect_url\": \"app://xx?dum=my\"\n}"
+							"raw": "{\n\t\"username\": \"johannadoe\",\n    \"password\": \"j0h4nn4d0e\",\n    \"email\": \"johannadoe@nowhere.xx\",\n\t\"activation_url\": \"http://myactivationsys.xx?dum=my\",\n\t\"redirect_url\": \"app://xx?dum=my\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup",
@@ -346,7 +469,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}"
+							"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\",\n\t}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup",
@@ -398,7 +522,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"uuid\": \"{{uuid}}\"\n}"
+							"raw": "{\n    \"uuid\": \"{{uuid}}\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/signup/activation",
@@ -451,7 +576,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contact\": \"{{profileEmail}}\",\n\t\"change_url\": \"http://example.com/change\"\n}"
+							"raw": "{\n\t\"contact\": \"{{profileEmail}}\",\n\t\"change_url\": \"http://example.com/change\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/change",
@@ -518,7 +644,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"uuid\": \"{{uuid}}\",\n    \"password\": \"a-brand-new password\",\n    \"login\": true\n}"
+							"raw": "{\n\t\"uuid\": \"{{uuid}}\",\n    \"password\": \"a-brand-new password\",\n    \"login\": true\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/change",
@@ -540,7 +667,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "360552ee-8331-4935-8676-7bce9e483d60",
 								"exec": [
 									"if (responseCode.code === 200) {",
 									"    tests[\"Status equals 200\"] = true;",
@@ -548,7 +675,8 @@
 									"    tests[\"Status code is 404\"] = true;",
 									"}",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -568,10 +696,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/auth/user",
 							"host": [
@@ -622,7 +746,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Gustavo\"\n}"
+							"raw": "{\n\t\"name\": \"Gustavo\"\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/auth/user",
@@ -638,13 +763,98 @@
 					"response": []
 				}
 			],
-			"description": "Authorization & Signup"
+			"description": "Authorization & Signup",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "2. Home & Status",
 			"item": [
 				{
 					"name": "GET home",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e5215bce-e8b3-4172-94dd-33d6fb8e21ac",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/home",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"home"
+							]
+						},
+						"description": "Home endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "GET home (no auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e5215bce-e8b3-4172-94dd-33d6fb8e21ac",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/home",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"home"
+							]
+						},
+						"description": "Home endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "GET config",
 					"event": [
 						{
 							"listen": "test",
@@ -673,20 +883,16 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "{{be4Url}}/home",
+							"raw": "{{be4Url}}/config",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
-								"home"
+								"config"
 							]
 						},
-						"description": "Home endpoint"
+						"description": "Config endpoint"
 					},
 					"response": []
 				},
@@ -717,10 +923,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/status/",
 							"host": [
@@ -735,7 +937,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "3. Model",
@@ -773,10 +976,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types",
 									"host": [
@@ -843,7 +1042,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\": \"cats\",\n            \"singular\": \"cat\",\n            \"description\": \"This is a cat\",\n            \"table\": \"BEdita/Core.Objects\",\n            \"parent_name\": \"objects\",\n            \"is_abstract\": false\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\": \"cats\",\n            \"singular\": \"cat\",\n            \"description\": \"This is a cat\",\n            \"table\": \"BEdita/Core.Objects\",\n            \"parent_name\": \"objects\",\n            \"is_abstract\": false\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types",
@@ -893,10 +1093,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types/{{objectTypeName}}",
 									"host": [
@@ -948,7 +1144,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"another dummy description\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{objectTypeId}}\",\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"description\": \"another dummy description\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/object_types/{{objectTypeId}}",
@@ -966,11 +1163,125 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
 					"name": "3.2 Property Types",
 					"item": [
+						{
+							"name": "Create property type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab287fef-941e-4601-a751-a68e1c38c8f6",
+										"exec": [
+											"tests[\"Status code is 201\"] = responseCode.code === 201;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"if (responseCode.code === 201) {",
+											"    try {",
+											"        var responseJSON = JSON.parse(responseBody);",
+											"        if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+											"            postman.setEnvironmentVariable(\"propertyTypeId\", responseJSON.data.id);",
+											"        }",
+											"    } catch (e) {",
+											"        tests[\"Error in parsing response\"] = e;",
+											"    }        ",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"type\": \"property_types\",\n        \"attributes\": {\n\t\t\t\"name\": \"myprop\",\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"A\",\n                  \"B\",\n                  \"C\"\n              ]\n            }\n        }\n    }\n}",
+									"options": {}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/property_types",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"property_types"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET single property",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a1c97b70-e721-47f2-b108-2567963d3668",
+										"exec": [
+											"if (responseCode.code === 200) {",
+											"    tests[\"Status equals 200\"] = true;",
+											"} else if (responseCode.code === 404) {",
+											"    tests[\"Status code is 404\"] = true;",
+											"}",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/property_types/{{propertyTypeId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"property_types",
+										"{{propertyTypeId}}"
+									]
+								},
+								"description": "GET object_type by object_type_id"
+							},
+							"response": []
+						},
 						{
 							"name": "GET property types",
 							"event": [
@@ -1001,10 +1312,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/property_types",
 									"host": [
@@ -1017,8 +1324,63 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Modify property type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "71d78e8c-083a-48b9-b790-cd6422bdd008",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyTypeId}}\",\n        \"type\": \"property_types\",\n        \"attributes\": {\n            \"params\": {\n               \"type\": \"string\",\n               \"enum\": [\n                  \"E\",\n                  \"F\",\n                  \"G\"\n              ]\n            }\n        }\n    }\n}",
+									"options": {}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/property_types/{{propertyTypeId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"property_types",
+										"{{propertyTypeId}}"
+									]
+								}
+							},
+							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1070,7 +1432,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n\t\t\t\"description\":\"Profile nickname\",\n\t\t\t\"property_type_name\":\"string\",\n\t\t\t\"object_type_name\":\"profiles\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n\t\t\t\"description\":\"Profile nickname\",\n\t\t\t\"property_type_name\":\"string\",\n\t\t\t\"object_type_name\":\"profiles\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties",
@@ -1119,10 +1482,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties/{{propertyId}}",
 									"host": [
@@ -1168,10 +1527,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties",
 									"host": [
@@ -1215,10 +1570,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties?filter[object_type]=profiles&filter[type]=dynamic",
 									"host": [
@@ -1278,7 +1629,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyId}}\",\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n            \"description\": \"This is a new description\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{propertyId}}\",\n        \"type\": \"properties\",\n        \"attributes\": {\n\t\t\t\"name\":\"nickname\",\n            \"description\": \"This is a new description\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/properties/{{propertyId}}",
@@ -1295,6 +1647,7 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1330,10 +1683,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations",
 									"host": [
@@ -1404,7 +1753,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"name\": \"owner_of\",\n            \"label\": \"Owner of\",\n            \"inverse_name\": \"belongs_to\",\n            \"inverse_label\": \"Belongs to\",\n            \"description\": \"Cat owner relation\",\n            \"params\": {\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"name\": \"owner_of\",\n            \"label\": \"Owner of\",\n            \"inverse_name\": \"belongs_to\",\n            \"inverse_label\": \"Belongs to\",\n            \"description\": \"Cat owner relation\",\n            \"params\": {\n            }\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations",
@@ -1450,10 +1800,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}",
 									"host": [
@@ -1514,7 +1860,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n    \t\"id\": \"{{relationId}}\",\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"label\": \"Shared with\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n    \t\"id\": \"{{relationId}}\",\n        \"type\": \"relations\",\n        \"attributes\": {\n            \"label\": \"Shared with\"\n        }\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}",
@@ -1567,7 +1914,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"3\"\n\t    },\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"2\"\n\t    }\n\t]\n}"
+									"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"3\"\n\t    },\n\t    {\n\t        \"type\": \"object_types\",\n\t\t    \"id\": \"2\"\n\t    }\n\t]\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/left_object_types",
@@ -1616,10 +1964,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/left_object_types",
 									"host": [
@@ -1672,7 +2016,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n\t    \"id\": \"3\"\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n\t    \"id\": \"3\"\n    }\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/right_object_types",
@@ -1721,10 +2066,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/right_object_types",
 									"host": [
@@ -1777,7 +2118,8 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"object_types\",\n\t    \t\"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}"
+									"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"object_types\",\n\t    \t\"id\": \"{{objectTypeId}}\"\n    \t}\n    ]\n}",
+									"options": {}
 								},
 								"url": {
 									"raw": "{{be4Url}}/model/relations/{{relationId}}/relationships/right_object_types",
@@ -1798,6 +2140,7 @@
 						}
 					],
 					"description": "relations endpoint",
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
 				{
@@ -1838,10 +2181,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/schema/{{objectTypeName}}",
 									"host": [
@@ -1891,10 +2230,6 @@
 										"value": "{{apiKey}}"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "{{be4Url}}/model/schema/roles",
 									"host": [
@@ -1910,9 +2245,549 @@
 							"response": []
 						}
 					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "3.6 Categories",
+					"item": [
+						{
+							"name": "Create category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab287fef-941e-4601-a751-a68e1c38c8f6",
+										"exec": [
+											"tests[\"Status code is 201\"] = responseCode.code === 201;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"if (responseCode.code === 201) {",
+											"    try {",
+											"        var responseJSON = JSON.parse(responseBody);",
+											"        if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+											"            postman.setEnvironmentVariable(\"propertyTypeId\", responseJSON.data.id);",
+											"        }",
+											"    } catch (e) {",
+											"        tests[\"Error in parsing response\"] = e;",
+											"    }        ",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/categories",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET single category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a1c97b70-e721-47f2-b108-2567963d3668",
+										"exec": [
+											"if (responseCode.code === 200) {",
+											"    tests[\"Status equals 200\"] = true;",
+											"} else if (responseCode.code === 404) {",
+											"    tests[\"Status code is 404\"] = true;",
+											"}",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories",
+										"{{categoryId}}"
+									]
+								},
+								"description": "GET object_type by object_type_id"
+							},
+							"response": []
+						},
+						{
+							"name": "GET categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "aac6008c-5b39-4e1f-8004-633204a04f32",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/categories",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET categories by type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "55b0016a-65da-4a95-8487-f01e6169c8ec",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/categories?filter[type]={{objectTypeName}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "filter[type]",
+											"value": "{{objectTypeName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modify category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "71d78e8c-083a-48b9-b790-cd6422bdd008",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8baa33ce-e05a-476b-92b2-8dc98df76f81",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5ed9c6c4-d61f-40ff-8830-0a27dbbf6593",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "3.7 Tags",
+					"item": [
+						{
+							"name": "Create category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab287fef-941e-4601-a751-a68e1c38c8f6",
+										"exec": [
+											"tests[\"Status code is 201\"] = responseCode.code === 201;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"if (responseCode.code === 201) {",
+											"    try {",
+											"        var responseJSON = JSON.parse(responseBody);",
+											"        if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+											"            postman.setEnvironmentVariable(\"propertyTypeId\", responseJSON.data.id);",
+											"        }",
+											"    } catch (e) {",
+											"        tests[\"Error in parsing response\"] = e;",
+											"    }        ",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"type\": \"categories\",\n        \"attributes\": {\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/categories",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET single category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a1c97b70-e721-47f2-b108-2567963d3668",
+										"exec": [
+											"if (responseCode.code === 200) {",
+											"    tests[\"Status equals 200\"] = true;",
+											"} else if (responseCode.code === 404) {",
+											"    tests[\"Status code is 404\"] = true;",
+											"}",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories",
+										"{{categoryId}}"
+									]
+								},
+								"description": "GET object_type by object_type_id"
+							},
+							"response": []
+						},
+						{
+							"name": "GET tags",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "aac6008c-5b39-4e1f-8004-633204a04f32",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/tags",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"tags"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modify category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "71d78e8c-083a-48b9-b790-cd6422bdd008",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8baa33ce-e05a-476b-92b2-8dc98df76f81",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5ed9c6c4-d61f-40ff-8830-0a27dbbf6593",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "4. Objects",
@@ -1947,10 +2822,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/objects",
 							"host": [
@@ -1970,7 +2841,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "8445d955-52c8-4130-8537-b72c48d50d77",
 								"exec": [
 									"var responseJSON;",
 									"try {",
@@ -1983,7 +2854,8 @@
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1996,7 +2868,9 @@
 							},
 							{
 								"key": "Content-Type",
-								"value": "application/vnd.api+json"
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "Authorization",
@@ -2009,7 +2883,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"a cat\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"a cat\"\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}",
@@ -2059,10 +2936,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
 							"host": [
@@ -2083,11 +2956,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "f2890942-7778-4906-8020-33d8d52c2c90",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2096,7 +2970,9 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/vnd.api+json"
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "Accept",
@@ -2113,7 +2989,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"description\": \"Superdummy\"\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
@@ -2126,59 +3005,6 @@
 							]
 						},
 						"description": "PATCH object"
-					},
-					"response": []
-				},
-				{
-					"name": "GET objects type filter",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}"
-							},
-							{
-								"key": "X-Api-Key",
-								"value": "{{apiKey}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{be4Url}}/objects?filter[type]=documents",
-							"host": [
-								"{{be4Url}}"
-							],
-							"path": [
-								"objects"
-							],
-							"query": [
-								{
-									"key": "filter[type]",
-									"value": "documents"
-								}
-							]
-						},
-						"description": "Get objects list"
 					},
 					"response": []
 				},
@@ -2218,7 +3044,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"{{objectTypeName}}\",\n        \t\"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n        \t\"type\": \"{{objectTypeName}}\",\n        \t\"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/1/relationships/{{relationName}}",
@@ -2232,6 +3059,55 @@
 								"{{relationName}}"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET objects type filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/objects?filter[type]=documents",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"objects"
+							],
+							"query": [
+								{
+									"key": "filter[type]",
+									"value": "documents"
+								}
+							]
+						},
+						"description": "Get objects list"
 					},
 					"response": []
 				},
@@ -2265,10 +3141,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}/{{inverseRelationName}}",
 							"host": [
@@ -2284,7 +3156,8 @@
 					"response": []
 				}
 			],
-			"description": "objects endpoint: Object management"
+			"description": "objects endpoint: Object management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "5. Users & Roles",
@@ -2319,10 +3192,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/users/",
 							"host": [
@@ -2382,7 +3251,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"username\": \"johndoe\",\n            \"password\": \"j04nd0e\",\n            \"uname\": \"johndoe\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users",
@@ -2433,10 +3303,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}",
 							"host": [
@@ -2487,7 +3353,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{userId}}\",\n        \"type\": \"users\",\n        \"attributes\": {\n            \"name\": \"John\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}",
@@ -2533,10 +3400,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/roles/",
 							"host": [
@@ -2596,7 +3459,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"animal\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n        \"attributes\": {\n            \"name\": \"animal\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles",
@@ -2646,10 +3510,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}",
 							"host": [
@@ -2700,7 +3560,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n        \t\"name\": \"animal\",\n            \"description\": \"a very important description of this role\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{roleId}}\",\n        \"type\": \"roles\",\n        \"attributes\": {\n        \t\"name\": \"animal\",\n            \"description\": \"a very important description of this role\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}",
@@ -2752,7 +3613,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}/relationships/roles",
@@ -2800,10 +3662,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}/roles",
 							"host": [
@@ -2855,7 +3713,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"users\",\n\t    \"id\": \"{{userId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}/relationships/users",
@@ -2903,10 +3762,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}/users",
 							"host": [
@@ -2958,7 +3813,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"roles\",\n\t    \"id\": \"{{roleId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}/relationships/roles",
@@ -2977,13 +3833,14 @@
 					"response": []
 				}
 			],
-			"description": "Roles management"
+			"description": "Roles management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "6. Streams & Images",
 			"item": [
 				{
-					"name": "Upload",
+					"name": "Upload file and create stream",
 					"event": [
 						{
 							"listen": "test",
@@ -3026,7 +3883,10 @@
 						],
 						"body": {
 							"mode": "file",
-							"file": {}
+							"file": {
+								"src": ""
+							},
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
@@ -3086,7 +3946,10 @@
 						],
 						"body": {
 							"mode": "file",
-							"file": {}
+							"file": {
+								"src": ""
+							},
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/upload/myfile.jpg",
@@ -3131,10 +3994,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/streams/{{streamUuid}}",
 							"host": [
@@ -3154,7 +4013,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "c0a620dc-637c-4c41-bbe8-bc149e5e396e",
 								"exec": [
 									"//tests[\"Status code is 201\"] = responseCode.code === 201;",
 									"//tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
@@ -3166,7 +4025,8 @@
 									"} catch (e) {",
 									"//    tests[\"Error in parsing response\"] = e;",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3175,7 +4035,9 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/vnd.api+json"
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "Accept",
@@ -3192,7 +4054,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"data\": {\n\t\t\"type\": \"images\",\n\t\t\"attributes\": {\n\t\t\t\"title\": \"My media\"\n\t\t}\n\t}\n}"
+							"raw": "{\n\t\"data\": {\n\t\t\"type\": \"images\",\n\t\t\"attributes\": {\n\t\t\t\"title\": \"My media\"\n\t\t}\n\t}\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/images",
@@ -3241,7 +4104,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"data\": {\n\t\t\"id\": \"{{imageId}}\",\n\t\t\"type\": \"images\"\n\t}\n}"
+							"raw": "{\n\t\"data\": {\n\t\t\"id\": \"{{imageId}}\",\n\t\t\"type\": \"images\"\n\t}\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/streams/{{streamUuid}}/relationships/object",
@@ -3259,15 +4123,16 @@
 					"response": []
 				},
 				{
-					"name": "Get image",
+					"name": "Get single image",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "ac54c53b-661e-4d7b-89c5-eb5683c9f499",
 								"exec": [
 									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3287,10 +4152,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/images/{{imageId}}",
 							"host": [
@@ -3303,12 +4164,263 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get images",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e06fe2e8-8046-4560-a3b5-52dc45d5f9ff",
+								"exec": [
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/images",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get media",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d02291db-7966-4d1f-8852-44a3d7b9a8b9",
+								"exec": [
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/media",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"media"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get media thumbs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d02291db-7966-4d1f-8852-44a3d7b9a8b9",
+								"exec": [
+									"//tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/media/thumbs?ids={{imageId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"media",
+								"thumbs"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{imageId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload file and create image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6866b5af-35b7-40f1-9e74-156a7fed59db",
+								"exec": [
+									"//tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"//tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"streamUuid\", responseJSON.data.id);        ",
+									"    }",
+									"} catch (e) {",
+									"    //tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "image/png"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {},
+							"options": {
+								"file": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/images/upload/other-file.jpg",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"images",
+								"upload",
+								"other-file.jpg"
+							]
+						}
+					},
+					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "7. Folders",
 			"item": [
+				{
+					"name": "Trees",
+					"item": [
+						{
+							"name": "Get path on trees",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d4ec4dc4-de0c-408b-be3f-1f2b72133891",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/trees/{{rootFolderId}}/{{subFolderId}}/{{objectId}}",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"trees",
+										"{{rootFolderId}}",
+										"{{subFolderId}}",
+										"{{objectId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
 				{
 					"name": "Create root folder",
 					"event": [
@@ -3353,7 +4465,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Root Folder\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
@@ -3397,10 +4510,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
 							"host": [
@@ -3443,10 +4552,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{rootFolderId}}",
 							"host": [
@@ -3491,10 +4596,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/folders?filter[roots]",
 							"host": [
@@ -3506,7 +4607,7 @@
 							"query": [
 								{
 									"key": "filter[roots]",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -3557,7 +4658,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"attributes\": {\n        \t\"title\": \"Sub Folder\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders",
@@ -3607,7 +4709,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"folders\",\n        \"id\": \"{{rootFolderId}}\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/parent",
@@ -3654,10 +4757,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/parent",
 							"host": [
@@ -3673,16 +4772,17 @@
 					"response": []
 				},
 				{
-					"name": "Add folder children",
+					"name": "Add folder children (root folder)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "7255b36f-4882-4faf-8453-3ecfbdcef08e",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3708,16 +4808,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {
+								"raw": {}
+							}
 						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{subFolderId}}",
+								"{{rootFolderId}}",
 								"relationships",
 								"children"
 							]
@@ -3731,11 +4834,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "65e8e2ee-fc26-4655-8a8f-9fca3c28a179",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3755,18 +4859,128 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "{{be4Url}}/folders/{{subFolderId}}/children",
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/children",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"folders",
-								"{{subFolderId}}",
+								"{{rootFolderId}}",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change children positions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1a1e3247-751a-4ceb-8958-e02956f0b8ce",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"folders\",\n\t        \"id\": \"{{subFolderId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"position\":2\n\t        \t}\n\t        }\n    \t},\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"position\":1\n\t        \t}\n\t        }\n    \t}\n    ]\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{rootFolderId}}",
+								"relationships",
+								"children"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change children canonical & menu flag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7a44f04e-e82d-4249-bc21-05d9b37a6d53",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\",\n\t        \"meta\": {\n\t        \t\"relation\": {\n\t        \t\t\"canonical\": true,\n\t\t\t\t\t\"menu\": false\n\t        \t}\n\t        }\n    \t}\n    ]\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/folders/{{rootFolderId}}/relationships/children",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"folders",
+								"{{rootFolderId}}",
+								"relationships",
 								"children"
 							]
 						}
@@ -3809,7 +5023,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}"
+							"raw": "{\n    \"data\": [\n    \t{\n\t        \"type\": \"{{objectTypeName}}\",\n\t        \"id\": \"{{objectId}}\"\n    \t}\n    ]\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/folders/{{subFolderId}}/relationships/children",
@@ -3855,10 +5070,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/objects?filter[parent]={{subFolderId}}",
 							"host": [
@@ -3906,10 +5117,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "file",
-							"file": {}
-						},
 						"url": {
 							"raw": "{{be4Url}}/folders?filter[parent]={{rootFolderId}}",
 							"host": [
@@ -3960,7 +5167,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{subFolderId}}",
@@ -4008,7 +5216,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{rootFolderId}}",
@@ -4024,7 +5233,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "8. Translations",
@@ -4068,10 +5278,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/translations/",
 							"host": [
@@ -4116,10 +5322,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
 							"host": [
@@ -4164,10 +5366,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}/object",
 							"host": [
@@ -4213,10 +5411,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}/relationships/object",
 							"host": [
@@ -4278,7 +5472,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"título uno\",\n                \"description\": \"descripción uno\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"título uno\",\n                \"description\": \"descripción uno\"\n            }\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations",
@@ -4329,7 +5524,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
@@ -4377,7 +5573,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",
@@ -4425,7 +5622,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{translationId}}",
@@ -4442,7 +5640,8 @@
 					"response": []
 				}
 			],
-			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
+			"description": "Translations endpoint: i18n management (add, remove, modify a translation).",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "9. Annotations",
@@ -4487,10 +5686,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/annotations/",
 							"host": [
@@ -4535,12 +5730,8 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "{{be4Url}}/annotations/{{annotationId}}",
+							"raw": "{{be4Url}}/annotation/{{annotationId}}",
 							"host": [
 								"{{be4Url}}"
 							],
@@ -4599,7 +5790,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"annotations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"description\": \"a note\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"annotations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"description\": \"a note\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations",
@@ -4650,7 +5842,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{annotationId}}\",\n        \"type\": \"annotations\",\n        \"attributes\": {\n            \"description\": \"another note\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{annotationId}}\",\n        \"type\": \"annotations\",\n        \"attributes\": {\n            \"description\": \"another note\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations/{{annotationId}}",
@@ -4698,7 +5891,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/annotations/{{annotationId}}",
@@ -4746,7 +5940,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{annotationId}}",
@@ -4763,7 +5958,8 @@
 					"response": []
 				}
 			],
-			"description": "Translations endpoint: i18n management (add, remove, modify a translation)."
+			"description": "Translations endpoint: i18n management (add, remove, modify a translation).",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "10. Trash",
@@ -4798,10 +5994,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/trash/",
 							"host": [
@@ -4822,12 +6014,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "a211ad2e-d68d-45ce-ad14-cf5d4ffc1c53",
 								"exec": [
 									"tests[\"Status code is 204\"] = responseCode.code === 204;",
 									"tests[\"Body matches string\"] = responseBody === \"\";",
 									""
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4849,15 +6042,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
-							"raw": "{{be4Url}}/objects/{{objectId}}",
+							"raw": "{{be4Url}}/trash/{{objectId}}",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
-								"objects",
+								"trash",
 								"{{objectId}}"
 							]
 						},
@@ -4899,10 +6093,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
 							"host": [
@@ -4953,7 +6143,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"objects\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"objects\"\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
@@ -4970,7 +6161,8 @@
 					"response": []
 				}
 			],
-			"description": "Trash management"
+			"description": "Trash management",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "11. Admin",
@@ -5020,7 +6212,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"my-very-first-app\",\n            \"description\": \"My first app\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"my-very-first-app\",\n            \"description\": \"My first app\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications",
@@ -5069,10 +6262,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications/{{adminResourceId}}",
 							"host": [
@@ -5117,10 +6306,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications",
 							"host": [
@@ -5170,7 +6355,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"new-app-name\",\n            \"description\": \"New application description\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"applications\",\n        \"attributes\": {\n            \"name\": \"new-app-name\",\n            \"description\": \"New application description\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications/{{adminResourceId}}",
@@ -5219,7 +6405,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/applications/{{adminResourceId}}",
@@ -5279,7 +6466,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"service\": \"dummy\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"service\": \"dummy\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs",
@@ -5328,10 +6516,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
 							"host": [
@@ -5376,10 +6560,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs",
 							"host": [
@@ -5429,7 +6609,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"priority\": 2\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"async_jobs\",\n        \"attributes\": {\n            \"priority\": 2\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
@@ -5478,7 +6659,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/async_jobs/{{adminResourceId}}",
@@ -5538,7 +6720,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n    \t\"id\": \"TestConf\",\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"TestConf\",\n            \"content\": \"config content\",\n            \"context\": \"config-context\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n    \t\"id\": \"TestConf\",\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"TestConf\",\n            \"content\": \"config content\",\n            \"context\": \"config-context\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config",
@@ -5588,10 +6771,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config/{{adminResourceId}}",
 							"host": [
@@ -5636,10 +6815,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config",
 							"host": [
@@ -5689,7 +6864,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"context\": \"another-context\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"context\": \"another-context\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config/{{adminResourceId}}",
@@ -5738,7 +6914,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/config/{{adminResourceId}}",
@@ -5798,7 +6975,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"name\": \"my_endpoint\",\n            \"description\": \"My first endpoint\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"name\": \"my_endpoint\",\n            \"description\": \"My first endpoint\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints",
@@ -5848,10 +7026,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
 							"host": [
@@ -5896,10 +7070,6 @@
 								"value": "{{apiKey}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints",
 							"host": [
@@ -5949,7 +7119,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"description\": \"New endpoint description\"\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{adminResourceId}}\",\n        \"type\": \"endpoints\",\n        \"attributes\": {\n            \"description\": \"New endpoint description\"\n        }\n    }\n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
@@ -5998,7 +7169,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/admin/endpoints/{{adminResourceId}}",
@@ -6014,10 +7186,303 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "12. Remove All",
+			"name": "12. History",
+			"item": [
+				{
+					"name": "GET object history",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d3edc05-76cb-496c-80d8-bfc20c657043",
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    tests[\"Status equals 200\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"} else if (responseCode.code === 404) {",
+									"    tests[\"Status code is 404\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/history?filter[resource_id]={{objectId}}&filter[resource_type]=objects",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"history"
+							],
+							"query": [
+								{
+									"key": "filter[resource_id]",
+									"value": "{{objectId}}"
+								},
+								{
+									"key": "filter[resource_type]",
+									"value": "objects"
+								}
+							]
+						},
+						"description": "get single object by id"
+					},
+					"response": []
+				},
+				{
+					"name": "GET user activity history",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d3edc05-76cb-496c-80d8-bfc20c657043",
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    tests[\"Status equals 200\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"} else if (responseCode.code === 404) {",
+									"    tests[\"Status code is 404\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/history?filter[user_id]={{userId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"history"
+							],
+							"query": [
+								{
+									"key": "filter[user_id]",
+									"value": "{{userId}}"
+								}
+							]
+						},
+						"description": "get single object by id"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "13. Categories & Tags",
+			"item": [
+				{
+					"name": "GET objects + categories/tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d3edc05-76cb-496c-80d8-bfc20c657043",
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    tests[\"Status equals 200\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"} else if (responseCode.code === 404) {",
+									"    tests[\"Status code is 404\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/{{objectTypeName}}?fields=tags,categories",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"{{objectTypeName}}"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tags,categories"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET objects + categories filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d3edc05-76cb-496c-80d8-bfc20c657043",
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    tests[\"Status equals 200\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"} else if (responseCode.code === 404) {",
+									"    tests[\"Status code is 404\"] = true;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/history?filter[user_id]={{userId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"history"
+							],
+							"query": [
+								{
+									"key": "filter[user_id]",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modify object tags/categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f2890942-7778-4906-8020-33d8d52c2c90",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectId}}\",\n        \"type\": \"{{objectTypeName}}\",\n        \"attributes\": {\n            \"categories\": [\n            \t{\n            \t\t\"name\": \"profile-2\"\n            \t}\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"{{objectTypeName}}",
+								"{{objectId}}"
+							]
+						},
+						"description": "PATCH object"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "14. Remove All",
 			"item": [
 				{
 					"name": "Remove sub folder permanently",
@@ -6051,7 +7516,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{subFolderId}}",
@@ -6099,7 +7565,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{rootFolderId}}",
@@ -6148,7 +7615,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/roles/{{roleId}}",
@@ -6199,7 +7667,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"{{objectTypeName}}\",\n\t\t    \"id\": \"{{objectId}}\"\n\t    }\n    ] \n}"
+							"raw": "{\n    \"data\": [\n\t    {\n\t        \"type\": \"{{objectTypeName}}\",\n\t\t    \"id\": \"{{objectId}}\"\n\t    }\n    ] \n}",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/1/relationships/{{relationName}}",
@@ -6251,7 +7720,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/relations/{{relationId}}",
@@ -6300,7 +7770,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/objects/{{objectId}}",
@@ -6348,7 +7819,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{objectId}}",
@@ -6397,7 +7869,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/properties/{{propertyId}}",
@@ -6408,6 +7881,58 @@
 								"model",
 								"properties",
 								"{{propertyId}}"
+							]
+						},
+						"description": "DEL object_type"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete property type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d89799aa-51e8-4e9b-a4be-491513dbb266",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";",
+									"postman.setEnvironmentVariable(\"propertyId\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {}
+						},
+						"url": {
+							"raw": "{{be4Url}}/model/property_types/{{propertyTypeId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"model",
+								"property_types",
+								"{{propertyTypeId}}"
 							]
 						},
 						"description": "DEL object_type"
@@ -6448,7 +7973,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/model/object_types/{{objectTypeName}}",
@@ -6497,7 +8023,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/users/{{userId}}",
@@ -6545,7 +8072,8 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "",
+							"options": {}
 						},
 						"url": {
 							"raw": "{{be4Url}}/trash/{{userId}}",
@@ -6561,7 +8089,9 @@
 					"response": []
 				}
 			],
-			"description": "Remove all objects and resources created"
+			"description": "Remove all objects and resources created",
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

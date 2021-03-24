@@ -62,30 +62,31 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
      */
     public function tearDown()
     {
-        if (in_array(static::TEMP_CONNECTION, ConnectionManager::configured())) {
-            ConnectionManager::get(static::TEMP_CONNECTION)
-                ->transactional(function (Connection $connection) {
-                    $tables = $connection->getSchemaCollection()->listTables();
+        ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
+        ConnectionManager::get('default')->getDriver()->disconnect();
+        ConnectionManager::get('default')
+            ->transactional(function (Connection $connection) {
+                $tables = $connection->getSchemaCollection()->listTables();
 
-                    foreach ($tables as $table) {
-                        $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
-                        foreach ($sql as $query) {
-                            $connection->query($query);
-                        }
+                foreach ($tables as $table) {
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
                     }
-                    foreach ($tables as $table) {
-                        $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
-                        foreach ($sql as $query) {
-                            $connection->query($query);
-                        }
+                }
+                foreach ($tables as $table) {
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
                     }
-                });
+                }
+            });
+        if (in_array(static::TEMP_CONNECTION, ConnectionManager::configured())) {
             ConnectionManager::drop(static::TEMP_CONNECTION);
         }
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);
         }
-        ConnectionManager::alias('test', 'default');
 
         parent::tearDown();
     }

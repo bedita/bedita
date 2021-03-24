@@ -534,11 +534,24 @@ class TableTest extends TestCase
 
         $this->fakeAnimals->addBehavior('Tree');
 
+        $animalsAlias = $this->fakeAnimals->getAlias();
+        $mammalsAlias = $this->fakeMammals->getAlias();
+        $felinesAlias = $this->fakeFelines->getAlias();
+        $checkAliases = function () use ($animalsAlias, $mammalsAlias, $felinesAlias) {
+            static::assertSame($felinesAlias, $this->fakeFelines->getAlias());
+            static::assertSame($mammalsAlias, $this->fakeMammals->getAlias());
+            static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
+        };
+
         static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        $checkAliases();
         static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+        $checkAliases();
 
         static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql());
+        $checkAliases();
         static::assertTextNotContains('FakeAnimals', $this->fakeFelines->find('children', ['for' => 1, 'direct' => true])->sql());
+        $checkAliases();
     }
 
     /**

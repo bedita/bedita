@@ -164,7 +164,7 @@ class CheckSchemaTask extends Shell
             $validator->setProvider($key, $value);
         }
 
-        $errors = $validator->errors(compact('symbol'));
+        $errors = $validator->validate(compact('symbol'));
 
         return Hash::get($errors, 'symbol', []);
     }

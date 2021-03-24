@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -76,12 +77,12 @@ class CategoriesTableTest extends TestCase
         $category = $this->Categories->get(1)->toArray();
         $expected = [
             'id' => 1,
-            'object_type_id' => 2,
+            'object_type_name' => 'documents',
             'name' => 'first-cat',
             'label' => 'First category',
             'parent_id' => null,
-            'tree_left' => null,
-            'tree_right' => null,
+            'tree_left' => 1,
+            'tree_right' => 2,
             'enabled' => true,
         ];
         unset($category['created'], $category['modified']);
@@ -124,5 +125,90 @@ class CategoriesTableTest extends TestCase
     {
         $categories = $this->Categories->find('enabled')->toArray();
         static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
+    }
+
+    /**
+     * Test find categories by type
+     *
+     * @return void
+     * @covers ::findType()
+     */
+    public function testFindCategoriesType()
+    {
+        $order = [
+            $this->Categories->aliasField('id') => 'ASC',
+        ];
+        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
+        static::assertEquals([1, 2, 3], Hash::extract($categories, '{n}.id'));
+
+        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
+        static::assertEquals([], $categories);
+    }
+
+    /**
+     * Test find categories by type failure
+     *
+     * @return void
+     * @covers ::findType()
+     */
+    public function testFindCategoriesTypeFail(): void
+    {
+        $this->expectException(BadFilterException::class);
+        $this->expectExceptionMessage('Missing required parameter "type"');
+
+        $this->Categories->find('type')->toArray();
+    }
+
+    /**
+     * Data provider for `testFindResource()`.
+     *
+     * @return array
+     */
+    public function findResourceProvider(): array
+    {
+        return [
+            'category' => [
+                1,
+                [
+                    'name' => 'first-cat',
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            'no name' => [
+                new BadFilterException('Missing required parameter "name"'),
+                [
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            'no type' => [
+                new BadFilterException('Missing required parameter "object_type_name"'),
+                [
+                    'name' => 'a-name',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findResource()`.
+     *
+     * @param int|\Exception $expected The value expected
+     * @param array $options The options for the finder
+     * @return void
+     *
+     * @covers ::findResource()
+     * @dataProvider findResourceProvider()
+     */
+    public function testFindResource($expected, $options): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $query = $this->Categories->find('resource', $options);
+        $entity = $query->first();
+
+        static::assertEquals(1, $query->count());
+        static::assertEquals($expected, $entity->id);
     }
 }

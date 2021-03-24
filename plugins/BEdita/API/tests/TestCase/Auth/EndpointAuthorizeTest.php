@@ -18,14 +18,13 @@ use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Laminas\Diactoros\Uri;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\Uri;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\EndpointAuthorize
@@ -106,8 +105,8 @@ class EndpointAuthorizeTest extends TestCase
     public function testGetEndpoint($expected, UriInterface $uri)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         CurrentApplication::setFromApiKey(API_KEY);
@@ -120,6 +119,29 @@ class EndpointAuthorizeTest extends TestCase
             $expected = TableRegistry::getTableLocator()->get('Endpoints')->get($expected);
         }
 
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+    }
+
+    /**
+     * Test `getEndpoint` method, reloading same endpoint.
+     *
+     * @covers ::getEndpoint()
+     * @return void
+     */
+    public function testGetEndpointSame(): void
+    {
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
+        $expected = $Endpoints->get(2);
+
+        $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
+        $request = new ServerRequest(['uri' => new Uri('/home')]);
+
+        $authorize->authorize([], $request);
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+
+        $Endpoints->delete($expected);
+
+        $authorize->authorize([], $request);
         static::assertAttributeEquals($expected, 'endpoint', $authorize);
     }
 
@@ -219,8 +241,8 @@ class EndpointAuthorizeTest extends TestCase
     public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));

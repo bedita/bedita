@@ -37,41 +37,41 @@ class ObjectsValidator extends Validator
 
         $this
             ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', null, 'create')
             ->requirePresence('id', 'update')
 
             ->inList('status', ['on', 'off', 'draft'])
-            ->notEmpty('status')
+            ->notEmptyString('status')
 
             ->ascii('uname')
-            ->allowEmpty('uname')
+            ->allowEmptyString('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'objectsTable'])
 
             ->boolean('locked')
-            ->allowEmpty('locked')
+            ->allowEmptyString('locked')
 
             ->boolean('deleted')
-            ->allowEmpty('deleted')
+            ->allowEmptyString('deleted')
 
             ->dateTime('published')
-            ->allowEmpty('published')
+            ->allowEmptyDateTime('published')
 
-            ->allowEmpty('title')
+            ->allowEmptyString('title')
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
-            ->allowEmpty('body')
+            ->allowEmptyString('body')
 
-            ->allowEmpty('extra')
+            ->allowEmptyArray('extra')
 
             ->scalar('lang')
             ->add('lang', 'languageTag', ['rule' => [Validation::class, 'languageTag']])
-            ->allowEmpty('lang')
+            ->allowEmptyString('lang')
 
             ->add('publish_start', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('publish_start')
+            ->allowEmptyDateTime('publish_start')
 
             ->add('publish_end', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('publish_end');
+            ->allowEmptyDateTime('publish_end');
     }
 }

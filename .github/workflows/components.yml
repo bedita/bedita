@@ -1,0 +1,41 @@
+name: 'Publish components'
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'plugins/BEdita/**'
+      - '.github/workflows/*'
+
+jobs:
+  filter-tree:
+    name: 'Filter components tree and push'
+    runs-on: 'ubuntu-latest'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: 'api'
+            path: 'plugins/BEdita/API'
+          - repo: 'core'
+            path: 'plugins/BEdita/Core'
+
+    steps:
+      - name: 'Checkout current revision'
+        uses: 'actions/checkout@v2'
+        with:
+          token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+          fetch-depth: '0'
+
+      - name: 'Filter tree'
+        run: 'git filter-branch --prune-empty --subdirectory-filter "${{ matrix.path }}" --tag-name-filter cat -- --all'
+
+      - name: 'Output last 10 commits'
+        run: 'git log -n 10'
+
+      - name: 'Push to component repository'
+        env:
+          REMOTE: "${{ format('https://github.com/{0}/{1}.git', github.repository_owner, matrix.repo) }}"
+        run: 'git push --force --tags "${REMOTE}" HEAD'
