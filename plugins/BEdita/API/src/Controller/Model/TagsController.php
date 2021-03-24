@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2020 ChannelWeb Srl, Chialab Srl
+ * Copyright 2021 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -16,7 +16,7 @@ namespace BEdita\API\Controller\Model;
 /**
  * Controller for `/model/tags` endpoint.
  *
- * @since 4.2.0
+ * @since 4.4.0
  *
  * @property \BEdita\Core\Model\Table\TagsTable $Tags
  */
@@ -32,6 +32,8 @@ class TagsController extends ModelController
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'allowedAssociations' => [],
+        'allowedAssociations' => [
+            'object_tags' => ['object_tags'],
+        ],
     ];
 }
