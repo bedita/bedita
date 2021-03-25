@@ -13,16 +13,19 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Utility\Hash;
 
 /**
- * Test tags & categories save
+ * Test tags & categories
  */
 class TagsCategoriesTest extends IntegrationTestCase
 {
     /**
      * Data provider for `testCreate`
+     *
+     * @return array
      */
-    public function createProvider()
+    public function createProvider(): array
     {
         return [
             'simple tag' => [
@@ -92,10 +95,12 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $type Object type
      * @param array $attributes New object attributes
+     * @return void
+     *
      * @dataProvider createProvider
      * @coversNothing
      */
-    public function testCreate(array $expected, string $type, array $attributes)
+    public function testCreate(array $expected, string $type, array $attributes): void
     {
         // Create object
         $data = compact('type', 'attributes');
@@ -127,8 +132,10 @@ class TagsCategoriesTest extends IntegrationTestCase
 
     /**
      * Data provider for `testUpdate`
+     *
+     * @return array
      */
-    public function updateProvider()
+    public function updateProvider(): array
     {
         return [
             'no cat' => [
@@ -219,10 +226,12 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $type Object type
      * @param array $attributes Object update attributes
+     * @return void
+     *
      * @dataProvider updateProvider
      * @coversNothing
      */
-    public function testUpdate(array $expected, string $type, string $id, array $attributes)
+    public function testUpdate(array $expected, string $type, string $id, array $attributes): void
     {
         // Patch object
         $data = compact('type', 'id', 'attributes');
@@ -247,5 +256,68 @@ class TagsCategoriesTest extends IntegrationTestCase
                 static::assertEquals($expected[$item], $result['data']['attributes'][$item]);
             }
         }
+    }
+
+    /**
+     * Data provider for `testModelEndpoints`
+     *
+     * @return array
+     */
+    public function modelEndpointsProvider(): array
+    {
+        return [
+            'categories' => [
+                [1, 2, 3],
+                '/model/categories',
+            ],
+            'tags' => [
+                [4],
+                '/model/tags',
+            ],
+            'single cat' => [
+                [2],
+                '/model/categories/2',
+            ],
+            'single tag' => [
+                [4],
+                '/model/tags/4',
+            ],
+            'obj categories' => [
+                [2],
+                '/model/categories/2/object_categories',
+            ],
+            'obj tags' => [
+                [4],
+                '/model/tags/4/object_tags',
+            ],
+        ];
+    }
+
+    /**
+     * Test model endpoints of tags/categories
+     *
+     * @param array $expected Expected result
+     * @param string $url Endpoint url
+     * @return void
+     *
+     * @dataProvider modelEndpointsProvider
+     * @coversNothing
+     */
+    public function testModelEndpoints(array $expected, string $url): void
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $data = Hash::extract($result, 'data');
+        if (!empty($data['id'])) {
+            static::assertEquals($expected[0], $data['id']);
+
+            return;
+        }
+        $ids = Hash::extract($data, '{n}.id');
+        sort($ids);
+        static::assertEquals($expected, $ids);
     }
 }

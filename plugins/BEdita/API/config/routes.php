@@ -43,6 +43,7 @@ Router::plugin(
             'property_types',
             'relations',
             'categories',
+            'tags',
         ];
         $routes->setRouteClass(InflectedRoute::class);
 
