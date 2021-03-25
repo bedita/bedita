@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\Tag;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
@@ -48,10 +49,10 @@ class CategoriesBehavior extends Behavior
      * Prepare 'categories' or 'tags' data
      *
      * @param string $item Item type, 'tags' or 'categories'
-     * @param EntityInterface $entity Entity data
+     * @param \Cake\Datasource\EntityInterface $entity Entity data
      * @return void
      */
-    protected function prepareData(string $item, EntityInterface $entity)
+    protected function prepareData(string $item, EntityInterface $entity): void
     {
         if (!$entity->isDirty($item)) {
             $entity->unsetProperty($item);
@@ -69,21 +70,21 @@ class CategoriesBehavior extends Behavior
         }
 
         if ($item === 'categories') {
-            $ids = $this->categoryIds($entity, $objectType);
+            $entities = $this->fetchCategories($entity, $objectType);
         } else {
-            $ids = $this->tagIds($entity);
+            $entities = $this->fetchTags($entity);
         }
-        $this->updateData($item, $entity, $ids);
+        $this->updateData($item, $entity, $entities);
     }
 
     /**
-     * Retrieve category ids from entity data
+     * Fetch categories with id from entity data
      *
-     * @param EntityInterface $entity Entity data
-     * @param EntityInterface $objectType Object type entity
+     * @param \Cake\Datasource\EntityInterface $entity Entity data
+     * @param \Cake\Datasource\EntityInterface $objectType Object type entity
      * @return array
      */
-    protected function categoryIds(EntityInterface $entity, EntityInterface $objectType)
+    protected function fetchCategories(EntityInterface $entity, EntityInterface $objectType): array
     {
         $data = (array)$entity->get('categories');
         $options = [
@@ -97,46 +98,66 @@ class CategoriesBehavior extends Behavior
     }
 
     /**
-     * Retrieve category ids from entity data
+     * Fetch tags with id from entity.
+     * Create new tag if no existing tag is found.
      *
-     * @param EntityInterface $entity Entity data
+     * @param \Cake\Datasource\EntityInterface $entity Entity data
      * @return array
      */
-    protected function tagIds(EntityInterface $entity): array
+    protected function fetchTags(EntityInterface $entity): array
     {
-        $data = (array)$entity->get('tags');
-        $Tags = TableRegistry::getTableLocator()->get('Tags');
-        $tagEntities = [];
-        foreach ($data as $item) {
-            $name = Hash::get($item, 'name');
-            $tag = $Tags->find()
-                ->where([$Tags->aliasField('name') => $name])
-                ->first();
-            if (!empty($tag) && $tag->get('enabled') === false) {
-                continue;
-            }
-            if (empty($tag)) {
-                $tag = $Tags->newEntity(compact('name'));
-                $tag = $Tags->saveOrFail($tag);
-            }
-            $tagEntities[] = $tag;
-        }
-
-        return $tagEntities;
+        return array_filter(array_map(
+            function ($item) {
+                return $this->checkTag($item);
+            },
+            (array)$entity->get('tags')
+        ));
     }
 
     /**
-     * Update entity data from using $ids array.
+     * Check if tag exists
+     *  - the existing Tag is returned if found
+     *  - a new Tag is created if missing
+     *  - NULL is returned if Tag exists but is disabled
+     *
+     * @param \BEdita\Core\Model\Entity\Tag $item Tag entity to check or create
+     * @return \BEdita\Core\Model\Entity\Tag|null
+     */
+    protected function checkTag(Tag $item): ?Tag
+    {
+        $Tags = TableRegistry::getTableLocator()->get('Tags');
+        $name = Hash::get($item, 'name');
+        /** @var \BEdita\Core\Model\Entity\Tag|null $tag */
+        $tag = $Tags->find()
+            ->where([$Tags->aliasField('name') => $name])
+            ->first();
+
+        if (empty($tag)) {
+            $label = Hash::get($item, 'label', Inflector::humanize($name));
+            $tag = $Tags->newEntity(compact('name', 'label'));
+
+            return $Tags->saveOrFail($tag);
+        }
+
+        if ($tag->get('enabled')) {
+            return $tag;
+        }
+
+        return null;
+    }
+
+    /**
+     * Update entity data from using tag or category entities array.
      * Data are removed if no category or tag has been found.
      *
      * @param string $item Item type, 'tags' or 'categories'
-     * @param EntityInterface $entity Entity data
-     * @param array $ids Item array with 'name' and 'id'
+     * @param \Cake\Datasource\EntityInterface $entity Entity data
+     * @param array $entities Entities array with 'name' and 'id'
      * @return void
      */
-    protected function updateData(string $item, EntityInterface $entity, array $ids)
+    protected function updateData(string $item, EntityInterface $entity, array $entities): void
     {
-        $names = Hash::combine($ids, '{n}.name', '{n}.id');
+        $names = Hash::combine($entities, '{n}.name', '{n}.id');
         $data = (array)$entity->get($item);
         foreach ($data as $k => $value) {
             $name = $value['name'];
