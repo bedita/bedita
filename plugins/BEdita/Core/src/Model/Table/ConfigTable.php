@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -97,6 +99,26 @@ class ConfigTable extends Table
             ->notEmpty('content');
 
         return $validator;
+    }
+
+    /**
+     * Invalidate database config cache after saving a config entity.
+     *
+     * @return void
+     */
+    public function afterSave()
+    {
+        Cache::clear(false, DatabaseConfig::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate database config cache after deleting a config entity.
+     *
+     * @return void
+     */
+    public function afterDelete()
+    {
+        Cache::clear(false, DatabaseConfig::CACHE_CONFIG);
     }
 
     /**
