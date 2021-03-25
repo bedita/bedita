@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -224,4 +226,44 @@ class ConfigTableTest extends TestCase
         $config = $this->Config->find('name', $data)->toArray();
         static::assertEquals($expected, count($config));
     }
-}
+
+    /**
+     * Test `afterDelete` method
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testAfterDelete(): void
+    {
+        $configData = (new DatabaseConfig())->read(null);
+        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $config = $this->Config->get(1);
+        $this->Config->deleteOrFail($config);
+
+        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        static::assertFalse($read);
+    }
+
+    /**
+     * Test `afterSave` method
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testAfterSave(): void
+    {
+        $configData = (new DatabaseConfig())->read(null);
+        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $config = $this->Config->get(1);
+        $config->content = 'new content';
+        $this->Config->saveOrFail($config);
+
+        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        static::assertFalse($read);
+    }}
