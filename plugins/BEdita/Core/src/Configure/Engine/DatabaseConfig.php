@@ -12,10 +12,10 @@
  */
 namespace BEdita\Core\Configure\Engine;
 
-use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\ModelAwareTrait;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -30,9 +30,13 @@ use Cake\ORM\TableRegistry;
  *
  * DatabaseConfig also manipulates how 'null', 'true', 'false' are handled.
  * These values will be converted to their boolean equivalents or to null.
+ *
+ * @param \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
+    use ModelAwareTrait;
+
     /**
      * Cache config name.
      *
@@ -52,7 +56,7 @@ class DatabaseConfig implements ConfigEngineInterface
      *
      * @var array
      */
-    protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
+    const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
      * Setup application `id` if provided.
@@ -62,6 +66,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function __construct($applicationId = null)
     {
         $this->applicationId = $applicationId;
+        $this->loadModel('Config');
     }
 
     /**
@@ -72,15 +77,21 @@ class DatabaseConfig implements ConfigEngineInterface
      */
     public function read($key): array
     {
-        $cacheKey = sprintf('db_conf_%s_%d', $key, $this->applicationId);
+        return $this->Config->fetchConfig($this->applicationId, $key)
+            ->filter(function (array $item): bool {
+                return !in_array($item['name'], self::RESERVED_KEYS);
+            })
+            ->map(function (array $item): array {
+                $content = json_decode($item['content'], true);
+                if ($content === null && json_last_error() !== JSON_ERROR_NONE) {
+                    $content = static::valueFromString($item['content']);
+                }
+                $data['content'] = $content;
 
-        return (array)Cache::remember(
-            $cacheKey,
-            function () use ($key) {
-                return $this->fetchConfig($key);
-            },
-            self::CACHE_CONFIG
-        );
+                return $data;
+            })
+            ->combine('name', 'content')
+            ->toArray();
     }
 
     /**
@@ -91,34 +102,34 @@ class DatabaseConfig implements ConfigEngineInterface
      * @return array Parsed configuration values.
      * @throws \Cake\Core\Exception\Exception when parameter group is not found
      */
-    protected function fetchConfig(?string $key): array
-    {
-        $values = [];
-        $config = TableRegistry::getTableLocator()->get('Config');
-        $query = $config->find()->select(['name', 'context', 'content']);
-        $query->where(function (QueryExpression $exp) {
-            return $exp->notIn('name', $this->reservedKeys);
-        });
-        if ($this->applicationId) {
-            $query->andWhere(['application_id' => $this->applicationId]);
-        } else {
-            $query->andWhere(['application_id IS' => null]);
-        }
-        if (!empty($key)) {
-            $query->andWhere(['context' => $key]);
-        }
-        $results = $query->all();
-        foreach ($results as $data) {
-            $cfgKey = $data['name'];
-            $cfgValue = json_decode($data['content'], true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $cfgValue = $this->valueFromString($data['content']);
-            }
-            $values[$cfgKey] = $cfgValue;
-        }
+    // protected function fetchConfig(?string $key): array
+    // {
+    //     $values = [];
+    //     $config = TableRegistry::getTableLocator()->get('Config');
+    //     $query = $config->find()->select(['name', 'context', 'content']);
+    //     $query->where(function (QueryExpression $exp) {
+    //         return $exp->notIn('name', $this->reservedKeys);
+    //     });
+    //     if ($this->applicationId) {
+    //         $query->andWhere(['application_id' => $this->applicationId]);
+    //     } else {
+    //         $query->andWhere(['application_id IS' => null]);
+    //     }
+    //     if (!empty($key)) {
+    //         $query->andWhere(['context' => $key]);
+    //     }
+    //     $results = $query->all();
+    //     foreach ($results as $data) {
+    //         $cfgKey = $data['name'];
+    //         $cfgValue = json_decode($data['content'], true);
+    //         if (json_last_error() !== JSON_ERROR_NONE) {
+    //             $cfgValue = static::valueFromString($data['content']);
+    //         }
+    //         $values[$cfgKey] = $cfgValue;
+    //     }
 
-        return $values;
-    }
+    //     return $values;
+    // }
 
     /**
      * Dumps Configure data array to Database.
@@ -136,7 +147,7 @@ class DatabaseConfig implements ConfigEngineInterface
             if (in_array($name, $this->reservedKeys)) {
                 continue;
             }
-            $content = is_array($content) ? json_encode($content) : $this->valueToString($content);
+            $content = is_array($content) ? json_encode($content) : static::valueToString($content);
             $entities[] = $table->newEntity(compact('name', 'context', 'content'));
         }
         $table->getConnection()->transactional(function () use ($table, $entities) {
@@ -156,7 +167,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected function valueToString($value)
+    protected static function valueToString($value)
     {
         if ($value === null) {
             return 'null';
@@ -180,7 +191,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param string $value Value to convert, if necessary.
      * @return mixed String Natural form value.
      */
-    protected function valueFromString($value)
+    protected static function valueFromString($value)
     {
         if ($value === 'NULL') {
             return null;

@@ -266,4 +266,14 @@ class ConfigTableTest extends TestCase
 
         $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
         static::assertFalse($read);
-    }}
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function testFetchConfig(): void
+    {
+
+    }
+}

@@ -71,7 +71,6 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      * @covers ::read()
-     * @covers ::fetchConfig()
      * @covers ::valueFromString()
      */
     public function testRead()
@@ -101,7 +100,6 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      * @covers ::read()
-     * @covers ::fetchConfig()
      * @covers ::__construct()
      */
     public function testReadAppId()

@@ -185,4 +185,29 @@ class ConfigTable extends Table
     {
         return $query->find('name', $options);
     }
+
+    /**
+     * Fetch configuration from database using cache.
+     *
+     * @param int|null $applicationId Application ID.
+     * @param string|null $context Config context.
+     * @return \Cake\ORM\Query
+     */
+    public function fetchConfig(?int $applicationId, ?string $context): Query
+    {
+        return $this->find()
+            ->select(['name', 'content'])
+            ->disableHydration()
+            ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
+                if (!empty($context)) {
+                    $exp = $exp->eq($this->aliasField('context'), $context);
+                }
+                if ($applicationId !== null) {
+                    return $exp->eq($this->aliasField('application_id'), $applicationId);
+                }
+
+                return $exp->isNull($this->aliasField('application_id'));
+            })
+            ->cache(sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'));
+    }
 }
