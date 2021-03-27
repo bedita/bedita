@@ -29,7 +29,9 @@ use Cake\Datasource\ModelAwareTrait;
  * DatabaseConfig also manipulates how 'null', 'true', 'false' are handled.
  * These values will be converted to their boolean equivalents or to null.
  *
- * @param \BEdita\Core\Model\Table\ConfigTable $Config
+ * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
