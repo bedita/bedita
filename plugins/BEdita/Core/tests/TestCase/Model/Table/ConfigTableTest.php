@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
@@ -236,14 +235,14 @@ class ConfigTableTest extends TestCase
      */
     public function testAfterDelete(): void
     {
-        $configData = (new DatabaseConfig())->read(null);
-        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
         static::assertNotEmpty($read);
 
         $config = $this->Config->get(1);
         $this->Config->deleteOrFail($config);
 
-        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
         static::assertFalse($read);
     }
 
@@ -256,15 +255,15 @@ class ConfigTableTest extends TestCase
      */
     public function testAfterSave(): void
     {
-        $configData = (new DatabaseConfig())->read(null);
-        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
         static::assertNotEmpty($read);
 
         $config = $this->Config->get(1);
         $config->content = 'new content';
         $this->Config->saveOrFail($config);
 
-        $read = Cache::read('db_conf__0', DatabaseConfig::CACHE_CONFIG);
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
         static::assertFalse($read);
     }
 
