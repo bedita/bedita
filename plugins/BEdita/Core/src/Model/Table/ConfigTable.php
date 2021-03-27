@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Configure\Engine\DatabaseConfig;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
@@ -43,6 +42,12 @@ use Cake\Validation\Validator;
  */
 class ConfigTable extends Table
 {
+    /**
+     * Cache config name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * {@inheritDoc}
@@ -89,14 +94,14 @@ class ConfigTable extends Table
     {
         $validator
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->alphaNumeric('name')
 
             ->requirePresence('context', 'create')
-            ->notEmpty('context')
+            ->notEmptyString('context')
 
             ->requirePresence('content', 'create')
-            ->notEmpty('content');
+            ->notEmptyString('content');
 
         return $validator;
     }
@@ -108,7 +113,7 @@ class ConfigTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, DatabaseConfig::CACHE_CONFIG);
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -118,7 +123,7 @@ class ConfigTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, DatabaseConfig::CACHE_CONFIG);
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -208,6 +213,9 @@ class ConfigTable extends Table
 
                 return $exp->isNull($this->aliasField('application_id'));
             })
-            ->cache(sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'));
+            ->cache(
+                sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'),
+                self::CACHE_CONFIG
+            );
     }
 }

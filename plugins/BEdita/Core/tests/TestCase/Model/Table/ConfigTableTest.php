@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
@@ -28,7 +29,6 @@ use Cake\Utility\Hash;
  */
 class ConfigTableTest extends TestCase
 {
-
     /**
      * Test subject
      *
@@ -269,11 +269,48 @@ class ConfigTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testFetchConfig`
+     */
+    public function fetchConfigProvider(): array
+    {
+        return [
+            'group2' => [
+                [
+                    [
+                        'name' => 'IntVal',
+                        'content' => '14',
+                    ],
+                ],
+                null,
+                'group2',
+            ],
+            'somecontext' => [
+                [
+                    [
+                        'name' => 'someVal',
+                        'content' => '42',
+                    ],
+                ],
+                1,
+                'somecontext',
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchConfig` method
+     *
+     * @param array $expected Expected result.
+     * @param int|null $appId Application ID.
+     * @param string|null $context Context key.
+     * @dataProvider fetchConfigProvider
      *
      * @return void
      */
-    public function testFetchConfig(): void
+    public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
-
+        Cache::clear(false, ConfigTable::CACHE_CONFIG);
+        $result = $this->Config->fetchConfig($appId, $context)->toArray();
+        static::assertEquals($expected, $result);
     }
 }
