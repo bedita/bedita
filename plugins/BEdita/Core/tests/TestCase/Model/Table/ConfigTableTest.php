@@ -302,9 +302,10 @@ class ConfigTableTest extends TestCase
      * @param array $expected Expected result.
      * @param int|null $appId Application ID.
      * @param string|null $context Context key.
-     * @dataProvider fetchConfigProvider
-     *
      * @return void
+     *
+     * @dataProvider fetchConfigProvider
+     * @covers ::fetchConfig()
      */
     public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
