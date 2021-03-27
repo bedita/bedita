@@ -29,13 +29,6 @@ class CurrentApplication
     use SingletonTrait;
 
     /**
-     * Cache config name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
-
-    /**
      * Current application entity.
      *
      * @var \BEdita\Core\Model\Entity\Application|null
@@ -135,7 +128,6 @@ class CurrentApplication
         static::getInstance()->set(
             TableRegistry::getTableLocator()->get('Applications')
                 ->find('apiKey', compact('apiKey'))
-                ->cache('app_' . $apiKey, self::CACHE_CONFIG)
                 ->firstOrFail()
         );
     }

@@ -51,6 +51,13 @@ class ApplicationsTable extends Table
     const DEFAULT_APPLICATION = 1;
 
     /**
+     * Cache config name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -154,7 +161,7 @@ class ApplicationsTable extends Table
      * @param array $options Options array. It requires an `apiKey` key.
      * @return \Cake\ORM\Query
      */
-    protected function findApiKey(Query $query, array $options)
+    protected function findApiKey(Query $query, array $options): Query
     {
         if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
             throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
@@ -164,7 +171,8 @@ class ApplicationsTable extends Table
             ->where([
                 $this->aliasField('api_key') => $options['apiKey'],
                 $this->aliasField('enabled') => true,
-            ]);
+            ])
+            ->cache(sprintf('app_%s', $options['apiKey']), static::CACHE_CONFIG);
     }
 
     /**
