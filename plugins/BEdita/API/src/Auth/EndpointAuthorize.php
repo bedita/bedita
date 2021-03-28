@@ -86,14 +86,18 @@ class EndpointAuthorize extends BaseAuthorize
         $strict = ($this->isAnonymous($user) && !$readRequest);
 
         $this->getEndpoint($request->getPath());
-        $permsCount = $this->permissionsCount();
+        $permsCount = $this->EndpointPermissions->fetchCount($this->endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
         if ($this->getConfig('defaultAuthorized') && ($this->endpointId === null || $permsCount === 0)) {
             return $this->authorized = true;
         }
 
-        $permissions = $this->loadPermissions($user, $strict);
+        $permissions = $this->EndpointPermissions->fetchPermissions(
+            $this->endpointId,
+            Hash::extract($user, 'roles.{n}.id'),
+            $strict
+        );
         $this->authorized = $this->checkPermissions($permissions, $readRequest);
 
         if (empty($permissions) && ($this->endpointId === null || $permsCount === 0)) {
@@ -162,32 +166,6 @@ class EndpointAuthorize extends BaseAuthorize
         }
 
         $this->endpointId = Hash::get($endpoint, 'id');
-    }
-
-    /**
-     * Return endoiint permissions count.
-     *
-     * @return int
-     */
-    protected function permissionsCount(): int
-    {
-        return $this->EndpointPermissions->fetchCount($this->endpointId);
-    }
-
-    /**
-     * Load endpoint permissions using cache
-     *
-     * @param mixed $user Logged user.
-     * @param bool $strict Strict check.
-     * @return array
-     */
-    protected function loadPermissions($user, bool $strict): array
-    {
-        return $this->EndpointPermissions->fetchPermissions(
-            $this->endpointId,
-            Hash::extract($user, 'roles.{n}.id'),
-            $strict
-        );
     }
 
     /**
