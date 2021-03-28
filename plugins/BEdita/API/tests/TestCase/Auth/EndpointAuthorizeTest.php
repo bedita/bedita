@@ -62,27 +62,11 @@ class EndpointAuthorizeTest extends TestCase
                 new Uri('/home/sweet/home'),
             ],
             '/' => [
-                new Endpoint(
-                    [
-                        'name' => '',
-                        'enabled' => true
-                    ],
-                    [
-                        'source' => 'Endpoints'
-                    ]
-                ),
+                null,
                 new Uri('/'),
             ],
             '/this/endpoint/definitely/doesnt/exist' => [
-                new Endpoint(
-                    [
-                        'name' => 'this',
-                        'enabled' => true
-                    ],
-                    [
-                        'source' => 'Endpoints'
-                    ]
-                ),
+                null,
                 new Uri('/this/endpoint/definitely/doesnt/exist'),
             ],
             '/disabled/endpoint' => [
@@ -95,7 +79,7 @@ class EndpointAuthorizeTest extends TestCase
     /**
      * Test getting endpoint from request.
      *
-     * @param mixed $expected Expected endpoint ID, entity, or exception.
+     * @param mixed $expected Expected endpoint ID, null, or exception.
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @return void
      *
@@ -115,11 +99,7 @@ class EndpointAuthorizeTest extends TestCase
 
         $authorize->authorize([], $request);
 
-        if (is_int($expected)) {
-            $expected = TableRegistry::getTableLocator()->get('Endpoints')->get($expected);
-        }
-
-        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+        static::assertAttributeEquals($expected, 'endpointId', $authorize);
     }
 
     /**
