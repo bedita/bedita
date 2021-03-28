@@ -82,14 +82,14 @@ class EndpointAuthorize extends BaseAuthorize
         $permsCount = $this->permissionsCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
-        if ($this->getConfig('defaultAuthorized') && ($permsCount === 0)) {
+        if ($this->getConfig('defaultAuthorized') && ($endpointId === null || $permsCount === 0)) {
             return $this->authorized = true;
         }
 
         $permissions = $this->loadPermissions($user, $endpointId, $strict);
         $this->authorized = $this->checkPermissions($permissions, $readRequest);
 
-        if (empty($permissions) && ($permsCount === 0)) {
+        if (empty($permissions) && ($endpointId === null || $permsCount === 0)) {
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
             // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
             $this->authorized = !$strict;
