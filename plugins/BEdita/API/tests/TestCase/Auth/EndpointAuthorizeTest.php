@@ -14,7 +14,6 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
-use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
@@ -192,7 +191,6 @@ class EndpointAuthorizeTest extends TestCase
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
