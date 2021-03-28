@@ -15,28 +15,23 @@ namespace BEdita\API\Auth;
 
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Table\RolesTable;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
-use Cake\Cache\Cache;
+use Cake\Datasource\ModelAwareTrait;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
-use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
  * Provide authorization on a per-endpoint basis.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\EndpointsTable $Endpoints
+ * @property \BEdita\Core\Model\Table\EndpointPermissionsTable $EndpointPermissions
  */
 class EndpointAuthorize extends BaseAuthorize
 {
-    /**
-     * Cache configuration name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
+    use ModelAwareTrait;
 
     /**
      * {@inheritDoc}
@@ -50,13 +45,6 @@ class EndpointAuthorize extends BaseAuthorize
         'blockAnonymousUsers' => true,
         'defaultAuthorized' => false,
     ];
-
-    /**
-     * Request object instance.
-     *
-     * @var \Cake\Http\ServerRequest
-     */
-    protected $request;
 
     /**
      * Cache result of `authorized()` method call.
@@ -75,8 +63,6 @@ class EndpointAuthorize extends BaseAuthorize
      */
     public function authorize($user, ServerRequest $request)
     {
-        $this->request = $request;
-
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
         if (
             !$this->getConfig('defaultAuthorized') &&
@@ -85,24 +71,23 @@ class EndpointAuthorize extends BaseAuthorize
         ) {
             $this->unauthenticated();
         }
+        $this->loadModel('Endpoints');
+        $this->loadModel('EndpointPermissions');
 
         // For anonymous users performing write operations, use strict mode.
-        $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
+        $readRequest = $request->is(['get', 'head']);
+        $strict = ($this->isAnonymous($user) && !$readRequest);
 
-        $path = array_values(array_filter(explode('/', $this->request->getPath())));
-        $endpoint = Hash::get($path, '0', '');
-        $this->checkDisabled($endpoint);
-
-        $permsCount = $this->permissionsCount($endpoint);
+        $endpointId = $this->getEndpoint($request->getPath());
+        $permsCount = $this->permissionsCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
         if ($this->getConfig('defaultAuthorized') && ($permsCount === 0)) {
             return $this->authorized = true;
         }
 
-        $permissions = $this->loadPermissions($user, $endpoint, $strict);
-
-        $this->authorized = $this->checkPermissions($permissions);
+        $permissions = $this->loadPermissions($user, $endpointId, $strict);
+        $this->authorized = $this->checkPermissions($permissions, $readRequest);
 
         if (empty($permissions) && ($permsCount === 0)) {
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
@@ -152,106 +137,63 @@ class EndpointAuthorize extends BaseAuthorize
     }
 
     /**
-     * Check if endpoint is disabled.
+     * Get endpoint id for request.
      *
-     * @param string $name Endpoint name.
-     * @return void
+     * @param string $path Request path.
+     * @return int|null
      * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
      */
-    protected function checkDisabled(string $name): void
+    protected function getEndpoint(string $path): ?int
     {
-        $disabled = (array)Cache::remember(
-            'disabled_endpoints',
-            function () {
-                return TableRegistry::getTableLocator()->get('Endpoints')
-                    ->find('list', ['valueField' => 'name'])
-                    ->where(['enabled' => false])
-                    ->toList();
-            },
-            self::CACHE_CONFIG
-        );
+        // endpoint name is the first part of URL path
+        $path = array_values(array_filter(explode('/', $path)));
+        $name = Hash::get($path, '0', '');
 
-        if (in_array($name, $disabled)) {
+        $endpoint = $this->Endpoints->fetchByName($name);
+        if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {
             throw new NotFoundException(__d('bedita', 'Resource not found.'));
         }
-    }
 
-    protected function permissionsCount(string $endpoint)
-    {
-        $applicationId = CurrentApplication::getApplicationId();
-
-        return (int)Cache::remember(
-            'perms_count_' . $applicationId . '_' . $endpoint,
-            function () use ($applicationId, $endpoint) {
-                $query = TableRegistry::getTableLocator()->get('EndpointPermissions')
-                    ->find('byApplication', compact('applicationId'));
-                $query = $query->innerJoinWith('Endpoints', function (Query $query) use ($endpoint) {
-                    return $query->where(['Endpoints.name' => $endpoint]);
-                });
-
-                return $query->count();
-            },
-            self::CACHE_CONFIG
-        );
+        return Hash::get($endpoint, 'id');
     }
 
     /**
-     * Load endpoint permissions usgin cache
+     * Return endoiint permissions count.
+     *
+     * @param int|null $endpointId Endpoint Id.
+     * @return int
+     */
+    protected function permissionsCount(?int $endpointId): int
+    {
+        return $this->EndpointPermissions->fetchCount($endpointId);
+    }
+
+    /**
+     * Load endpoint permissions using cache
      *
      * @param mixed $user Logged user.
-     * @param string $endpoint Endpoint name.
+     * @param int|null $endpointId Endpoint id.
      * @param bool $strict Strict check.
      * @return array
      */
-    protected function loadPermissions($user, string $endpoint, bool $strict = false): array
+    protected function loadPermissions($user, ?int $endpointId, bool $strict): array
     {
-        $applicationId = CurrentApplication::getApplicationId();
-        $roleIds = null;
-        $roleKey = 'anonymous';
-        if (!$this->isAnonymous($user)) {
-            $roleIds = Hash::extract($user, 'roles.{n}.id');
-            sort($roleIds);
-            $roleKey = implode('-', $roleIds);
-        }
-        $cacheKey = sprintf('perms_%d_%d_%s_%s', (int)$strict, $applicationId, $endpoint, $roleKey);
+        $roleIds = Hash::extract($user, 'roles.{n}.id');
 
-        return (array)Cache::remember(
-            $cacheKey,
-            function () use ($applicationId, $endpoint, $roleIds, $strict) {
-
-                $entity = TableRegistry::getTableLocator()->get('Endpoints')
-                    ->find()
-                    ->select(['id'])
-                    ->where(['Endpoints.name' => $endpoint])
-                    ->first();
-                $endpointIds = [];
-                if (!empty($entity)) {
-                    $endpointIds = [$entity->get('id')];
-                }
-
-                $query = TableRegistry::getTableLocator()->get('EndpointPermissions')
-                    ->find('byApplication', compact('applicationId', 'strict'))
-                    ->find('byEndpoint', compact('endpointIds', 'strict'));
-                if ($roleIds != null) {
-                    $query = $query->find('byRole', compact('roleIds'));
-                }
-
-                return $query->toArray();
-            },
-            self::CACHE_CONFIG
-        );
+        return $this->EndpointPermissions->fetchPermissions($endpointId, $roleIds, $strict);
     }
 
     /**
      * Checks if request can be authorized basing on a set of applicable permissions.
      *
      * @param \BEdita\Core\Model\Entity\EndpointPermission[] $permissions Set of applicable permissions.
+     * @param bool $readRequest Read request flag.
      * @return bool|string
      */
-    protected function checkPermissions(array $permissions)
+    protected function checkPermissions(array $permissions, bool $readRequest)
     {
         $shift = EndpointPermission::PERM_READ;
-        if (!$this->request->is(['get', 'head'])) {
+        if (!$readRequest) {
             $shift = EndpointPermission::PERM_WRITE;
         }
 

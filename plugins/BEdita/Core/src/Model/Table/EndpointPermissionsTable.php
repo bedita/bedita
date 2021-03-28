@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
@@ -32,6 +33,13 @@ use Cake\Validation\Validator;
  */
 class EndpointPermissionsTable extends Table
 {
+    /**
+     * Cache configuration name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
+
     /**
      * {@inheritDoc}
      *
@@ -95,7 +103,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByEndpoint(Query $query, array $options)
+    protected function findByEndpoint(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
@@ -132,7 +140,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByApplication(Query $query, array $options)
+    protected function findByApplication(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
@@ -169,7 +177,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByRole(Query $query, array $options)
+    protected function findByRole(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
@@ -237,5 +245,48 @@ class EndpointPermissionsTable extends Table
         }
 
         return $query;
+    }
+
+    /**
+     * Fetch endpoint permissions count using cache.
+     *
+     * @param int|null $endpointId Endpoint id.
+     * @return int
+     */
+    public function fetchCount(?int $endpointId): int
+    {
+        $applicationId = CurrentApplication::getApplicationId();
+        $endpointIds = array_filter([$endpointId]);
+        $key = sprintf('perms_count_%s_%d', $applicationId, $endpointId);
+
+        return $this->find('byApplication', compact('applicationId'))
+            ->find('byEndpoint', compact('endpointIds'))
+            // ->cache($key, self::CACHE_CONFIG)
+            ->count();
+    }
+
+    /**
+     * Fetch endpoint permissions using cache.
+     *
+     * @param int|null $endpointId Endpoint id.
+     * @param array|null $roleIds Role ids.
+     * @param bool $strict Strict check.
+     * @return array
+     */
+    public function fetchPermissions(?int $endpointId, ?array $roleIds, bool $strict): array
+    {
+        $applicationId = CurrentApplication::getApplicationId();
+        $endpointIds = array_filter([$endpointId]);
+        //$cacheKey = sprintf('perms_%d_%d_%s_%s', (int)$strict, $applicationId, $endpointId, $roleKey);
+
+        $query = $this->find('byApplication', compact('applicationId', 'strict'))
+            ->find('byEndpoint', compact('endpointIds', 'strict'));
+
+        if ($roleIds !== null) {
+            $query = $query
+                ->find('byRole', compact('roleIds'));
+        }
+
+        return $query->toArray();
     }
 }

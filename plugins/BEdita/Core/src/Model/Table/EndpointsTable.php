@@ -38,6 +38,13 @@ use Cake\Validation\Validator;
 class EndpointsTable extends Table
 {
     /**
+     * Cache configuration name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -90,5 +97,21 @@ class EndpointsTable extends Table
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Fetch endpoint data by name using cache.
+     *
+     * @param string $name Endpoint name.
+     * @return array
+     */
+    public function fetchByName(string $name): array
+    {
+        return (array)$this->find()
+            ->select(['id', 'enabled'])
+            ->disableHydration()
+            ->where([$this->aliasField('name') => $name])
+            // ->cache(sprintf('enpoint_%s', $name), self::CACHE_CONFIG)
+            ->first();
     }
 }

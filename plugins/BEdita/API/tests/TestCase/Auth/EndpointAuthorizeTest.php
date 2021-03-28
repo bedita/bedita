@@ -18,7 +18,6 @@ use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
