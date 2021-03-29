@@ -22,6 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -175,6 +176,7 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkStatus($entity);
         $this->checkLangTag($entity);
 
         return true;
@@ -191,6 +193,30 @@ class ObjectsTable extends Table
     {
         if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
             $entity->set('lang', Configure::read('I18n.default'));
+        }
+    }
+
+    /**
+     * Check that `status` is consistent with `Status.level` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Http\Exception\BadRequestException
+     */
+    protected function checkStatus(EntityInterface $entity): void
+    {
+        if ($entity->isNew() || !Configure::check('Status.level') || !$entity->isDirty('status')) {
+            return;
+        }
+        $level = Configure::read('Status.level');
+        $status = $entity->get('status');
+        if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
+            throw new BadRequestException(__d(
+                'bedita',
+                'Status "{0}" is not consistent with configured Status.level "{1}"',
+                $status,
+                $level
+            ));
         }
     }
 
