@@ -643,4 +643,43 @@ class JsonApiTraitTest extends TestCase
 
         static::assertEquals($expected, $role);
     }
+
+    /**
+     * Data provider for testJsonApiSerializeCount()
+     *
+     * @return array
+     */
+    public function metaCountProvider(): array
+    {
+        return [
+            'count' => [
+                2,
+                2,
+            ],
+            'not_valid' => [
+                false,
+                'ciao',
+            ],
+        ];
+    }
+
+    /**
+     * Test that `count` is present in meta of relationships
+     *
+     * @return void
+     *
+     * @covers ::jsonApiSerialize()
+     * @covers ::getRelationshipCount()
+     * @dataProvider metaCountProvider()
+     */
+    public function testJsonApiSerializeCount($expected, $count): void
+    {
+        $role = $this->Roles->get(1);
+        $role->set('_countData', ['users' => $count]);
+        $role = $role->jsonApiSerialize();
+
+        $result = Hash::get($role, 'relationships.users.meta.count', false);
+
+        static::assertEquals($expected, $result);
+    }
 }

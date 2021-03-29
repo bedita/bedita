@@ -102,11 +102,11 @@ class TreesTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->scalar('position')
-            ->notEmpty('position')
+            ->notEmptyString('position')
             ->notEquals('position', 0, null, function ($context) {
                 return is_numeric($context['data']['position']);
             })
@@ -119,7 +119,7 @@ class TreesTable extends Table
 
         $validator
             ->boolean('menu')
-            ->notEmpty('menu');
+            ->notEmptyString('menu');
 
         $validator
             ->boolean('canonical');

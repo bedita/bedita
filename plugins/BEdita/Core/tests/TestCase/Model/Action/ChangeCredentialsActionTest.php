@@ -48,6 +48,8 @@ class ChangeCredentialsActionTest extends TestCase
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
     ];
 
     /**

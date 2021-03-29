@@ -261,17 +261,51 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testFindDateRanges` test case.
+     *
+     * @return array
+     */
+    public function findDateRangesProvider()
+    {
+        return [
+            'simple' => [
+                [9],
+                [
+                    'start_date' => ['gt' => '2017-01-01'],
+                ],
+            ],
+            'sub1' => [
+                [],
+                [
+                    'date_ranges_min_start_date' => true,
+                    'from_date' => '2019-01-01',
+                ],
+            ],
+            'sub2' => [
+                [9],
+                [
+                    'date_ranges_max_start_date' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test object date ranges finder.
      * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
      *
+     * @param array $expected Expected results.
+     * @param array $options Finder options.
      * @return void
      *
+     * @dataProvider findDateRangesProvider
      * @covers ::findDateRanges()
+     * @covers ::dateRangesSubQueryJoin()
      */
-    public function testFindDateRanges()
+    public function testFindDateRanges(array $expected, array $options)
     {
-        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
-        $this->assertNotEmpty($result);
+        $result = $this->Objects->find('dateRanges', $options)->toArray();
+        $this->assertEquals($expected, Hash::extract($result, '{n}.id'));
     }
 
     /**
@@ -616,6 +650,69 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `checkStatus`.
+     *
+     * @return array
+     */
+    public function checkStatusProvider(): array
+    {
+        return [
+            'no conf' => [
+                'draft',
+                [
+                    'status' => 'draft',
+                ],
+                '',
+            ],
+            'error' => [
+                new BadRequestException('Status "draft" is not consistent with configured Status.level "on"'),
+                [
+                    'status' => 'draft',
+                ],
+                'on',
+            ],
+            'ok' => [
+                'draft',
+                [
+                    'status' => 'draft',
+                ],
+                'draft',
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkStatus()`.
+     *
+     * @param string|\Exception $expected Status value or Exception.
+     * @param string $config Status level config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkStatusProvider()
+     * @covers ::checkStatus()
+     */
+    public function testCheckStatus($expected, array $data, string $config = ''): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        if (!empty($config)) {
+            Configure::write('Status.level', $config);
+        }
+
+        $id = Hash::get($data, 'id', 2);
+        $object = $this->Objects->get($id);
+        unset($data['id']);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('status'));
+    }
+
+    /**
      * Test `findTranslations()`.
      *
      * @return void
@@ -726,5 +823,32 @@ class ObjectsTableTest extends TestCase
             ->find('unameId', [4])
             ->firstOrFail();
         static::assertSame('gustavo-supporto', $result->get('uname'));
+    }
+
+    /**
+     * Test that only available children are returned.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testParentsAvailable(): void
+    {
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        static::assertNotEmpty($object->parents);
+
+        $firstParent = $object->parents[0];
+        $firstParent->status = 'off';
+        $this->Objects->Parents->saveOrFail($firstParent);
+
+        Configure::write('Status.level', 'off');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertContains($firstParent->id, $childrenIds);
+
+        Configure::write('Status.level', 'draft');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertNotContains($firstParent->id, $childrenIds);
     }
 }

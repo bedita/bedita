@@ -123,6 +123,34 @@ class ApplicationsTableTest extends TestCase
                     'description' => 'Where is app name?',
                 ],
             ],
+            'enabledOk' => [
+                true,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => true,
+                ],
+            ],
+            'enabledKo' => [
+                false,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => 'hello',
+                ],
+            ],
+            'enabledEmptyString' => [
+                false,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => '',
+                ],
+            ],
+            'enabledZero' => [
+                true,
+                [
+                    'name' => 'Unique Application Name',
+                    'enabled' => 0,
+                ],
+            ],
         ];
     }
 
@@ -265,8 +293,8 @@ class ApplicationsTableTest extends TestCase
     public function testFindApiKey($expected, $apiKey)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $count = $this->Applications->find('apiKey', compact('apiKey'))->count();

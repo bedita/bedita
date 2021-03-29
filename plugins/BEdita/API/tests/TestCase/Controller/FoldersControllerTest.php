@@ -574,6 +574,46 @@ class FoldersControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `?include` query parameter on related endpoint.
+     *
+     * @return void
+     *
+     * @covers ::findAssociation()
+     */
+    public function testRelatedIncludeSiblings(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/12/parent?include=children');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertSame(['11'], Hash::extract($result, 'data.id'));
+        static::assertSame(['12', '2'], Hash::extract($result, 'included.{n}.id'));
+    }
+
+    /**
+     * Test `?include` query parameter on related endpoint.
+     *
+     * @return void
+     *
+     * @covers ::findAssociation()
+     */
+    public function testRelatedIncludeCreatorWithRoles(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders/12/created_by_user?include=roles');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertSame(['1'], Hash::extract($result, 'data.id'));
+        static::assertSame(['1'], Hash::extract($result, 'included.{n}.id'));
+    }
+
+    /**
      * Data provider for `testSetRelationshipsAllowedMethods()`
      *
      * @return array

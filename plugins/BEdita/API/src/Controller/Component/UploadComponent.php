@@ -18,7 +18,7 @@ use Cake\Controller\Component;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\Event\Event;
-use Zend\Diactoros\Stream;
+use Laminas\Diactoros\Stream;
 
 /**
  * Handles file upload actions

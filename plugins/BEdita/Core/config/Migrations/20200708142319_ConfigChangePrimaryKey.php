@@ -170,6 +170,10 @@ class ConfigChangePrimaryKey extends AbstractMigration
      */
     protected function restoreConfigRows(): void
     {
+        if (empty($this->configRows)) {
+            return;
+        }
+
         $this->table('config')->insert($this->configRows)->save();
     }
 }

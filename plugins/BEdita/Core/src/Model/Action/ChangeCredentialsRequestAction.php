@@ -103,17 +103,17 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
         $validator->setProvider('bedita', Validation::class);
 
         $validator->email('contact')
-            ->notEmpty('contact')
+            ->notEmptyString('contact')
             ->requirePresence('contact')
 
-            ->notEmpty('change_url')
+            ->notEmptyString('change_url')
             ->requirePresence('change_url')
             ->add('activation_url', 'customUrl', [
                 'rule' => 'url',
                 'provider' => 'bedita',
             ]);
 
-        $errors = $validator->errors($data);
+        $errors = $validator->validate($data);
         if (empty($errors)) {
             return true;
         }

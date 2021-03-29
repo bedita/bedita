@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Datasource;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\Paginator;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
@@ -87,6 +88,9 @@ class JsonApiPaginator extends Paginator
                 $options['direction'] = 'desc';
             }
             unset($options['order']);
+            if (in_array($options['sort'], ObjectsTable::DATERANGES_SORT_FIELDS)) {
+                $options['sortWhitelist'] = [$options['sort']];
+            }
         }
 
         $options = parent::validateSort($object, $options);

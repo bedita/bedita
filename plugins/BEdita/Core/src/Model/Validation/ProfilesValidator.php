@@ -33,47 +33,47 @@ class ProfilesValidator extends ObjectsValidator
         parent::__construct();
 
         $this
-            ->allowEmpty('name')
+            ->allowEmptyString('name')
 
-            ->allowEmpty('surname')
+            ->allowEmptyString('surname')
 
             ->email('email')
-            ->allowEmpty('email')
+            ->allowEmptyString('email')
 
-            ->allowEmpty('person_title')
+            ->allowEmptyString('person_title')
 
-            ->allowEmpty('gender')
+            ->allowEmptyString('gender')
 
             ->add('birthdate', 'date', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('birthdate')
+            ->allowEmptyDateTime('birthdate')
 
             ->add('deathdate', 'date', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('deathdate')
+            ->allowEmptyDateTime('deathdate')
 
             ->boolean('company')
-            ->allowEmpty('company')
+            ->allowEmptyString('company')
 
-            ->allowEmpty('company_name')
+            ->allowEmptyString('company_name')
 
-            ->allowEmpty('company_kind')
+            ->allowEmptyString('company_kind')
 
-            ->allowEmpty('street_address')
+            ->allowEmptyString('street_address')
 
-            ->allowEmpty('city')
+            ->allowEmptyString('city')
 
-            ->allowEmpty('zipcode')
+            ->allowEmptyString('zipcode')
 
-            ->allowEmpty('country')
+            ->allowEmptyString('country')
 
-            ->allowEmpty('state_name')
+            ->allowEmptyString('state_name')
 
-            ->allowEmpty('phone')
+            ->allowEmptyString('phone')
 
             ->url('website')
-            ->allowEmpty('website')
+            ->allowEmptyString('website')
 
-            ->allowEmpty('national_id_number')
+            ->allowEmptyString('national_id_number')
 
-            ->allowEmpty('vat_number');
+            ->allowEmptyString('vat_number');
     }
 }
