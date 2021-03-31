@@ -12,8 +12,8 @@
  */
 
 use BEdita\API\Controller\Component\JsonApiComponent;
-use BEdita\API\Event\CommonEventHandler;
 use BEdita\API\Error\ExceptionRenderer;
+use BEdita\API\Event\CommonEventHandler;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
