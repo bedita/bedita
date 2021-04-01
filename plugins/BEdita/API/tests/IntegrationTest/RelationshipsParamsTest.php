@@ -403,4 +403,43 @@ class RelationshipsParamsTest extends IntegrationTestCase
         static::assertEquals(1, count($related));
         static::assertEquals(5, $related[0]->get('left_id'));
     }
+
+    /**
+     * Test patch relationships passing uname in place of id.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testPatchUname(): void
+    {
+        $data = [
+            [
+                'id' => 'second-user',
+                'type' => 'users',
+                'meta' => [
+                    'relation' => [
+                        'params' => [
+                            'name' => 'Gustavo',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $endpoint = sprintf('/locations/8/relationships/inverse_another_test');
+        $this->patch($endpoint, json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+
+        $related = $this->ObjectRelations->find()
+            ->where([
+                'relation_id' => 2,
+                'right_id' => 8,
+            ])
+            ->toArray();
+        static::assertEquals(1, count($related));
+        static::assertEquals(5, $related[0]->get('left_id'));
+    }
 }

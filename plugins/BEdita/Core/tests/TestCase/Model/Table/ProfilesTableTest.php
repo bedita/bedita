@@ -39,17 +39,17 @@ class ProfilesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
-        'plugin.BEdita/Core.Properties',
-        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.History',
     ];
 

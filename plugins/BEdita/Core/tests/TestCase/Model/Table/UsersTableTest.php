@@ -45,17 +45,20 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.ExternalAuth',
-        'plugin.BEdita/Core.Properties',
-        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -721,6 +724,8 @@ class UsersTableTest extends TestCase
         static::assertEquals('__deleted-5', $result->get('uname'));
         static::assertEquals(true, $result->get('locked'));
         static::assertNull($result->get('last_login'));
+        // verify external_auth records have been removed
+        static::assertFalse($this->Users->ExternalAuth->exists(['user_id' => 5]));
     }
 
     /**
@@ -746,6 +751,8 @@ class UsersTableTest extends TestCase
         static::assertEquals('__deleted-5', $result->get('uname'));
         static::assertEquals(true, $result->get('locked'));
         static::assertNull($result->get('last_login'));
+        // verify external_auth records have been removed
+        static::assertFalse($this->Users->ExternalAuth->exists(['user_id' => 5]));
     }
 
     /**

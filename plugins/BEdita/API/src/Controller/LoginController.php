@@ -25,7 +25,8 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Association;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
@@ -35,6 +36,9 @@ use Firebase\JWT\JWT;
  * Controller for `/auth` endpoint.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\UsersTable $Users
+ * @property \BEdita\Core\Model\Table\AuthProvidersTable $AuthProviders
  */
 class LoginController extends AppController
 {
@@ -60,6 +64,9 @@ class LoginController extends AppController
     {
         parent::initialize();
 
+        $this->loadModel('Users');
+        $this->loadModel('AuthProviders');
+
         if ($this->request->contentType() === 'application/json') {
             $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
         }
@@ -81,7 +88,7 @@ class LoginController extends AppController
                 ],
             ];
 
-            $authenticationComponents += TableRegistry::getTableLocator()->get('AuthProviders')
+            $authenticationComponents += $this->AuthProviders
                 ->find('authenticate')
                 ->toArray();
 
@@ -141,12 +148,11 @@ class LoginController extends AppController
             return null;
         }
         // Execute actual optout
-        $table = TableRegistry::getTableLocator()->get('Users');
-        $action = new GetObjectAction(compact('table'));
+        $action = new GetObjectAction(['table' => $this->Users]);
         $user = $action(['primaryKey' => $result['id']]);
         // setup special `_optout` property to allow self-removal
         $user->set('_optout', true);
-        $table->deleteOrFail($user);
+        $this->Users->deleteOrFail($user);
         $this->dispatchEvent('Auth.optout', [$result]);
 
         return $this->response->withStatus(204);
@@ -272,7 +278,7 @@ class LoginController extends AppController
         $data = $this->request->getData();
         $this->checkPassword($entity, $data);
 
-        $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('Users')]);
+        $action = new SaveEntityAction(['table' => $this->Users]);
         $action(compact('entity', 'data'));
 
         // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
@@ -322,7 +328,8 @@ class LoginController extends AppController
         $contain = array_unique(array_merge($contain, ['Roles']));
         $conditions = ['id' => $userId];
 
-        $user = TableRegistry::getTableLocator()->get('Users')
+        /** @var \BEdita\Core\Model\Entity\User $user */
+        $user = $this->Users
             ->find('login', compact('conditions', 'contain'))
             ->first();
         if (empty($user)) {
@@ -335,10 +342,10 @@ class LoginController extends AppController
     /**
      * {@inheritDoc}
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation(string $relationship, Table $table = null): Association
     {
         $relationship = Inflector::underscore($relationship);
-        $association = TableRegistry::getTableLocator()->get('Users')->associations()->getByProperty($relationship);
+        $association = $this->Users->associations()->getByProperty($relationship);
         if (empty($association)) {
             throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
         }

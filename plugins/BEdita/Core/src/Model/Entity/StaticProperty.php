@@ -35,12 +35,12 @@ class StaticProperty extends Property
      * This method is used to hydrate entities correctly.
      *
      * @param \BEdita\Core\Model\Entity\Property $property Property to convert.
-     * @return static
+     * @return self
      * @internal
      */
-    public static function fromProperty(Property $property)
+    public static function fromProperty(Property $property): self
     {
-        return new static(
+        return new self(
             $property->_properties,
             [
                 'markNew' => $property->isNew(),

@@ -22,6 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -60,6 +61,19 @@ class ObjectsTable extends Table
      * {@inheritDoc}
      */
     protected $_validatorClass = ObjectsValidator::class;
+
+    /**
+     * Special sort fields: virtual column names used for custom sort strategies
+     * Only related to `DateRanges` for now
+     *
+     * @var array
+     */
+    const DATERANGES_SORT_FIELDS = [
+        'date_ranges_min_start_date',
+        'date_ranges_max_start_date',
+        'date_ranges_min_end_date',
+        'date_ranges_max_end_date',
+    ];
 
     /**
      * {@inheritDoc}
@@ -102,6 +116,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+            'finder' => 'available',
             'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('Categories', [
@@ -161,6 +176,7 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkStatus($entity);
         $this->checkLangTag($entity);
 
         return true;
@@ -177,6 +193,30 @@ class ObjectsTable extends Table
     {
         if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
             $entity->set('lang', Configure::read('I18n.default'));
+        }
+    }
+
+    /**
+     * Check that `status` is consistent with `Status.level` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Http\Exception\BadRequestException
+     */
+    protected function checkStatus(EntityInterface $entity): void
+    {
+        if ($entity->isNew() || !Configure::check('Status.level') || !$entity->isDirty('status')) {
+            return;
+        }
+        $level = Configure::read('Status.level');
+        $status = $entity->get('status');
+        if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
+            throw new BadRequestException(__d(
+                'bedita',
+                'Status "{0}" is not consistent with configured Status.level "{1}"',
+                $status,
+                $level
+            ));
         }
     }
 
@@ -257,11 +297,58 @@ class ObjectsTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        return $query
-            ->distinct([$this->aliasField($this->getPrimaryKey())])
-            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-                return $query->find('dateRanges', $options);
-            });
+        $join = $this->dateRangesSubQueryJoin($query, $options);
+        if (!empty($join)) {
+            return $join;
+        }
+
+        return $query->distinct([$this->aliasField($this->getPrimaryKey())])
+                ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                    return $query->find('dateRanges', $options);
+                });
+    }
+
+    /**
+     * Create a date ranges subquery join if a special sort field is set.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return Query|null
+     */
+    protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
+    {
+        $minMaxField = key(
+            array_intersect_key(
+                $options,
+                array_flip(self::DATERANGES_SORT_FIELDS)
+            )
+        );
+        if (empty($minMaxField)) {
+            return null;
+        }
+        unset($options[$minMaxField]);
+        $finder = 'dateRanges';
+        if (empty($options)) {
+            $finder = 'all';
+        }
+        $subQuery = $this->DateRanges->find($finder, $options)
+            ->select([
+                'date_ranges_object_id' => 'object_id',
+                'date_ranges_min_start_date' => $query->func()->min('start_date'),
+                'date_ranges_max_start_date' => $query->func()->max('start_date'),
+                'date_ranges_min_end_date' => $query->func()->min('end_date'),
+                'date_ranges_max_end_date' => $query->func()->max('end_date'),
+            ])
+            ->group('object_id');
+
+        return $query->distinct([
+                $this->aliasField($this->getPrimaryKey()),
+                $minMaxField,
+            ])
+            ->innerJoin(
+                ['DateBoundaries' => $subQuery],
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
+            );
     }
 
     /**
@@ -363,7 +450,7 @@ class ObjectsTable extends Table
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
-        $level = reset($options);
+        $level = $options[0];
         switch ($level) {
             case 'on':
                 return $query->where([

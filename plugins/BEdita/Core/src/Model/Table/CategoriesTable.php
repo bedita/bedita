@@ -17,7 +17,6 @@ use BEdita\Core\Exception\BadFilterException;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -165,5 +164,27 @@ class CategoriesTable extends CategoriesTagsBaseTable
         return $query->innerJoinWith('ObjectTypes', function (Query $query) use ($options) {
             return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
         });
+    }
+
+    /**
+     * Find category resource by name and object type.
+     * Options array argument MUST contain 'name' and 'object_type_name' keys.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        if (empty($options['name'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+        }
+        if (empty($options['object_type_name'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
+        }
+
+        return $query->find('type', [$options['object_type_name']])
+            ->where([$this->aliasField('name') => $options['name']]);
     }
 }

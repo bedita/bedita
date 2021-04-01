@@ -102,6 +102,29 @@ class EndpointAuthorizeTest extends TestCase
     }
 
     /**
+     * Test `getEndpoint` method, reloading same endpoint.
+     *
+     * @covers ::getEndpoint()
+     * @return void
+     */
+    public function testGetEndpointSame(): void
+    {
+        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
+        $expected = $Endpoints->get(2);
+
+        $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
+        $request = new ServerRequest(['uri' => new Uri('/home')]);
+
+        $authorize->authorize([], $request);
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+
+        $Endpoints->delete($expected);
+
+        $authorize->authorize([], $request);
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+    }
+
+    /**
      * Data provider for `testAuthorize` test case.
      *
      * @return array

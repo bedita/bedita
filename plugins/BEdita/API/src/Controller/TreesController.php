@@ -18,6 +18,8 @@ use BEdita\Core\Model\Entity\Tree;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\Association;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -281,10 +283,11 @@ class TreesController extends AppController
      * Find the association corresponding to the relationship name.
      *
      * @param string $relationship Relationship name.
+     * @param \Cake\ORM\Table|null $table Table to consider.
      * @return \Cake\ORM\Association
      * @throws \Cake\Http\Exception\NotFoundException Throws an exception if no association could be found.
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
         if (in_array($relationship, $this->getConfig('allowedAssociations'))) {
             $association = $this->Table->associations()->getByProperty($relationship);

@@ -100,6 +100,19 @@ return [
         ],
 
         /**
+         * Configure the cache used for BEdita internal resources caching.
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         */
+        '_bedita_core_' => [
+            'className' => 'File',
+            'prefix' => 'bedita_core_',
+            'path' => CACHE . 'bedita_core/',
+            'serialize' => true,
+            'duration' => '+1 year',
+            'url' => env('CACHE_BEDITACORE_URL', null),
+        ],
+
+        /**
          * Configure the cache used for object types caching.
          * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
          */

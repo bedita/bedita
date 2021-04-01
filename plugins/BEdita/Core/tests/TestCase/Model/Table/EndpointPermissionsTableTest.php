@@ -366,25 +366,25 @@ class EndpointPermissionsTableTest extends TestCase
             'application, endpoint, role' => [
                 0b1001,
                 [
-                    'application' => 'Disabled app',
-                    'endpoint' => 'home',
-                    'role' => 'first role',
+                    'application_name' => 'Disabled app',
+                    'endpoint_name' => 'home',
+                    'role_name' => 'first role',
                 ],
             ],
             'application=null, endpoint=null, role=null' => [
                 0,
                 [
-                    'application' => null,
-                    'endpoint' => null,
-                    'role' => null,
+                    'application_name' => null,
+                    'endpoint_name' => null,
+                    'role_name' => null,
                 ],
             ],
             'application, endpoint=null, role=null' => [
                 0b1111,
                 [
-                    'application' => 'First app',
-                    'endpoint' => null,
-                    'role' => null,
+                    'application_name' => 'First app',
+                    'endpoint_name' => null,
+                    'role_name' => null,
                 ],
             ],
         ];

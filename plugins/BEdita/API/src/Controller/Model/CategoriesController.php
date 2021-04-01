@@ -36,6 +36,7 @@ class CategoriesController extends ModelController
             'object_type' => ['object_types'],
             'parent_category' => ['categories'],
             'child_categories' => ['categories'],
+            'object_categories' => ['object_categories'],
         ],
     ];
 }

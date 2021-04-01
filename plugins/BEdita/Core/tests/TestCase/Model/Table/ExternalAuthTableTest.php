@@ -55,6 +55,7 @@ class ExternalAuthTableTest extends TestCase
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
