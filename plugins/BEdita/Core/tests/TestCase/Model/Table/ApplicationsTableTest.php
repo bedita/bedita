@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -300,6 +301,51 @@ class ApplicationsTableTest extends TestCase
         $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
 
         static::assertSame($expected, $count);
+    }
+
+    /**
+     * Test `afterDelete` method
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testAfterDelete(): void
+    {
+        $app = $this->Applications->get(2);
+        $apiKey = $app->get('api_key');
+        $app->set('enabled', true);
+        $this->Applications->saveOrFail($app);
+
+        $app = $this->Applications->find('apiKey', compact('apiKey'))->first();
+        $read = Cache::read(sprintf('app_%s', $apiKey), ApplicationsTable::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $this->Applications->deleteOrFail($app);
+
+        $read = Cache::read(sprintf('app_%s', $apiKey), ApplicationsTable::CACHE_CONFIG);
+        static::assertFalse($read);
+    }
+
+    /**
+     * Test `afterSave` method
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testAfterSave(): void
+    {
+        $app = $this->Applications->find('apiKey', ['apiKey' => API_KEY])->first();
+        $read = Cache::read(sprintf('app_%s', API_KEY), ApplicationsTable::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $app = $this->Applications->get(1);
+        $app->set('description', 'new app description');
+        $this->Applications->saveOrFail($app);
+
+        $read = Cache::read(sprintf('app_%s', API_KEY), ApplicationsTable::CACHE_CONFIG);
+        static::assertFalse($read);
     }
 
     /**
