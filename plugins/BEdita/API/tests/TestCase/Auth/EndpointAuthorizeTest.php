@@ -233,7 +233,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAllowByDefault()
@@ -277,7 +276,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAllowByDefaultUnknownEndpoint()
@@ -321,7 +319,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      * @covers ::unauthenticated()
      * @expectedException \Cake\Http\Exception\UnauthorizedException
