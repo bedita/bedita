@@ -106,7 +106,7 @@ return [
         '_bedita_core_' => [
             'className' => 'File',
             'prefix' => 'bedita_core_',
-            'path' => CACHE . 'object_types/',
+            'path' => CACHE . 'bedita_core/',
             'serialize' => true,
             'duration' => '+1 year',
             'url' => env('CACHE_BEDITACORE_URL', null),

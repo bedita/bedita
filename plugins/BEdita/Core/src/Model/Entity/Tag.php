@@ -56,4 +56,13 @@ class Tag extends Entity implements JsonApiSerializable
         'tree_left',
         'tree_right',
     ];
+
+    /**
+     * {@inheritDoc}
+     * @codeCoverageIgnore
+     */
+    protected function getType()
+    {
+        return 'tags';
+    }
 }

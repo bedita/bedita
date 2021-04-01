@@ -19,6 +19,8 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -106,15 +108,15 @@ class RelationsTable extends Table
             ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->requirePresence('label', 'create')
-            ->notEmptyString('label')
+            ->allowEmptyString('label', null, 'create')
+            ->notEmptyString('label', null, 'update')
 
             ->requirePresence('inverse_name', 'create')
             ->notEmptyString('inverse_name')
             ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->requirePresence('inverse_label', 'create')
-            ->notEmptyString('inverse_label')
+            ->allowEmptyString('inverse_label', null, 'create')
+            ->notEmptyString('inverse_label', null, 'update')
 
             ->allowEmptyString('description')
 
@@ -198,6 +200,24 @@ class RelationsTable extends Table
                     ->eq($this->aliasField('inverse_name'), $name);
             });
         });
+    }
+
+    /**
+     * Populate default `label` and `inverse_label` properties if not set.
+     *
+     * {@inheritDoc}
+     */
+    public function beforeSave(Event $event, EntityInterface $entity): void
+    {
+        if (!$entity->isNew()) {
+            return;
+        }
+        if (empty($entity->get('label'))) {
+            $entity->set('label', Inflector::humanize((string)$entity->get('name')));
+        }
+        if (empty($entity->get('inverse_label'))) {
+            $entity->set('inverse_label', Inflector::humanize((string)$entity->get('inverse_name')));
+        }
     }
 
     /**

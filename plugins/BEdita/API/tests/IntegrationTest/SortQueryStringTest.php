@@ -21,6 +21,15 @@ use Cake\Utility\Hash;
 class SortQueryStringTest extends IntegrationTestCase
 {
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.DateRanges'
+    ];
+
+    /**
      * Provider for testSortObjects()
      *
      * @return array
@@ -52,7 +61,12 @@ class SortQueryStringTest extends IntegrationTestCase
                 200,
                 '/roles',
                 'name'
-            ]
+            ],
+            'eventsSpecialSort' => [
+                200,
+                '/events',
+                'date_ranges_max_end_date',
+            ],
         ];
     }
 

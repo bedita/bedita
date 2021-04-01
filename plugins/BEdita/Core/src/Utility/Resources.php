@@ -16,9 +16,7 @@ namespace BEdita\Core\Utility;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * Utility class to resources creation/update/removal in migrations, shell scripts and similar scenarios
@@ -40,7 +38,7 @@ use Cake\Utility\Inflector;
  *     ],
  *   ],
  */
-class Resources
+class Resources extends ResourcesBase
 {
     /**
      * Default options array with following keys:
@@ -81,6 +79,7 @@ class Resources
     protected static $allowed = [
         'applications',
         'auth_providers',
+        'categories',
         'config',
         'property_types',
         'object_types',
@@ -271,27 +270,6 @@ class Resources
         }
 
         return $res;
-    }
-
-    /**
-     * Get resource table with type validation
-     *
-     * @param string $type Resource type name
-     * @param array $options Table locator options
-     * @return \Cake\ORM\Table
-     * @throws BadRequestException
-     */
-    protected static function getTable(string $type, array $options = []): Table
-    {
-        if (!in_array($type, static::$allowed)) {
-            throw new BadRequestException(
-                __d('bedita', 'Resource type not allowed "{0}"', $type)
-            );
-        }
-        TableRegistry::getTableLocator()->clear();
-
-        return TableRegistry::getTableLocator()
-            ->get(Inflector::camelize($type), $options);
     }
 
     /**

@@ -324,6 +324,7 @@ class SignupUserActionTest extends TestCase
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
         static::assertSame('on', $result->status);
+        static::assertNotEmpty($result->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 

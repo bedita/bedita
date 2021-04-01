@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Event\EventDispatcherTrait;
 
 /**
  * Command to remove links between related objects or objects and associated entities.
@@ -24,6 +25,7 @@ use Cake\Datasource\EntityInterface;
  */
 class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
 {
+    use EventDispatcherTrait;
 
     /**
      * Remove existing relations using `\BEdita\Core\Model\Action\RemoveAssociatedAction`.
@@ -35,6 +37,7 @@ class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
     protected function update(EntityInterface $entity, $relatedEntities)
     {
         $action = new RemoveAssociatedAction($this->getConfig());
+        $action->setEventManager($this->getEventManager());
 
         return $action->execute(compact('entity', 'relatedEntities'));
     }

@@ -155,7 +155,7 @@ class DateRangesTable extends Table
             'start_date',
             'end_date',
             'from_date',
-            'to_date'
+            'to_date',
         ]);
         $options = array_intersect_key($options, $allowed);
         if (empty($options)) {

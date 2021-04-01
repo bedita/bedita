@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
@@ -26,8 +27,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Category $category
  */
-class ObjectCategory extends Entity
+class ObjectCategory extends Entity implements JsonApiSerializable
 {
+    use JsonApiModelTrait;
+
     /**
      * {@inheritDoc}
      */

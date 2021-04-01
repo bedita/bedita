@@ -13,12 +13,14 @@
 
 namespace BEdita\Core\Model\Action;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
+use InvalidArgumentException;
 
 /**
  * Command to replace all entities associated to another entity.
@@ -68,7 +70,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
         }
 
         if ($relatedEntities !== null && !($relatedEntities instanceof EntityInterface)) {
-            throw new \InvalidArgumentException(__d('bedita', 'Unable to link multiple entities'));
+            throw new InvalidArgumentException(__d('bedita', 'Unable to link multiple entities'));
         }
 
         if ($this->Association instanceof BelongsTo) {
@@ -95,16 +97,31 @@ class SetAssociatedAction extends UpdateAssociatedAction
      */
     protected function toMany(EntityInterface $entity, array $relatedEntities)
     {
+        $relatedEntities = new ArrayObject($relatedEntities);
+        $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+
         // This doesn't need to be in a transaction.
-        $relatedEntities = $this->diff($entity, $relatedEntities, true, $affectedEntities);
+        $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), true, $affectedEntities);
         $count = count($affectedEntities);
 
         if ($this->Association instanceof HasMany) {
-            return $this->Association->replace($entity, $relatedEntities, ['atomic' => false]) ? $count : false;
+            if ($this->Association->replace($entity, $relatedEntities, ['atomic' => false]) === false) {
+                return false;
+            }
+
+            $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+
+            return $count;
         }
 
         if ($this->Association instanceof BelongsToMany) {
-            return $this->Association->replaceLinks($entity, $relatedEntities, ['atomic' => false]) ? $count : false;
+            if ($this->Association->replaceLinks($entity, $relatedEntities, ['atomic' => false]) === false) {
+                return false;
+            }
+
+            $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+
+            return $count;
         }
 
         return false;
@@ -123,6 +140,10 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $dirty = $entity->isDirty();
         $existing = $this->existing($entity);
 
+        $relatedEntities = new ArrayObject([$relatedEntity]);
+        $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+        $relatedEntity = $relatedEntities[0];
+
         if ($existing === null && $relatedEntity === null) {
             return 0;
         } elseif (!$dirty && $relatedEntity !== null) {
@@ -132,10 +153,16 @@ class SetAssociatedAction extends UpdateAssociatedAction
                 return 0;
             }
         }
-
         $entity->set($this->Association->getProperty(), $relatedEntity);
 
-        return $this->Association->getSource()->save($entity) ? 1 : false;
+        if ($this->Association->getSource()->save($entity) === false) {
+            return false;
+        }
+
+        $relatedEntities = [$relatedEntity];
+        $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+
+        return 1;
     }
 
     /**
@@ -150,6 +177,10 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $foreignKey = (array)$this->Association->getForeignKey();
         $bindingKeyValue = $entity->extract((array)$this->Association->getBindingKey());
         $existing = $this->existing($entity);
+
+        $relatedEntities = new ArrayObject([$relatedEntity]);
+        $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+        $relatedEntity = $relatedEntities[0];
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
@@ -183,6 +214,13 @@ class SetAssociatedAction extends UpdateAssociatedAction
             $bindingKeyValue
         ));
 
-        return $this->Association->getTarget()->save($relatedEntity) ? 1 : false;
+        if ($this->Association->getTarget()->save($relatedEntity) === false) {
+            return false;
+        }
+
+        $relatedEntities = [$relatedEntity];
+        $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
+
+        return 1;
     }
 }

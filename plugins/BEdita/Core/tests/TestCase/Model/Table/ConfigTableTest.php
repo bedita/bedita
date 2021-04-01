@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -26,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class ConfigTableTest extends TestCase
 {
-
     /**
      * Test subject
      *
@@ -223,5 +224,93 @@ class ConfigTableTest extends TestCase
 
         $config = $this->Config->find('name', $data)->toArray();
         static::assertEquals($expected, count($config));
+    }
+
+    /**
+     * Test `afterDelete` method
+     *
+     * @return void
+     *
+     * @covers ::afterDelete()
+     */
+    public function testAfterDelete(): void
+    {
+        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $config = $this->Config->get(1);
+        $this->Config->deleteOrFail($config);
+
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
+        static::assertFalse($read);
+    }
+
+    /**
+     * Test `afterSave` method
+     *
+     * @return void
+     *
+     * @covers ::afterSave()
+     */
+    public function testAfterSave(): void
+    {
+        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
+        static::assertNotEmpty($read);
+
+        $config = $this->Config->get(1);
+        $config->content = 'new content';
+        $this->Config->saveOrFail($config);
+
+        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
+        static::assertFalse($read);
+    }
+
+    /**
+     * Data provider for `testFetchConfig`
+     */
+    public function fetchConfigProvider(): array
+    {
+        return [
+            'group2' => [
+                [
+                    [
+                        'name' => 'IntVal',
+                        'content' => '14',
+                    ],
+                ],
+                null,
+                'group2',
+            ],
+            'somecontext' => [
+                [
+                    [
+                        'name' => 'someVal',
+                        'content' => '42',
+                    ],
+                ],
+                1,
+                'somecontext',
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchConfig` method
+     *
+     * @param array $expected Expected result.
+     * @param int|null $appId Application ID.
+     * @param string|null $context Context key.
+     * @return void
+     *
+     * @dataProvider fetchConfigProvider
+     * @covers ::fetchConfig()
+     */
+    public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
+    {
+        Cache::clear(false, ConfigTable::CACHE_CONFIG);
+        $result = $this->Config->fetchConfig($appId, $context)->toArray();
+        static::assertEquals($expected, $result);
     }
 }
