@@ -78,7 +78,7 @@ class EndpointAuthorize extends BaseAuthorize
         $readRequest = $request->is(['get', 'head']);
         $strict = ($this->isAnonymous($user) && !$readRequest);
 
-        $endpointId = $this->getEndpoint($request->getPath());
+        $endpointId = $this->Endpoints->fetchId($request->getPath());
         $permsCount = $this->EndpointPermissions->fetchCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
@@ -138,27 +138,6 @@ class EndpointAuthorize extends BaseAuthorize
     public function isAnonymous($user)
     {
         return !empty($user['_anonymous']);
-    }
-
-    /**
-     * Get endpoint id for request.
-     *
-     * @param string $path Request path.
-     * @return int|null
-     * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
-     */
-    public function getEndpoint(string $path): ?int
-    {
-        // endpoint name is the first part of URL path
-        $path = array_values(array_filter(explode('/', $path)));
-        $name = Hash::get($path, '0', '');
-
-        $endpoint = $this->Endpoints->fetchByName($name);
-        if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {
-            throw new NotFoundException(__d('bedita', 'Resource not found.'));
-        }
-
-        return Hash::get($endpoint, 'id');
     }
 
     /**

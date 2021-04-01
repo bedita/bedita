@@ -13,8 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -100,18 +102,29 @@ class EndpointsTable extends Table
     }
 
     /**
-     * Fetch endpoint data by name using cache.
+     * Fetch endpoint id from path using cache.
      *
-     * @param string $name Endpoint name.
-     * @return array
+     * @param string $path The path.
+     * @return int|null
+     * @throws \Cake\Http\Exception\NotFoundException
      */
-    public function fetchByName(string $name): array
+    public function fetchId(string $path): ?int
     {
-        return (array)$this->find()
+        // endpoint name is the first part of URL path
+        $path = array_values(array_filter(explode('/', $path)));
+        $name = Hash::get($path, '0', '');
+
+        $endpoint = (array)$this->find()
             ->select(['id', 'enabled'])
             ->disableHydration()
             ->where([$this->aliasField('name') => $name])
-            // ->cache(sprintf('enpoint_%s', $name), self::CACHE_CONFIG)
+            ->cache(sprintf('enpoint_%s', $name), self::CACHE_CONFIG)
             ->first();
+
+        if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {
+            throw new NotFoundException(__d('bedita', 'Resource not found.'));
+        }
+
+        return Hash::get($endpoint, 'id');
     }
 }
