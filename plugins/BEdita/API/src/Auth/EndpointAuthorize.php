@@ -47,13 +47,6 @@ class EndpointAuthorize extends BaseAuthorize
     ];
 
     /**
-     * Current endpoint ID.
-     *
-     * @var int|null
-     */
-    protected $endpointId = null;
-
-    /**
      * Cache result of `authorized()` method call.
      *
      * This is required for controller to know whether authorization was granted on all contents,
@@ -85,22 +78,22 @@ class EndpointAuthorize extends BaseAuthorize
         $readRequest = $request->is(['get', 'head']);
         $strict = ($this->isAnonymous($user) && !$readRequest);
 
-        $this->getEndpoint($request->getPath());
-        $permsCount = $this->EndpointPermissions->fetchCount($this->endpointId);
+        $endpointId = $this->getEndpoint($request->getPath());
+        $permsCount = $this->EndpointPermissions->fetchCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
-        if ($this->getConfig('defaultAuthorized') && ($this->endpointId === null || $permsCount === 0)) {
+        if ($this->getConfig('defaultAuthorized') && ($endpointId === null || $permsCount === 0)) {
             return $this->authorized = true;
         }
 
         $permissions = $this->EndpointPermissions->fetchPermissions(
-            $this->endpointId,
+            $endpointId,
             Hash::extract($user, 'roles.{n}.id'),
             $strict
         );
         $this->authorized = $this->checkPermissions($permissions, $readRequest);
 
-        if (empty($permissions) && ($this->endpointId === null || $permsCount === 0)) {
+        if (empty($permissions) && ($endpointId === null || $permsCount === 0)) {
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
             // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
             $this->authorized = !$strict;
@@ -151,10 +144,10 @@ class EndpointAuthorize extends BaseAuthorize
      * Get endpoint id for request.
      *
      * @param string $path Request path.
-     * @return void
+     * @return int|null
      * @throws \Cake\Http\Exception\NotFoundException If endpoint is disabled
      */
-    protected function getEndpoint(string $path): void
+    public function getEndpoint(string $path): ?int
     {
         // endpoint name is the first part of URL path
         $path = array_values(array_filter(explode('/', $path)));
@@ -165,7 +158,7 @@ class EndpointAuthorize extends BaseAuthorize
             throw new NotFoundException(__d('bedita', 'Resource not found.'));
         }
 
-        $this->endpointId = Hash::get($endpoint, 'id');
+        return Hash::get($endpoint, 'id');
     }
 
     /**
