@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -171,5 +172,58 @@ class EndpointsTableTest extends TestCase
         $endpoint = $this->Endpoints->newEntity($data, ['validate' => false]);
         $success = $this->Endpoints->save($endpoint);
         $this->assertEquals($expected, (bool)$success, print_r($endpoint->getErrors(), true));
+    }
+
+    /**
+     * Data provider for `testFetchIdByName` test case.
+     *
+     * @return array
+     */
+    public function fetchIdProvider()
+    {
+        return [
+            '/auth' => [
+                1,
+                '/auth',
+            ],
+            '/home/sweet/home' => [
+                2,
+                '/home/sweet/home',
+            ],
+            '/' => [
+                null,
+                '/',
+            ],
+            '/this/endpoint/definitely/doesnt/exist' => [
+                null,
+                '/this/endpoint/definitely/doesnt/exist',
+            ],
+            '/disabled/endpoint' => [
+                new NotFoundException('Resource not found.'),
+                '/disabled/endpoint',
+            ]
+        ];
+    }
+
+    /**
+     * Test getting endpoint from request.
+     *
+     * @param mixed $expected Expected endpoint ID, null, or exception.
+     * @param string $path Request path.
+     * @return void
+     *
+     * @dataProvider fetchIdProvider()
+     * @covers ::fetchId()
+     */
+    public function testFetchIdByName($expected, string $path): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Endpoints->fetchId($path);
+
+        static::assertEquals($expected, $result);
     }
 }

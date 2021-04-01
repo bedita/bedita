@@ -15,7 +15,6 @@ namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -43,63 +42,6 @@ class EndpointAuthorizeTest extends TestCase
         'plugin.BEdita/Core.EndpointPermissions',
         'plugin.BEdita/Core.Config',
     ];
-
-    /**
-     * Data provider for `testGetEndpoint` test case.
-     *
-     * @return array
-     */
-    public function getEndpointProvider()
-    {
-        return [
-            '/auth' => [
-                1,
-                new Uri('/auth'),
-            ],
-            '/home/sweet/home' => [
-                2,
-                new Uri('/home/sweet/home'),
-            ],
-            '/' => [
-                null,
-                new Uri('/'),
-            ],
-            '/this/endpoint/definitely/doesnt/exist' => [
-                null,
-                new Uri('/this/endpoint/definitely/doesnt/exist'),
-            ],
-            '/disabled/endpoint' => [
-                new NotFoundException('Resource not found.'),
-                new Uri('/disabled/endpoint'),
-            ]
-        ];
-    }
-
-    /**
-     * Test getting endpoint from request.
-     *
-     * @param mixed $expected Expected endpoint ID, null, or exception.
-     * @param \Psr\Http\Message\UriInterface $uri Request URI.
-     * @return void
-     *
-     * @dataProvider getEndpointProvider()
-     * @covers ::getEndpoint()
-     */
-    public function testGetEndpoint($expected, UriInterface $uri)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        CurrentApplication::setFromApiKey(API_KEY);
-        $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
-        $authorize->loadModel('Endpoints');
-
-        $result = $authorize->getEndpoint($uri->getPath());
-
-        static::assertEquals($expected, $result);
-    }
 
     /**
      * Data provider for `testAuthorize` test case.
