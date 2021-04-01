@@ -111,7 +111,7 @@ class ConfigTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(false, self::CACHE_CONFIG);
     }
@@ -121,7 +121,7 @@ class ConfigTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(false, self::CACHE_CONFIG);
     }
