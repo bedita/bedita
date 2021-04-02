@@ -31,7 +31,7 @@
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^3.1",
         "fzaninotto/faker": "^1.5",
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.5"
     },
     "autoload": {
         "psr-4": {
