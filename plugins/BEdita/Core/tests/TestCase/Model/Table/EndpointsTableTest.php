@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -175,7 +176,7 @@ class EndpointsTableTest extends TestCase
     }
 
     /**
-     * Data provider for `testFetchIdByName` test case.
+     * Data provider for `testFetchId` test case.
      *
      * @return array
      */
@@ -215,15 +216,15 @@ class EndpointsTableTest extends TestCase
      * @dataProvider fetchIdProvider()
      * @covers ::fetchId()
      */
-    public function testFetchIdByName($expected, string $path): void
+    public function testFetchId($expected, string $path): void
     {
+        Cache::clear(false, $this->Endpoints::CACHE_CONFIG);
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->Endpoints->fetchId($path);
-
         static::assertEquals($expected, $result);
     }
 }

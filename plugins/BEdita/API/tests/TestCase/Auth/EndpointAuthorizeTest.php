@@ -14,7 +14,9 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
+use BEdita\Core\Model\Table\QueryCacheTable;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Controller\Controller;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -42,6 +44,24 @@ class EndpointAuthorizeTest extends TestCase
         'plugin.BEdita/Core.EndpointPermissions',
         'plugin.BEdita/Core.Config',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
+        parent::tearDown();
+    }
 
     /**
      * Data provider for `testAuthorize` test case.

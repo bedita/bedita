@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -407,5 +408,83 @@ class EndpointPermissionsTableTest extends TestCase
 
         static::assertEquals(1, $query->count());
         static::assertEquals($expected, $entity->permission);
+    }
+
+    /**
+     * Data provider for `testFetchCount`
+     */
+    public function fetchCountProvider(): array
+    {
+        return [
+            'one' => [
+                1,
+                1,
+            ],
+            'null' => [
+                1,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchCount` method
+     *
+     * @param int $expected Expected result.
+     * @param int|null $endpointId Endpoint ID.
+     * @return void
+     *
+     * @dataProvider fetchCountProvider()
+     * @covers ::fetchCount()
+     */
+    public function testFetchCount(int $expected, ?int $endpointId): void
+    {
+        Cache::clear(false, $this->EndpointPermissions::CACHE_CONFIG);
+        $result = $this->EndpointPermissions->fetchCount($endpointId);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testFetchPermissions`
+     */
+    public function fetchPermissionsProvider(): array
+    {
+        return [
+            'one' => [
+                1,
+                1,
+                ['_anonymous' => true],
+                false,
+            ],
+            'null' => [
+                0,
+                null,
+                [
+                    'roles' => [
+                        ['id' => 1],
+                    ],
+                ],
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchPermissions` method
+     *
+     * @param int $expected Expected result
+     * @param int|null $endpointId Endpoint id.
+     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
+     * @param bool $strict Strict check.
+     * @return void
+     *
+     * @dataProvider fetchPermissionsProvider()
+     * @covers ::fetchPermissions()
+     */
+    public function testFetchPermissions(int $expected, ?int $endpointId, $user, bool $strict): void
+    {
+        Cache::clear(false, $this->EndpointPermissions::CACHE_CONFIG);
+        $result = $this->EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
+        static::assertEquals($expected, count($result));
     }
 }

@@ -227,47 +227,6 @@ class ConfigTableTest extends TestCase
     }
 
     /**
-     * Test `afterDelete` method
-     *
-     * @return void
-     *
-     * @covers ::afterDelete()
-     */
-    public function testAfterDelete(): void
-    {
-        $config = $this->Config->fetchConfig(null, null)->toArray();
-        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
-        static::assertNotEmpty($read);
-
-        $config = $this->Config->get(1);
-        $this->Config->deleteOrFail($config);
-
-        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
-        static::assertFalse($read);
-    }
-
-    /**
-     * Test `afterSave` method
-     *
-     * @return void
-     *
-     * @covers ::afterSave()
-     */
-    public function testAfterSave(): void
-    {
-        $config = $this->Config->fetchConfig(null, null)->toArray();
-        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
-        static::assertNotEmpty($read);
-
-        $config = $this->Config->get(1);
-        $config->content = 'new content';
-        $this->Config->saveOrFail($config);
-
-        $read = Cache::read('config_*_*', ConfigTable::CACHE_CONFIG);
-        static::assertFalse($read);
-    }
-
-    /**
      * Data provider for `testFetchConfig`
      */
     public function fetchConfigProvider(): array
