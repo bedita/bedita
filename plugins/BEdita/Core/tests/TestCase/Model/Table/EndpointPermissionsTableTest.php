@@ -13,7 +13,10 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\QueryCacheTable;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
+use Cake\Log\LogTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -26,6 +29,7 @@ use Cake\TestSuite\TestCase;
  */
 class EndpointPermissionsTableTest extends TestCase
 {
+    use LogTrait;
 
     /**
      * Test subject
@@ -56,6 +60,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         parent::setUp();
         $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
+        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
     }
 
     /**
@@ -439,7 +444,7 @@ class EndpointPermissionsTableTest extends TestCase
      */
     public function testFetchCount(int $expected, ?int $endpointId): void
     {
-        Cache::clear(false, $this->EndpointPermissions::CACHE_CONFIG);
+        CurrentApplication::setApplication(null);
         $result = $this->EndpointPermissions->fetchCount($endpointId);
         static::assertEquals($expected, $result);
     }
@@ -483,7 +488,7 @@ class EndpointPermissionsTableTest extends TestCase
      */
     public function testFetchPermissions(int $expected, ?int $endpointId, $user, bool $strict): void
     {
-        Cache::clear(false, $this->EndpointPermissions::CACHE_CONFIG);
+        CurrentApplication::setApplication(null);
         $result = $this->EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
         static::assertEquals($expected, count($result));
     }
