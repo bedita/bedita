@@ -278,11 +278,11 @@ class EndpointPermissionsTable extends Table
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        $key = sprintf('perms_count_%s_%d', $applicationId, $endpointId);
+        $key = sprintf('perms_count_%s_%s', $applicationId ?: '*', $endpointId ?: '*');
 
         return $this->find('byApplication', compact('applicationId'))
             ->find('byEndpoint', compact('endpointIds'))
-            // ->cache($key, self::CACHE_CONFIG)
+            ->cache($key, self::CACHE_CONFIG)
             ->count();
     }
 
