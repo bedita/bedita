@@ -13,10 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Cache\Cache;
+use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -40,13 +39,6 @@ use Cake\Validation\Validator;
  */
 class EndpointsTable extends Table
 {
-    /**
-     * Cache configuration name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
-
     /**
      * {@inheritDoc}
      *
@@ -100,26 +92,6 @@ class EndpointsTable extends Table
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 
         return $rules;
-    }
-
-    /**
-     * Invalidate cache after saving an entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate cache after deleting an entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**

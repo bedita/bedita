@@ -13,13 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Cache\Cache;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -34,13 +33,6 @@ use Cake\Validation\Validator;
  */
 class EndpointPermissionsTable extends Table
 {
-    /**
-     * Cache configuration name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
-
     /**
      * {@inheritDoc}
      *
@@ -90,26 +82,6 @@ class EndpointPermissionsTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
-    }
-
-    /**
-     * Invalidate cache after saving an entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate cache after deleting an entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -290,24 +262,31 @@ class EndpointPermissionsTable extends Table
      * Fetch endpoint permissions using cache.
      *
      * @param int|null $endpointId Endpoint id.
-     * @param array|null $roleIds Role ids.
+     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
      * @param bool $strict Strict check.
      * @return array
      */
-    public function fetchPermissions(?int $endpointId, ?array $roleIds, bool $strict): array
+    public function fetchPermissions(?int $endpointId, $user, bool $strict): array
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        //$cacheKey = sprintf('perms_%d_%d_%s_%s', (int)$strict, $applicationId, $endpointId, $roleKey);
+        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: '*', $endpointId ?: '*');
 
-        $query = $this->find('byApplication', compact('applicationId', 'strict'))
-            ->find('byEndpoint', compact('endpointIds', 'strict'));
-
-        if ($roleIds !== null) {
-            $query = $query
-                ->find('byRole', compact('roleIds'));
+        if (!empty($user['_anonymous'])) {
+            return $this->find('byApplication', compact('applicationId', 'strict'))
+                ->find('byEndpoint', compact('endpointIds', 'strict'))
+                ->cache($key, self::CACHE_CONFIG)
+                ->toArray();
         }
 
-        return $query->toArray();
+        $roleIds = (array)Hash::extract($user, 'roles.{n}.id');
+        sort($roleIds);
+        $key .= sprintf('_%s', implode('.', $roleIds));
+
+        return $this->find('byApplication', compact('applicationId', 'strict'))
+            ->find('byEndpoint', compact('endpointIds', 'strict'))
+            ->find('byRole', compact('roleIds'))
+            ->cache($key, self::CACHE_CONFIG)
+            ->toArray();
     }
 }

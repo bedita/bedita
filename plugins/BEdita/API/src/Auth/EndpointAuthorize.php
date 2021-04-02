@@ -17,7 +17,6 @@ use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\ModelAwareTrait;
-use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 
@@ -86,11 +85,7 @@ class EndpointAuthorize extends BaseAuthorize
             return $this->authorized = true;
         }
 
-        $permissions = $this->EndpointPermissions->fetchPermissions(
-            $endpointId,
-            Hash::extract($user, 'roles.{n}.id'),
-            $strict
-        );
+        $permissions = $this->EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
         $this->authorized = $this->checkPermissions($permissions, $readRequest);
 
         if (empty($permissions) && ($endpointId === null || $permsCount === 0)) {
