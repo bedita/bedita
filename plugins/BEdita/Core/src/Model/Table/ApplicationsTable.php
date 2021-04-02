@@ -14,13 +14,12 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -50,13 +49,6 @@ class ApplicationsTable extends Table
      * @var int
      */
     const DEFAULT_APPLICATION = 1;
-
-    /**
-     * Cache config name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * {@inheritDoc}
@@ -118,26 +110,6 @@ class ApplicationsTable extends Table
         $rules->add($rules->isUnique(['api_key']));
 
         return $rules;
-    }
-
-    /**
-     * Invalidate applications cache after saving an application entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate applications cache after deleting an application entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**

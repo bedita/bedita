@@ -13,13 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -42,13 +41,6 @@ use Cake\Validation\Validator;
  */
 class ConfigTable extends Table
 {
-    /**
-     * Cache config name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
-
     /**
      * {@inheritDoc}
      *
@@ -104,26 +96,6 @@ class ConfigTable extends Table
             ->notEmptyString('content');
 
         return $validator;
-    }
-
-    /**
-     * Invalidate database config cache after saving a config entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate database config cache after deleting a config entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
