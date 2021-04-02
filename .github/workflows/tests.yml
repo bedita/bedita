@@ -212,7 +212,11 @@ jobs:
             composer-lowest-
             composer-
 
-      - name: 'Install dependencies with Composer'
+      - name: 'Install dependencies with Composer' # first time allow failure since wikimedia-plugin-merge update will fail
+        continue-on-error: true
+        run: 'composer update --prefer-lowest --prefer-dist --no-interaction'
+
+      - name: 'Update dependencies with Composer' # update again work
         run: 'composer update --prefer-lowest --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit'
