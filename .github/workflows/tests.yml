@@ -23,7 +23,7 @@ jobs:
         uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '7.4'
-          tools: 'composer:v1'
+          tools: 'composer'
           extensions: 'mbstring, intl'
           coverage: 'none'
 
@@ -62,7 +62,7 @@ jobs:
         uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '7.4'
-          tools: 'composer:v1, phpstan'
+          tools: 'composer, phpstan'
           extensions: 'mbstring, intl'
           coverage: 'none'
 
@@ -141,7 +141,7 @@ jobs:
         uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '${{ matrix.php }}'
-          tools: 'composer:v1'
+          tools: 'composer'
           extensions: 'mbstring, intl, pdo_${{ fromJson(matrix.db).pdo }}'
           coverage: 'pcov'
           ini-values: 'pcov.directory=., pcov.exclude="~vendor~"'
@@ -196,7 +196,7 @@ jobs:
         uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '7.2'
-          tools: 'composer:v1'
+          tools: 'composer'
           extensions: 'mbstring, intl, pdo_sqlite'
 
       - name: 'Discover Composer cache directory'
