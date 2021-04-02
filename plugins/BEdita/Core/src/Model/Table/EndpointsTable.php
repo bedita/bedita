@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -99,6 +100,26 @@ class EndpointsTable extends Table
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Invalidate cache after saving an entity.
+     *
+     * @return void
+     */
+    public function afterSave(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate cache after deleting an entity.
+     *
+     * @return void
+     */
+    public function afterDelete(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**

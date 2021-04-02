@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
@@ -89,6 +90,26 @@ class EndpointPermissionsTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
+    }
+
+    /**
+     * Invalidate cache after saving an entity.
+     *
+     * @return void
+     */
+    public function afterSave(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate cache after deleting an entity.
+     *
+     * @return void
+     */
+    public function afterDelete(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
