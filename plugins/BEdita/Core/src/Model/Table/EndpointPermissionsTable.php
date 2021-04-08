@@ -262,7 +262,7 @@ class EndpointPermissionsTable extends Table
      * Fetch endpoint permissions using cache.
      *
      * @param int|null $endpointId Endpoint id.
-     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
+     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged and `roles` array if logged.
      * @param bool $strict Strict check.
      * @return array
      */

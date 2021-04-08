@@ -29,7 +29,7 @@ abstract class QueryCacheTable extends Table
      *
      * @var string
      */
-    const CACHE_CONFIG = '_bedita_core_';
+    public const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * Invalidate database config cache after saving a config entity.
