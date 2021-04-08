@@ -55,15 +55,6 @@ class EndpointAuthorizeTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function tearDown()
-    {
-        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testAuthorize` test case.
      *
      * @return array
