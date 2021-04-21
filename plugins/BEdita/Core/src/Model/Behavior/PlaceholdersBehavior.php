@@ -224,18 +224,6 @@ class PlaceholdersBehavior extends Behavior
     }
 
     /**
-     * Lock entity from being hard-deleted if it is placeholded somewhere.
-     *
-     * @param \Cake\Event\Event $event Dispatched event.
-     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
-     * @return void
-     */
-    public function beforeDelete(Event $event, EntityInterface $entity): void
-    {
-        $this->ensureNotPlaceholded($entity);
-    }
-
-    /**
      * Ensure an entity does not appear as a placeholder.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being checked.

@@ -425,34 +425,4 @@ class PlaceholdersBehaviorTest extends TestCase
         $entity->set('deleted', true);
         $table->saveOrFail($entity);
     }
-
-    /**
-     * Test {@see PlaceholdersBehavior::beforeDelete()}.
-     *
-     * @return void
-     *
-     * @covers ::beforeDelete()
-     * @covers ::getAssociation()
-     * @covers ::ensureNotPlaceholded()
-     */
-    public function testBeforeDeleteLockedEntity(): void
-    {
-        $body = '<!-- BE-PLACEHOLDER.10 --><h1>My sweet placeholder</h1>';
-
-        // Save with placeholder in body.
-        $table = $this->getTableLocator()->get('Documents');
-        $entity = $table->get(2, ['contain' => ['ObjectTypes']]);
-        $entity->set('body', $body);
-        $table->saveOrFail($entity);
-
-        $entity = $table->get(2, ['contain' => ['ObjectTypes', 'Placeholder']]);
-        static::assertSame([10], Hash::extract($entity->get('placeholder'), '{n}.id'));
-
-        // Try to delete media.
-        $this->expectException(LockedResourceException::class);
-        $this->expectExceptionMessage('Cannot delete object 10 because it is still placeholded in one object');
-        $table = $this->getTableLocator()->get('Media');
-        $entity = $table->get(10, ['contain' => ['ObjectTypes']]);
-        $table->deleteOrFail($entity);
-    }
 }
