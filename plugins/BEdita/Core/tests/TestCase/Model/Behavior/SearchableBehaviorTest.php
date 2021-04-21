@@ -206,11 +206,13 @@ class SearchableBehaviorTest extends TestCase
                 'lion_snake',
                 'FakeSearches',
             ],
-            // 'search underscore 2' => [
-            //     [],
-            //     'li_n',
-            //     'FakeSearches',
-            // ],
+             'search underscore 2' => [
+                 [
+                     2 => 'lion_snake',
+                 ],
+                 'li_n',
+                 'FakeSearches',
+             ],
         ];
     }
 
