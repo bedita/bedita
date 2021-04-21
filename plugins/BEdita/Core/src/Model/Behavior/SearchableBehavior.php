@@ -131,8 +131,8 @@ class SearchableBehavior extends Behavior
         $words = array_unique(array_map( // Escape `%`, `_` and `\` characters in words.
             function ($word) {
                 return str_replace(
-                    ['%', '_', '\\'],
-                    ['\\%', '_', '\\\\'],
+                    ['%', '\\'],
+                    ['\\%', '\\\\'],
                     $word
                 );
             },
