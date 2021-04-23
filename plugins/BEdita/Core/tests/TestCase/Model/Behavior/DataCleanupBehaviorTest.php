@@ -136,10 +136,78 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @dataProvider cleanupProvider
      * @covers ::beforeMarshal()
+     * @covers ::defaultFields()
      */
     public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
         Configure::write('DefaultValues', $defaultValues);
+        $Users = TableRegistry::getTableLocator()->get('Users');
+
+        $user = $Users->newEntity($inputData);
+        foreach ($expected as $k => $v) {
+            $this->assertEquals($user[$k], $v);
+        }
+    }
+
+    /**
+     * Data provider for `testStatusLevel` test case.
+     *
+     * @return array
+     */
+    public function statusLevelProvider(): array
+    {
+        return [
+            'status' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                    'status' => null,
+                ],
+                [
+                    'status' => 'draft'
+                ],
+                'draft',
+            ],
+            'status2' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                    'status' => '',
+                ],
+                [
+                    'status' => 'on'
+                ],
+                'on',
+            ],
+            'status from config' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                    'status' => '',
+                ],
+                [
+                    'status' => 'draft'
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `Status.level` configurations
+     *
+     * @param array $inputData Input data.
+     * @param array $expected Expected result.
+     * @param string $level Status level.
+     * @return void
+     *
+     * @dataProvider statusLevelProvider
+     * @covers ::defaultFields()
+     */
+    public function testStatusLevel(array $inputData, array $expected, string $level = ''): void
+    {
+        if (!empty($level)) {
+            Configure::write('Status.level', $level);
+        }
         $Users = TableRegistry::getTableLocator()->get('Users');
 
         $user = $Users->newEntity($inputData);

@@ -13,6 +13,9 @@ CURRENT_BRANCH=$(shell git branch | grep '*' | tr -d '* ')
 COMPONENT_PATH[api]=API
 COMPONENT_PATH[core]=Core
 
+# composer version to use. Leave empty to use last version.
+COMPOSER_VERSION=1.10.16
+
 # Github settings
 UPLOAD_HOST=https://uploads.github.com
 API_HOST=https://api.github.com
@@ -79,7 +82,10 @@ guard-%:
 
 # Download composer
 composer.phar:
-	curl -sS https://getcomposer.org/installer | php
+	curl -sS https://getcomposer.org/installer | php;
+	@if [ ! -z "$COMPOSER_VERSION" ]; then \
+		php composer.phar self-update ${COMPOSER_VERSION}; \
+	fi;
 
 # Install dependencies
 install: composer.phar

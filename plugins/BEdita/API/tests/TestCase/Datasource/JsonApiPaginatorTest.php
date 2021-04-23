@@ -117,6 +117,10 @@ class JsonApiPaginatorTest extends TestCase
                 ['Roles.name' => 'desc'],
                 '-name',
             ],
+            'special' => [
+                ['date_ranges_max_end_date' => 'desc'],
+                '-date_ranges_max_end_date',
+            ],
             'multipleFields' => [
                 new BadRequestException('Unsupported sorting field'),
                 'username,created',

@@ -18,8 +18,8 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Laminas\Diactoros\Stream;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\Stream

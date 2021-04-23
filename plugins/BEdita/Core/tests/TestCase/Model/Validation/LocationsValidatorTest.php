@@ -119,7 +119,7 @@ class LocationsValidatorTest extends TestCase
     {
         $validator = new LocationsValidator();
 
-        $errors = $validator->errors($data, $newRecord);
+        $errors = $validator->validate($data, $newRecord);
         $errors = Hash::flatten($errors);
 
         static::assertEquals($expected, array_keys($errors));

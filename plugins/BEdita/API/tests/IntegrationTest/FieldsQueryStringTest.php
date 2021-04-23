@@ -31,22 +31,22 @@ class FieldsQueryStringTest extends IntegrationTestCase
             'simple' => [
                 '/documents?fields=title',
                 ['title'],
-                []
+                [],
             ],
             'multi' => [
                 '/roles?fields=name,created',
                 ['name'],
-                ['created']
+                ['created'],
             ],
             'none' => [
                 '/users?fields[users]=gustavo',
                 [],
-                []
+                ['external_auth'],
             ],
             'single' => [
                 '/users/1?fields=username',
                 ['username'],
-                []
+                ['external_auth'],
             ],
             'meta' => [
                 '/roles/1?fields=unchangeable',
@@ -56,7 +56,7 @@ class FieldsQueryStringTest extends IntegrationTestCase
             'sparse' => [
                 '/roles?fields[roles]=name',
                 ['name'],
-                []
+                [],
             ],
         ];
     }

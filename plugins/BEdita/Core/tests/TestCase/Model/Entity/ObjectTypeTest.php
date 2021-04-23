@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -321,6 +323,59 @@ class ObjectTypeTest extends TestCase
         static::assertArrayHasKey('left_relations', $result['relationships']);
         static::assertArrayHasKey('right_relations', $result['relationships']);
         static::assertArrayNotHasKey('relations', $result['relationships']);
+    }
+
+    /**
+     * Data provider for {@see ObjectTypeTest::testGetParent()} test case.
+     *
+     * @return array[]
+     */
+    public function getParentProvider(): array
+    {
+        return [
+            'no parent' => [
+                null,
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('objects');
+                },
+            ],
+            'parent needs to be loaded' => [
+                'objects',
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('documents');
+                },
+            ],
+            'parent, preloaded' => [
+                'objects',
+                function (ObjectTypesTable $table): ObjectType {
+                    return $table->get('locations', ['contain' => ['Parent']]);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * Test {@see ObjectType::getParent()}.
+     *
+     * @param string|null $expected Expected parent.
+     * @param callable $subject Function that is expected to return an {@see ObjectType} entity.
+     * @return void
+     *
+     * @dataProvider getParentProvider()
+     * @covers ::getParent()
+     */
+    public function testGetParent(?string $expected, callable $subject): void
+    {
+        /** @var ObjectType $objectType */
+        $objectType = $subject($this->ObjectTypes);
+
+        $actual = $objectType->getParent();
+        if ($expected === null) {
+            static::assertNull($actual);
+        } else {
+            static::assertInstanceOf(ObjectType::class, $actual);
+            static::assertSame($expected, $actual->name);
+        }
     }
 
     /**
@@ -733,5 +788,180 @@ class ObjectTypeTest extends TestCase
         $schema = $objectType->schema;
         $required = Hash::extract($schema, 'required');
         static::assertEquals(['username'], $required);
+    }
+
+    /** Test static properties override in `schema`.
+     *
+     * @return void
+     *
+     * @covers ::_getSchema()
+     */
+    public function testSchemaOverride()
+    {
+        $objectType = $this->ObjectTypes->get('profiles');
+        $schema = $objectType->schema;
+        $oneOf = Hash::extract($schema, 'properties.street_address.oneOf');
+        $expected = [
+            [
+                'type' => 'null',
+            ],
+            [
+                'type' => 'string',
+            ],
+        ];
+        static::assertEquals($expected, $oneOf);
+
+        // remove override property type of `street_address`
+        $Properties = TableRegistry::getTableLocator()->get('Properties');
+        $entity = $Properties->get(10);
+        $Properties->delete($entity);
+
+        $schema = $objectType->schema;
+        $oneOf = Hash::extract($schema, 'properties.street_address.oneOf');
+
+        $expected[1]['contentMediaType'] = 'text/html';
+        static::assertEquals($expected, $oneOf);
+    }
+
+    /**
+     * Data provider for {@see self::testGetFullInheritanceChain()} test case.
+     *
+     * @return array[]
+     */
+    public function getFullInheritanceChainProvider(): array
+    {
+        return [
+            'objects' => [
+                ['objects'],
+                'objects',
+            ],
+            'locations' => [
+                ['locations', 'objects'],
+                'locations',
+            ],
+            'media' => [
+                ['media', 'objects'],
+                'media',
+            ],
+            'files' => [
+                ['files', 'media', 'objects'],
+                'files',
+            ],
+        ];
+    }
+
+    /**
+     * Test {@see ObjectType::getFullInheritanceChain()}.
+     *
+     * @param string[] $expected Expected chain.
+     * @param string $name Test subject.
+     * @return void
+     *
+     * @dataProvider getFullInheritanceChainProvider()
+     * @covers ::getFullInheritanceChain
+     */
+    public function testGetFullInheritanceChain(array $expected, string $name): void
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $fullChain = $objectType->getFullInheritanceChain();
+        static::assertInstanceOf(\Iterator::class, $fullChain);
+
+        $fullChain = iterator_to_array($fullChain);
+        foreach ($fullChain as $ancestor) {
+            static::assertInstanceOf(ObjectType::class, $ancestor);
+        }
+
+        $actual = Hash::extract($fullChain, '{*}.name');
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for {@see ObjectTypeTest::testIsDescendantOf()} test case.
+     *
+     * @return array[]
+     */
+    public function isDescendantOfProvider(): array
+    {
+        return [
+            'media descendant of objects' => [true, 'media', 'objects'],
+            'files descendant of objects' => [true, 'files', 'objects'],
+            'files descendant of media' => [true, 'files', 'media'],
+            'users descendant of objects' => [true, 'users', 'objects'],
+            'users NOT descendant of media' => [false, 'users', 'media'],
+            'objects NOT descendant of media' => [false, 'objects', 'media'],
+            'objects NOT descendant of files' => [false, 'objects', 'files'],
+            'media NOT descendant of files' => [false, 'media', 'files'],
+            'objects NOT descendant of users' => [false, 'objects', 'users'],
+            'media NOT descendant of users' => [false, 'media', 'users'],
+        ];
+    }
+
+    /**
+     * Test {@see ObjectType::isDescendantOf()}.
+     *
+     * @param bool $expected Expected result.
+     * @param string $descendantName Descendant object type name.
+     * @param string $ancestorName Ancestor object type name.
+     * @return void
+     *
+     * @dataProvider isDescendantOfProvider()
+     * @covers ::isDescendantOf()
+     */
+    public function testIsDescendantOf(bool $expected, string $descendantName, string $ancestorName): void
+    {
+        $descendant = $this->ObjectTypes->get($descendantName);
+        $ancestor = $this->ObjectTypes->get($ancestorName);
+
+        $actual = $descendant->isDescendantOf($ancestor);
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for {@see ObjectTypeTest::testGetClosestCommonAncestor()} test case.
+     *
+     * @return array[]
+     */
+    public function getClosestCommonAncestorProvider(): array
+    {
+        return [
+            'Ø = null' => [null, []],
+            'profiles = profiles' => ['profiles', ['profiles']],
+            'files|media = media' => ['media', ['files', 'media']],
+            'media|files = media' => ['media', ['media', 'files']],
+            'locations|users|files = objects' => ['objects', ['locations', 'users', 'files']],
+        ];
+    }
+
+    /**
+     * Test {@see ObjectType::getClosestCommonAncestor()}.
+     *
+     * @param string|null $expected Expected result.
+     * @param ObjectType[]|string[] $names Object type names.
+     * @return void
+     *
+     * @dataProvider getClosestCommonAncestorProvider()
+     * @covers ::getClosestCommonAncestor()
+     */
+    public function testGetClosestCommonAncestor(?string $expected, array $names): void
+    {
+        $objectTypes = array_map(
+            function ($name): ObjectType {
+                if (is_string($name)) {
+                    return $this->ObjectTypes->get($name);
+                }
+
+                return $name;
+            },
+            $names
+        );
+
+        $actual = ObjectType::getClosestCommonAncestor(...$objectTypes);
+        if ($expected === null) {
+            static::assertNull($actual);
+        } else {
+            static::assertInstanceOf(ObjectType::class, $actual);
+            static::assertSame($expected, $actual->name);
+        }
     }
 }

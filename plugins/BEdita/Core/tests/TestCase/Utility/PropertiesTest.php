@@ -36,6 +36,11 @@ class PropertiesTest extends TestCase
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
     ];
 
     /**
@@ -98,8 +103,8 @@ class PropertiesTest extends TestCase
      */
     public function testValidate()
     {
-        static::expectException(BadRequestException::class);
-        static::expectExceptionMessage('Missing mandatory property data "name"');
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('Missing mandatory property data "name"');
 
         unset($this->properties[0]['name']);
         Properties::create($this->properties);

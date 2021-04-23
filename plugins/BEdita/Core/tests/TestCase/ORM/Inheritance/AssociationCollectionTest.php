@@ -17,7 +17,6 @@ use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\Association;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 

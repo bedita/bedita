@@ -32,8 +32,8 @@ class CategoriesFixture extends TestFixture
             'name' => 'first-cat',
             'label' => 'First category',
             'parent_id' => null,
-            'tree_left' => null,
-            'tree_right' => null,
+            'tree_left' => 1,
+            'tree_right' => 2,
             'enabled' => 1,
             'created' => '2019-11-25 17:35:58',
             'modified' => '2019-11-25 17:35:58'
@@ -44,8 +44,8 @@ class CategoriesFixture extends TestFixture
             'name' => 'second-cat',
             'label' => 'Second category',
             'parent_id' => null,
-            'tree_left' => null,
-            'tree_right' => null,
+            'tree_left' => 3,
+            'tree_right' => 4,
             'enabled' => 1,
             'created' => '2019-11-25 17:35:58',
             'modified' => '2019-11-25 17:35:58'
@@ -56,8 +56,8 @@ class CategoriesFixture extends TestFixture
             'name' => 'disabled-cat',
             'label' => 'Disabled category',
             'parent_id' => null,
-            'tree_left' => null,
-            'tree_right' => null,
+            'tree_left' => 5,
+            'tree_right' => 6,
             'enabled' => 0,
             'created' => '2019-11-26 12:15:51',
             'modified' => '2019-11-26 12:15:51'

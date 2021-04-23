@@ -106,8 +106,8 @@ class CategoriesTagsBaseTableTest extends TestCase
      */
     public function testFindTagsIdsFail()
     {
-        static::expectException('\Cake\Http\Exception\BadRequestException');
-        static::expectExceptionMessage('Missing or wrong required parameter "names"');
+        $this->expectException('\Cake\Http\Exception\BadRequestException');
+        $this->expectExceptionMessage('Missing or wrong required parameter "names"');
         TableRegistry::getTableLocator()->get('Tags')
             ->find('ids', ['names' => 42])
             ->toArray();
@@ -142,8 +142,8 @@ class CategoriesTagsBaseTableTest extends TestCase
      */
     public function testFindCategoriesIdsFail2()
     {
-        static::expectException('\Cake\Http\Exception\BadRequestException');
-        static::expectExceptionMessage('Missing required parameter "typeId"');
+        $this->expectException('\Cake\Http\Exception\BadRequestException');
+        $this->expectExceptionMessage('Missing required parameter "typeId"');
         TableRegistry::getTableLocator()->get('Categories')
             ->find('ids', ['names' => 'unnamed'])
             ->toArray();

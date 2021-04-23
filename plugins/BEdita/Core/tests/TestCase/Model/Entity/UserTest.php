@@ -14,9 +14,11 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Entity\User} Test Case
@@ -39,14 +41,18 @@ class UserTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
     ];
 
     /**
@@ -156,5 +162,47 @@ class UserTest extends TestCase
 
         static::assertNotEquals('myPassword', $user->password_hash);
         static::assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
+    }
+
+    /**
+     * Test getter for JSON API meta fields.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     * @covers ::getExternalAuthMeta()
+     */
+    public function testGetMeta(): void
+    {
+        $user = $this->Users->get(5);
+        $user = $user->jsonApiSerialize(
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+        );
+
+        static::assertArrayHasKey('external_auth', $user['meta']);
+        static::assertEquals('uuid', Hash::get($user, 'meta.external_auth.0.provider'));
+    }
+
+    /**
+     * Test that external_auth is null for entity withoud id.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     * @covers ::getExternalAuthMeta()
+     */
+    public function testGetMetaMissingUserId(): void
+    {
+        $user = new User();
+        $user->type = 'users';
+        $user->created_by = 1;
+        $user = $user->jsonApiSerialize(
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+        );
+
+        static::assertArrayHasKey('external_auth', $user['meta']);
+        static::assertEquals(null, Hash::get($user, 'meta.external_auth'));
     }
 }

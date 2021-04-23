@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -41,6 +42,12 @@ use Cake\Validation\Validator;
  */
 class ConfigTable extends Table
 {
+    /**
+     * Cache config name.
+     *
+     * @var string
+     */
+    const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * {@inheritDoc}
@@ -87,16 +94,36 @@ class ConfigTable extends Table
     {
         $validator
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->alphaNumeric('name')
 
             ->requirePresence('context', 'create')
-            ->notEmpty('context')
+            ->notEmptyString('context')
 
             ->requirePresence('content', 'create')
-            ->notEmpty('content');
+            ->notEmptyString('content');
 
         return $validator;
+    }
+
+    /**
+     * Invalidate database config cache after saving a config entity.
+     *
+     * @return void
+     */
+    public function afterSave(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
+    }
+
+    /**
+     * Invalidate database config cache after deleting a config entity.
+     *
+     * @return void
+     */
+    public function afterDelete(): void
+    {
+        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -148,5 +175,47 @@ class ConfigTable extends Table
 
             return $query->where($conditions);
         });
+    }
+
+    /**
+     * Alias for `name` finder.
+     * Used to load entity in `BEdita\Core\Utility\Resources`
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @codeCoverageIgnore
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        return $query->find('name', $options);
+    }
+
+    /**
+     * Fetch configuration from database using cache.
+     *
+     * @param int|null $applicationId Application ID.
+     * @param string|null $context Config context.
+     * @return \Cake\ORM\Query
+     */
+    public function fetchConfig(?int $applicationId, ?string $context): Query
+    {
+        return $this->find()
+            ->select(['name', 'content'])
+            ->disableHydration()
+            ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
+                if (!empty($context)) {
+                    $exp = $exp->eq($this->aliasField('context'), $context);
+                }
+                if ($applicationId !== null) {
+                    return $exp->eq($this->aliasField('application_id'), $applicationId);
+                }
+
+                return $exp->isNull($this->aliasField('application_id'));
+            })
+            ->cache(
+                sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'),
+                self::CACHE_CONFIG
+            );
     }
 }

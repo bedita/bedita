@@ -80,17 +80,17 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
-        try {
-            $objectType = $this->objectType($this->getTable()->getAlias());
-            $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
-                ->find('objectType', [$objectType->id])
-                ->where(['enabled' => true])
-                ->all();
-        } catch (RecordNotFoundException $e) {
+        $objectType = $this->objectType();
+        if ($objectType === null) {
             return [];
         }
 
-        $this->available = collection($properties)->indexBy('name')->toArray();
+        $this->available = TableRegistry::getTableLocator()->get('Properties')
+            ->find('type', ['dynamic'])
+            ->find('objectType', [$objectType->id])
+            ->where(['enabled' => true, 'is_static' => false])
+            ->indexBy('name')
+            ->toArray();
 
         return $this->available;
     }

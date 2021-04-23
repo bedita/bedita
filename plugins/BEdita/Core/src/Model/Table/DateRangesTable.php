@@ -75,18 +75,18 @@ class DateRangesTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->add('start_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('start_date');
+            ->allowEmptyDateTime('start_date');
 
         $validator
             ->add('end_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmpty('end_date');
+            ->allowEmptyDateTime('end_date');
 
         $validator
-            ->allowEmpty('params');
+            ->allowEmptyArray('params');
 
         return $validator;
     }
@@ -155,7 +155,7 @@ class DateRangesTable extends Table
             'start_date',
             'end_date',
             'from_date',
-            'to_date'
+            'to_date',
         ]);
         $options = array_intersect_key($options, $allowed);
         if (empty($options)) {

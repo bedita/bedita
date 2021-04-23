@@ -104,6 +104,12 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login_err' => null,
                         'num_login_err' => 1,
                         'verified' => '2017-05-29T11:36:00+00:00',
+                        'external_auth' => [
+                            [
+                                'provider' => 'example',
+                                'username' => 'first_user'
+                            ],
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -183,6 +189,12 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login_err' => '2016-03-15T09:57:38+00:00',
                         'num_login_err' => 0,
                         'verified' => null,
+                        'external_auth' => [
+                            [
+                                'provider' => 'uuid',
+                                'username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
+                            ],
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -332,6 +344,12 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login_err' => null,
                     'num_login_err' => 1,
                     'verified' => '2017-05-29T11:36:00+00:00',
+                    'external_auth' => [
+                        [
+                            'provider' => 'example',
+                            'username' => 'first_user'
+                        ],
+                    ],
                 ],
                 'relationships' => [
                     'roles' => [

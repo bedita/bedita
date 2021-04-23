@@ -1,0 +1,11 @@
+
+create:
+
+  # Object Types
+  object_types:
+    - name: foos
+      singular: foo
+      description: Foo object
+      plugin: BEdita/Core
+      model: Objects
+      enabled: 1

@@ -57,6 +57,10 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
@@ -462,6 +466,7 @@ class JsonApiTraitTest extends TestCase
             'blocked',
             'created',
             'created_by',
+            'external_auth',
             'last_login',
             'last_login_err',
             'locked',
@@ -527,6 +532,7 @@ class JsonApiTraitTest extends TestCase
             'blocked',
             'created',
             'created_by',
+            'external_auth',
             'last_login',
             'last_login_err',
             'locked',
@@ -636,5 +642,44 @@ class JsonApiTraitTest extends TestCase
         $role = json_decode(json_encode($role), true);
 
         static::assertEquals($expected, $role);
+    }
+
+    /**
+     * Data provider for testJsonApiSerializeCount()
+     *
+     * @return array
+     */
+    public function metaCountProvider(): array
+    {
+        return [
+            'count' => [
+                2,
+                2,
+            ],
+            'not_valid' => [
+                false,
+                'ciao',
+            ],
+        ];
+    }
+
+    /**
+     * Test that `count` is present in meta of relationships
+     *
+     * @return void
+     *
+     * @covers ::jsonApiSerialize()
+     * @covers ::getRelationshipCount()
+     * @dataProvider metaCountProvider()
+     */
+    public function testJsonApiSerializeCount($expected, $count): void
+    {
+        $role = $this->Roles->get(1);
+        $role->set('_countData', ['users' => $count]);
+        $role = $role->jsonApiSerialize();
+
+        $result = Hash::get($role, 'relationships.users.meta.count', false);
+
+        static::assertEquals($expected, $result);
     }
 }

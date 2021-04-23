@@ -19,18 +19,6 @@ use Cake\ORM\TableRegistry;
 trait FakeAnimalsTrait
 {
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.FakeAnimals',
-        'plugin.BEdita/Core.FakeMammals',
-        'plugin.BEdita/Core.FakeFelines',
-        'plugin.BEdita/Core.FakeArticles',
-    ];
-
-    /**
      * Table FakeAnimals
      *
      * @var \BEdita\Core\ORM\Inheritance\Table
@@ -57,6 +45,21 @@ trait FakeAnimalsTrait
      * @var array
      */
     protected $tableOptions = ['className' => Table::class];
+
+    /**
+     * Gets fixtures.
+     *
+     * @return array
+     */
+    public function getFixtures()
+    {
+        return [
+            'plugin.BEdita/Core.FakeAnimals',
+            'plugin.BEdita/Core.FakeMammals',
+            'plugin.BEdita/Core.FakeFelines',
+            'plugin.BEdita/Core.FakeArticles',
+        ];
+    }
 
     /**
      * Setup Tables
