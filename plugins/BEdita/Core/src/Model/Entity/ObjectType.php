@@ -81,6 +81,13 @@ class ObjectType extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * List of associations represented as properties.
+     *
+     * @var array
+     */
+    public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
+
+    /**
      * {@inheritDoc}
      */
     protected $_accessible = [
@@ -430,8 +437,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function associationProperties(): array
     {
-        $associations = ['Tags', 'Categories', 'DateRanges'];
-        $assocProps = array_intersect($associations, (array)$this->associations);
+        $assocProps = array_intersect(self::ASSOC_PROPERTIES, (array)$this->associations);
         $res = [];
         foreach ($assocProps as $assoc) {
             $name = Inflector::delimit($assoc);
