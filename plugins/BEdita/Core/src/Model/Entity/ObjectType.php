@@ -380,7 +380,12 @@ class ObjectType extends Entity implements JsonApiSerializable
 
         $res = [];
         foreach ($relations as $relation) {
-            $types = (array)Hash::extract((array)$relation->get($relTypes), '{n}.name');
+            $types = array_map(
+                function($t) {
+                    return $t->get('name');
+                },
+                (array)$relation->get($relTypes)
+            );
             sort($types);
             $res[$relation->get($name)] = [
                 'label' => $relation->get($label),
