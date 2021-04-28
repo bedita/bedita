@@ -381,7 +381,7 @@ class ObjectType extends Entity implements JsonApiSerializable
         $res = [];
         foreach ($relations as $relation) {
             $types = array_map(
-                function($t) {
+                function ($t) {
                     return $t->get('name');
                 },
                 (array)$relation->get($relTypes)
