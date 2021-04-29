@@ -23,7 +23,7 @@
 	
 	{$view->element('form_links')}
 			
-	{*$view->element('form_geotag')*}
+	{$view->element('form_geotag')}
 	
 	{$view->element('form_translations')}
 	

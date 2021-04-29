@@ -41,7 +41,8 @@ class ShortNews extends BeditaContentModel {
                 'Category',
                 'Annotation',
                 'Alias',
-                'Version' => array('User.realname', 'User.userid')
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
             )
         ),
         'default' => array(
@@ -51,7 +52,8 @@ class ShortNews extends BeditaContentModel {
                 'ObjectType',
                 'Category',
                 'RelatedObject',
-                'Annotation'
+                'Annotation',
+                'GeoTag'
             )
         ),
         'minimum' => array('BEObject' => array('ObjectType')),
@@ -61,6 +63,7 @@ class ShortNews extends BeditaContentModel {
                 'UserCreated',
                 'RelatedObject',
                 'Category',
+                'GeoTag',
                 'ObjectProperty'
             )
         ),
@@ -68,6 +71,7 @@ class ShortNews extends BeditaContentModel {
             'BEObject' => array(
                 'LangText',
                 'Category',
+                'GeoTag',
                 'ObjectProperty'
             )
         )
