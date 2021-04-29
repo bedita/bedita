@@ -10,20 +10,20 @@
 
 	{include file="../inc/form_properties.tpl" comments=true}
 
-	{$view->element('form_previews')}
-
 	{if !empty($conf->eventsCalendarDatesElement)}
 		{$view->element($conf->eventsCalendarDatesElement.name, $conf->eventsCalendarDatesElement.options)}
 	{else}
 		{$view->element('form_calendar_dates')}
 	{/if}
-	
+
+	{assign_associative var="params" object_type_id=$conf->objectTypes.event.id}
+	{$view->element('form_assoc_objects', $params)}
+
 	{assign_associative var="params" title="Event Locations"}
 	{$view->element('form_geotag', $params)}
 
 	{include file="../inc/form_promoter.tpl" comments=true}
 	
-
 	{$view->element('form_tree')}
 	
 	{$view->element('form_categories')}
@@ -37,9 +37,6 @@
 	
 	{$view->element('form_translations')}
 	
-	{assign_associative var="params" object_type_id=$conf->objectTypes.event.id}
-	{$view->element('form_assoc_objects', $params)}
-	
 	{assign_associative var="params" el=$object}
 	{$view->element('form_advanced_properties', $params)}
 	
@@ -47,6 +44,8 @@
 
 	{assign_associative var="params" el=$object recursion=true}
 	{$view->element('form_permissions', $params)}
+
+	{$view->element('form_previews')}
 
 	{$view->element('form_versions')}
 	

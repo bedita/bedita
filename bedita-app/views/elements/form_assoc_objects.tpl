@@ -87,7 +87,7 @@ $(document).ready(function() {
 	</h2>
 </div>
 
-<div class="relationList {if $rel == "attach"}boxed{/if}" id="relationType_{$rel}">
+<div class="relationList {if $rel == "attach" or $rel == "poster"}boxed{/if}" id="relationType_{$rel}">
 
 	<div class="relViewOptions">
 		<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
