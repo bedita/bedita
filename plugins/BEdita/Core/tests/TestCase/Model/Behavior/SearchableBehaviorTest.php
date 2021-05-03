@@ -213,6 +213,13 @@ class SearchableBehaviorTest extends TestCase
                  'li_n',
                  'FakeSearches',
              ],
+             'search case' => [
+                [
+                    1 => 'hippo-tiger',
+                ],
+                'HIPPO',
+                'FakeSearches',
+            ],
         ];
     }
 
