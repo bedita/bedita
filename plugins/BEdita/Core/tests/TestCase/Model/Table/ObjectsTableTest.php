@@ -770,6 +770,19 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Test `findPublishDateAllowed()`.
+     *
+     * @return void
+     *
+     * @covers ::findPublishDateAllowed()
+     */
+    public function testFindPublishDateAllowed()
+    {
+        $result = $this->Objects->find('publishDateAllowed')->toArray();
+        static::assertSame(12, count($result));
+    }
+
+    /**
      * Test `findCategories` method.
      *
      * @return void
