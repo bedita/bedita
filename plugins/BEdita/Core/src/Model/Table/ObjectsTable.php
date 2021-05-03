@@ -487,19 +487,66 @@ class ObjectsTable extends Table
 
     /**
      * Finder for available objects based on these rules:
-     *  - `status` should be acceptable (=> via `findStatusLevel`)
+     *  - `status`, `publish_start` and `publish_end` should be acceptable via `findPublishable`
      *  - `deleted` should be 0
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    protected function findAvailable(Query $query)
+    protected function findAvailable(Query $query): Query
+    {
+        return $query->find('publishable')
+            ->where([$this->aliasField('deleted') => 0]);
+    }
+
+    /**
+     * Finder for publishable objects based on these rules:
+     *  - `status` should be acceptable checking 'Status.level' configuration
+     *  - `publish_start` and `publish_end` should be acceptable
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPublishable(Query $query): Query
     {
         if (Configure::check('Status.level')) {
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
+        if ((bool)Configure::read('PublishDate.check', false)) {
+            $query = $query->find('publishDateAllowed');
+        }
 
-        return $query->where([$this->aliasField('deleted') => 0]);
+        return $query;
+    }
+
+    /**
+     * Finder to check if `publish_start` and `publish_end` dates allow object publishing.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPublishDateAllowed(Query $query)
+    {
+        $now = $query->func()->now();
+
+        return $query->where(function (QueryExpression $exp) use ($now) {
+            return $exp->and_([
+                $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $field = $this->aliasField('publish_start');
+
+                    return $exp
+                        ->isNull($field)
+                        ->lte($field, $now);
+                }),
+                $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $field = $this->aliasField('publish_end');
+
+                    return $exp
+                        ->isNull($field)
+                        ->gte($field, $now);
+                }),
+            ]);
+        });
     }
 
     /**
