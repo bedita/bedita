@@ -784,7 +784,7 @@ class ObjectsTableTest extends TestCase
                 10,
                 [
                     'Status.level' => 'on',
-                    'PublishDate.check' => true,
+                    'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [

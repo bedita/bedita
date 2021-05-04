@@ -502,7 +502,7 @@ class ObjectsTable extends Table
     /**
      * Finder for publishable objects based on these rules:
      *  - `status` should be acceptable checking 'Status.level' configuration
-     *  - `publish_start` and `publish_end` should be acceptable, checking 'PublishDate.check' configuration
+     *  - `publish_start` and `publish_end` should be acceptable, checking 'Publish.checkDate' configuration
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
@@ -512,7 +512,7 @@ class ObjectsTable extends Table
         if (Configure::check('Status.level')) {
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
-        if ((bool)Configure::read('PublishDate.check', false)) {
+        if ((bool)Configure::read('Publish.checkDate', false)) {
             $query = $query->find('publishDateAllowed');
         }
 

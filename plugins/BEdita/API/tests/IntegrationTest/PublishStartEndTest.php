@@ -19,7 +19,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
- * Test `PublishDate.check` configuration and `publish_start` + `publish_date`
+ * Test `Publish.checkDate` configuration and `publish_start` + `publish_date`
  */
 class PublisStartEndTest extends IntegrationTestCase
 {
@@ -45,10 +45,10 @@ class PublisStartEndTest extends IntegrationTestCase
     }
 
     /**
-     * Test `PublishDate.check` config on objects list
+     * Test `Publish.checkDate` config on objects list
      *
      * @param array $expected Object ids in response
-     * @param bool $config The `PublishDate.check` config
+     * @param bool $config The `Publish.checkDate` config
      * @param string $url The test URL
      * @return void
      *
@@ -57,7 +57,7 @@ class PublisStartEndTest extends IntegrationTestCase
      */
     public function testListObjects($expected, $config, $url): void
     {
-        Configure::write('PublishDate.check', $config);
+        Configure::write('Publish.checkDate', $config);
 
         $this->configRequestHeaders();
         $this->get($url);
@@ -110,10 +110,10 @@ class PublisStartEndTest extends IntegrationTestCase
     }
 
     /**
-     * Test `PublishDate.check` config on single objects
+     * Test `Publish.checkDate` config on single objects
      *
      * @param int $expected The HTTP status code expected
-     * @param bool $config The `PublishDate.check` config
+     * @param bool $config The `Publish.checkDate` config
      * @param array $data The fields data
      * @return void
      *
@@ -122,7 +122,7 @@ class PublisStartEndTest extends IntegrationTestCase
      */
     public function testSingleObject($expected, $config, array $data): void
     {
-        Configure::write('PublishDate.check', $config);
+        Configure::write('Publish.checkDate', $config);
 
         $table = TableRegistry::getTableLocator()->get('Documents');
         $document = $table->get(3);
