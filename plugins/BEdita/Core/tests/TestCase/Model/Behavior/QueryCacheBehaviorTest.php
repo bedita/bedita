@@ -11,19 +11,18 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\TestCase\Model\Table;
+namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\Model\Table\QueryCacheTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Table\QueryCacheTable} Test Case
+ * {@see \BEdita\Core\Model\Behavior\QueryCacheBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\QueryCacheTable
+ * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
-class QueryCacheTableTest extends TestCase
+class QueryCacheBehaviorTest extends TestCase
 {
     use ModelAwareTrait;
 
@@ -43,18 +42,20 @@ class QueryCacheTableTest extends TestCase
      * @return void
      *
      * @covers ::afterDelete()
+     * @covers ::queryCache()
      */
     public function testAfterDelete(): void
     {
         $this->loadModel('Config');
         $config = $this->Config->fetchConfig(null, null)->toArray();
-        $read = Cache::read('config_*_*', QueryCacheTable::CACHE_CONFIG);
+        $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');
+        $read = Cache::read('config_*_*', $cacheConf);
         static::assertNotEmpty($read);
 
         $config = $this->Config->get(1);
         $this->Config->deleteOrFail($config);
 
-        $read = Cache::read('config_*_*', QueryCacheTable::CACHE_CONFIG);
+        $read = Cache::read('config_*_*', $cacheConf);
         static::assertFalse($read);
     }
 
@@ -69,14 +70,15 @@ class QueryCacheTableTest extends TestCase
     {
         $this->loadModel('Config');
         $config = $this->Config->fetchConfig(null, null)->toArray();
-        $read = Cache::read('config_*_*', QueryCacheTable::CACHE_CONFIG);
+        $behavior = $this->Config->behaviors()->get('QueryCache');
+        $read = Cache::read('config_*_*', $behavior->getConfig('cacheConfig'));
         static::assertNotEmpty($read);
 
         $config = $this->Config->get(1);
         $config->content = 'new content';
         $this->Config->saveOrFail($config);
 
-        $read = Cache::read('config_*_*', QueryCacheTable::CACHE_CONFIG);
+        $read = Cache::read('config_*_*', $behavior->getConfig('cacheConfig'));
         static::assertFalse($read);
     }
 }

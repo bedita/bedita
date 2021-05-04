@@ -14,12 +14,12 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -38,6 +38,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  *
  * @since 4.0.0
  */
@@ -67,6 +68,7 @@ class ApplicationsTable extends Table
                 'description' => 5,
             ],
         ]);
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
@@ -160,12 +162,12 @@ class ApplicationsTable extends Table
             throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
         }
 
-        return $query
-            ->where([
-                $this->aliasField('api_key') => $options['apiKey'],
-                $this->aliasField('enabled') => true,
-            ])
-            ->cache(sprintf('app_%s', $options['apiKey']), static::CACHE_CONFIG);
+        $query = $query->where([
+            $this->aliasField('api_key') => $options['apiKey'],
+            $this->aliasField('enabled') => true,
+        ]);
+
+        return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
     }
 
     /**

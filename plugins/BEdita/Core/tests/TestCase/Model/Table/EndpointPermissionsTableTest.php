@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\QueryCacheTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Log\LogTrait;
@@ -60,7 +59,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         parent::setUp();
         $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
-        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**

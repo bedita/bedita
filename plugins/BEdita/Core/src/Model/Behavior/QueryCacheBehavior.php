@@ -11,10 +11,11 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Model\Table;
+namespace BEdita\Core\Model\Behavior;
 
 use Cake\Cache\Cache;
-use Cake\ORM\Table;
+use Cake\ORM\Behavior;
+use Cake\ORM\Query;
 
 /**
  * Abstract base class for table classes using query `cache` in some methods.
@@ -22,14 +23,14 @@ use Cake\ORM\Table;
  *
  * @since 4.4.0
  */
-abstract class QueryCacheTable extends Table
+class QueryCacheBehavior extends Behavior
 {
     /**
-     * Cache config name.
-     *
-     * @var string
+     * @inheritDoc
      */
-    public const CACHE_CONFIG = '_bedita_core_';
+    protected $_defaultConfig = [
+        'cacheConfig' => '_bedita_core_',
+    ];
 
     /**
      * Invalidate database config cache after saving a config entity.
@@ -38,7 +39,7 @@ abstract class QueryCacheTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(false, $this->getConfig('cacheConfig'));
     }
 
     /**
@@ -48,6 +49,18 @@ abstract class QueryCacheTable extends Table
      */
     public function afterDelete(): void
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(false, $this->getConfig('cacheConfig'));
+    }
+
+    /**
+     * Add query cache using configured cache config.
+     *
+     * @param \Cake\ORM\Query $query Query object
+     * @param string $key Cache key
+     * @return \Cake\ORM\Query
+     */
+    public function queryCache(Query $query, string $key): Query
+    {
+        return $query->cache($key, $this->getConfig('cacheConfig'));
     }
 }

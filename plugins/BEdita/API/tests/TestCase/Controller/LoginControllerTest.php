@@ -15,7 +15,6 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
-use BEdita\Core\Model\Table\QueryCacheTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\I18n\Time;
@@ -49,7 +48,7 @@ class LoginControllerTest extends IntegrationTestCase
     public function setUp()
     {
         parent::setUp();
-        Cache::clear(false, QueryCacheTable::CACHE_CONFIG);
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**

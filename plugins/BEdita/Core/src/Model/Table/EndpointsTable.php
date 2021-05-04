@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -34,6 +34,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  *
  * @since 4.0.0
  */
@@ -51,6 +52,7 @@ class EndpointsTable extends Table
         $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('ObjectTypes');
         $this->hasMany('EndpointPermissions', [
@@ -107,11 +109,12 @@ class EndpointsTable extends Table
         $path = array_values(array_filter(explode('/', $path)));
         $name = Hash::get($path, '0', '');
 
-        $endpoint = (array)$this->find()
+        $query = $this->find()
             ->select(['id', 'enabled'])
             ->disableHydration()
-            ->where([$this->aliasField('name') => $name])
-            ->cache(sprintf('enpoint_%s', $name), self::CACHE_CONFIG)
+            ->where([$this->aliasField('name') => $name]);
+
+        $endpoint = (array)$this->queryCache($query, sprintf('enpoint_%s', $name))
             ->first();
 
         if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {

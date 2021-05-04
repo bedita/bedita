@@ -13,12 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -36,6 +36,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  *
  * @since 4.0.0
  */
@@ -61,6 +62,7 @@ class ConfigTable extends Table
                 ]
             ],
         ]);
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('Applications');
     }
@@ -172,7 +174,7 @@ class ConfigTable extends Table
      */
     public function fetchConfig(?int $applicationId, ?string $context): Query
     {
-        return $this->find()
+        $query = $this->find()
             ->select(['name', 'content'])
             ->disableHydration()
             ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
@@ -184,10 +186,11 @@ class ConfigTable extends Table
                 }
 
                 return $exp->isNull($this->aliasField('application_id'));
-            })
-            ->cache(
-                sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'),
-                self::CACHE_CONFIG
-            );
+            });
+
+        return $this->queryCache(
+            $query,
+            sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*')
+        );
     }
 }

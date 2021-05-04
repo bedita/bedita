@@ -218,7 +218,8 @@ class EndpointsTableTest extends TestCase
      */
     public function testFetchId($expected, string $path): void
     {
-        Cache::clear(false, $this->Endpoints::CACHE_CONFIG);
+        $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');
+        Cache::clear(false, $cacheConf);
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());

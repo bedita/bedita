@@ -268,7 +268,8 @@ class ConfigTableTest extends TestCase
      */
     public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
-        Cache::clear(false, ConfigTable::CACHE_CONFIG);
+        $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');
+        Cache::clear(false, $cacheConf);
         $result = $this->Config->fetchConfig($appId, $context)->toArray();
         static::assertEquals($expected, $result);
     }

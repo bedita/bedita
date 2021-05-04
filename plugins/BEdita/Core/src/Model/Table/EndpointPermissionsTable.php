@@ -13,12 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Table\QueryCacheTable as Table;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -28,6 +28,8 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Association\BelongsTo $Roles
+ *
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  *
  * @since 4.0.0
  */
@@ -44,6 +46,8 @@ class EndpointPermissionsTable extends Table
 
         $this->setTable('endpoint_permissions');
         $this->setDisplayField('id');
+
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('Endpoints', [
             'joinType' => 'INNER',
@@ -252,9 +256,10 @@ class EndpointPermissionsTable extends Table
         $endpointIds = array_filter([$endpointId]);
         $key = sprintf('perms_count_%s_%s', $applicationId ?: '*', $endpointId ?: '*');
 
-        return $this->find('byApplication', compact('applicationId'))
-            ->find('byEndpoint', compact('endpointIds'))
-            ->cache($key, self::CACHE_CONFIG)
+        $query = $this->find('byApplication', compact('applicationId'))
+            ->find('byEndpoint', compact('endpointIds'));
+
+        return $this->queryCache($query, $key)
             ->count();
     }
 
@@ -273,9 +278,10 @@ class EndpointPermissionsTable extends Table
         $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: '*', $endpointId ?: '*');
 
         if (!empty($user['_anonymous'])) {
-            return $this->find('byApplication', compact('applicationId', 'strict'))
-                ->find('byEndpoint', compact('endpointIds', 'strict'))
-                ->cache($key, self::CACHE_CONFIG)
+            $query = $this->find('byApplication', compact('applicationId', 'strict'))
+                ->find('byEndpoint', compact('endpointIds', 'strict'));
+
+            return $this->queryCache($query, $key)
                 ->toArray();
         }
 
@@ -283,10 +289,11 @@ class EndpointPermissionsTable extends Table
         sort($roleIds);
         $key .= sprintf('_%s', implode('.', $roleIds));
 
-        return $this->find('byApplication', compact('applicationId', 'strict'))
+        $query = $this->find('byApplication', compact('applicationId', 'strict'))
             ->find('byEndpoint', compact('endpointIds', 'strict'))
-            ->find('byRole', compact('roleIds'))
-            ->cache($key, self::CACHE_CONFIG)
+            ->find('byRole', compact('roleIds'));
+
+        return $this->queryCache($query, $key)
             ->toArray();
     }
 }
