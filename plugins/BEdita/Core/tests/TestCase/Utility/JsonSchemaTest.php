@@ -230,9 +230,6 @@ class JsonSchemaTest extends TestCase
             static::assertNotEmpty($result);
 
             $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'associations', 'relations', 'revision'];
-            if (!in_array($name, ['roles', 'streams'])) {
-                $keys = array_merge($keys, ['associations', 'relations']);
-            }
             $found = array_keys($result);
             static::assertEquals(sort($keys), sort($found));
             static::assertEquals($expected['properties'], array_keys($result['properties']), '', 0, 10, true);
