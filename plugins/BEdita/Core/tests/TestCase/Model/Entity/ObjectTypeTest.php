@@ -709,7 +709,7 @@ class ObjectTypeTest extends TestCase
      * @covers ::objectTypeRelations()
      * @covers ::associationProperties()
      */
-    public function testGetSchema($expected, $name)
+    public function testGetSchema($expected, $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
 
@@ -761,7 +761,7 @@ class ObjectTypeTest extends TestCase
      * @covers ::_getSchema()
      * @covers ::objectTypeProperties()
      */
-    public function testGetSchemaHiddenProperties()
+    public function testGetSchemaHiddenProperties(): void
     {
         // enable type `news`
         $objectType = $this->ObjectTypes->get('news');
@@ -782,7 +782,7 @@ class ObjectTypeTest extends TestCase
      *
      * @covers ::objectTypeProperties()
      */
-    public function testGetSchemaRequired()
+    public function testGetSchemaRequired(): void
     {
         $objectType = $this->ObjectTypes->get('users');
         $schema = $objectType->schema;
