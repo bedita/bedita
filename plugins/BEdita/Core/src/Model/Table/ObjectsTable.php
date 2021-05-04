@@ -502,7 +502,7 @@ class ObjectsTable extends Table
     /**
      * Finder for publishable objects based on these rules:
      *  - `status` should be acceptable checking 'Status.level' configuration
-     *  - `publish_start` and `publish_end` should be acceptable
+     *  - `publish_start` and `publish_end` should be acceptable, checking 'PublishDate.check' configuration
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
