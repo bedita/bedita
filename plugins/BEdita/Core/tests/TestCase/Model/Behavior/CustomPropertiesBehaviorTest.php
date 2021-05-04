@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\Collection\CollectionInterface;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -282,6 +283,35 @@ class CustomPropertiesBehaviorTest extends TestCase
         foreach ($expectedProperties as $property) {
             static::assertArrayHasKey($property, $result);
         }
+    }
+
+    /**
+     * Test that formatter is prepended to other formatters that may be attached to the Query object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindFormatterPrepended()
+    {
+        $expected = [
+            'files_property' => ['media-one' => null, 'media-two' => null],
+            'media_property' => ['media-one' => 'synapse', 'media-two' => null],
+            'count' => 2,
+        ];
+
+        $result = $this->getTableLocator()->get('Files')->find()
+            ->formatResults(function (CollectionInterface $results): array {
+                return [
+                    'files_property' => $results->combine('uname', 'files_property')->toArray(),
+                    'media_property' => $results->combine('uname', 'media_property')->toArray(),
+                    'count' => $results->count(),
+                ];
+            })
+            ->order('Files.id')
+            ->toArray();
+
+        static::assertSame($expected, $result);
     }
 
     /**
