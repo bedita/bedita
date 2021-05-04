@@ -308,7 +308,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @covers ::afterDelete()
+     * @coversNothing
      */
     public function testAfterDelete(): void
     {
@@ -333,7 +333,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @covers ::afterSave()
+     * @coversNothing
      */
     public function testAfterSave(): void
     {
