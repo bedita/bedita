@@ -112,13 +112,16 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\ORM\Query $query Query object instance.
      * @return void
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(Event $event, Query $query): Query
     {
-        $query->formatResults(function (CollectionInterface $results) {
-            return $results->map(function ($row) {
-                return $this->promoteProperties($row);
-            });
-        });
+        return $query->formatResults(
+            function (CollectionInterface $results) {
+                return $results->map(function ($row) {
+                    return $this->promoteProperties($row);
+                });
+            },
+            Query::PREPEND
+        );
     }
 
     /**
