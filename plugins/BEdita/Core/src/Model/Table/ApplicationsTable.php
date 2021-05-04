@@ -34,11 +34,11 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  *
  * @since 4.0.0
  */

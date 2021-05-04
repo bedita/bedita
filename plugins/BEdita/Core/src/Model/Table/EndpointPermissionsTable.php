@@ -29,7 +29,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Association\BelongsTo $Roles
  *
- * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @since 4.0.0
  */
