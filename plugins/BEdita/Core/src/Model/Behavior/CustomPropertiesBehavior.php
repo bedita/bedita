@@ -110,7 +110,7 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
-     * @return void
+     * @return \Cake\ORM\Query
      */
     public function beforeFind(Event $event, Query $query): Query
     {
