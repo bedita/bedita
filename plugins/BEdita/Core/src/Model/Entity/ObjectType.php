@@ -442,7 +442,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function associationProperties(): array
     {
-        $assocProps = array_intersect(self::ASSOC_PROPERTIES, (array)$this->associations);
+        $assocProps = array_intersect(static::ASSOC_PROPERTIES, (array)$this->associations);
         $res = [];
         foreach ($assocProps as $assoc) {
             $name = Inflector::delimit($assoc);
