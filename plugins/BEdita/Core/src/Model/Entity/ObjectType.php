@@ -18,6 +18,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Generator;
 
@@ -32,8 +33,8 @@ use Generator;
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property string $associations
- * @property string $hidden
+ * @property array $associations
+ * @property array $hidden
  * @property string[] $relations
  * @property bool $is_abstract
  * @property int $parent_id
@@ -57,6 +58,34 @@ class ObjectType extends Entity implements JsonApiSerializable
         listAssociations as protected jsonApiListAssociations;
     }
     use LocatorAwareTrait;
+
+    /**
+     * JSON Schema definition of nullable objects array.
+     * Basic schema for categories, tags, date_ranges and other properties.
+     *
+     * @var array
+     */
+    public const NULLABLE_OBJECT_ARRAY = [
+        'oneOf' => [
+            [
+                'type' => 'null'
+            ],
+            [
+                'type' => 'array',
+                'uniqueItems' => true,
+                'items' => [
+                    'type' => 'object'
+                ],
+            ],
+        ],
+    ];
+
+    /**
+     * List of associations represented as properties.
+     *
+     * @var array
+     */
+    public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
 
     /**
      * {@inheritDoc}
@@ -321,6 +350,60 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
+        $associations = (array)$this->associations;
+        $relations = static::objectTypeRelations($this->right_relations, 'right') +
+            static::objectTypeRelations($this->left_relations, 'left');
+
+        return $this->objectTypeProperties() + compact('associations', 'relations');
+    }
+
+    /**
+     * Retrieve relation information as associative array:
+     *  * relation name as key, direct or inverse
+     *  * label, params and related types as values
+     *
+     * @param array $relations Relations array
+     * @param string $side Relation side, 'left' or 'right'
+     * @return array
+     */
+    protected static function objectTypeRelations(array $relations, string $side): array
+    {
+        if ($side === 'left') {
+            $name = 'name';
+            $label = 'label';
+            $relTypes = 'right_object_types';
+        } else {
+            $name = 'inverse_name';
+            $label = 'inverse_label';
+            $relTypes = 'left_object_types';
+        }
+
+        $res = [];
+        foreach ($relations as $relation) {
+            $types = array_map(
+                function ($t) {
+                    return $t->get('name');
+                },
+                (array)$relation->get($relTypes)
+            );
+            sort($types);
+            $res[$relation->get($name)] = [
+                'label' => $relation->get($label),
+                'params' => $relation->params
+            ] + compact('types');
+        }
+
+        return $res;
+    }
+
+    /**
+     * Return object type properties in JSON SCHEMA format
+     *
+     * @return array
+     */
+    protected function objectTypeProperties(): array
+    {
+        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
         // Fetch all properties, properties with `is_static` true at the end.
         // This way we can override default property type of a static property.
         $allProperties = $this->getTableLocator()->get('Properties')
@@ -329,11 +412,11 @@ class ObjectType extends Entity implements JsonApiSerializable
             ->toArray();
         $entity = $this->getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
-        $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
-        $properties = $required = [];
+        $required = [];
+        $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
-            if (in_array($property->name, $typeHidden)) {
+            if (in_array($property->name, (array)$this->hidden)) {
                 continue;
             }
             $accessMode = null;
@@ -353,7 +436,26 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
-     * Check if an object type is child of another object type.
+     * Add internal associations as properties
+     *
+     * @return array
+     */
+    protected function associationProperties(): array
+    {
+        $assocProps = array_intersect(static::ASSOC_PROPERTIES, (array)$this->associations);
+        $res = [];
+        foreach ($assocProps as $assoc) {
+            $name = Inflector::delimit($assoc);
+            $res[$name] = self::NULLABLE_OBJECT_ARRAY + [
+                '$id' => sprintf('/properties/%s', $name),
+                'title' => $assoc,
+            ];
+        }
+
+        return $res;
+    }
+
+    /** Check if an object type is child of another object type.
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $ancestor Ancestor object type to test.
      * @return bool
