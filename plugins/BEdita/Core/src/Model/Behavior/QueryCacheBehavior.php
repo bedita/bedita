@@ -18,7 +18,7 @@ use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 
 /**
- * Abstract base class for table classes using query `cache` in some methods.
+ * Behavior to handle caching easily in table classes via `queryCache` methods.
  * Cache invalidation is performed in `afterSave` and `afterDelete` methods.
  *
  * @since 4.4.0
