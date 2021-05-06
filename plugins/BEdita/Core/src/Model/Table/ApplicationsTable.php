@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -35,6 +34,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
  *
@@ -50,13 +50,6 @@ class ApplicationsTable extends Table
      * @var int
      */
     const DEFAULT_APPLICATION = 1;
-
-    /**
-     * Cache config name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
 
     /**
      * {@inheritDoc}
@@ -75,6 +68,7 @@ class ApplicationsTable extends Table
                 'description' => 5,
             ],
         ]);
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
@@ -118,26 +112,6 @@ class ApplicationsTable extends Table
         $rules->add($rules->isUnique(['api_key']));
 
         return $rules;
-    }
-
-    /**
-     * Invalidate applications cache after saving an application entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate applications cache after deleting an application entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -188,12 +162,12 @@ class ApplicationsTable extends Table
             throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
         }
 
-        return $query
-            ->where([
-                $this->aliasField('api_key') => $options['apiKey'],
-                $this->aliasField('enabled') => true,
-            ])
-            ->cache(sprintf('app_%s', $options['apiKey']), static::CACHE_CONFIG);
+        $query = $query->where([
+            $this->aliasField('api_key') => $options['apiKey'],
+            $this->aliasField('enabled') => true,
+        ]);
+
+        return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
     }
 
     /**

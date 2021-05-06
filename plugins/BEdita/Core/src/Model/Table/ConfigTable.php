@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
-use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -35,6 +34,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
@@ -42,13 +42,6 @@ use Cake\Validation\Validator;
  */
 class ConfigTable extends Table
 {
-    /**
-     * Cache config name.
-     *
-     * @var string
-     */
-    const CACHE_CONFIG = '_bedita_core_';
-
     /**
      * {@inheritDoc}
      *
@@ -69,6 +62,7 @@ class ConfigTable extends Table
                 ]
             ],
         ]);
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('Applications');
     }
@@ -104,26 +98,6 @@ class ConfigTable extends Table
             ->notEmptyString('content');
 
         return $validator;
-    }
-
-    /**
-     * Invalidate database config cache after saving a config entity.
-     *
-     * @return void
-     */
-    public function afterSave(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
-    }
-
-    /**
-     * Invalidate database config cache after deleting a config entity.
-     *
-     * @return void
-     */
-    public function afterDelete(): void
-    {
-        Cache::clear(false, self::CACHE_CONFIG);
     }
 
     /**
@@ -200,7 +174,7 @@ class ConfigTable extends Table
      */
     public function fetchConfig(?int $applicationId, ?string $context): Query
     {
-        return $this->find()
+        $query = $this->find()
             ->select(['name', 'content'])
             ->disableHydration()
             ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
@@ -212,10 +186,11 @@ class ConfigTable extends Table
                 }
 
                 return $exp->isNull($this->aliasField('application_id'));
-            })
-            ->cache(
-                sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*'),
-                self::CACHE_CONFIG
-            );
+            });
+
+        return $this->queryCache(
+            $query,
+            sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*')
+        );
     }
 }

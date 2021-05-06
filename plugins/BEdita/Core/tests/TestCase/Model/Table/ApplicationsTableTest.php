@@ -308,7 +308,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @covers ::afterDelete()
+     * @coversNothing
      */
     public function testAfterDelete(): void
     {
@@ -318,12 +318,13 @@ class ApplicationsTableTest extends TestCase
         $this->Applications->saveOrFail($app);
 
         $app = $this->Applications->find('apiKey', compact('apiKey'))->first();
-        $read = Cache::read(sprintf('app_%s', $apiKey), ApplicationsTable::CACHE_CONFIG);
+        $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
+        $read = Cache::read(sprintf('app_%s', $apiKey), $cacheConf);
         static::assertNotEmpty($read);
 
         $this->Applications->deleteOrFail($app);
 
-        $read = Cache::read(sprintf('app_%s', $apiKey), ApplicationsTable::CACHE_CONFIG);
+        $read = Cache::read(sprintf('app_%s', $apiKey), $cacheConf);
         static::assertFalse($read);
     }
 
@@ -332,19 +333,20 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @covers ::afterSave()
+     * @coversNothing
      */
     public function testAfterSave(): void
     {
         $app = $this->Applications->find('apiKey', ['apiKey' => API_KEY])->first();
-        $read = Cache::read(sprintf('app_%s', API_KEY), ApplicationsTable::CACHE_CONFIG);
+        $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
+        $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
         static::assertNotEmpty($read);
 
         $app = $this->Applications->get(1);
         $app->set('description', 'new app description');
         $this->Applications->saveOrFail($app);
 
-        $read = Cache::read(sprintf('app_%s', API_KEY), ApplicationsTable::CACHE_CONFIG);
+        $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
         static::assertFalse($read);
     }
 

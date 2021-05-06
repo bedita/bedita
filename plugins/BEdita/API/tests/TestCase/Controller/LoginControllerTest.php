@@ -16,6 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -40,6 +41,15 @@ class LoginControllerTest extends IntegrationTestCase
             'home' => 'http://api.example.com/home',
         ],
     ];
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        Cache::clear(false, '_bedita_core_');
+    }
 
     /**
      * Test login method.
