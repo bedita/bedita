@@ -6,15 +6,10 @@
 # Use the version number to figure out if the release
 # is a pre-release
 PRERELEASE=$(shell echo $(VERSION) | grep -E 'dev|rc|alpha|beta' --quiet && echo 'true' || echo 'false')
-COMPONENTS= api core
-COMPONENTS_DIR=plugins/BEdita
 CURRENT_BRANCH=$(shell git branch | grep '*' | tr -d '* ')
-# components paths on filesystem as array
-COMPONENT_PATH[api]=API
-COMPONENT_PATH[core]=Core
 
 # composer version to use. Leave empty to use last version.
-COMPOSER_VERSION=1.10.16
+COMPOSER_VERSION=
 
 # Github settings
 UPLOAD_HOST=https://uploads.github.com
