@@ -52,5 +52,13 @@ class RelationsFixture extends TestFixture
             'description' => 'Sample description.',
             'params' => null,
         ],
+        [
+            'name' => 'placeholder',
+            'label' => 'Placeholder',
+            'inverse_name' => 'placeholded',
+            'inverse_label' => 'Placeholded in',
+            'description' => 'Relation to link objects with other objects that appear in the body of the former.',
+            'params' => null,
+        ],
     ];
 }

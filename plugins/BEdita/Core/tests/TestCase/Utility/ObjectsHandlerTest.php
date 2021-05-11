@@ -38,6 +38,7 @@ class ObjectsHandlerTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',

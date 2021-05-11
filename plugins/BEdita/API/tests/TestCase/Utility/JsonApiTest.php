@@ -445,6 +445,18 @@ class JsonApiTest extends TestCase
                                 'self' => '/documents/2/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => '/documents/2/placeholder',
+                                'self' => '/documents/2/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => '/documents/2/placeholded',
+                                'self' => '/documents/2/relationships/placeholded',
+                            ],
+                        ],
                     ],
                     '_schema' => [
                         'profiles' => [
@@ -676,6 +688,18 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/translations',
                         'self' => '/documents/2/relationships/translations',
+                    ],
+                ],
+                'placeholder' => [
+                    'links' => [
+                        'related' => '/documents/2/placeholder',
+                        'self' => '/documents/2/relationships/placeholder',
+                    ],
+                ],
+                'placeholded' => [
+                    'links' => [
+                        'related' => '/documents/2/placeholded',
+                        'self' => '/documents/2/relationships/placeholded',
                     ],
                 ],
             ],

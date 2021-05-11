@@ -63,6 +63,16 @@ class RelationTypesFixture extends TestFixture
             'object_type_id' => 8, // media
             'side' => 'right',
         ],
+        [
+            'relation_id' => 4, // placeholder / placeholded
+            'object_type_id' => 1, // objects
+            'side' => 'left',
+        ],
+        [
+            'relation_id' => 4, // placeholder / placeholded
+            'object_type_id' => 1, // objects
+            'side' => 'right',
+        ],
     ];
 
     /**

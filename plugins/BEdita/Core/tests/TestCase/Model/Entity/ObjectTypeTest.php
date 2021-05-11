@@ -107,7 +107,9 @@ class ObjectTypeTest extends TestCase
             'table' => 'BEdita/Core.Objects',
             'relations' => [
                 'test',
+                'placeholder',
                 'inverse_test',
+                'placeholded',
             ],
             'parent_name' => 'objects',
         ];
@@ -265,6 +267,10 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetRelationsByName($expected, $name, $side = 'both')
     {
+        // Remove placeholder relation, because it applies to everything.
+        $rel = $this->getTableLocator()->get('Relations');
+        $rel->deleteOrFail($rel->get('placeholder'));
+
         $objectType = $this->ObjectTypes->get($name);
         $relations = array_keys($objectType->getRelations($side));
 
@@ -282,6 +288,8 @@ class ObjectTypeTest extends TestCase
     {
         $expected = [
             'inverse_test',
+            'placeholded',
+            'placeholder',
         ];
         $objectType = $this->ObjectTypes->get(3);
 

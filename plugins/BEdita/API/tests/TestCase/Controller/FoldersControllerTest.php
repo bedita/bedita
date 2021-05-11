@@ -131,6 +131,18 @@ class FoldersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/11/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/placeholder',
+                                'self' => 'http://api.example.com/folders/11/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/placeholded',
+                                'self' => 'http://api.example.com/folders/11/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -178,6 +190,18 @@ class FoldersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/12/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/placeholder',
+                                'self' => 'http://api.example.com/folders/12/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/placeholded',
+                                'self' => 'http://api.example.com/folders/12/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -223,6 +247,18 @@ class FoldersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/folders/13/translations',
                                 'self' => 'http://api.example.com/folders/13/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/placeholder',
+                                'self' => 'http://api.example.com/folders/13/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/placeholded',
+                                'self' => 'http://api.example.com/folders/13/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -335,6 +371,18 @@ class FoldersControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/folders/11/translations',
                             'self' => 'http://api.example.com/folders/11/relationships/translations',
+                        ],
+                    ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/folders/11/placeholder',
+                            'self' => 'http://api.example.com/folders/11/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/folders/11/placeholded',
+                            'self' => 'http://api.example.com/folders/11/relationships/placeholded',
                         ],
                     ],
                 ],

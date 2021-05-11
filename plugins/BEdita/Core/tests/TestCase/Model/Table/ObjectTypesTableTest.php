@@ -255,7 +255,9 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -278,7 +280,9 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -301,7 +305,9 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -324,7 +330,9 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -347,7 +355,9 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'placeholder',
                         'inverse_test',
+                        'placeholded',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',

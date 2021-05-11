@@ -139,6 +139,18 @@ class UsersControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholder',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholded',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -222,6 +234,18 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/translations',
                                 'self' => 'http://api.example.com/users/5/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/placeholder',
+                                'self' => 'http://api.example.com/users/5/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/placeholded',
+                                'self' => 'http://api.example.com/users/5/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -374,6 +398,18 @@ class UsersControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/users/1/translations',
                             'self' => 'http://api.example.com/users/1/relationships/translations',
+                        ],
+                    ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/placeholder',
+                            'self' => 'http://api.example.com/users/1/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/placeholded',
+                            'self' => 'http://api.example.com/users/1/relationships/placeholded',
                         ],
                     ],
                 ],

@@ -10,6 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\ObjectsController;
@@ -148,6 +149,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/1/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholder',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/placeholded',
+                                'self' => 'http://api.example.com/users/1/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -203,6 +216,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/placeholder',
+                                'self' => 'http://api.example.com/documents/2/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/placeholded',
+                                'self' => 'http://api.example.com/documents/2/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -255,6 +280,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholder',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholded',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -299,6 +336,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -355,6 +404,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/users/5/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/placeholder',
+                                'self' => 'http://api.example.com/users/5/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/placeholded',
+                                'self' => 'http://api.example.com/users/5/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -401,6 +462,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/locations/8/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/placeholder',
+                                'self' => 'http://api.example.com/locations/8/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/placeholded',
+                                'self' => 'http://api.example.com/locations/8/relationships/placeholded',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -445,6 +518,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/events/9/translations',
                                 'self' => 'http://api.example.com/events/9/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/placeholder',
+                                'self' => 'http://api.example.com/events/9/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/events/9/placeholded',
+                                'self' => 'http://api.example.com/events/9/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -494,6 +579,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/files/10/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/placeholder',
+                                'self' => 'http://api.example.com/files/10/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/10/placeholded',
+                                'self' => 'http://api.example.com/files/10/relationships/placeholded',
+                            ],
+                        ],
                         'inverse_test_abstract' => [
                             'links' => [
                                 'related' => 'http://api.example.com/files/10/inverse_test_abstract',
@@ -538,6 +635,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/folders/11/translations',
                                 'self' => 'http://api.example.com/folders/11/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/placeholder',
+                                'self' => 'http://api.example.com/folders/11/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/11/placeholded',
+                                'self' => 'http://api.example.com/folders/11/relationships/placeholded',
                             ],
                         ],
                         'children' => [
@@ -586,6 +695,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/folders/12/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/placeholder',
+                                'self' => 'http://api.example.com/folders/12/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/12/placeholded',
+                                'self' => 'http://api.example.com/folders/12/relationships/placeholded',
+                            ],
+                        ],
                         'children' => [
                             'links' => [
                                 'related' => 'http://api.example.com/folders/12/children',
@@ -630,6 +751,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/folders/13/translations',
                                 'self' => 'http://api.example.com/folders/13/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/placeholder',
+                                'self' => 'http://api.example.com/folders/13/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/folders/13/placeholded',
+                                'self' => 'http://api.example.com/folders/13/relationships/placeholded',
                             ],
                         ],
                         'children' => [
@@ -682,6 +815,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/translations',
                                 'self' => 'http://api.example.com/files/14/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/placeholder',
+                                'self' => 'http://api.example.com/files/14/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/14/placeholded',
+                                'self' => 'http://api.example.com/files/14/relationships/placeholded',
                             ],
                         ],
                         'inverse_test_abstract' => [
@@ -827,6 +972,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/documents/2/relationships/translations',
                         ],
                     ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/placeholder',
+                            'self' => 'http://api.example.com/documents/2/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/placeholded',
+                            'self' => 'http://api.example.com/documents/2/relationships/placeholded',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -909,6 +1066,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/translations',
                             'self' => 'http://api.example.com/documents/6/relationships/translations',
+                        ],
+                    ],
+                    'placeholder' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/placeholder',
+                            'self' => 'http://api.example.com/documents/6/relationships/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/placeholded',
+                            'self' => 'http://api.example.com/documents/6/relationships/placeholded',
                         ],
                     ],
                 ],
@@ -1367,6 +1536,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/placeholder',
+                                'self' => 'http://api.example.com/documents/2/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/placeholded',
+                                'self' => 'http://api.example.com/documents/2/relationships/placeholded',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'locked' => true,
@@ -1462,6 +1643,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1500,6 +1693,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/translations',
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholder',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholded',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -1562,9 +1767,9 @@ class ObjectsControllerTest extends IntegrationTestCase
     /**
      * Test related method on folder related relationships.
      *
-     * @return void
      * @param string $expected Expected result
      * @param string $url Test URL
+     * @return void
      *
      * @dataProvider linksAvailableProvider
      * @covers ::getAvailableUrl()
@@ -1668,6 +1873,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1747,6 +1964,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -1938,6 +2167,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -2318,6 +2559,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/documents/2/translations',
                         ],
                     ],
+                    'placeholder' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/placeholder',
+                            'related' => 'http://api.example.com/documents/2/placeholder',
+                        ],
+                    ],
+                    'placeholded' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/placeholded',
+                            'related' => 'http://api.example.com/documents/2/placeholded',
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -2368,6 +2621,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholder',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/placeholded',
+                                'self' => 'http://api.example.com/profiles/4/relationships/placeholded',
                             ],
                         ],
                     ],
@@ -2425,6 +2690,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/translations',
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
+                        'placeholder' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholder',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholder',
+                            ],
+                        ],
+                        'placeholded' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/placeholded',
+                                'self' => 'http://api.example.com/documents/3/relationships/placeholded',
                             ],
                         ],
                     ],

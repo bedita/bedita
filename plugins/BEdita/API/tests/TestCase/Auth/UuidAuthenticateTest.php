@@ -42,6 +42,7 @@ class UuidAuthenticateTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.AuthProviders',
