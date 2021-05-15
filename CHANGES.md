@@ -1,5 +1,52 @@
 # ChangeLog
 
+## Version 4.4.0 - Cactus
+
+### API changes (4.4.0)
+
+* [#1787](https://github.com/bedita/bedita/pull/1787) Add `/model/tags` route
+* [#1774](https://github.com/bedita/bedita/pull/1774) Allow `uname` in relationship management
+* [#1773](https://github.com/bedita/bedita/pull/1773) Fix `?include` check
+* [#1772](https://github.com/bedita/bedita/pull/1772) Fix `/home` authorization check on object types endpoints
+* [#1767](https://github.com/bedita/bedita/pull/1767) Fix `status` handling on status level check
+* [#1759](https://github.com/bedita/bedita/pull/1759) Introduce min/max sort on DateRanges
+* [#1747](https://github.com/bedita/bedita/pull/1747) Dispatch JsonApi.beforeFormatData and JsonApi.afterFormatData events
+* [#1746](https://github.com/bedita/bedita/pull/1746) Include relations count number via `?count` query string
+* [#1710](https://github.com/bedita/bedita/pull/1710) Add associations and relations metadata to JSON Schema
+
+### Core changes (4.4.0)
+
+* [#1795](https://github.com/bedita/bedita/pull/1795) Ensure custom properties results formatter is prepended
+* [#1790](https://github.com/bedita/bedita/pull/1790) Add endpoints permissions cache
+* [#1751](https://github.com/bedita/bedita/pull/1751) Activate routes cache
+* [#1788](https://github.com/bedita/bedita/pull/1788) Enale tags creation in  CategoriesBehavior
+* [#1784](https://github.com/bedita/bedita/pull/1784) Reload ObjectType entity to load related type's relations
+* [#1783](https://github.com/bedita/bedita/pull/1783) Add index on `created` and `modified` columns of `async_jobs`
+* [#1782](https://github.com/bedita/bedita/pull/1782) ResourceBase class for Resources utilities
+* [#1780](https://github.com/bedita/bedita/pull/1780) External Auth Signup: add `verified`, remove reference on `anonymize`
+* [#1778](https://github.com/bedita/bedita/pull/1778) Expose available custom properties getting related object
+* [#1777](https://github.com/bedita/bedita/pull/1777) Enable `categories` in migrations
+* [#1769](https://github.com/bedita/bedita/pull/1769) Display only _"available"_ children and parents
+* [#1768](https://github.com/bedita/bedita/pull/1768) Restore original inherited table alias after cascading to parent finder
+* [#1766](https://github.com/bedita/bedita/pull/1766) Allow empty `label/inverse_label` in relations
+* [#1765](https://github.com/bedita/bedita/pull/1765) Cache database config and applications
+* [#1762](https://github.com/bedita/bedita/pull/1762) Dispatch events when adding, removing, or replacing associations
+* [#1761](https://github.com/bedita/bedita/pull/1761) Introduce layered cache
+* [#1757](https://github.com/bedita/bedita/pull/1757) Add virtual property `object_type_name` to Endpoint Entity
+* [#1754](https://github.com/bedita/bedita/pull/1754) Avoid to use real properties as virtual properties
+* [#1745](https://github.com/bedita/bedita/pull/1745) Fix search behavior, allow `_` and `-` in search
+
+### Integration changes (4.4.0)
+
+* [#1791](https://github.com/bedita/bedita/pull/1791) Update to composer 2
+* [#1786](https://github.com/bedita/bedita/pull/1786) Drop PHP 7.1
+* [#1771](https://github.com/bedita/bedita/pull/1771) Better isolation within test cases
+* [#1760](https://github.com/bedita/bedita/pull/1760) Remove useless inline docblock, fix phpstan weirdness
+* [#1758](https://github.com/bedita/bedita/pull/1758) Fix publish components action
+* [#1756](https://github.com/bedita/bedita/pull/1756) Remove travis CI
+* [#1755](https://github.com/bedita/bedita/pull/1755) Move to GitHub Actions
+* [#1733](https://github.com/bedita/bedita/pull/1733) Upgrade to CakePHP 3.9
+
 ## Version 4.3.0 - Cactus
 
 ### API changes (4.3.0)

@@ -121,11 +121,14 @@ class CurrentApplication
      *
      * @param string $apiKey API key.
      * @return void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException
      */
-    public static function setFromApiKey($apiKey)
+    public static function setFromApiKey(string $apiKey): void
     {
         static::getInstance()->set(
-            TableRegistry::getTableLocator()->get('Applications')->find('apiKey', compact('apiKey'))->firstOrFail()
+            TableRegistry::getTableLocator()->get('Applications')
+                ->find('apiKey', compact('apiKey'))
+                ->firstOrFail()
         );
     }
 

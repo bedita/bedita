@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Configure\Engine;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
@@ -24,7 +25,6 @@ use Cake\TestSuite\TestCase;
  */
 class DatabaseConfigTest extends TestCase
 {
-
     /**
      * Test subject
      *
@@ -50,8 +50,8 @@ class DatabaseConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
         $this->DatabaseConfig = new DatabaseConfig();
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**
@@ -74,7 +74,7 @@ class DatabaseConfigTest extends TestCase
      */
     public function testRead()
     {
-        $configData = $this->DatabaseConfig->read();
+        $configData = $this->DatabaseConfig->read(null);
         static::assertEquals(true, $configData['Name2']);
         static::assertEquals(14, $configData['IntVal']);
 

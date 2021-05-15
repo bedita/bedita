@@ -129,11 +129,11 @@ class SearchableBehavior extends Behavior
 
         $minLength = $this->getConfig('minLength');
         $maxWords = $this->getConfig('maxWords');
-        $words = array_unique(array_map( // Escape `%`, `_` and `\` characters in words.
+        $words = array_unique(array_map( // Escape `%` and `\` characters in words.
             function ($word) {
                 return str_replace(
-                    ['%', '_', '\\'],
-                    ['\\%', '\\_', '\\\\'],
+                    ['%', '\\'],
+                    ['\\%', '\\\\'],
                     mb_strtolower($word)
                 );
             },

@@ -658,8 +658,39 @@ class ObjectTypeTest extends TestCase
                                 ],
                             ],
                         ],
+                        'categories' => [
+                            '$id' => '/properties/categories',
+                            'title' => 'Categories',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null'
+                                ],
+                                [
+                                    'type' => 'array',
+                                    'uniqueItems' => true,
+                                    'items' => [
+                                        'type' => 'object'
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'required' => [],
+                    'associations' => [
+                        'Categories'
+                    ],
+                    'relations' => [
+                        'inverse_test' => [
+                            'label' => 'Inverse test relation',
+                            'params' => null,
+                            'types' => ['documents'],
+                        ],
+                        'test' => [
+                            'label' => 'Test relation',
+                            'params' => null,
+                            'types' => ['documents', 'profiles'],
+                        ],
+                    ],
                 ],
                 'documents',
             ],
@@ -675,8 +706,10 @@ class ObjectTypeTest extends TestCase
      *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
+     * @covers ::objectTypeRelations()
+     * @covers ::associationProperties()
      */
-    public function testGetSchema($expected, $name)
+    public function testGetSchema($expected, $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
 
@@ -726,8 +759,9 @@ class ObjectTypeTest extends TestCase
      * @return void
      *
      * @covers ::_getSchema()
+     * @covers ::objectTypeProperties()
      */
-    public function testGetSchemaHiddenProperties()
+    public function testGetSchemaHiddenProperties(): void
     {
         // enable type `news`
         $objectType = $this->ObjectTypes->get('news');
@@ -742,7 +776,21 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * Test static properties override in `schema`.
+     * Test `objectTypeProperties` method whith required properties.
+     *
+     * @return void
+     *
+     * @covers ::objectTypeProperties()
+     */
+    public function testGetSchemaRequired(): void
+    {
+        $objectType = $this->ObjectTypes->get('users');
+        $schema = $objectType->schema;
+        $required = Hash::extract($schema, 'required');
+        static::assertEquals(['username'], $required);
+    }
+
+    /** Test static properties override in `schema`.
      *
      * @return void
      *

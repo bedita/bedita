@@ -26,7 +26,7 @@ $app = new Application(dirname(__DIR__) . '/config');
 $app->bootstrap();
 $app->pluginBootstrap();
 
-TableRegistry::clear();
+TableRegistry::getTableLocator()->clear();
 
 if (getenv('db_dsn')) {
     ConnectionManager::drop('test');

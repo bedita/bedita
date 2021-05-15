@@ -1,5 +1,7 @@
 .git/
 .vscode/
+.settings/
+.history/
 /coverage
 /logs
 /plugins
