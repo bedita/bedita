@@ -22,7 +22,7 @@ use Cake\Utility\Hash;
  *
  * Provides static methods to generate Project model
  *
- * @since 4.4.0
+ * @since 4.5.0
  */
 class ProjectModel
 {

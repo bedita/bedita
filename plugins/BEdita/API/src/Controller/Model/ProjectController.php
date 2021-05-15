@@ -20,7 +20,7 @@ use Cake\Event\Event;
 /**
  * Controller for `/model/project` endpoint.
  *
- * @since 4.4.0
+ * @since 4.5.0
  *
  */
 class ProjectController extends AppController
