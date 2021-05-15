@@ -25,10 +25,12 @@ class ProjectControllerTest extends IntegrationTestCase
     /**
      * Test `index()` method.
      *
+     * @return void
+     *
      * @covers ::index()
      * @covers ::initialize()
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $expected = [
             'property_types' => [

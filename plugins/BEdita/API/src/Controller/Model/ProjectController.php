@@ -16,6 +16,7 @@ namespace BEdita\API\Controller\Model;
 use BEdita\API\Controller\AppController;
 use BEdita\Core\Utility\ProjectModel;
 use Cake\Event\Event;
+use Cake\Http\Response;
 
 /**
  * Controller for `/model/project` endpoint.
@@ -35,7 +36,7 @@ class ProjectController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         if ($this->components()->has('JsonApi')) {
@@ -61,7 +62,7 @@ class ProjectController extends AppController
      *
      * @return \Cake\Http\Response
      */
-    public function index()
+    public function index(): Response
     {
         $this->request->allowMethod(['get']);
 
