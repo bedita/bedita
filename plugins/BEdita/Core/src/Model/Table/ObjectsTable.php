@@ -525,7 +525,7 @@ class ObjectsTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    protected function findPublishDateAllowed(Query $query)
+    protected function findPublishDateAllowed(Query $query): Query
     {
         $now = $query->func()->now();
 

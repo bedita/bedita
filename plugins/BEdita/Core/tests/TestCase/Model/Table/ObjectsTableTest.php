@@ -800,7 +800,7 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishable()`.
      *
      * @param int $expected Expected results.
-     * @param string $statusLevel Configuration to write.
+     * @param string $config Configuration to write.
      * @return void
      *
      * @dataProvider findPublishableProvider()
@@ -823,7 +823,7 @@ class ObjectsTableTest extends TestCase
      *
      * @covers ::findPublishDateAllowed()
      */
-    public function testFindPublishDateAllowed()
+    public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
         static::assertSame(12, count($result));
@@ -836,7 +836,7 @@ class ObjectsTableTest extends TestCase
      *
      * @covers ::findPublishDateAllowed()
      */
-    public function testFindPublishDateAllowedSingle()
+    public function testFindPublishDateAllowedSingle(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
         static::assertNull($result);
