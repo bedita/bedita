@@ -19,7 +19,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
- * Test `Publish.checkDate` configuration and `publish_start` + `publish_date`
+ * Integration test for `Publish.checkDate` configuration
+ * using `publish_start` and `publish_date` values.
  */
 class PublisStartEndTest extends IntegrationTestCase
 {
