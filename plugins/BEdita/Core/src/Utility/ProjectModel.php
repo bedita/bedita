@@ -125,4 +125,54 @@ class ProjectModel
             })
             ->toArray();
     }
+
+    /**
+     * Calculates the difference between the current project model
+     * and a new project model passed by argument as array.
+     * Diff array will contain 'create', 'update' and 'remove' keys
+     * with corresponding model items in order to sync the current
+     * project model to the new one.
+     *
+     * @param array $project New project model
+     * @return array
+     */
+    public static function diff(array $project): array
+    {
+        $create = $update = $remove = [];
+        $currentModel = json_decode(json_encode(static::generate()), true);
+        foreach ($currentModel as $key => $value) {
+            $current = Hash::combine((array)$value, '{n}.name', '{n}');
+            $new = Hash::combine((array)Hash::get($project, $key), '{n}.name', '{n}');
+            $create[$key] = array_values(array_diff_key($new, $current));
+            $remove[$key] = array_values(array_diff_key($current, $new));
+            $update[$key] = static::itemsToUpdate($current, $new);
+        }
+
+        return array_filter(
+            array_map('array_filter', compact('create', 'update', 'remove'))
+        );
+    }
+
+    /**
+     * Calculate items to update in a project model set.
+     *
+     * @param array $current Current items
+     * @param array $new New items
+     * @return array
+     */
+    protected static function itemsToUpdate(array $current, array $new): array
+    {
+        return array_filter(array_map(
+            function ($k, $v) use ($current) {
+                $diff = Hash::diff($v, $current[$k]);
+                if (empty($diff)) {
+                    return null;
+                }
+
+                return $v;
+            },
+            array_keys($new),
+            array_values($new)
+        ));
+    }
 }
