@@ -121,7 +121,8 @@ class GeometryBehaviorTest extends TestCase
      */
     public function testFindGeo($conditions, $numExpected)
     {
-        $supported = Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7']);
+        $supported = Database::supportedVersion(['vendor' => 'mariadb', 'minVersion' => 10.0])
+            || Database::supportedVersion(['vendor' => 'mysql', 'minVersion' => 5.7, 'maxVersion' => 8.0]);
         if (!$supported) {
             $this->expectException(BadFilterException::class);
         }

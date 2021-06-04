@@ -134,7 +134,11 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->get($endpoint . '?' . $query);
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertContentType('application/vnd.api+json');
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+
+        $supported = Database::supportedVersion(['vendor' => 'mariadb', 'minVersion' => 10.0])
+            || Database::supportedVersion(['vendor' => 'mysql', 'minVersion' => 5.7, 'maxVersion' => 8.0]);
+
+        if (!$supported) {
             $this->assertResponseCode(400);
         } else {
             $this->assertResponseCode(200);
