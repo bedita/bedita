@@ -15,7 +15,6 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Utility\Database;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -137,7 +136,7 @@ class DatabaseTest extends TestCase
      *
      * @covers ::basicInfo()
      */
-    public function testBasicInfo(): void
+    public function testBasicInfo()
     {
         $info = Database::basicInfo();
         $this->assertNotEmpty($info);

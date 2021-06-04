@@ -143,20 +143,20 @@ class Database
      * Get basic database connection info
      *
      * @param string $dbConfig Input database configuration ('default' as default)
+     * @param bool $version Retrieve or not version info
      * @return array containing requested configuration
      *          + 'vendor' key (mysql, sqlite, postgres,...)
      */
-    public static function basicInfo(string $dbConfig = 'default'): array
+    public static function basicInfo($dbConfig = 'default', $version = true)
     {
         $connection = ConnectionManager::get($dbConfig);
         $config = $connection->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
-        $query = 'SELECT VERSION()';
-        if ($config['vendor'] === 'sqlite') {
-            $query = 'SELECT SQLITE_VERSION()';
+        $config['version'] = 'unknown';
+        if ($version && $config['vendor'] !== 'sqlite') {
+            $version = $connection->execute('SELECT VERSION()')->fetch();
+            $config['version'] = implode('', $version);
         }
-        $version = $connection->execute($query)->fetch();
-        $config['version'] = implode('', $version);
 
         return $config;
     }
