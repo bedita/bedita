@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Utility\Database;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -159,9 +160,14 @@ class DatabaseTest extends TestCase
     public function testSupportedVersion()
     {
         $info = Database::basicInfo();
-        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
+        $vendor = Hash::get($info, 'realVendor', $info['vendor']);
+        $version = (float)implode('.', array_slice(explode('.', $info['version']), 0, 2));
+
+        $result = Database::supportedVersion(compact('vendor') + ['minVersion' => $version]);
         static::assertTrue($result);
-        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'zzzzzzzzz']);
+        $result = Database::supportedVersion(compact('vendor') + ['maxVersion' => 0.1]);
+        static::assertFalse($result);
+        $result = Database::supportedVersion(compact('vendor') + ['minVersion' => 100]);
         static::assertFalse($result);
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);

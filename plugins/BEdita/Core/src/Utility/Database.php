@@ -15,6 +15,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\Utility\Hash;
 
 /**
  * Database utilities class
@@ -163,16 +164,25 @@ class Database
     /**
      * See if a DB vendor and min version matches current connection info on 'default'
      *
-     * @param array $options Array containing 'vendor' (lower case - 'mysql', 'postgres', 'sqlite') and optionally 'version'
+     * @param array $options Array containing
+     *      - 'vendor': lower case vendor name 'mysql', 'postgres', 'sqlite', 'mariadb'
+     *      - [optional]: 'maxVersion' and 'minVersion' as number with two digits maximum
      * @return bool True on match success, false otherwise
      */
-    public static function supportedVersion($options)
+    public static function supportedVersion(array $options): bool
     {
         $info = static::basicInfo();
-        if ($options['vendor'] !== $info['vendor']) {
+        // Use `realVendor` as vendor name, fallback to 'vendor'
+        $vendor = Hash::get($info, 'realVendor', $info['vendor']);
+        if ($options['vendor'] !== $vendor) {
             return false;
         }
-        if (!empty($options['version']) && $options['version'] > $info['version']) {
+        // Two digits numeric version of current connection
+        $version = (float)implode('.', array_slice(explode('.', $info['version']), 0, 2));
+        if (!empty($options['minVersion']) && $version < (float)$options['minVersion']) {
+            return false;
+        }
+        if (!empty($options['maxVersion']) && $version > (float)$options['maxVersion']) {
             return false;
         }
 
