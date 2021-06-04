@@ -85,6 +85,7 @@ class ProjectModelCommand extends Command
         }
 
         Resources::save($diff);
+        $io->success('Project model updated');
 
         foreach (Cache::configured() as $cache) {
             Cache::clear(false, $cache);

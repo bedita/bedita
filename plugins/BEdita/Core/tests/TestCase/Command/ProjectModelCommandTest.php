@@ -176,6 +176,7 @@ class ProjectModelCommandTest extends TestCase
         file_put_contents($path, json_encode($model));
         $this->exec('project_model --file ' . $path);
         unlink($path);
+        $this->assertOutputContains('Project model updated');
         $this->assertOutputContains('Cache cleared');
         $this->assertExitSuccess();
     }
