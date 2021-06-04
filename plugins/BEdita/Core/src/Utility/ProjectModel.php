@@ -163,9 +163,11 @@ class ProjectModel
     protected static function itemsToUpdate(array $current, array $new): array
     {
         return array_filter(array_map(
-            function ($k, $v) use ($current) {
-                $diff = Hash::diff($v, $current[$k]);
-                if (empty($diff)) {
+            function ($k, array $v) use ($current) {
+                if (empty($current[$k])) {
+                    return null;
+                }
+                if (empty(Hash::diff($v, (array)$current[$k]))) {
                     return null;
                 }
 
