@@ -137,16 +137,16 @@ class DatabaseTest extends TestCase
      *
      * @covers ::basicInfo()
      */
-    public function testBasicInfo()
+    public function testBasicInfo(): void
     {
         $info = Database::basicInfo();
         $this->assertNotEmpty($info);
         $this->assertArrayHasKey('database', $info);
         $this->assertStringEndsWith($info['vendor'], strtolower($info['driver']));
+        $this->assertArrayHasKey('version', $info);
         if ($info['vendor'] != 'sqlite') {
             $this->assertArrayHasKey('host', $info);
             $this->assertArrayHasKey('username', $info);
-            $this->assertArrayHasKey('version', $info);
         }
     }
 
@@ -157,7 +157,7 @@ class DatabaseTest extends TestCase
      *
      * @covers ::supportedVersion()
      */
-    public function testSupportedVersion()
+    public function testSupportedVersion(): void
     {
         $info = Database::basicInfo();
         $vendor = Hash::get($info, 'realVendor', $info['vendor']);
