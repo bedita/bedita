@@ -56,6 +56,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                 ->checkGeoSupport();
         }
     }
+
     /**
      * Data provider for `testFilterDate` test case.
      *
