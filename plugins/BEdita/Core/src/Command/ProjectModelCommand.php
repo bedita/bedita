@@ -19,6 +19,7 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Core\ConventionsTrait;
 
 /**
  * Command to apply project model from input file.
@@ -27,15 +28,30 @@ use Cake\Console\ConsoleOptionParser;
  */
 class ProjectModelCommand extends Command
 {
+    use ConventionsTrait;
+
+    /**
+     * Project model default file name
+     *
+     * @var string
+     */
+    public const PROJECT_MODEL_FILE = 'project_model.json';
+
     /**
      * {@inheritDoc}
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        return $parser->addArgument('file', [
-            'help' => 'Path of JSON file containing project model to apply',
-            'required' => true,
-        ]);
+        return $parser->addOption('file', [
+                'help' => 'Path of JSON file containing project model to apply',
+                'short' => 'f',
+                'required' => false,
+            ])
+            ->addOption('plugin', [
+                'help' => 'Plugin to use for loading default `project_model.json` file',
+                'short' => 'p',
+                'required' => false,
+            ]);
     }
 
     /**
@@ -43,14 +59,14 @@ class ProjectModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $file = $args->getArgument('file');
+        $file = $this->modelFilePath($args, $io);
         if (!file_exists($file)) {
             $io->error(sprintf('File not found %s', $file));
 
             return self::CODE_ERROR;
         }
 
-        $project = json_decode(file_get_contents($file), true);
+        $project = (array)json_decode(file_get_contents($file), true);
         if (empty($project)) {
             $io->error(sprintf('Bad file content in %s', $file));
 
@@ -69,12 +85,36 @@ class ProjectModelCommand extends Command
         }
 
         Resources::save($diff);
-        $caches = Cache::configured();
-        foreach ($caches as $cache) {
+
+        foreach (Cache::configured() as $cache) {
             Cache::clear(false, $cache);
         }
         $io->success('Cache cleared');
 
         return null;
+    }
+
+    /**
+     * Retrieve model file path using CLI options and defaults.
+     *  - if `--file/-f` is used, this path is used
+     *  - if `--plugin/-p` is used default model file is searched in a plugin
+     *  - if no option is passed default path is used
+     *
+     * @param \Cake\Console\Arguments $args Console arguments
+     * @param \Cake\Console\ConsoleIo $io Console IO
+     * @return string
+     */
+    protected function modelFilePath(Arguments $args, ConsoleIo $io): string
+    {
+        $file = $args->getOption('file');
+        if (!empty($file)) {
+            return $file;
+        }
+        $plugin = $args->getOption('plugin');
+        if (!empty($plugin)) {
+            return $this->_pluginPath($plugin) . 'config' . DS . self::PROJECT_MODEL_FILE;
+        }
+
+        return CONFIG . self::PROJECT_MODEL_FILE;
     }
 }
