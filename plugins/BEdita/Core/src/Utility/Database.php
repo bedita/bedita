@@ -164,25 +164,17 @@ class Database
     /**
      * See if a DB vendor and min version matches current connection info on 'default'
      *
-     * @param array $options Array containing
-     *      - 'vendor': lower case vendor name 'mysql', 'postgres', 'sqlite', 'mariadb'
-     *      - [optional]: 'maxVersion' and 'minVersion' as number with two digits maximum
+     * @param array $options Array containing 'vendor' (lower case - 'mysql', 'postgres', 'sqlite') and optionally 'version'
      * @return bool True on match success, false otherwise
+     * @deprecated Will be dropped in a future release, not to be used anymore
      */
-    public static function supportedVersion(array $options): bool
+    public static function supportedVersion($options)
     {
         $info = static::basicInfo();
-        // Use `realVendor` as vendor name, fallback to 'vendor'
-        $vendor = Hash::get($info, 'realVendor', $info['vendor']);
-        if ($options['vendor'] !== $vendor) {
+        if ($options['vendor'] !== $info['vendor']) {
             return false;
         }
-        // Two digits numeric version of current connection
-        $version = (float)implode('.', array_slice(explode('.', $info['version']), 0, 2));
-        if (!empty($options['minVersion']) && $version < (float)$options['minVersion']) {
-            return false;
-        }
-        if (!empty($options['maxVersion']) && $version > (float)$options['maxVersion']) {
+        if (!empty($options['version']) && $options['version'] > $info['version']) {
             return false;
         }
 

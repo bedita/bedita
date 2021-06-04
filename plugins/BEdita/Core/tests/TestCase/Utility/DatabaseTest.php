@@ -143,10 +143,10 @@ class DatabaseTest extends TestCase
         $this->assertNotEmpty($info);
         $this->assertArrayHasKey('database', $info);
         $this->assertStringEndsWith($info['vendor'], strtolower($info['driver']));
-        $this->assertArrayHasKey('version', $info);
         if ($info['vendor'] != 'sqlite') {
             $this->assertArrayHasKey('host', $info);
             $this->assertArrayHasKey('username', $info);
+            $this->assertArrayHasKey('version', $info);
         }
     }
 
@@ -157,17 +157,12 @@ class DatabaseTest extends TestCase
      *
      * @covers ::supportedVersion()
      */
-    public function testSupportedVersion(): void
+    public function testSupportedVersion()
     {
         $info = Database::basicInfo();
-        $vendor = Hash::get($info, 'realVendor', $info['vendor']);
-        $version = (float)implode('.', array_slice(explode('.', $info['version']), 0, 2));
-
-        $result = Database::supportedVersion(compact('vendor') + ['minVersion' => $version]);
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
         static::assertTrue($result);
-        $result = Database::supportedVersion(compact('vendor') + ['maxVersion' => 0.1]);
-        static::assertFalse($result);
-        $result = Database::supportedVersion(compact('vendor') + ['minVersion' => 100]);
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'zzzzzzzzz']);
         static::assertFalse($result);
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);
