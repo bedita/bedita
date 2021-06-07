@@ -177,10 +177,10 @@ Router::plugin(
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
                     ['_name' => 'schema', 'pass' => ['type']]
                 );
-                $routes->get(
+                $routes->connect(
                     '/project',
                     ['controller' => 'Project', 'action' => 'index'],
-                    'project'
+                    ['_name' => 'project']
                 );
             }
         );

@@ -16,7 +16,7 @@ namespace BEdita\API\Controller\Model;
 use BEdita\API\Controller\AppController;
 use BEdita\Core\Utility\ProjectModel;
 use Cake\Event\Event;
-use Cake\Http\Response;
+use Cake\Http\Exception\NotAcceptableException;
 
 /**
  * Controller for `/model/project` endpoint.
@@ -27,13 +27,6 @@ use Cake\Http\Response;
 class ProjectController extends AppController
 {
     /**
-     * JSON content type.
-     *
-     * @var string
-     */
-    const CONTENT_TYPE = 'application/json';
-
-    /**
      * {@inheritDoc}
      */
     public function initialize(): void
@@ -42,27 +35,27 @@ class ProjectController extends AppController
         if ($this->components()->has('JsonApi')) {
             $this->components()->unload('JsonApi');
         }
-        $this->viewBuilder()->setClassName('Json');
+        $this->RequestHandler->setConfig('viewClassMap.json', 'Json');
     }
 
     /**
      * {@inheritDoc}
-     *
-     * Intentionally left blank to override parent method.
-     * Avoid content-type negotiation checks based on `Accept` header.
-     *
-     * @codeCoverageIgnore
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(Event $event): void
     {
+        if (!$this->request->is(['json'])) {
+            throw new NotAcceptableException(
+                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
+            );
+        }
     }
 
     /**
      * Get project schema.
      *
-     * @return \Cake\Http\Response
+     * @return void
      */
-    public function index(): Response
+    public function index(): void
     {
         $this->request->allowMethod(['get']);
 
@@ -70,8 +63,5 @@ class ProjectController extends AppController
 
         $this->set($model);
         $this->set('_serialize', true);
-
-        return $this->render()
-            ->withType(static::CONTENT_TYPE);
     }
 }

@@ -277,12 +277,30 @@ class ProjectControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequestHeaders();
+        $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
         $this->get('/model/project');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `beforeFilter()` method.
+     *
+     * @return void
+     *
+     * @covers ::beforeFilter()
+     */
+    public function testBeforeFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/model/project');
+        $this->assertResponseCode(406);
+
+        $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
+        $this->get('/model/project');
+        $this->assertResponseCode(200);
     }
 }
