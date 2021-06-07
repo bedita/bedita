@@ -29,16 +29,14 @@ class ProjectModelTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Profiles',
-        'plugin.BEdita/Core.Users',
-        'plugin.BEdita/Core.Locations',
-        'plugin.BEdita/Core.Media',
     ];
 
     /**
@@ -47,6 +45,28 @@ class ProjectModelTest extends TestCase
      * @var array
      */
     public const PROJECT_MODEL = [
+        'applications' => [
+            [
+                'name' => 'First app',
+                'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
+                'enabled' => true,
+            ],
+            [
+                'name' => 'Disabled app',
+                'description' => 'This app has been disabled',
+                'enabled' => false,
+            ],
+        ],
+        'roles' => [
+            [
+                'name' => 'first role',
+                'description' => 'this is the very first role',
+            ],
+            [
+                'name' => 'second role',
+                'description' => 'this is a second role',
+            ],
+        ],
         'property_types' => [
             [
                 'name' => 'unused property type',
@@ -297,6 +317,8 @@ class ProjectModelTest extends TestCase
      * @return void
      *
      * @covers ::generate()
+     * @covers ::applications()
+     * @covers ::roles()
      * @covers ::propertyTypes()
      * @covers ::objectTypes()
      * @covers ::relations()

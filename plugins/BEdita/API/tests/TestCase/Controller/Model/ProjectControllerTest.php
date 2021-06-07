@@ -33,6 +33,28 @@ class ProjectControllerTest extends IntegrationTestCase
     public function testIndex(): void
     {
         $expected = [
+            'applications' => [
+                [
+                    'name' => 'First app',
+                    'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
+                    'enabled' => true,
+                ],
+                [
+                    'name' => 'Disabled app',
+                    'description' => 'This app has been disabled',
+                    'enabled' => false,
+                ],
+            ],
+            'roles' => [
+                [
+                    'name' => 'first role',
+                    'description' => 'this is the very first role',
+                ],
+                [
+                    'name' => 'second role',
+                    'description' => 'this is a second role',
+                ],
+            ],
             'property_types' => [
                 [
                     'name' => 'unused property type',
