@@ -65,7 +65,7 @@ class ProjectModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $file = $this->modelFilePath($args, $io);
+        $file = $this->modelFilePath($args);
         if (!file_exists($file)) {
             $io->error(sprintf('File not found %s', $file));
 
@@ -108,16 +108,15 @@ class ProjectModelCommand extends Command
      *  - if no option is passed default path is used
      *
      * @param \Cake\Console\Arguments $args Console arguments
-     * @param \Cake\Console\ConsoleIo $io Console IO
      * @return string
      */
-    protected function modelFilePath(Arguments $args, ConsoleIo $io): string
+    protected function modelFilePath(Arguments $args): string
     {
-        $file = $args->getOption('file');
+        $file = (string)$args->getOption('file');
         if (!empty($file)) {
             return $file;
         }
-        $plugin = $args->getOption('plugin');
+        $plugin = (string)$args->getOption('plugin');
         if (!empty($plugin)) {
             return $this->_pluginPath($plugin) . 'config' . DS . self::PROJECT_MODEL_FILE;
         }

@@ -14,6 +14,7 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -92,8 +93,7 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
-            ->each(function ($row) {
-                /** @var \BEdita\Core\Mode\Entity\ObjectType $row */
+            ->each(function (EntityInterface $row) {
                 $row->unsetProperty([
                     'id',
                     'left_relations',
@@ -117,15 +117,12 @@ class ProjectModel
         return TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
-            ->each(function ($row) {
-                /** @var \BEdita\Core\Mode\Entity\Relation $row */
-                $left = Hash::extract($row, 'left_object_types.{n}.name');
-                $right = Hash::extract($row, 'right_object_types.{n}.name');
+            ->each(function (EntityInterface $row) {
+                $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
+                $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
                 sort($right);
-                $row->unsetProperty([
-                    'id',
-                ]);
+                $row->unsetProperty('id');
                 $row->set('left_object_types', $left);
                 $row->set('right_object_types', $right);
             })
@@ -141,8 +138,7 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Properties')
             ->find('type', ['dynamic'])
-            ->each(function ($row) {
-                /** @var \BEdita\Core\Mode\Entity\Property $row */
+            ->each(function (EntityInterface $row) {
                 $row->unsetProperty([
                     'id',
                     'created',
