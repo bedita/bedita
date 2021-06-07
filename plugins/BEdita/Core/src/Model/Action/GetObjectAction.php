@@ -66,7 +66,7 @@ class GetObjectAction extends BaseAction
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
 
         // Build query and add finders.
-        $query = $this->Table->find()
+        $query = $this->Table->find('publishable')
             ->contain($contain)
             ->where($conditions);
         if (isset($this->objectType)) {
@@ -75,9 +75,6 @@ class GetObjectAction extends BaseAction
                 $query = $query->contain($assoc);
             }
             $query = $query->find('type', (array)$this->objectType->id);
-        }
-        if (Configure::check('Status.level')) {
-            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
         if (!empty($data['lang'])) {
             $query = $query->find('translations', ['lang' => $data['lang']]);

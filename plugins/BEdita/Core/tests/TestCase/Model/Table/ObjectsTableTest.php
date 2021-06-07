@@ -8,6 +8,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
+use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -735,7 +736,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider()
+    public function findAvailableProvider(): array
     {
         return [
             'no status' => [
@@ -753,20 +754,99 @@ class ObjectsTableTest extends TestCase
     /**
      * Test `findAvailable()`.
      *
+     * @param int $expected Expected results.
+     * @param array $condition Search condition.
+     * @param string $statusLevel Configuration to write.
      * @return void
      *
      * @dataProvider findAvailableProvider()
      * @covers ::findAvailable()
      */
-    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null)
+    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null): void
     {
-        $result = $this->Objects->find('available')
-            ->where($condition)
-            ->toArray();
         if (!empty($statusLevel)) {
             Configure::write('Status.level', $statusLevel);
         }
-        static::assertSame($expected, count($result));
+
+        $count = $this->Objects->find('available')->where($condition)->count();
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindPublishable`.
+     *
+     * @return array
+     */
+    public function findPublishableProvider(): array
+    {
+        return [
+            'on + publish' => [
+                10,
+                [
+                    'Status.level' => 'on',
+                    'Publish.checkDate' => true,
+                ],
+            ],
+            'draft' => [
+                15,
+                [
+                    'Status.level' => 'draft',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findPublishable()`.
+     *
+     * @param int $expected Expected results.
+     * @param string $config Configuration to write.
+     * @return void
+     *
+     * @dataProvider findPublishableProvider()
+     * @covers ::findPublishable()
+     */
+    public function testFindPublishable(int $expected, array $config = null): void
+    {
+        if (!empty($config)) {
+            Configure::write($config);
+        }
+
+        $result = $this->Objects->find('publishable')->count();
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test `findPublishDateAllowed()`.
+     *
+     * @return void
+     *
+     * @covers ::findPublishDateAllowed()
+     */
+    public function testFindPublishDateAllowed(): void
+    {
+        $result = $this->Objects->find('publishDateAllowed')->toArray();
+        static::assertSame(12, count($result));
+    }
+
+    /**
+     * Test `findPublishDateAllowed()` on a single object changing `publish_end`.
+     *
+     * @return void
+     *
+     * @covers ::findPublishDateAllowed()
+     */
+    public function testFindPublishDateAllowedSingle(): void
+    {
+        $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
+        static::assertNull($result);
+
+        $object = $this->Objects->get(2);
+        $object->publish_end = Time::parse(time() + DAY);
+        $this->Objects->saveOrFail($object);
+
+        $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
+        static::assertNotNull($result);
     }
 
     /**
