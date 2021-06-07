@@ -34,11 +34,39 @@ class ProjectModel
     public static function generate(): array
     {
         return [
+            'applications' => static::applications(),
+            'roles' => static::roles(),
             'property_types' => static::propertyTypes(),
             'object_types' => static::objectTypes(),
             'relations' => static::relations(),
             'properties' => static::properties(),
         ];
+    }
+
+    /**
+     * Retrieve applications
+     *
+     * @return array
+     */
+    protected static function applications(): array
+    {
+        return TableRegistry::getTableLocator()->get('Applications')
+            ->find()
+            ->select(['name', 'description', 'enabled'])
+            ->toArray();
+    }
+
+    /**
+     * Retrieve roles
+     *
+     * @return array
+     */
+    protected static function roles(): array
+    {
+        return TableRegistry::getTableLocator()->get('Roles')
+            ->find()
+            ->select(['name', 'description'])
+            ->toArray();
     }
 
     /**
