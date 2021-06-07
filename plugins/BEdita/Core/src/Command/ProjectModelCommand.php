@@ -47,6 +47,12 @@ class ProjectModelCommand extends Command
                 'short' => 'f',
                 'required' => false,
             ])
+            ->addOption('cache-clear', [
+                'help' => 'Perform cache clear after resources change',
+                'short' => 'c',
+                'boolean' => true,
+                'required' => false,
+            ])
             ->addOption('plugin', [
                 'help' => 'Plugin to use for loading default `project_model.json` file',
                 'short' => 'p',
@@ -87,10 +93,10 @@ class ProjectModelCommand extends Command
         Resources::save($diff);
         $io->success('Project model updated');
 
-        foreach (Cache::configured() as $cache) {
-            Cache::clear(false, $cache);
+        if ($args->getOption('cache-clear')) {
+            Cache::clearAll();
+            $io->success('Cache cleared');
         }
-        $io->success('Cache cleared');
 
         return null;
     }
