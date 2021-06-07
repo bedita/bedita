@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Utility\Database;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -34,6 +34,28 @@ class FilterQueryStringTest extends IntegrationTestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
     ];
+
+    /**
+     * Geometry support for current connection.
+     *
+     * @var bool
+     */
+    private static $geoSupport;
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        if (!isset(static::$geoSupport)) {
+            static::$geoSupport = TableRegistry::getTableLocator()
+                ->get('Locations')
+                ->checkGeoSupport();
+        }
+    }
 
     /**
      * Data provider for `testFilterDate` test case.
@@ -134,7 +156,8 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->get($endpoint . '?' . $query);
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertContentType('application/vnd.api+json');
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+
+        if (!static::$geoSupport) {
             $this->assertResponseCode(400);
         } else {
             $this->assertResponseCode(200);
