@@ -744,6 +744,14 @@ class ObjectsTableTest extends TestCase
                     'description' => 'new description',
                 ],
             ],
+            'locked now' => [
+                true,
+                [
+                    'id' => 3,
+                    'uname' => 'new-uname',
+                    'locked' => true,
+                ],
+            ],
         ];
     }
 
