@@ -705,9 +705,7 @@ class ObjectsTableTest extends TestCase
             Configure::write('Status.level', $config);
         }
 
-        $id = Hash::get($data, 'id', 2);
-        $object = $this->Objects->get($id);
-        unset($data['id']);
+        $object = $this->Objects->get(4);
         $object = $this->Objects->patchEntity($object, $data);
         $object = $this->Objects->save($object);
 
