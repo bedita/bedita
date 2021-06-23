@@ -23,6 +23,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -178,6 +179,7 @@ class ObjectsTable extends Table
         }
         $this->checkStatus($entity);
         $this->checkLangTag($entity);
+        $this->checkLocked($entity);
 
         return true;
     }
@@ -193,6 +195,23 @@ class ObjectsTable extends Table
     {
         if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
             $entity->set('lang', Configure::read('I18n.default'));
+        }
+    }
+
+    /**
+     * Check `locked` attribute.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Http\Exception\BadRequestException
+     */
+    protected function checkLocked(EntityInterface $entity): void
+    {
+        if (empty($entity->get('locked'))) {
+            return;
+        }
+        if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
+            throw new ForbiddenException(__('Operation not allowed on "locked" objects'));
         }
     }
 
