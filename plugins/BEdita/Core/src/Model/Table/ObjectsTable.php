@@ -208,7 +208,7 @@ class ObjectsTable extends Table
      */
     protected function checkLocked(EntityInterface $entity): void
     {
-        if (empty($entity->get('locked'))) {
+        if (empty($entity->get('locked')) || $entity->isDirty('locked')) {
             return;
         }
         if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {

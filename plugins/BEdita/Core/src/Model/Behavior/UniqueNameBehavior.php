@@ -88,7 +88,7 @@ class UniqueNameBehavior extends Behavior
                 'replacement' => $this->getConfig('replacement'),
                 'preserve' => $this->getConfig('preserve'),
             ]));
-            if ($uname === $entity->get('uname')) {
+            if ($uname === $entity->get('uname') && !$entity->isDirty('uname')) {
                 return;
             }
         }
