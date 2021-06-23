@@ -215,7 +215,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchCategories(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $entity = $table->get(2, ['contain' => ['Categories']]);
+        $entity = $table->get(3, ['contain' => ['Categories']]);
         $data = [
             'categories' => [
                 [
