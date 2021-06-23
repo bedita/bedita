@@ -200,6 +200,7 @@ class ObjectsTable extends Table
 
     /**
      * Check `locked` attribute.
+     * If `locked` is true `status`, `uname` and `deleted` cannot be changed.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
