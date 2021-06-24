@@ -83,7 +83,8 @@ class ObjectsHandler
         } else {
             $entity = $table->newEntity();
         }
-        $entity = $table->patchEntity($entity, $data);
+        $options = ['accessibleFields' => ['locked' => true]];
+        $entity = $table->patchEntity($entity, $data, $options);
         $entity->set('type', $objectType->name);
         $saveResult = $table->saveOrFail($entity);
 
