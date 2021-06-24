@@ -204,7 +204,7 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Http\Exception\BadRequestException
+     * @throws \Cake\Http\Exception\ForbiddenException
      */
     protected function checkLocked(EntityInterface $entity): void
     {
