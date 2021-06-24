@@ -127,6 +127,20 @@ class ObjectsHandlerTest extends TestCase
     }
 
     /**
+     * Test `save` with `locked` attribute
+     *
+     * @return void
+     * @covers ::save()
+     */
+    public function testSaveLocked()
+    {
+        $data = ['id' => 5, 'locked' => true];
+        $entity = ObjectsHandler::save('users', $data);
+        $this->assertNotEmpty($entity);
+        $this->assertTrue($entity->locked);
+    }
+
+    /**
      * Test `delete` failure
      *
      * @return void
