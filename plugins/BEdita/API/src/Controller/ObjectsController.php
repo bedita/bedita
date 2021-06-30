@@ -23,6 +23,7 @@ use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Table\RolesTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -66,6 +67,13 @@ class ObjectsController extends ResourcesController
             'parents' => ['folders'],
         ],
     ];
+
+    /**
+     * Meta properties accessible for admins
+     *
+     * @var array
+     */
+    protected const ADMIN_META_ACCESSIBLE = ['blocked', 'locked'];
 
     /**
      * {@inheritDoc}
@@ -261,8 +269,9 @@ class ObjectsController extends ResourcesController
 
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
-            $data = $this->request->getData();
-            $entity = $action(compact('entity', 'data'));
+            $data = (array)$this->request->getData();
+            $entityOptions = $this->patchEntityOptions($data);
+            $entity = $action(compact('entity', 'data', 'entityOptions'));
         }
 
         $this->set('_fields', $this->request->getQuery('fields', []));
@@ -270,6 +279,26 @@ class ObjectsController extends ResourcesController
         $this->set('_serialize', ['entity']);
 
         return null;
+    }
+
+    /**
+     * Retrieve entity options to handle meta property changes by admin users.
+     * Add these authorized meta to entity data.
+     *
+     * @param array $data Entity data
+     * @return array
+     */
+    protected function patchEntityOptions(array &$data): array
+    {
+        $roles = (array)$this->Auth->user('roles');
+        $meta = (array)Hash::get($data, '_meta');
+        $meta = array_intersect_key($meta, array_flip(static::ADMIN_META_ACCESSIBLE));
+        if (!in_array(RolesTable::ADMIN_ROLE, Hash::extract($roles, '{n}.id')) || empty($meta)) {
+            return [];
+        }
+        $data = array_merge($data, $meta);
+
+        return ['accessibleFields' => array_fill_keys(array_keys($meta), true)];
     }
 
     /**
