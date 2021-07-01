@@ -270,7 +270,7 @@ class ObjectsController extends ResourcesController
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
             $data = (array)$this->request->getData();
-            $entityOptions = $this->patchEntityOptions($data);
+            $entityOptions = $this->saveEntityOptions($data);
             $entity = $action(compact('entity', 'data', 'entityOptions'));
         }
 
@@ -288,7 +288,7 @@ class ObjectsController extends ResourcesController
      * @param array $data Entity data
      * @return array
      */
-    protected function patchEntityOptions(array &$data): array
+    protected function saveEntityOptions(array &$data): array
     {
         $roles = (array)$this->Auth->user('roles');
         $meta = (array)Hash::get($data, '_meta');
