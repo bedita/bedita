@@ -25,6 +25,13 @@ class UsersController extends ObjectsController
     public $modelClass = 'Users';
 
     /**
+     * Meta properties accessible for admins
+     *
+     * @var array
+     */
+    protected const ADMIN_META_ACCESSIBLE = ['blocked', 'locked'];
+
+    /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [

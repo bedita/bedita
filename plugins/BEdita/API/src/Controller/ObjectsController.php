@@ -73,7 +73,7 @@ class ObjectsController extends ResourcesController
      *
      * @var array
      */
-    protected const ADMIN_META_ACCESSIBLE = ['blocked', 'locked'];
+    protected const ADMIN_META_ACCESSIBLE = ['locked'];
 
     /**
      * {@inheritDoc}
