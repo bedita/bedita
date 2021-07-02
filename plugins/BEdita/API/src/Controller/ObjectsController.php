@@ -293,7 +293,7 @@ class ObjectsController extends ResourcesController
         $roles = (array)$this->Auth->user('roles');
         $meta = (array)Hash::get($data, '_meta');
         $meta = array_intersect_key($meta, array_flip(static::ADMIN_META_ACCESSIBLE));
-        if (!in_array(RolesTable::ADMIN_ROLE, Hash::extract($roles, '{n}.id')) || empty($meta)) {
+        if (!in_array(RolesTable::ADMIN_ROLE, (array)Hash::extract($roles, '{n}.id')) || empty($meta)) {
             return [];
         }
         $data = array_merge($data, $meta);
