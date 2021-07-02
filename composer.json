@@ -55,21 +55,11 @@
         "post-create-project-cmd": "BEdita\\App\\Console\\Installer::postInstall",
         "check": [
             "@test",
-            "@cs-setup",
             "@cs-check"
         ],
         "cs-check": " vendor/bin/phpcs --colors -n -p --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "cs-fix": "vendor/bin/phpcbf --colors --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
-        "cs-setup": [
-            "vendor/bin/phpcs --config-set installed_paths vendor/cakephp/cakephp-codesniffer",
-            "vendor/bin/phpcs --config-set default_standard CakePHP",
-            "vendor/bin/phpcs --config-set colors 1"
-        ],
-        "test": "vendor/bin/phpunit --colors=always",
-        "update-dev": [
-            "@composer update",
-            "@cs-setup"
-        ]
+        "test": "vendor/bin/phpunit --colors=always"
     },
     "extra": {
         "merge-plugin": {
