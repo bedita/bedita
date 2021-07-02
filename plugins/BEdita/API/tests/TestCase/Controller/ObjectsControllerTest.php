@@ -2787,7 +2787,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param bool $expected Expected result
      * @param string $id Test object ID
      * @param array $meta Meta data
-     * @param array $user USer data
+     * @param array $user User data
      * @return void
      *
      * @dataProvider saveEntityOptionsProvider
