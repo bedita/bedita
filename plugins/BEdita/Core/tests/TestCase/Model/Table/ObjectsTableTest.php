@@ -8,6 +8,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
@@ -704,13 +705,76 @@ class ObjectsTableTest extends TestCase
             Configure::write('Status.level', $config);
         }
 
-        $id = Hash::get($data, 'id', 2);
-        $object = $this->Objects->get($id);
-        unset($data['id']);
+        $object = $this->Objects->get(4);
         $object = $this->Objects->patchEntity($object, $data);
         $object = $this->Objects->save($object);
 
         static::assertSame($expected, $object->get('status'));
+    }
+
+    /**
+     * Data provider for `checkLocked`.
+     *
+     * @return array
+     */
+    public function checkLockedProvider(): array
+    {
+        return [
+            'not locked' => [
+                true,
+                [
+                    'id' => 3,
+                    'status' => 'on',
+                ],
+            ],
+            'forbidden' => [
+                new ForbiddenException('Operation not allowed on "locked" objects'),
+                [
+                    'id' => 2,
+                    'status' => 'off',
+                ],
+                'on',
+            ],
+            'allowed' => [
+                true,
+                [
+                    'id' => 1,
+                    'description' => 'new description',
+                ],
+            ],
+            'locked now' => [
+                true,
+                [
+                    'id' => 3,
+                    'uname' => 'new-uname',
+                    'locked' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkLocked()`.
+     *
+     * @param string|\Exception $expected result or Exception.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkLockedProvider()
+     * @covers ::checkLocked()
+     */
+    public function testCheckLocked($expected, array $data): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $object = $this->Objects->get(Hash::get($data, 'id'));
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->saveOrFail($object);
+
+        static::assertNotEmpty($object);
     }
 
     /**

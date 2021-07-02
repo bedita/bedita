@@ -67,7 +67,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'disabled-cat'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'profile tags' => [
@@ -97,7 +97,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'other-cat'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no categories' => [
@@ -107,7 +107,7 @@ class CategoriesBehaviorTest extends TestCase
                 [
                     'description' => 'some description',
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no tags allowed' => [
@@ -119,7 +119,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'first-tag'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no categories allowed' => [
@@ -215,7 +215,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchCategories(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $entity = $table->get(2, ['contain' => ['Categories']]);
+        $entity = $table->get(3, ['contain' => ['Categories']]);
         $data = [
             'categories' => [
                 [

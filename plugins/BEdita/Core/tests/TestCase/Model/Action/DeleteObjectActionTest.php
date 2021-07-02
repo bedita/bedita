@@ -73,13 +73,13 @@ class DeleteObjectActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('Documents');
         $action = new DeleteObjectAction(compact('table'));
 
-        $entity = $table->get(2);
+        $entity = $table->get(3);
 
         $result = $action(compact('entity'));
 
         static::assertTrue($result);
-        static::assertTrue($table->exists(['id' => 2]));
-        static::assertTrue($table->get(2)->get('deleted'));
+        static::assertTrue($table->exists(['id' => 3]));
+        static::assertTrue($table->get(3)->get('deleted'));
     }
 
     /**
@@ -92,11 +92,11 @@ class DeleteObjectActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('Documents');
         $action = new DeleteObjectAction(compact('table'));
 
-        $entity = $table->get(2);
+        $entity = $table->get(3);
 
         $result = $action(compact('entity') + ['hard' => true]);
 
         static::assertTrue($result);
-        static::assertFalse($table->exists(['id' => 2]));
+        static::assertFalse($table->exists(['id' => 3]));
     }
 }
