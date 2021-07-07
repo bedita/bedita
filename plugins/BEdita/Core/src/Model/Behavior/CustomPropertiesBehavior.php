@@ -14,13 +14,15 @@
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * CustomProperties behavior
@@ -35,6 +37,11 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'field' => 'custom_props',
+        'filter' => [
+            'number' => FILTER_VALIDATE_FLOAT,
+            'integer' => FILTER_VALIDATE_INT,
+            'boolean' => FILTER_VALIDATE_BOOLEAN,
+        ],
     ];
 
     /**
@@ -185,18 +192,46 @@ class CustomPropertiesBehavior extends Behavior
         $dirty = false;
         $available = $this->getAvailable();
         foreach ($available as $property) {
+            /** @var \BEdita\Core\Model\Entity\Property $property */
             $propertyName = $property->name;
             if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
                 continue;
             }
 
             $dirty = true;
-            $value[$propertyName] = $entity->get($propertyName);
+            $schema = (array)$property->property_type->params;
+            $value[$propertyName] = $this->propertyValue($entity->get($property->name), $schema);
         }
 
         if ($dirty) {
             $entity->set($field, $value);
         }
+    }
+
+    /**
+     * Return property value to be saved.
+     * First a simple formatting is performed, only for few basic types, then a JSON Schema validation
+     * is performed
+     *
+     * @param mixed $value Custom property valu
+     * @param array $schema Property JSON Schema
+     * @return mixed
+     * @throws BadRequestException
+     */
+    protected function propertyValue($value, array $schema)
+    {
+        $type = (string)Hash::get($schema, 'type');
+        $filter = $this->getConfig(sprintf('filter.%s', $type));
+        if ($filter) {
+            $value = filter_var($value, $filter, FILTER_NULL_ON_FAILURE);
+        }
+
+        $result = Validation::jsonSchema($value, $schema);
+        if (is_string($result)) {
+            throw new BadRequestException($result);
+        }
+
+        return $value;
     }
 
     /**
