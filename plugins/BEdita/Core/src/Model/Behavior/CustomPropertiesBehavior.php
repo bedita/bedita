@@ -18,7 +18,6 @@ use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -136,11 +135,14 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return void
+     * @return false|void
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $this->demoteProperties($entity);
+        if ($entity->hasErrors()) {
+            return false;
+        }
     }
 
     /**
@@ -180,6 +182,7 @@ class CustomPropertiesBehavior extends Behavior
 
     /**
      * Send custom properties back to where they came from.
+     * Value formatting and JSON Schema validation is performed.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
@@ -193,14 +196,19 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($available as $property) {
             /** @var \BEdita\Core\Model\Entity\Property $property */
-            $propertyName = $property->name;
-            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
+            $name = $property->name;
+            if (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) {
                 continue;
             }
 
             $dirty = true;
             $schema = (array)$property->property_type->params;
-            $value[$propertyName] = $this->propertyValue($entity->get($property->name), $schema);
+            $propValue = $this->formatValue($entity->get($name), $schema);
+            $result = Validation::jsonSchema($propValue, $schema);
+            if ($propValue !== null && is_string($result)) {
+                $entity->setError($name, $result);
+            }
+            $value[$name] = $propValue;
         }
 
         if ($dirty) {
@@ -209,26 +217,34 @@ class CustomPropertiesBehavior extends Behavior
     }
 
     /**
-     * Return property value to be saved.
-     * First a simple formatting is performed, only for few basic types, then a JSON Schema validation
-     * is performed
+     * Format property value to be saved.
+     * A simple formatting is performed, only for few basic types
      *
-     * @param mixed $value Custom property valu
+     * @param mixed $value Custom property value
      * @param array $schema Property JSON Schema
      * @return mixed
-     * @throws BadRequestException
      */
-    protected function propertyValue($value, array $schema)
+    protected function formatValue($value, array $schema)
     {
+        if ($value === null) {
+            return null;
+        }
         $type = (string)Hash::get($schema, 'type');
+        // apply `filter_var` to some primitive types
         $filter = $this->getConfig(sprintf('filter.%s', $type));
         if ($filter) {
-            $value = filter_var($value, $filter, FILTER_NULL_ON_FAILURE);
+            return filter_var($value, $filter, FILTER_NULL_ON_FAILURE);
         }
-
-        $result = Validation::jsonSchema($value, $schema);
-        if (is_string($result)) {
-            throw new BadRequestException($result);
+        // set `null` on empty strings in other cases
+        if (in_array($type, ['array', 'object']) && $value === '') {
+            return null;
+        }
+        $format = (string)Hash::get($schema, 'format');
+        if ($type === 'string' && (in_array($format, ['email', 'uri', 'date']) || !empty(Hash::get($schema, 'enum')))) {
+            $value = trim($value);
+            if ($value === '') {
+                return null;
+            }
         }
 
         return $value;
