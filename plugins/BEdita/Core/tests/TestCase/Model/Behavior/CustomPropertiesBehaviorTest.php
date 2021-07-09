@@ -296,7 +296,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         $expected = [
             'files_property' => ['media-one' => null, 'media-two' => null],
-            'media_property' => ['media-one' => 'synapse', 'media-two' => null],
+            'media_property' => ['media-one' => true, 'media-two' => null],
             'count' => 2,
         ];
 
@@ -343,18 +343,18 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                 ],
                 10,
                 'Files',
             ],
             'overwrite' => [
                 [
-                    'media_property' => 'synapse',
+                    'media_property' => true,
                     'files_property' => 'gustavo@example.org',
                 ],
                 [
@@ -370,21 +370,34 @@ class CustomPropertiesBehaviorTest extends TestCase
                 ],
                 [
                     'media_property' => null,
+                    'files_property' => '',
                 ],
                 10,
                 'Files',
             ],
             'disabledProperty' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => 0,
                     'disabled_property' => 'do not write it!',
                 ],
                 10,
                 'Files',
+            ],
+            'email' => [
+                [
+                    'another_email' => null,
+                    'another_username' => 'another'
+                ],
+                [
+                    'another_email' => '',
+                    'another_username' => 'another'
+                ],
+                5,
+                'Users',
             ],
         ];
     }
@@ -401,8 +414,9 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::demoteProperties()
+     * @covers ::formatValue()
      */
-    public function testBeforeSave(array $expected, array $data, $id, $table)
+    public function testBeforeSave(array $expected, array $data, $id, $table): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
         $entity = $table->get($id);
@@ -416,6 +430,26 @@ class CustomPropertiesBehaviorTest extends TestCase
         ksort($result);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test validation error on custom properties.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     * @covers ::demoteProperties()
+     */
+    public function testValidationFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $entity = $table->get(2);
+
+        $table->patchEntity($entity, ['another_title' => true]);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
     }
 
     /**

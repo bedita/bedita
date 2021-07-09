@@ -251,7 +251,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'name' => 'another_email',
                     'description' => 'User email',
                     'is_nullable' => true,
-                    'property_type_name' => 'string',
+                    'property_type_name' => 'email',
                     'object_type_name' => 'users',
                 ],
                 [
@@ -279,14 +279,14 @@ class ProjectControllerTest extends IntegrationTestCase
                     'name' => 'media_property',
                     'description' => null,
                     'is_nullable' => true,
-                    'property_type_name' => 'string',
+                    'property_type_name' => 'boolean',
                     'object_type_name' => 'media',
                 ],
                 [
                     'name' => 'files_property',
                     'description' => null,
                     'is_nullable' => true,
-                    'property_type_name' => 'string',
+                    'property_type_name' => 'json',
                     'object_type_name' => 'files',
                 ],
                 [

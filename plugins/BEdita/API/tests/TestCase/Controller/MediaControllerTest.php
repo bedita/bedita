@@ -426,7 +426,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
-                        'media_property' => 'synapse', // inherited custom property
+                        'media_property' => true, // inherited custom property
                         'name' => 'My media name',
                         'provider' => null,
                         'provider_uid' => null,

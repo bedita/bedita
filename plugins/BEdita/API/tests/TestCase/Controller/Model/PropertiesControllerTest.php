@@ -128,7 +128,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'another_email',
                         'description' => 'User email',
-                        'property_type_name' => 'string',
+                        'property_type_name' => 'email',
                         'object_type_name' => 'users',
                         'label' => null,
                         'is_nullable' => true,
@@ -208,7 +208,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'media_property',
                         'description' => null,
-                        'property_type_name' => 'string',
+                        'property_type_name' => 'boolean',
                         'object_type_name' => 'media',
                         'label' => null,
                         'is_nullable' => true,
@@ -228,7 +228,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'files_property',
                         'description' => null,
-                        'property_type_name' => 'string',
+                        'property_type_name' => 'json',
                         'object_type_name' => 'files',
                         'label' => null,
                         'is_nullable' => true,
