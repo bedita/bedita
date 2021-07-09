@@ -56,6 +56,9 @@ class Properties extends ResourcesBase
         'delete' => [
             'atomic' => false,
         ],
+        'update' => [
+            'atomic' => false,
+        ],
     ];
 
     /**
@@ -107,6 +110,36 @@ class Properties extends ResourcesBase
                 ->firstOrFail();
 
             $Properties->deleteOrFail($property, static::$defaults['delete']);
+        }
+    }
+
+    /**
+     * Update properties in `properties` table using input `$properties` array
+     *
+     * @param array $properties Properties data
+     * @param array $options Table locator options
+     * @return void
+     */
+    public static function update(array $properties, array $options = []): void
+    {
+        $Properties = static::getTable('Properties', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
+
+        foreach ($properties as $p) {
+            static::validate($p);
+            $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
+
+            /** @var \Cake\Datasource\EntityInterface $property */
+            $property = $Properties->find()
+                ->where([
+                    'name' => $p['name'],
+                    'object_type_id' => $objectType->get('id'),
+                ])
+                ->firstOrFail();
+            $property->set('property_type_name', $p['property']);
+            $property->set('description', Hash::get($p, 'description'));
+
+            $Properties->saveOrFail($property, static::$defaults['update']);
         }
     }
 
