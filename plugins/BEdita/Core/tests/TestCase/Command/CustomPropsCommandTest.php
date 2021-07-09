@@ -1,0 +1,119 @@
+<?php
+namespace BEdita\Core\Test\TestCase\Command;
+
+use BEdita\Core\Filesystem\Adapter\LocalAdapter;
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+/**
+ * {@see BEdita\Core\Command\CustomPropsCommand} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Command\CustomPropsCommand
+ */
+class CustomPropsCommandTest extends TestCase
+{
+    use ConsoleIntegrationTestTrait;
+
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Streams',
+    ];
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->useCommandRunner();
+    }
+
+    /**
+     * Test buildOptionParser method
+     *
+     * @return void
+     *
+     * @covers ::buildOptionParser()
+     */
+    public function testBuildOptionParser()
+    {
+        $this->exec('custom_props --help');
+        $this->assertOutputContains('Object ID to check');
+        $this->assertOutputContains('Object type name to check');
+    }
+
+    /**
+     * Test `execute` method
+     *
+     * @return void
+     *
+     * @covers ::execute()
+     * @covers ::customPropsByType()
+     * @covers ::objectsGenerator()
+     */
+    public function testExecute(): void
+    {
+        FilesystemRegistry::setConfig('default', [
+            'className' => LocalAdapter::class,
+        ]);
+        $this->exec('custom_props');
+        $this->assertOutputContains('Updated 2 users without errors');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `execute` with `id` and `type` option
+     *
+     * @return void
+     *
+     * @covers ::execute()
+     * @covers ::customPropsByType()
+     */
+    public function testOptionsExecute(): void
+    {
+        $this->exec('custom_props --type users --id 5');
+        $this->assertOutputContains('Updated 1 users without errors');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `execute` method
+     *
+     * @return void
+     *
+     * @covers ::execute()
+     * @covers ::customPropsByType()
+     * @covers ::objectsGenerator()
+     */
+    public function testFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $table->removeBehavior('CustomProperties');
+        $document = $table->get(2);
+        $document->set('custom_props', ['another_title' => true]);
+        $table->saveOrFail($document);
+        $table->addBehavior('BEdita/Core.CustomProperties');
+
+        $this->exec('custom_props --type documents --id 2');
+        $this->assertErrorContains('errors updating documents');
+        $this->assertExitError();
+    }
+}
