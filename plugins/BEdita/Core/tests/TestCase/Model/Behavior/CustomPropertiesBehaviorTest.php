@@ -355,18 +355,19 @@ class CustomPropertiesBehaviorTest extends TestCase
             'overwrite' => [
                 [
                     'media_property' => true,
-                    'files_property' => 'gustavo@example.org',
+                    'files_property' => ['gustavo' => 'supporto'],
+                    // 'files_property' => '{"gustavo":"supporto"}',
                 ],
                 [
-                    'files_property' => 'gustavo@example.org',
+                    'files_property' => ['gustavo' => 'supporto'],
+                    // 'files_property' => '{"gustavo":"supporto"}',
                 ],
                 10,
                 'Files',
             ],
             'empty' => [
                 [
-                    'media_property' => null,
-                    'files_property' => null,
+                    'media_property' => ['Boolean expected, null received']
                 ],
                 [
                     'media_property' => null,
@@ -422,7 +423,12 @@ class CustomPropertiesBehaviorTest extends TestCase
         $entity = $table->get($id);
 
         $table->patchEntity($entity, $data);
-        $table->save($entity);
+        $success = $table->save($entity);
+        if ($success === false) {
+            static::assertSame($expected, $entity->getErrors());
+
+            return;
+        }
 
         $result = $entity->get('custom_props');
 

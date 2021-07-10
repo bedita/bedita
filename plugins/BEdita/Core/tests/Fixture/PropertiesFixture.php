@@ -109,7 +109,7 @@ class PropertiesFixture extends TestFixture
             'description' => null,
             'enabled' => true,
             'label' => null,
-            'is_nullable' => true,
+            'is_nullable' => false,
             'is_static' => false,
         ],
         [
