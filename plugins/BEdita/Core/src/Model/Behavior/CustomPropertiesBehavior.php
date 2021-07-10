@@ -205,7 +205,7 @@ class CustomPropertiesBehavior extends Behavior
             $schema = (array)$property->property_type->params;
             $propValue = $this->formatValue($entity->get($name), $schema);
             $result = Validation::jsonSchema($propValue, $schema);
-            if ($propValue !== null && is_string($result)) {
+            if (($propValue !== null || !$property->is_nullable) && is_string($result)) {
                 $entity->setError($name, $result);
             }
             $value[$name] = $propValue;
