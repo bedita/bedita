@@ -211,7 +211,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'property_type_name' => 'boolean',
                         'object_type_name' => 'media',
                         'label' => null,
-                        'is_nullable' => true,
+                        'is_nullable' => false,
                         'is_static' => false,
                     ],
                     'meta' => [
