@@ -296,7 +296,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         $expected = [
             'files_property' => ['media-one' => null, 'media-two' => null],
-            'media_property' => ['media-one' => true, 'media-two' => null],
+            'media_property' => ['media-one' => true, 'media-two' => false],
             'count' => 2,
         ];
 
