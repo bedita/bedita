@@ -39,7 +39,10 @@ class DefaultValuesTest extends IntegrationTestCase
             'files on' => [
                 ['status' => 'on'],
                 'files',
-                ['title' => 'My File'],
+                [
+                    'title' => 'My File',
+                    'media_property' => true,
+                ],
                 [
                     'files' => [
                         'status' => 'on',
@@ -50,7 +53,10 @@ class DefaultValuesTest extends IntegrationTestCase
             'files draft' => [
                 ['status' => 'draft'],
                 'files',
-                ['title' => 'My File'],
+                [
+                    'title' => 'My File',
+                    'media_property' => false,
+                ],
                 [],
             ],
 

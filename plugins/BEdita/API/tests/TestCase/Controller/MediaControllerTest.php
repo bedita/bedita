@@ -350,6 +350,7 @@ class MediaControllerTest extends IntegrationTestCase
             'type' => 'files',
             'attributes' => [
                 'provider_thumbnail' => 'https://thumbs.example.org/item.jpg',
+                'media_property' => true,
             ],
         ];
         $newId = $this->lastObjectId() + 1;
