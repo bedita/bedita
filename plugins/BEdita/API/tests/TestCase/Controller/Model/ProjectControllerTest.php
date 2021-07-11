@@ -278,7 +278,7 @@ class ProjectControllerTest extends IntegrationTestCase
                 [
                     'name' => 'media_property',
                     'description' => null,
-                    'is_nullable' => true,
+                    'is_nullable' => false,
                     'property_type_name' => 'boolean',
                     'object_type_name' => 'media',
                 ],
