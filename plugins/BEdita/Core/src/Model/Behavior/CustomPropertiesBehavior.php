@@ -197,7 +197,10 @@ class CustomPropertiesBehavior extends Behavior
         foreach ($available as $property) {
             /** @var \BEdita\Core\Model\Entity\Property $property */
             $name = $property->name;
-            if (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) {
+            if (
+                (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) &&
+                !($entity->isNew() && !$property->is_nullable)
+            ) {
                 continue;
             }
 

@@ -356,11 +356,9 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'media_property' => true,
                     'files_property' => ['gustavo' => 'supporto'],
-                    // 'files_property' => '{"gustavo":"supporto"}',
                 ],
                 [
                     'files_property' => ['gustavo' => 'supporto'],
-                    // 'files_property' => '{"gustavo":"supporto"}',
                 ],
                 10,
                 'Files',
@@ -456,6 +454,27 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         static::assertFalse($result);
         static::assertNotEmpty($entity->getErrors());
+    }
+
+    /**
+     * Test validation error on not nullable property.
+     *
+     * @return void
+     *
+     * @covers ::demoteProperties()
+     */
+    public function testValidationNewFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Files');
+        $entity = $table->newEntity(['title' => 'New file']);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
+        $expected = [
+            'media_property' => ['Boolean expected, null received'],
+        ];
+        static::assertEquals($expected, $entity->getErrors());
     }
 
     /**
