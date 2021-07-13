@@ -94,8 +94,7 @@ class CustomPropsCommand extends Command
         $io->info(sprintf('Processing %s...', $type));
         $this->Table = TableRegistry::getTableLocator()->get(Inflector::camelize($type));
         $query = $this->Table
-            ->find('type', (array)$type)
-            ->select(['id', 'title', 'custom_props']);
+            ->find('type', (array)$type);
         if ($id) {
             $query = $query->where(compact('id'));
         }
