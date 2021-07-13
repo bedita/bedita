@@ -600,6 +600,12 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function testFindCustomPropInteger(): void
     {
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Mysql) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+        }
+
         $Profiles = $this->getTableLocator()->get('Profiles');
         $profile = $Profiles->find()->first();
         $profile->set('number_of_friends', 10);
