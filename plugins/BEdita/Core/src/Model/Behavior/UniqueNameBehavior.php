@@ -80,6 +80,9 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueName(EntityInterface $entity): void
     {
+        if (!$entity->isNew() && !$entity->has('uname')) {
+            return;
+        }
         $uname = $entity->get('uname');
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
