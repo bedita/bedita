@@ -193,6 +193,7 @@ class ProfilesTableTest extends TestCase
             // custom prop
             'another_birthdate',
             'another_surname',
+            'number_of_friends',
         ];
 
         sort($expectedProperties);

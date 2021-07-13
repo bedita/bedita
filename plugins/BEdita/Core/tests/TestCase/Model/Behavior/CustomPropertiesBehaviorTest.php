@@ -102,6 +102,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_surname',
                     'another_birthdate',
+                    'number_of_friends',
                 ],
                 'Profiles',
             ],
