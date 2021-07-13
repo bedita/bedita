@@ -27,11 +27,11 @@ class TestConstants
         'applications' => '2244706479',
         'documents' => '4059696127',
         'events' => '1528552691',
-        'files' => '1243827317',
+        'files' => '290039203',
         'folders' => '3223993640',
         'locations' => '2540919723',
         'profiles' => '3185752423',
         'roles' => '2845943672',
-        'users' => '1532277861',
+        'users' => '3777799474',
     ];
 }

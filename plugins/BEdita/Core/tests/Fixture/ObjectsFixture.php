@@ -208,7 +208,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
-            'custom_props' => '{"media_property":"synapse"}',
+            'custom_props' => '{"media_property":true}',
         ],
         // 11
         [
@@ -289,6 +289,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
+            'custom_props' => '{"media_property":false}',
         ],
         // 15 (ghost object)
         [

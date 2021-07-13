@@ -296,7 +296,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         $expected = [
             'files_property' => ['media-one' => null, 'media-two' => null],
-            'media_property' => ['media-one' => 'synapse', 'media-two' => null],
+            'media_property' => ['media-one' => true, 'media-two' => false],
             'count' => 2,
         ];
 
@@ -343,48 +343,60 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                 ],
                 10,
                 'Files',
             ],
             'overwrite' => [
                 [
-                    'media_property' => 'synapse',
-                    'files_property' => 'gustavo@example.org',
+                    'media_property' => true,
+                    'files_property' => ['gustavo' => 'supporto'],
                 ],
                 [
-                    'files_property' => 'gustavo@example.org',
+                    'files_property' => ['gustavo' => 'supporto'],
                 ],
                 10,
                 'Files',
             ],
             'empty' => [
                 [
-                    'media_property' => null,
-                    'files_property' => null,
+                    'media_property' => ['Boolean expected, null received']
                 ],
                 [
                     'media_property' => null,
+                    'files_property' => '',
                 ],
                 10,
                 'Files',
             ],
             'disabledProperty' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => 0,
                     'disabled_property' => 'do not write it!',
                 ],
                 10,
                 'Files',
+            ],
+            'email' => [
+                [
+                    'another_email' => null,
+                    'another_username' => 'another'
+                ],
+                [
+                    'another_email' => '',
+                    'another_username' => 'another'
+                ],
+                5,
+                'Users',
             ],
         ];
     }
@@ -401,14 +413,20 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::demoteProperties()
+     * @covers ::formatValue()
      */
-    public function testBeforeSave(array $expected, array $data, $id, $table)
+    public function testBeforeSave(array $expected, array $data, $id, $table): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
         $entity = $table->get($id);
 
         $table->patchEntity($entity, $data);
-        $table->save($entity);
+        $success = $table->save($entity);
+        if ($success === false) {
+            static::assertSame($expected, $entity->getErrors());
+
+            return;
+        }
 
         $result = $entity->get('custom_props');
 
@@ -416,6 +434,47 @@ class CustomPropertiesBehaviorTest extends TestCase
         ksort($result);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test validation error on custom properties.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     * @covers ::demoteProperties()
+     */
+    public function testValidationFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $entity = $table->get(2);
+
+        $table->patchEntity($entity, ['another_title' => true]);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
+    }
+
+    /**
+     * Test validation error on not nullable property.
+     *
+     * @return void
+     *
+     * @covers ::demoteProperties()
+     */
+    public function testValidationNewFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Files');
+        $entity = $table->newEntity(['title' => 'New file']);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
+        $expected = [
+            'media_property' => ['Boolean expected, null received'],
+        ];
+        static::assertEquals($expected, $entity->getErrors());
     }
 
     /**

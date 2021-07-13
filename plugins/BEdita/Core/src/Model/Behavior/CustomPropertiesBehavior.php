@@ -14,13 +14,14 @@
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * CustomProperties behavior
@@ -35,6 +36,11 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'field' => 'custom_props',
+        'filter' => [
+            'number' => FILTER_VALIDATE_FLOAT,
+            'integer' => FILTER_VALIDATE_INT,
+            'boolean' => FILTER_VALIDATE_BOOLEAN,
+        ],
     ];
 
     /**
@@ -129,11 +135,14 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return void
+     * @return false|void
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $this->demoteProperties($entity);
+        if ($entity->hasErrors()) {
+            return false;
+        }
     }
 
     /**
@@ -173,6 +182,7 @@ class CustomPropertiesBehavior extends Behavior
 
     /**
      * Send custom properties back to where they came from.
+     * Value formatting and JSON Schema validation is performed.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
@@ -185,18 +195,62 @@ class CustomPropertiesBehavior extends Behavior
         $dirty = false;
         $available = $this->getAvailable();
         foreach ($available as $property) {
-            $propertyName = $property->name;
-            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
+            /** @var \BEdita\Core\Model\Entity\Property $property */
+            $name = $property->name;
+            if (
+                (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) &&
+                !($entity->isNew() && !$property->is_nullable)
+            ) {
                 continue;
             }
 
             $dirty = true;
-            $value[$propertyName] = $entity->get($propertyName);
+            $schema = (array)$property->property_type->params;
+            $propValue = $this->formatValue($entity->get($name), $schema);
+            $result = Validation::jsonSchema($propValue, $schema);
+            if (($propValue !== null || !$property->is_nullable) && is_string($result)) {
+                $entity->setError($name, $result);
+            }
+            $value[$name] = $propValue;
         }
 
         if ($dirty) {
             $entity->set($field, $value);
         }
+    }
+
+    /**
+     * Format property value to be saved.
+     * A simple formatting is performed, only for few basic types
+     *
+     * @param mixed $value Custom property value
+     * @param array $schema Property JSON Schema
+     * @return mixed
+     */
+    protected function formatValue($value, array $schema)
+    {
+        if ($value === null) {
+            return null;
+        }
+        $type = (string)Hash::get($schema, 'type');
+        // apply `filter_var` to some primitive types
+        $filter = $this->getConfig(sprintf('filter.%s', $type));
+        if ($filter) {
+            return filter_var($value, $filter, FILTER_NULL_ON_FAILURE);
+        }
+        // set `null` on empty strings in other cases
+        if (in_array($type, ['array', 'object']) && $value === '') {
+            return null;
+        }
+        $format = (string)Hash::get($schema, 'format');
+        if ($type === 'string' && (in_array($format, ['email', 'uri', 'date']) || !empty(Hash::get($schema, 'enum')))) {
+            $value = trim($value);
+            if ($value === '') {
+                return null;
+            }
+        }
+
+        return $value;
     }
 
     /**
