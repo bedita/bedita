@@ -13,11 +13,15 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -40,6 +44,13 @@ class CustomPropertiesBehavior extends Behavior
             'number' => FILTER_VALIDATE_FLOAT,
             'integer' => FILTER_VALIDATE_INT,
             'boolean' => FILTER_VALIDATE_BOOLEAN,
+        ],
+        'implementedFinders' => [
+            'customProp' => 'findCustomProp',
+        ],
+        'implementedMethods' => [
+            'getCustomPropsAvailable' => 'getAvailable',
+            'getCustomPropsDefaultValues' => 'getDefaultValues',
         ],
     ];
 
@@ -196,6 +207,7 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($available as $property) {
             /** @var \BEdita\Core\Model\Entity\Property $property */
+            /** @var \BEdita\Core\Model\Entity\Property $property */
             $name = $property->name;
             if (
                 (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) &&
@@ -269,5 +281,58 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         return array_key_exists($field, (array)$entity);
+    }
+
+    /**
+     * Finder for custom property.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options.
+     * @return \Cake\ORM\Query
+     */
+    public function findCustomProp(Query $query, array $options): Query
+    {
+        if (empty($options)) {
+            // Bad filter options.
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+            ]);
+        }
+
+        $available = $this->getAvailable();
+        foreach ($options as $key => &$value) {
+            /** @var \BEdita\Core\Model\Entity\Property $property */
+            $property = Hash::get($available, $key);
+            if (!$property) {
+                throw new BadRequestException(__d('bedita', 'Invalid custom property'));
+            }
+
+            $value = $this->formatValue($value, $property->property_type->params);
+        }
+        unset($value);
+
+        return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
+            $field = $this->getTable()->aliasField($this->getConfig('field'));
+
+            return $exp->and_(array_map(
+                function ($key, $value) use ($field, $query) {
+                    return $query->newExpr()->eq(
+                        new FunctionExpression(
+                            'JSON_UNQUOTE',
+                            [
+                                new FunctionExpression(
+                                    'JSON_EXTRACT',
+                                    [$field => 'identifier', sprintf('$.%s', $key)],
+                                ),
+                            ],
+                            null,
+                        ),
+                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
+                    );
+                },
+                array_keys($options),
+                $options
+            ));
+        });
     }
 }

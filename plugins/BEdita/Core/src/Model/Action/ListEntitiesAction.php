@@ -87,6 +87,7 @@ class ListEntitiesAction extends BaseAction
      */
     protected function buildFilter(Query $query, array $filter)
     {
+        $customPropsOptions = [];
         foreach ($filter as $key => $value) {
             $variableKey = Inflector::variable($key);
             if ($this->Table->hasFinder($variableKey)) {
@@ -131,12 +132,26 @@ class ListEntitiesAction extends BaseAction
                 continue;
             }
 
+            if ($this->Table->behaviors()->has('CustomProperties')) {
+                /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior */
+                $behavior = $this->Table->behaviors()->get('CustomProperties');
+                if (in_array($key, array_keys($behavior->getAvailable()))) {
+                    $customPropsOptions[$key] = $value;
+
+                    continue;
+                };
+            }
+
             // No suitable filter was found
             //$this->log('Filter not found ' . $key, 'error');
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => 'filter "' . $key . '" was not found',
             ]);
+        }
+
+        if (!empty($customPropsOptions)) {
+            $query = $query->find('customProp', $customPropsOptions);
         }
 
         return $query;
