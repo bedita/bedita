@@ -17,6 +17,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
+use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -289,14 +290,18 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options.
      * @return \Cake\ORM\Query
+     * @throws \Cake\Http\Exception\BadRequestException When
      */
     public function findCustomProp(Query $query, array $options): Query
     {
+        // for now we handle just MySQL
+        if (!($query->getConnection()->getDriver() instanceof Mysql)) {
+            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
+        }
+
         if (empty($options)) {
             // Bad filter options.
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-            ]);
+            throw new BadFilterException(__d('bedita', 'Invalid data'));
         }
 
         $available = $this->getAvailable();
@@ -304,7 +309,7 @@ class CustomPropertiesBehavior extends Behavior
             /** @var \BEdita\Core\Model\Entity\Property $property */
             $property = Hash::get($available, $key);
             if (!$property) {
-                throw new BadRequestException(__d('bedita', 'Invalid custom property'));
+                throw new BadFilterException(__d('bedita', 'Invalid custom property "{0}"', [$key]));
             }
 
             $value = $this->formatValue($value, $property->property_type->params);
