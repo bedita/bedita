@@ -569,7 +569,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @covers ::findCustomProp()
      * @dataProvider findCustomPropProvider
      */
-    public function testFindCustomProp($expected, $tableName, array $options): void
+    public function testFindCustomProp($expected, string $tableName, array $options): void
     {
         $connection = ConnectionManager::get('default');
         if (!$connection->getDriver() instanceof Mysql) {

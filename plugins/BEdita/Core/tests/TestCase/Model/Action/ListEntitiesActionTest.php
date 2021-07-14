@@ -252,16 +252,13 @@ class ListEntitiesActionTest extends TestCase
     /**
      * Test command execution with custom prop filter.
      *
-     * @param array $expected Expected results.
-     * @param mixed $filter Filter.
-     * @param string $table Table name.
      * @return void
      *
      * @covers ::initialize()
      * @covers ::buildFilter()
      * @covers ::execute()
      */
-    public function testFilterCustomProp()
+    public function testFilterCustomProp(): void
     {
         $this->skipUnless(ConnectionManager::get('default')->getDriver() instanceof Mysql);
 

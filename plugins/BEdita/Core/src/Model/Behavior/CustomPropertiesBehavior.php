@@ -208,7 +208,6 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($available as $property) {
             /** @var \BEdita\Core\Model\Entity\Property $property */
-            /** @var \BEdita\Core\Model\Entity\Property $property */
             $name = $property->name;
             if (
                 (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) &&
