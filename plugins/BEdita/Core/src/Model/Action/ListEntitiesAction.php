@@ -143,7 +143,6 @@ class ListEntitiesAction extends BaseAction
             }
 
             // No suitable filter was found
-            //$this->log('Filter not found ' . $key, 'error');
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => 'filter "' . $key . '" was not found',
