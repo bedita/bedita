@@ -327,10 +327,9 @@ class CustomPropertiesBehavior extends Behavior
                             [
                                 new FunctionExpression(
                                     'JSON_EXTRACT',
-                                    [$field => 'identifier', sprintf('$.%s', $key)],
+                                    [$field => 'identifier', sprintf('$.%s', $key)]
                                 ),
-                            ],
-                            null,
+                            ]
                         ),
                         new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
                     );
