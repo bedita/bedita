@@ -16,6 +16,7 @@
 	{$html->css('bedita-icons.css')}
 	
 	{$html->script("libs/jquery/jquery-3.6.0.min")}
+	{$html->script("libs/jquery/jquery-migrate-3.3.2.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
 	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
 	{$html->script("beditaUI")}
