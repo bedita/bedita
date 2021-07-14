@@ -30,8 +30,9 @@
 	{$beurl->addModuleScripts()}
 
 	{$html->script("libs/jquery/ui/jquery-ui.min")}
-	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
-	{$html->script("libs/jquery/ui/jquery.ui.tooltip.min")}
+	{if $currLang != "eng"}
+		{$html->script("libs/jquery/ui/i18n/datepicker-$currLang2", false)}
+	{/if}
 
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
