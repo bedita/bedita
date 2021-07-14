@@ -22,7 +22,6 @@
 	{$scripts_for_layout}
 
 	{$html->script("libs/jquery/ui/jquery-ui.min")}
-	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
 
 	
 </head>

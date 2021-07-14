@@ -1,7 +1,6 @@
 {$html->css("ui.datepicker", null, ['inline' => false])}
 {$html->script("libs/jquery/plugins/jquery.form", false)}
 
-{$html->script("libs/jquery/ui/jquery.ui.sortable.min", true)}
 {$html->script("libs/jquery/plugins/jquery.selectboxes.pack", false)}
 
 {$view->element('modulesmenu', ['sectionSel' => null])}
