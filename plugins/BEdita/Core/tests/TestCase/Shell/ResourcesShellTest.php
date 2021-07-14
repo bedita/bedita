@@ -220,6 +220,18 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
+     * Test `edit` failure
+     *
+     * @return void
+     */
+    public function testEditFail(): void
+    {
+        $this->exec('resources edit -t applications 1111');
+        $this->assertErrorContains('Resource with id 1111 not found');
+        $this->assertExitCode(Shell::CODE_ERROR);
+    }
+
+    /**
      * Data provider for `testList` test case.
      *
      * @return array
