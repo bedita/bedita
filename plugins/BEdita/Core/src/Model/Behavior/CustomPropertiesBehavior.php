@@ -243,7 +243,7 @@ class CustomPropertiesBehavior extends Behavior
             return null;
         }
         $format = (string)Hash::get($schema, 'format');
-        if ($type === 'string' && (in_array($format, ['email', 'uri', 'date']) || !empty(Hash::get($schema, 'enum')))) {
+        if ($type === 'string' && (in_array($format, ['email', 'uri', 'date', 'date-time']) || !empty(Hash::get($schema, 'enum')))) {
             $value = trim($value);
             if ($value === '') {
                 return null;
