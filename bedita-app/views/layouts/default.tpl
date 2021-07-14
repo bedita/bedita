@@ -15,7 +15,8 @@
 
 	{$html->css('bedita-icons.css')}
 	
-	{$html->script("libs/jquery/jquery-2.1.0.min")}
+	{$html->script("libs/jquery/jquery-3.6.0.min")}
+	{$html->script("libs/jquery/jquery-migrate-3.3.2.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
 	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
 	{$html->script("beditaUI")}
@@ -29,9 +30,9 @@
 	{$beurl->addModuleScripts()}
 
 	{$html->script("libs/jquery/ui/jquery-ui.min")}
-	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
-	{$html->script("libs/jquery/ui/jquery.ui.tooltip.min")}
-	{$html->script('libs/jquery/plugins/jquery.float_thead.min.js')}
+	{if $currLang != "eng"}
+		{$html->script("libs/jquery/ui/i18n/datepicker-$currLang2", false)}
+	{/if}
 
 	{* collect linked scripts around *}
 	{$scripts_for_layout}

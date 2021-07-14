@@ -1388,6 +1388,7 @@ TABLE.bordered {
 TABLE.indexlist {
 	width:100%;
 	border-bottom: solid 1px #666;
+	position: relative;
 }
  
 TABLE.indexlist H4 {
@@ -1395,19 +1396,17 @@ TABLE.indexlist H4 {
 	display: inline-block;
 	/* padding-top:5px; */
 }
-  
-.indexlist thead {
+
+.indexlist TH  {
 	border-bottom: solid 1px #666;
 	font-weight: bold;
 	background-color: #DFDFDF;
-}
-
-.indexlist TH  {
-	/* font-weight: bold; */
-	/* background-color:#FFFFFF; */
 	white-space: nowrap;
 	line-height: 30px;
 	text-transform: capitalize;
+	position: sticky;
+	top: 0;
+	z-index: 100;
 }
 
 .indexlist TD  {
