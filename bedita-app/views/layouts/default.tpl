@@ -32,7 +32,6 @@
 	{$html->script("libs/jquery/ui/jquery-ui.min")}
 	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
 	{$html->script("libs/jquery/ui/jquery.ui.tooltip.min")}
-	{$html->script('libs/jquery/plugins/jquery.float_thead.min.js')}
 
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
