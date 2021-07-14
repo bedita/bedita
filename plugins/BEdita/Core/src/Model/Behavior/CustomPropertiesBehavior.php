@@ -331,7 +331,7 @@ class CustomPropertiesBehavior extends Behavior
                                 ),
                             ]
                         ),
-                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
+                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
                     );
                 },
                 array_keys($options),
