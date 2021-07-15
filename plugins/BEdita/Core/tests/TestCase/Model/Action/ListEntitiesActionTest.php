@@ -15,6 +15,8 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Database\Driver\Mysql;
+use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -38,9 +40,13 @@ class ListEntitiesActionTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
@@ -241,6 +247,30 @@ class ListEntitiesActionTest extends TestCase
 
         static::assertInstanceOf(Query::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
+    }
+
+    /**
+     * Test command execution with custom prop filter.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::buildFilter()
+     * @covers ::execute()
+     */
+    public function testFilterCustomProp(): void
+    {
+        $this->skipUnless(ConnectionManager::get('default')->getDriver() instanceof Mysql);
+
+        $table = $this->getTableLocator()->get('Files');
+        $action = new ListEntitiesAction(compact('table'));
+
+        $result = $action(['filter' => ['media_property' => true]]);
+        static::assertInstanceOf(Query::class, $result);
+
+        $result = $result->toArray();
+        static::assertCount(1, $result);
+        static::assertEquals(10, $result[0]->id);
     }
 
     /**
