@@ -298,19 +298,16 @@ class CustomPropertiesBehavior extends Behavior
             throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
         }
 
+        $available = $this->getAvailable();
+        $options = array_intersect_key($options, $available);
         if (empty($options)) {
             // Bad filter options.
             throw new BadFilterException(__d('bedita', 'Invalid data'));
         }
 
-        $available = $this->getAvailable();
         foreach ($options as $key => &$value) {
             /** @var \BEdita\Core\Model\Entity\Property $property */
             $property = Hash::get($available, $key);
-            if (!$property) {
-                throw new BadFilterException(__d('bedita', 'Invalid custom property "{0}"', [$key]));
-            }
-
             $value = $this->formatValue($value, $property->property_type->params);
         }
         unset($value);
