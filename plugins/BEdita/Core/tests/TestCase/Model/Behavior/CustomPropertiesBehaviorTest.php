@@ -516,7 +516,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [],
             ],
             'invalid custom prop' => [
-                new BadFilterException('Invalid custom property "yeppa"'),
+                new BadFilterException('Invalid data'),
                 'Documents',
                 ['yeppa' => 12],
             ],
