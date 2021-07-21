@@ -2745,4 +2745,79 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         static::assertEquals(9, Hash::get($result, 'data.0.id'));
     }
+
+    /**
+     * Provider for testSaveEntityOptions()
+     *
+     * @return array
+     */
+    public function saveEntityOptionsProvider()
+    {
+        return [
+            'lock' => [
+                true,
+                '3',
+                [
+                    'locked' => true,
+                ]
+            ],
+            'user' => [
+                false,
+                '2',
+                [
+                    'locked' => false,
+                ],
+                [
+                    'username' => 'second user',
+                    'password' => 'password2',
+                ],
+            ],
+            'no meta' => [
+                false,
+                '2',
+                [
+                    'created_by' => 3,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `saveEntityOptions()`
+     *
+     * @param bool $expected Expected result
+     * @param string $id Test object ID
+     * @param array $meta Meta data
+     * @param array $user User data
+     * @return void
+     *
+     * @dataProvider saveEntityOptionsProvider
+     * @covers ::saveEntityOptions()
+     */
+    public function testSaveEntityOptions(bool $expected, string $id, array $meta, array $user = []): void
+    {
+        $data = [
+            'id' => $id,
+            'type' => 'documents',
+            'meta' => $meta,
+        ];
+
+        $header = $this->getUserAuthHeader(
+            Hash::get($user, 'username'),
+            Hash::get($user, 'password')
+        );
+        $this->configRequestHeaders('PATCH', $header);
+        $this->patch("/documents/$id", json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $document = TableRegistry::getTableLocator()->get('Documents')->get($id);
+        $props = $document->extract(array_keys($meta));
+        if ($expected) {
+            static::assertEquals($props, $meta);
+        } else {
+            static::assertNotEquals($props, $meta);
+        }
+    }
 }
