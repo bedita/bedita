@@ -1425,6 +1425,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
                 'ObjectProperty',
                 'LangText',
                 'ObjectType',
+                'RelatedObject',
                 'Annotation',
                 'Category'
             ),
