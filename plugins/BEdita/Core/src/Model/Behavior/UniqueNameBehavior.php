@@ -24,7 +24,7 @@ use Cake\Utility\Text;
  *
  * Creates or updates a unique name of objects (see `objects.uname` field).
  *
- * Unique name is created tyipically from object title or from other object properties in case of missing title.
+ * Unique name is created typically from object title or from other object properties in case of missing title.
  * An object type may impose custom rule.
  * Name must be unique inside current project.
  *
@@ -109,6 +109,8 @@ class UniqueNameBehavior extends Behavior
     /**
      * Generate unique name string from $config parameters.
      * If $regenerate parameter is true, random hash is added to uname string.
+     * If the user has specifically set an uname, the `sourceField` config is ignored and the provided
+     * uname value is used.
      * A 'callable' item is called if set in config('generator') instead of generateUniqueName(...)
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
@@ -116,7 +118,7 @@ class UniqueNameBehavior extends Behavior
      * @param array $cfg Optional config parameters to override defaults
      * @return string uname
      */
-    public function generateUniqueName(EntityInterface $entity, $regenerate = false, array $cfg = [])
+    public function generateUniqueName(EntityInterface $entity, bool $regenerate = false, array $cfg = []): string
     {
         $config = array_merge($this->getConfig(), $cfg);
         $generator = $config['generator'];
@@ -124,6 +126,9 @@ class UniqueNameBehavior extends Behavior
             return $generator($entity, $regenerate);
         }
         $fieldValue = $entity->get($config['sourceField']);
+        if ($entity->isDirty('uname') && !empty($entity->get('uname'))) {
+            $fieldValue = $entity->get('uname');
+        }
         if (empty($fieldValue)) {
             $fieldValue = (string)$entity->get('type');
             $regenerate = true;
@@ -141,7 +146,7 @@ class UniqueNameBehavior extends Behavior
      * @param array $cfg parameters to create unique name
      * @return string uname
      */
-    public function uniqueNameFromValue($value, $regenerate = false, array $cfg = [])
+    public function uniqueNameFromValue(string $value, bool $regenerate = false, array $cfg = []): string
     {
         $config = array_merge($this->getConfig(), $cfg);
         $slug = Text::slug($value, [
@@ -166,10 +171,10 @@ class UniqueNameBehavior extends Behavior
      * Verify $uname is unique
      *
      * @param string $uname to check
-     * @param int $id object id to exclude from check
+     * @param int|null $id object id to exclude from check
      * @return bool
      */
-    public function uniqueNameExists($uname, $id = null)
+    public function uniqueNameExists(string $uname, int $id = null): bool
     {
         $options = ['uname' => $uname];
         if (!empty($id)) {
