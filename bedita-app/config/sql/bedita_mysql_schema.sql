@@ -240,7 +240,7 @@ CREATE TABLE geo_tags (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'geotagging informations' ;
 
-CREATE TABLE groups (
+CREATE TABLE `groups` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL COMMENT 'group name',
   backend_auth BOOL NOT NULL DEFAULT '0' COMMENT 'group authorized to backend (default: false)',
@@ -248,10 +248,10 @@ CREATE TABLE groups (
   created datetime default NULL,
   modified datetime default NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY name (name)
+  UNIQUE KEY (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'generic groups';
 
-CREATE TABLE groups_users (
+CREATE TABLE `groups_users` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   group_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
@@ -263,7 +263,7 @@ CREATE TABLE groups_users (
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(group_id)
-    REFERENCES groups(id)
+    REFERENCES `groups` (id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'join table for groups/users';
