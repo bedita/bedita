@@ -251,7 +251,7 @@ CREATE TABLE `groups` (
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'generic groups';
 
-CREATE TABLE `groups_users` (
+CREATE TABLE groups_users (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   group_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
