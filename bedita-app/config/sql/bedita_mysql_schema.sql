@@ -248,7 +248,7 @@ CREATE TABLE `groups` (
   created datetime default NULL,
   modified datetime default NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY (name)
+  UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'generic groups';
 
 CREATE TABLE `groups_users` (
