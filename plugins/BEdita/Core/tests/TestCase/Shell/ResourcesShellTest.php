@@ -223,6 +223,8 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * Test `edit` failure
      *
      * @return void
+     *
+     * @covers ::edit()
      */
     public function testEditFail(): void
     {
