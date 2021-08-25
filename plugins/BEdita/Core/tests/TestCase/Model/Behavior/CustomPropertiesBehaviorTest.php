@@ -13,9 +13,12 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Collection\CollectionInterface;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Mysql;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -99,6 +102,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_surname',
                     'another_birthdate',
+                    'number_of_friends',
                 ],
                 'Profiles',
             ],
@@ -496,5 +500,130 @@ class CustomPropertiesBehaviorTest extends TestCase
         $user->set('another_email', 'xyz@example.com');
         static::assertTrue($user->isDirty('another_username'));
         static::assertTrue($user->isDirty('another_email'));
+    }
+
+    /**
+     * Data provider for testFindCustomProp()
+     *
+     * @return array
+     */
+    public function findCustomPropProvider(): array
+    {
+        return [
+            'empty options' => [
+                new BadFilterException('Invalid data'),
+                'Documents',
+                [],
+            ],
+            'invalid custom prop' => [
+                new BadFilterException('Invalid data'),
+                'Documents',
+                ['yeppa' => 12],
+            ],
+            'filter string' => [
+                [5],
+                'Users',
+                ['another_username' => 'synapse'],
+            ],
+            'filter bool true' => [
+                [10],
+                'Files',
+                ['media_property' => true],
+            ],
+            'filter bool 1 as true' => [
+                [10],
+                'Files',
+                ['media_property' => 1],
+            ],
+            'filter bool "1" as true' => [
+                [10],
+                'Files',
+                ['media_property' => '1'],
+            ],
+            'filter bool false' => [
+                [14],
+                'Files',
+                ['media_property' => false],
+            ],
+            'filter bool 0 as false' => [
+                [14],
+                'Files',
+                ['media_property' => 0],
+            ],
+            'filter bool "0" as false' => [
+                [14],
+                'Files',
+                ['media_property' => '0'],
+            ],
+        ];
+    }
+
+    /**
+     * Test for custom prop finder.
+     *
+     * @param mixed $expected The expected result
+     * @param string $tableName The table name
+     * @param array $options Options for finder
+     * @return void
+     *
+     * @covers ::findCustomProp()
+     * @dataProvider findCustomPropProvider
+     */
+    public function testFindCustomProp($expected, string $tableName, array $options): void
+    {
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Mysql) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+        } elseif ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->getTableLocator()
+            ->get($tableName)
+            ->find('customProp', $options)
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        sort($expected);
+
+        static::assertEquals($expected, array_keys($result));
+    }
+
+    /**
+     * Test custom prop finder for integer property.
+     *
+     * @return void
+     *
+     * @covers ::findCustomProp()
+     */
+    public function testFindCustomPropInteger(): void
+    {
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Mysql) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+        }
+
+        $Profiles = $this->getTableLocator()->get('Profiles');
+        $profile = $Profiles->find()->first();
+        $profile->set('number_of_friends', 10);
+        $Profiles->saveOrFail($profile);
+
+        $result = $Profiles->find('customProp', ['number_of_friends' => 10])
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        static::assertEquals([$profile->id], array_keys($result));
+
+        $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        static::assertEquals([$profile->id], array_keys($result));
     }
 }
