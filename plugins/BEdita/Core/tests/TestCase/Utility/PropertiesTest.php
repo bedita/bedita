@@ -14,17 +14,21 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Properties;
+use Cake\Datasource\ModelAwareTrait;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Utility\Properties} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Utility\Properties
+ *
+ * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
 class PropertiesTest extends TestCase
 {
+    use ModelAwareTrait;
+
     /**
      * Fixtures
      *
@@ -36,6 +40,11 @@ class PropertiesTest extends TestCase
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
     ];
 
     /**
@@ -58,16 +67,27 @@ class PropertiesTest extends TestCase
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->loadModel('Properties');
+    }
+
+    /**
      * Test `create` method.
+     *
+     * @return void
      *
      * @covers ::create()
      * @covers ::validate()
      */
-    public function testCreate()
+    public function testCreate(): void
     {
         Properties::create($this->properties);
 
-        $newProperties = TableRegistry::getTableLocator()->get('Properties')
+        $newProperties = $this->Properties
             ->find()
             ->where(['name IN' => ['custom_one', 'custom_two']])
             ->toArray();
@@ -77,14 +97,16 @@ class PropertiesTest extends TestCase
     /**
      * Test `remove` method.
      *
+     * @return void
+     *
      * @covers ::remove()
      */
-    public function testRemove()
+    public function testRemove(): void
     {
         Properties::create($this->properties);
 
         Properties::remove($this->properties);
-        $newProperties = TableRegistry::getTableLocator()->get('Properties')
+        $newProperties = $this->Properties
             ->find()
             ->where(['name IN' => ['custom_one', 'custom_two']])
             ->toArray();
@@ -94,14 +116,37 @@ class PropertiesTest extends TestCase
     /**
      * Test `validate` failure.
      *
+     * @return void
+     *
      * @covers ::validate()
      */
-    public function testValidate()
+    public function testValidate(): void
     {
         $this->expectException(BadRequestException::class);
         $this->expectExceptionMessage('Missing mandatory property data "name"');
 
         unset($this->properties[0]['name']);
         Properties::create($this->properties);
+    }
+
+    /**
+     * Test `update` method.
+     *
+     * @return void
+     *
+     * @covers ::update()
+     */
+    public function testUpdate(): void
+    {
+        Properties::create($this->properties);
+
+        $this->properties[1]['property'] = 'text';
+        Properties::update($this->properties);
+
+        $newProp = $this->Properties
+            ->find()
+            ->where(['name' => 'custom_two'])
+            ->first();
+        static::assertEquals('text', $newProp->get('property_type_name'));
     }
 }

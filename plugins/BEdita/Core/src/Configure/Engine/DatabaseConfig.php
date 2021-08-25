@@ -14,8 +14,7 @@ namespace BEdita\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception;
-use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\TableRegistry;
+use Cake\Datasource\ModelAwareTrait;
 
 /**
  * BEdita database configuration engine.
@@ -29,9 +28,15 @@ use Cake\ORM\TableRegistry;
  *
  * DatabaseConfig also manipulates how 'null', 'true', 'false' are handled.
  * These values will be converted to their boolean equivalents or to null.
+ *
+ * @since 4.0.0
+ *
+ * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
+    use ModelAwareTrait;
+
     /**
      * Application id
      *
@@ -44,7 +49,7 @@ class DatabaseConfig implements ConfigEngineInterface
      *
      * @var array
      */
-    protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
+    const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
      * Setup application `id` if provided.
@@ -54,43 +59,34 @@ class DatabaseConfig implements ConfigEngineInterface
     public function __construct($applicationId = null)
     {
         $this->applicationId = $applicationId;
+        $this->loadModel('Config');
     }
 
     /**
-     * Read from DB (or cache) $key group of paramenters (see database `config.context`)
+     * Read configuration from database of `$key` parameters group
      * and return the results as an array.
+     * Parameter group is mapped to database column `config.context`.
      *
-     * @param string $key The group of parameters to read from database (see `config.context`).
+     * @param string|null $key The group of parameters to read from database (see `config.context`).
      * @return array Parsed configuration values.
-     * @throws \Cake\Core\Exception\Exception when parameter group is not found
      */
-    public function read($key = null)
+    public function read($key): array
     {
-        $values = [];
-        $config = TableRegistry::getTableLocator()->get('Config');
-        $query = $config->find()->select(['name', 'context', 'content']);
-        $query->where(function (QueryExpression $exp) {
-            return $exp->notIn('name', $this->reservedKeys);
-        });
-        if ($this->applicationId) {
-            $query->andWhere(['application_id' => $this->applicationId]);
-        } else {
-            $query->andWhere(['application_id IS' => null]);
-        }
-        if ($key) {
-            $query->andWhere(['context' => $key]);
-        }
-        $results = $query->all();
-        foreach ($results as $data) {
-            $cfgKey = $data['name'];
-            $cfgValue = json_decode($data['content'], true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $cfgValue = $this->valueFromString($data['content']);
-            }
-            $values[$cfgKey] = $cfgValue;
-        }
+        return $this->Config->fetchConfig($this->applicationId, $key)
+            ->filter(function (array $item): bool {
+                return !in_array($item['name'], self::RESERVED_KEYS);
+            })
+            ->map(function (array $item): array {
+                $content = json_decode($item['content'], true);
+                if ($content === null && json_last_error() !== JSON_ERROR_NONE) {
+                    $content = static::valueFromString($item['content']);
+                }
+                $item['content'] = $content;
 
-        return $values;
+                return $item;
+            })
+            ->combine('name', 'content')
+            ->toArray();
     }
 
     /**
@@ -104,17 +100,16 @@ class DatabaseConfig implements ConfigEngineInterface
     {
         $context = $key;
         $entities = [];
-        $table = TableRegistry::getTableLocator()->get('Config');
         foreach ($data as $name => $content) {
-            if (in_array($name, $this->reservedKeys)) {
+            if (in_array($name, self::RESERVED_KEYS)) {
                 continue;
             }
-            $content = is_array($content) ? json_encode($content) : $this->valueToString($content);
-            $entities[] = $table->newEntity(compact('name', 'context', 'content'));
+            $content = is_array($content) ? json_encode($content) : static::valueToString($content);
+            $entities[] = $this->Config->newEntity(compact('name', 'context', 'content'));
         }
-        $table->getConnection()->transactional(function () use ($table, $entities) {
+        $this->Config->getConnection()->transactional(function () use ($entities) {
             foreach ($entities as $entity) {
-                if (!$table->save($entity, ['atomic' => false])) {
+                if (!$this->Config->save($entity, ['atomic' => false])) {
                     throw new Exception(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
                 }
             }
@@ -129,7 +124,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected function valueToString($value)
+    protected static function valueToString($value)
     {
         if ($value === null) {
             return 'null';
@@ -153,7 +148,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param string $value Value to convert, if necessary.
      * @return mixed String Natural form value.
      */
-    protected function valueFromString($value)
+    protected static function valueFromString($value)
     {
         if ($value === 'NULL') {
             return null;

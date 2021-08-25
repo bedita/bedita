@@ -78,17 +78,19 @@ class UniqueNameBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function uniqueName(EntityInterface $entity)
+    public function uniqueName(EntityInterface $entity): void
     {
-        $config = $this->getConfig();
         $uname = $entity->get('uname');
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         } else {
             $uname = strtolower(Text::slug($uname, [
-                'replacement' => $config['replacement'],
-                'preserve' => $config['preserve'],
+                'replacement' => $this->getConfig('replacement'),
+                'preserve' => $this->getConfig('preserve'),
             ]));
+            if ($uname === $entity->get('uname') && !$entity->isDirty('uname')) {
+                return;
+            }
         }
         $count = 0;
         while (

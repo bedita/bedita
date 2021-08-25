@@ -34,6 +34,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
@@ -41,7 +42,6 @@ use Cake\Validation\Validator;
  */
 class ConfigTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *
@@ -62,6 +62,7 @@ class ConfigTable extends Table
                 ]
             ],
         ]);
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('Applications');
     }
@@ -87,14 +88,14 @@ class ConfigTable extends Table
     {
         $validator
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->alphaNumeric('name')
 
             ->requirePresence('context', 'create')
-            ->notEmpty('context')
+            ->notEmptyString('context')
 
             ->requirePresence('content', 'create')
-            ->notEmpty('content');
+            ->notEmptyString('content');
 
         return $validator;
     }
@@ -162,5 +163,34 @@ class ConfigTable extends Table
     protected function findResource(Query $query, array $options): Query
     {
         return $query->find('name', $options);
+    }
+
+    /**
+     * Fetch configuration from database using cache.
+     *
+     * @param int|null $applicationId Application ID.
+     * @param string|null $context Config context.
+     * @return \Cake\ORM\Query
+     */
+    public function fetchConfig(?int $applicationId, ?string $context): Query
+    {
+        $query = $this->find()
+            ->select(['name', 'content'])
+            ->disableHydration()
+            ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
+                if (!empty($context)) {
+                    $exp = $exp->eq($this->aliasField('context'), $context);
+                }
+                if ($applicationId !== null) {
+                    return $exp->eq($this->aliasField('application_id'), $applicationId);
+                }
+
+                return $exp->isNull($this->aliasField('application_id'));
+            });
+
+        return $this->queryCache(
+            $query,
+            sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*')
+        );
     }
 }

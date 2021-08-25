@@ -16,9 +16,11 @@ namespace BEdita\Core\Model\Entity;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Generator;
 
 /**
  * ObjectType Entity.
@@ -31,8 +33,8 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property string $associations
- * @property string $hidden
+ * @property array $associations
+ * @property array $hidden
  * @property string[] $relations
  * @property bool $is_abstract
  * @property int $parent_id
@@ -55,6 +57,35 @@ class ObjectType extends Entity implements JsonApiSerializable
     use JsonApiModelTrait {
         listAssociations as protected jsonApiListAssociations;
     }
+    use LocatorAwareTrait;
+
+    /**
+     * JSON Schema definition of nullable objects array.
+     * Basic schema for categories, tags, date_ranges and other properties.
+     *
+     * @var array
+     */
+    public const NULLABLE_OBJECT_ARRAY = [
+        'oneOf' => [
+            [
+                'type' => 'null'
+            ],
+            [
+                'type' => 'array',
+                'uniqueItems' => true,
+                'items' => [
+                    'type' => 'object'
+                ],
+            ],
+        ],
+    ];
+
+    /**
+     * List of associations represented as properties.
+     *
+     * @var array
+     */
+    public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
 
     /**
      * {@inheritDoc}
@@ -103,7 +134,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      * @param string $name Object type name.
      * @return string
      */
-    protected function _setName($name)
+    protected function _setName(string $name): string
     {
         return Inflector::underscore($name);
     }
@@ -115,7 +146,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getSingular()
+    protected function _getSingular(): ?string
     {
         if (!empty($this->_properties['singular'])) {
             return $this->_properties['singular'];
@@ -132,7 +163,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      * @param string|null $singular Object type singular name.
      * @return string
      */
-    protected function _setSingular($singular)
+    protected function _setSingular(?string $singular): string
     {
         return Inflector::underscore($singular);
     }
@@ -142,7 +173,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getAlias()
+    protected function _getAlias(): string
     {
         return Inflector::camelize($this->name);
     }
@@ -152,7 +183,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getTable()
+    protected function _getTable(): string
     {
         $table = $this->plugin . '.';
         if ($table == '.') {
@@ -170,7 +201,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      * @param string $table Full table name.
      * @return void
      */
-    protected function _setTable($table)
+    protected function _setTable(string $table): void
     {
         list($plugin, $model) = pluginSplit($table);
 
@@ -179,12 +210,48 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
+     * Get parent object type, if set.
+     *
+     * @return self|null
+     */
+    public function getParent(): ?self
+    {
+        if ($this->parent_id === null) {
+            return null;
+        }
+
+        if ($this->parent !== null) {
+            return $this->parent;
+        }
+
+        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
+        $table = $this->getTableLocator()->get($this->getSource());
+
+        return $table->get($this->parent_id);
+    }
+
+    /**
+     * Iterate through full inheritance chain.
+     *
+     * @return \Generator|self[]
+     */
+    public function getFullInheritanceChain(): Generator
+    {
+        $objectType = $this;
+        while ($objectType !== null) {
+            yield $objectType;
+
+            $objectType = $objectType->getParent();
+        }
+    }
+
+    /**
      * Get all relations, including relations inherited from parent object types, indexed by their name.
      *
      * @param string $side Filter relations by side this object type stays on. Either `left`, `right` or `both`.
      * @return \BEdita\Core\Model\Entity\Relation[]
      */
-    public function getRelations($side = 'both')
+    public function getRelations(string $side = 'both'): array
     {
         if ($side === 'both') {
             return $this->getRelations('left') + $this->getRelations('right');
@@ -196,14 +263,11 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         $property = sprintf('%s_relations', $side);
-        $objectType = $this;
-        $relations = (array)$this->get($property);
-        while ($objectType->has('parent_id')) {
-            $objectType = TableRegistry::getTableLocator()->get($this->getSource())->get($objectType->get('parent_id'));
-            $relations = array_merge($relations, (array)$objectType->get($property));
-        }
 
-        return collection($relations)
+        return collection($this->getFullInheritanceChain())
+            ->unfold(function (self $objectType) use ($property): Generator {
+                yield from (array)$objectType->get($property);
+            })
             ->indexBy($indexBy)
             ->toArray();
     }
@@ -213,7 +277,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      *
      * @return string[]|null
      */
-    protected function _getRelations()
+    protected function _getRelations(): ?array
     {
         if (!$this->has('left_relations') || !$this->has('right_relations')) {
             return null;
@@ -225,7 +289,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     /**
      * {@inheritDoc}
      */
-    protected static function listAssociations(Table $Table, array $hidden = [])
+    protected static function listAssociations(Table $Table, array $hidden = []): array
     {
         $associations = static::jsonApiListAssociations($Table, $hidden);
         $associations = array_diff($associations, ['relations']);
@@ -236,19 +300,16 @@ class ObjectType extends Entity implements JsonApiSerializable
     /**
      * Getter for virtual property `parent_name`.
      *
-     * @return string
+     * @return string|null
      */
-    protected function _getParentName()
+    protected function _getParentName(): ?string
     {
-        if (!$this->parent_id) {
+        $parent = $this->getParent();
+        if ($parent === null) {
             return null;
         }
 
-        if (!empty($this->parent)) {
-            return $this->parent->get('name');
-        }
-
-        return TableRegistry::getTableLocator()->get('ObjectTypes')->get($this->parent_id)->get('name');
+        return $parent->name;
     }
 
     /**
@@ -257,11 +318,13 @@ class ObjectType extends Entity implements JsonApiSerializable
      * @param string $parentName Parent object type name.
      * @return string
      */
-    protected function _setParentName($parentName)
+    protected function _setParentName(string $parentName): ?string
     {
         try {
-            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($parentName);
-            if (!$objectType->get('is_abstract') || !$objectType->get('enabled')) {
+            /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
+            $table = $this->getTableLocator()->get($this->getSource());
+            $objectType = $table->get($parentName);
+            if (!$objectType->is_abstract || !$objectType->enabled) {
                 return null;
             }
 
@@ -287,19 +350,73 @@ class ObjectType extends Entity implements JsonApiSerializable
             return false;
         }
 
+        $associations = (array)$this->associations;
+        $relations = static::objectTypeRelations($this->right_relations, 'right') +
+            static::objectTypeRelations($this->left_relations, 'left');
+
+        return $this->objectTypeProperties() + compact('associations', 'relations');
+    }
+
+    /**
+     * Retrieve relation information as associative array:
+     *  * relation name as key, direct or inverse
+     *  * label, params and related types as values
+     *
+     * @param array $relations Relations array
+     * @param string $side Relation side, 'left' or 'right'
+     * @return array
+     */
+    protected static function objectTypeRelations(array $relations, string $side): array
+    {
+        if ($side === 'left') {
+            $name = 'name';
+            $label = 'label';
+            $relTypes = 'right_object_types';
+        } else {
+            $name = 'inverse_name';
+            $label = 'inverse_label';
+            $relTypes = 'left_object_types';
+        }
+
+        $res = [];
+        foreach ($relations as $relation) {
+            $types = array_map(
+                function ($t) {
+                    return $t->get('name');
+                },
+                (array)$relation->get($relTypes)
+            );
+            sort($types);
+            $res[$relation->get($name)] = [
+                'label' => $relation->get($label),
+                'params' => $relation->params
+            ] + compact('types');
+        }
+
+        return $res;
+    }
+
+    /**
+     * Return object type properties in JSON SCHEMA format
+     *
+     * @return array
+     */
+    protected function objectTypeProperties(): array
+    {
+        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
         // Fetch all properties, properties with `is_static` true at the end.
         // This way we can override default property type of a static property.
-        $allProperties = TableRegistry::getTableLocator()->get('Properties')
+        $allProperties = $this->getTableLocator()->get('Properties')
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
-        $entity = TableRegistry::getTableLocator()->get($this->name)->newEntity();
+        $entity = $this->getTableLocator()->get($this->name)->newEntity();
         $hiddenProperties = $entity->getHidden();
-        $typeHidden = !empty($this->hidden) ? $this->hidden : [];
 
-        $properties = $required = [];
+        $required = [];
+        $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
-            if (in_array($property->name, $typeHidden)) {
+            if (in_array($property->name, (array)$this->hidden)) {
                 continue;
             }
             $accessMode = null;
@@ -316,5 +433,70 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         return compact('properties', 'required');
+    }
+
+    /**
+     * Add internal associations as properties
+     *
+     * @return array
+     */
+    protected function associationProperties(): array
+    {
+        $assocProps = array_intersect(static::ASSOC_PROPERTIES, (array)$this->associations);
+        $res = [];
+        foreach ($assocProps as $assoc) {
+            $name = Inflector::delimit($assoc);
+            $res[$name] = self::NULLABLE_OBJECT_ARRAY + [
+                '$id' => sprintf('/properties/%s', $name),
+                'title' => $assoc,
+            ];
+        }
+
+        return $res;
+    }
+
+    /** Check if an object type is child of another object type.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType $ancestor Ancestor object type to test.
+     * @return bool
+     */
+    public function isDescendantOf(self $ancestor): bool
+    {
+        foreach ($this->getFullInheritanceChain() as $objectType) {
+            if ((int)$objectType->id === (int)$ancestor->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the closest common parent object type for a set of object types.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType ...$objectTypes Object types to find common ancestor for.
+     * @return static|null
+     */
+    public static function getClosestCommonAncestor(self ...$objectTypes): ?self
+    {
+        if (empty($objectTypes)) {
+            return null;
+        }
+
+        $parent = array_shift($objectTypes);
+        foreach ($parent->getFullInheritanceChain() as $commonAncestor) {
+            $isCommonAncestor = array_reduce(
+                $objectTypes,
+                function (bool $store, ObjectType $item) use ($commonAncestor): bool {
+                    return $store && $item->isDescendantOf($commonAncestor);
+                },
+                true
+            );
+            if ($isCommonAncestor) {
+                return $commonAncestor;
+            }
+        }
+
+        return null;
     }
 }

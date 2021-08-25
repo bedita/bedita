@@ -14,11 +14,9 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
-use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Controller\ComponentRegistry;
+use Cake\Cache\Cache;
 use Cake\Controller\Controller;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
@@ -47,80 +45,12 @@ class EndpointAuthorizeTest extends TestCase
     ];
 
     /**
-     * Data provider for `testGetEndpoint` test case.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getEndpointProvider()
+    public function setUp()
     {
-        return [
-            '/auth' => [
-                1,
-                new Uri('/auth'),
-            ],
-            '/home/sweet/home' => [
-                2,
-                new Uri('/home/sweet/home'),
-            ],
-            '/' => [
-                new Endpoint(
-                    [
-                        'name' => '',
-                        'enabled' => true
-                    ],
-                    [
-                        'source' => 'Endpoints'
-                    ]
-                ),
-                new Uri('/'),
-            ],
-            '/this/endpoint/definitely/doesnt/exist' => [
-                new Endpoint(
-                    [
-                        'name' => 'this',
-                        'enabled' => true
-                    ],
-                    [
-                        'source' => 'Endpoints'
-                    ]
-                ),
-                new Uri('/this/endpoint/definitely/doesnt/exist'),
-            ],
-            '/disabled/endpoint' => [
-                new NotFoundException('Resource not found.'),
-                new Uri('/disabled/endpoint'),
-            ]
-        ];
-    }
-
-    /**
-     * Test getting endpoint from request.
-     *
-     * @param mixed $expected Expected endpoint ID, entity, or exception.
-     * @param \Psr\Http\Message\UriInterface $uri Request URI.
-     * @return void
-     *
-     * @dataProvider getEndpointProvider()
-     * @covers ::getEndpoint()
-     */
-    public function testGetEndpoint($expected, UriInterface $uri)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        CurrentApplication::setFromApiKey(API_KEY);
-        $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
-        $request = new ServerRequest(compact('uri'));
-
-        $authorize->authorize([], $request);
-
-        if (is_int($expected)) {
-            $expected = TableRegistry::getTableLocator()->get('Endpoints')->get($expected);
-        }
-
-        static::assertAttributeEquals($expected, 'endpoint', $authorize);
+        parent::setUp();
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**
@@ -213,7 +143,6 @@ class EndpointAuthorizeTest extends TestCase
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
@@ -256,7 +185,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAllowByDefault()
@@ -300,7 +228,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
     public function testAllowByDefaultUnknownEndpoint()
@@ -344,7 +271,6 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @covers ::authorize()
      * @covers ::isAnonymous()
-     * @covers ::getPermissions()
      * @covers ::checkPermissions()
      * @covers ::unauthenticated()
      * @expectedException \Cake\Http\Exception\UnauthorizedException

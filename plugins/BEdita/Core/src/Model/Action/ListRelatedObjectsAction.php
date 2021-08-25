@@ -79,11 +79,8 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                 $this->Association->getTarget()->aliasField('object_type_id'),
             ]);
         }
-        if (Configure::check('Status.level')) {
-            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
-        }
 
-        return $query;
+        return $query->find('publishable');
     }
 
     /**

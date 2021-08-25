@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
@@ -27,6 +28,8 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Association\BelongsTo $Roles
+ *
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @since 4.0.0
  */
@@ -43,6 +46,8 @@ class EndpointPermissionsTable extends Table
 
         $this->setTable('endpoint_permissions');
         $this->setDisplayField('id');
+
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('Endpoints', [
             'joinType' => 'INNER',
@@ -95,7 +100,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByEndpoint(Query $query, array $options)
+    protected function findByEndpoint(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
@@ -132,7 +137,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByApplication(Query $query, array $options)
+    protected function findByApplication(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
@@ -169,7 +174,7 @@ class EndpointPermissionsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
      */
-    protected function findByRole(Query $query, array $options)
+    protected function findByRole(Query $query, array $options): Query
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
@@ -198,9 +203,9 @@ class EndpointPermissionsTable extends Table
      * Find permissions by role, application and endpoint name.
      *
      * This finder accepts three options:
-     * - `endpoint``: the endpoint name
-     * - `role`: the role name
-     * - `application`: the application name
+     * - `endpoint_name``: the endpoint name
+     * - `role_name`: the role name
+     * - `application_name`: the application name
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Additional options.
@@ -208,9 +213,9 @@ class EndpointPermissionsTable extends Table
      */
     protected function findResource(Query $query, array $options): Query
     {
-        $endpoint = Hash::get($options, 'endpoint');
-        $role = Hash::get($options, 'role');
-        $application = Hash::get($options, 'application');
+        $endpoint = Hash::get($options, 'endpoint_name');
+        $role = Hash::get($options, 'role_name');
+        $application = Hash::get($options, 'application_name');
 
         if ($endpoint === null) {
             $query = $query->whereNull('endpoint_id');
@@ -237,5 +242,58 @@ class EndpointPermissionsTable extends Table
         }
 
         return $query;
+    }
+
+    /**
+     * Fetch endpoint permissions count using cache.
+     *
+     * @param int|null $endpointId Endpoint id.
+     * @return int
+     */
+    public function fetchCount(?int $endpointId): int
+    {
+        $applicationId = CurrentApplication::getApplicationId();
+        $endpointIds = array_filter([$endpointId]);
+        $key = sprintf('perms_count_%s_%s', $applicationId ?: '*', $endpointId ?: '*');
+
+        $query = $this->find('byApplication', compact('applicationId'))
+            ->find('byEndpoint', compact('endpointIds'));
+
+        return $this->queryCache($query, $key)
+            ->count();
+    }
+
+    /**
+     * Fetch endpoint permissions using cache.
+     *
+     * @param int|null $endpointId Endpoint id.
+     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged and `roles` array if logged.
+     * @param bool $strict Strict check.
+     * @return array
+     */
+    public function fetchPermissions(?int $endpointId, $user, bool $strict): array
+    {
+        $applicationId = CurrentApplication::getApplicationId();
+        $endpointIds = array_filter([$endpointId]);
+        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: '*', $endpointId ?: '*');
+
+        if (!empty($user['_anonymous'])) {
+            $query = $this->find('byApplication', compact('applicationId', 'strict'))
+                ->find('byEndpoint', compact('endpointIds', 'strict'));
+
+            return $this->queryCache($query, $key)
+                ->toArray();
+        }
+
+        $roleIds = (array)Hash::extract($user, 'roles.{n}.id');
+        sort($roleIds);
+        $key .= sprintf('_%s', implode('.', $roleIds));
+
+        $query = $this->find('byApplication', compact('applicationId', 'strict'))
+            ->find('byEndpoint', compact('endpointIds', 'strict'))
+            ->find('byRole', compact('roleIds'));
+
+        return $this->queryCache($query, $key)
+            ->toArray();
     }
 }

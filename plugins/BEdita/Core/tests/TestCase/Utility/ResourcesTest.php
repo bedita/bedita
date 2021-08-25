@@ -37,6 +37,7 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
@@ -91,6 +92,16 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'third-cat',
+                        'label' => 'Third category',
+                        'object_type_name' => 'documents',
+                    ],
+                ],
+            ],
             'config' => [
                 'config',
                 [
@@ -129,6 +140,14 @@ class ResourcesTest extends TestCase
                     [
                         'name' => 'pets',
                         'description' => 'handle pets with care',
+                    ]
+                ],
+                'endpoints with object type',
+                [
+                    [
+                        'name' => 'pets',
+                        'description' => 'handle pets with care',
+                        'object_type_name' => 'documents',
                     ]
                 ],
             ],
@@ -187,7 +206,6 @@ class ResourcesTest extends TestCase
      * @return void
      *
      * @covers ::create()
-     * @covers ::getTable()
      * @dataProvider createProvider
      */
     public function testCreate(string $type, array $data): void
@@ -236,6 +254,15 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'second-cat',
+                        'object_type_name' => 'documents',
+                    ],
+                ],
+            ],
             'objects' => [
                 'object_types',
                 [
@@ -264,14 +291,14 @@ class ResourcesTest extends TestCase
                 'endpoint_permissions',
                 [
                     [
-                        'application' => 'Disabled app',
-                        'endpoint' => 'home',
-                        'role' => 'second role',
+                        'application_name' => 'Disabled app',
+                        'endpoint_name' => 'home',
+                        'role_name' => 'second role',
                     ],
                     [
-                        'application' => 'First app',
-                        'endpoint' => null,
-                        'role' => null,
+                        'application_name' => 'First app',
+                        'endpoint_name' => null,
+                        'role_name' => null,
                     ],
                 ],
             ],
@@ -346,6 +373,16 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'second-cat',
+                        'object_type_name' => 'documents',
+                        'label' => 'Another category',
+                    ],
+                ],
+            ],
             'config' => [
                 'config',
                 [
@@ -381,14 +418,21 @@ class ResourcesTest extends TestCase
                         'enabled' => 1,
                     ]
                 ],
+                'endpoints with object type',
+                [
+                    [
+                        'name' => 'disabled',
+                        'object_type_name' => 'documents',
+                    ]
+                ],
             ],
             'endpoint_permissions' => [
                 'endpoint_permissions',
                 [
                     [
-                        'application' => 'Disabled app',
-                        'endpoint' => 'home',
-                        'role' => 'first role',
+                        'application_name' => 'Disabled app',
+                        'endpoint_name' => 'home',
+                        'role_name' => 'first role',
                         'permission' => 0b1111,
                     ],
                 ],
@@ -432,19 +476,6 @@ class ResourcesTest extends TestCase
                 static::assertEquals($val, $entity->get($name));
             }
         }
-    }
-
-    /**
-     * Test `getTable` method failure.
-     *
-     * @covers ::getTable()
-     */
-    public function testGetTableFail()
-    {
-        $this->expectException(BadRequestException::class);
-        $this->expectExceptionMessage('Resource type not allowed "cats"');
-
-        Resources::create('cats', []);
     }
 
     /**

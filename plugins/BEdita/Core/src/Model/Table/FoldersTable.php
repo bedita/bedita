@@ -57,6 +57,7 @@ class FoldersTable extends ObjectsTable
             'through' => 'Trees',
             'foreignKey' => 'parent_id',
             'targetForeignKey' => 'object_id',
+            'finder' => 'available',
             'sort' => [
                 'Trees.tree_left' => 'asc',
             ],

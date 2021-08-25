@@ -376,6 +376,23 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
+     * Test `uniqueName()` when `uname` is valid an unchanged
+     *
+     * @return void
+     *
+     * @covers ::uniqueName()
+     */
+    public function testUniqueNameUnchanged(): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+        $document = $Documents->get(2);
+        $behavior->uniqueName($document);
+
+        static::assertFalse($document->isDirty('uname'));
+    }
+
+    /**
      * test generate uname before save
      *
      * @return void

@@ -80,14 +80,11 @@ class ListObjectsAction extends BaseAction
         if (isset($type)) {
             $query = $query->find('type', (array)$type);
         }
-        if (Configure::check('Status.level')) {
-            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
-        }
 
         if (!empty($data['lang'])) {
             $query = $query->find('translations', ['lang' => $data['lang']]);
         }
 
-        return $query;
+        return $query->find('publishable');
     }
 }

@@ -22,6 +22,8 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -60,6 +62,19 @@ class ObjectsTable extends Table
      * {@inheritDoc}
      */
     protected $_validatorClass = ObjectsValidator::class;
+
+    /**
+     * Special sort fields: virtual column names used for custom sort strategies
+     * Only related to `DateRanges` for now
+     *
+     * @var array
+     */
+    const DATERANGES_SORT_FIELDS = [
+        'date_ranges_min_start_date',
+        'date_ranges_max_start_date',
+        'date_ranges_min_end_date',
+        'date_ranges_max_end_date',
+    ];
 
     /**
      * {@inheritDoc}
@@ -102,6 +117,7 @@ class ObjectsTable extends Table
             'through' => 'BEdita/Core.Trees',
             'foreignKey' => 'object_id',
             'targetForeignKey' => 'parent_id',
+            'finder' => 'available',
             'cascadeCallbacks' => true,
         ]);
         $this->belongsToMany('Categories', [
@@ -161,7 +177,9 @@ class ObjectsTable extends Table
             // Cannot save objects of an abstract type.
             return false;
         }
+        $this->checkStatus($entity);
         $this->checkLangTag($entity);
+        $this->checkLocked($entity);
 
         return true;
     }
@@ -177,6 +195,48 @@ class ObjectsTable extends Table
     {
         if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
             $entity->set('lang', Configure::read('I18n.default'));
+        }
+    }
+
+    /**
+     * Check `locked` attribute.
+     * If `locked` is true `status`, `uname` and `deleted` cannot be changed.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException
+     */
+    protected function checkLocked(EntityInterface $entity): void
+    {
+        if (empty($entity->get('locked')) || $entity->isDirty('locked')) {
+            return;
+        }
+        if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
+            throw new ForbiddenException(__('Operation not allowed on "locked" objects'));
+        }
+    }
+
+    /**
+     * Check that `status` is consistent with `Status.level` configuration.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \Cake\Http\Exception\BadRequestException
+     */
+    protected function checkStatus(EntityInterface $entity): void
+    {
+        if ($entity->isNew() || !Configure::check('Status.level') || !$entity->isDirty('status')) {
+            return;
+        }
+        $level = Configure::read('Status.level');
+        $status = $entity->get('status');
+        if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
+            throw new BadRequestException(__d(
+                'bedita',
+                'Status "{0}" is not consistent with configured Status.level "{1}"',
+                $status,
+                $level
+            ));
         }
     }
 
@@ -257,11 +317,58 @@ class ObjectsTable extends Table
      */
     protected function findDateRanges(Query $query, array $options)
     {
-        return $query
-            ->distinct([$this->aliasField($this->getPrimaryKey())])
-            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-                return $query->find('dateRanges', $options);
-            });
+        $join = $this->dateRangesSubQueryJoin($query, $options);
+        if (!empty($join)) {
+            return $join;
+        }
+
+        return $query->distinct([$this->aliasField($this->getPrimaryKey())])
+                ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                    return $query->find('dateRanges', $options);
+                });
+    }
+
+    /**
+     * Create a date ranges subquery join if a special sort field is set.
+     *
+     * @param Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return Query|null
+     */
+    protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
+    {
+        $minMaxField = key(
+            array_intersect_key(
+                $options,
+                array_flip(self::DATERANGES_SORT_FIELDS)
+            )
+        );
+        if (empty($minMaxField)) {
+            return null;
+        }
+        unset($options[$minMaxField]);
+        $finder = 'dateRanges';
+        if (empty($options)) {
+            $finder = 'all';
+        }
+        $subQuery = $this->DateRanges->find($finder, $options)
+            ->select([
+                'date_ranges_object_id' => 'object_id',
+                'date_ranges_min_start_date' => $query->func()->min('start_date'),
+                'date_ranges_max_start_date' => $query->func()->max('start_date'),
+                'date_ranges_min_end_date' => $query->func()->min('end_date'),
+                'date_ranges_max_end_date' => $query->func()->max('end_date'),
+            ])
+            ->group('object_id');
+
+        return $query->distinct([
+                $this->aliasField($this->getPrimaryKey()),
+                $minMaxField,
+            ])
+            ->innerJoin(
+                ['DateBoundaries' => $subQuery],
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
+            );
     }
 
     /**
@@ -381,7 +488,7 @@ class ObjectsTable extends Table
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
         }
 
-        $level = reset($options);
+        $level = $options[0];
         switch ($level) {
             case 'on':
                 return $query->where([
@@ -418,19 +525,66 @@ class ObjectsTable extends Table
 
     /**
      * Finder for available objects based on these rules:
-     *  - `status` should be acceptable (=> via `findStatusLevel`)
+     *  - `status`, `publish_start` and `publish_end` should be acceptable via `findPublishable`
      *  - `deleted` should be 0
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    protected function findAvailable(Query $query)
+    protected function findAvailable(Query $query): Query
+    {
+        return $query->find('publishable')
+            ->where([$this->aliasField('deleted') => 0]);
+    }
+
+    /**
+     * Finder for publishable objects based on these rules:
+     *  - `status` should be acceptable checking 'Status.level' configuration
+     *  - `publish_start` and `publish_end` should be acceptable, checking 'Publish.checkDate' configuration
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPublishable(Query $query): Query
     {
         if (Configure::check('Status.level')) {
             $query = $query->find('statusLevel', [Configure::read('Status.level')]);
         }
+        if ((bool)Configure::read('Publish.checkDate', false)) {
+            $query = $query->find('publishDateAllowed');
+        }
 
-        return $query->where([$this->aliasField('deleted') => 0]);
+        return $query;
+    }
+
+    /**
+     * Finder to check if `publish_start` and `publish_end` dates allow object publishing.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findPublishDateAllowed(Query $query): Query
+    {
+        $now = $query->func()->now();
+
+        return $query->where(function (QueryExpression $exp) use ($now) {
+            return $exp->and_([
+                $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $field = $this->aliasField('publish_start');
+
+                    return $exp
+                        ->isNull($field)
+                        ->lte($field, $now);
+                }),
+                $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $field = $this->aliasField('publish_end');
+
+                    return $exp
+                        ->isNull($field)
+                        ->gte($field, $now);
+                }),
+            ]);
+        });
     }
 
     /**

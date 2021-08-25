@@ -14,7 +14,6 @@
 namespace BEdita\Core\Utility;
 
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -38,7 +37,7 @@ use Cake\Utility\Inflector;
  *     ],
  *   ]
  */
-class Properties
+class Properties extends ResourcesBase
 {
     /**
      * Default options array with following keys:
@@ -57,6 +56,9 @@ class Properties
         'delete' => [
             'atomic' => false,
         ],
+        'update' => [
+            'atomic' => false,
+        ],
     ];
 
     /**
@@ -68,8 +70,7 @@ class Properties
      */
     public static function create(array $properties, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
+        $Properties = static::getTable('Properties', $options);
 
         foreach ($properties as $p) {
             static::validate($p);
@@ -93,9 +94,8 @@ class Properties
      */
     public static function remove(array $properties, array $options = []): void
     {
-        TableRegistry::getTableLocator()->clear();
-        $Properties = TableRegistry::getTableLocator()->get('Properties', $options);
-        $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes', $options);
+        $Properties = static::getTable('Properties', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
 
         foreach ($properties as $p) {
             static::validate($p);
@@ -110,6 +110,36 @@ class Properties
                 ->firstOrFail();
 
             $Properties->deleteOrFail($property, static::$defaults['delete']);
+        }
+    }
+
+    /**
+     * Update properties in `properties` table using input `$properties` array
+     *
+     * @param array $properties Properties data
+     * @param array $options Table locator options
+     * @return void
+     */
+    public static function update(array $properties, array $options = []): void
+    {
+        $Properties = static::getTable('Properties', $options);
+        $ObjectTypes = static::getTable('ObjectTypes', $options);
+
+        foreach ($properties as $p) {
+            static::validate($p);
+            $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
+
+            /** @var \Cake\Datasource\EntityInterface $property */
+            $property = $Properties->find()
+                ->where([
+                    'name' => $p['name'],
+                    'object_type_id' => $objectType->get('id'),
+                ])
+                ->firstOrFail();
+            $property->set('property_type_name', $p['property']);
+            $property->set('description', Hash::get($p, 'description'));
+
+            $Properties->saveOrFail($property, static::$defaults['update']);
         }
     }
 

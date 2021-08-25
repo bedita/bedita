@@ -13,14 +13,20 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * CustomProperties behavior
@@ -35,6 +41,18 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'field' => 'custom_props',
+        'filter' => [
+            'number' => FILTER_VALIDATE_FLOAT,
+            'integer' => FILTER_VALIDATE_INT,
+            'boolean' => FILTER_VALIDATE_BOOLEAN,
+        ],
+        'implementedFinders' => [
+            'customProp' => 'findCustomProp',
+        ],
+        'implementedMethods' => [
+            'getCustomPropsAvailable' => 'getAvailable',
+            'getCustomPropsDefaultValues' => 'getDefaultValues',
+        ],
     ];
 
     /**
@@ -80,17 +98,17 @@ class CustomPropertiesBehavior extends Behavior
             return $this->available;
         }
 
-        try {
-            $objectType = $this->objectType($this->getTable()->getAlias());
-            $properties = TableRegistry::getTableLocator()->get('Properties')->find('type', ['dynamic'])
-                ->find('objectType', [$objectType->id])
-                ->where(['enabled' => true, 'is_static' => false])
-                ->all();
-        } catch (RecordNotFoundException $e) {
+        $objectType = $this->objectType();
+        if ($objectType === null) {
             return [];
         }
 
-        $this->available = collection($properties)->indexBy('name')->toArray();
+        $this->available = TableRegistry::getTableLocator()->get('Properties')
+            ->find('type', ['dynamic'])
+            ->find('objectType', [$objectType->id])
+            ->where(['enabled' => true, 'is_static' => false])
+            ->indexBy('name')
+            ->toArray();
 
         return $this->available;
     }
@@ -110,15 +128,18 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
-     * @return void
+     * @return \Cake\ORM\Query
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(Event $event, Query $query): Query
     {
-        $query->formatResults(function (CollectionInterface $results) {
-            return $results->map(function ($row) {
-                return $this->promoteProperties($row);
-            });
-        });
+        return $query->formatResults(
+            function (CollectionInterface $results) {
+                return $results->map(function ($row) {
+                    return $this->promoteProperties($row);
+                });
+            },
+            Query::PREPEND
+        );
     }
 
     /**
@@ -126,11 +147,14 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return void
+     * @return false|void
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $this->demoteProperties($entity);
+        if ($entity->hasErrors()) {
+            return false;
+        }
     }
 
     /**
@@ -170,6 +194,7 @@ class CustomPropertiesBehavior extends Behavior
 
     /**
      * Send custom properties back to where they came from.
+     * Value formatting and JSON Schema validation is performed.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
@@ -182,18 +207,62 @@ class CustomPropertiesBehavior extends Behavior
         $dirty = false;
         $available = $this->getAvailable();
         foreach ($available as $property) {
-            $propertyName = $property->name;
-            if (!$this->isFieldSet($entity, $propertyName) || !$entity->isDirty($propertyName)) {
+            /** @var \BEdita\Core\Model\Entity\Property $property */
+            $name = $property->name;
+            if (
+                (!$this->isFieldSet($entity, $name) || !$entity->isDirty($name)) &&
+                !($entity->isNew() && !$property->is_nullable)
+            ) {
                 continue;
             }
 
             $dirty = true;
-            $value[$propertyName] = $entity->get($propertyName);
+            $schema = (array)$property->property_type->params;
+            $propValue = $this->formatValue($entity->get($name), $schema);
+            $result = Validation::jsonSchema($propValue, $schema);
+            if (($propValue !== null || !$property->is_nullable) && is_string($result)) {
+                $entity->setError($name, $result);
+            }
+            $value[$name] = $propValue;
         }
 
         if ($dirty) {
             $entity->set($field, $value);
         }
+    }
+
+    /**
+     * Format property value to be saved.
+     * A simple formatting is performed, only for few basic types
+     *
+     * @param mixed $value Custom property value
+     * @param array $schema Property JSON Schema
+     * @return mixed
+     */
+    protected function formatValue($value, array $schema)
+    {
+        if ($value === null) {
+            return null;
+        }
+        $type = (string)Hash::get($schema, 'type');
+        // apply `filter_var` to some primitive types
+        $filter = $this->getConfig(sprintf('filter.%s', $type));
+        if ($filter) {
+            return filter_var($value, $filter, FILTER_NULL_ON_FAILURE);
+        }
+        // set `null` on empty strings in other cases
+        if (in_array($type, ['array', 'object']) && $value === '') {
+            return null;
+        }
+        $format = (string)Hash::get($schema, 'format');
+        if ($type === 'string' && (in_array($format, ['email', 'uri', 'date', 'date-time']) || !empty(Hash::get($schema, 'enum')))) {
+            $value = trim($value);
+            if ($value === '') {
+                return null;
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -212,5 +281,58 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         return array_key_exists($field, (array)$entity);
+    }
+
+    /**
+     * Finder for custom property.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options.
+     * @return \Cake\ORM\Query
+     * @throws \Cake\Http\Exception\BadRequestException When
+     */
+    public function findCustomProp(Query $query, array $options): Query
+    {
+        // for now we handle just MySQL
+        if (!($query->getConnection()->getDriver() instanceof Mysql)) {
+            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
+        }
+
+        $available = $this->getAvailable();
+        $options = array_intersect_key($options, $available);
+        if (empty($options)) {
+            // Bad filter options.
+            throw new BadFilterException(__d('bedita', 'Invalid data'));
+        }
+
+        foreach ($options as $key => &$value) {
+            /** @var \BEdita\Core\Model\Entity\Property $property */
+            $property = Hash::get($available, $key);
+            $value = $this->formatValue($value, $property->property_type->params);
+        }
+        unset($value);
+
+        return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
+            $field = $this->getTable()->aliasField($this->getConfig('field'));
+
+            return $exp->and_(array_map(
+                function ($key, $value) use ($field, $query) {
+                    return $query->newExpr()->eq(
+                        new FunctionExpression(
+                            'JSON_UNQUOTE',
+                            [
+                                new FunctionExpression(
+                                    'JSON_EXTRACT',
+                                    [$field => 'identifier', sprintf('$.%s', $key)]
+                                ),
+                            ]
+                        ),
+                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
+                    );
+                },
+                array_keys($options),
+                $options
+            ));
+        });
     }
 }

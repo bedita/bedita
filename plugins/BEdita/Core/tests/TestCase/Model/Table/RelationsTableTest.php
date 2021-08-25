@@ -114,6 +114,21 @@ class RelationsTableTest extends TestCase
                     'params' => null,
                 ],
             ],
+            'simple' => [
+                true,
+                [
+                    'name' => 'some_relation',
+                    'inverse_name' => 'some_inverse_relation',
+                ],
+            ],
+            'empty label' => [
+                false,
+                [
+                    'id' => 1,
+                    'inverse_name' => 'reverse_test',
+                    'inverse_label' => '',
+                ],
+            ],
         ];
     }
 
@@ -129,7 +144,11 @@ class RelationsTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->Relations->newEntity();
+        if (empty($data['id'])) {
+            $objectType = $this->Relations->newEntity();
+        } else {
+            $objectType = $this->Relations->get($data['id']);
+        }
         $this->Relations->patchEntity($objectType, $data);
 
         $success = $this->Relations->save($objectType);
@@ -213,6 +232,51 @@ class RelationsTableTest extends TestCase
         static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test before save callback on an existing entity.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveExisting()
+    {
+        $entity = $this->Relations->get(1);
+        $originalLabel = $entity->label;
+        $originalInverseLabel = $entity->inverse_label;
+
+        $entity = $this->Relations->patchEntity($entity, [
+            'name' => 'foo_bar',
+            'inverse_name' => 'bar_foo',
+        ]);
+        $this->Relations->saveOrFail($entity);
+
+        $entity = $this->Relations->get(1);
+        static::assertSame('foo_bar', $entity->name);
+        static::assertSame($originalLabel, $entity->label);
+        static::assertSame('bar_foo', $entity->inverse_name);
+        static::assertSame($originalInverseLabel, $entity->inverse_label);
+    }
+
+    /**
+     * Test before save callback with a new entity.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave()
+    {
+        $entity = $this->Relations->newEntity([
+            'name' => 'some_name',
+            'inverse_name' => 'some_inverse_name',
+        ]);
+        $entity = $this->Relations->saveOrFail($entity);
+
+        static::assertSame('Some Name', $entity->get('label'));
+        static::assertSame('Some Inverse Name', $entity->get('inverse_label'));
     }
 
     /**

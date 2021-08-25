@@ -43,6 +43,7 @@ Router::plugin(
             'property_types',
             'relations',
             'categories',
+            'tags',
         ];
         $routes->setRouteClass(InflectedRoute::class);
 
@@ -175,6 +176,11 @@ Router::plugin(
                     '/schema/:type',
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
                     ['_name' => 'schema', 'pass' => ['type']]
+                );
+                $routes->connect(
+                    '/project',
+                    ['controller' => 'Project', 'action' => 'index'],
+                    ['_name' => 'project']
                 );
             }
         );

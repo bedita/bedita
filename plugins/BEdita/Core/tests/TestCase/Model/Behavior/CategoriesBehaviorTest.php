@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CategoriesBehavior} Test Case
@@ -66,7 +67,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'disabled-cat'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'profile tags' => [
@@ -96,7 +97,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'other-cat'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no categories' => [
@@ -106,7 +107,7 @@ class CategoriesBehaviorTest extends TestCase
                 [
                     'description' => 'some description',
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no tags allowed' => [
@@ -118,7 +119,7 @@ class CategoriesBehaviorTest extends TestCase
                         ['name' => 'first-tag'],
                     ]
                 ],
-                2,
+                3,
                 'Documents',
             ],
             'no categories allowed' => [
@@ -135,13 +136,22 @@ class CategoriesBehaviorTest extends TestCase
             ],
             'missing tags' => [
                 [
-                    'tags' => []
+                    'tags' => [
+                        [
+                            'name' => 'some-tag',
+                            'id' => 5,
+                        ],
+                        [
+                            'name' => 'other-tag',
+                            'id' => 6,
+                        ],
+                    ],
                 ],
                 [
                     'tags' => [
                         ['name' => 'some-tag'],
                         ['name' => 'other-tag'],
-                    ]
+                    ],
                 ],
                 4,
                 'Profiles',
@@ -161,7 +171,6 @@ class CategoriesBehaviorTest extends TestCase
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::prepareData()
-     * @covers ::retrieveIds()
      * @covers ::updateData()
      */
     public function testBeforeSave(array $expected, array $data, $id, $tableName)
@@ -190,8 +199,109 @@ class CategoriesBehaviorTest extends TestCase
                     $res = $res->toArray();
                 }
                 ksort($res);
+                unset($res['modified']);
                 static::assertSame($expected[$key][$k], $res);
             }
         }
+    }
+
+    /**
+     * Test `fetchCategories` method
+     *
+     * @return void
+     *
+     * @covers ::fetchCategories()
+     */
+    public function testFetchCategories(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $entity = $table->get(3, ['contain' => ['Categories']]);
+        $data = [
+            'categories' => [
+                [
+                    'name' => 'second-cat',
+                ]
+            ]
+        ];
+        $entity = $table->patchEntity($entity, $data);
+        $entity = $table->save($entity);
+        static::assertNotFalse($entity);
+        $categories = (array)$entity->get('categories');
+        $names = Hash::extract($categories, '{n}.name');
+        sort($names);
+        static::assertEquals(['second-cat'], $names);
+    }
+
+    /**
+     * Test `fetchTags` method
+     *
+     * @return void
+     *
+     * @covers ::fetchTags()
+     * @covers ::checkTag()
+     */
+    public function testFetchTags(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Profiles');
+        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->patchEntity($entity, [
+            'tags' => [
+                [
+                    'name' => 'first-tag',
+                ],
+                [
+                    'name' => 'second',
+                    'label' => 'Second',
+                ],
+                [
+                    'name' => 'third',
+                ]
+            ]
+        ]);
+        $entity = $table->save($entity);
+        static::assertNotFalse($entity);
+
+        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $tags = (array)$entity->get('tags');
+        $names = Hash::extract($tags, '{n}.name');
+        sort($names);
+        static::assertEquals(['first-tag', 'second', 'third'], $names);
+        $labels = Hash::extract($tags, '{n}.label');
+        sort($labels);
+        static::assertEquals(['First tag', 'Second', 'Third'], $labels);
+    }
+
+    /**
+     * Test `fetchTags` with a disabled tag
+     *
+     * @return void
+     *
+     * @covers ::fetchTags()
+     * @covers ::checkTag()
+     */
+    public function testFetchTagsDisabled(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Tags');
+        $tag = $table->get(4);
+        $tag->set('enabled', false);
+        $table->saveOrFail($tag);
+
+        $table = TableRegistry::getTableLocator()->get('Profiles');
+        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->patchEntity($entity, [
+            'tags' => [
+                [
+                    'name' => 'first-tag',
+                ],
+                [
+                    'name' => 'second',
+                ],
+            ],
+        ]);
+        $entity = $table->save($entity);
+        static::assertNotFalse($entity);
+        $tags = (array)$entity->get('tags');
+        $names = Hash::extract($tags, '{n}.name');
+        static::assertEquals(['second'], $names);
     }
 }

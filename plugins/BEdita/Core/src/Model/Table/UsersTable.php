@@ -392,6 +392,14 @@ class UsersTable extends Table
         $entity->set('deleted', true);
         $entity->set('locked', true);
 
+        $this->loadInto($entity, ['ExternalAuth']);
+        array_walk(
+            $entity->external_auth,
+            function ($item) {
+                $this->ExternalAuth->deleteOrFail($item);
+            }
+        );
+
         return $this->save($entity);
     }
 
