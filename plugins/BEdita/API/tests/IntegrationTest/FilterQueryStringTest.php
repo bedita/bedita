@@ -552,6 +552,42 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
+     * Test `/folders?filter[mine]`.
+     *
+     * @coversNothing
+     */
+    public function testMineFilter()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/users?filter[mine]');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([5], Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
+     * Test `/folders?filter[edited]`.
+     *
+     * @coversNothing
+     */
+    public function testEditedFilter()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/documents?filter[edited]');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([3], Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
      * Data provider for `testTrashFilter` test case.
      *
      * @return array
