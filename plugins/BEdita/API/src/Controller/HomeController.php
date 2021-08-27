@@ -19,7 +19,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use Zend\Diactoros\Uri;
+use Laminas\Diactoros\Uri;
 
 /**
  * Controller for `/home` endpoint.
@@ -84,15 +84,17 @@ class HomeController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $this->request->allowMethod(['get', 'head']);
 
         $default = Hash::insert($this->defaultEndpoints, '{*}.object_type', false);
         $endPoints = array_merge($this->objectTypesEndpoints(), $default);
+        $resources = [];
         foreach ($endPoints as $e => $data) {
             $resources[$e] = $this->endpointFeatures($e, $data);
         }
+        $resources = array_filter($resources);
         $project = Configure::read('Project');
         $version = Configure::read('BEdita.version');
 
@@ -102,12 +104,14 @@ class HomeController extends AppController
 
     /**
      * Return endpoint features to display in `/home` response
+     * If no methods are allowed an empty array is returned and
+     * the endpoint will not be listed in `/home` response.
      *
      * @param string $endpoint Endpoint name
      * @param array $options Endpoint options - methods and multiple types flag
      * @return array Array of features
      */
-    protected function endpointFeatures($endpoint, $options)
+    protected function endpointFeatures($endpoint, $options): array
     {
         $methods = $options['methods'];
         if ($methods === 'ALL') {
@@ -118,6 +122,9 @@ class HomeController extends AppController
             if ($this->checkAuthorization($endpoint, $method)) {
                 $allow[] = $method;
             }
+        }
+        if (empty($allow)) {
+            return [];
         }
 
         return [
@@ -142,7 +149,7 @@ class HomeController extends AppController
      *
      * @return array Array of object type names
      */
-    protected function objectTypesEndpoints()
+    protected function objectTypesEndpoints(): array
     {
         $allTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                         ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
@@ -167,7 +174,7 @@ class HomeController extends AppController
      * @param string $method HTTP method
      * @return bool True on granted authorization, false otherwise
      */
-    protected function checkAuthorization($endpoint, $method)
+    protected function checkAuthorization($endpoint, $method): bool
     {
         if (empty(LoggedUser::getUser()) && !$this->unloggedAuthorized($endpoint, $method)) {
             return false;
@@ -188,7 +195,7 @@ class HomeController extends AppController
      * @param string $method HTTP method
      * @return bool True on granted authorization, false otherwise
      */
-    protected function unloggedAuthorized($endpoint, $method)
+    protected function unloggedAuthorized($endpoint, $method): bool
     {
         $defaultAllow = Hash::get($this->defaultAllowUnlogged, $endpoint, $this->defaultAllowUnlogged['/*']);
 

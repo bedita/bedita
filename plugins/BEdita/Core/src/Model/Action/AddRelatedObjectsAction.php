@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\EntityInterface;
 
@@ -34,16 +35,20 @@ class AddRelatedObjectsAction extends UpdateRelatedObjectsAction
     {
         if (!($this->Association instanceof RelatedTo)) {
             $action = new AddAssociatedAction($this->getConfig());
+            $action->setEventManager($this->getEventManager());
 
             return $action->execute(compact('entity', 'relatedEntities'));
         }
 
         return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
-            $relatedEntities = $this->diff($entity, $relatedEntities, false);
+            $relatedEntities = new ArrayObject($relatedEntities);
+            $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
+            $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), false);
             if (!$this->Association->link($entity, $relatedEntities)) {
                 return false;
             }
+            $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
             return collection($relatedEntities)
                 ->extract($this->Association->getBindingKey())

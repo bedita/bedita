@@ -35,6 +35,8 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Profiles',
@@ -44,6 +46,7 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -260,8 +263,8 @@ class ListRelatedObjectsActionTest extends TestCase
     public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null, $statusLevel = null)
     {
         if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         Configure::write('Status.level', $statusLevel);
@@ -273,6 +276,42 @@ class ListRelatedObjectsActionTest extends TestCase
         $result = $action(['primaryKey' => $id] + compact('list', 'only'));
         $result = json_decode(json_encode($result->toArray()), true);
 
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that deleted objects will not show as related
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testDeleted(): void
+    {
+        // set Document 3 `deleted`
+        // must not appear on right side of Document 2 `test` relation
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $entity = $table->get(3);
+        $entity->set('deleted', true);
+        $table->saveOrFail($entity);
+
+        $association = $table->getAssociation('test');
+        $action = new ListRelatedObjectsAction(compact('association'));
+
+        $result = $action(['primaryKey' => 2, 'list' => true]);
+        $result = json_decode(json_encode($result->toArray()), true);
+
+        $expected = [
+            [
+                'id' => 4,
+                'type' => 'profiles',
+                '_joinData' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => null,
+                ],
+            ]
+        ];
         static::assertEquals($expected, $result);
     }
 }

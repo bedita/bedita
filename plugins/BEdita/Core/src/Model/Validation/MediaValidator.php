@@ -31,19 +31,19 @@ class MediaValidator extends ObjectsValidator
         parent::__construct();
 
         $this
-            ->allowEmpty('name')
+            ->allowEmptyString('name')
 
             ->ascii('provider')
-            ->allowEmpty('provider')
+            ->allowEmptyString('provider')
 
-            ->notEmpty('provider_uid', null, function ($context) {
+            ->notEmptyString('provider_uid', null, function ($context) {
                 return !empty($context['data']['provider']); // Required if provider is set.
             })
 
             ->url('provider_url')
-            ->allowEmpty('provider_url')
+            ->allowEmptyString('provider_url')
 
             ->url('provider_thumbnail')
-            ->allowEmpty('provider_thumbnail');
+            ->allowEmptyString('provider_thumbnail');
     }
 }

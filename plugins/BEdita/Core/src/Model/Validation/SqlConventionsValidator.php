@@ -33,7 +33,7 @@ use Cake\Validation\Validator;
  * $validator->setProvider('type', 'index');
  *
  * $symbol = 'my_index_name';
- * $errors = $validator->errors(compact('symbol'));
+ * $errors = $validator->validate(compact('symbol'));
  * ```
  *
  * Validating a column can be achieved in a similar way. Also, `allColumns` provider can be a list of
@@ -45,7 +45,7 @@ use Cake\Validation\Validator;
  * $validator->setProvider('allColumns', ['my_column' => 'table_one', 'my_other_column' => 'table_two']);
  *
  * $symbol = 'my_column_name';
- * $errors = $validator->errors(compact('symbol'));
+ * $errors = $validator->validate(compact('symbol'));
  * ```
  *
  * @since 4.0.0
@@ -65,7 +65,7 @@ class SqlConventionsValidator extends Validator
      *
      * @var string
      */
-    const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by';
+    const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by,url';
 
     /**
      * List of reserved words.

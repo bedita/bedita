@@ -8,6 +8,8 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -48,6 +50,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.Translations',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -260,17 +263,51 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testFindDateRanges` test case.
+     *
+     * @return array
+     */
+    public function findDateRangesProvider()
+    {
+        return [
+            'simple' => [
+                [9],
+                [
+                    'start_date' => ['gt' => '2017-01-01'],
+                ],
+            ],
+            'sub1' => [
+                [],
+                [
+                    'date_ranges_min_start_date' => true,
+                    'from_date' => '2019-01-01',
+                ],
+            ],
+            'sub2' => [
+                [9],
+                [
+                    'date_ranges_max_start_date' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Test object date ranges finder.
      * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
      *
+     * @param array $expected Expected results.
+     * @param array $options Finder options.
      * @return void
      *
+     * @dataProvider findDateRangesProvider
      * @covers ::findDateRanges()
+     * @covers ::dateRangesSubQueryJoin()
      */
-    public function testFindDateRanges()
+    public function testFindDateRanges(array $expected, array $options)
     {
-        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
-        $this->assertNotEmpty($result);
+        $result = $this->Objects->find('dateRanges', $options)->toArray();
+        $this->assertEquals($expected, Hash::extract($result, '{n}.id'));
     }
 
     /**
@@ -289,6 +326,9 @@ class ObjectsTableTest extends TestCase
             'date_ranges' => [
                 [
                     'start_date' => '1992-08-17',
+                    'params' => [
+                        'k' => 'v',
+                    ],
                 ],
             ],
         ];
@@ -299,6 +339,7 @@ class ObjectsTableTest extends TestCase
         }
         $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
         static::assertCount(1, $object->date_ranges);
+        static::assertEquals(['k' => 'v'], $object->date_ranges[0]['params']);
 
         $data['date_ranges'][0]['start_date'] = date('Y-m-d');
         $object = $this->Objects->patchEntity($object, $data);
@@ -611,6 +652,132 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `checkStatus`.
+     *
+     * @return array
+     */
+    public function checkStatusProvider(): array
+    {
+        return [
+            'no conf' => [
+                'draft',
+                [
+                    'status' => 'draft',
+                ],
+                '',
+            ],
+            'error' => [
+                new BadRequestException('Status "draft" is not consistent with configured Status.level "on"'),
+                [
+                    'status' => 'draft',
+                ],
+                'on',
+            ],
+            'ok' => [
+                'draft',
+                [
+                    'status' => 'draft',
+                ],
+                'draft',
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkStatus()`.
+     *
+     * @param string|\Exception $expected Status value or Exception.
+     * @param string $config Status level config.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkStatusProvider()
+     * @covers ::checkStatus()
+     */
+    public function testCheckStatus($expected, array $data, string $config = ''): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        if (!empty($config)) {
+            Configure::write('Status.level', $config);
+        }
+
+        $object = $this->Objects->get(4);
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+
+        static::assertSame($expected, $object->get('status'));
+    }
+
+    /**
+     * Data provider for `checkLocked`.
+     *
+     * @return array
+     */
+    public function checkLockedProvider(): array
+    {
+        return [
+            'not locked' => [
+                true,
+                [
+                    'id' => 3,
+                    'status' => 'on',
+                ],
+            ],
+            'forbidden' => [
+                new ForbiddenException('Operation not allowed on "locked" objects'),
+                [
+                    'id' => 2,
+                    'status' => 'off',
+                ],
+                'on',
+            ],
+            'allowed' => [
+                true,
+                [
+                    'id' => 1,
+                    'description' => 'new description',
+                ],
+            ],
+            'locked now' => [
+                true,
+                [
+                    'id' => 3,
+                    'uname' => 'new-uname',
+                    'locked' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `checkLocked()`.
+     *
+     * @param string|\Exception $expected result or Exception.
+     * @param array $data Save input data.
+     * @return void
+     *
+     * @dataProvider checkLockedProvider()
+     * @covers ::checkLocked()
+     */
+    public function testCheckLocked($expected, array $data): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $object = $this->Objects->get(Hash::get($data, 'id'));
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->saveOrFail($object);
+
+        static::assertNotEmpty($object);
+    }
+
+    /**
      * Test `findTranslations()`.
      *
      * @return void
@@ -633,7 +800,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider()
+    public function findAvailableProvider(): array
     {
         return [
             'no status' => [
@@ -651,20 +818,99 @@ class ObjectsTableTest extends TestCase
     /**
      * Test `findAvailable()`.
      *
+     * @param int $expected Expected results.
+     * @param array $condition Search condition.
+     * @param string $statusLevel Configuration to write.
      * @return void
      *
      * @dataProvider findAvailableProvider()
      * @covers ::findAvailable()
      */
-    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null)
+    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null): void
     {
-        $result = $this->Objects->find('available')
-            ->where($condition)
-            ->toArray();
         if (!empty($statusLevel)) {
             Configure::write('Status.level', $statusLevel);
         }
-        static::assertSame($expected, count($result));
+
+        $count = $this->Objects->find('available')->where($condition)->count();
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindPublishable`.
+     *
+     * @return array
+     */
+    public function findPublishableProvider(): array
+    {
+        return [
+            'on + publish' => [
+                10,
+                [
+                    'Status.level' => 'on',
+                    'Publish.checkDate' => true,
+                ],
+            ],
+            'draft' => [
+                15,
+                [
+                    'Status.level' => 'draft',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findPublishable()`.
+     *
+     * @param int $expected Expected results.
+     * @param string $config Configuration to write.
+     * @return void
+     *
+     * @dataProvider findPublishableProvider()
+     * @covers ::findPublishable()
+     */
+    public function testFindPublishable(int $expected, array $config = null): void
+    {
+        if (!empty($config)) {
+            Configure::write($config);
+        }
+
+        $result = $this->Objects->find('publishable')->count();
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test `findPublishDateAllowed()`.
+     *
+     * @return void
+     *
+     * @covers ::findPublishDateAllowed()
+     */
+    public function testFindPublishDateAllowed(): void
+    {
+        $result = $this->Objects->find('publishDateAllowed')->toArray();
+        static::assertSame(12, count($result));
+    }
+
+    /**
+     * Test `findPublishDateAllowed()` on a single object changing `publish_end`.
+     *
+     * @return void
+     *
+     * @covers ::findPublishDateAllowed()
+     */
+    public function testFindPublishDateAllowedSingle(): void
+    {
+        $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
+        static::assertNull($result);
+
+        $object = $this->Objects->get(2);
+        $object->publish_end = Time::parse(time() + DAY);
+        $this->Objects->saveOrFail($object);
+
+        $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
+        static::assertNotNull($result);
     }
 
     /**
@@ -721,5 +967,32 @@ class ObjectsTableTest extends TestCase
             ->find('unameId', [4])
             ->firstOrFail();
         static::assertSame('gustavo-supporto', $result->get('uname'));
+    }
+
+    /**
+     * Test that only available children are returned.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testParentsAvailable(): void
+    {
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        static::assertNotEmpty($object->parents);
+
+        $firstParent = $object->parents[0];
+        $firstParent->status = 'off';
+        $this->Objects->Parents->saveOrFail($firstParent);
+
+        Configure::write('Status.level', 'off');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertContains($firstParent->id, $childrenIds);
+
+        Configure::write('Status.level', 'draft');
+        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $childrenIds = Hash::extract($object->parents, '{*}.id');
+        static::assertNotContains($firstParent->id, $childrenIds);
     }
 }

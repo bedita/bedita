@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -23,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class GeometryBehaviorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -31,11 +29,20 @@ class GeometryBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Locations',
     ];
+
+    /**
+     * Geometry support for current connection.
+     *
+     * @var bool
+     */
+    private static $geoSupport;
 
     /**
      * Test subject
@@ -54,6 +61,9 @@ class GeometryBehaviorTest extends TestCase
         parent::setUp();
 
         $this->Locations = TableRegistry::getTableLocator()->get('Locations');
+        if (!isset(static::$geoSupport)) {
+            static::$geoSupport = $this->Locations->checkGeoSupport();
+        }
     }
 
     /**
@@ -117,16 +127,15 @@ class GeometryBehaviorTest extends TestCase
      * @covers ::getDistanceExpression()
      * @covers ::parseCoordinates()
      */
-    public function testFindGeo($conditions, $numExpected)
+    public function testFindGeo($conditions, $numExpected): void
     {
-        $supported = Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7']);
-        if (!$supported) {
+        if (!static::$geoSupport) {
             $this->expectException(BadFilterException::class);
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
 
-        if ($supported) {
+        if (static::$geoSupport) {
             static::assertEquals($numExpected, count($result));
         } else {
             static::fail('This backend is not supposed to have geometric types support');

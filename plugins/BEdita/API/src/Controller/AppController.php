@@ -23,6 +23,8 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\Association;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 
 /**
@@ -117,10 +119,11 @@ class AppController extends Controller
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
      * @param string|array|null $include Association(s) to be included.
+     * @param \Cake\ORM\Table|null $table Table to consider.
      * @return array
      * @throws \Cake\Http\Exception\BadRequestException Throws an exception if a
      */
-    protected function prepareInclude($include)
+    protected function prepareInclude($include, ?Table $table = null): array
     {
         if ($include === null) {
             return [];
@@ -139,7 +142,7 @@ class AppController extends Controller
             }
 
             try {
-                $association = $this->findAssociation($relationship);
+                $association = $this->findAssociation($relationship, $table);
             } catch (NotFoundException $e) {
                 throw new BadRequestException(
                     __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
@@ -157,11 +160,12 @@ class AppController extends Controller
      * Subclasses need to override this method.
      *
      * @param string $relationship Relationship name.
-     * @return \Cake\ORM\Association|void
+     * @param \Cake\ORM\Table|null $table Table to consider.
+     * @return \Cake\ORM\Association
      * @throws \Cake\Http\Exception\NotFoundException Throws an exception if no suitable association could be found.
      * @codeCoverageIgnore
      */
-    protected function findAssociation($relationship)
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
         throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }

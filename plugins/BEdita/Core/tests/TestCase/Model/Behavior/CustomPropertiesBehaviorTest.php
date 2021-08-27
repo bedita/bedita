@@ -13,6 +13,12 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Filesystem\FilesystemRegistry;
+use Cake\Collection\CollectionInterface;
+use Cake\Core\Configure;
+use Cake\Database\Driver\Mysql;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,7 +45,28 @@ class CustomPropertiesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.History',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        FilesystemRegistry::dropAll();
+        parent::tearDown();
+    }
 
     /**
      * Test initialization.
@@ -75,6 +102,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [
                     'another_surname',
                     'another_birthdate',
+                    'number_of_friends',
                 ],
                 'Profiles',
             ],
@@ -126,6 +154,31 @@ class CustomPropertiesBehaviorTest extends TestCase
         $result = $behavior->getAvailable();
         $result = array_keys($result);
         sort($result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test get available properties for related object.
+     *
+     * @return void
+     *
+     * @covers ::getAvailable()
+     * @covers ::objectType()
+     */
+    public function testGetAvailableRelatedObject(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Profiles')
+            ->getAssociation('InverseTest')->getTarget();
+
+        static::assertEquals('InverseTest', $table->getAlias());
+
+        $behavior = $table->behaviors()->get('CustomProperties');
+        $result = $behavior->getAvailable();
+
+        $expected = ['another_title', 'another_description']; // documents custom props
+        $result = array_keys($result);
+        sort($result);
+        sort($expected);
         static::assertEquals($expected, $result);
     }
 
@@ -226,6 +279,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ->enableHydration($hydrate)
             ->first();
         if ($hydrate) {
+            static::assertFalse($result->isDirty());
             $result = $result->toArray();
         }
 
@@ -233,6 +287,35 @@ class CustomPropertiesBehaviorTest extends TestCase
         foreach ($expectedProperties as $property) {
             static::assertArrayHasKey($property, $result);
         }
+    }
+
+    /**
+     * Test that formatter is prepended to other formatters that may be attached to the Query object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     */
+    public function testBeforeFindFormatterPrepended()
+    {
+        $expected = [
+            'files_property' => ['media-one' => null, 'media-two' => null],
+            'media_property' => ['media-one' => true, 'media-two' => false],
+            'count' => 2,
+        ];
+
+        $result = $this->getTableLocator()->get('Files')->find()
+            ->formatResults(function (CollectionInterface $results): array {
+                return [
+                    'files_property' => $results->combine('uname', 'files_property')->toArray(),
+                    'media_property' => $results->combine('uname', 'media_property')->toArray(),
+                    'count' => $results->count(),
+                ];
+            })
+            ->order('Files.id')
+            ->toArray();
+
+        static::assertSame($expected, $result);
     }
 
     /**
@@ -264,48 +347,60 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                 ],
                 10,
                 'Files',
             ],
             'overwrite' => [
                 [
-                    'media_property' => 'synapse',
-                    'files_property' => 'gustavo@example.org',
+                    'media_property' => true,
+                    'files_property' => ['gustavo' => 'supporto'],
                 ],
                 [
-                    'files_property' => 'gustavo@example.org',
+                    'files_property' => ['gustavo' => 'supporto'],
                 ],
                 10,
                 'Files',
             ],
             'empty' => [
                 [
-                    'media_property' => null,
-                    'files_property' => null,
+                    'media_property' => ['Boolean expected, null received']
                 ],
                 [
                     'media_property' => null,
+                    'files_property' => '',
                 ],
                 10,
                 'Files',
             ],
             'disabledProperty' => [
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => false,
                     'files_property' => null,
                 ],
                 [
-                    'media_property' => 'gustavo',
+                    'media_property' => 0,
                     'disabled_property' => 'do not write it!',
                 ],
                 10,
                 'Files',
+            ],
+            'email' => [
+                [
+                    'another_email' => null,
+                    'another_username' => 'another'
+                ],
+                [
+                    'another_email' => '',
+                    'another_username' => 'another'
+                ],
+                5,
+                'Users',
             ],
         ];
     }
@@ -322,14 +417,20 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::demoteProperties()
+     * @covers ::formatValue()
      */
-    public function testBeforeSave(array $expected, array $data, $id, $table)
+    public function testBeforeSave(array $expected, array $data, $id, $table): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
         $entity = $table->get($id);
 
         $table->patchEntity($entity, $data);
-        $table->save($entity);
+        $success = $table->save($entity);
+        if ($success === false) {
+            static::assertSame($expected, $entity->getErrors());
+
+            return;
+        }
 
         $result = $entity->get('custom_props');
 
@@ -337,5 +438,192 @@ class CustomPropertiesBehaviorTest extends TestCase
         ksort($result);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test validation error on custom properties.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     * @covers ::demoteProperties()
+     */
+    public function testValidationFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Documents');
+        $entity = $table->get(2);
+
+        $table->patchEntity($entity, ['another_title' => true]);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
+    }
+
+    /**
+     * Test validation error on not nullable property.
+     *
+     * @return void
+     *
+     * @covers ::demoteProperties()
+     */
+    public function testValidationNewFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Files');
+        $entity = $table->newEntity(['title' => 'New file']);
+        $result = $table->save($entity);
+
+        static::assertFalse($result);
+        static::assertNotEmpty($entity->getErrors());
+        $expected = [
+            'media_property' => ['Boolean expected, null received'],
+        ];
+        static::assertEquals($expected, $entity->getErrors());
+    }
+
+    /**
+     * Test that custom properties are not dirty getting object.
+     *
+     * @return void
+     *
+     * @covers ::beforeFind()
+     * @covers ::promoteProperties()
+     * @covers ::isFieldSet()
+     */
+    public function testCustomPropertyNotDirty(): void
+    {
+        $user = TableRegistry::getTableLocator()->get('Users')->get(5);
+        static::assertFalse($user->isDirty('another_username'));
+        static::assertFalse($user->isDirty('another_email'));
+
+        $user->set('another_username', 'blablabla');
+        $user->set('another_email', 'xyz@example.com');
+        static::assertTrue($user->isDirty('another_username'));
+        static::assertTrue($user->isDirty('another_email'));
+    }
+
+    /**
+     * Data provider for testFindCustomProp()
+     *
+     * @return array
+     */
+    public function findCustomPropProvider(): array
+    {
+        return [
+            'empty options' => [
+                new BadFilterException('Invalid data'),
+                'Documents',
+                [],
+            ],
+            'invalid custom prop' => [
+                new BadFilterException('Invalid data'),
+                'Documents',
+                ['yeppa' => 12],
+            ],
+            'filter string' => [
+                [5],
+                'Users',
+                ['another_username' => 'synapse'],
+            ],
+            'filter bool true' => [
+                [10],
+                'Files',
+                ['media_property' => true],
+            ],
+            'filter bool 1 as true' => [
+                [10],
+                'Files',
+                ['media_property' => 1],
+            ],
+            'filter bool "1" as true' => [
+                [10],
+                'Files',
+                ['media_property' => '1'],
+            ],
+            'filter bool false' => [
+                [14],
+                'Files',
+                ['media_property' => false],
+            ],
+            'filter bool 0 as false' => [
+                [14],
+                'Files',
+                ['media_property' => 0],
+            ],
+            'filter bool "0" as false' => [
+                [14],
+                'Files',
+                ['media_property' => '0'],
+            ],
+        ];
+    }
+
+    /**
+     * Test for custom prop finder.
+     *
+     * @param mixed $expected The expected result
+     * @param string $tableName The table name
+     * @param array $options Options for finder
+     * @return void
+     *
+     * @covers ::findCustomProp()
+     * @dataProvider findCustomPropProvider
+     */
+    public function testFindCustomProp($expected, string $tableName, array $options): void
+    {
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Mysql) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+        } elseif ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->getTableLocator()
+            ->get($tableName)
+            ->find('customProp', $options)
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        sort($expected);
+
+        static::assertEquals($expected, array_keys($result));
+    }
+
+    /**
+     * Test custom prop finder for integer property.
+     *
+     * @return void
+     *
+     * @covers ::findCustomProp()
+     */
+    public function testFindCustomPropInteger(): void
+    {
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Mysql) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+        }
+
+        $Profiles = $this->getTableLocator()->get('Profiles');
+        $profile = $Profiles->find()->first();
+        $profile->set('number_of_friends', 10);
+        $Profiles->saveOrFail($profile);
+
+        $result = $Profiles->find('customProp', ['number_of_friends' => 10])
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        static::assertEquals([$profile->id], array_keys($result));
+
+        $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
+            ->find('list')
+            ->orderAsc('id')
+            ->toArray();
+
+        static::assertEquals([$profile->id], array_keys($result));
     }
 }

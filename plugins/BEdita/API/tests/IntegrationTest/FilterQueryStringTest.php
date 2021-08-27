@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Utility\Database;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -36,6 +36,28 @@ class FilterQueryStringTest extends IntegrationTestCase
     ];
 
     /**
+     * Geometry support for current connection.
+     *
+     * @var bool
+     */
+    private static $geoSupport;
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        if (!isset(static::$geoSupport)) {
+            static::$geoSupport = TableRegistry::getTableLocator()
+                ->get('Locations')
+                ->checkGeoSupport();
+        }
+    }
+
+    /**
      * Data provider for `testFilterDate` test case.
      *
      * @return array
@@ -47,11 +69,23 @@ class FilterQueryStringTest extends IntegrationTestCase
                'filter[date_ranges][start_date][gt]=2017-01-01',
                1
             ],
-            'none' => [
+            'simple 2' => [
+                'filter[date_ranges][from_date]=2017-01-01T14:00:00',
+                1
+             ],
+             'simple 3' => [
+                'filter[date_ranges][from_date]=2017-03-08T21:41:00',
+                0
+             ],
+             'none' => [
                'filter[date_ranges][end_date][le]=2017-01-01',
                0
             ],
-            'combined' => [
+            'none 2' => [
+                'filter[date_ranges][to_date]=2017-01-01',
+                0
+             ],
+             'combined' => [
                'filter[date_ranges][start_date][gt]=2017-01-01&filter[date_ranges][end_date][lt]=2017-04-01',
                1
             ],
@@ -122,7 +156,8 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->get($endpoint . '?' . $query);
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertContentType('application/vnd.api+json');
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+
+        if (!static::$geoSupport) {
             $this->assertResponseCode(400);
         } else {
             $this->assertResponseCode(200);
@@ -719,5 +754,27 @@ class FilterQueryStringTest extends IntegrationTestCase
 
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
+     * Test `/model/categories?filter[type]={type}`.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testCategoriesTypeFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/model/categories?filter[type]=documents');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals(3, count($result['data']));
+
+        $this->configRequestHeaders();
+        $this->get('/model/categories?filter[type]=locations');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(0, count($result['data']));
     }
 }

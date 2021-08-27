@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use Cake\ORM\TableRegistry;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\UploadController
@@ -44,7 +45,7 @@ class UploadControllerTest extends IntegrationTestCase
      */
     public function tearDown()
     {
-        $this->filesystemCleanup();
+        $this->filesystemRestore();
         parent::tearDown();
     }
 
@@ -58,6 +59,12 @@ class UploadControllerTest extends IntegrationTestCase
      */
     public function testUpload()
     {
+        // set proprty to `nullable` to avoid error
+        $table = TableRegistry::getTableLocator()->get('Properties');
+        $property = $table->get(8);
+        $property->is_nullable = true;
+        $table->saveOrFail($property);
+
         $fileName = 'gustavo.json';
         $contents = '{"name":"Gustavo","surname":"Supporto"}';
         $contentType = 'application/json';

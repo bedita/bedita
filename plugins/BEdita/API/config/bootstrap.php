@@ -12,6 +12,7 @@
  */
 
 use BEdita\API\Controller\Component\JsonApiComponent;
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\Event\CommonEventHandler;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
@@ -26,14 +27,12 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('api', 'database');
 }
 
-/**
- * When debug is active and ExceptionRenderer configured is different
- * from BEdita\API\Error\ExceptionRenderer then write an info log.
- * If you want to use a different renderer comment it to avoid writing log
- */
 $exceptionRenderer = Configure::read('Error.exceptionRenderer');
-if ($exceptionRenderer !== 'BEdita\API\Error\ExceptionRenderer' && Configure::read('debug')) {
-    Log::info('ExceptionRenderer used is ' . $exceptionRenderer . '.  BEdita/API should use BEdita\API\Error\ExceptionRenderer.');
+if ($exceptionRenderer !== ExceptionRenderer::class) {
+    if (Configure::read('debug')) {
+        Log::info(sprintf('ExceptionRenderer used is %s. BEdita/API should use %s.', $exceptionRenderer, ExceptionRenderer::class));
+    }
+    Configure::write('Error.exceptionRenderer', ExceptionRenderer::class);
 }
 
 /** Add custom request detectors. */

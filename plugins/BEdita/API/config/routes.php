@@ -43,6 +43,7 @@ Router::plugin(
             'property_types',
             'relations',
             'categories',
+            'tags',
         ];
         $routes->setRouteClass(InflectedRoute::class);
 
@@ -176,6 +177,11 @@ Router::plugin(
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
                     ['_name' => 'schema', 'pass' => ['type']]
                 );
+                $routes->connect(
+                    '/project',
+                    ['controller' => 'Project', 'action' => 'index'],
+                    ['_name' => 'project']
+                );
             }
         );
 
@@ -217,6 +223,13 @@ Router::plugin(
             '/history',
             ['controller' => 'History', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'history:index']
+        );
+
+        // Trees.
+        $routes->connect(
+            '/trees/**',
+            ['controller' => 'Trees', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'trees:index']
         );
 
         // Upload file and create object.

@@ -44,19 +44,6 @@ use Cake\Mailer\TransportFactory;
 use Cake\Utility\Security;
 
 /**
- * Uncomment block of code below if you want to use `.env` file during development.
- * You should copy `config/.env.default to `config/.env` and set/modify the
- * variables as required.
- */
-// if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
-//     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
-//     $dotenv->parse()
-//         ->putenv()
-//         ->toEnv()
-//         ->toServer();
-// }
-
-/**
  * In `config/environment.php` you may set some environment variables
  * used in configuration
  */
@@ -103,12 +90,22 @@ if (!Configure::check('Cache._bedita_object_types_')) {
         'duration' => '+1 year',
     ]);
 }
+if (!Configure::check('Cache._bedita_core_')) {
+    Configure::write('Cache._bedita_core_', [
+        'className' => 'File',
+        'prefix' => 'bedita_core_',
+        'path' => CACHE . 'object_types/',
+        'serialize' => true,
+        'duration' => '+1 year',
+    ]);
+}
 
 /* When debug = true the metadata cache should last
  * for a very very short time, as we want
  * to refresh the cache while developers are making changes.
  */
 if (Configure::read('debug')) {
+    Configure::write('Cache._bedita_core_.duration', '+2 minutes');
     Configure::write('Cache._bedita_object_types_.duration', '+2 minutes');
     Configure::write('Cache._cake_model_.duration', '+2 minutes');
     Configure::write('Cache._cake_core_.duration', '+2 minutes');

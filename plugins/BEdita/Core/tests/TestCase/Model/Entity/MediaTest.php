@@ -95,7 +95,10 @@ class MediaTest extends TestCase
      */
     public function testGetMediaUrl()
     {
-        $entity = $this->Files->newEntity(['title' => 'New file']);
+        $entity = $this->Files->newEntity([
+            'title' => 'New file',
+            'media_property' => false,
+        ]);
         $entity->created_by = 1;
         $entity->modified_by = 1;
         $entity = $this->Files->saveOrFail($entity);

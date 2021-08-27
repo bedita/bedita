@@ -13,8 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -27,6 +29,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Endpoint patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  *
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
@@ -49,6 +52,7 @@ class EndpointsTable extends Table
         $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.QueryCache');
 
         $this->belongsTo('ObjectTypes');
         $this->hasMany('EndpointPermissions', [
@@ -65,16 +69,16 @@ class EndpointsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create')
+            ->allowEmptyString('id', null, 'create')
 
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmptyString('name')
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
-            ->allowEmpty('description')
+            ->allowEmptyString('description')
 
             ->boolean('enabled')
-            ->notEmpty('enabled');
+            ->notEmptyString('enabled');
 
         return $validator;
     }
@@ -90,5 +94,33 @@ class EndpointsTable extends Table
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Fetch endpoint id from path using cache.
+     *
+     * @param string $path The path.
+     * @return int|null
+     * @throws \Cake\Http\Exception\NotFoundException
+     */
+    public function fetchId(string $path): ?int
+    {
+        // endpoint name is the first part of URL path
+        $path = array_values(array_filter(explode('/', $path)));
+        $name = Hash::get($path, '0', '');
+
+        $query = $this->find()
+            ->select(['id', 'enabled'])
+            ->disableHydration()
+            ->where([$this->aliasField('name') => $name]);
+
+        $endpoint = (array)$this->queryCache($query, sprintf('enpoint_%s', $name))
+            ->first();
+
+        if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {
+            throw new NotFoundException(__d('bedita', 'Resource not found.'));
+        }
+
+        return Hash::get($endpoint, 'id');
     }
 }

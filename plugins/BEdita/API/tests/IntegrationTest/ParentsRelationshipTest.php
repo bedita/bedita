@@ -312,4 +312,40 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         static::assertEquals([4], $childrenIds);
     }
+
+    /**
+     * Test `meta.relation` content in GET `parents` and GET `parent` response
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testParentsMeta()
+    {
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/parents');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['data']));
+
+        $expected = [
+            'depth_level' => 2,
+            'menu' => true,
+            'canonical' => true,
+        ];
+        static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
+
+        $this->configRequestHeaders();
+        $this->get('/folders/12/parent');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals('11', $result['data']['id']);
+
+        $expected = [
+            'depth_level' => 1,
+            'menu' => true,
+            'canonical' => true,
+        ];
+        static::assertEquals($expected, Hash::get($result, 'data.meta.relation'));
+    }
 }

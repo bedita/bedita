@@ -21,18 +21,19 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "cakephp/cakephp": "~3.8.1",
-        "cakephp/plugin-installer": "^1.1",
-        "wikimedia/composer-merge-plugin": "^1.4"
+        "php": ">=7.2.0",
+        "cakephp/cakephp": "~3.10.0",
+        "cakephp/plugin-installer": "^1.3",
+        "guzzlehttp/psr7": "1.8.2",
+        "wikimedia/composer-merge-plugin": "^2.0.1"
     },
     "require-dev": {
-        "cakephp/bake": "^1.11",
-        "cakephp/debug_kit": "^3.19.0",
+        "cakephp/bake": "^1.12",
+        "cakephp/debug_kit": "^3.23.0",
         "cakephp/cakephp-codesniffer": "~3.2.1",
         "psy/psysh": "@stable",
-        "bedita/dev-tools": "1.1.*",
-        "phpunit/phpunit": "^6.0"
+        "bedita/dev-tools": "1.4.*",
+        "phpunit/phpunit": "^6.5"
     },
     "autoload": {
         "psr-4": {
@@ -53,24 +54,13 @@
         "post-install-cmd": "BEdita\\App\\Console\\Installer::postInstall",
         "post-update-cmd": "BEdita\\App\\Console\\Installer::postInstall",
         "post-create-project-cmd": "BEdita\\App\\Console\\Installer::postInstall",
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
         "check": [
             "@test",
-            "@cs-setup",
             "@cs-check"
         ],
         "cs-check": " vendor/bin/phpcs --colors -n -p --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "cs-fix": "vendor/bin/phpcbf --colors --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
-        "cs-setup": [
-            "vendor/bin/phpcs --config-set installed_paths vendor/cakephp/cakephp-codesniffer",
-            "vendor/bin/phpcs --config-set default_standard CakePHP",
-            "vendor/bin/phpcs --config-set colors 1"
-        ],
-        "test": "vendor/bin/phpunit --colors=always",
-        "update-dev": [
-            "@composer update",
-            "@cs-setup"
-        ]
+        "test": "vendor/bin/phpunit --colors=always"
     },
     "extra": {
         "merge-plugin": {

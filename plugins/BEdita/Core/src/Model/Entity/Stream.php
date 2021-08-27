@@ -18,9 +18,9 @@ use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
+use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream as ZendStream;
 
 /**
  * Stream Entity
@@ -147,23 +147,26 @@ class Stream extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $stream = new ZendStream($readStream, 'r');
+        $stream = new LaminasStream($readStream, 'r');
 
         return $this->_properties['contents'] = $stream;
     }
 
     /**
-     * Create a Zend Stream out of a PHP resource.
+     * Create a Laminas Stream out of a PHP resource.
      *
      * In the meanwhile, file size, MD5 and SHA1 hashes are
      *
      * @param resource $source Original resource.
-     * @return \Zend\Diactoros\Stream
+     * @return \Laminas\Diactoros\Stream
      * @throws \InvalidArgumentException Throws an exception if the parameter is not a resource.
      */
     protected function createStream($source)
     {
-        rewind($source);
+        $info = stream_get_meta_data($source);
+        if ($info['seekable'] === true) {
+            rewind($source);
+        }
 
         $resource = fopen('php://temp', 'wb+');
         stream_copy_to_stream($source, $resource);
@@ -190,7 +193,7 @@ class Stream extends Entity implements JsonApiSerializable
 
         // Stream.
         rewind($resource);
-        $stream = new ZendStream($resource, 'r');
+        $stream = new LaminasStream($resource, 'r');
 
         return $stream;
     }

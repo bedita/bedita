@@ -52,6 +52,7 @@ class NewObjectTypesTest extends IntegrationTestCase
                 ],
                 [
                     'description' => 'a new song',
+                    'media_property' => true,
                 ]
             ],
         ];
@@ -88,7 +89,7 @@ class NewObjectTypesTest extends IntegrationTestCase
             'attributes' => $attributes,
         ];
 
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $endpoint = '/' . $type;
         $this->post($endpoint, json_encode(compact('data')));
@@ -96,7 +97,7 @@ class NewObjectTypesTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         // VIEW
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders();
         $lastId++;
         $this->get("/$type/$lastId");

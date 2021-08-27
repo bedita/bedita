@@ -33,6 +33,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Media',
     ];
 
@@ -43,6 +44,8 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::addCount()
+     * @covers ::prepareFilter()
      */
     public function testIndex()
     {
@@ -459,7 +462,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
-                        'media_property' => 'synapse', // inherited custom property
+                        'media_property' => true, // inherited custom property
                     ],
                     'meta' => [
                         'locked' => false,
@@ -650,6 +653,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'media_property' => false,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -751,6 +755,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::addCount()
      */
     public function testSingle()
     {
@@ -1286,6 +1291,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::getAvailableUrl()
      * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
+     * @covers ::addCount()
      */
     public function testRelated()
     {
@@ -1331,6 +1337,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
+                        'another_title' => null,
+                        'another_description' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/2',
@@ -2447,6 +2455,27 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `?include` query parameter on related endpoint.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testRelatedInclude(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/profiles/4/inverse_test?include=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertSame(['3', '2'], Hash::extract($result, 'data.{n}.id'));
+        static::assertSame(['4'], Hash::extract($result, 'data.0.relationships.test.data.{n}.id'));
+        static::assertSame(['4', '3'], Hash::extract($result, 'data.1.relationships.test.data.{n}.id'));
+    }
+
+    /**
      * Test listing streams for an object.
      *
      * @return void
@@ -2680,5 +2709,40 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         static::assertNotEmpty($result['included']);
         static::assertEquals($expected, $result['included']);
+    }
+
+    /**
+     * Test addCount()
+     *
+     * @return void
+     *
+     * @covers ::addCount()
+     */
+    public function testAddCount(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents/2?count=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertEquals(2, Hash::get($result, 'data.relationships.test.meta.count'));
+    }
+
+    /**
+     * Test prepareFilter()
+     *
+     * @return void
+     *
+     * @covers ::prepareFilter()
+     */
+    public function testPrepareFilter(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/events?sort=date_ranges_min_start_date');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        static::assertEquals(9, Hash::get($result, 'data.0.id'));
     }
 }

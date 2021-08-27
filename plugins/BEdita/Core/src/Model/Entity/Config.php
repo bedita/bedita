@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Config Entity.
@@ -42,4 +43,29 @@ class Config extends Entity implements JsonApiSerializable
         'created' => false,
         'modified' => false,
     ];
+
+    /**
+     * Setter for `application` virtual property.
+     *
+     * @param string|null $application The application to set
+     * @return string|null
+     */
+    protected function _setApplication(?string $application): ?string
+    {
+        if ($application === null) {
+            $this->application_id = null;
+
+            return null;
+        }
+
+        $table = TableRegistry::getTableLocator()->get('Applications');
+        $this->application_id = $table
+            ->find('list', ['valueField' => 'id'])
+            ->where([
+                $table->aliasField('name') => $application,
+            ])
+            ->firstOrFail();
+
+        return $application;
+    }
 }

@@ -13,7 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Application;
+use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
+use BEdita\Core\Model\Entity\Role;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -362,5 +366,170 @@ class EndpointPermissionTest extends TestCase
         $write = $entity->get('write');
 
         static::assertSame($expected, $write);
+    }
+
+    /**
+     * Data provder for `testSetEndpointName()`
+     *
+     * @return array
+     */
+    public function setEndpointNameProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                2,
+                'home',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "endpoints"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for endpoint_name.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The endpoint name
+     * @return void
+     *
+     * @covers ::_setEndpointName()
+     * @dataProvider setEndpointNameProvider()
+     */
+    public function testSetEndpointName($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('endpoint_name', $name);
+        $endpoint = $entity->endpoint;
+        if ($expected === null) {
+            static::assertNull($endpoint);
+            static::assertNull($entity->endpoint_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Endpoint::class, $endpoint);
+        static::assertEquals($expected, $endpoint->id);
+        static::assertEquals($expected, $entity->endpoint_id);
+    }
+
+    /**
+     * Data provder for `testSetRoleName()`
+     *
+     * @return array
+     */
+    public function setRoleNameProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                2,
+                'second role',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "roles"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for role_name.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The role name
+     * @return void
+     *
+     * @covers ::_setRoleName()
+     * @dataProvider setRoleNameProvider()
+     */
+    public function testSetRoleName($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('role_name', $name);
+        $role = $entity->role;
+        if ($expected === null) {
+            static::assertNull($role);
+            static::assertNull($entity->role_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Role::class, $role);
+        static::assertEquals($expected, $role->id);
+        static::assertEquals($expected, $entity->role_id);
+    }
+
+    /**
+     * Data provder for `testSetApplicationName()`
+     *
+     * @return array
+     */
+    public function setApplicationNameProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                null,
+            ],
+            'valid name' => [
+                1,
+                'First app',
+            ],
+            'not valid name' => [
+                new RecordNotFoundException('Record not found in table "applications"'),
+                'dontfindme',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for application_name.
+     *
+     * @param mixed $expected The expected data
+     * @param string $name The application name
+     * @return void
+     *
+     * @covers ::_setApplicationName()
+     * @dataProvider setApplicationNameProvider()
+     */
+    public function testSetApplicationName($expected, ?string $name): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(RecordNotFoundException::class);
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $entity = new EndpointPermission();
+        $entity->set('application_name', $name);
+        $application = $entity->application;
+        if ($expected === null) {
+            static::assertNull($application);
+            static::assertNull($entity->application_id);
+
+            return;
+        }
+
+        static::assertInstanceOf(Application::class, $application);
+        static::assertEquals($expected, $application->id);
+        static::assertEquals($expected, $entity->application_id);
     }
 }

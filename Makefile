@@ -6,12 +6,10 @@
 # Use the version number to figure out if the release
 # is a pre-release
 PRERELEASE=$(shell echo $(VERSION) | grep -E 'dev|rc|alpha|beta' --quiet && echo 'true' || echo 'false')
-COMPONENTS= api core
-COMPONENTS_DIR=plugins/BEdita
 CURRENT_BRANCH=$(shell git branch | grep '*' | tr -d '* ')
-# components paths on filesystem as array
-COMPONENT_PATH[api]=API
-COMPONENT_PATH[core]=Core
+
+# composer version to use. Leave empty to use last version.
+COMPOSER_VERSION=
 
 # Github settings
 UPLOAD_HOST=https://uploads.github.com
@@ -53,20 +51,7 @@ help:
 	@echo "publish"
 	@echo "  Publish the dist/bedita-VERSION.zip to github."
 	@echo ""
-	@echo "components"
-	@echo "  Split each of the public namespaces into separate repos and push them to Github."
-	@echo ""
-	@echo "clean-components CURRENT_BRANCH=xx"
-	@echo "  Delete branch xx from each subsplit. Useful when cleaning up after a security release."
-	@echo ""
-	@echo "test"
-	@echo "  Run the tests for BEdita."
-	@echo ""
 	@echo "All other tasks are not intended to be run directly."
-
-
-test: install
-	vendor/bin/phpunit
 
 
 # Utility target for checking required parameters
@@ -79,12 +64,14 @@ guard-%:
 
 # Download composer
 composer.phar:
-	curl -sS https://getcomposer.org/installer | php
+	curl -sS https://getcomposer.org/installer | php;
+	@if [ ! -z "$COMPOSER_VERSION" ]; then \
+		php composer.phar self-update ${COMPOSER_VERSION}; \
+	fi;
 
 # Install dependencies
 install: composer.phar
 	php composer.phar install
-
 
 
 # Version bumping & tagging for BEdita itself
@@ -117,11 +104,6 @@ build:
 build/bedita: build
 	git clone git@github.com:$(OWNER)/bedita.git build/bedita/
 	cd build/bedita && git checkout $(VERSION_TAG)
-
-# build/cakephp: build
-# 	git checkout $(VERSION)
-# 	git checkout-index -a -f --prefix=build/cakephp/
-# 	git checkout -
 
 dist/bedita-$(DASH_VERSION).zip: build/bedita composer.phar
 	mkdir -p dist
@@ -156,37 +138,5 @@ publish: guard-VERSION guard-GITHUB_USER dist/bedita-$(DASH_VERSION).zip
 	rm release.json
 	rm id.txt
 
-# Tasks for publishing separate repositories out of each BEdita namespace
-
-components: $(foreach component, $(COMPONENTS), component-$(component))
-components-tag: $(foreach component, $(COMPONENTS), tag-component-$(component))
-
-component-%:
-	git checkout $(CURRENT_BRANCH) > /dev/null
-	- (git remote add $* git@github.com:$(OWNER)/$*.git -f 2> /dev/null)
-	- (git branch -D $* 2> /dev/null)
-	git checkout -b $*
-	git filter-branch --prune-empty --subdirectory-filter $(COMPONENTS_DIR)/$(COMPONENT_PATH[$*]) -f $*
-	git push -f $* $*:$(CURRENT_BRANCH)
-	git checkout $(CURRENT_BRANCH) > /dev/null
-
-tag-component-%: component-% guard-VERSION guard-GITHUB_USER
-	@echo "Creating tag for the $* component"
-	git checkout $*
-	curl $(AUTH) -XPOST $(API_HOST)/repos/$(OWNER)/$*/git/refs -d '{ \
-		"ref": "refs\/tags\/$(VERSION)", \
-		"sha": "$(shell git rev-parse $*)" \
-	}'
-	git checkout $(CURRENT_BRANCH) > /dev/null
-	git branch -D $*
-	git remote rm $*
-
-# Tasks for cleaning up branches created by security fixes to old branches.
-components-clean: $(foreach component, $(COMPONENTS), clean-component-$(component))
-clean-component-%:
-	- (git remote add $* git@github.com:$(OWNER)/$*.git -f 2> /dev/null)
-	- (git branch -D $* 2> /dev/null)
-	- git push -f $* :$(CURRENT_BRANCH)
-
 # Top level alias for doing a release.
-release: guard-VERSION guard-GITHUB_USER tag-release components-tag package publish
+release: guard-VERSION guard-GITHUB_USER tag-release package publish

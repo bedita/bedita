@@ -12,7 +12,8 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\API\Model\Action\UpdateRelatedAction;
+use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -21,6 +22,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -42,6 +44,7 @@ use Cake\Utility\Inflector;
  */
 class ObjectsController extends ResourcesController
 {
+    use ActionTrait;
 
     /**
      * {@inheritDoc}
@@ -113,7 +116,6 @@ class ObjectsController extends ResourcesController
     {
         $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
         try {
-            /** @var \BEdita\Core\Model\Entity\ObjectType $this->objectType */
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
@@ -189,7 +191,7 @@ class ObjectsController extends ResourcesController
                 );
         } else {
             // List existing entities.
-            $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+            $filter = $this->prepareFilter();
             $contain = $this->prepareInclude($this->request->getQuery('include'));
             $lang = $this->request->getQuery('lang');
 
@@ -198,6 +200,7 @@ class ObjectsController extends ResourcesController
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
+            $this->addCount($data->toArray());
         }
 
         $this->set(compact('data'));
@@ -235,6 +238,8 @@ class ObjectsController extends ResourcesController
             'contain' => $contain,
             'lang' => $this->request->getQuery('lang'),
         ]);
+
+        $this->addCount([$entity]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -288,8 +293,8 @@ class ObjectsController extends ResourcesController
         $relatedId = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
-        $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
-        $contain = $this->prepareInclude($this->request->getQuery('include'));
+        $filter = $this->prepareFilter();
+        $contain = $this->prepareInclude($this->request->getQuery('include'), $association->getTarget());
         $lang = $this->request->getQuery('lang');
 
         $action = $this->getAssociatedAction($association);
@@ -297,6 +302,7 @@ class ObjectsController extends ResourcesController
 
         if ($objects instanceof Query) {
             $objects = $this->paginate($objects);
+            $this->addCount($objects->toArray());
         }
 
         $this->set('_fields', $this->request->getQuery('fields', []));
@@ -333,7 +339,7 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
-                $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
+                $filter = $this->prepareFilter();
 
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
@@ -353,7 +359,7 @@ class ObjectsController extends ResourcesController
                 return null;
         }
 
-        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $action = new UpdateRelatedAction(compact('action') + ['request' => $this->request]);
         $count = $action(['primaryKey' => $id]);
 
         if ($count === false) {
@@ -436,5 +442,46 @@ class ObjectsController extends ResourcesController
         }
 
         return (array)$this->getConfig(sprintf('allowedAssociations.%s', $relationship), []);
+    }
+
+    /**
+     * Add count data to the entities when query string `count` is present.
+     *
+     * @param array|\Cake\Collection\CollectionInterface $entities List of entities
+     * @return void
+     */
+    protected function addCount($entities): void
+    {
+        $count = $this->request->getQuery('count');
+        if (empty($count)) {
+            return;
+        }
+
+        /** @var \BEdita\Core\Model\Action\CountRelatedObjectsAction $action */
+        $action = $this->createAction('CountRelatedObjectsAction');
+        $action(compact('entities', 'count'));
+    }
+
+    /**
+     * Prepare filter array from request.
+     *
+     * @return array
+     */
+    protected function prepareFilter(): array
+    {
+        $filter = (array)$this->request->getQuery('filter') +
+            array_filter(['query' => $this->request->getQuery('q')]);
+        $sort = $this->request->getQuery('sort');
+        if (empty($sort)) {
+            return $filter;
+        }
+        // Add date ranges special sort field to filter if found
+        // It will be used in `ObjectsTable::findDateRanges`
+        $sort = str_replace('-', '', $sort);
+        if (in_array($sort, ObjectsTable::DATERANGES_SORT_FIELDS)) {
+            $filter['date_ranges'][$sort] = true;
+        }
+
+        return $filter;
     }
 }

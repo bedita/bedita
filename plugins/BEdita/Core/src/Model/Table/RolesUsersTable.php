@@ -71,7 +71,7 @@ class RolesUsersTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         return $validator;
     }

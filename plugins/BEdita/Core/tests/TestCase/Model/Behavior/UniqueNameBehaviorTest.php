@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,9 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\UniqueNameBehavior;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +43,7 @@ class UniqueNameBehaviorTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.History',
     ];
 
     /**
@@ -81,6 +84,10 @@ class UniqueNameBehaviorTest extends TestCase
                 'Oèù yahìì',
                 'user-oeu-yahii',
             ],
+            'preserveUnderscore' => [
+                'Guy_Dude',
+                'user-guy_dude',
+            ],
             'others' => [
                 '¬5654@-BIG STRING',
                 'user-5654-big-string',
@@ -109,6 +116,48 @@ class UniqueNameBehaviorTest extends TestCase
         $Users->save($user);
 
         $this->assertEquals($user['uname'], $uname);
+    }
+
+    /**
+     * Data provider for `testUniqueName` test case.
+     *
+     * @return array
+     */
+    public function uniqueNameProvider()
+    {
+        return [
+            'mix' => [
+                'Amazing test! 100% gluten-free!',
+                'amazing-test-100-gluten-free',
+            ],
+            'preserveUnderscore' => [
+                '@Guy_Dude made this test',
+                'guy_dude-made-this-test',
+            ],
+            'accents' => [
+                'àéì òù',
+                'aei-ou',
+            ],
+        ];
+    }
+
+    /**
+     * testUniqueName method
+     *
+     * @param string $value Original uname.
+     * @param string $expected Expected sanitized uname.
+     * @return void
+     *
+     * @dataProvider uniqueNameProvider
+     * @covers ::uniqueName()
+     */
+    public function testUniqueName($value, $expected)
+    {
+        $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
+        $entity = new Entity(['uname' => $value]);
+        $behavior->uniqueName($entity);
+
+        $this->assertEquals($expected, $entity->get('uname'));
     }
 
     /**
@@ -264,6 +313,12 @@ class UniqueNameBehaviorTest extends TestCase
                 ],
                 true
             ],
+            'underscoreValue' => [
+                'test this_value',
+                'test-this_value',
+                [],
+                false,
+            ],
         ];
     }
 
@@ -317,7 +372,24 @@ class UniqueNameBehaviorTest extends TestCase
         $document->set('uname', '');
         $document->set('title', '');
         $behavior->uniqueName($document);
-        static::assertContains('documents_', $document->get('uname'));
+        static::assertContains('documents-', $document->get('uname'));
+    }
+
+    /**
+     * Test `uniqueName()` when `uname` is valid an unchanged
+     *
+     * @return void
+     *
+     * @covers ::uniqueName()
+     */
+    public function testUniqueNameUnchanged(): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+        $document = $Documents->get(2);
+        $behavior->uniqueName($document);
+
+        static::assertFalse($document->isDirty('uname'));
     }
 
     /**
@@ -342,5 +414,29 @@ class UniqueNameBehaviorTest extends TestCase
         });
 
         $Documents->save($entity);
+    }
+
+    /**
+     * Test unique name max lenght
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testUniqueNameMaxLen()
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+
+        // check internal uname generation lenght
+        $data = ['title' => str_repeat('new title', 100)];
+        $document = $Documents->newEntity($data);
+        $behavior->uniqueName($document);
+        $this->assertEquals(strlen($document->get('uname')), UniqueNameBehavior::UNAME_MAX_LENGTH);
+
+        // limit explicit uname set lenght
+        $document->set('uname', str_repeat('new-uname', 100));
+        $behavior->uniqueName($document);
+        $this->assertEquals(strlen($document->get('uname')), UniqueNameBehavior::UNAME_MAX_LENGTH);
     }
 }

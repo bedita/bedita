@@ -51,6 +51,8 @@ class JsonApiViewTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
     ];
 
     /**
@@ -260,21 +262,68 @@ class JsonApiViewTest extends TestCase
             'included' => [
                 json_encode([
                     'data' => [
-                        'id' => '1',
-                        'type' => 'roles',
-                        'relationships' => [
-                            'users' => [
-                                'data' => [
-                                   [
-                                        'id' => '1',
-                                        'type' => 'users'
-                                   ],
-                                ],
-                                'links' => [
-                                    'related' => '/roles/1/users',
-                                    'self' => '/roles/1/relationships/users'
-                                ]
-                             ],
+                        [
+                            'id' => '1',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/1',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '1',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/1/users',
+                                        'self' => '/roles/1/relationships/users'
+                                    ]
+                                 ],
+                            ],
+                        ],
+                        [
+                            'id' => '2',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/2',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '5',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/2/users',
+                                        'self' => '/roles/2/relationships/users'
+                                    ]
+                                 ],
+                            ],
+                        ],
+                        [
+                            'id' => '3',
+                            'type' => 'roles',
+                            'links' => [
+                                'self' => '/roles/3',
+                            ],
+                            'relationships' => [
+                                'users' => [
+                                    'data' => [
+                                       [
+                                            'id' => '1',
+                                            'type' => 'users'
+                                       ],
+                                    ],
+                                    'links' => [
+                                        'related' => '/roles/3/users',
+                                        'self' => '/roles/3/relationships/users'
+                                    ]
+                                 ],
+                            ],
                         ],
                     ],
                     'meta' => [
@@ -289,20 +338,28 @@ class JsonApiViewTest extends TestCase
                         [
                             'id' => '1',
                             'type' => 'users',
+                            'meta' => [
+                                'external_auth' => [
+                                    [
+                                        'provider' => 'example',
+                                        'username' => 'first_user',
+                                    ],
+                                ],
+                            ],
                             'links' => [
                                 'self' => '/users/1'
                             ],
                             'relationships' => [
-                                'roles' => [
-                                    'links' => [
-                                        'related' => '/users/1/roles',
-                                        'self' => '/users/1/relationships/roles'
-                                    ]
-                                ],
                                 'another_test' => [
                                     'links' => [
                                         'related' => '/users/1/another_test',
                                         'self' => '/users/1/relationships/another_test'
+                                    ]
+                                ],
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/1/roles',
+                                        'self' => '/users/1/relationships/roles'
                                     ]
                                 ],
                                 'parents' => [
@@ -315,6 +372,47 @@ class JsonApiViewTest extends TestCase
                                     'links' => [
                                         'related' => '/users/1/translations',
                                         'self' => '/users/1/relationships/translations'
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'id' => '5',
+                            'type' => 'users',
+                            'meta' => [
+                                'external_auth' => [
+                                    [
+                                        'provider' => 'uuid',
+                                        'username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d'
+                                    ],
+                                ],
+                            ],
+                            'links' => [
+                                'self' => '/users/5'
+                            ],
+                            'relationships' => [
+                                'another_test' => [
+                                    'links' => [
+                                        'related' => '/users/5/another_test',
+                                        'self' => '/users/5/relationships/another_test'
+                                    ]
+                                ],
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/5/roles',
+                                        'self' => '/users/5/relationships/roles'
+                                    ]
+                                ],
+                                'parents' => [
+                                    'links' => [
+                                        'related' => '/users/5/parents',
+                                        'self' => '/users/5/relationships/parents'
+                                    ]
+                                ],
+                                'translations' => [
+                                    'links' => [
+                                        'related' => '/users/5/translations',
+                                        'self' => '/users/5/relationships/translations'
                                     ]
                                 ]
                             ]
@@ -323,7 +421,11 @@ class JsonApiViewTest extends TestCase
                 ]),
                 function (Table $Table) {
                     return [
-                        'object' => $Table->get(1, ['contain' => 'Users']),
+                        'objects' => [
+                            $Table->get(1, ['contain' => 'Users']),
+                            $Table->get(2, ['contain' => 'Users']),
+                            $Table->get(1, ['contain' => 'Users'])->set('id', 3),
+                        ],
                         '_serialize' => true,
                         '_fields' => [
                             'roles' => '',

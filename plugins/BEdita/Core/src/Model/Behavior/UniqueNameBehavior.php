@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2020 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -40,14 +40,22 @@ class UniqueNameBehavior extends Behavior
     const UNAME_MAX_REGENERATE = 10;
 
     /**
+     * Max regenerate iterations to avoid duplicates.
+     *
+     * @var int
+     */
+    const UNAME_MAX_LENGTH = 255;
+
+    /**
      * Default configuration.
      *
      * Possible keys are:
      *  - 'sourceField' field value to use for unique name creation
      *  - 'prefix' constant prefix to use
      *  - 'replacement' character replacement for space
-     *  - 'separator' seaparator of `hash` suffix
-     *  - 'hashlength' `hash` suffix length
+     *  - 'preserve' non-word character to preserve when creating slug
+     *  - 'separator' hash suffix separator
+     *  - 'hashlength' hash suffix length
      *  - 'generator' callable function for unique name generation, if set all other keys are ignored
      *
      * @var array
@@ -56,7 +64,8 @@ class UniqueNameBehavior extends Behavior
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',
-        'separator' => '_',
+        'preserve' => '_',
+        'separator' => '-',
         'hashlength' => 6,
         'generator' => null,
     ];
@@ -69,11 +78,19 @@ class UniqueNameBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function uniqueName(EntityInterface $entity)
+    public function uniqueName(EntityInterface $entity): void
     {
         $uname = $entity->get('uname');
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
+        } else {
+            $uname = strtolower(Text::slug($uname, [
+                'replacement' => $this->getConfig('replacement'),
+                'preserve' => $this->getConfig('preserve'),
+            ]));
+            if ($uname === $entity->get('uname') && !$entity->isDirty('uname')) {
+                return;
+            }
         }
         $count = 0;
         while (
@@ -83,7 +100,7 @@ class UniqueNameBehavior extends Behavior
             $uname = $this->generateUniqueName($entity, true);
         }
 
-        $entity->set('uname', $uname);
+        $entity->set('uname', Text::truncate($uname, self::UNAME_MAX_LENGTH));
     }
 
     /**
@@ -124,14 +141,19 @@ class UniqueNameBehavior extends Behavior
     public function uniqueNameFromValue($value, $regenerate = false, array $cfg = [])
     {
         $config = array_merge($this->getConfig(), $cfg);
-        $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
+        $slug = Text::slug($value, [
+            'replacement' => $config['replacement'],
+            'preserve' => $config['preserve'],
+        ]);
+        $uname = $config['prefix'] . $slug;
         if ($regenerate) {
             $hash = Text::uuid();
             $hash = str_replace('-', '', $hash);
             if (!empty($config['hashlength'])) {
                 $hash = substr($hash, 0, $config['hashlength']);
             }
-            $uname .= $config['separator'] . $hash;
+            $maxLen = self::UNAME_MAX_LENGTH - strlen($hash) - 1;
+            $uname = Text::truncate($uname, $maxLen) . $config['separator'] . $hash;
         }
 
         return strtolower($uname);

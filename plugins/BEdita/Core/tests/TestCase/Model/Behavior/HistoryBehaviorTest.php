@@ -41,6 +41,8 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
     ];
 
     /**
@@ -145,7 +147,7 @@ class HistoryBehaviorTest extends TestCase
     public function testAfterSave()
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
-        $doc = $Documents->get(2);
+        $doc = $Documents->get(3);
         $data = [
             'description' => 'new history desc'
         ];
@@ -156,14 +158,14 @@ class HistoryBehaviorTest extends TestCase
         static::assertEquals($data, $behavior->getChanged());
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
-                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
         $expected = [
             'id' => 3,
-            'resource_id' => '2',
+            'resource_id' => '3',
             'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
@@ -185,13 +187,13 @@ class HistoryBehaviorTest extends TestCase
     public function testTrashRestore()
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
-        $entity = $Documents->get(2);
+        $entity = $Documents->get(3);
         $entity->deleted = true;
         $entity = $Documents->saveOrFail($entity);
 
         $History = TableRegistry::getTableLocator()->get('History');
         $history = $History->find()
-                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
                 ->last();
         static::assertEquals('trash', $history->get('user_action'));
@@ -199,7 +201,7 @@ class HistoryBehaviorTest extends TestCase
         $entity->deleted = false;
         $Documents->saveOrFail($entity);
         $history = $History->find()
-                ->where(['resource_id' => '2', 'resource_type' => 'objects'])
+                ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
                 ->last();
         static::assertNotEmpty($history);
@@ -295,7 +297,7 @@ class HistoryBehaviorTest extends TestCase
         Configure::write('History', ['table' => null]);
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->get(2);
-        $Documents->patchEntity($entity, ['title' => 'new title']);
+        $Documents->patchEntity($entity, ['title' => 'new title', 'id' => 2]);
         $Documents->saveOrFail($entity);
 
         $history = TableRegistry::getTableLocator()->get('History')->find()

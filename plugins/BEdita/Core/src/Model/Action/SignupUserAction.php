@@ -71,6 +71,23 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected $Roles;
 
     /**
+     * Default configuration.
+     *
+     * - activation_url => url used for signup activation
+     * - roles => the allowed roles on signup. if empty no role can be associated
+     * - defaultRoles => default roles associated to user if no one was specified
+     * - requireActivation => false if user will be active without confirm
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'activation_url' => null,
+        'roles' => null,
+        'defaultRoles' => null,
+        'requireActivation' => true,
+    ];
+
+    /**
      * {@inheritdoc}
      */
     protected function initialize(array $config)
@@ -91,10 +108,17 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     public function execute(array $data = [])
     {
+        $this->setConfig((array)Configure::read('Signup'));
+
         $data = $this->normalizeInput($data);
         // add activation url from config if not set
-        if (Configure::check('Signup.activationUrl') && empty($data['data']['activation_url'])) {
-            $data['data']['activation_url'] = Router::url(Configure::read('Signup.activationUrl'));
+        $activationUrl = $this->getConfig('activationUrl');
+        if (!empty($activationUrl) && empty($data['data']['activation_url'])) {
+            $data['data']['activation_url'] = Router::url($activationUrl);
+        }
+        $signupRoles = (array)Hash::get($data, 'data.roles', $this->getConfig('defaultRoles'));
+        if (!empty($signupRoles)) {
+            $data['data']['roles'] = $signupRoles;
         }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
@@ -163,7 +187,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
             $validator
                 ->requirePresence('username')
-                ->notEmpty('username');
+                ->notEmptyString('username');
         } else {
             $validator
                 ->requirePresence('provider_username')
@@ -181,13 +205,53 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 'provider' => 'bedita',
             ]);
 
-        return $validator->errors($data);
+        if (!empty($this->getConfig('roles'))) {
+            $validator->requirePresence('roles');
+        }
+
+        $validator->add('roles', 'validateRoles', [
+            'rule' => [$this, 'validateRoles'],
+        ]);
+
+        return $validator->validate($data);
+    }
+
+    /**
+     * Validate roles against allowed signup roles configured.
+     * In addtion roles can't contain ADMIN_ROLE.
+     *
+     * @param string|array $roles The roles to check
+     * @return true|string
+     */
+    public function validateRoles($roles)
+    {
+        $allowedRoles = (array)$this->getConfig('roles');
+        if (empty($allowedRoles) && !empty($roles)) {
+            return __d('bedita', 'Roles are not allowed on signup');
+        }
+
+        $adminRoleName = $this->Roles->get(RolesTable::ADMIN_ROLE)->get('name');
+
+        $roles = (array)$roles;
+        $message = '{0} not allowed on signup';
+        if (in_array($adminRoleName, $roles)) {
+            return __d('bedita', $message, [$adminRoleName]);
+        }
+
+        $valid = array_intersect($roles, $allowedRoles);
+        if (empty(array_diff($roles, $valid))) {
+            return true;
+        }
+
+        $rolesNotAllowed = array_diff($roles, $allowedRoles);
+
+        return __d('bedita', $message, [implode(', ', $rolesNotAllowed)]);
     }
 
     /**
      * Create a new user with status:
      *  - `on` if an external auth provider is used or no activation
-     *    is required via `Signup.requireActivation` config
+     *    is required via `requireActivation` config
      *  - `draft` in other cases.
      *
      * The user is validated using 'signup' validation.
@@ -203,10 +267,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
 
         $status = 'draft';
-        if (Configure::read('Signup.requireActivation') === false) {
+        if ($this->getConfig('requireActivation') === false) {
             $status = 'on';
         }
-        unset($data['status']);
 
         if (empty($data['auth_provider'])) {
             return $this->createUserEntity($data, $status, 'signup');
@@ -214,7 +277,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         $authProvider = $this->checkExternalAuth($data);
 
-        $user = $this->createUserEntity($data, 'on', 'signupExternal');
+        $user = $this->createUserEntity($data, 'on', 'signupExternal', true);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -228,14 +291,17 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     }
 
     /**
-     * Create User model entity.
+     * Create User entity.
      *
      * @param array $data The signup data
      * @param string $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
-     * @return @return \BEdita\Core\Model\Entity\User The User entity created
+     * @param bool $verified Add `verified` value to entity
+     *
+     * @return \BEdita\Core\Model\Entity\User The User entity created
+     * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
-    protected function createUserEntity(array $data, $status, $validate)
+    protected function createUserEntity(array $data, $status, $validate, bool $verified = false)
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -245,15 +311,15 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
-        $data['status'] = $status;
 
-        return $action([
-            'entity' => $this->Users->newEntity(),
-            'data' => $data,
-            'entityOptions' => [
-                'validate' => $validate,
-            ],
-        ]);
+        $data['status'] = $status;
+        $entity = $this->Users->newEntity();
+        if ($verified === true) {
+            $entity->set('verified', Time::now());
+        }
+        $entityOptions = compact('validate');
+
+        return $action(compact('entity', 'data', 'entityOptions'));
     }
 
     /**
@@ -293,11 +359,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response($url, $accessToken)
+    protected function getOAuth2Response(string $url, string $accessToken): array
     {
         $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
 
-        return !empty($response->json) ? $response->json : [];
+        return (array)$response->getJson();
     }
 
     /**
@@ -309,35 +375,28 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function addRoles(User $entity, array $data)
     {
-        $signupRoles = Hash::get($data, 'roles', Configure::read('Signup.defaultRoles'));
+        $signupRoles = Hash::get($data, 'roles');
         if (empty($signupRoles)) {
             return;
         }
         $roles = $this->loadRoles($signupRoles);
+
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
         $association = $this->Users->associations()->getByProperty('roles');
         $association->link($entity, $roles);
     }
 
     /**
-     * Load requested roles entities with validation
+     * Load requested roles.
      *
      * @param array $roles Requested role names
      * @return \BEdita\Core\Model\Entity\Role[] requested role entities
-     * @throws \Cake\Http\Exception\BadRequestException When role validation fails
      */
     protected function loadRoles(array $roles)
     {
-        $entities = [];
-        $allowed = (array)Configure::read('Signup.roles');
-        foreach ($roles as $name) {
-            $role = $this->Roles->find()->where(compact('name'))->first();
-            if (RolesTable::ADMIN_ROLE === $role->get('id') || !in_array($name, $allowed)) {
-                throw new BadRequestException(__d('bedita', 'Role "{0}" not allowed on signup', [$name]));
-            }
-            $entities[] = $role;
-        }
-
-        return $entities;
+        return $this->Roles->find()
+            ->where(['name IN' => $roles])
+            ->toList();
     }
 
     /**

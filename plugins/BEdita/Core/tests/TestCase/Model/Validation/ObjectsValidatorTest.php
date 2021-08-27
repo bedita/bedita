@@ -109,7 +109,7 @@ class ObjectsValidatorTest extends TestCase
     {
         $validator = new ObjectsValidator();
 
-        $errors = $validator->errors($data, $newRecord);
+        $errors = $validator->validate($data, $newRecord);
         $errors = Hash::flatten($errors);
 
         static::assertEquals($expected, array_keys($errors));

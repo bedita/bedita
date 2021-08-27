@@ -15,6 +15,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\Utility\Hash;
 
 /**
  * Database utilities class
@@ -165,6 +166,7 @@ class Database
      *
      * @param array $options Array containing 'vendor' (lower case - 'mysql', 'postgres', 'sqlite') and optionally 'version'
      * @return bool True on match success, false otherwise
+     * @deprecated Will be dropped in a future release, not to be used anymore
      */
     public static function supportedVersion($options)
     {

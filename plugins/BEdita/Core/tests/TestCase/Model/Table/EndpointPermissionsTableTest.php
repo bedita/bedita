@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
+use Cake\Log\LogTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -25,6 +28,7 @@ use Cake\TestSuite\TestCase;
  */
 class EndpointPermissionsTableTest extends TestCase
 {
+    use LogTrait;
 
     /**
      * Test subject
@@ -55,6 +59,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         parent::setUp();
         $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
+        Cache::clear(false, '_bedita_core_');
     }
 
     /**
@@ -353,5 +358,137 @@ class EndpointPermissionsTableTest extends TestCase
         $count = $this->EndpointPermissions->find('byRole', compact('roleIds', 'strict'))->count();
 
         static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindResource()`.
+     *
+     * @return array
+     */
+    public function findResourceProvider(): array
+    {
+        return [
+            'application, endpoint, role' => [
+                0b1001,
+                [
+                    'application_name' => 'Disabled app',
+                    'endpoint_name' => 'home',
+                    'role_name' => 'first role',
+                ],
+            ],
+            'application=null, endpoint=null, role=null' => [
+                0,
+                [
+                    'application_name' => null,
+                    'endpoint_name' => null,
+                    'role_name' => null,
+                ],
+            ],
+            'application, endpoint=null, role=null' => [
+                0b1111,
+                [
+                    'application_name' => 'First app',
+                    'endpoint_name' => null,
+                    'role_name' => null,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findResource()`.
+     *
+     * @param int $expected The value expected
+     * @param array $options The options for the finder
+     * @return void
+     *
+     * @covers ::findResource()
+     * @dataProvider findResourceProvider()
+     */
+    public function testFindResource($expected, $options)
+    {
+        $query = $this->EndpointPermissions->find('resource', $options);
+        $entity = $query->first();
+
+        static::assertEquals(1, $query->count());
+        static::assertEquals($expected, $entity->permission);
+    }
+
+    /**
+     * Data provider for `testFetchCount`
+     */
+    public function fetchCountProvider(): array
+    {
+        return [
+            'one' => [
+                1,
+                1,
+            ],
+            'null' => [
+                1,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchCount` method
+     *
+     * @param int $expected Expected result.
+     * @param int|null $endpointId Endpoint ID.
+     * @return void
+     *
+     * @dataProvider fetchCountProvider()
+     * @covers ::fetchCount()
+     */
+    public function testFetchCount(int $expected, ?int $endpointId): void
+    {
+        CurrentApplication::setApplication(null);
+        $result = $this->EndpointPermissions->fetchCount($endpointId);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testFetchPermissions`
+     */
+    public function fetchPermissionsProvider(): array
+    {
+        return [
+            'one' => [
+                1,
+                1,
+                ['_anonymous' => true],
+                false,
+            ],
+            'null' => [
+                0,
+                null,
+                [
+                    'roles' => [
+                        ['id' => 1],
+                    ],
+                ],
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test `fetchPermissions` method
+     *
+     * @param int $expected Expected result
+     * @param int|null $endpointId Endpoint id.
+     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
+     * @param bool $strict Strict check.
+     * @return void
+     *
+     * @dataProvider fetchPermissionsProvider()
+     * @covers ::fetchPermissions()
+     */
+    public function testFetchPermissions(int $expected, ?int $endpointId, $user, bool $strict): void
+    {
+        CurrentApplication::setApplication(null);
+        $result = $this->EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
+        static::assertEquals($expected, count($result));
     }
 }

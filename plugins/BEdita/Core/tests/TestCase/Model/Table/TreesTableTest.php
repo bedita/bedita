@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
@@ -412,5 +413,92 @@ class TreesTableTest extends TestCase
         $currentPosition = $this->Trees->getCurrentPosition($node);
 
         static::assertSame($expected, $currentPosition);
+    }
+
+    /**
+     * Test set canonical `true`
+     *
+     * @covers ::afterSave()
+     */
+    public function testSetCanonical()
+    {
+        $entity = $this->Trees->newEntity(
+            [
+                'object_id' => 2,
+                'parent_id' => 12,
+                'root_id' => 11,
+                'parent_node_id' => 2,
+            ]
+        );
+        $entity = $this->Trees->saveOrFail($entity);
+        static::assertTrue((bool)$entity);
+
+        $entity = $this->Trees->get($entity->get('id'));
+        static::assertFalse($entity->get('canonical'));
+
+        // get other record for the same object
+        $other = $this->Trees->get(3);
+        static::assertTrue($other->get('canonical'));
+
+        // change canonical in subfolder
+        $entity->set('canonical', true);
+        $entity = $this->Trees->save($entity);
+        static::assertTrue($entity->get('canonical'));
+        // other record must have canonical false now
+        $other = $this->Trees->get(3);
+        static::assertFalse($other->get('canonical'));
+    }
+
+    /**
+     * Data provider for `testFindPathNodes` test case.
+     *
+     * @return array
+     */
+    public function findPathNodesProvider()
+    {
+        return [
+            'first' => [
+                [11, 12, 4],
+                [4],
+            ],
+            'invalid' => [
+                new RecordNotFoundException('Record not found in table "trees"'),
+                [3],
+            ],
+            'bad' => [
+                new BadRequestException('Missing required parameter "object id"'),
+                [],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findPathNodes` method.
+     *
+     * @param array|\Exception $expected Expected array path or exception.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @dataProvider findPathNodesProvider()
+     * @covers ::findPathNodes()
+     *
+     * @return void
+     */
+    public function testFindPathNodes($expected, array $options): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $path = $this->Trees->find('pathNodes', $options)
+            ->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'object_id',
+            ])
+            ->toArray();
+
+        static::assertSame($expected, array_values($path));
     }
 }
