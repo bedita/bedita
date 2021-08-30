@@ -65,7 +65,6 @@ class EndpointAuthorize extends BaseAuthorize
     {
         // if not set read `X-Api-Key` header as fallback to set current app
         CurrentApplication::setFromRequest($request);
-        $this->request = $request;
 
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
         if (
