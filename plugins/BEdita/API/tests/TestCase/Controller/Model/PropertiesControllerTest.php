@@ -54,10 +54,10 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 10,
+                    'count' => 11,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 10,
+                    'page_items' => 11,
                     'page_size' => 20,
                 ],
             ],
@@ -262,6 +262,26 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/properties/10',
                     ],
                 ],
+                [
+                    'id' => '11',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'number_of_friends',
+                        'description' => null,
+                        'property_type_name' => 'integer',
+                        'object_type_name' => 'profiles',
+                        'label' => null,
+                        'is_nullable' => true,
+                        'is_static' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2021-07-13T18:30:00+00:00',
+                        'modified' => '2021-07-13T18:30:00+00:00',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/properties/11',
+                    ],
+                ],
             ],
         ];
 
@@ -420,7 +440,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/properties/11');
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/12');
         static::assertTrue(TableRegistry::getTableLocator()->get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
