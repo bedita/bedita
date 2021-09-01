@@ -385,24 +385,6 @@ class ObjectsTable extends Table
     }
 
     /**
-     * Finder for `edited` objects (i.e.: created or modifed by logged-in user)
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
-     */
-    protected function findEdited(Query $query)
-    {
-        return $query->where(function (QueryExpression $exp, Query $q) {
-            return $exp->or_([
-                $q->newExpr()
-                    ->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id()),
-                $q->newExpr()
-                    ->eq($this->aliasField($this->ModifiedByUsers->getForeignKey()), LoggedUser::id()),
-                ]);
-        });
-    }
-
-    /**
      * Try to get the object `id` from `uname`.
      *
      * If `$uname` is numeric it returns immediately.
