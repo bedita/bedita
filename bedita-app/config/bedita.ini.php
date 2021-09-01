@@ -530,8 +530,8 @@ $config['media_providers'] = array(
         'params' => array(
             'width' => 300,
             'height' => 250,
-            'urlthumb' => 'http://i.ytimg.com/vi/%s/default.jpg',
-            'urlembed' => 'http://www.youtube.com/oembed?url=%s',
+            'urlthumb' => 'https://i.ytimg.com/vi/%s/default.jpg',
+            'urlembed' => 'https://www.youtube.com/oembed?url=%s',
         ),
     ),
     'vimeo' => array(
@@ -541,8 +541,8 @@ $config['media_providers'] = array(
         'params' => array(
             'width' => 300,
             'height' => 250,
-            'urlinfo' => 'http://vimeo.com/api/v2/video/%s.%s',
-            'urlembed' => 'http://vimeo.com/api/oembed.json?url=%s',
+            'urlinfo' => 'https://vimeo.com/api/v2/video/%s.%s',
+            'urlembed' => 'https://vimeo.com/api/oembed.json?url=%s',
         ),
     ),
 );
