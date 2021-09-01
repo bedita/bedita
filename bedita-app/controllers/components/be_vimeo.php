@@ -87,7 +87,7 @@ class BeVimeoComponent extends Object {
 			$data['thumbnail']	= $this->info['thumbnail_medium'];
 		}
 		if (empty($data['duration'])) {
-			$data['duration']	= $this->info['duration']/60;
+			$data['duration']	= $this->info['duration'];
 		}
 		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']);
 		$data['mime_type']	= "video/".$data["provider"];
