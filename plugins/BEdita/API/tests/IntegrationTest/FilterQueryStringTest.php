@@ -570,21 +570,28 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
-     * Test `/folders?filter[edited]`.
+     * Test `/folders?filter[history_editor]`.
      *
      * @coversNothing
      */
-    public function testEditedFilter()
+    public function testHistoryEditorFilter()
     {
         $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
-        $this->get('/documents?filter[edited]');
+        $this->get('/documents?filter[history_editor]');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         static::assertArrayHasKey('data', $result);
-        static::assertEquals([3], Hash::extract($result['data'], '{n}.id'));
+        static::assertEquals([2], Hash::extract($result['data'], '{n}.id'));
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/documents?filter[history_editor]=1');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([2], Hash::extract($result['data'], '{n}.id'));
     }
 
     /**
