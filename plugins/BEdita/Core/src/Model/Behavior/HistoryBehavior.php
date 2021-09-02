@@ -234,18 +234,16 @@ class HistoryBehavior extends Behavior
             })
             ->distinct();
 
+        $field = 'HistoryItems.object_id';
+        // On Postgres we need an explicit cast to INTEGER to avoid
+        // this error "operator does not exist: character varying = integer"
+        if ($query->getConnection()->getDriver() instanceof Postgres) {
+            $field = $query->func()->cast('HistoryItems.object_id', 'INTEGER');
+        }
+
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            function (QueryExpression $exp) use ($query) {
-                $field = 'HistoryItems.object_id';
-                // On Postgres we need an explicit cast to INTEGER to avoid
-                // this error "operator does not exist: character varying = integer"
-                if ($query->getConnection()->getDriver() instanceof Postgres) {
-                    $field = $query->func()->cast('HistoryItems.object_id', 'INTEGER');
-                }
-
-                return $exp->equalFields($field, $this->getTable()->aliasField('id'));
-            }
+            $query->newExpr()->equalFields($field, $this->getTable()->aliasField('id'))
         );
     }
 }
