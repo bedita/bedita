@@ -236,7 +236,7 @@ class HistoryBehavior extends Behavior
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
             $query->newExpr()->equalFields(
-                'HistoryItems.object_id',
+                $query->func()->cast('HistoryItems.object_id', 'integer'),
                 $this->getTable()->aliasField('id')
             )
         );
