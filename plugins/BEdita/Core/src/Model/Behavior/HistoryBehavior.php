@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Behavior;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -235,10 +236,16 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->newExpr()->equalFields(
-                $query->func()->cast('HistoryItems.object_id', 'integer'),
-                $this->getTable()->aliasField('id')
-            )
+            function (QueryExpression $exp) use ($query) {
+                $field = 'HistoryItems.object_id';
+                // On Postgres we need an explicit cast to INTEGER to avoid
+                // this error "operator does not exist: character varying = integer"
+                if ($query->getConnection()->getDriver() instanceof Postgres) {
+                    $field = $query->func()->cast('HistoryItems.object_id', 'INTEGER');
+                }
+
+                return $exp->equalFields($field, $this->getTable()->aliasField('id'));
+            }
         );
     }
 }
