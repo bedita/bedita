@@ -306,4 +306,48 @@ class HistoryBehaviorTest extends TestCase
         static::assertNotEmpty($history);
         static::assertEquals(2, count($history));
     }
+
+    /**
+     * Data provider for `testFindHistoryEditor()`
+     *
+     * @return array
+     */
+    public function findHistoryEditorProvider(): array
+    {
+        return [
+            'logged' => [
+                [2],
+                []
+            ],
+            'options' => [
+                [2],
+                [5]
+            ],
+        ];
+    }
+
+    /**
+     * Test `findHistoryEditor` finder.
+     *
+     * @param array $expected Expected result
+     * @param array $options Filter options
+     *
+     * @return void
+     *
+     * @dataProvider findHistoryEditorProvider
+     * @covers ::findHistoryEditor()
+     */
+    public function testFindHistoryEditor(array $expected, array $options): void
+    {
+        LoggedUser::setUser(['id' => 1]);
+
+        $result = TableRegistry::getTableLocator()->get('Documents')
+            ->find('historyEditor', $options)
+            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->toArray();
+
+        LoggedUser::resetUser();
+
+        static::assertEquals($expected, array_values($result));
+    }
 }

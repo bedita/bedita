@@ -16,10 +16,14 @@ namespace BEdita\Core\Model\Behavior;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * History behavior
@@ -43,6 +47,9 @@ class HistoryBehavior extends Behavior
             'password' => '*****',
         ],
         'resource_type' => 'objects',
+        'implementedFinders' => [
+            'historyEditor' => 'findHistoryEditor',
+        ],
     ];
 
     /**
@@ -202,5 +209,41 @@ class HistoryBehavior extends Behavior
         $history = $this->historyEntity($entity);
         $history->user_action = 'remove';
         $this->Table->saveOrFail($history);
+    }
+
+    /**
+     * Finder for editor objects in history: object created or modifed by a user looking at history data.
+     * Logged user id is used if no id is present in options array.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options containing user id
+     * @return \Cake\ORM\Query
+     */
+    public function findHistoryEditor(Query $query, array $options): Query
+    {
+        $editorId = Hash::get($options, '0');
+        if (empty($editorId)) {
+            $editorId = LoggedUser::id();
+        }
+        $subQuery = $this->Table->find()
+            ->select(['object_id' => 'resource_id'])
+            ->where(function (QueryExpression $exp) use ($editorId) {
+                return $exp
+                    ->eq('resource_type', $this->getConfig('resource_type'))
+                    ->eq('user_id', $editorId);
+            })
+            ->distinct();
+
+        $field = 'HistoryItems.object_id';
+        // On Postgres we need an explicit cast to INTEGER to avoid
+        // this error "operator does not exist: character varying = integer"
+        if ($query->getConnection()->getDriver() instanceof Postgres) {
+            $field = $query->func()->cast('HistoryItems.object_id', 'INTEGER');
+        }
+
+        return $query->innerJoin(
+            ['HistoryItems' => $subQuery],
+            $query->newExpr()->equalFields($field, $this->getTable()->aliasField('id'))
+        );
     }
 }
