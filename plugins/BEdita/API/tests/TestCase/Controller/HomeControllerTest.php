@@ -261,7 +261,7 @@ class HomeControllerTest extends IntegrationTestCase
                                 'application/vnd.api+json'
                             ],
                             'display' => [
-                                'label' => 'Translation',
+                                'label' => 'Translations',
                             ],
                             'object_type' => false,
                             'multiple_types' => true,
