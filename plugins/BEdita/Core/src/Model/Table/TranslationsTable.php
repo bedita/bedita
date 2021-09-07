@@ -58,6 +58,10 @@ class TranslationsTable extends Table
             'fields' => [
                 'translated_fields' => 10,
             ],
+            'columnTypes' => [
+                'json',
+                'text',
+            ],
         ]);
 
         $this->belongsTo('Objects', [
