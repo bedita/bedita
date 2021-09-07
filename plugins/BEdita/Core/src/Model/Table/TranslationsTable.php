@@ -54,6 +54,15 @@ class TranslationsTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'translated_fields' => 10,
+            ],
+            'columnTypes' => [
+                'json',
+                'text',
+            ],
+        ]);
 
         $this->belongsTo('Objects', [
             'className' => 'Objects',
