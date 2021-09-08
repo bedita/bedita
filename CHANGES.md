@@ -6,7 +6,7 @@
 
 * [#1817](https://github.com/bedita/bedita/pull/1817) New `/translations` endpoint
 * [#1808](https://github.com/bedita/bedita/pull/1808) Filter for custom properties
-* [#1802](https://github.com/bedita/bedita/pull/1802) Lock/unlock actions
+* [#1802](https://github.com/bedita/bedita/pull/1802) Lock/unlock objects and block/unblock users actions
 * [#1798](https://github.com/bedita/bedita/pull/1798) Project model endpoint & command
 * [#1753](https://github.com/bedita/bedita/pull/1753) New `history_editor` finder & filter
 
