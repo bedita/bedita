@@ -27,6 +27,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
+        'plugin.BEdita/Core.Annotations',
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
@@ -348,6 +349,30 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '4',
                     '5',
                     '6',
+                ],
+            ],
+            'translations' => [
+                '/translations?filter[query]=ici',
+                [
+                    '2',
+                ],
+            ],
+            'annotations' => [
+                '/annotations?q=ipsum',
+                [
+                    '1',
+                ],
+            ],
+            'categories' => [
+                '/model/categories?filter[query]=second',
+                [
+                    '2',
+                ],
+            ],
+            'tags' => [
+                '/model/tags?q=first',
+                [
+                    '4',
                 ],
             ],
         ];
