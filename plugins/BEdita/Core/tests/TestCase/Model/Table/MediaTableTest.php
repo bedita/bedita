@@ -24,11 +24,16 @@ class MediaTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Users',
     ];
 
     /**
@@ -76,6 +81,7 @@ class MediaTableTest extends TestCase
                     'provider_uid' => null,
                     'provider_url' => null,
                     'provider_thumbnail' => null,
+                    'media_property' => false,
                 ],
             ],
             'notUniqueUname' => [
@@ -89,6 +95,7 @@ class MediaTableTest extends TestCase
                     'provider_uid' => null,
                     'provider_url' => null,
                     'provider_thumbnail' => null,
+                    'media_property' => false,
                     'uname' => 'media-one',
                 ],
             ],
@@ -110,7 +117,7 @@ class MediaTableTest extends TestCase
         $entity->object_type_id = 9;
         $success = (bool)$this->Media->save($entity);
 
-        $this->assertTrue($success);
+        $this->assertTrue($success, print_r($entity->getErrors(), true));
 
         if ($changed) {
             $this->assertNotEquals($data['uname'], $entity->uname);

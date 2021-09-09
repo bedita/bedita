@@ -414,19 +414,19 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
-     * test generate uname before save
+     * test generate uname before rules
      *
      * @return void
-     * @covers ::beforeSave()
+     * @covers ::beforeRules()
      */
-    public function testBeforeSave()
+    public function testBeforeRules()
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->newEntity([
             'title' => 'uh là la'
         ]);
 
-        $Documents->getEventManager()->on('Model.beforeSave', function (Event $event, EntityInterface $entity) {
+        $Documents->getEventManager()->on('Model.beforeRules', function (Event $event, EntityInterface $entity) {
             $uname = $entity->get('uname');
             static::assertNotEmpty($uname);
             static::assertEquals('uh-la-la', $uname);
