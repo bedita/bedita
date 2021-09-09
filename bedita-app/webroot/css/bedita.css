@@ -2139,21 +2139,22 @@ A.BEbutton.golink:before {
 	text-align: center;
 	border-radius: 6px;
 	padding: 5px 5px;
-	position: absolute;
+	position: relative;
 	z-index: 1;
-    bottom: 96%;
+    top: 32px;
     margin-left: -292px;
     margin-bottom: 6px;
 }
 
-.filters .cell .elastictooltiptext::after {
+.filters .cell .elastictooltiptext::before {
 	content: "";
 	position: absolute;
-	top: 100%;
+	bottom: 100%;
 	left: 5%;
 	border-width: 5px;
 	border-style: solid;
-	border-color: #555 transparent transparent transparent;
+	border-color: #555 transparent  transparent transparent;
+	transform: rotate(180deg);
   }
 
 .filters .formbuttons {
