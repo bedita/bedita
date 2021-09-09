@@ -192,7 +192,7 @@ class UniqueNameBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeRules(Event $event, EntityInterface $entity)
     {
         $this->uniqueName($entity);
     }
