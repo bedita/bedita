@@ -156,7 +156,7 @@ class UsersTableTest extends TestCase
 
         if ($changed) {
             $this->assertNotEquals($data['uname'], $entity->uname);
-        } else if (isset($data['uname'])) {
+        } elseif (isset($data['uname'])) {
             $this->assertEquals($data['uname'], $entity->uname);
         }
     }
