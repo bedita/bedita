@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -38,8 +39,9 @@ class MediaTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Media') ? [] : ['className' => 'BEdita\Core\Model\Table\MediaTable'];
-        $this->Media = TableRegistry::getTableLocator()->get('Media', $config);
+
+        $this->Media = TableRegistry::getTableLocator()->get('Media');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -50,27 +52,70 @@ class MediaTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Media);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testSave` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function saveProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'valid' => [
+                false,
+                [
+                    'name' => 'Cool media file',
+                    'width' => null,
+                    'height' => null,
+                    'duration' => null,
+                    'provider' => null,
+                    'provider_uid' => null,
+                    'provider_url' => null,
+                    'provider_thumbnail' => null,
+                ],
+            ],
+            'notUniqueUname' => [
+                true,
+                [
+                    'name' => 'Cooler media file',
+                    'width' => null,
+                    'height' => null,
+                    'duration' => null,
+                    'provider' => null,
+                    'provider_uid' => null,
+                    'provider_url' => null,
+                    'provider_thumbnail' => null,
+                    'uname' => 'media-one',
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test entity save.
      *
+     * @param bool $changed
+     * @param array $data
      * @return void
+     * @dataProvider saveProvider
+     * @coversNothing
      */
-    public function testValidationDefault()
+    public function testSave(bool $changed, array $data)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $entity = $this->Media->newEntity($data);
+        $entity->object_type_id = 9;
+        $success = (bool)$this->Media->save($entity);
+
+        $this->assertTrue($success);
+
+        if ($changed) {
+            $this->assertNotEquals($data['uname'], $entity->uname);
+        } else if (isset($data['uname'])) {
+            $this->assertEquals($data['uname'], $entity->uname);
+        }
     }
 }

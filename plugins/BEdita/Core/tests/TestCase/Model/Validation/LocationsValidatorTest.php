@@ -85,14 +85,6 @@ class LocationsValidatorTest extends TestCase
                     'publish_end' => 'somewhen',
                 ],
             ],
-            'not unique' => [
-                [
-                    'uname.unique',
-                ],
-                [
-                    'uname' => 'title-one',
-                ],
-            ],
             'invalid coordinates' => [
                 [
                     'coords.valid',

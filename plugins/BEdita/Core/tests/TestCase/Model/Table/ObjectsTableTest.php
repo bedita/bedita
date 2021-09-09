@@ -93,6 +93,56 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testSave` test case.
+     *
+     * @return array
+     */
+    public function saveProvider()
+    {
+        return [
+            'valid' => [
+                false,
+                [
+                    'title' => 'doc title',
+                    'description' => 'doc description',
+                ],
+            ],
+            'notUniqueUname' => [
+                true,
+                [
+                    'title' => 'another doc title',
+                    'description' => 'another doc description',
+                    'uname' => 'title-one',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test entity save.
+     *
+     * @param bool $changed
+     * @param array $data
+     * @return void
+     * @dataProvider saveProvider
+     * @coversNothing
+     */
+    public function testSave(bool $changed, array $data)
+    {
+        $entity = $this->Objects->newEntity($data);
+        $entity->type = 'documents';
+        $success = (bool)$this->Objects->save($entity);
+
+        $this->assertTrue($success);
+
+        if ($changed) {
+            $this->assertNotEquals($data['uname'], $entity->uname);
+        } else if (isset($data['uname'])) {
+            $this->assertEquals($data['uname'], $entity->uname);
+        }
+    }
+
+    /**
      * Data provider for `testValidation` test case.
      *
      * @return array
@@ -106,16 +156,6 @@ class ObjectsTableTest extends TestCase
                     'title' => 'title three',
                     'description' => 'another description',
                     'uname' => 'title-three',
-                ],
-            ],
-            'notUniqueUname' => [
-                false,
-                [
-                    'title' => 'title four',
-                    'description' => 'another description',
-                    'status' => 'on',
-                    'uname' => 'title-one',
-                    'lang' => 'en',
                 ],
             ],
             'titleOnly' => [
@@ -152,11 +192,6 @@ class ObjectsTableTest extends TestCase
 
         $error = (bool)$object->getErrors();
         $this->assertEquals($expected, !$error);
-
-        if ($expected) {
-            $success = $this->Objects->save($object);
-            $this->assertTrue((bool)$success);
-        }
     }
 
     /**

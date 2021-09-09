@@ -61,6 +61,7 @@ class ProfilesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Profiles = TableRegistry::getTableLocator()->get('Profiles');
         LoggedUser::setUser(['id' => 1]);
     }
@@ -91,6 +92,65 @@ class ProfilesTableTest extends TestCase
         $this->assertEquals('profiles', $this->Profiles->getTable());
         $this->assertEquals('id', $this->Profiles->getPrimaryKey());
         $this->assertEquals('name', $this->Profiles->getDisplayField());
+    }
+
+    /**
+     * Data provider for `testSave` test case.
+     *
+     * @return array
+     */
+    public function saveProvider()
+    {
+        return [
+            'valid' => [
+                false,
+                [
+                    'name' => 'Fake',
+                    'surname' => 'User',
+                    'email' => 'fake.user@example.com',
+                    'person_title' => 'Miss',
+                    'gender' => null,
+                    'birthdate' => null,
+                    'deathdate' => null,
+                ],
+            ],
+            'notUniqueUname' => [
+                true,
+                [
+                    'name' => 'Real',
+                    'surname' => 'User',
+                    'email' => 'real.user@example.com',
+                    'person_title' => 'Mr',
+                    'gender' => null,
+                    'birthdate' => null,
+                    'deathdate' => null,
+                    'uname' => 'gustavo-supporto',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test entity save.
+     *
+     * @param bool $changed
+     * @param array $data
+     * @return void
+     * @dataProvider saveProvider
+     * @coversNothing
+     */
+    public function testSave(bool $changed, array $data)
+    {
+        $entity = $this->Profiles->newEntity($data);
+        $success = (bool)$this->Profiles->save($entity);
+
+        $this->assertTrue($success);
+
+        if ($changed) {
+            $this->assertNotEquals($data['uname'], $entity->uname);
+        } else if (isset($data['uname'])) {
+            $this->assertEquals($data['uname'], $entity->uname);
+        }
     }
 
     /**

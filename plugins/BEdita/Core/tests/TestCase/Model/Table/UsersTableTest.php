@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
@@ -99,6 +100,65 @@ class UsersTableTest extends TestCase
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->Users->ExternalAuth);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Users->Roles);
+    }
+
+    /**
+     * Data provider for `testSave` test case.
+     *
+     * @return array
+     */
+    public function saveProvider()
+    {
+        return [
+            'valid' => [
+                false,
+                [
+                    'username' => 'globetrotter user',
+                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter1'),
+                    'blocked' => 0,
+                    'last_login' => null,
+                    'last_login_err' => null,
+                    'num_login_err' => 1,
+                    'verified' => '2017-05-29 11:36:00',
+                ],
+            ],
+            'notUniqueUname' => [
+                true,
+                [
+                    'username' => 'support user',
+                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter2'),
+                    'blocked' => 0,
+                    'last_login' => null,
+                    'last_login_err' => null,
+                    'num_login_err' => 1,
+                    'verified' => '2017-05-29 11:36:00',
+                    'uname' => 'gustavo-supporto',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test entity save.
+     *
+     * @param bool $changed
+     * @param array $data
+     * @return void
+     * @dataProvider saveProvider
+     * @coversNothing
+     */
+    public function testSave(bool $changed, array $data)
+    {
+        $entity = $this->Users->newEntity($data);
+        $success = (bool)$this->Users->save($entity);
+
+        $this->assertTrue($success);
+
+        if ($changed) {
+            $this->assertNotEquals($data['uname'], $entity->uname);
+        } else if (isset($data['uname'])) {
+            $this->assertEquals($data['uname'], $entity->uname);
+        }
     }
 
     /**
