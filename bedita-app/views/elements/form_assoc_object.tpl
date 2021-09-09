@@ -103,7 +103,7 @@
 	
 	<td class="lang">{$objRelated.lang|default:''}</td>
 
-	<td nowrap class="mimetype">
+	<td class="mimetype">
 		{if !empty($objRelated.file_size)}{$objRelated.file_size|default:0|filesize}<br>{/if} {$objRelated.mime_type|default:''|truncate:60:'~':true}
 	</td>
 
