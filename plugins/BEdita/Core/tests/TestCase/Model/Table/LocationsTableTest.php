@@ -44,6 +44,7 @@ class LocationsTableTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Users',
