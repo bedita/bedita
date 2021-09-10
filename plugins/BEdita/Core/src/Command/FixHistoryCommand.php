@@ -212,7 +212,7 @@ class FixHistoryCommand extends Command
             $joinConditions[] = $query->newExpr()->eq($this->History->aliasField('user_action'), 'create');
         }
 
-        $conditions = [$idField . ' IS NULL'];
+        $conditions = [$this->History->aliasField('resource_id') . ' IS NULL'];
         if ($args->getOption('id')) {
             $conditions[] = [$this->Objects->aliasField('id') => $args->getOption('id')];
         }
