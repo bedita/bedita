@@ -15,9 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
-use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
