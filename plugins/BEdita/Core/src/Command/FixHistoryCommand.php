@@ -12,19 +12,20 @@
  */
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Driver\Postgres;
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Generator;
 
 /**
- * FixHistory command.
+ * FixHistory command: add missing history items or repair existing ones
+ * looking at `objects.created_by` and `objects.modified_by` properties.
  *
  * @since 4.6.0
  *
@@ -89,6 +90,7 @@ class FixHistoryCommand extends Command
         $query = $this->missingHistoryQuery(true, $args);
         $count = 0;
         foreach ($this->objectsGenerator($query) as $object) {
+            /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryCreate($object);
             $count++;
         }
@@ -98,6 +100,7 @@ class FixHistoryCommand extends Command
         $query = $this->missingHistoryQuery(false, $args);
         $count = 0;
         foreach ($this->objectsGenerator($query) as $object) {
+            /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryUpdate($object);
             $count++;
         }
@@ -116,6 +119,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryCreate(ObjectEntity $object): void
     {
+        /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -142,6 +146,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryUpdate(ObjectEntity $object): void
     {
+        /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -164,9 +169,9 @@ class FixHistoryCommand extends Command
      * History entity
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object Object entity
-     * @return \Cake\Datasource\EntityInterface
+     * @return \BEdita\Core\Model\Entity\History
      */
-    protected function historyEntity(ObjectEntity $object): EntityInterface
+    protected function historyEntity(ObjectEntity $object): History
     {
         $history = $this->History->newEntity();
         $history->resource_id = $object->get('id');
