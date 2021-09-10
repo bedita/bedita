@@ -188,12 +188,33 @@ class FixHistoryCommand extends Command
      * @param Arguments $args Command arguments
      * @return Query
      */
-    public function missingHistoryQuery(bool $created, Arguments $args): Query
+    protected function missingHistoryQuery(bool $created, Arguments $args): Query
     {
         $query = $this->Objects->find();
         if ($args->getOption('type')) {
             $query = $query->find('type', [$args->getOption('type')]);
         }
+
+        $conditions = [$this->History->aliasField('resource_id') . ' IS NULL'];
+        if ($args->getOption('id')) {
+            $conditions[] = [$this->Objects->aliasField('id') => $args->getOption('id')];
+        }
+
+        return $query->leftJoin(
+            [$this->History->getAlias() => $this->History->getTable()],
+            $this->joinConditions($query, $created)
+        )->where($conditions);
+    }
+
+    /**
+     * Join conditions used in `missingHistoryQuery`
+     *
+     * @param \Cake\ORM\Query $query Query object
+     * @param bool $created Created flag, if true look for `create` action in history
+     * @return array
+     */
+    protected function joinConditions(Query $query, bool $created): array
+    {
         $idField = $this->History->aliasField('resource_id');
         // On Postgres we need an explicit cast to INTEGER to avoid
         // this error "operator does not exist: character varying = integer"
@@ -217,15 +238,7 @@ class FixHistoryCommand extends Command
             $joinConditions[] = $query->newExpr()->eq($this->History->aliasField('user_action'), 'create');
         }
 
-        $conditions = [$this->History->aliasField('resource_id') . ' IS NULL'];
-        if ($args->getOption('id')) {
-            $conditions[] = [$this->Objects->aliasField('id') => $args->getOption('id')];
-        }
-
-        return $query->leftJoin(
-            [$this->History->getAlias() => $this->History->getTable()],
-            $joinConditions
-        )->where($conditions);
+        return $joinConditions;
     }
 
     /**
