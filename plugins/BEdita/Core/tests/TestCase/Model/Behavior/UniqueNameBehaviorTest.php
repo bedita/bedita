@@ -227,6 +227,50 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
+     * Data provider for `testRegenerate` test case.
+     *
+     * @return array
+     */
+    public function regenerateUniqueNameProvider()
+    {
+        return [
+            'providedUname' => [
+                'provided-uname',
+                'provided-title',
+            ],
+            'noUname' => [
+                null,
+                'my-title'
+            ],
+        ];
+    }
+
+    /**
+     * testRegenerate method
+     *
+     * @param string $uname Uname.
+     * @param string $title Title.
+     * @return void
+     *
+     * @dataProvider regenerateUniqueNameProvider
+     * @covers ::generateUniqueName()
+     */
+    public function testRegenerateUniqueName($uname, $title)
+    {
+        $Folders = TableRegistry::getTableLocator()->get('Folders');
+        $folder = $Folders->newEntity();
+        $Folders->patchEntity($folder, compact('uname', 'title'));
+        $behavior = $Folders->behaviors()->get('UniqueName');
+        $generated = $behavior->generateUniqueName($folder, true);
+
+        if ($uname !== null) {
+            $this->assertTextContains($uname, $generated);
+        } else {
+            $this->assertTextContains($title, $generated);
+        }
+    }
+
+    /**
      * Data provider for `testNameExists` test case.
      *
      * @return array
