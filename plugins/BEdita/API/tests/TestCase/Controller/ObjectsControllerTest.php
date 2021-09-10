@@ -1209,41 +1209,6 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test edit method with invalid data.
-     *
-     * @return void
-     *
-     * @covers ::resource()
-     * @covers ::initialize()
-     */
-    public function testEditInvalid()
-    {
-        $data = [
-            'id' => '2',
-            'type' => 'documents',
-            'attributes' => [
-                'uname' => 'first-user',
-            ],
-        ];
-
-        $authHeader = $this->getUserAuthHeader();
-
-        $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/documents/2', json_encode(compact('data')));
-
-        $this->assertResponseCode(400);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('title-one', TableRegistry::getTableLocator()->get('Documents')->get(2)->get('uname'));
-
-        $this->configRequestHeaders('PATCH', $authHeader);
-        $data['id'] = 33;
-        $this->patch('/documents/33', json_encode(compact('data')));
-
-        $this->assertResponseCode(404);
-        $this->assertContentType('application/vnd.api+json');
-    }
-
-    /**
      * Test delete method.
      *
      * @return void
