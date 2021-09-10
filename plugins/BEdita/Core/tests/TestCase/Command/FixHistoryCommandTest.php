@@ -86,6 +86,7 @@ class FixHistoryCommandTest extends TestCase
      * @return void
      *
      * @covers ::execute()
+     * @covers ::joinConditions()
      * @covers ::missingHistoryQuery()
      */
     public function testOptionsExecute(): void
