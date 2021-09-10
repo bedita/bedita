@@ -15,6 +15,9 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
@@ -48,6 +51,7 @@ class Stream extends Entity implements JsonApiSerializable
 {
     use JsonApiTrait;
     use LogTrait;
+    use EventDispatcherTrait;
 
     /**
      * {@inheritDoc}
@@ -194,6 +198,8 @@ class Stream extends Entity implements JsonApiSerializable
         // Stream.
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
+
+        $this->dispatchEvent('Stream.create', $stream);
 
         return $stream;
     }
