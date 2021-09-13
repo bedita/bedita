@@ -19,6 +19,7 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Generator;
@@ -53,16 +54,38 @@ class FixHistoryCommand extends Command
     public $appId;
 
     /**
+     * Increment to use in object ID scan
+     *
+     * @var int
+     */
+    public const INCREMENT = 500;
+
+    /**
+     * Min object ID to scan
+     *
+     * @var int
+     */
+    protected $minId;
+
+    /**
+     * Max object ID to scan
+     *
+     * @var int
+     */
+    protected $maxId;
+
+    /**
      * {@inheritDoc}
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        return $parser->addOption('id', [
-                'help' => 'Object ID to check',
+        return $parser->addOption('from', [
+                'help' => 'Min ID to check',
+                'short' => 'f',
                 'required' => false,
             ])
-            ->addOption('type', [
-                'help' => 'Object type name to check',
+            ->addOption('to', [
+                'help' => 'Max ID to check',
                 'short' => 't',
                 'required' => false,
             ]);
@@ -86,29 +109,61 @@ class FixHistoryCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        // repair missing `create` actions
+        $this->minId = $args->getOption('from');
+        if (empty($this->minId)) {
+            $this->minId = 1;
+        }
+        $this->maxId = $args->getOption('to');
+        if (empty($this->maxId)) {
+            $q = $this->Objects->find();
+            $this->maxId = $q->select(['max_id' => $q->func()->max('id')])->first()->get('max_id');
+        }
+
+        $io->info('Repair `create` history actions');
         $query = $this->missingHistoryQuery(true, $args);
         $count = 0;
-        foreach ($this->objectsGenerator($query) as $object) {
+        foreach ($this->objectsGenerator($query, $io) as $object) {
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryCreate($object);
             $count++;
+            $this->objectDetails($object, 'create', $io);
         }
         $io->success('History creation items fixed: ' . $count);
 
-        // repair missing `update` actions
+        $io->info('Repair `update` history actions');
         $query = $this->missingHistoryQuery(false, $args);
         $count = 0;
-        foreach ($this->objectsGenerator($query) as $object) {
+        foreach ($this->objectsGenerator($query, $io) as $object) {
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryUpdate($object);
             $count++;
+            $this->objectDetails($object, 'update', $io);
         }
         $io->success('History update items fixed: ' . $count);
 
         $io->success('Done');
 
         return null;
+    }
+
+    /**
+     * Output object details to console
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $object Object entity
+     * @param string $action History action
+     * @param \Cake\Console\ConsoleIo $io Console I/O
+     * @return void
+     */
+    protected function objectDetails(ObjectEntity $object, string $action, ConsoleIo $io): void
+    {
+        $msg = sprintf(
+            'Fixed "%s" on [%d] "%s" [%s]',
+            $action,
+            $object->id,
+            $object->title,
+            $object->type
+        );
+        $io->info($msg);
     }
 
     /**
@@ -188,22 +243,16 @@ class FixHistoryCommand extends Command
      * @param Arguments $args Command arguments
      * @return Query
      */
-    protected function missingHistoryQuery(bool $created, Arguments $args): Query
+    protected function missingHistoryQuery(bool $created): Query
     {
         $query = $this->Objects->find();
-        if ($args->getOption('type')) {
-            $query = $query->find('type', [$args->getOption('type')]);
-        }
-
         $conditions = [$this->History->aliasField('resource_id') . ' IS NULL'];
-        if ($args->getOption('id')) {
-            $conditions[] = [$this->Objects->aliasField('id') => $args->getOption('id')];
-        }
 
         return $query->leftJoin(
-            [$this->History->getAlias() => $this->History->getTable()],
-            $this->joinConditions($query, $created)
-        )->where($conditions);
+                [$this->History->getAlias() => $this->History->getTable()],
+                $this->joinConditions($query, $created)
+            )
+            ->where($conditions);
     }
 
     /**
@@ -245,17 +294,23 @@ class FixHistoryCommand extends Command
      * Objects generator.
      *
      * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\Console\ConsoleIo $io Console I/O
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query): Generator
+    protected function objectsGenerator(Query $query, ConsoleIo $io): Generator
     {
-        $pageSize = 1000;
-        $pages = ceil($query->count() / $pageSize);
+        $from = $this->minId;
+        $to = $from + min(self::INCREMENT - 1, $this->maxId - $from);
 
-        for ($page = 1; $page <= $pages; $page++) {
+        while ($from <= $this->maxId) {
+            $io->info(sprintf('Searching IDs from %d to %d', $from, $to));
             yield from $query
-                ->page($page, $pageSize)
-                ->toArray();
+                ->where(function (QueryExpression $exp) use ($from, $to) {
+                    return $exp->between($this->Objects->aliasField('id'), $from, $to);
+                })->toArray();
+
+            $from = $to + 1;
+            $to = $from + min(self::INCREMENT - 1, $this->maxId - $from);
         }
     }
 }
