@@ -77,6 +77,8 @@ class FoldersTable extends ObjectsTable
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules = parent::buildRules($rules);
+
         $rules->add(
             [$this, 'hasAtMostOneParent'],
             'hasAtMostOneParent',
@@ -160,6 +162,8 @@ class FoldersTable extends ObjectsTable
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
+        parent::beforeSave($event, $entity);
+
         $entity->setDirty('parents', false);
     }
 

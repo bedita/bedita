@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -37,11 +38,16 @@ class LocationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Users',
     ];
 
     /**
@@ -54,6 +60,7 @@ class LocationsTableTest extends TestCase
         parent::setUp();
 
         $this->Locations = TableRegistry::getTableLocator()->get('Locations');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -64,17 +71,65 @@ class LocationsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Locations);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
 
     /**
-     * Test initialization method.
+     * Data provider for `testSave` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function saveProvider()
     {
-        static::markTestIncomplete('Not yet implemented');
+        return [
+            'valid' => [
+                false,
+                [
+                    'coords' => 'POINT(11.3441359 44.4959174)',
+                    'address' => 'Piazza del Nettuno',
+                    'locality' => 'Bologna',
+                    'postal_code' => '40126',
+                    'country_name' => 'Italy',
+                    'region' => 'Emilia-romagna',
+                ],
+            ],
+            'notUniqueUname' => [
+                true,
+                [
+                    'coords' => 'POINT(11.3464055 44.4944183)',
+                    'address' => 'Piazza di Porta Ravegnana',
+                    'locality' => 'Bologna',
+                    'postal_code' => '40126',
+                    'country_name' => 'Italy',
+                    'region' => 'Emilia-romagna',
+                    'uname' => 'the-two-towers',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test entity save.
+     *
+     * @param bool $changed
+     * @param array $data
+     * @return void
+     * @dataProvider saveProvider
+     * @coversNothing
+     */
+    public function testSave(bool $changed, array $data)
+    {
+        $entity = $this->Locations->newEntity($data);
+        $success = (bool)$this->Locations->save($entity);
+
+        $this->assertTrue($success);
+
+        if ($changed) {
+            $this->assertNotEquals($data['uname'], $entity->uname);
+        } elseif (isset($data['uname'])) {
+            $this->assertEquals($data['uname'], $entity->uname);
+        }
     }
 }
