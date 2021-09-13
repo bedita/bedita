@@ -109,20 +109,20 @@ class FixHistoryCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $this->minId = $args->getOption('from');
-        if (empty($this->minId)) {
+        $this->minId = intval($args->getOption('from'));
+        if ($this->minId === 0) {
             $this->minId = 1;
         }
-        $this->maxId = $args->getOption('to');
-        if (empty($this->maxId)) {
+        $this->maxId = intval($args->getOption('to'));
+        if ($this->maxId === 0) {
             $q = $this->Objects->find();
-            $this->maxId = $q->select(['max_id' => $q->func()->max('id')])->first()->get('max_id');
+            $max = $q->select(['max_id' => $q->func()->max('id')])->first()->get('max_id');
+            $this->maxId = intval($max);
         }
 
         $io->info('Repair `create` history actions');
-        $query = $this->missingHistoryQuery(true, $args);
         $count = 0;
-        foreach ($this->objectsGenerator($query, $io) as $object) {
+        foreach ($this->objectsGenerator(true, $io) as $object) {
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryCreate($object);
             $count++;
@@ -131,9 +131,8 @@ class FixHistoryCommand extends Command
         $io->success('History creation items fixed: ' . $count);
 
         $io->info('Repair `update` history actions');
-        $query = $this->missingHistoryQuery(false, $args);
         $count = 0;
-        foreach ($this->objectsGenerator($query, $io) as $object) {
+        foreach ($this->objectsGenerator(false, $io) as $object) {
             /** @var \BEdita\Core\Model\Entity\ObjectEntity $object */
             $this->fixHistoryUpdate($object);
             $count++;
@@ -240,19 +239,23 @@ class FixHistoryCommand extends Command
      * Create query for missing history data.
      *
      * @param bool $created Created flag, if true look for `create` action in history
-     * @param Arguments $args Command arguments
+     * @param int $from From ID
+     * @param int $to To ID
      * @return Query
      */
-    protected function missingHistoryQuery(bool $created): Query
+    protected function missingHistoryQuery(bool $created, int $from, int $to): Query
     {
         $query = $this->Objects->find();
-        $conditions = [$this->History->aliasField('resource_id') . ' IS NULL'];
 
         return $query->leftJoin(
-                [$this->History->getAlias() => $this->History->getTable()],
-                $this->joinConditions($query, $created)
-            )
-            ->where($conditions);
+            [$this->History->getAlias() => $this->History->getTable()],
+            $this->joinConditions($query, $created)
+        )->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
+            return $exp->and_([
+                $q->newExpr()->between($this->Objects->aliasField('id'), $from, $to),
+                $q->newExpr()->isNull($this->History->aliasField('resource_id')),
+            ]);
+        });
     }
 
     /**
@@ -293,21 +296,19 @@ class FixHistoryCommand extends Command
     /**
      * Objects generator.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param bool $created Created flag, if true look for `create` action in history
      * @param \Cake\Console\ConsoleIo $io Console I/O
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query, ConsoleIo $io): Generator
+    protected function objectsGenerator(bool $created, ConsoleIo $io): Generator
     {
         $from = $this->minId;
         $to = $from + min(self::INCREMENT - 1, $this->maxId - $from);
 
         while ($from <= $this->maxId) {
             $io->info(sprintf('Searching IDs from %d to %d', $from, $to));
-            yield from $query
-                ->where(function (QueryExpression $exp) use ($from, $to) {
-                    return $exp->between($this->Objects->aliasField('id'), $from, $to);
-                })->toArray();
+
+            yield from $this->missingHistoryQuery($created, $from, $to)->toArray();
 
             $from = $to + 1;
             $to = $from + min(self::INCREMENT - 1, $this->maxId - $from);
