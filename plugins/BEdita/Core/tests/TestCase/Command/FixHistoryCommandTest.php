@@ -55,8 +55,8 @@ class FixHistoryCommandTest extends TestCase
     public function testBuildOptionParser()
     {
         $this->exec('fix_history --help');
-        $this->assertOutputContains('Object ID to check');
-        $this->assertOutputContains('Object type name to check');
+        $this->assertOutputContains('Min ID to check');
+        $this->assertOutputContains('Max ID to check');
     }
 
     /**
@@ -86,14 +86,15 @@ class FixHistoryCommandTest extends TestCase
      * @return void
      *
      * @covers ::execute()
+     * @covers ::objectDetails()
      * @covers ::joinConditions()
      * @covers ::missingHistoryQuery()
      */
     public function testOptionsExecute(): void
     {
-        $this->exec('fix_history --type users --id 5');
+        $this->exec('fix_history --from 1 --to 5');
         $this->assertExitSuccess();
-        $this->assertOutputContains('History creation items fixed: 1');
-        $this->assertOutputContains('History update items fixed: 0');
+        $this->assertOutputContains('History creation items fixed: 4');
+        $this->assertOutputContains('History update items fixed: 1');
     }
 }
