@@ -50,7 +50,7 @@ class Stream extends Entity implements JsonApiSerializable
     use EventDispatcherTrait;
     use JsonApiTrait;
     use LogTrait;
-   
+
     /**
      * {@inheritDoc}
      */
