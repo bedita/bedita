@@ -198,7 +198,7 @@ class Stream extends Entity implements JsonApiSerializable
         $stream = new LaminasStream($resource, 'r');
 
         $this->dispatchEvent('Stream.create', [$stream]);
-        $this->_getMetadata($stream);
+
         return $stream;
     }
 
@@ -251,13 +251,5 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         return $this->_properties['url'] = FilesystemRegistry::getPublicUrl($this->uri);
-    }
-
-    protected function _getMetadata($stream)
-    {
-        $ext_allowed = ['image/png', 'image/jpeg', 'image/jpg'];
-        if(!empty($stream.mime_type) && in_array($stream.mime_type, $ext_allowed)) {
-            
-        }
     }
 }
