@@ -190,6 +190,7 @@ class JsonSchemaTest extends TestCase
                         'modified',
                         'version',
                         'width',
+                        'file_metadata'
                     ],
                     'required' => [
                         'file_name',
