@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
@@ -198,6 +199,7 @@ class Stream extends Entity implements JsonApiSerializable
         $stream = new LaminasStream($resource, 'r');
 
         $this->dispatchEvent('Stream.create', [$stream]);
+        $this->_getMetadata($source);
 
         return $stream;
     }
@@ -251,5 +253,17 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         return $this->_properties['url'] = FilesystemRegistry::getPublicUrl($this->uri);
+    }
+
+    protected function _getMetadata($source)
+    {
+        $ext_allowed = Configure::read('Streams.ext_allowed');
+        if (in_array($this->mime_type, $ext_allowed)) {
+            try {
+                $this->file_metadata = json_encode(exif_read_data($source));
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
     }
 }
