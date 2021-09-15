@@ -78,6 +78,11 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * Mime types allowed to read exif data
+     */
+    const EXIF_MIME_TYPES = ['image/jpg', 'image/jpeg'];
+
+    /**
      * Get filesystem path (including mount point) under which file should be stored.
      *
      * Result of this method will be generally used as the entity `uri` on save.
@@ -198,8 +203,8 @@ class Stream extends Entity implements JsonApiSerializable
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
+        $this->readFileMetadata($source);
         $this->dispatchEvent('Stream.create', [$stream]);
-        $this->_getMetadata($source);
 
         return $stream;
     }
@@ -255,15 +260,24 @@ class Stream extends Entity implements JsonApiSerializable
         return $this->_properties['url'] = FilesystemRegistry::getPublicUrl($this->uri);
     }
 
-    protected function _getMetadata($source)
+    /**
+     * Read exif data from stream
+     *
+     * @param resource $source Original resource.
+     * @return null
+     */
+    protected function readFileMetadata($source)
     {
-        $ext_allowed = Configure::read('Streams.ext_allowed');
-        if (in_array($this->mime_type, $ext_allowed)) {
-            try {
-                $this->file_metadata = json_encode(exif_read_data($source));
-            } catch (\Exception $e) {
-                return null;
-            }
+        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES)) {
+            return null;
+        }
+
+        try {
+            $this->file_metadata = exif_read_data($source);
+        } catch (\Exception $e) {
+            $this->log(sprintf('Cannot read exif data of file "%s" with uuid = ', $this->uuid, $this->file_name), 'warning');
+
+            return null;
         }
     }
 }

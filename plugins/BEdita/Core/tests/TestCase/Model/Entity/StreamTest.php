@@ -327,4 +327,12 @@ class StreamTest extends TestCase
         static::assertSame($expected, $first);
         static::assertSame($expected, $second);
     }
+
+    // /**
+    //  * Test read exif data
+    //  * @covers :: readFileMetadata()
+    //  */
+    // public function testReadFileMetadata(){
+
+    // }
 }
