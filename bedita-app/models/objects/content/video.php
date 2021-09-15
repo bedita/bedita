@@ -32,6 +32,19 @@ class Video extends BeditaStreamModel
 
     public $objectTypesGroups = array('multimedia', 'leafs', 'related');
 
+    public $searchFields = array(
+        'title' => 10,
+        'nickname' => 8,
+        'original_name' => 8,
+        'description' => 6,
+        'name' => 6,
+        'provider' => 6,
+        'abstract' => 4,
+        'body' => 4,
+        'subject' => 4,
+        'note' => 2
+    );
+
     /**
      * Transform captions
      *
