@@ -333,8 +333,8 @@ class StreamTest extends TestCase
     /**
      * Test read exif data
      *
-     * @covers :: readFileMetadata()
-     * @covers :: createStreams()
+     * @covers ::readFileMetadata()
+     * @covers ::createStreams()
      */
     public function testReadFileMetadata()
     {
@@ -345,28 +345,36 @@ class StreamTest extends TestCase
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $image_test;
 
-        $expected = [
-            "FileName" => "a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg",
-            "FileSize" => 5403,
-            "FileType" => 2,
-            "MimeType" => "image/jpeg",
-            "SectionsFound" => "",
-            "COMPUTED" => [
-                "html" => "width=\"275\" height=\"183\"",
-                "Width" => 275,
-                "Height" => 183,
-                "IsColor" => 1
-            ],
-            "FileSize" => 5403,
-            "FileType" => 2,
-            "MimeType" => "image/jpeg",
-            "SectionsFound" => ""
-        ];
-        //remove timestamp of file only for test
-        unset($stream->file_metadata['FileDateTime']);
+        if (function_exists('getimagesizefromstring')) {
+            static::assertEquals(275, $stream->width);
+            static::assertEquals(183, $stream->height);
+        } else {
+            static::assertNull($stream->width);
+            static::assertNull($stream->height);
+        }
 
-        static::assertEquals($expected, $stream->file_metadata);
-        static::assertEquals(275, $stream->width);
-        static::assertEquals(183, $stream->height);
+        if (function_exists('exif_read_data')) {
+            $expected = [
+                "FileName" => "a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg",
+                "FileSize" => 5403,
+                "FileType" => 2,
+                "MimeType" => "image/jpeg",
+                "SectionsFound" => "",
+                "COMPUTED" => [
+                    "html" => "width=\"275\" height=\"183\"",
+                    "Width" => 275,
+                    "Height" => 183,
+                    "IsColor" => 1
+                ],
+                "FileSize" => 5403,
+                "FileType" => 2,
+                "MimeType" => "image/jpeg",
+                "SectionsFound" => ""
+            ];
+            //remove timestamp of file only for test
+            unset($stream->file_metadata['FileDateTime']);
+
+            static::assertEquals($expected, $stream->file_metadata);
+        }
     }
 }

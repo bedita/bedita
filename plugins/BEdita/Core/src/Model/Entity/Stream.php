@@ -264,10 +264,10 @@ class Stream extends Entity implements JsonApiSerializable
     /**
      * Read exif data from stream
      *
-     * @param resource $source Original resource.
+     * @param resource $resource Resource streammed
      * @return null
      */
-    protected function readFileMetadata($source, $resource)
+    protected function readFileMetadata($resource): void
     {
         if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
             rewind($resource);
@@ -280,15 +280,16 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES) && function_exists('exif_read_data')) {
-            return null;
+            return;
         }
 
         try {
-            $this->file_metadata = exif_read_data($source);
+            rewind($resource);
+            $this->file_metadata = exif_read_data($resource);
         } catch (\Exception $e) {
             $this->log(sprintf('Cannot read exif data of file "%s" with uuid = %s', $this->uuid, $this->file_name), 'warning');
 
-            return null;
+            return;
         }
     }
 }
