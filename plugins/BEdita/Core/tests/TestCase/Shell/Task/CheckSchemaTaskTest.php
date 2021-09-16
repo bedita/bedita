@@ -182,11 +182,15 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        if ($connection->getDriver() instanceof Mysql) {
+            pr($this->_err->messages());
+            $this->assertErrorEmpty();
+        }
+
         if (!$this->checkAvailable($connection)) {
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
-        $this->assertErrorEmpty();
+        $this->assertExitCode(Shell::CODE_SUCCESS);
     }
 
     /**
