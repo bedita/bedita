@@ -180,10 +180,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
         /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
-        $this->exec(CheckSchemaTask::class);
+        $this->exec(CheckSchemaTask::class . ' --verbose');
 
         if ($connection->getDriver() instanceof Mysql) {
             pr($this->_err->messages());
+            pr($this->_out->messages());
             $this->assertErrorEmpty();
         }
 
