@@ -15,6 +15,8 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use Cake\Core\Configure;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
@@ -328,11 +330,41 @@ class StreamTest extends TestCase
         static::assertSame($expected, $second);
     }
 
-    // /**
-    //  * Test read exif data
-    //  * @covers :: readFileMetadata()
-    //  */
-    // public function testReadFileMetadata(){
+    /**
+     * Test read exif data
+     *
+     * @covers :: readFileMetadata()
+     * @covers :: createStreams()
+     */
+    public function testReadFileMetadata()
+    {
+        $path = Configure::read('Filesystem.default.path');
+        $image_test = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
 
-    // }
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/jpeg';
+        $stream->contents = $image_test;
+
+        $expected = [
+            "FileName" => "a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg",
+            "FileSize" => 5403,
+            "FileType" => 2,
+            "MimeType" => "image/jpeg",
+            "SectionsFound" => "",
+            "COMPUTED" => [
+                "html" => "width=\"275\" height=\"183\"",
+                "Width" => 275,
+                "Height" => 183,
+                "IsColor" => 1
+            ],
+            "FileSize" => 5403,
+            "FileType" => 2,
+            "MimeType" => "image/jpeg",
+            "SectionsFound" => ""
+        ];
+        //remove timestamp of file only for test
+        unset($stream->file_metadata['FileDateTime']);
+
+        static::assertEquals($expected, $stream->file_metadata);
+    }
 }

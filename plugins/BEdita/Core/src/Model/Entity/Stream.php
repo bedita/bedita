@@ -19,6 +19,7 @@ use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
@@ -274,8 +275,10 @@ class Stream extends Entity implements JsonApiSerializable
 
         try {
             $this->file_metadata = exif_read_data($source);
+            $this->width = Hash::get($this->file_metadata, 'COMPUTED.Width');
+            $this->height = Hash::get($this->file_metadata, 'COMPUTED.Height');
         } catch (\Exception $e) {
-            $this->log(sprintf('Cannot read exif data of file "%s" with uuid = ', $this->uuid, $this->file_name), 'warning');
+            $this->log(sprintf('Cannot read exif data of file "%s" with uuid = %s', $this->uuid, $this->file_name), 'warning');
 
             return null;
         }
