@@ -204,7 +204,7 @@ class Stream extends Entity implements JsonApiSerializable
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
-        $this->readFileMetadata($source);
+        $this->readFileMetadata($source, $resource);
         $this->dispatchEvent('Stream.create', [$stream]);
 
         return $stream;
@@ -267,16 +267,24 @@ class Stream extends Entity implements JsonApiSerializable
      * @param resource $source Original resource.
      * @return null
      */
-    protected function readFileMetadata($source)
+    protected function readFileMetadata($source, $resource)
     {
-        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES)) {
+        if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
+            rewind($resource);
+            $size = getimagesizefromstring(stream_get_contents($resource));
+
+            if ($size) {
+                $this->width = $size[0];
+                $this->height = $size[1];
+            }
+        }
+
+        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES) && function_exists('exif_read_data')) {
             return null;
         }
 
         try {
             $this->file_metadata = exif_read_data($source);
-            $this->width = Hash::get($this->file_metadata, 'COMPUTED.Width');
-            $this->height = Hash::get($this->file_metadata, 'COMPUTED.Height');
         } catch (\Exception $e) {
             $this->log(sprintf('Cannot read exif data of file "%s" with uuid = %s', $this->uuid, $this->file_name), 'warning');
 

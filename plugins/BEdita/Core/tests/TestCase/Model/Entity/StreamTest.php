@@ -366,5 +366,7 @@ class StreamTest extends TestCase
         unset($stream->file_metadata['FileDateTime']);
 
         static::assertEquals($expected, $stream->file_metadata);
+        static::assertEquals(275, $stream->width);
+        static::assertEquals(183, $stream->height);
     }
 }
