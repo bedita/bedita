@@ -204,7 +204,7 @@ class Stream extends Entity implements JsonApiSerializable
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
-        $this->readFileMetadata($source, $resource);
+        $this->readFileMetadata($resource);
         $this->dispatchEvent('Stream.create', [$stream]);
 
         return $stream;
@@ -265,7 +265,7 @@ class Stream extends Entity implements JsonApiSerializable
      * Read exif data from stream
      *
      * @param resource $resource Resource streammed
-     * @return null
+     * @return void
      */
     protected function readFileMetadata($resource): void
     {
@@ -279,7 +279,7 @@ class Stream extends Entity implements JsonApiSerializable
             }
         }
 
-        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES) && function_exists('exif_read_data')) {
+        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
             return;
         }
 

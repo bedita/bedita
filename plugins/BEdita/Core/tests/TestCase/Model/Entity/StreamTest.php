@@ -334,7 +334,7 @@ class StreamTest extends TestCase
      * Test read exif data
      *
      * @covers ::readFileMetadata()
-     * @covers ::createStreams()
+     * @covers ::createStream()
      */
     public function testReadFileMetadata()
     {
@@ -349,8 +349,8 @@ class StreamTest extends TestCase
             static::assertEquals(275, $stream->width);
             static::assertEquals(183, $stream->height);
         } else {
-            static::assertNull($stream->width);
-            static::assertNull($stream->height);
+            // `exif_read_data` not available
+            static::assertEmpty($stream->file_metadata);
         }
 
         if (function_exists('exif_read_data')) {
