@@ -180,18 +180,13 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
         /* @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
-        $this->exec(CheckSchemaTask::class . ' --verbose');
+        $this->exec(CheckSchemaTask::class);
 
-        if ($connection->getDriver() instanceof Mysql) {
-            pr($this->_err->messages());
-            pr($this->_out->messages());
-            $this->assertErrorEmpty();
-        }
-
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         if (!$this->checkAvailable($connection)) {
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorEmpty();
     }
 
     /**
