@@ -349,13 +349,12 @@ class StreamTest extends TestCase
             static::assertEquals(275, $stream->width);
             static::assertEquals(183, $stream->height);
         } else {
-            // `exif_read_data` not available
-            static::assertEmpty($stream->file_metadata);
+            static::assertNull($stream->width);
+            static::assertNull($stream->height);
         }
 
         if (function_exists('exif_read_data')) {
             $expected = [
-                "FileName" => "a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg",
                 "FileSize" => 5403,
                 "FileType" => 2,
                 "MimeType" => "image/jpeg",
@@ -375,6 +374,9 @@ class StreamTest extends TestCase
             unset($stream->file_metadata['FileDateTime']);
 
             static::assertEquals($expected, $stream->file_metadata);
+        } else {
+            // `exif_read_data` not available
+            static::assertEmpty($stream->file_metadata);
         }
     }
 }
