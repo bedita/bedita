@@ -331,6 +331,33 @@ class StreamTest extends TestCase
     }
 
     /**
+     * Read data from image if is possible
+     * @param Stream $stream stream entity
+     */
+
+    public function readDataFromImage($stream): void
+    {
+        if (!preg_match('/image\//', $stream->mime_type)) {
+            static::assertNull($stream->width);
+            static::assertNull($stream->height);
+        } else {
+            if (function_exists('getimagesizefromstring')) {
+                static::assertNotNull($stream->width);
+                static::assertNotNull($stream->height);
+            } else {
+                static::assertNull($stream->width);
+                static::assertNull($stream->height);
+            }
+
+            if (function_exists('exif_read_data') && in_array($stream->mime_type, $stream::EXIF_MIME_TYPES)) {
+                static::assertNotNull($stream->file_metadata);
+            } else {
+                static::assertEmpty($stream->file_metadata);
+            }
+        }
+    }
+
+    /**
      * Test read exif data
      *
      * @covers ::readFileMetadata()
@@ -340,43 +367,34 @@ class StreamTest extends TestCase
     {
         $path = Configure::read('Filesystem.default.path');
         $image_test = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
+        $gif_test = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
 
         $stream = $this->Streams->newEntity();
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $image_test;
 
-        if (function_exists('getimagesizefromstring')) {
-            static::assertEquals(275, $stream->width);
-            static::assertEquals(183, $stream->height);
-        } else {
-            static::assertNull($stream->width);
-            static::assertNull($stream->height);
-        }
+        $this->readDataFromImage($stream);
+        // mime type not allowed
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/gif';
+        $stream->contents = $gif_test;
+        $this->readDataFromImage($stream);
+    }
 
-        if (function_exists('exif_read_data')) {
-            $expected = [
-                "FileSize" => 5403,
-                "FileType" => 2,
-                "MimeType" => "image/jpeg",
-                "SectionsFound" => "",
-                "COMPUTED" => [
-                    "html" => "width=\"275\" height=\"183\"",
-                    "Width" => 275,
-                    "Height" => 183,
-                    "IsColor" => 1
-                ],
-                "FileSize" => 5403,
-                "FileType" => 2,
-                "MimeType" => "image/jpeg",
-                "SectionsFound" => ""
-            ];
-            //remove timestamp of file only for test
-            unset($stream->file_metadata['FileDateTime']);
+    /**
+     * Test failed read exif data
+     *
+     * @covers ::readFileMetadata()
+     * @covers ::createStream()
+     */
+    public function testFailedReadFileMetadata()
+    {
+        $path = Configure::read('Filesystem.default.path');
+        $gif_test = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/jpeg';
+        $stream->contents = $gif_test;
 
-            static::assertEquals($expected, $stream->file_metadata);
-        } else {
-            // `exif_read_data` not available
-            static::assertEmpty($stream->file_metadata);
-        }
+        static::assertEmpty($stream->file_metadata);
     }
 }

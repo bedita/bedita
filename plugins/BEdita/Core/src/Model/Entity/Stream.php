@@ -286,8 +286,8 @@ class Stream extends Entity implements JsonApiSerializable
         try {
             rewind($resource);
             $this->file_metadata = exif_read_data($resource);
-        } catch (\Exception $e) {
-            $this->log(sprintf('Cannot read exif data of file "%s" with uuid = %s', $this->uuid, $this->file_name), 'warning');
+        } catch (\Throwable $e) {
+            $this->log(sprintf('%s file name "%s"', $e->getMessage(), $this->file_name), 'error');
 
             return;
         }
