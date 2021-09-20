@@ -30,11 +30,12 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Locations',
-        'plugin.BEdita/Core.ObjectRelations',
-        'plugin.BEdita/Core.Streams',
         'plugin.BEdita/Core.DateRanges',
+        'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
@@ -1219,25 +1220,25 @@ class ObjectsControllerTest extends IntegrationTestCase
     public function testEditInvalid()
     {
         $data = [
-            'id' => '2',
-            'type' => 'documents',
+            'id' => '5',
+            'type' => 'users',
             'attributes' => [
-                'uname' => 'first-user',
+                'email' => 'first.user@example.com',
             ],
         ];
 
         $authHeader = $this->getUserAuthHeader();
 
         $this->configRequestHeaders('PATCH', $authHeader);
-        $this->patch('/documents/2', json_encode(compact('data')));
+        $this->patch('/users/5', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('title-one', TableRegistry::getTableLocator()->get('Documents')->get(2)->get('uname'));
+        $this->assertEquals('second.user@example.com', TableRegistry::getTableLocator()->get('Users')->get(5)->get('email'));
 
         $this->configRequestHeaders('PATCH', $authHeader);
         $data['id'] = 33;
-        $this->patch('/documents/33', json_encode(compact('data')));
+        $this->patch('/users/33', json_encode(compact('data')));
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

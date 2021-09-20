@@ -95,15 +95,6 @@ class ProfilesValidatorTest extends TestCase
                     'website' => 'not.an.url@example.org',
                 ],
             ],
-            'not unique' => [
-                [
-                    'uname.unique',
-                ],
-                [
-                    'uname' => 'title-one',
-                    'email' => 'first.user@example.com',
-                ],
-            ],
         ];
     }
 

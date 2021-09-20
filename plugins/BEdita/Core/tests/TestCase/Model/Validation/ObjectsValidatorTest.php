@@ -84,14 +84,6 @@ class ObjectsValidatorTest extends TestCase
                     'publish_end' => 'somewhen',
                 ],
             ],
-            'not unique' => [
-                [
-                    'uname.unique',
-                ],
-                [
-                    'uname' => 'title-one',
-                ],
-            ],
         ];
     }
 
