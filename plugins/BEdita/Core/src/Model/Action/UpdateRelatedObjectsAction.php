@@ -63,7 +63,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
         if (is_array($relatedEntities) && count($relatedEntities) === 1) {
             $relatedEntities = reset($relatedEntities);
         }
-        if (!empty($relatedEntities)) {
+        if (!empty($relatedEntities) && $relatedEntities instanceof \Cake\Datasource\EntityInterface) {
             /** @var EntityInterface $relatedEntities */
             $joinData = (array)$relatedEntities->get('_joinData');
             // set join data properties in Tree entity, on empty array no properties are set
