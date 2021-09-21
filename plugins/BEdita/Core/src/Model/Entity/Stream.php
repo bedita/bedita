@@ -79,9 +79,12 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * Mime types allowed to read exif data
+     * Mime types tipically containing EXIF headers.
+     * Used to reduce possible errors in `exif_read_data()`
+     *
+     * @var array
      */
-    const EXIF_MIME_TYPES = ['image/jpg', 'image/jpeg'];
+    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/tiff'];
 
     /**
      * Get filesystem path (including mount point) under which file should be stored.
@@ -200,11 +203,13 @@ class Stream extends Entity implements JsonApiSerializable
         $this->hash_sha1 = hash_final($hashContext);
         $this->setDirty('hash_sha1', true);
 
+        // Read additional metadata (only images for now)
+        $this->readFileMetadata($resource);
+
         // Stream.
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
-        $this->readFileMetadata($resource);
         $this->dispatchEvent('Stream.create', [$stream]);
 
         return $stream;
@@ -262,7 +267,7 @@ class Stream extends Entity implements JsonApiSerializable
     }
 
     /**
-     * Read exif data from stream
+     * Read additional metadata from stream (only images for now)
      *
      * @param resource $resource Resource streammed
      * @return void
@@ -279,17 +284,14 @@ class Stream extends Entity implements JsonApiSerializable
             }
         }
 
-        if (!in_array($this->mime_type, $this::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
+        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
             return;
         }
 
-        try {
-            rewind($resource);
-            $this->file_metadata = exif_read_data($resource);
-        } catch (\Throwable $e) {
-            $this->log(sprintf('%s file name "%s"', $e->getMessage(), $this->file_name), 'error');
-
-            return;
+        rewind($resource);
+        $exif = exif_read_data($resource);
+        if ($exif) {
+            $this->file_metadata = $exif;
         }
     }
 }
