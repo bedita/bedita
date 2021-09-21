@@ -278,7 +278,7 @@ class Stream extends Entity implements JsonApiSerializable
             rewind($resource);
             $size = getimagesizefromstring(stream_get_contents($resource));
 
-            if ($size) {
+            if (!empty($size)) {
                 $this->width = $size[0];
                 $this->height = $size[1];
             }
@@ -290,7 +290,7 @@ class Stream extends Entity implements JsonApiSerializable
 
         rewind($resource);
         $exif = exif_read_data($resource);
-        if ($exif) {
+        if (!empty($exif)) {
             $this->file_metadata = $exif;
         }
     }
