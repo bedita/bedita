@@ -112,7 +112,7 @@ class AddRelatedObjectsActionTest extends TestCase
                 ],
             ],
             'update, more than one related entities' => [
-                new BadRequestException('Parents association for folders allows at most one related entity'),
+                new BadRequestException(__d('bedita', 'Parents association for folders allows at most one related entity')),
                 'Folders',
                 'parents',
                 4,

@@ -58,7 +58,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 
         $relatedEntities = $data['relatedEntities'];
         if (is_array($relatedEntities) && count($relatedEntities) > 1) {
-            throw new BadRequestException('Parents association for folders allows at most one related entity');
+            throw new BadRequestException(__d('bedita', 'Parents association for folders allows at most one related entity'));
         }
 
         $table = $this->Association->junction();
