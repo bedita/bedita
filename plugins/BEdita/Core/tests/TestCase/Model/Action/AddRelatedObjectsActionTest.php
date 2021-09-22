@@ -18,6 +18,7 @@ use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
@@ -111,9 +112,9 @@ class AddRelatedObjectsActionTest extends TestCase
                 ],
             ],
             'update, more than one related entities' => [
-                [2, 3],
-                'Profiles',
-                'inverse_test',
+                new BadRequestException('Parents association for folders allows at most one related entity'),
+                'Folders',
+                'parents',
                 4,
                 [
                     2 => [

@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\Folder;
 use BEdita\Core\ORM\Association\RelatedTo;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Utility\Hash;
 
 /**
@@ -55,15 +56,19 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
             return $data;
         }
 
+        $relatedEntities = $data['relatedEntities'];
+        if (is_array($relatedEntities) && count($relatedEntities) > 1) {
+            throw new BadRequestException('Parents association for folders allows at most one related entity');
+        }
+
         $table = $this->Association->junction();
         $entity = $table->find()
             ->where([$table->getAssociation('Objects')->getForeignKey() => $data['entity']->id])
             ->firstOrFail();
-        $relatedEntities = $data['relatedEntities'];
         if (is_array($relatedEntities) && count($relatedEntities) === 1) {
             $relatedEntities = reset($relatedEntities);
         }
-        if (!empty($relatedEntities) && $relatedEntities instanceof \Cake\Datasource\EntityInterface) {
+        if (!empty($relatedEntities)) {
             /** @var EntityInterface $relatedEntities */
             $joinData = (array)$relatedEntities->get('_joinData');
             // set join data properties in Tree entity, on empty array no properties are set
