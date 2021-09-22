@@ -42,6 +42,7 @@ class RelatedToTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
     ];
 
     /**
