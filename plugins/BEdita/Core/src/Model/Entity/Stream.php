@@ -209,7 +209,7 @@ class Stream extends Entity implements JsonApiSerializable
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
-        $this->dispatchEvent('Stream.create', [$stream]);
+        $this->dispatchEvent('Stream.create', [$resource]);
 
         return $stream;
     }
