@@ -110,6 +110,26 @@ class AddRelatedObjectsActionTest extends TestCase
                     ],
                 ],
             ],
+            'update, more than one related entities' => [
+                [2, 3],
+                'Profiles',
+                'inverse_test',
+                4,
+                [
+                    2 => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                    3 => [
+                        'priority' => 1,
+                        'inv_priority' => 1,
+                        'params' => [
+                            'key' => 'value',
+                        ],
+                    ],
+                ],
+            ],
             'noJoinData' => [
                 [2],
                 'Documents',
