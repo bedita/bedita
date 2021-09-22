@@ -15,9 +15,11 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
@@ -42,7 +44,6 @@ use Psr\Http\Message\StreamInterface;
  * @property string|null $url
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
- * @property array|null $file_metadata
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity|null $object
  */
@@ -209,7 +210,7 @@ class Stream extends Entity implements JsonApiSerializable
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
 
-        $this->dispatchEvent('Stream.create', [$source]);
+        $this->dispatchEvent('Stream.create', [$stream]);
 
         return $stream;
     }
