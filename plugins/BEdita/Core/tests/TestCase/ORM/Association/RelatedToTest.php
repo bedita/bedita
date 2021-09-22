@@ -39,7 +39,9 @@ class RelatedToTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Properties',
     ];
 
     /**
@@ -333,5 +335,80 @@ class RelatedToTest extends TestCase
             static::assertInstanceOf(ObjectType::class, $actualOT);
             static::assertSame($expectedOT, $actualOT->name);
         }
+    }
+
+    /**
+     * Data provider for `testAttachTo()`
+     *
+     * @return array
+     */
+    public function attachToProvider(): array
+    {
+        return [
+            'no related inheritance table' => [
+                [
+                    4 => 'Gustavo Supporto profile',
+                ],
+                'Profiles',
+                'inverse_test',
+                [],
+            ],
+            'related inheritance table' => [
+                [
+                    8 => 'The Two Towers',
+                ],
+                'Locations',
+                'inverse_another_test',
+                []
+            ],
+            'related inheritance table with conditions' => [
+                [
+                    8 => 'The Two Towers',
+                ],
+                'Locations',
+                'inverse_another_test',
+                [
+                    'username' => 'first user',
+                ]
+            ],
+            'empty result' => [
+                [],
+                'Locations',
+                'inverse_another_test',
+                [
+                    'username' => 'none',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * Test that join with object relation works.
+     *
+     * @param array $expected The expected result
+     * @param string $tableName Table name
+     * @param string $relation Relation name
+     * @param array $joinConditions Conditions to apply
+     * @return void
+     *
+     * @covers ::attachTo()
+     * @dataProvider attachToProvider
+     */
+    public function testAttachTo($expected, $tableName, $relation, $joinConditions): void
+    {
+        $Table = $this->getTableLocator()->get($tableName);
+        $Association = $Table->associations()->getByProperty($relation);
+
+        $result = $Table->find('list', ['valueField' => 'title'])
+            ->innerJoinWith($Association->getName(), function (Query $q) use ($joinConditions) {
+                if (empty($joinConditions)) {
+                    return $q;
+                }
+
+                return $q->where($joinConditions);
+            })
+            ->toArray();
+
+        static::assertEquals($expected, $result);
     }
 }

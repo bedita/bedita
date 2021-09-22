@@ -845,4 +845,44 @@ class FilterQueryStringTest extends IntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals(0, count($result['data']));
     }
+
+    /**
+     * Data provider for `testRelatedFilter`.
+     *
+     * @return array
+     */
+    public function relatedFilterProvider()
+    {
+        return [
+            'test' => [
+                [2, 3],
+                '/documents?filter[test]=4',
+            ],
+            'inverse_another_test' => [
+                [8],
+                '/locations?filter[inverse_another_test]=1',
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[{relation}]={id}`.
+     *
+     * @param array $expected Expected result
+     * @param string $url Request URL
+     * @return void
+     *
+     * @dataProvider relatedFilterProvider
+     * @coversNothing
+     */
+    public function testRelatedFilter(array $expected, string $url): void
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $found = Hash::extract($result, 'data.{n}.id');
+        static::assertEquals($expected, $found);
+    }
 }
