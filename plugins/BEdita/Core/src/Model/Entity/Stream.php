@@ -205,12 +205,11 @@ class Stream extends Entity implements JsonApiSerializable
 
         // Read additional metadata (only images for now)
         $this->readFileMetadata($resource);
+        $this->dispatchEvent('Stream.create', [$source]);
 
         // Stream.
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
-
-        $this->dispatchEvent('Stream.create', [$stream]);
 
         return $stream;
     }
