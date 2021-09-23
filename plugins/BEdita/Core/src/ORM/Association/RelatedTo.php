@@ -14,7 +14,9 @@
 namespace BEdita\Core\ORM\Association;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 
 /**
@@ -200,5 +202,20 @@ class RelatedTo extends BelongsToMany
     public function isInverse(): bool
     {
         return $this->getForeignKey() === $this->getInverseKey();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Use inheritance subquery as table for target that is an inheritance table.
+     */
+    public function attachTo(Query $query, array $options = []): void
+    {
+        $targetTable = $this->getTarget();
+        if ($targetTable instanceof InheritanceTable) {
+            $options['table'] = $targetTable->query()->getInheritanceSubQuery();
+        }
+
+        parent::attachTo($query, $options);
     }
 }
