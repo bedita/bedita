@@ -205,7 +205,8 @@ class Stream extends Entity implements JsonApiSerializable
 
         // Read additional metadata (only images for now)
         $this->readFileMetadata($resource);
-        $this->dispatchEvent('Stream.create', [$source]);
+        rewind($resource);
+        $this->dispatchEvent('Stream.create', [$resource]);
 
         // Stream.
         rewind($resource);
