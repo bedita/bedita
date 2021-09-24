@@ -15,11 +15,9 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
-use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
