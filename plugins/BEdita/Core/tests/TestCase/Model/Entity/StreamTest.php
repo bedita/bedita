@@ -14,9 +14,9 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Entity\Stream as EntityStream;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
@@ -349,7 +349,7 @@ class StreamTest extends TestCase
                 static::assertNull($stream->height);
             }
 
-            if (function_exists('exif_read_data') && in_array($stream->mime_type, $stream::EXIF_MIME_TYPES)) {
+            if (function_exists('exif_read_data') && in_array($stream->mime_type, EntityStream::EXIF_MIME_TYPES)) {
                 static::assertNotNull($stream->file_metadata);
             } else {
                 static::assertEmpty($stream->file_metadata);
@@ -390,10 +390,10 @@ class StreamTest extends TestCase
     public function testFailedReadFileMetadata()
     {
         $path = Configure::read('Filesystem.default.path');
-        $gif_test = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
+        $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
         $stream = $this->Streams->newEntity();
         $stream->mime_type = 'image/jpeg';
-        $stream->contents = $gif_test;
+        $stream->contents = $gifTest;
 
         static::assertEmpty($stream->file_metadata);
     }
