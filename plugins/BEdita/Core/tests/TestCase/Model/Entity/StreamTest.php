@@ -366,18 +366,18 @@ class StreamTest extends TestCase
     public function testReadFileMetadata()
     {
         $path = Configure::read('Filesystem.default.path');
-        $image_test = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
-        $gif_test = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
+        $imageTest = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
+        $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
 
         $stream = $this->Streams->newEntity();
         $stream->mime_type = 'image/jpeg';
-        $stream->contents = $image_test;
+        $stream->contents = $imageTest;
 
         $this->readDataFromImage($stream);
         // mime type not allowed
         $stream = $this->Streams->newEntity();
         $stream->mime_type = 'image/gif';
-        $stream->contents = $gif_test;
+        $stream->contents = $gifTest;
         $this->readDataFromImage($stream);
     }
 
