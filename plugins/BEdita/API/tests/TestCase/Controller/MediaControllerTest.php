@@ -566,6 +566,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'created' => '2017-06-22T12:37:41+00:00',
                         'modified' => '2017-06-22T12:37:41+00:00',
                         'url' => 'https://static.example.org/files/9e58fa47-db64-4479-a0ab-88a706180d59.txt',
+                        'file_metadata' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59',
@@ -597,6 +598,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'created' => '2018-03-22T15:58:47+00:00',
                         'modified' => '2018-03-22T15:58:47+00:00',
                         'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                        'file_metadata' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',
@@ -727,6 +729,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'created' => '2018-03-22T15:58:47+00:00',
                         'modified' => '2018-03-22T15:58:47+00:00',
                         'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
+                        'file_metadata' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',

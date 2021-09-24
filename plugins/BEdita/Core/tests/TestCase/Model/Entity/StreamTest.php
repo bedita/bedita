@@ -14,7 +14,9 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Entity\Stream as EntityStream;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
@@ -326,5 +328,73 @@ class StreamTest extends TestCase
 
         static::assertSame($expected, $first);
         static::assertSame($expected, $second);
+    }
+
+    /**
+     * Read data from image if is possible
+     * @param Stream $stream stream entity
+     */
+
+    public function readDataFromImage($stream): void
+    {
+        if (!preg_match('/image\//', $stream->mime_type)) {
+            static::assertNull($stream->width);
+            static::assertNull($stream->height);
+        } else {
+            if (function_exists('getimagesizefromstring')) {
+                static::assertNotNull($stream->width);
+                static::assertNotNull($stream->height);
+            } else {
+                static::assertNull($stream->width);
+                static::assertNull($stream->height);
+            }
+
+            if (function_exists('exif_read_data') && in_array($stream->mime_type, EntityStream::EXIF_MIME_TYPES)) {
+                static::assertNotNull($stream->file_metadata);
+            } else {
+                static::assertEmpty($stream->file_metadata);
+            }
+        }
+    }
+
+    /**
+     * Test read exif data
+     *
+     * @covers ::readFileMetadata()
+     * @covers ::createStream()
+     */
+    public function testReadFileMetadata()
+    {
+        $path = Configure::read('Filesystem.default.path');
+        $imageTest = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
+        $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
+
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/jpeg';
+        $stream->contents = $imageTest;
+
+        $this->readDataFromImage($stream);
+        // mime type not allowed
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/gif';
+        $stream->contents = $gifTest;
+        $this->readDataFromImage($stream);
+    }
+
+    /**
+     * Test failed read exif data
+     *
+     * @covers ::readFileMetadata()
+     * @covers ::createStream()
+     */
+    public function testFailedReadFileMetadata()
+    {
+        $path = Configure::read('Filesystem.default.path');
+        $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
+        $stream = $this->Streams->newEntity();
+        $stream->mime_type = 'image/jpeg';
+        $stream->contents = $gifTest;
+
+        static::assertEmpty($stream->file_metadata);
     }
 }

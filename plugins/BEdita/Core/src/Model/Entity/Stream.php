@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
@@ -37,6 +38,7 @@ use Psr\Http\Message\StreamInterface;
  * @property int $width
  * @property int $height
  * @property int $duration
+ * @property array $file_metadata
  * @property \Psr\Http\Message\StreamInterface|null $contents
  * @property string|null $url
  * @property \Cake\I18n\Time $created
@@ -46,6 +48,7 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream extends Entity implements JsonApiSerializable
 {
+    use EventDispatcherTrait;
     use JsonApiTrait;
     use LogTrait;
 
@@ -73,6 +76,14 @@ class Stream extends Entity implements JsonApiSerializable
     protected $_virtual = [
         'url',
     ];
+
+    /**
+     * Mime types tipically containing EXIF headers.
+     * Used to reduce possible errors in `exif_read_data()`
+     *
+     * @var array
+     */
+    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/tiff'];
 
     /**
      * Get filesystem path (including mount point) under which file should be stored.
@@ -191,6 +202,11 @@ class Stream extends Entity implements JsonApiSerializable
         $this->hash_sha1 = hash_final($hashContext);
         $this->setDirty('hash_sha1', true);
 
+        // Read additional metadata (only images for now)
+        $this->readFileMetadata($resource);
+        rewind($resource);
+        $this->dispatchEvent('Stream.create', [$resource]);
+
         // Stream.
         rewind($resource);
         $stream = new LaminasStream($resource, 'r');
@@ -247,5 +263,34 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         return $this->_properties['url'] = FilesystemRegistry::getPublicUrl($this->uri);
+    }
+
+    /**
+     * Read additional metadata from stream (only images for now)
+     *
+     * @param resource $resource Resource streammed
+     * @return void
+     */
+    protected function readFileMetadata($resource): void
+    {
+        if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
+            rewind($resource);
+            $size = getimagesizefromstring(stream_get_contents($resource));
+
+            if (!empty($size)) {
+                $this->width = $size[0];
+                $this->height = $size[1];
+            }
+        }
+
+        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
+            return;
+        }
+
+        rewind($resource);
+        $exif = exif_read_data($resource);
+        if (!empty($exif)) {
+            $this->file_metadata = $exif;
+        }
     }
 }
