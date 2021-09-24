@@ -40,6 +40,7 @@ use Psr\Http\Message\StreamInterface;
  * @property int $width
  * @property int $height
  * @property int $duration
+ * @property array $file_metadata
  * @property \Psr\Http\Message\StreamInterface|null $contents
  * @property string|null $url
  * @property \Cake\I18n\Time $created
