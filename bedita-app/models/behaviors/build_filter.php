@@ -1177,6 +1177,10 @@ class BuildFilterBehavior extends ModelBehavior {
                     }
                 }
 
+                $forbiddenObjectsIds = array_unique($forbiddenObjectsIds);
+                $forbiddenSection = array_unique($forbiddenSection);
+                $forbiddenPub = array_unique($forbiddenPub);
+
                 if (!empty($forbiddenPub) || !empty($forbiddenSection)) {
 
                     $query = "SELECT {$s}Tree{$e}.{$s}id{$e}
