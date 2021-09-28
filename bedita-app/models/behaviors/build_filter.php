@@ -1177,6 +1177,10 @@ class BuildFilterBehavior extends ModelBehavior {
                     }
                 }
 
+                $forbiddenObjectsIds = array_unique($forbiddenObjectsIds);
+                $forbiddenSection = array_unique($forbiddenSection);
+                $forbiddenPub = array_unique($forbiddenPub);
+
                 if (!empty($forbiddenPub) || !empty($forbiddenSection)) {
 
                     $query = "SELECT {$s}Tree{$e}.{$s}id{$e}
@@ -1218,8 +1222,22 @@ class BuildFilterBehavior extends ModelBehavior {
                 }
 
                 // get only objects not forbidden
-                $forbiddenObjectsList = implode(',', $forbiddenObjectsIds);
-                $this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} NOT IN (" . $forbiddenObjectsList .")";
+                // trick: this subquery needs to avoid that MySQL uses primary key as index
+                // in this way the query results much faster
+                $dbo = $this->model->getDataSource();
+                $subquery = $dbo->buildStatement([
+                    'table' => 'objects',
+                    'alias' => 'BEObj',
+                    'fields' => array('BEObj.id'),
+                    'conditions' => array(
+                        'BEObj.id' => $forbiddenObjectsIds
+                    ),
+                    'group' => '',
+                    'order' => '',
+                    'limit' => '',
+                ], $this->model);
+
+                $this->conditions[] = sprintf("{$s}BEObject{$e}.{$s}id{$e} NOT IN (%s)", $subquery);
             }
         }
     }
