@@ -14,11 +14,14 @@
 namespace BEdita\API\Auth;
 
 use BEdita\API\Exception\ExpiredTokenException;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -117,7 +120,34 @@ class JwtAuthenticate extends BaseAuthenticate
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
+        $this->setApplication($request);
+
         return $this->getUser($request);
+    }
+
+    /**
+     * Find and application ID based on info available in JWT.
+     *
+     * @param \Cake\Http\ServerRequest $request Request object.
+     * @return void
+     */
+    public function setApplication(ServerRequest $request)
+    {
+        $payload = $this->getPayload($request);
+
+        if (!empty($this->error)) {
+            throw new UnauthorizedException($this->error->getMessage());
+        }
+        $appId = Hash::get($payload, 'sub.app');
+        if (empty($appId)) {
+            return;
+        }
+
+        CurrentApplication::setApplication(
+            TableRegistry::getTableLocator()->get('Applications')
+                ->find('active', ['id' => $appId])
+                ->firstOrFail()
+        );
     }
 
     /**
@@ -129,7 +159,6 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
-
         if (!empty($this->error)) {
             throw new UnauthorizedException($this->error->getMessage());
         }
@@ -142,7 +171,9 @@ class JwtAuthenticate extends BaseAuthenticate
             return false;
         }
 
-        $user = $this->_findUser($payload['sub']);
+        // 'sub' can cotain user id in 'user' key (new JWT structure) or in 'sub' directly
+        $userId = Hash::get($payload['sub'], 'user', $payload['sub']);
+        $user = $this->_findUser($userId);
 
         return $user;
     }
@@ -156,6 +187,9 @@ class JwtAuthenticate extends BaseAuthenticate
      */
     public function getPayload(ServerRequest $request)
     {
+        if (!empty($this->payload)) {
+            return $this->payload;
+        }
         $token = $this->getToken($request);
         if ($token) {
             return $this->payload = $this->decode($token, $request);

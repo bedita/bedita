@@ -170,6 +170,20 @@ class ApplicationsTable extends Table
         return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
     }
 
+    protected function findActive(Query $query, array $options): Query
+    {
+        if (empty($options['id']) || !is_string($options['id'])) {
+            throw new \BadMethodCallException('Required option "id" must be a not empty string');
+        }
+
+        $query = $query->where([
+            $this->aliasField('id') => $options['id'],
+            $this->aliasField('enabled') => true,
+        ]);
+
+        return $this->queryCache($query, sprintf('app_id_%s', $options['id']));
+    }
+
     /**
      * Before delete checks: if applications is DEFAULT_APPLICATION or current raise a ImmutableResourceException
      *

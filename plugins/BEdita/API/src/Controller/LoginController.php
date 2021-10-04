@@ -18,6 +18,7 @@ use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
@@ -28,6 +29,7 @@ use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -195,21 +197,22 @@ class LoginController extends AppController
      * `id`, `username` and for each role `id` and `name
      *
      * @param array $userInput Complete user data
-     * @return array Reduced user data
+     * @return array Reduced user data (can be empty)
      */
     protected function reducedUserData(array $userInput)
     {
-        $roles = [];
-        foreach ($userInput['roles'] as $role) {
-            $roles[] = [
-                'id' => $role['id'],
-                'name' => $role['name'],
-            ];
-        }
         $user = array_intersect_key($userInput, array_flip(['id', 'username']));
-        $user['roles'] = $roles;
+        $user['roles'] = array_map(
+            function ($role) {
+                return [
+                    'id' => $role['id'],
+                    'name' => $role['name'],
+                ];
+            },
+            (array)Hash::get($userInput, 'roles')
+        );
 
-        return $user;
+        return array_filter($user);
     }
 
     /**
@@ -223,22 +226,29 @@ class LoginController extends AppController
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($this->request, true);
+        $salt = Security::getSalt();
         $claims = [
             'iss' => Router::fullBaseUrl(),
             'iat' => time(),
             'nbf' => time(),
         ];
+        $appId = CurrentApplication::getApplicationId();
+        $payload = array_filter(compact('user') + $claims + [
+            'app' => $appId,
+            'exp' => strtotime($duration),
+        ]);
+        $jwt = JWT::encode($payload, $salt, $algorithm);
 
-        $jwt = JWT::encode(
-            $user + $claims + ['exp' => strtotime($duration)],
-            Security::getSalt(),
-            $algorithm
-        );
-        $renew = JWT::encode(
-            $claims + ['sub' => $user['id'], 'aud' => $currentUrl],
-            Security::getSalt(),
-            $algorithm
-        );
+        $subData = array_filter([
+            'user' => Hash::get($user, 'id'),
+            'app' => $appId,
+        ]);
+        $payload = array_filter($claims + [
+            'sub' => $subData,
+            'aud' => $currentUrl,
+            'exp' => strtotime($duration),
+        ]);
+        $renew = JWT::encode($payload, $salt, $algorithm);
 
         return compact('jwt', 'renew');
     }
