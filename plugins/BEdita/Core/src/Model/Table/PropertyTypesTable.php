@@ -55,6 +55,12 @@ class PropertyTypesTable extends Table
         $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'name' => 10,
+                'params' => 8,
+            ],
+        ]);
 
         $this->hasMany('Properties');
     }

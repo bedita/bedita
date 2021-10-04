@@ -92,7 +92,7 @@ class Query extends CakeQuery
      *
      * @return \Cake\ORM\Query
      */
-    protected function getInheritanceSubQuery()
+    public function getInheritanceSubQuery()
     {
         $subQuery = new parent($this->getConnection(), $this->_repository);
 

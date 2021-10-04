@@ -56,6 +56,12 @@ class CategoriesTable extends CategoriesTagsBaseTable
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'label' => 10,
+                'name' => 8,
+            ],
+        ]);
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',

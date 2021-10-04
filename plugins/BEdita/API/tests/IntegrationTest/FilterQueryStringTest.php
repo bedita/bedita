@@ -27,6 +27,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      * {@inheritDoc}
      */
     public $fixtures = [
+        'plugin.BEdita/Core.Annotations',
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
@@ -350,6 +351,30 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '6',
                 ],
             ],
+            'translations' => [
+                '/translations?filter[query]=ici',
+                [
+                    '2',
+                ],
+            ],
+            'annotations' => [
+                '/annotations?q=ipsum',
+                [
+                    '1',
+                ],
+            ],
+            'categories' => [
+                '/model/categories?filter[query]=second',
+                [
+                    '2',
+                ],
+            ],
+            'tags' => [
+                '/model/tags?q=first',
+                [
+                    '4',
+                ],
+            ],
         ];
     }
 
@@ -549,6 +574,49 @@ class FilterQueryStringTest extends IntegrationTestCase
 
         static::assertArrayHasKey('data', $result);
         static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'), '', 0, 10, true);
+    }
+
+    /**
+     * Test `/folders?filter[mine]`.
+     *
+     * @coversNothing
+     */
+    public function testMineFilter()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/users?filter[mine]');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([5], Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
+     * Test `/folders?filter[history_editor]`.
+     *
+     * @coversNothing
+     */
+    public function testHistoryEditorFilter()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/documents?filter[history_editor]');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([2], Hash::extract($result['data'], '{n}.id'));
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->get('/documents?filter[history_editor]=1');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals([2], Hash::extract($result['data'], '{n}.id'));
     }
 
     /**
@@ -776,5 +844,45 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->get('/model/categories?filter[type]=locations');
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals(0, count($result['data']));
+    }
+
+    /**
+     * Data provider for `testRelatedFilter`.
+     *
+     * @return array
+     */
+    public function relatedFilterProvider()
+    {
+        return [
+            'test' => [
+                [2, 3],
+                '/documents?filter[test]=4',
+            ],
+            'inverse_another_test' => [
+                [8],
+                '/locations?filter[inverse_another_test]=1',
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[{relation}]={id}`.
+     *
+     * @param array $expected Expected result
+     * @param string $url Request URL
+     * @return void
+     *
+     * @dataProvider relatedFilterProvider
+     * @coversNothing
+     */
+    public function testRelatedFilter(array $expected, string $url): void
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $found = Hash::extract($result, 'data.{n}.id');
+        static::assertEquals($expected, $found);
     }
 }

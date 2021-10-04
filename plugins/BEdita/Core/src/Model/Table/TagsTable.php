@@ -53,6 +53,12 @@ class TagsTable extends CategoriesTagsBaseTable
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.Searchable', [
+            'fields' => [
+                'label' => 10,
+                'name' => 8,
+            ],
+        ]);
 
         $this->hasMany('ObjectTags', [
             'foreignKey' => 'category_id',

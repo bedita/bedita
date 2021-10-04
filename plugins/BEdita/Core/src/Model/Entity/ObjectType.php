@@ -351,8 +351,8 @@ class ObjectType extends Entity implements JsonApiSerializable
         }
 
         $associations = (array)$this->associations;
-        $relations = static::objectTypeRelations($this->right_relations, 'right') +
-            static::objectTypeRelations($this->left_relations, 'left');
+        $relations = static::objectTypeRelations($this->getRelations('right'), 'right') +
+            static::objectTypeRelations($this->getRelations('left'), 'left');
 
         return $this->objectTypeProperties() + compact('associations', 'relations');
     }

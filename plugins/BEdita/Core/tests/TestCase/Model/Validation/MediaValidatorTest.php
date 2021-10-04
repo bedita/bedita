@@ -92,14 +92,6 @@ class MediaValidatorTest extends TestCase
                     'provider_thumbnail' => 'gustavo.supporto@example.org',
                 ],
             ],
-            'not unique' => [
-                [
-                    'uname.unique',
-                ],
-                [
-                    'uname' => 'title-one',
-                ],
-            ],
         ];
     }
 

@@ -1,5 +1,34 @@
 # ChangeLog
 
+## Version 4.5.0 - Cactus
+
+### API changes (4.5.0)
+
+* [#1817](https://github.com/bedita/bedita/pull/1817) New `/translations` endpoint
+* [#1808](https://github.com/bedita/bedita/pull/1808) Filter for custom properties
+* [#1802](https://github.com/bedita/bedita/pull/1802) Lock/unlock objects and block/unblock users actions
+* [#1798](https://github.com/bedita/bedita/pull/1798) Project model endpoint & command
+* [#1753](https://github.com/bedita/bedita/pull/1753) New `history_editor` finder & filter
+
+### Core changes (4.5.0)
+
+* [#1818](https://github.com/bedita/bedita/pull/1818) More resources tables searchable
+* [#1809](https://github.com/bedita/bedita/pull/1809) Add `date-time` to nullable formats
+* [#1807](https://github.com/bedita/bedita/pull/1807) Avoid `uname` change when absent
+* [#1804](https://github.com/bedita/bedita/pull/1804) Format and validate JSON Schema properties
+* [#1800](https://github.com/bedita/bedita/pull/1800) Locked constraint logic
+* [#1796](https://github.com/bedita/bedita/pull/1796) Filter `publish_start` and `publish_end` dates
+
+### Integration changes (4.5.0)
+
+* [#1815](https://github.com/bedita/bedita/pull/1815) Fix PHPstan issues, PHPstan added to `require-dev`
+* [#1812](https://github.com/bedita/bedita/pull/1812) Upgrade to CakePHP 3.10
+* [#1805](https://github.com/bedita/bedita/pull/1805) Properties update utility
+* [#1803](https://github.com/bedita/bedita/pull/1803) Use phpcs XML conf
+* [#1801](https://github.com/bedita/bedita/pull/1801) Enable `locked` save via `ObjectsHandler`
+* [#1799](https://github.com/bedita/bedita/pull/1799) Fix geometric tests
+* [#1797](https://github.com/bedita/bedita/pull/1797) Release Makefile cleanup
+
 ## Version 4.4.0 - Cactus
 
 ### API changes (4.4.0)

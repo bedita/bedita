@@ -227,6 +227,50 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
+     * Data provider for `testRegenerate` test case.
+     *
+     * @return array
+     */
+    public function regenerateUniqueNameProvider()
+    {
+        return [
+            'providedUname' => [
+                'provided-uname',
+                'provided-title',
+            ],
+            'noUname' => [
+                null,
+                'my-title'
+            ],
+        ];
+    }
+
+    /**
+     * testRegenerate method
+     *
+     * @param string $uname Uname.
+     * @param string $title Title.
+     * @return void
+     *
+     * @dataProvider regenerateUniqueNameProvider
+     * @covers ::generateUniqueName()
+     */
+    public function testRegenerateUniqueName($uname, $title)
+    {
+        $Folders = TableRegistry::getTableLocator()->get('Folders');
+        $folder = $Folders->newEntity();
+        $Folders->patchEntity($folder, compact('uname', 'title'));
+        $behavior = $Folders->behaviors()->get('UniqueName');
+        $generated = $behavior->generateUniqueName($folder, true);
+
+        if ($uname !== null) {
+            $this->assertTextContains($uname, $generated);
+        } else {
+            $this->assertTextContains($title, $generated);
+        }
+    }
+
+    /**
      * Data provider for `testNameExists` test case.
      *
      * @return array
@@ -393,19 +437,40 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
-     * test generate uname before save
+     * Test `uniqueName()` when `uname` is unchanged and not in entity
      *
      * @return void
-     * @covers ::beforeSave()
+     *
+     * @covers ::uniqueName()
      */
-    public function testBeforeSave()
+    public function testUniqueNameIgnore(): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $document = $Documents->get(2);
+        $document->set('title', 'a new title');
+        $document->unsetProperty('uname');
+
+        $behavior = $Documents->behaviors()->get('UniqueName');
+        $behavior->uniqueName($document);
+
+        static::assertFalse($document->isDirty('uname'));
+        static::assertFalse($document->has('uname'));
+    }
+
+    /**
+     * test generate uname before rules
+     *
+     * @return void
+     * @covers ::beforeRules()
+     */
+    public function testBeforeRules()
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->newEntity([
             'title' => 'uh là la'
         ]);
 
-        $Documents->getEventManager()->on('Model.beforeSave', function (Event $event, EntityInterface $entity) {
+        $Documents->getEventManager()->on('Model.beforeRules', function (Event $event, EntityInterface $entity) {
             $uname = $entity->get('uname');
             static::assertNotEmpty($uname);
             static::assertEquals('uh-la-la', $uname);

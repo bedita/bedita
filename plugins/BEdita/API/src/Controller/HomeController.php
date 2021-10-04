@@ -61,6 +61,10 @@ class HomeController extends AppController
             'methods' => ['GET'],
             'multiple_types' => false,
          ],
+         '/translations' => [
+            'methods' => 'ALL',
+            'multiple_types' => true,
+         ],
          '/trash' => [
             'methods' => 'ALL',
             'multiple_types' => true,

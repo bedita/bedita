@@ -142,23 +142,19 @@ class ResourcesShell extends Shell
      * Return entity by ID or name.
      *
      * @param mixed $id Entity ID or name.
-     * @return \Cake\Datasource\EntityInterface
+     * @return \Cake\Datasource\EntityInterface|null
      */
     protected function getEntity($id)
     {
-        $table = $this->getTable();
-        try {
-            if (!is_numeric($id)) {
-                return $table
-                    ->find()
-                    ->where(['name' => $id])
-                    ->firstOrFail();
-            }
-
-            return $table->get($id);
-        } catch (RecordNotFoundException $e) {
-            $this->abort($e->getMessage());
+        $condition = compact('id');
+        if (!is_numeric($id)) {
+            $condition = ['name' => $id];
         }
+
+        return $this->getTable()
+                ->find()
+                ->where($condition)
+                ->first();
     }
 
     /**
@@ -235,6 +231,9 @@ class ResourcesShell extends Shell
     {
         $table = $this->getTable();
         $entity = $this->getEntity($id);
+        if (empty($entity)) {
+            $this->abort(sprintf('Resource with id %d not found', $id));
+        }
         $field = $this->param('field');
         if ($field === 'api_key' && $table instanceof ApplicationsTable) {
              $entity->set('api_key', ApplicationsTable::generateApiKey());
@@ -278,6 +277,9 @@ class ResourcesShell extends Shell
         }
 
         $entity = $this->getEntity($id);
+        if (empty($entity)) {
+            $this->abort(sprintf('Resource with id %d not found', $id));
+        }
         $action = new DeleteEntityAction(compact('table'));
         $action(compact('entity'));
 

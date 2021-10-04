@@ -476,6 +476,285 @@ class ObjectTypeTest extends TestCase
                 false,
                 'media',
             ],
+            'files' => [
+                [
+                    'properties' => [
+                        'id' => [
+                            '$id' => '/properties/id',
+                            'title' => 'Id',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
+                        'title' => [
+                            '$id' => '/properties/title',
+                            'title' => 'Title',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'description' => [
+                            '$id' => '/properties/description',
+                            'title' => 'Description',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'body' => [
+                            '$id' => '/properties/body',
+                            'title' => 'Body',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                        ],
+                        'uname' => [
+                            '$id' => '/properties/uname',
+                            'title' => 'Uname',
+                            'type' => 'string',
+                            'maxLength' => 255,
+                        ],
+                        'status' => [
+                            '$id' => '/properties/status',
+                            'title' => 'Status',
+                            'type' => 'string',
+                            'enum' => ['on', 'off', 'draft'],
+                            'default' => 'draft',
+                        ],
+                        'lang' => [
+                            '$id' => '/properties/lang',
+                            'title' => 'Lang',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                        ],
+                        'locked' => [
+                            '$id' => '/properties/locked',
+                            'title' => 'Locked',
+                            'type' => 'boolean',
+                            'readOnly' => true,
+                            'default' => false,
+                        ],
+                        'extra' => [
+                            '$id' => '/properties/extra',
+                            'title' => 'Extra',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'object',
+                                ],
+                            ],
+                        ],
+                        'created' => [
+                            '$id' => '/properties/created',
+                            'title' => 'Created',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'modified' => [
+                            '$id' => '/properties/modified',
+                            'title' => 'Modified',
+                            'type' => 'string',
+                            'format' => 'date-time',
+                            'readOnly' => true,
+                        ],
+                        'created_by' => [
+                            '$id' => '/properties/created_by',
+                            'title' => 'Created By',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
+                        'modified_by' => [
+                            '$id' => '/properties/modified_by',
+                            'title' => 'Modified By',
+                            'type' => 'integer',
+                            'readOnly' => true,
+                        ],
+                        'published' => [
+                            '$id' => '/properties/published',
+                            'title' => 'Published',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                            'readOnly' => true,
+                        ],
+                        'publish_start' => [
+                            '$id' => '/properties/publish_start',
+                            'title' => 'Publish Start',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'publish_end' => [
+                            '$id' => '/properties/publish_end',
+                            'title' => 'Publish End',
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'date-time',
+                                ],
+                            ],
+                        ],
+                        'media_property' => [
+                            'type' => 'boolean',
+                            '$id' => '/properties/media_property',
+                            'title' => 'Media Property',
+                        ],
+                        'disabled_property' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                            '$id' => '/properties/disabled_property',
+                            'title' => 'Disabled Property',
+                        ],
+                        'files_property' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'object',
+                                ],
+                            ],
+                            '$id' => '/properties/files_property',
+                            'title' => 'Files Property',
+                        ],
+                        'name' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'contentMediaType' => 'text/html',
+                                ],
+                            ],
+                            '$id' => '/properties/name',
+                            'title' => 'Name',
+                        ],
+                        'provider' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                            '$id' => '/properties/provider',
+                            'title' => 'Provider',
+                        ],
+                        'provider_uid' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                            '$id' => '/properties/provider_uid',
+                            'title' => 'Provider Uid',
+                        ],
+                        'provider_url' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'uri',
+                                ],
+                            ],
+                            '$id' => '/properties/provider_url',
+                            'title' => 'Provider Url',
+                        ],
+                        'provider_thumbnail' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                    'format' => 'uri',
+                                ],
+                            ],
+                            '$id' => '/properties/provider_thumbnail',
+                            'title' => 'Provider Thumbnail',
+                        ],
+                        'provider_extra' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'object',
+                                ],
+                            ],
+                            '$id' => '/properties/provider_extra',
+                            'title' => 'Provider Extra',
+                        ],
+                    ],
+                    'required' => [
+                        'media_property',
+                    ],
+                    'associations' => [
+                        'Streams'
+                    ],
+                    'relations' => [
+                        'inverse_test_abstract' => [
+                            'label' => 'Inverse test relation involving abstract types',
+                            'params' => null,
+                            'types' => ['events'],
+                        ],
+                    ],
+                ],
+                'files',
+            ],
             'documents' => [
                 [
                     'properties' => [
