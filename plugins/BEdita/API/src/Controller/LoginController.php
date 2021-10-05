@@ -28,6 +28,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -116,6 +117,14 @@ class LoginController extends AppController
     public function login(): void
     {
         $this->set('_serialize', []);
+
+        $this->checkClientCredentials();
+        // in case of `client_credentials` grant type skip user authentication
+        if ((string)$this->request->getData('grant_type') === 'client_credentials') {
+            $this->set('_meta', $this->jwtTokens([]));
+
+            return;
+        }
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
@@ -184,12 +193,38 @@ class LoginController extends AppController
         if (!$result || !is_array($result)) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
-            // Result is a user; check endpoint permission on `/auth`
+        // Result is a user; check endpoint permission on `/auth`
         if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
             throw new UnauthorizedException(__('Login not authorized'));
         }
 
         return $result;
+    }
+
+    /**
+     * Verify client application credentials `client_id/client_secret`.
+     * Upon success the matching application is set via `CurrentApplication` otherwise
+     * an `UnauthorizedException` will be thrown.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\UnauthorizedException
+     */
+    protected function checkClientCredentials(): void
+    {
+        $grantType = $this->request->getData('grant_type');
+        if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
+            return;
+        }
+        $application = TableRegistry::getTableLocator()->get('Applications')
+            ->find('credentials', [
+                'client_id' => $this->request->getData('client_id'),
+                'client_secret' => $this->request->getData('client_secret'),
+            ])
+            ->first();
+        if (empty($application)) {
+            throw new UnauthorizedException(__('App authentication failed'));
+        }
+        CurrentApplication::setApplication($application);
     }
 
     /**
