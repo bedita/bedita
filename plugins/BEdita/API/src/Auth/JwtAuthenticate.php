@@ -120,34 +120,27 @@ class JwtAuthenticate extends BaseAuthenticate
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
-        $this->setApplication($request);
-
         return $this->getUser($request);
     }
 
     /**
      * Find and application ID based on info available in JWT.
      *
-     * @param \Cake\Http\ServerRequest $request Request object.
      * @return void
      */
-    public function setApplication(ServerRequest $request)
+    public function setApplication(): void
     {
-        $payload = $this->getPayload($request);
-
-        if (!empty($this->error)) {
-            throw new UnauthorizedException($this->error->getMessage());
-        }
-        $appId = Hash::get($payload, 'sub.app');
-        if (empty($appId)) {
+        if (empty($this->payload)) {
             return;
         }
-
-        CurrentApplication::setApplication(
-            TableRegistry::getTableLocator()->get('Applications')
-                ->find('active', ['id' => $appId])
-                ->firstOrFail()
-        );
+        $id = Hash::get($this->payload, 'app');
+        if (!empty($id)) {
+            CurrentApplication::setApplication(
+                TableRegistry::getTableLocator()->get('Applications')
+                    ->find('active', compact('id'))
+                    ->firstOrFail()
+            );
+        }
     }
 
     /**
@@ -162,6 +155,7 @@ class JwtAuthenticate extends BaseAuthenticate
         if (!empty($this->error)) {
             throw new UnauthorizedException($this->error->getMessage());
         }
+        $this->setApplication();
 
         if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
             return $payload;

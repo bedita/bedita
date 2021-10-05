@@ -274,15 +274,12 @@ class LoginController extends AppController
         ]);
         $jwt = JWT::encode($payload, $salt, $algorithm);
 
-        $subData = array_filter([
-            'user' => Hash::get($user, 'id'),
+        $payload = $claims + [
+            'sub' => Hash::get($user, 'id'),
             'app' => $appId,
-        ]);
-        $payload = array_filter($claims + [
-            'sub' => $subData,
             'aud' => $currentUrl,
             'exp' => strtotime($duration),
-        ]);
+        ];
         $renew = JWT::encode($payload, $salt, $algorithm);
 
         return compact('jwt', 'renew');
