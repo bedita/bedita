@@ -13,7 +13,7 @@ class ApplicationClientSecret extends AbstractMigration
                 'comment' => 'client secret value for application',
                 'default' => null,
                 'limit' => 255,
-                'null' => false,
+                'null' => true,
             ])
             ->update();
     }
