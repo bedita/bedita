@@ -20,6 +20,7 @@ use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -170,6 +171,13 @@ class ApplicationsTable extends Table
         return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
     }
 
+    /**
+     * Find an active application by ID using cache.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array. It requires an `apiKey` key.
+     * @return \Cake\ORM\Query
+     */
     protected function findActive(Query $query, array $options): Query
     {
         if (empty($options['id']) || !is_string($options['id'])) {
@@ -182,6 +190,25 @@ class ApplicationsTable extends Table
         ]);
 
         return $this->queryCache($query, sprintf('app_id_%s', $options['id']));
+    }
+
+    /**
+     * Find an active application by client_id and client_secret.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array. It requires an `apiKey` key.
+     * @return \Cake\ORM\Query
+     */
+    protected function findCredentials(Query $query, array $options): Query
+    {
+        if (empty($options['client_id'])) {
+            throw new \BadMethodCallException('Required option "client_id" must be a not empty string');
+        }
+
+        return $query->where([
+            $this->aliasField('api_key') => $options['client_id'],
+            $this->aliasField('client_secret') . ' IS' => Hash::get($options, 'client_secret'),
+        ]);
     }
 
     /**
