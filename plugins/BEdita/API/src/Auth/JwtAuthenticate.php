@@ -156,10 +156,13 @@ class JwtAuthenticate extends BaseAuthenticate
         if (!empty($this->error)) {
             throw new UnauthorizedException($this->error->getMessage());
         }
+        if ($payload === false) {
+            return false;
+        }
         $this->setApplication();
 
         if (!$this->_config['queryDatasource'] && !array_key_exists('sub', $payload)) {
-            return $payload;
+            return isset($payload['id']) ? $payload : false;
         }
 
         if (!array_key_exists('sub', $payload)) {
