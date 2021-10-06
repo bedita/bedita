@@ -158,7 +158,7 @@ class JwtAuthenticate extends BaseAuthenticate
         }
         $this->setApplication();
 
-        if (!$this->_config['queryDatasource'] && isset($payload['user'])) {
+        if (!$this->_config['queryDatasource'] && !array_key_exists('sub', $payload)) {
             return $payload;
         }
 

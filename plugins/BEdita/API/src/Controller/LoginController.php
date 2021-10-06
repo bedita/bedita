@@ -271,10 +271,10 @@ class LoginController extends AppController
             'nbf' => time(),
         ];
         $appId = CurrentApplication::getApplicationId();
-        $payload = array_filter(compact('user') + $claims + [
+        $payload = $user + $claims + [
             'app' => $appId,
             'exp' => strtotime($duration),
-        ]);
+        ];
         $jwt = JWT::encode($payload, $salt, $algorithm);
 
         $payload = $claims + [
