@@ -152,22 +152,27 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
+
         if (!empty($this->error)) {
             throw new UnauthorizedException($this->error->getMessage());
         }
         $this->setApplication();
 
-        if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
+        if (!$this->_config['queryDatasource'] && isset($payload['user'])) {
             return $payload;
         }
 
-        if (!isset($payload['sub'])) {
+        if (!array_key_exists('sub', $payload)) {
+            return false;
+        }
+        // if `sub` is null and application is set we are renewing an application-only access token
+        if ($payload['sub'] === null && CurrentApplication::getApplicationId()) {
+            $this->_registry->getController()->Auth->setConfig('clientCredentials', true);
+
             return false;
         }
 
-        // 'sub' can cotain user id in 'user' key (new JWT structure) or in 'sub' directly
-        $userId = Hash::get($payload['sub'], 'user', $payload['sub']);
-        $user = $this->_findUser($userId);
+        $user = $this->_findUser($payload['sub']);
 
         return $user;
     }

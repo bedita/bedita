@@ -120,7 +120,10 @@ class LoginController extends AppController
 
         $this->checkClientCredentials();
         // in case of `client_credentials` grant type skip user authentication
-        if ((string)$this->request->getData('grant_type') === 'client_credentials') {
+        if (
+            (string)$this->request->getData('grant_type') === 'client_credentials' ||
+            $this->Auth->getConfig('clientCredentials') === true
+        ) {
             $this->set('_meta', $this->jwtTokens([]));
 
             return;
