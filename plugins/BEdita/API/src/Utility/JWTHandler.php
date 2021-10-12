@@ -41,13 +41,6 @@ class JWTHandler
 
         try {
             $payload = JWT::decode($token, Security::getSalt(), [$algorithm]);
-
-            // if (isset($payload->aud)) {
-            //     $audience = Router::url($payload->aud, true);
-            //     if (strpos($audience, Router::reverse($request, true)) !== 0) {
-            //         throw new \DomainException('Invalid audience');
-            //     }
-            // }
         } catch (\Firebase\JWT\ExpiredException $e) {
             throw new ExpiredTokenException();
         }

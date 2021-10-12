@@ -20,6 +20,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
+use Exception;
 
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
@@ -87,13 +88,6 @@ class JwtAuthenticate extends BaseAuthenticate
     protected $payload = null;
 
     /**
-     * Exception.
-     *
-     * @var \Exception
-     */
-    // protected $error;
-
-    /**
      * Get user record based on info available in JWT.
      *
      * @param \Cake\Http\ServerRequest $request The request object.
@@ -114,56 +108,59 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
-
-        if (!empty($this->error)) {
-            throw new UnauthorizedException($this->error->getMessage());
-        }
-        if ($payload === false) {
+        if (empty($payload)) {
             return false;
         }
 
-        if (!$this->_config['queryDatasource'] && !array_key_exists('sub', $payload)) {
-            return isset($payload['id']) ? $payload : false;
+        // if 'sub' claim is set in payload and 'queryDatasource' configuration is `true`
+        // we are renewing the user access token
+        if (!empty($payload['sub']) && $this->_config['queryDatasource']) {
+            return $this->_findUser($payload['sub']);
         }
-
-        if (!array_key_exists('sub', $payload)) {
-            return false;
-        }
-        // if `sub` is null and application is set we are renewing an application-only access token
-        if ($payload['sub'] === null && CurrentApplication::getApplicationId()) {
+        // if `sub` claim exists and is null and application is set
+        // we are renewing an application-only access token
+        if (array_key_exists('sub', $payload) && $payload['sub'] === null && CurrentApplication::getApplicationId()) {
             $this->_registry->getController()->Auth->setConfig('clientCredentials', true);
 
             return false;
         }
 
-        $user = $this->_findUser($payload['sub']);
-
-        return $user;
+        return isset($payload['id']) ? $payload : false;
     }
 
     /**
      * Get payload data.
      *
      * @param \Cake\Http\ServerRequest $request Request instance or null
-     * @return object|false Payload object on success, `false` on failure.
+     * @return array Payload array.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
-    public function getPayload(ServerRequest $request)
+    public function getPayload(ServerRequest $request): array
     {
         if (!empty($this->payload)) {
             return $this->payload;
         }
 
         // retrieve payload from request and check audience
-        $this->payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, false);
-        if (isset($this->payload->aud)) {
-            $audience = Router::url($this->payload->aud, true);
+        $payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, false);
+        if (empty($payload)) {
+            return [];
+        }
+        if (!isset($payload['aud'])) {
+            return $this->payload = (array)$payload;
+        }
+
+        // Check audience if set in payload
+        try {
+            $audience = Router::url($payload['aud'], true);
             if (strpos($audience, Router::reverse($request, true)) !== 0) {
                 throw new \DomainException('Invalid audience');
             }
+        } catch (\Exception $ex) {
+            throw new UnauthorizedException($ex->getMessage());
         }
 
-        return $this->payload;
+        return $this->payload = (array)$payload;
     }
 
     /**
