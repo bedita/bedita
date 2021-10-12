@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Controller;
 
+use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -21,7 +22,6 @@ use BEdita\Core\Model\Entity\User;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
-use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -29,11 +29,8 @@ use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * Controller for `/auth` endpoint.
@@ -261,31 +258,7 @@ class LoginController extends AppController
      */
     protected function jwtTokens(array $user)
     {
-        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
-        $currentUrl = Router::reverse($this->request, true);
-        $salt = Security::getSalt();
-        $claims = [
-            'iss' => Router::fullBaseUrl(),
-            'iat' => time(),
-            'nbf' => time(),
-        ];
-        $appId = CurrentApplication::getApplicationId();
-        $payload = $user + $claims + [
-            'app' => $appId,
-            'exp' => strtotime($duration),
-        ];
-        $jwt = JWT::encode($payload, $salt, $algorithm);
-
-        $payload = $claims + [
-            'sub' => Hash::get($user, 'id'),
-            'app' => $appId,
-            'aud' => $currentUrl,
-            'exp' => strtotime($duration),
-        ];
-        $renew = JWT::encode($payload, $salt, $algorithm);
-
-        return compact('jwt', 'renew');
+        return JWTHandler::tokens([], $this->request);
     }
 
     /**

@@ -13,9 +13,11 @@
 namespace BEdita\API\Utility;
 
 use BEdita\API\Exception\ExpiredTokenException;
-use Cake\Core\InstanceConfigTrait;
+use BEdita\Core\State\CurrentApplication;
+use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -26,38 +28,19 @@ use Firebase\JWT\JWT;
  */
 class JWTHandler
 {
-    use InstanceConfigTrait;
-
-    /**
-     * Default config for this object.
-     *
-     * - `header` The header where the token is stored. Defaults to `'Authorization'`.
-     * - `headerPrefix` The prefix to the token in header. Defaults to `'Bearer'`.
-     * - `queryParam` The query parameter where the token is passed as a fallback. Defaults to `'token'`.
-     * - `allowedAlgorithms` List of supported verification algorithms. Defaults to `['HS256']`.
-     *   See API of JWT::decode() for more info.
-     *
-     * @var array
-     */
-    protected $_defaultConfig = [
-        'allowedAlgorithms' => [
-            'HS256',
-            'HS512',
-        ],
-    ];
-
     /**
      * Decode JWT token.
      *
      * @param string $token JWT token to decode.
-     * @param \Cake\Http\ServerRequest $request Request object.
      * @return array The token's payload as a PHP array.
      * @throws \Exception Throws an exception if the token could not be decoded.
      */
-    public function decode(string $token, ServerRequest $request)
+    public static function decode(string $token)
     {
+        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
+
         try {
-            $payload = JWT::decode($token, Security::getSalt(), $this->getConfig('allowedAlgorithms'));
+            $payload = JWT::decode($token, Security::getSalt(), [$algorithm]);
 
             // if (isset($payload->aud)) {
             //     $audience = Router::url($payload->aud, true);
@@ -70,5 +53,41 @@ class JWTHandler
         }
 
         return (array)$payload;
+    }
+
+    /**
+     * Calculate JWT token for auth and renew operations
+     *
+     * @param array $user Minimal user data to encode in JWT
+     * @param \Cake\Http\ServerRequest $request Request object.
+     * @return array JWT tokens requested
+     */
+    public static function tokens(array $user, ServerRequest $request): array
+    {
+        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
+        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
+        $currentUrl = Router::reverse($request, true);
+        $salt = Security::getSalt();
+        $claims = [
+            'iss' => Router::fullBaseUrl(),
+            'iat' => time(),
+            'nbf' => time(),
+        ];
+        $appId = CurrentApplication::getApplicationId();
+        $payload = $user + $claims + [
+            'app' => $appId,
+            'exp' => strtotime($duration),
+        ];
+        $jwt = JWT::encode($payload, $salt, $algorithm);
+
+        $payload = $claims + [
+            'sub' => Hash::get($user, 'id'),
+            'app' => $appId,
+            'aud' => $currentUrl,
+            'exp' => strtotime($duration),
+        ];
+        $renew = JWT::encode($payload, $salt, $algorithm);
+
+        return compact('jwt', 'renew');
     }
 }

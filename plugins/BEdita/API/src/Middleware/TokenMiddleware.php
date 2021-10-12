@@ -47,20 +47,6 @@ class TokenMiddleware
     ];
 
     /**
-     * Parsed token.
-     *
-     * @var string|null
-     */
-    protected $token = null;
-
-    /**
-     * Payload data.
-     *
-     * @var object|null
-     */
-    protected $payload = null;
-
-    /**
      * Invoke method.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
@@ -72,8 +58,7 @@ class TokenMiddleware
     {
         $token = $this->getToken($request);
         if (!empty($token)) {
-            $jwt = new JWTHandler();
-            $payload = $jwt->decode($token, $request);
+            $payload = JWTHandler::decode($token, $request);
             $request = $request->withAttribute($this->getConfig('payloadAttribute'), $payload);
         }
         CurrentApplication::setFromRequest($request);
@@ -93,14 +78,11 @@ class TokenMiddleware
         $headerPrefix = strtolower(trim($this->getConfig('headerPrefix'))) . ' ';
         $headerPrefixLength = strlen($headerPrefix);
         if ($header && strtolower(substr($header, 0, $headerPrefixLength)) == $headerPrefix) {
-            return $this->token = substr($header, $headerPrefixLength);
+            return substr($header, $headerPrefixLength);
         }
 
         if (!empty($this->getConfig('queryParam'))) {
-            return $this->token = Hash::get(
-                $request->getQueryParams(),
-                $this->$this->getConfig('queryParam')
-            );
+            return Hash::get($request->getQueryParams(), $this->getConfig('queryParam'));
         }
 
         return null;

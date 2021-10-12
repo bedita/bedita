@@ -160,9 +160,6 @@ class CurrentApplication
      */
     public static function setFromRequest(ServerRequest $request): void
     {
-        if (static::getApplication() !== null) {
-            return;
-        }
         $payload = (array)$request->getAttribute('jwt');
         $id = Hash::get($payload, 'app');
         if (!empty($id)) {
