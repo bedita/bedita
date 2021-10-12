@@ -13,17 +13,12 @@
 
 namespace BEdita\API\Auth;
 
-use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
-use Cake\Utility\Hash;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
@@ -71,13 +66,6 @@ class JwtAuthenticate extends BaseAuthenticate
      * @var array
      */
     protected $_defaultConfig = [
-        'header' => 'Authorization',
-        'headerPrefix' => 'Bearer',
-        'queryParam' => 'token',
-        'allowedAlgorithms' => [
-            'HS256',
-            'HS512',
-        ],
         'fields' => [
             'username' => 'id',
             'password' => null,
@@ -88,14 +76,8 @@ class JwtAuthenticate extends BaseAuthenticate
         'contain' => null,
         'passwordHasher' => 'Default',
         'queryDatasource' => false,
+        'payloadAttribute' => 'jwt',
     ];
-
-    /**
-     * Parsed token.
-     *
-     * @var string|null
-     */
-    protected $token = null;
 
     /**
      * Payload data.
@@ -109,7 +91,7 @@ class JwtAuthenticate extends BaseAuthenticate
      *
      * @var \Exception
      */
-    protected $error;
+    // protected $error;
 
     /**
      * Get user record based on info available in JWT.
@@ -121,26 +103,6 @@ class JwtAuthenticate extends BaseAuthenticate
     public function authenticate(ServerRequest $request, Response $response)
     {
         return $this->getUser($request);
-    }
-
-    /**
-     * Find and application ID based on info available in JWT.
-     *
-     * @return void
-     */
-    public function setApplication(): void
-    {
-        if (empty($this->payload)) {
-            return;
-        }
-        $id = Hash::get($this->payload, 'app');
-        if (!empty($id)) {
-            CurrentApplication::setApplication(
-                TableRegistry::getTableLocator()->get('Applications')
-                    ->find('active', compact('id'))
-                    ->firstOrFail()
-            );
-        }
     }
 
     /**
@@ -159,7 +121,6 @@ class JwtAuthenticate extends BaseAuthenticate
         if ($payload === false) {
             return false;
         }
-        $this->setApplication();
 
         if (!$this->_config['queryDatasource'] && !array_key_exists('sub', $payload)) {
             return isset($payload['id']) ? $payload : false;
@@ -192,66 +153,17 @@ class JwtAuthenticate extends BaseAuthenticate
         if (!empty($this->payload)) {
             return $this->payload;
         }
-        $token = $this->getToken($request);
-        if ($token) {
-            return $this->payload = $this->decode($token, $request);
-        }
 
-        return false;
-    }
-
-    /**
-     * Get token from header or query string.
-     *
-     * @param \Cake\Http\ServerRequest $request Request object.
-     * @return string|null Token string if found else null.
-     */
-    public function getToken(ServerRequest $request)
-    {
-        $config = $this->_config;
-
-        $header = trim($request->getHeaderLine($config['header']));
-        $headerPrefix = strtolower(trim($config['headerPrefix'])) . ' ';
-        $headerPrefixLength = strlen($headerPrefix);
-        if ($header && strtolower(substr($header, 0, $headerPrefixLength)) == $headerPrefix) {
-            return $this->token = substr($header, $headerPrefixLength);
-        }
-
-        if (!empty($this->_config['queryParam'])) {
-            return $this->token = $request->getQuery($this->_config['queryParam']);
-        }
-
-        return null;
-    }
-
-    /**
-     * Decode JWT token.
-     *
-     * @param string $token JWT token to decode.
-     * @param \Cake\Http\ServerRequest $request Request object.
-     * @return array|false The token's payload as a PHP object, `false` on failure.
-     * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
-     */
-    protected function decode($token, ServerRequest $request)
-    {
-        try {
-            $payload = JWT::decode($token, Security::getSalt(), $this->_config['allowedAlgorithms']);
-
-            if (isset($payload->aud)) {
-                $audience = Router::url($payload->aud, true);
-                if (strpos($audience, Router::reverse($request, true)) !== 0) {
-                    throw new \DomainException('Invalid audience');
-                }
+        // retrieve payload from request and check audience
+        $this->payload = $request->getAttribute('jwt', false);
+        if (isset($this->payload->aud)) {
+            $audience = Router::url($this->payload->aud, true);
+            if (strpos($audience, Router::reverse($request, true)) !== 0) {
+                throw new \DomainException('Invalid audience');
             }
-
-            return (array)$payload;
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new ExpiredTokenException();
-        } catch (\Exception $e) {
-            $this->error = $e;
         }
 
-        return false;
+        return $this->payload;
     }
 
     /**

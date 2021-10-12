@@ -22,6 +22,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Singleton class to store current application.
@@ -160,6 +161,14 @@ class CurrentApplication
     public static function setFromRequest(ServerRequest $request): void
     {
         if (static::getApplication() !== null) {
+            return;
+        }
+        $payload = (array)$request->getAttribute('jwt');
+        $id = Hash::get($payload, 'app');
+        if (!empty($id)) {
+            $application = new Application(compact('id'));
+            CurrentApplication::setApplication($application);
+
             return;
         }
 
