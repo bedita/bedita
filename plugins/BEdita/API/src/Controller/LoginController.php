@@ -258,7 +258,7 @@ class LoginController extends AppController
      */
     protected function jwtTokens(array $user)
     {
-        return JWTHandler::tokens([], $this->request);
+        return JWTHandler::tokens($user, $this->request);
     }
 
     /**
