@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Exception\UnauthorizedException;
@@ -76,7 +77,6 @@ class JwtAuthenticate extends BaseAuthenticate
         'contain' => null,
         'passwordHasher' => 'Default',
         'queryDatasource' => false,
-        'payloadAttribute' => 'jwt',
     ];
 
     /**
@@ -155,7 +155,7 @@ class JwtAuthenticate extends BaseAuthenticate
         }
 
         // retrieve payload from request and check audience
-        $this->payload = $request->getAttribute('jwt', false);
+        $this->payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, false);
         if (isset($this->payload->aud)) {
             $audience = Router::url($this->payload->aud, true);
             if (strpos($audience, Router::reverse($request, true)) !== 0) {

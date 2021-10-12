@@ -12,9 +12,14 @@
  */
 namespace BEdita\API\Middleware;
 
+use BadMethodCallException;
 use BEdita\API\Utility\JWTHandler;
+use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -43,8 +48,18 @@ class TokenMiddleware
         'header' => 'Authorization',
         'headerPrefix' => 'Bearer',
         'queryParam' => 'token',
-        'payloadAttribute' => 'jwt',
+        'apiKey' => [
+            'header' => 'X-Api-Key',
+            'query' => 'api_key',
+        ],
     ];
+
+    /**
+     * Request attribute name where payload is stored
+     *
+     * @var string
+     */
+    public const PAYLOAD_REQUEST_ATTRIBUTE = 'jwt';
 
     /**
      * Invoke method.
@@ -56,12 +71,21 @@ class TokenMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
+        $payload = [];
         $token = $this->getToken($request);
         if (!empty($token)) {
             $payload = JWTHandler::decode($token, $request);
-            $request = $request->withAttribute($this->getConfig('payloadAttribute'), $payload);
+            $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
         }
-        CurrentApplication::setFromRequest($request);
+
+        // Read application from JWT payload first - fallback to API KEY
+        $id = Hash::get($payload, 'app');
+        if (!empty($id)) {
+            $application = new Application(compact('id'));
+            CurrentApplication::setApplication($application);
+        } else {
+            $this->applicationFromApiKey($request);
+        }
 
         return $next($request, $response);
     }
@@ -86,5 +110,36 @@ class TokenMiddleware
         }
 
         return null;
+    }
+
+    /**
+     * Read application from API KEY.
+     * This is done primarily with an API_KEY header like 'X-Api-Key',
+     * alternatively `api_key` query string is used (not recommended)
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
+     * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
+     */
+    protected function applicationFromApiKey(ServerRequestInterface $request)
+    {
+        $apiKey = $request->getHeaderLine($this->getConfig('apiKey.header'));
+        if (empty($apiKey)) {
+            $apiKey = (string)Hash::get(
+                $request->getQueryParams(),
+                $this->getConfig('apiKey.query')
+            );
+        }
+        if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps', true))) {
+            return;
+        }
+
+        try {
+            CurrentApplication::setFromApiKey($apiKey);
+        } catch (BadMethodCallException $e) {
+            throw new ForbiddenException(__d('bedita', 'Missing API key'));
+        } catch (RecordNotFoundException $e) {
+            throw new ForbiddenException(__d('bedita', 'Invalid API key'));
+        }
     }
 }
