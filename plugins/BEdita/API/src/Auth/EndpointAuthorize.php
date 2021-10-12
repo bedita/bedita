@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019-2021 ChannelWeb Srl, Chialab Srl
+ * Copyright 2019 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,6 @@ namespace BEdita\API\Auth;
 
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Table\RolesTable;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\Http\ServerRequest;
