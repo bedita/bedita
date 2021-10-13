@@ -22,7 +22,25 @@ use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
 /**
- * Encode/decode JWT token
+ * Encode/decode JWT token.
+ *
+ * Here a brief description of the token structure layout.
+ *
+ * Common claims, always present, are:
+ *   'iss': issuer of the JWT (reserved)
+ *   'iat': issued at time (reserved)
+ *   'nbf': 'not before time', token must not be accepted before this time (reserved)
+ *   'exp': expiration time (reserved)
+ *   'app': client application ID, null if no application is set (custom)
+ *
+ * The access token is made of common claims and following custom user data;
+ *   'id': user ID
+ *   'username': username
+ *   'roles': array containing name and ID of user roles
+ *
+ * The renew token is made of common claims and following reserved claims;
+ *   'sub': subject of the JWT, user ID (reserved)
+ *   'aud': audience for which the JWT is intended (reserved)
  *
  * @since 4.6.0
  */
@@ -61,23 +79,24 @@ class JWTHandler
         $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($request, true);
         $salt = Security::getSalt();
+        $appId = CurrentApplication::getApplicationId();
+
+        // Common claims
         $claims = [
             'iss' => Router::fullBaseUrl(),
             'iat' => time(),
             'nbf' => time(),
-        ];
-        $appId = CurrentApplication::getApplicationId();
-        $payload = $user + $claims + [
-            'app' => $appId,
             'exp' => strtotime($duration),
+            'app' => $appId,
         ];
+        // Access token payload
+        $payload = $user + $claims;
         $jwt = JWT::encode($payload, $salt, $algorithm);
 
+        // Renew token payload
         $payload = $claims + [
             'sub' => Hash::get($user, 'id'),
-            'app' => $appId,
             'aud' => $currentUrl,
-            'exp' => strtotime($duration),
         ];
         $renew = JWT::encode($payload, $salt, $algorithm);
 
