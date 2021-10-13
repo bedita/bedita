@@ -19,6 +19,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
@@ -52,8 +53,8 @@ class JwtAuthenticate extends BaseAuthenticate
      *   You can set finder name as string or an array where key is finder name and value
      *   is an array passed to `Table::find()` options.
      *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
-     * - `authenticate` Flag indicating if we are performing an explicit authenticate action
-     *   like in `refresh_token` grant use case
+     * - `authenticate` Boolean field indicating if we are performing an explicit `authenticate` action,
+     *   used in `refresh_token` grant use case
      *
      * @var array
      */
@@ -63,11 +64,7 @@ class JwtAuthenticate extends BaseAuthenticate
             'password' => null,
         ],
         'userModel' => 'Users',
-        // 'scope' => [],
         'finder' => 'login',
-        // 'contain' => null,
-        // 'passwordHasher' => 'Default',
-        // 'queryDatasource' => false,
         'authenticate' => false,
     ];
 
@@ -105,20 +102,57 @@ class JwtAuthenticate extends BaseAuthenticate
             return false;
         }
 
-        // Handle refresh token grant type:
-        //  - if `sub` claim is not null and `authenticate()` was called => renew user access token
-        //  - if `sub` claim is null and `app` claim is not => renew client credential token
         if ((string)$request->getData('grant_type') === 'refresh_token') {
-            if (!empty($payload['sub']) && $this->getConfig('authenticate')) {
-                return $this->_findUser($payload['sub']);
-            } elseif (empty($payload['sub']) && !empty($payload['app'])) {
-                $this->_registry->getController()->Auth->setConfig('renewClientCredentials', true);
-            }
-
-            return false;
+            return $this->handleRefreshToken($request);
         }
 
         return isset($payload['id']) ? $payload : false;
+    }
+
+    /**
+     * Handle refresh token grant looking at payload:
+     *  - first `aud` (audience) claim is checked
+     *  - if `sub` claim is not null and `authenticate()` was called => renew user access token
+     *  - if `sub` claim is null and `app` claim is not => renew client credential token
+     *
+     * @param \Cake\Http\ServerRequest $request Request object.
+     * @return array|false User record array, `false` on failure.
+     */
+    protected function handleRefreshToken(ServerRequest $request)
+    {
+        $this->checkAudience($request);
+
+        if ($this->getConfig('authenticate') && !empty($this->payload['sub'])) {
+            return $this->_findUser($this->payload['sub']);
+        } elseif (empty($this->payload['sub']) && !empty($this->payload['app'])) {
+            $this->_registry->getController()->Auth->setConfig('renewClientCredentials', true);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check audience claim.
+     * If claim is missing or 'audience` check fails an exception is thrown.
+     *
+     * @param \Cake\Http\ServerRequest $request Request instance or null
+     * @return void
+     * @throws \DomainException|\Cake\Http\Exception\UnauthorizedException
+     */
+    protected function checkAudience(ServerRequest $request): void
+    {
+        $audience = Hash::get($this->payload, 'aud');
+        if (empty($audience)) {
+            throw new \DomainException('Invalid audience');
+        }
+        try {
+            $url = Router::url($audience, true);
+            if (strpos($url, Router::reverse($request, true)) !== 0) {
+                throw new \DomainException('Invalid audience');
+            }
+        } catch (\Exception $ex) {
+            throw new UnauthorizedException($ex->getMessage());
+        }
     }
 
     /**
@@ -133,25 +167,7 @@ class JwtAuthenticate extends BaseAuthenticate
         if (!empty($this->payload)) {
             return $this->payload;
         }
-
-        // retrieve payload from request and check audience
         $payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, false);
-        if (empty($payload)) {
-            return [];
-        }
-        if (!isset($payload['aud'])) {
-            return $this->payload = (array)$payload;
-        }
-
-        // Check audience if set in payload
-        try {
-            $audience = Router::url($payload['aud'], true);
-            if (strpos($audience, Router::reverse($request, true)) !== 0) {
-                throw new \DomainException('Invalid audience');
-            }
-        } catch (\Exception $ex) {
-            throw new UnauthorizedException($ex->getMessage());
-        }
 
         return $this->payload = (array)$payload;
     }

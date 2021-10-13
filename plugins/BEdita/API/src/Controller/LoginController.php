@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018-2021 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -115,16 +115,7 @@ class LoginController extends AppController
 
         $this->setGrantType();
         $this->checkClientCredentials();
-        // In case of `client_credentials` grant type or client credentials renew
-        // avoid user identification and return only app related tokens
-        if (
-            (string)$this->request->getData('grant_type') === 'client_credentials' ||
-            $this->Auth->getConfig('renewClientCredentials') === true
-        ) {
-             $this->set('_meta', $this->jwtTokens([]));
 
-            return;
-        }
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
@@ -139,6 +130,7 @@ class LoginController extends AppController
 
     /**
      * Try to setup appropriate grant type if missing looking at request data.
+     * `grant_type` should be always set explicitly in request data.
      *
      * @return void
      */
@@ -205,6 +197,10 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('post');
 
+        if ($this->clientCredentialsOnly()) {
+            return [];
+        }
+
         if ($this->request->getData('password')) {
             $this->request = $this->request
                 ->withData('password_hash', $this->request->getData('password'))
@@ -221,6 +217,27 @@ class LoginController extends AppController
         }
 
         return $result;
+    }
+
+    /**
+     * Check if we are dealing with client credentials only.
+     * In case of `client_credentials` grant type or `refresh_token` grant type
+     * with only client credentials renew we avoid user identification and return
+     * only application related tokens.
+     *
+     * @return bool
+     */
+    protected function clientCredentialsOnly(): bool
+    {
+        $grant = $this->request->getData('grant_type');
+        if (
+            $grant === 'client_credentials' ||
+            ($grant === 'refresh_token' && $this->Auth->getConfig('renewClientCredentials') === true)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -254,7 +271,7 @@ class LoginController extends AppController
      * `id`, `username` and for each role `id` and `name
      *
      * @param array $userInput Complete user data
-     * @return array Reduced user data (can be empty)
+     * @return array Reduced user data (can be empty in case of client credentials)
      */
     protected function reducedUserData(array $userInput)
     {
