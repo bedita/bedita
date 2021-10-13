@@ -83,9 +83,7 @@ class LoginController extends AppController
                     ],
                     'passwordHasher' => self::PASSWORD_HASHER,
                 ],
-                'BEdita/API.Jwt' => [
-                    'queryDatasource' => true,
-                ],
+                'BEdita/API.Jwt',
             ];
 
             $authenticationComponents += $this->AuthProviders
@@ -115,13 +113,15 @@ class LoginController extends AppController
     {
         $this->set('_serialize', []);
 
+        $this->setGrantType();
         $this->checkClientCredentials();
-        // in case of `client_credentials` grant type skip user authentication
+        // In case of `client_credentials` grant type or client credentials renew
+        // avoid user identification and return only app related tokens
         if (
             (string)$this->request->getData('grant_type') === 'client_credentials' ||
-            $this->Auth->getConfig('clientCredentials') === true
+            $this->Auth->getConfig('renewClientCredentials') === true
         ) {
-            $this->set('_meta', $this->jwtTokens([]));
+             $this->set('_meta', $this->jwtTokens([]));
 
             return;
         }
@@ -135,6 +135,27 @@ class LoginController extends AppController
         $user = $this->reducedUserData($result);
         $meta = $this->jwtTokens($user);
         $this->set('_meta', $meta);
+    }
+
+    /**
+     * Try to setup appropriate grant type if missing looking at request data.
+     *
+     * @return void
+     */
+    protected function setGrantType(): void
+    {
+        if (!empty($this->request->getData('grant_type'))) {
+            return;
+        }
+
+        $data = $this->request->getData();
+        if (empty($data)) {
+            $this->request = $this->request->withData('grant_type', 'refresh_token');
+        } elseif (!empty($data['username']) && !empty($data['passwrod'])) {
+            $this->request = $this->request->withData('grant_type', 'password');
+        } elseif (!empty(['client_id'])) {
+            $this->request = $this->request->withData('grant_type', 'client_credentials');
+        }
     }
 
     /**
@@ -175,6 +196,7 @@ class LoginController extends AppController
      *  - classic username and password
      *  - only with username, first step of OTP login
      *  - with username, authorization code and secret token as OTP login or 2FA access
+     *  - via JWT on refresh token grant type
      *
      * @return array
      * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid or access is unauthorized

@@ -14,13 +14,11 @@
 namespace BEdita\API\Auth;
 
 use BEdita\API\Middleware\TokenMiddleware;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
-use Exception;
 
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
@@ -48,22 +46,14 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Default config for this object.
      *
-     * - `header` The header where the token is stored. Defaults to `'Authorization'`.
-     * - `headerPrefix` The prefix to the token in header. Defaults to `'Bearer'`.
-     * - `queryParam` The query parameter where the token is passed as a fallback. Defaults to `'token'`.
-     * - `allowedAlgorithms` List of supported verification algorithms. Defaults to `['HS256']`.
-     *   See API of JWT::decode() for more info.
      * - `fields` The fields to use to identify a user by.
      * - `userModel` The alias for users table, defaults to Users.
      * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
      *   You can set finder name as string or an array where key is finder name and value
      *   is an array passed to `Table::find()` options.
      *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
-     * - `passwordHasher` Password hasher class. Can be a string specifying class name
-     *    or an array containing `className` key, any other keys will be passed as
-     *    config to the class. Defaults to 'Default'.
-     * - Options `scope` and `contain` have been deprecated since 3.1. Use custom
-     *   finder instead to modify the query to fetch user record.
+     * - `authenticate` Flag indicating if we are performing an explicit authenticate action
+     *   like in `refresh_token` grant use case
      *
      * @var array
      */
@@ -73,11 +63,12 @@ class JwtAuthenticate extends BaseAuthenticate
             'password' => null,
         ],
         'userModel' => 'Users',
-        'scope' => [],
+        // 'scope' => [],
         'finder' => 'login',
-        'contain' => null,
-        'passwordHasher' => 'Default',
-        'queryDatasource' => false,
+        // 'contain' => null,
+        // 'passwordHasher' => 'Default',
+        // 'queryDatasource' => false,
+        'authenticate' => false,
     ];
 
     /**
@@ -96,6 +87,8 @@ class JwtAuthenticate extends BaseAuthenticate
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
+        $this->setConfig('authenticate', true);
+
         return $this->getUser($request);
     }
 
@@ -112,15 +105,15 @@ class JwtAuthenticate extends BaseAuthenticate
             return false;
         }
 
-        // if 'sub' claim is set in payload and 'queryDatasource' configuration is `true`
-        // we are renewing the user access token
-        if (!empty($payload['sub']) && $this->_config['queryDatasource']) {
-            return $this->_findUser($payload['sub']);
-        }
-        // if `sub` claim exists and is null and application is set
-        // we are renewing an application-only access token
-        if (array_key_exists('sub', $payload) && $payload['sub'] === null && CurrentApplication::getApplicationId()) {
-            $this->_registry->getController()->Auth->setConfig('clientCredentials', true);
+        // Handle refresh token grant type:
+        //  - if `sub` claim is not null and `authenticate()` was called => renew user access token
+        //  - if `sub` claim is null and `app` claim is not => renew client credential token
+        if ((string)$request->getData('grant_type') === 'refresh_token') {
+            if (!empty($payload['sub']) && $this->getConfig('authenticate')) {
+                return $this->_findUser($payload['sub']);
+            } elseif (empty($payload['sub']) && !empty($payload['app'])) {
+                $this->_registry->getController()->Auth->setConfig('renewClientCredentials', true);
+            }
 
             return false;
         }
@@ -133,7 +126,7 @@ class JwtAuthenticate extends BaseAuthenticate
      *
      * @param \Cake\Http\ServerRequest $request Request instance or null
      * @return array Payload array.
-     * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
+     * @throws \DomainException|\Cake\Http\Exception\UnauthorizedException If 'audience` check fails.
      */
     public function getPayload(ServerRequest $request): array
     {
