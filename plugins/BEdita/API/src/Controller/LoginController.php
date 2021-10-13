@@ -254,6 +254,7 @@ class LoginController extends AppController
         if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
             return;
         }
+        /** @var \BEdita\Core\Model\Entity\Application $application */
         $application = TableRegistry::getTableLocator()->get('Applications')
             ->find('credentials', [
                 'client_id' => $this->request->getData('client_id'),

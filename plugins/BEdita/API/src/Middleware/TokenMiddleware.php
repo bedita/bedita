@@ -74,7 +74,7 @@ class TokenMiddleware
         $payload = [];
         $token = $this->getToken($request);
         if (!empty($token)) {
-            $payload = JWTHandler::decode($token, $request);
+            $payload = JWTHandler::decode($token);
             $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
         }
 
@@ -99,7 +99,7 @@ class TokenMiddleware
     protected function getToken(ServerRequestInterface $request): ?string
     {
         $header = trim($request->getHeaderLine($this->getConfig('header')));
-        $headerPrefix = strtolower(trim($this->getConfig('headerPrefix'))) . ' ';
+        $headerPrefix = strtolower(trim((string)$this->getConfig('headerPrefix'))) . ' ';
         $headerPrefixLength = strlen($headerPrefix);
         if ($header && strtolower(substr($header, 0, $headerPrefixLength)) == $headerPrefix) {
             return substr($header, $headerPrefixLength);

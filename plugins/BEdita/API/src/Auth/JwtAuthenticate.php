@@ -71,7 +71,7 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Payload data.
      *
-     * @var object|null
+     * @var array|null
      */
     protected $payload = null;
 
@@ -183,10 +183,6 @@ class JwtAuthenticate extends BaseAuthenticate
     public function unauthenticated(ServerRequest $request, Response $response)
     {
         $message = $this->_registry->getController()->Auth->getConfig('authError');
-        if ($this->error) {
-            $message = $this->error->getMessage();
-        }
-
         throw new UnauthorizedException($message);
     }
 }
