@@ -173,27 +173,6 @@ class ApplicationsTable extends Table
     }
 
     /**
-     * Find an active application by ID using cache.
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options array.
-     * @return \Cake\ORM\Query
-     */
-    protected function findActive(Query $query, array $options): Query
-    {
-        if (empty($options['id'])) {
-            throw new \BadMethodCallException('Required option "id" must be a not empty string');
-        }
-
-        $query = $query->where([
-            $this->aliasField('id') => $options['id'],
-            $this->aliasField('enabled') => true,
-        ]);
-
-        return $this->queryCache($query, sprintf('app_id_%s', $options['id']));
-    }
-
-    /**
      * Find an active application by client_id and client_secret.
      *
      * @param \Cake\ORM\Query $query Query object instance.
