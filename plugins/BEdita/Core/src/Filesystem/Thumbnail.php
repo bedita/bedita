@@ -99,6 +99,13 @@ class Thumbnail
      */
     public static function get(Stream $stream, $options = 'default')
     {
+        if ($stream->get('private_url')) {
+            return [
+                'url' => null,
+                'ready' => false,
+                'acceptable' => false,
+            ];
+        }
         $options = self::getOptions($options);
 
         $generator = Hash::get($options, 'generator', 'default');
