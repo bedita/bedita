@@ -258,7 +258,7 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         if (!$this->has('uri') || $this->get('private_url')) {
-            // Stream is not yet (or not any more) associated to any object, thus it is not accessible.
+            // Stream has a private UR or is not yet (or not any more) associated to any object.
             return null;
         }
 
