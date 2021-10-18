@@ -71,14 +71,28 @@ class TokenMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        $payload = [];
-        $token = $this->getToken($request);
-        if (!empty($token)) {
-            $payload = JWTHandler::decode($token);
-            $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
+        $payload = (array)$request->getAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE);
+        if (empty($payload)) {
+            $token = $this->getToken($request);
+            if (!empty($token)) {
+                $payload = JWTHandler::decode($token);
+                $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
+            }
         }
+        $this->readApplication($payload, $request);
 
-        // Read application from JWT payload first - fallback to API KEY
+        return $next($request, $response);
+    }
+
+    /**
+     *  Read application from JWT payload first or from API KEY as fallback
+     *
+     * @param array $payload JWT Payload
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object
+     * @return void
+     */
+    protected function readApplication(array $payload, ServerRequestInterface $request): void
+    {
         $id = Hash::get($payload, 'app');
         if (!empty($id)) {
             $application = new Application(compact('id'));
@@ -86,8 +100,6 @@ class TokenMiddleware
         } else {
             $this->applicationFromApiKey($request);
         }
-
-        return $next($request, $response);
     }
 
     /**
