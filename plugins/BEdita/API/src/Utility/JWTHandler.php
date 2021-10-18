@@ -48,17 +48,24 @@ class JWTHandler
 {
     /**
      * Decode JWT token.
+     * Options array may contain these keys:
+     *  - 'key' - Key or map of keys used in decode
+     *  - 'algorithms' -  List of supported verification algorithms
      *
      * @param string $token JWT token to decode.
+     * @param array $options Decode options including key and algorithms.
      * @return array The token's payload as a PHP array.
      * @throws \Exception Throws an exception if the token could not be decoded.
      */
-    public static function decode(string $token)
+    public static function decode(string $token, array $options = []): array
     {
-        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
+        $options += [
+            'key' => Security::getSalt(),
+            'algorithms' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+        ];
 
         try {
-            $payload = JWT::decode($token, Security::getSalt(), [$algorithm]);
+            $payload = JWT::decode($token, $options['key'], (array)$options['algorithms']);
         } catch (\Firebase\JWT\ExpiredException $e) {
             throw new ExpiredTokenException();
         }
