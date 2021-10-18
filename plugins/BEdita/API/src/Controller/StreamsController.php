@@ -124,10 +124,9 @@ class StreamsController extends ResourcesController
 
         /** @var \Psr\Http\Message\StreamInterface $content */
         $content = $stream->get('contents');
-        if (empty($content)) {
-            throw new NotFoundException('File not found');
+        if ($content !== null) {
+            $response = $response->withStringBody($content->getContents());
         }
-        $response = $response->withStringBody($content->getContents());
 
         return $response->withDownload($filename);
     }
