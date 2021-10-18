@@ -167,7 +167,7 @@ class JwtAuthenticate extends BaseAuthenticate
         if (!empty($this->payload)) {
             return $this->payload;
         }
-        $payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, false);
+        $payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE);
 
         return $this->payload = (array)$payload;
     }
