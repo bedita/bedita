@@ -321,4 +321,25 @@ class ThumbnailTest extends TestCase
 
         Thumbnail::delete($stream);
     }
+
+    /**
+     * Test `get` with private URL
+     *
+     * @covers ::get()
+     *
+     * @return void
+     */
+    public function testGetPrivateUrl(): void
+    {
+        $stream = new Stream();
+        $stream->private_url = true;
+
+        $result = Thumbnail::get($stream);
+        $expected = [
+            'url' => null,
+            'ready' => false,
+            'acceptable' => false,
+        ];
+        static::assertEquals($expected, $result);
+    }
 }

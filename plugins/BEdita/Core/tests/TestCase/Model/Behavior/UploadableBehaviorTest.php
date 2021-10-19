@@ -111,6 +111,16 @@ class UploadableBehaviorTest extends TestCase
                     'contents' => $newContents,
                 ],
             ],
+            'private file' => [
+                [
+                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $newContents,
+                ],
+                [
+                    'file_name' => 'new-file.txt',
+                    'contents' => $newContents,
+                    'private_url' => true,
+                ],
+            ],
         ];
     }
 
@@ -124,6 +134,7 @@ class UploadableBehaviorTest extends TestCase
      * @dataProvider afterSaveProvider()
      * @covers ::afterSave()
      * @covers ::processUpload()
+     * @covers ::setVisibility()
      * @covers ::write()
      */
     public function testAfterSave(array $expected, array $data)
@@ -137,6 +148,7 @@ class UploadableBehaviorTest extends TestCase
             $stream->uri = $stream->filesystemPath(); // Force update of URI.
         }
         $this->Streams->saveOrFail($stream);
+        $visibility = (bool)$stream->get('private_url') ? 'private' : 'public';
 
         foreach ($expected as $path => $contents) {
             if ($contents === false) {
@@ -144,6 +156,7 @@ class UploadableBehaviorTest extends TestCase
             } else {
                 static::assertTrue($manager->has($path));
                 static::assertSame($contents, $manager->read($path));
+                static::assertEquals($visibility, $manager->getVisibility($path));
             }
         }
     }

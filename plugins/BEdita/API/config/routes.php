@@ -126,6 +126,13 @@ Router::plugin(
             ['controller' => 'Media', 'action' => 'thumbs'],
             ['_name' => 'media:thumbs:multiple']
         );
+        // Download
+        $routes->connect(
+            '/streams/download/:uuid',
+            ['controller' => 'Streams', 'action' => 'download'],
+            ['_name' => 'streams:download']
+        )
+        ->setPass(['uuid']);
 
         $resourcesRoutes = function (array $controllers) {
             $controller = implode('|', $controllers);

@@ -331,6 +331,20 @@ class StreamTest extends TestCase
     }
 
     /**
+     * Test URL getter with private url.
+     *
+     * @return void
+     *
+     * @covers ::_getUrl()
+     */
+    public function testGetUrlPrivate()
+    {
+        $stream = $this->Streams->get('9e58fa47-db64-4479-a0ab-88a706180d59');
+        $stream->private_url = true;
+        static::assertNull($stream->get('url'));
+    }
+
+    /**
      * Read data from image if is possible
      * @param Stream $stream stream entity
      */
