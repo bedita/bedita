@@ -187,4 +187,30 @@ class UploadComponentTest extends IntegrationTestCase
 
         $this->assertHeader('Location', $url);
     }
+
+    /**
+     * Test upload method with `private_url` query.
+     *
+     * @return void
+     *
+     * @covers ::upload()
+     */
+    public function testUploadPrivateUrl()
+    {
+        $fileName = 'private.txt';
+        $contents = 'top secret URL';
+        $contentType = 'text/plain';
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType, 'Content-Transfer-Encoding' => 'base64']);
+        $this->post(sprintf('/streams/upload/%s?private_url=true', $fileName), base64_encode($contents));
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        $meta = Hash::get($response, 'data.meta');
+        static::assertNotEmpty($meta);
+        static::assertTrue($meta['private_url']);
+        static::assertNull($meta['url']);
+    }
 }
