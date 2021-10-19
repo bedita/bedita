@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017-2021 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -94,6 +94,23 @@ class UploadableBehavior extends Behavior
     }
 
     /**
+     * Set `private` file visibility on `private_url`
+     *
+     * @param \Cake\ORM\Entity $entity Entity.
+     * @param string $pathField Name of field in which path is stored.
+     * @return void
+     */
+    protected function setVisibility(Entity $entity, $pathField): void
+    {
+        if (!$entity->get('private_url')) {
+            return;
+        }
+        $path = $entity->get($pathField);
+        $manager = FilesystemRegistry::getMountManager();
+        $manager->setVisibility($path, 'private');
+    }
+
+    /**
      * Process delete of a single file.
      *
      * @param \Cake\ORM\Entity $entity Entity.
@@ -119,6 +136,7 @@ class UploadableBehavior extends Behavior
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processUpload($entity, $file['path'], $file['contents']);
+            $this->setVisibility($entity, $file['path']);
         }
     }
 

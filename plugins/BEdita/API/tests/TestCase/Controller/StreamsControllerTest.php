@@ -16,7 +16,6 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
-use Cake\Utility\Hash;
 use Cake\Validation\Validation;
 
 /**
@@ -97,6 +96,7 @@ class StreamsControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::resource()
+     * @covers ::beforeFilter()
      */
     public function testGet()
     {
@@ -227,5 +227,25 @@ class StreamsControllerTest extends IntegrationTestCase
         $this->patch(sprintf('/streams/%s/relationships/object', $uuid), json_encode(compact('data')));
 
         $this->assertResponseCode($expected);
+    }
+
+    /**
+     * Test `download` method.
+     *
+     * @return void
+     *
+     * @covers ::download()
+     * @covers ::beforeFilter()
+     */
+    public function testDownload(): void
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader() + ['Content-Type' => 'text/plain']);
+        $this->get('/streams/download/9e58fa47-db64-4479-a0ab-88a706180d59');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('text/plain');
+
+        $response = (string)$this->_response->getBody();
+        static::assertEquals(trim($response), 'Sample uploaded file.');
     }
 }

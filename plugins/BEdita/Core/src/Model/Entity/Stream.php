@@ -39,6 +39,7 @@ use Psr\Http\Message\StreamInterface;
  * @property int $height
  * @property int $duration
  * @property array $file_metadata
+ * @property bool $private_url
  * @property \Psr\Http\Message\StreamInterface|null $contents
  * @property string|null $url
  * @property \Cake\I18n\Time $created
@@ -257,8 +258,8 @@ class Stream extends Entity implements JsonApiSerializable
             return $this->_properties['url'];
         }
 
-        if (!$this->has('uri')) {
-            // Stream is not yet (or not any more) associated to any object, thus it is not accessible.
+        if (!$this->has('uri') || $this->get('private_url')) {
+            // Stream has a private UR or is not yet (or not any more) associated to any object.
             return null;
         }
 
