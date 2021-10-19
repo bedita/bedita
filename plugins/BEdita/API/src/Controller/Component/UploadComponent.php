@@ -76,7 +76,8 @@ class UploadComponent extends Component
             'contents' => $request->getBody(),
         ];
         $entity->set('object_id', $objectId);
-        $entity->set('private_url', (bool)$request->getQuery('private_url', false));
+        $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
+        $entity->set('private_url', $private);
         $data = $action(compact('entity', 'data'));
         $action = new GetEntityAction(['table' => $this->Streams]);
 
