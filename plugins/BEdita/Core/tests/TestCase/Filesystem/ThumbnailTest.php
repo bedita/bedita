@@ -329,7 +329,7 @@ class ThumbnailTest extends TestCase
      *
      * @return void
      */
-    public function testGetPrivateUrl()
+    public function testGetPrivateUrl(): void
     {
         $stream = new Stream();
         $stream->private_url = true;

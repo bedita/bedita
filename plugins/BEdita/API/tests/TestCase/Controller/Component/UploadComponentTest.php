@@ -195,7 +195,7 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @covers ::upload()
      */
-    public function testUploadPrivateUrl()
+    public function testUploadPrivateUrl(): void
     {
         $fileName = 'private.txt';
         $contents = 'top secret URL';
