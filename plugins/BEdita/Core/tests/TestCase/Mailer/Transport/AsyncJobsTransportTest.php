@@ -172,6 +172,8 @@ class AsyncJobsTransportTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()->where(['service' => 'mail'])->first();
 
         static::assertInstanceOf($this->AsyncJobs->getEntityClass(), $asyncJob);
+        static::assertArrayNotHasKey('viewVars', $asyncJob->payload);
+        static::assertArrayNotHasKey('viewConfig', $asyncJob->payload);
 
         $mailService = new MailService();
         $result = $mailService->run($asyncJob->payload, ['transport' => 'debug']);
