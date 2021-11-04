@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
@@ -69,6 +70,12 @@ class ApplicationsControllerTest extends IntegrationTestCase
                     'page_count' => 1,
                     'page_items' => 2,
                     'page_size' => 20,
+                ],
+                'schema' => [
+                    'applications' => [
+                        '$id' => 'http://api.example.com/model/schema/applications',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['applications'],
+                    ],
                 ],
             ],
         ];
