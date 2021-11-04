@@ -218,6 +218,13 @@ Router::plugin(
             ['_name' => 'trash:delete', 'pass' => ['id']]
         );
 
+        // Applications.
+        $routes->connect(
+            '/applications',
+            ['controller' => 'Applications', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'applications:index']
+        );
+
         // Config.
         $routes->connect(
             '/config',
