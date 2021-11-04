@@ -42,6 +42,17 @@ class ApplicationsControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/admin/applications/1'
                     ]
                 ],
+                [
+                    'id' => '2',
+                    'type' => 'applications',
+                    'attributes' => [
+                        'name' => 'Disabled app',
+                        'description' => 'This app has been disabled',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/admin/applications/2',
+                    ],
+                ],
             ],
             'links' => [
                 'self' => 'http://api.example.com/applications',
@@ -53,10 +64,10 @@ class ApplicationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 1,
+                    'count' => 2,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 1,
+                    'page_items' => 2,
                     'page_size' => 20,
                 ],
             ],
