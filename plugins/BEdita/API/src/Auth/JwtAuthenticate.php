@@ -143,12 +143,12 @@ class JwtAuthenticate extends BaseAuthenticate
     {
         $audience = Hash::get($this->payload, 'aud');
         if (empty($audience)) {
-            throw new \DomainException('Invalid audience');
+            throw new \DomainException('Invalid audience (empty)');
         }
         try {
             $url = Router::url($audience, true);
             if (strpos($url, Router::reverse($request, true)) !== 0) {
-                throw new \DomainException('Invalid audience');
+                throw new \DomainException(sprintf('Invalid audience %s', $url));
             }
         } catch (\Exception $ex) {
             throw new UnauthorizedException($ex->getMessage());
