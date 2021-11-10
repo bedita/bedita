@@ -93,9 +93,9 @@ class TokenMiddleware
      */
     protected function readApplication(array $payload, ServerRequestInterface $request): void
     {
-        $id = Hash::get($payload, 'app');
-        if (!empty($id)) {
-            $application = new Application(compact('id'));
+        $app = (array)Hash::get($payload, 'app');
+        if (!empty($app) && !empty($app['id'])) {
+            $application = new Application($app);
             CurrentApplication::setApplication($application);
         } else {
             $this->applicationFromApiKey($request);

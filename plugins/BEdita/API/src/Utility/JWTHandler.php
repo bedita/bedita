@@ -31,7 +31,8 @@ use Firebase\JWT\JWT;
  *   'iat': issued at time (reserved)
  *   'nbf': 'not before time', token must not be accepted before this time (reserved)
  *   'exp': expiration time (reserved)
- *   'app': client application ID, null if no application is set (custom)
+ *   'app': client application data as array (containing at least 'id' and 'name' attributes)
+ *          or null if no application is set (custom)
  *
  * The access token is made of common claims and following custom user data;
  *   'id': user ID
@@ -86,7 +87,6 @@ class JWTHandler
         $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
         $currentUrl = Router::reverse($request, true);
         $salt = Security::getSalt();
-        $appId = CurrentApplication::getApplicationId();
 
         // Common claims
         $claims = [
@@ -94,7 +94,7 @@ class JWTHandler
             'iat' => time(),
             'nbf' => time(),
             'exp' => strtotime($duration),
-            'app' => $appId,
+            'app' => static::applicationData(),
         ];
         // Access token payload
         $payload = $user + $claims;
@@ -108,5 +108,23 @@ class JWTHandler
         $renew = JWT::encode($payload, $salt, $algorithm);
 
         return compact('jwt', 'renew');
+    }
+
+    /**
+     * Return current application data array
+     *
+     * @return array|null
+     */
+    protected static function applicationData(): ?array
+    {
+        $app = CurrentApplication::getApplication();
+        if (empty($app)) {
+            return null;
+        }
+
+        return [
+            'id' => $app->id,
+            'name' => $app->name,
+        ];
     }
 }
