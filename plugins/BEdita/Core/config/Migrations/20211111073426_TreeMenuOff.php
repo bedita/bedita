@@ -15,7 +15,7 @@ class TreeMenuOff extends AbstractMigration
                 'comment' => 'menu on/off (default off)',
                 'default' => '0',
                 'limit' => 10,
-                'null' => true,
+                'null' => false,
                 'signed' => false,
             ])
             ->update();
