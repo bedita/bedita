@@ -11,12 +11,12 @@ class TreeMenuOff extends AbstractMigration
     public function change()
     {
         $this->table('trees')
-            ->changeColumn('menu', 'integer', [
+            ->changeColumn('menu', 'boolean', [
                 'comment' => 'menu on/off (default off)',
                 'default' => '0',
-                'limit' => 10,
+                'limit' => null,
                 'null' => false,
-                'signed' => false,
+                'length' => null,
             ])
             ->update();
     }
