@@ -13,9 +13,13 @@
 
 namespace BEdita\API\Controller;
 
+use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Controller for `/streams` endpoint.
@@ -62,6 +66,20 @@ class StreamsController extends ResourcesController
     }
 
     /**
+     * Allow custom `Accept` header if we are downloading a stream
+     *
+     * {@inheritDoc}
+     */
+    public function beforeFilter(Event $event)
+    {
+        if ($this->request->getParam('action') === 'download') {
+            return;
+        }
+
+        return parent::beforeFilter($event);
+    }
+
+    /**
      * Upload a new stream.
      *
      * @param string $fileName Original file name.
@@ -87,6 +105,30 @@ class StreamsController extends ResourcesController
                     true
                 )
             );
+    }
+
+    /**
+     * Download a stream.
+     *
+     * @param string $uuid Stream UUID.
+     * @return \Cake\Http\Response
+     * @throws \Cake\Http\Exception\NotFoundException
+     */
+    public function download(string $uuid): Response
+    {
+        /** @var \BEdita\Core\Model\Entity\Stream $stream */
+        $stream = $this->Table->get($uuid);
+        $filename = Hash::get($stream, 'file_name', sprintf('stream-%s', $uuid));
+
+        $response = $this->response->withType($stream->get('mime_type'));
+
+        /** @var \Psr\Http\Message\StreamInterface $content */
+        $content = $stream->get('contents');
+        if ($content !== null) {
+            $response = $response->withStringBody($content->getContents());
+        }
+
+        return $response->withDownload($filename);
     }
 
     /**

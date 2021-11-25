@@ -126,6 +126,13 @@ Router::plugin(
             ['controller' => 'Media', 'action' => 'thumbs'],
             ['_name' => 'media:thumbs:multiple']
         );
+        // Download
+        $routes->connect(
+            '/streams/download/:uuid',
+            ['controller' => 'Streams', 'action' => 'download'],
+            ['_name' => 'streams:download']
+        )
+        ->setPass(['uuid']);
 
         $resourcesRoutes = function (array $controllers) {
             $controller = implode('|', $controllers);
@@ -209,6 +216,13 @@ Router::plugin(
             '/trash/:id',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'trash:delete', 'pass' => ['id']]
+        );
+
+        // Applications.
+        $routes->connect(
+            '/applications',
+            ['controller' => 'Applications', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'applications:index']
         );
 
         // Config.
