@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\I18n\Time;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -29,6 +30,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property int $num_login_err
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_created
  *
  * @since 4.0.0
  */
@@ -44,7 +46,15 @@ class User extends Profile
         parent::__construct($properties, $options);
 
         $this->setHidden(['password_hash', 'external_auth'], true);
-        $this->setAccess(['blocked', 'last_login', 'last_login_err', 'num_login_err', 'verified'], false);
+        $access = [
+            'blocked',
+            'last_login',
+            'last_login_err',
+            'num_login_err',
+            'verified',
+            'password_created',
+        ];
+        $this->setAccess($access, false);
     }
 
     /**
@@ -113,6 +123,8 @@ class User extends Profile
      */
     protected function _setPasswordHash($password)
     {
+        $this->password_created = Time::now();
+
         return (new DefaultPasswordHasher())->hash($password);
     }
 }
