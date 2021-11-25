@@ -104,6 +104,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login_err' => null,
                         'num_login_err' => 1,
                         'verified' => '2017-05-29T11:36:00+00:00',
+                        'password_created' => '2017-05-29T11:36:00+00:00',
                         'external_auth' => [
                             [
                                 'provider' => 'example',
@@ -189,6 +190,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login_err' => '2016-03-15T09:57:38+00:00',
                         'num_login_err' => 0,
                         'verified' => null,
+                        'password_created' => '2016-03-15T09:57:38+00:00',
                         'external_auth' => [
                             [
                                 'provider' => 'uuid',
@@ -344,6 +346,7 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login_err' => null,
                     'num_login_err' => 1,
                     'verified' => '2017-05-29T11:36:00+00:00',
+                    'password_created' => '2017-05-29T11:36:00+00:00',
                     'external_auth' => [
                         [
                             'provider' => 'example',

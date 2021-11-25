@@ -495,6 +495,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'last_login_err' => null,
                         'num_login_err' => 1,
                         'verified' => '2017-05-29T11:36:00+00:00',
+                        'password_created' => '2017-05-29T11:36:00+00:00',
                         'external_auth' => [
                             [
                                 'provider' => 'example',
