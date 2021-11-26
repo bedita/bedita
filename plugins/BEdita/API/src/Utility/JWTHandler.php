@@ -15,7 +15,6 @@ namespace BEdita\API\Utility;
 use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
@@ -78,14 +77,13 @@ class JWTHandler
      * Calculate JWT token for auth and renew operations
      *
      * @param array $user Minimal user data to encode in JWT
-     * @param \Cake\Http\ServerRequest $request Request object.
+     * @param string $url Current URL.
      * @return array JWT tokens requested
      */
-    public static function tokens(array $user, ServerRequest $request): array
+    public static function tokens(array $user, string $url): array
     {
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
-        $currentUrl = Router::reverse($request, true);
         $salt = Security::getSalt();
 
         // Common claims
@@ -103,7 +101,7 @@ class JWTHandler
         // Renew token payload
         $payload = $claims + [
             'sub' => Hash::get($user, 'id'),
-            'aud' => $currentUrl,
+            'aud' => $url,
         ];
         $renew = JWT::encode($payload, $salt, $algorithm);
 

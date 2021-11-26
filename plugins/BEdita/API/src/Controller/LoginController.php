@@ -29,6 +29,7 @@ use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -57,8 +58,6 @@ class LoginController extends AppController
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize()
     {
@@ -298,7 +297,7 @@ class LoginController extends AppController
      */
     protected function jwtTokens(array $user)
     {
-        return JWTHandler::tokens($user, $this->request);
+        return JWTHandler::tokens($user, Router::reverse($this->request, true));
     }
 
     /**
