@@ -73,7 +73,6 @@ class ProfilesTable extends Table
                 'city' => 2,
                 'country' => 2,
                 'state_name' => 2,
-                'alias' => 10,
             ],
         ]);
     }
