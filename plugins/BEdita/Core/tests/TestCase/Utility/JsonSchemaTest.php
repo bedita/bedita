@@ -78,7 +78,6 @@ class JsonSchemaTest extends TestCase
                 [
                     'properties' => [
                         'id',
-                        'alias',
                         'another_email',
                         'another_username',
                         'birthdate',
