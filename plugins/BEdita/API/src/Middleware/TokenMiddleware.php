@@ -117,8 +117,9 @@ class TokenMiddleware
             return substr($header, $headerPrefixLength);
         }
 
-        if (!empty($this->getConfig('queryParam'))) {
-            return Hash::get($request->getQueryParams(), $this->getConfig('queryParam'));
+        $name = $this->getConfig('queryParam');
+        if (!empty($name) && Hash::check($request->getQueryParams(), $name)) {
+            return Hash::get($request->getQueryParams(), $name);
         }
 
         return null;
@@ -133,7 +134,7 @@ class TokenMiddleware
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
      */
-    protected function applicationFromApiKey(ServerRequestInterface $request)
+    protected function applicationFromApiKey(ServerRequestInterface $request): void
     {
         $apiKey = $request->getHeaderLine($this->getConfig('apiKey.header'));
         if (empty($apiKey)) {
