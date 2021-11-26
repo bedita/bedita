@@ -18,7 +18,9 @@ use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 
 /**
- * Test for RoutingMiddleware
+ * {@see \BEdita\API\Middleware\CorsMiddleware} Test Case
+ *
+ * @covers \BEdita\API\Middleware\CorsMiddleware
  */
 class CorsMiddlewareTest extends TestCase
 {
