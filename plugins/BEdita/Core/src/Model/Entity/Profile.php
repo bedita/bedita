@@ -36,8 +36,9 @@ namespace BEdita\Core\Model\Entity;
  * @property string $website
  * @property string $national_id_number
  * @property string $vat_number
+ * @property string $alias
  *
- * @since 4.0.0
+ * @since 4.5.0
  */
 class Profile extends ObjectEntity
 {
