@@ -91,7 +91,6 @@ class UsersControllerTest extends IntegrationTestCase
                         'username' => 'first user',
                         'another_username' => null, // custom property
                         'another_email' => null, // custom property
-                        'alias' => null,
                     ],
                     'meta' => [
                         'locked' => true,
@@ -177,7 +176,6 @@ class UsersControllerTest extends IntegrationTestCase
                         'username' => 'second user',
                         'another_username' => 'synapse', // custom property
                         'another_email' => 'synapse@example.org', // custom property
-                        'alias' => null,
                     ],
                     'meta' => [
                         'locked' => false,
