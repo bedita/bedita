@@ -21,6 +21,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $api_key
+ * @property string $client_secret
  * @property string $name
  * @property string $description
  * @property \Cake\I18n\Time $created
@@ -28,6 +29,8 @@ use Cake\ORM\Entity;
  * @property bool $enabled
  *
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
+ *
+ * @since 4.0.0
  */
 class Application extends Entity implements JsonApiSerializable
 {
@@ -40,6 +43,7 @@ class Application extends Entity implements JsonApiSerializable
         '*' => true,
         'id' => false,
         'api_key' => false,
+        'client_secret' => false,
         'created' => false,
         'modified' => false,
     ];
