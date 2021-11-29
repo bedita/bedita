@@ -222,6 +222,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         $headers = [
             'Host' => 'api.example.com',
             'Accept' => 'application/vnd.api+json',
+            'X-Api-Key' => API_KEY,
         ];
 
         if (in_array($method, ['POST', 'PATCH', 'DELETE'])) {

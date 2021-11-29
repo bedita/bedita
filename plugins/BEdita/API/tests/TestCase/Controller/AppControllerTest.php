@@ -38,6 +38,7 @@ class AppControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
 

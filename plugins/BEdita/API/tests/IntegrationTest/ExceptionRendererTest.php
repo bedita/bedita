@@ -81,6 +81,7 @@ class ExceptionRendererTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => $accept,
+                'X-Api-Key' => API_KEY,
             ],
         ]);
 
@@ -160,6 +161,7 @@ class ExceptionRendererTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => $accept,
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles');

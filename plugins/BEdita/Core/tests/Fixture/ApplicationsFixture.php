@@ -30,6 +30,7 @@ class ApplicationsFixture extends TestFixture
     public $records = [
         [
             'api_key' => API_KEY,
+            'client_secret' => null,
             'name' => 'First app',
             'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
             'created' => '2016-10-28 07:10:57',
@@ -38,6 +39,7 @@ class ApplicationsFixture extends TestFixture
         ],
         [
             'api_key' => 'abcdef12345',
+            'client_secret' => 'topsecretstring',
             'name' => 'Disabled app',
             'description' => 'This app has been disabled',
             'created' => '2017-02-17 15:51:29',

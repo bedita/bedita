@@ -18,6 +18,7 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\ApplicationsTable} Test Case
@@ -301,6 +302,60 @@ class ApplicationsTableTest extends TestCase
         $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
 
         static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindCredentials` test case.
+     *
+     * @return array
+     */
+    public function findCredentialsProvider(): array
+    {
+        return [
+            'no secret' => [
+                1,
+                [
+                    'client_id' => API_KEY,
+                ]
+            ],
+            'secret' => [
+                2,
+                [
+                    'client_id' => 'abcdef12345',
+                    'client_secret' => 'topsecretstring',
+                ]
+            ],
+            'badMethodException' => [
+                new \BadMethodCallException('Required option "client_id" must be a not empty string'),
+                [],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findCredentials` method.
+     *
+     * @param int|\Exception $expected Expected count.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @dataProvider findCredentialsProvider()
+     * @covers ::findCredentials()
+     */
+    public function testFindCredentials($expected, $options)
+    {
+        $app = $this->Applications->get(2);
+        $app->set('enabled', true);
+        $this->Applications->saveOrFail($app);
+
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Applications->find('credentials', $options)->first();
+
+        static::assertEquals($expected, Hash::get($result, 'id'));
     }
 
     /**

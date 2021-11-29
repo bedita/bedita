@@ -54,6 +54,7 @@ class CurrentApplicationTest extends TestCase
         parent::setUp();
 
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
+        CurrentApplication::setApplication(null);
         Cache::clear(false, '_bedita_core_');
     }
 
@@ -185,100 +186,5 @@ class CurrentApplicationTest extends TestCase
     public function testSetFromApiKeyFailure()
     {
         CurrentApplication::setFromApiKey('INVALID_API_KEY');
-    }
-
-    /**
-     * Data provider for `testSetFromRequest` test case.
-     *
-     * @return array
-     */
-    public function setFromRequestProvider()
-    {
-        return [
-            'standard' => [
-                1,
-                [
-                    'HTTP_X_API_KEY' => API_KEY,
-                ],
-            ],
-            'invalid API key' => [
-                new ForbiddenException('Invalid API key'),
-                [
-                    'HTTP_X_API_KEY' => 'this API key is invalid!',
-                ],
-            ],
-            'missing API key' => [
-                new ForbiddenException('Missing API key'),
-                [],
-                [],
-                true,
-            ],
-            'anonymous application' => [
-                null,
-                [],
-            ],
-            'query string api key' => [
-                1,
-                [],
-                [
-                    'api_key' => API_KEY,
-                ],
-            ],
-            'query string failure' => [
-                new ForbiddenException('Invalid API key'),
-                [],
-                [
-                    'api_key' => 'this API key is invalid!',
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * Test getting application from request headers.
-     *
-     * @param int|\Exception $expected Expected application ID.
-     * @param array $environment Request headers.
-     * @param array $query Request query strings.
-     * @param bool $blockAnonymous Block anonymous apps flag.
-     * @return void
-     *
-     * @dataProvider setFromRequestProvider()
-     * @covers ::setFromRequest()
-     */
-    public function testSetFromRequest($expected, array $environment, array $query = [], $blockAnonymous = false)
-    {
-        if ($expected instanceof \Exception) {
-            static::expectException(get_class($expected));
-            static::expectExceptionMessage($expected->getMessage());
-        }
-
-        Configure::write('Security.blockAnonymousApps', $blockAnonymous);
-        CurrentApplication::getInstance()->set(null);
-        $environment += ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment', 'query'));
-
-        CurrentApplication::setFromRequest($request);
-
-        static::assertEquals($expected, CurrentApplication::getApplicationId());
-    }
-
-    /**
-     * Test default behavior on missing 'Security.blockAnonymousApps' key
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testSetFromRequestDefault()
-    {
-        static::expectException(ForbiddenException::class);
-        static::expectExceptionMessage('Missing API key');
-
-        Configure::delete('Security.blockAnonymousApps');
-        CurrentApplication::getInstance()->set(null);
-        $environment = ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment'));
-
-        CurrentApplication::setFromRequest($request);
     }
 }
