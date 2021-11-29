@@ -38,7 +38,7 @@ namespace BEdita\Core\Model\Entity;
  * @property string $vat_number
  * @property string $pseudonym
  *
- * @since 4.5.0
+ * @since 4.0.0
  */
 class Profile extends ObjectEntity
 {
