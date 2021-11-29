@@ -106,6 +106,7 @@ class JsonSchemaTest extends TestCase
                         'num_login_err',
                         'person_title',
                         'phone',
+                        'pseudonym',
                         'publish_end',
                         'publish_start',
                         'published',
