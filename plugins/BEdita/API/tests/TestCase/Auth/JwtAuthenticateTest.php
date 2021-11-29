@@ -24,6 +24,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
+use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -40,7 +41,11 @@ class JwtAuthenticateTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
@@ -54,6 +59,8 @@ class JwtAuthenticateTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        Router::fullBaseUrl('http://example.org');
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
@@ -359,18 +366,86 @@ class JwtAuthenticateTest extends TestCase
      * @return void
      *
      * @covers ::handleRefreshToken()
+     * @covers ::getUser()
      */
     public function testHandleRefreshToken(): void
     {
         $auth = new JwtAuthenticate(new ComponentRegistry(), []);
 
-        $data = ['id' => 1, 'aud' => 'http://api.example.org', 'sub' => 1];
-        $request = new ServerRequest();
+        $data = ['sub' => 1, 'aud' => 'http://example.org/auth'];
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Login',
+                'action' => 'login',
+                '_method' => 'POST',
+            ],
+        ]);
         $request = $request->withAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, $data)
             ->withData('grant_type', 'refresh_token');
-        $user = $auth->getUser($request);
+        $user = $auth->authenticate($request, new Response());
 
         static::assertNotEmpty($user);
+        static::assertArrayHasKey('username', $user);
+        static::assertEquals(1, $user['id']);
+    }
+
+    /**
+     * Test `handleRefreshToken()` method on renew client credentials case
+     *
+     * @return void
+     *
+     * @covers ::handleRefreshToken()
+     */
+    public function testRenewClientCredentials(): void
+    {
+        $data = ['sub' => null, 'aud' => 'http://example.org/auth', 'app' => ['id' => 1]];
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Login',
+                'action' => 'login',
+                '_method' => 'POST',
+            ],
+        ]);
+        $controller = new Controller($request);
+        $controller->loadComponent('Auth');
+        $auth = new JwtAuthenticate(new ComponentRegistry($controller), []);
+        $request = $request->withAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, $data)
+            ->withData('grant_type', 'refresh_token');
+        $result = $auth->authenticate($request, new Response());
+
+        static::assertFalse($result);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return array
+     */
+    public function checkAudienceProvider(): array
+    {
+        return [
+            'ok' => [
+                true,
+                [
+                    'sub' => 1,
+                    'aud' => 'http://example.org/auth',
+                ],
+            ],
+            'bad aud' => [
+                new UnauthorizedException('Invalid audience http://gustavo.net'),
+                [
+                    'aud' => 'http://gustavo.net',
+                ],
+            ],
+            'no aud' => [
+                new \DomainException('Missing audience'),
+                [
+                    'some' => 'value',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -378,14 +453,36 @@ class JwtAuthenticateTest extends TestCase
      *
      * @return void
      *
+     * @dataProvider checkAudienceProvider
      * @covers ::checkAudience()
      */
-    public function testCheckAudience(): void
+    public function testCheckAudience($expected, array $data): void
     {
-        $auth = new JwtAuthenticate(new ComponentRegistry(), []);
-        $request = ServerRequestFactory::fromGlobals();
-        $res = $auth->getUser($request);
-        static::assertFalse($res);
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Login',
+                'action' => 'login',
+                '_method' => 'POST',
+            ],
+        ]);
+        $controller = new Controller($request);
+        $controller->loadComponent('Auth');
+        $auth = new JwtAuthenticate(new ComponentRegistry($controller), []);
+        $request = $request->withAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, $data)
+            ->withData('grant_type', 'refresh_token');
+
+        $result = $auth->authenticate($request, new Response());
+        if ($expected) {
+            static::assertNotEmpty($result);
+        } else {
+            static::assertFalse($result);
+        }
     }
 
     /**
