@@ -70,8 +70,8 @@ class CommonEventHandler implements EventListenerInterface
                 ErrorHandlerMiddleware::class,
                 new CorsMiddleware(Configure::read('CORS'))
             )
-            ->insertBefore(
-                RoutingMiddleware::class,
+            ->insertAfter(
+                ErrorHandlerMiddleware::class,
                 new TokenMiddleware()
             );
     }
