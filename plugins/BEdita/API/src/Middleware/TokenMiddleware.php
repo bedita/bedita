@@ -52,6 +52,13 @@ class TokenMiddleware
             'header' => 'X-Api-Key',
             'query' => 'api_key',
         ],
+        'clientAuth' => [
+            'path' => '/auth',
+            'field' => [
+                'name' => 'grant_type',
+                'value' => 'client_credentials',
+            ],
+        ],
     ];
 
     /**
@@ -136,23 +143,74 @@ class TokenMiddleware
      */
     protected function applicationFromApiKey(ServerRequestInterface $request): void
     {
-        $apiKey = $request->getHeaderLine($this->getConfig('apiKey.header'));
-        if (empty($apiKey)) {
-            $apiKey = (string)Hash::get(
-                $request->getQueryParams(),
-                $this->getConfig('apiKey.query')
-            );
-        }
-        if (empty($apiKey) && empty(Configure::read('Security.blockAnonymousApps', true))) {
+        $apiKey = $this->fetchApiKey($request);
+        // null API Key as return type is allowed => skip application load
+        if ($apiKey === null) {
             return;
         }
 
         try {
             CurrentApplication::setFromApiKey($apiKey);
-        } catch (BadMethodCallException $e) {
-            throw new ForbiddenException(__d('bedita', 'Missing API key'));
         } catch (RecordNotFoundException $e) {
             throw new ForbiddenException(__d('bedita', 'Invalid API key'));
         }
+    }
+
+    /**
+     * Fetch API Key from headers or query string.
+     * Check if a null API Key is allowed, otherwise raise a 403 Error
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
+     * @return string|null
+     */
+    protected function fetchApiKey(ServerRequestInterface $request): ?string
+    {
+        $apiKey = $request->getHeaderLine($this->getConfig('apiKey.header'));
+        if (!empty($apiKey)) {
+            return $apiKey;
+        }
+
+        $apiKey = (string)Hash::get(
+            $request->getQueryParams(),
+            $this->getConfig('apiKey.query')
+        );
+        if (!empty($apiKey)) {
+            return $apiKey;
+        }
+        // An empty API KEY is allowed if 'Security.blockAnonymousApps' is set to false
+        // or in case of a client_credentials request
+        if (empty(Configure::read('Security.blockAnonymousApps', true))) {
+            return null;
+        }
+        $this->verifyClientCredentials($request);
+
+        return null;
+    }
+
+    /**
+     * Verify that the request is a `client_credentials` request:
+     *  * `POST /auth` as method and path
+     *  * `grant_type` field with `client_credentials` value must be set in POST body
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
+     * @return void
+     */
+    protected function verifyClientCredentials(ServerRequestInterface $request): void
+    {
+        $path = $request->getUri()->getPath();
+        $isPost = $request->getMethod() === 'POST';
+        // We assume that `Content-Type` is application/json
+        $body = (array)json_decode((string)$request->getBody(), true);
+        $value = Hash::get($body, $this->getConfig('clientAuth.field.name'));
+        $contentType = $request->getHeaderLine('Content-Type');
+        if (
+            $path === $this->getConfig('clientAuth.path') &&
+            $isPost && $value === $this->getConfig('clientAuth.field.name') &&
+            $contentType === 'application/json'
+        ) {
+            return;
+        }
+
+        throw new ForbiddenException(__d('bedita', 'Missing API key'));
     }
 }
