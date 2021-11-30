@@ -178,7 +178,7 @@ class TokenMiddleware
             return $apiKey;
         }
         // An empty API KEY is allowed if 'Security.blockAnonymousApps' is set to false
-        // or in case of a client_credentials request
+        // or in case of an authentication request with `client_credentials` as grant type.
         if (empty(Configure::read('Security.blockAnonymousApps', true))) {
             return null;
         }
@@ -205,7 +205,7 @@ class TokenMiddleware
         $contentType = $request->getHeaderLine('Content-Type');
         if (
             $path === $this->getConfig('clientAuth.path') &&
-            $isPost && $value === $this->getConfig('clientAuth.field.name') &&
+            $isPost && $value === $this->getConfig('clientAuth.field.value') &&
             $contentType === 'application/json'
         ) {
             return;
