@@ -355,11 +355,25 @@ class LoginControllerTest extends IntegrationTestCase
     {
         // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
         // POST /auth with role id 2 on application id 2 MUST fail
-        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));
+        $table = TableRegistry::getTableLocator()->get('Applications');
+        $app = $table->get(2);
+        $app->set('enabled', true);
+        $table->saveOrFail($app);
 
-        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-
-        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        $data = [
+            'username' => 'second user',
+            'password' => 'password2',
+            'client_id' => 'abcdef12345',
+            'client_secret' => 'topsecretstring',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($data));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);

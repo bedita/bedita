@@ -55,6 +55,8 @@ class CurrentApplicationTest extends TestCase
 
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
         CurrentApplication::setApplication(null);
+        Configure::delete('appVal');
+        Configure::delete('someVal');
         Cache::clear(false, '_bedita_core_');
     }
 
