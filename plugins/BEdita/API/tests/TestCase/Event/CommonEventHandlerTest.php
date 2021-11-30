@@ -21,9 +21,7 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
-use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\TestCase;
-use TestApp\Application;
 
 /**
  * @coversDefaultClass \BEdita\API\Event\CommonEventHandler
@@ -69,12 +67,9 @@ class CommonEventHandlerTest extends TestCase
         $middleware->add(new ErrorHandlerMiddleware());
         static::assertCount(1, $middleware);
 
-        $middleware->add(new RoutingMiddleware(new Application(CONFIG)));
-        static::assertCount(2, $middleware);
-
         $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
         EventManager::instance()->dispatch($event);
-        static::assertCount(5, $middleware);
+        static::assertCount(4, $middleware);
         static::assertInstanceOf(AnalyticsMiddleware::class, $middleware->get(0));
         static::assertInstanceOf(CorsMiddleware::class, $middleware->get(1));
         static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(2));

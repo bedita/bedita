@@ -17,6 +17,7 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -30,7 +31,19 @@ use Firebase\JWT\JWT;
  */
 class TokenMiddlewareTest extends TestCase
 {
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.Config',
+    ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function setUp()
     {
         CurrentApplication::setApplication(null);
@@ -122,6 +135,8 @@ class TokenMiddlewareTest extends TestCase
      * @covers ::readApplication()
      * @covers ::getToken()
      * @covers ::applicationFromApiKey()
+     * @covers ::fetchApiKey()
+     * @covers ::verifyClientCredentials()
      */
     public function testInvoke($expected, array $server, ?array $query = null, bool $blockAnonymous = false): void
     {
@@ -157,7 +172,9 @@ class TokenMiddlewareTest extends TestCase
      * Test default behavior on missing 'Security.blockAnonymousApps' key
      *
      * @return void
-     * @coversNothing
+     *
+     * @covers ::fetchApiKey()
+     * @covers ::verifyClientCredentials()
      */
     public function testGetApplicationDefault()
     {
@@ -172,5 +189,43 @@ class TokenMiddlewareTest extends TestCase
             new Response(),
             null
         );
+    }
+
+    /**
+     * Test default behavior on `client_credentials` request
+     *
+     * @return void
+     *
+     * @covers ::fetchApiKey()
+     * @covers ::verifyClientCredentials()
+     */
+    public function testClientCredentialsRequest()
+    {
+        CurrentApplication::setApplication(null);
+        Configure::delete('Security.blockAnonymousApps');
+
+        $request = new ServerRequest([
+            'input' => json_encode([
+                'client_id' => '1234567890',
+                'grant_type' => 'client_credentials',
+            ]),
+            'environment' => [
+                'CONTENT_TYPE' => 'application/json',
+                'REQUEST_METHOD' => 'POST',
+                'REQUEST_URI' => '/auth',
+            ],
+        ]);
+        $middleware = new TokenMiddleware();
+        /** @var \Zend\Diactoros\ServerRequest $result */
+        $result = $middleware(
+            $request,
+            new Response(),
+            function ($req, $res) {
+                return $req;
+            }
+        );
+
+        static::assertNull(CurrentApplication::getApplication());
+        static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
     }
 }

@@ -358,19 +358,19 @@ class LoginControllerTest extends IntegrationTestCase
         $table = TableRegistry::getTableLocator()->get('Applications');
         $app = $table->get(2);
         $app->set('enabled', true);
+        $app->set('client_secret', null);
         $table->saveOrFail($app);
 
         $this->configRequest([
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
+                'X-Api-Key' => 'abcdef12345',
             ],
         ]);
         $data = [
             'username' => 'second user',
             'password' => 'password2',
-            'client_id' => 'abcdef12345',
-            'client_secret' => 'topsecretstring',
             'grant_type' => 'password',
         ];
         $this->post('/auth', json_encode($data));
