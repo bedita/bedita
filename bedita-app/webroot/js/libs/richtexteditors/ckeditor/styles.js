@@ -40,6 +40,18 @@ CKEDITOR.stylesSet.add( 'default', [
 		element: 'aside'
 	},
 
+	{		
+		name: 'Stile Esercizio',
+		element: 'DIV',
+		attributes: { 'class': 'stile-esercizio' }
+	},
+
+	{		
+		name: 'Raccordo',
+		element: 'DIV',
+		attributes: { 'class': 'raccordo' }
+	},
+
 	/* Inline Styles */
 
 	{ name: 'Definition',		element: 'dfn'},
