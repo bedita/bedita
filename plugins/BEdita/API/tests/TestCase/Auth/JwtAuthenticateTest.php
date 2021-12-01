@@ -14,20 +14,15 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\JwtAuthenticate;
-use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Middleware\TokenMiddleware;
-use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\I18n\Time;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\JwtAuthenticate
@@ -307,7 +302,6 @@ class JwtAuthenticateTest extends TestCase
 
         $request = $request->withAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, ['aud' => 'http://example.org'])
             ->withData('grant_type', 'refresh_token');
-
 
         $controller = new Controller($request);
         $controller->loadComponent('Auth', [
