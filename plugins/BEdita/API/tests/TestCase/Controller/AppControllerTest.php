@@ -175,6 +175,7 @@ class AppControllerTest extends IntegrationTestCase
                         'publish_end' => null,
                         'another_username' => null, // custom property
                         'another_email' => null, // custom property
+                        'pseudonym' => null,
                     ],
                     'meta' => [
                         'blocked' => false,

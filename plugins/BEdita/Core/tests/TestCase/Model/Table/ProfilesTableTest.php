@@ -254,6 +254,7 @@ class ProfilesTableTest extends TestCase
             'another_birthdate',
             'another_surname',
             'number_of_friends',
+            'pseudonym',
         ];
 
         sort($expectedProperties);
