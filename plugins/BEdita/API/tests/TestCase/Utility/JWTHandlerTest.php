@@ -71,6 +71,7 @@ class JWTHandlerTest extends TestCase
      * @dataProvider decodeProvider
      *
      * @covers ::decode()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testDecode($expected, string $token, array $options = []): void
     {
