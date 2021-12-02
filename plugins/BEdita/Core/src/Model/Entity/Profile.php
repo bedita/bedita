@@ -36,6 +36,7 @@ namespace BEdita\Core\Model\Entity;
  * @property string $website
  * @property string $national_id_number
  * @property string $vat_number
+ * @property string $pseudonym
  *
  * @since 4.0.0
  */
