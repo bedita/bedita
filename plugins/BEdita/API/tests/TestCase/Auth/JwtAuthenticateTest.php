@@ -189,6 +189,7 @@ class JwtAuthenticateTest extends TestCase
                     'last_login_err' => null,
                     'num_login_err' => 1,
                     'verified' => new Time('2017-05-29 11:36:00'),
+                    'password_modified' => new Time('2017-05-29 11:36:00'),
                 ],
                 [
                     'userModel' => 'BEdita/API.Users',
