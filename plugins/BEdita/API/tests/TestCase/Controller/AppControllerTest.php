@@ -189,6 +189,7 @@ class AppControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'verified' => '2017-05-29T11:36:00+00:00',
+                        'password_modified' => '2017-05-29T11:36:00+00:00',
                         'external_auth' => [
                             [
                                 'provider' => 'example',

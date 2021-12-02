@@ -475,6 +475,7 @@ class JsonApiTraitTest extends TestCase
             'num_login_err',
             'published',
             'verified',
+            'password_modified',
         ];
 
         $user = $this->Roles->get(1, ['contain' => ['Users']])
@@ -542,6 +543,7 @@ class JsonApiTraitTest extends TestCase
             'published',
             'relation',
             'verified',
+            'password_modified',
         ];
         $expectedRelation = [
             'id',
