@@ -164,8 +164,8 @@ class UserTest extends TestCase
 
         static::assertNotEquals('myPassword', $user->password_hash);
         static::assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
-        static::assertNotEmpty($user->password_created);
-        static::assertGreaterThanOrEqual($user->password_created->timestamp, $now->timestamp);
+        static::assertNotEmpty($user->password_modified);
+        static::assertGreaterThanOrEqual($user->password_modified->timestamp, $now->timestamp);
     }
 
     /**

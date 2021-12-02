@@ -30,7 +30,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property int $num_login_err
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_created
+ * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_modified
  *
  * @since 4.0.0
  */
@@ -52,7 +52,7 @@ class User extends Profile
             'last_login_err',
             'num_login_err',
             'verified',
-            'password_created',
+            'password_modified',
         ];
         $this->setAccess($access, false);
     }
@@ -123,7 +123,7 @@ class User extends Profile
      */
     protected function _setPasswordHash($password)
     {
-        $this->password_created = Time::now();
+        $this->password_modified = Time::now();
 
         return (new DefaultPasswordHasher())->hash($password);
     }

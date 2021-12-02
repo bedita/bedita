@@ -13,8 +13,8 @@ class PasswordCreated extends AbstractMigration
     public function change()
     {
         $this->table('users')
-            ->addColumn('password_created', 'datetime', [
-                'comment' => 'Password creation date',
+            ->addColumn('password_modified', 'datetime', [
+                'comment' => 'Password last modification date',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
