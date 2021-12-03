@@ -52,7 +52,7 @@ CKEDITOR.stylesSet.add( 'default', [
 		attributes: { 'class': 'raccordo' }
 	},
 
-	{		
+	{
 		name: 'Nota',
 		element: 'DIV',
 		attributes: { 'id': 'note' }
