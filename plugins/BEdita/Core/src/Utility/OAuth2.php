@@ -54,7 +54,7 @@ class OAuth2
         $client = new Client((array)$this->getConfig('client'));
         $query = $this->getQuery($accessToken);
         $headers = $this->getHeaders($accessToken);
-        $response = $client->get($url, [], compact('headers'));
+        $response = $client->get($url, $query, compact('headers'));
 
         return (array)$response->getJson();
     }
