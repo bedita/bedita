@@ -18,11 +18,11 @@ use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
+use BEdita\Core\Utility\OAuth2;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Client;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\I18n\Time;
@@ -343,7 +343,12 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         if (empty($authProvider)) {
             throw new UnauthorizedException(__d('bedita', 'External auth provider not found'));
         }
-        $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
+        $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
+        $providerResponse = $this->getOAuth2Response(
+            $authProvider->get('url'),
+            $data['access_token'],
+            $options
+        );
         if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
             throw new UnauthorizedException(__d('bedita', 'External auth failed'));
         }
@@ -356,14 +361,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @param string $url OAuth2 provider URL
      * @param string $accessToken Access token to use in request
+     * @param array $options OAuth2 request options
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response(string $url, string $accessToken): array
+    protected function getOAuth2Response(string $url, string $accessToken, array $options = []): array
     {
-        $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
-
-        return (array)$response->getJson();
+        return (new OAuth2())->response($url, $accessToken, $options);
     }
 
     /**
