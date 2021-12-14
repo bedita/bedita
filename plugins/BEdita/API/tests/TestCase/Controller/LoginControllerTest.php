@@ -165,8 +165,8 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test `setGrantType()` method
      *
-     * @param string $expected
-     * @param array $post
+     * @param string $expected Expected result.
+     * @param array $post POST data.
      * @return void
      *
      * @dataProvider setGrantTypeProvider
@@ -219,8 +219,8 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test `checkClientCredentials()` method
      *
-     * @param string $expected
-     * @param array $post
+     * @param mixed $expected Expected result.
+     * @param array $post POST data.
      * @return void
      *
      * @dataProvider checkClientCredentialsProvider

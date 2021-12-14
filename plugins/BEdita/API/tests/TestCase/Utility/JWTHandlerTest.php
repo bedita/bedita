@@ -105,14 +105,24 @@ class JWTHandlerTest extends TestCase
         static::assertArrayHasKey('renew', $tokens);
 
         $jwt = (array)JWT::decode($tokens['jwt'], Security::getSalt(), ['HS256']);
+
+        static::assertArrayHasKey('iat', $jwt);
+        static::assertArrayHasKey('nbf', $jwt);
+        static::assertArrayHasKey('exp', $jwt);
+
+        unset($jwt['iat'], $jwt['nbf'], $jwt['exp']);
         $expected = $user + [
             'iss' => Router::fullBaseUrl(),
             'app' => null,
         ];
-        unset($jwt['iat'], $jwt['nbf'], $jwt['exp']);
         static::assertEquals($expected, $jwt);
 
         $renew = (array)JWT::decode($tokens['renew'], Security::getSalt(), ['HS256']);
+
+        static::assertArrayHasKey('iat', $renew);
+        static::assertArrayHasKey('nbf', $renew);
+        static::assertArrayHasKey('exp', $renew);
+
         $expected = [
             'iss' => Router::fullBaseUrl(),
             'app' => null,

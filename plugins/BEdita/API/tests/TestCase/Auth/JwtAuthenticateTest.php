@@ -190,7 +190,7 @@ class JwtAuthenticateTest extends TestCase
     }
 
     /**
-     * Undocumented function
+     * Data provider for `testCheckAudience()`
      *
      * @return array
      */

@@ -127,6 +127,10 @@ class TokenMiddlewareTest extends TestCase
     /**
      * Test middleware invocation.
      *
+     * @param mixed $expected Expected result.
+     * @param array $server Request $_SERVER data.
+     * @param array|null $query Request query data.
+     * @param boolean $blockAnonymous Block anonymous apps flag.
      * @return void
      *
      * @dataProvider invokeProvider
