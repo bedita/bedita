@@ -95,7 +95,7 @@ class JWTHandler
             'app' => static::applicationData(),
         ];
         // Access token payload
-        $payload = $user + $claims;
+        $payload = $claims + $user;
         $jwt = JWT::encode($payload, $salt, $algorithm);
 
         // Renew token payload
