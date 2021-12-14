@@ -160,6 +160,6 @@ class AuthenticationTest extends IntegrationTestCase
         $jwt = Hash::get($body, 'meta.jwt');
         static::assertNotNull($jwt);
         $renew = Hash::get($body, 'meta.renew');
-        static::assertNotNull($jwt);
+        static::assertNotNull($renew);
     }
 }
