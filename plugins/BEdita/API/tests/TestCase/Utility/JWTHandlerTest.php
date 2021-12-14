@@ -61,7 +61,7 @@ class JWTHandlerTest extends TestCase
     }
 
     /**
-     * Test `getUser` method.
+     * Test `decode` method.
      *
      * @param array|false|\Exception $expected Expected result.
      * @param string $token Token.
