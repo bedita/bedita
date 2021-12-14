@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class RoleTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

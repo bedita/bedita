@@ -32,7 +32,6 @@ use Cake\TestSuite\TestCase;
  */
 class ChangeCredentialsActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

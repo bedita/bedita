@@ -20,7 +20,6 @@ namespace BEdita\Core\Model\Validation;
  */
 class MediaValidator extends ObjectsValidator
 {
-
     /**
      * {@inheritDoc}
      *

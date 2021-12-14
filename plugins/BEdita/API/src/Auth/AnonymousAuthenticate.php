@@ -24,7 +24,6 @@ use Cake\Http\ServerRequest;
  */
 class AnonymousAuthenticate extends BaseAuthenticate
 {
-
     /**
      * {@inheritDoc}
      */

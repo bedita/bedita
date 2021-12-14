@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class UpdateRelatedAction extends UpdateAssociatedAction
 {
-
     /** @inheritDoc */
     protected function getTargetEntities(array $data, Association $association): array
     {

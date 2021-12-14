@@ -25,7 +25,6 @@ use Migrations\Migrations;
  */
 class InitSchemaTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      *

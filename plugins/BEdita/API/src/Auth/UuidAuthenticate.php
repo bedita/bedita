@@ -33,7 +33,6 @@ use Cake\Validation\Validation;
  */
 class UuidAuthenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *

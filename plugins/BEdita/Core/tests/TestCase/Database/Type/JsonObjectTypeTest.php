@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class JsonObjectTypeTest extends TestCase
 {
-
     /**
      * Data provider for `testToPHP` test case.
      *

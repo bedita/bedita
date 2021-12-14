@@ -10,7 +10,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class AsyncJobsFixture extends TestFixture
 {
-
     /**
      * Records
      *

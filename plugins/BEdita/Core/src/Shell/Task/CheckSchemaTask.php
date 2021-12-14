@@ -31,7 +31,6 @@ use Migrations\Migrations;
  */
 class CheckSchemaTask extends Shell
 {
-
     /**
      * Registry of all issues found.
      *

@@ -26,7 +26,6 @@ use Cake\TestSuite\TestCase;
  */
 class RelationsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

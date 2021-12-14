@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class AuthProvidersTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

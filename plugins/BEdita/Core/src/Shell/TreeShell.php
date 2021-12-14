@@ -27,7 +27,6 @@ use Cake\Console\Shell;
  */
 class TreeShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

@@ -57,7 +57,6 @@ use Cake\Utility\Hash;
  */
 class ObjectsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

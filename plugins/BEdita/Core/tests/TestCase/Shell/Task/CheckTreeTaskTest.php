@@ -24,7 +24,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class CheckTreeTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Trees table.
      *

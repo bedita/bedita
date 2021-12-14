@@ -26,7 +26,6 @@ use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
  */
 class ThumbnailServiceTest extends TestCase
 {
-
     /**
      * Fixtures.
      *

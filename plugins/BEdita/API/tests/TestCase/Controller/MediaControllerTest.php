@@ -26,7 +26,6 @@ use Cake\Utility\Hash;
  */
 class MediaControllerTest extends IntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

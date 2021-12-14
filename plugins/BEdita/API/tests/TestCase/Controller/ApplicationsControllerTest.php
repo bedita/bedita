@@ -20,7 +20,6 @@ use BEdita\API\Test\TestConstants;
  */
 class ApplicationsControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test index method.
      *

@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class RelationTypesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

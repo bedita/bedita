@@ -20,7 +20,6 @@ namespace BEdita\Core\Model\Action;
  */
 class GetEntityAction extends BaseAction
 {
-
     /**
      * Table.
      *

@@ -18,7 +18,6 @@ use Cake\ORM\Entity;
  */
 class ObjectRelation extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

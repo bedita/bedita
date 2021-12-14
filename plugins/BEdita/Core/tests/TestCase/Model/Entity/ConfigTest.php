@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class ConfigTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

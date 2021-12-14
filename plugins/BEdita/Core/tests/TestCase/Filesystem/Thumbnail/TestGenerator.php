@@ -21,7 +21,6 @@ use BEdita\Core\Model\Entity\Stream;
  */
 class TestGenerator extends ThumbnailGenerator
 {
-
     /**
      * Fake thumbnail URL.
      *

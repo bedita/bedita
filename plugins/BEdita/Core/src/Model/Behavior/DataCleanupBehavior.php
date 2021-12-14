@@ -30,7 +30,6 @@ use Cake\Utility\Inflector;
  */
 class DataCleanupBehavior extends Behavior
 {
-
     /**
      * Default configuration.
      *

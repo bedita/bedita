@@ -37,7 +37,6 @@ use Cake\Utility\Inflector;
  */
 class ListAssociatedAction extends BaseAction
 {
-
     /**
      * Name of inverse association.
      *

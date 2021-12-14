@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  */
 class SqlConventionsValidatorTest extends TestCase
 {
-
     /**
      * Data provider for `testValidation` provider.
      *

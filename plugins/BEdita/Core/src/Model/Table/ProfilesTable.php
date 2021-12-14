@@ -34,7 +34,6 @@ use Cake\Utility\Hash;
  */
 class ProfilesTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class EmailTest extends TestCase
 {
-
     /**
      * {@inheritDoc}
      */

@@ -26,7 +26,6 @@ use Cake\Utility\Hash;
  */
 class ObjectEntityTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

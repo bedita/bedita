@@ -28,7 +28,6 @@ use Cake\Utility\Inflector;
  */
 class ResourcesShell extends Shell
 {
-
     /**
      * Accepted resource types
      *

@@ -22,7 +22,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class SpecShellTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Name for temporary configuration file.
      *

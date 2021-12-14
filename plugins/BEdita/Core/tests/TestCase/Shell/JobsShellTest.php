@@ -26,7 +26,6 @@ use Cake\Utility\Text;
  */
 class JobsShellTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Fixtures
      *

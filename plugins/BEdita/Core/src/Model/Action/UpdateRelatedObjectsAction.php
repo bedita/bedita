@@ -27,7 +27,6 @@ use Cake\Utility\Hash;
  */
 abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 {
-
     /**
      * {@inheritDoc}
      */

@@ -26,7 +26,6 @@ use Cake\Http\ServerRequest;
  */
 class OAuth2Authenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *

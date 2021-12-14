@@ -22,7 +22,6 @@ use BEdita\API\Controller\ResourcesController;
  */
 abstract class AdminController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */

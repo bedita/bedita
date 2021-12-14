@@ -9,7 +9,6 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectPermissionsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

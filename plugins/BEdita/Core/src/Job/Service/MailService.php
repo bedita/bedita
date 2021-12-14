@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class MailService implements JobService
 {
-
     /**
      * Send a single email.
      *

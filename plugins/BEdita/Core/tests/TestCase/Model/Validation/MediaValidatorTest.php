@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  */
 class MediaValidatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *

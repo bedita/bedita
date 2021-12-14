@@ -26,7 +26,6 @@ use Cake\TestSuite\TestCase;
  */
 class ListAssociatedActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

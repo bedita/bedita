@@ -41,7 +41,6 @@ use Cake\Validation\Validator;
  */
 class AnnotationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

@@ -29,7 +29,6 @@ use Cake\ORM\TableRegistry;
  */
 class ListRelatedObjectsAction extends ListAssociatedAction
 {
-
     /**
      * {@inheritDoc}
      */

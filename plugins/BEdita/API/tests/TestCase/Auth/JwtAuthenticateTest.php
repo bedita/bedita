@@ -31,7 +31,6 @@ use Firebase\JWT\JWT;
  */
 class JwtAuthenticateTest extends TestCase
 {
-
     /**
      * Fixtures
      *

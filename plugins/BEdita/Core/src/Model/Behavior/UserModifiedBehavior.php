@@ -28,7 +28,6 @@ use Cake\ORM\Behavior;
  */
 class UserModifiedBehavior extends Behavior
 {
-
     /**
      * Default config
      *

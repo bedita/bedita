@@ -10,7 +10,6 @@ use Cake\TestSuite\TestCase;
  */
 class MediaTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

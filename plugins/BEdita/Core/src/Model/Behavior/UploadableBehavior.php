@@ -27,7 +27,6 @@ use Psr\Http\Message\StreamInterface;
  */
 class UploadableBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

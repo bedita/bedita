@@ -30,7 +30,6 @@ use Cake\TestSuite\TestCase;
  */
 class OTPAuthenticateTest extends TestCase
 {
-
     /**
      * Fixtures
      *

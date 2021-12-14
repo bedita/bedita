@@ -20,7 +20,6 @@ use Cake\Database\Schema\TableSchema;
  */
 class MediaTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

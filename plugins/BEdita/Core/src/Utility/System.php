@@ -23,7 +23,6 @@ use Cake\Core\Plugin;
  */
 class System
 {
-
     /**
      * Get status information
      *

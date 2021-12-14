@@ -9,7 +9,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class PropertiesFixture extends TestFixture
 {
-
     /**
      * Records
      *

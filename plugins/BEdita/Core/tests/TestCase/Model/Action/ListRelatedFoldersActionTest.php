@@ -27,7 +27,6 @@ use Cake\Utility\Inflector;
  */
 class ListRelatedFoldersActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

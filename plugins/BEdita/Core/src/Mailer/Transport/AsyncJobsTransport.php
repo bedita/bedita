@@ -28,7 +28,6 @@ use Cake\ORM\TableRegistry;
  */
 class AsyncJobsTransport extends AbstractTransport
 {
-
     /**
      * {@inheritDoc}
      */

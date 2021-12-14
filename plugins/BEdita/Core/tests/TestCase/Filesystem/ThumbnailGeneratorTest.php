@@ -21,7 +21,6 @@ use Cake\TestSuite\TestCase;
  */
 class ThumbnailGeneratorTest extends TestCase
 {
-
     /**
      * Test `initialize` method.
      *

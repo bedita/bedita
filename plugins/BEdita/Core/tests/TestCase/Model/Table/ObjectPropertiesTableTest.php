@@ -9,7 +9,6 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectPropertiesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

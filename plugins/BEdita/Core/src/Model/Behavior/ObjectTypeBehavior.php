@@ -24,7 +24,6 @@ use Cake\ORM\TableRegistry;
  */
 class ObjectTypeBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

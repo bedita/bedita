@@ -25,7 +25,6 @@ use Cake\ORM\Table;
  */
 class TreeBehavior extends CakeTreeBehavior
 {
-
     /**
      * {@inheritDoc}
      *

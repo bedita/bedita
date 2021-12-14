@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectTypeBehaviorTest extends TestCase
 {
-
     /**
      * Fixtures
      *

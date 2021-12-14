@@ -40,7 +40,6 @@ use Cake\Datasource\ConnectionManager;
  */
 class BeditaShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

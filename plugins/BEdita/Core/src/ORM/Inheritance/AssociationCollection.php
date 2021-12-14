@@ -28,7 +28,6 @@ use Cake\ORM\AssociationCollection as CakeAssociationCollection;
  */
 class AssociationCollection extends CakeAssociationCollection
 {
-
     /**
      * Inner association collection.
      *

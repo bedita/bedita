@@ -28,7 +28,6 @@ use Cake\TestSuite\TestCase;
  */
 class UniqueNameBehaviorTest extends TestCase
 {
-
     /**
      * Fixtures
      *

@@ -26,7 +26,6 @@ use League\Flysystem\MountManager;
  */
 class FilesystemRegistryTest extends TestCase
 {
-
     /**
      * {@inheritDoc}
      */

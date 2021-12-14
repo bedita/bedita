@@ -22,7 +22,6 @@ use BEdita\API\Controller\ResourcesController;
  */
 abstract class ModelController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */

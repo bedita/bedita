@@ -27,7 +27,6 @@ use Exception;
  */
 class UpdateRelatedActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

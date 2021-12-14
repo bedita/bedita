@@ -24,7 +24,6 @@ use League\Flysystem\Adapter\Local;
  */
 class LocalAdapter extends FilesystemAdapter
 {
-
     /**
      * {@inheritDoc}
      */

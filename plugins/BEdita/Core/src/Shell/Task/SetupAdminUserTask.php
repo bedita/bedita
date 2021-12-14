@@ -27,7 +27,6 @@ use Cake\ORM\Exception\PersistenceFailedException;
  */
 class SetupAdminUserTask extends Shell
 {
-
     /**
      * Default username of first user.
      *

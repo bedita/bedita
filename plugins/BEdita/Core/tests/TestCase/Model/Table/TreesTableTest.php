@@ -30,7 +30,6 @@ use Cake\TestSuite\TestCase;
  */
 class TreesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

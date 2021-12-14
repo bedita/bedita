@@ -23,7 +23,6 @@ use Cake\Utility\Inflector;
  */
 class ServiceRegistry
 {
-
     /**
      * Registered instances.
      *

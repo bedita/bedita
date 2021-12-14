@@ -22,7 +22,6 @@ use Cake\Core\Exception\Exception;
  */
 class InvalidThumbnailOptionsException extends Exception
 {
-
     /**
      * {@inheritDoc}
      */

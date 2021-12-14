@@ -21,7 +21,6 @@ namespace BEdita\Core;
  */
 trait SingletonTrait
 {
-
     /**
      * Singleton instance.
      *

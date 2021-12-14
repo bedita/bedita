@@ -20,7 +20,6 @@ namespace BEdita\Core\Utility;
  */
 interface JsonApiSerializable
 {
-
     /**
      * Tell JSON API serializer to exclude `attributes` from resource.
      *

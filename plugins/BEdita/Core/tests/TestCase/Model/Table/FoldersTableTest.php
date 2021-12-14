@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class FoldersTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

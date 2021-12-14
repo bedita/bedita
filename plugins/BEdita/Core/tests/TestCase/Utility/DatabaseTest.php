@@ -24,7 +24,6 @@ use Cake\Utility\Inflector;
  */
 class DatabaseTest extends TestCase
 {
-
     /**
      * {@inheritDoc}
      */

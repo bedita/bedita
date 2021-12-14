@@ -22,7 +22,6 @@ use League\Flysystem\AdapterInterface;
  */
 class FilesystemAdapterTest extends TestCase
 {
-
     /**
      * Test class initialization.
      *

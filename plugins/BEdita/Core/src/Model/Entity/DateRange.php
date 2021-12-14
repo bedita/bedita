@@ -28,7 +28,6 @@ use Cake\ORM\Entity;
  */
 class DateRange extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

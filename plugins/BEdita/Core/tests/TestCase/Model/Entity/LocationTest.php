@@ -21,7 +21,6 @@ use Cake\TestSuite\TestCase;
  */
 class LocationTest extends TestCase
 {
-
     /**
      * Fixtures
      *
