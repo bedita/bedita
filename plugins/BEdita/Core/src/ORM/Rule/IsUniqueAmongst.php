@@ -23,7 +23,6 @@ use Cake\ORM\Rule\IsUnique;
  */
 class IsUniqueAmongst extends IsUnique
 {
-
     /**
      * Build uniqueness conditions.
      *

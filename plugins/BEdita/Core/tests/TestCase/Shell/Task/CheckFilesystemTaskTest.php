@@ -22,7 +22,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Temporary directory for permissions tests.
      *

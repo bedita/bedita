@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class StaticProperty extends Property
 {
-
     /**
      * Convert a property into a static property.
      *

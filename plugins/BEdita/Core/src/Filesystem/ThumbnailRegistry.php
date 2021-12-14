@@ -26,7 +26,6 @@ use Cake\Core\ObjectRegistry;
  */
 class ThumbnailRegistry extends ObjectRegistry
 {
-
     /**
      * {@inheritDoc}
      */

@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Model;
  */
 class CategoriesController extends ModelController
 {
-
     /**
      * {@inheritDoc}
      */

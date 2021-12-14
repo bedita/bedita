@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  */
 class TranslationsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

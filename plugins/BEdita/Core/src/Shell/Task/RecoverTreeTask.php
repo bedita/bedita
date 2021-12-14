@@ -24,7 +24,6 @@ use Cake\Console\Shell;
  */
 class RecoverTreeTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

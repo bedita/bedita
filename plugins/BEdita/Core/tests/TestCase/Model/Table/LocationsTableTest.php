@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class LocationsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

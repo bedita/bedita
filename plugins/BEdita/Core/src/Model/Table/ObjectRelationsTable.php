@@ -24,7 +24,6 @@ use Cake\Validation\Validator;
  */
 class ObjectRelationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

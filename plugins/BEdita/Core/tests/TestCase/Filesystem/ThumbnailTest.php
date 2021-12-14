@@ -28,7 +28,6 @@ use Cake\TestSuite\TestCase;
  */
 class ThumbnailTest extends TestCase
 {
-
     /**
      * Name of test configuration for generating thumbnails.
      *

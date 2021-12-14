@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class TextTest extends TestCase
 {
-
     /**
      * Data provider for `testUuid5` test case.
      *

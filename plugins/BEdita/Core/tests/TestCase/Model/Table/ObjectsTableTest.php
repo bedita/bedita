@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  */
 class ObjectsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

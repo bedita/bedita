@@ -26,7 +26,6 @@ use Cake\Utility\Inflector;
  */
 class RemoveRelatedObjectsActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

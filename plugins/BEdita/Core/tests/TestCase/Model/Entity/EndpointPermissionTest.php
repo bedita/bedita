@@ -30,7 +30,6 @@ use Cake\TestSuite\TestCase;
  */
 class EndpointPermissionTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

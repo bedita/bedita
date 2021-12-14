@@ -27,7 +27,6 @@ use Cake\ORM\Entity;
  */
 class RelationType extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

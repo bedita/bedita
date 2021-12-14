@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class ExternalAuthTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

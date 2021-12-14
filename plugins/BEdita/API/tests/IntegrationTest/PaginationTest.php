@@ -21,7 +21,6 @@ use Cake\Core\Configure;
  */
 class PaginationTest extends IntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

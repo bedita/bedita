@@ -29,7 +29,6 @@ use Cake\ORM\TableRegistry;
  */
 class Table extends CakeTable
 {
-
     /**
      * Table that is being inherited by this one.
      *

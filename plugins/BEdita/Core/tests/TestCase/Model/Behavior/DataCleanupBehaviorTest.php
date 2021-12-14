@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class DataCleanupBehaviorTest extends TestCase
 {
-
     /**
      * Fixtures
      *

@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class ProfilesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

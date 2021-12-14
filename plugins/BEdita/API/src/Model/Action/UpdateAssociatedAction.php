@@ -29,7 +29,6 @@ use Cake\Utility\Hash;
  */
 class UpdateAssociatedAction extends BaseAction
 {
-
     /**
      * Add associated action.
      *

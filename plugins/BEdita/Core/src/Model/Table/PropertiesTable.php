@@ -46,7 +46,6 @@ use Cake\Validation\Validator;
  */
 class PropertiesTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

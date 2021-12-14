@@ -29,7 +29,6 @@ use Cake\TestSuite\TestCase;
  */
 class UsersTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

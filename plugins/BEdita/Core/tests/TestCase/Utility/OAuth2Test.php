@@ -25,7 +25,6 @@ use Cake\TestSuite\TestCase;
  */
 class OAuth2Test extends TestCase
 {
-
     /**
      * Data provider method for `testResponse()`
      *

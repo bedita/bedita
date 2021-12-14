@@ -26,7 +26,6 @@ use Cake\TestSuite\TestCase;
  */
 class CurrentApplicationTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

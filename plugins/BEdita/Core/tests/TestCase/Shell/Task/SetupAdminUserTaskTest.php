@@ -24,7 +24,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Users table.
      *

@@ -20,7 +20,6 @@ use Cake\Utility\Text as CakeText;
  */
 class Text extends CakeText
 {
-
     /**
      * Null UUID.
      *

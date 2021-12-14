@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class SingletonTraitTest extends TestCase
 {
-
     /**
      * Assert that the class cannot be instantiated.
      *

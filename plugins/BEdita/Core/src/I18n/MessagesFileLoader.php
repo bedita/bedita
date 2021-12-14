@@ -26,7 +26,6 @@ use Locale;
  */
 class MessagesFileLoader extends BaseLoader
 {
-
     /**
      * List of plugins where lookup should happen for the given domain.
      *

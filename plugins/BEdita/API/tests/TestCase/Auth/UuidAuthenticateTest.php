@@ -27,7 +27,6 @@ use Cake\TestSuite\TestCase;
  */
 class UuidAuthenticateTest extends TestCase
 {
-
     /**
      * Fixtures
      *

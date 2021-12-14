@@ -21,7 +21,6 @@ namespace BEdita\API\Controller;
  */
 class RolesController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */

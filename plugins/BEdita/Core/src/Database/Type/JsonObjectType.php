@@ -23,7 +23,6 @@ use Cake\Database\Type\JsonType;
  */
 class JsonObjectType extends JsonType
 {
-
     /**
      * {@inheritDoc}
      */

@@ -25,7 +25,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Trees table.
      *

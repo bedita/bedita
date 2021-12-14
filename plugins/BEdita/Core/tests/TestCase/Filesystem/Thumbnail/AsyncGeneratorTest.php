@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class AsyncGeneratorTest extends TestCase
 {
-
     /**
      * Fixtures.
      *

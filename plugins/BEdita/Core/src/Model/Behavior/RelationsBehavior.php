@@ -25,7 +25,6 @@ use Swaggest\JsonSchema\Schema;
  */
 class RelationsBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

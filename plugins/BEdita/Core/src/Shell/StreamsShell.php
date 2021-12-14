@@ -24,7 +24,6 @@ use Cake\Console\Shell;
  */
 class StreamsShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

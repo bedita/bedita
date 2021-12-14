@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class AnonymousAuthenticateTest extends TestCase
 {
-
     /**
      * Test `authenticate` method.
      *

@@ -33,7 +33,6 @@ use League\Glide\Manipulators\Size as SizeManipulator;
  */
 class GlideGenerator extends ThumbnailGenerator
 {
-
     /**
      * Enforced maximum image size.
      *

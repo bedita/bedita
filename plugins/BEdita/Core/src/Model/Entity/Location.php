@@ -26,7 +26,6 @@ namespace BEdita\Core\Model\Entity;
  */
 class Location extends ObjectEntity
 {
-
     /**
      * {@inheritDoc}
      */

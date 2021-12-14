@@ -20,7 +20,6 @@ use Cake\Http\Exception\HttpException;
  */
 class UnsupportedMediaTypeException extends HttpException
 {
-
     /**
      * Constructor
      *

@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class Database
 {
-
     /**
      * Returns an array with current database schema information (tables, columns,
      * indexes, constraints)

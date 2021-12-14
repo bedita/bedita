@@ -32,7 +32,6 @@ use Cake\ORM\Entity;
  */
 class ExternalAuth extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

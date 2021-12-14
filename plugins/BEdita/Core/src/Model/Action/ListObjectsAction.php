@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  */
 class ListObjectsAction extends BaseAction
 {
-
     /**
      * Table.
      *

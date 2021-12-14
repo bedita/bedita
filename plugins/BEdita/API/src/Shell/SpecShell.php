@@ -25,7 +25,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class SpecShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      *

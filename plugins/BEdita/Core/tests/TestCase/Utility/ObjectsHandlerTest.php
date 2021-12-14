@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectsHandlerTest extends TestCase
 {
-
     /**
      * Fixtures
      *

@@ -36,7 +36,6 @@ use Cake\Validation\Validator;
  */
 class RolesUsersTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

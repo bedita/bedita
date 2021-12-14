@@ -26,7 +26,6 @@ use Cake\Utility\Hash;
  */
 class MediaController extends ObjectsController
 {
-
     /**
      * Get and validate IDs in request URL.
      *

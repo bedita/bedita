@@ -21,7 +21,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class RelationTypesFixture extends TestFixture
 {
-
     /**
      * Records
      *

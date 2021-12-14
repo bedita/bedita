@@ -44,7 +44,6 @@ use Firebase\JWT\JWT;
  */
 class JwtAuthenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *

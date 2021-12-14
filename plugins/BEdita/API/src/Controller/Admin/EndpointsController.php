@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Admin;
  */
 class EndpointsController extends AdminController
 {
-
     /**
      * {@inheritDoc}
      */

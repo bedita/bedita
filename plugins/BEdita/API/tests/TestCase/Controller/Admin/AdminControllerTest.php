@@ -20,7 +20,6 @@ use BEdita\API\TestSuite\IntegrationTestCase;
  */
 class AdminControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test unauthorized response for unauthenticated calls.
      *

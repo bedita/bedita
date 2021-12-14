@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class ErrorHandlerTest extends TestCase
 {
-
     /**
      * Data provider for `testDisplayError` test case.
      *

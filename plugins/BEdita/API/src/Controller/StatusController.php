@@ -22,7 +22,6 @@ use Cake\Core\Configure;
  */
 class StatusController extends AppController
 {
-
     /**
      * {@inheritDoc}
      */

@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  */
 class JsonApiTraitTest extends TestCase
 {
-
     /**
      * Helper table.
      *

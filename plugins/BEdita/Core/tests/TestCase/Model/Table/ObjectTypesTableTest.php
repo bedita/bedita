@@ -32,7 +32,6 @@ use Cake\Utility\Hash;
  */
 class ObjectTypesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

@@ -25,7 +25,6 @@ use Cake\ORM\TableRegistry;
  */
 class AsyncGenerator extends ThumbnailGenerator
 {
-
     /**
      * {@inheritDoc}
      */

@@ -29,7 +29,6 @@ use Cake\TestSuite\TestCase;
  */
 class OAuth2AuthenticateTest extends TestCase
 {
-
     /**
      * Fixtures
      *

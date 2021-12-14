@@ -30,7 +30,6 @@ use Cake\Utility\Inflector;
  */
 class SetAssociatedActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

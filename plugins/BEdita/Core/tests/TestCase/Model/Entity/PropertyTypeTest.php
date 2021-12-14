@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class PropertyTypeTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

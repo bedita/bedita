@@ -38,7 +38,6 @@ use Cake\Validation\Validator;
  */
 class TranslationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

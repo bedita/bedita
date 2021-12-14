@@ -27,7 +27,6 @@ use Cake\Validation\Validator;
  */
 class PropertyTypesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

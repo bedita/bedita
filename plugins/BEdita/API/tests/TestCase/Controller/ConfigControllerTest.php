@@ -19,7 +19,6 @@ use BEdita\API\TestSuite\IntegrationTestCase;
  */
 class ConfigControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test index method.
      *

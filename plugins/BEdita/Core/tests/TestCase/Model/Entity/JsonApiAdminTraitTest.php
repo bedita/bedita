@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class JsonApiAdminTraitTest extends TestCase
 {
-
     /**
      * Helper table.
      *

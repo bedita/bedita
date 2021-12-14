@@ -26,7 +26,6 @@ use Cake\ORM\Table as CakeTable;
  */
 class Query extends CakeQuery
 {
-
     /**
      * {@inheritDoc}
      */

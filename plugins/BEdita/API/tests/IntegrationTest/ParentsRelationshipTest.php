@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  */
 class ParentsRelationshipTest extends IntegrationTestCase
 {
-
     /**
      * Keep the TreesTable instance
      *

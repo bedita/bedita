@@ -25,7 +25,6 @@ use Cake\Routing\Router;
  */
 class TranslationsController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */

@@ -42,7 +42,6 @@ use Cake\Validation\Validator;
  */
 class AuthProvidersTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

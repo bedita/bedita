@@ -24,7 +24,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  */
 class JobsShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

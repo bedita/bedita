@@ -40,7 +40,6 @@ use Cake\Validation\Validator;
  */
 class RolesTable extends Table
 {
-
     /**
      * Administrator role id
      *

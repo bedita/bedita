@@ -27,7 +27,6 @@ use Cake\Http\ServerRequest;
  */
 class AppControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test API meta info header.
      *

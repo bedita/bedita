@@ -28,7 +28,6 @@ use Cake\ORM\Query;
  */
 class JsonApiPaginator extends Paginator
 {
-
     /**
      * {@inheritDoc}
      */

@@ -27,7 +27,6 @@ use Cake\Utility\Text;
  */
 class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Name for temporary connection.
      *

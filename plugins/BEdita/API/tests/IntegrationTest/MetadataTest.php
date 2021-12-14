@@ -24,7 +24,6 @@ use Cake\Utility\Text;
  */
 class MetadataTest extends IntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

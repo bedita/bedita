@@ -39,7 +39,6 @@ use Cake\Validation\Validator;
  */
 class StreamsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

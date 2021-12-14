@@ -21,7 +21,6 @@ use Cake\TestSuite\TestCase;
  */
 class UnsupportedMediaTypeExceptionTest extends TestCase
 {
-
     /**
      * Test `__construct()` method.
      *

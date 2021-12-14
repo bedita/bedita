@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class FoldersControllerTest extends IntegrationTestCase
 {
-
     /**
      * Folders table.
      *

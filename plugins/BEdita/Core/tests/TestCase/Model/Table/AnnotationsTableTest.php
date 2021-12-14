@@ -15,7 +15,6 @@ use Cake\Utility\Hash;
  */
 class AnnotationsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

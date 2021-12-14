@@ -25,7 +25,6 @@ use Cake\Utility\Hash;
  */
 class BeditaShellTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Name for temporary configuration file.
      *

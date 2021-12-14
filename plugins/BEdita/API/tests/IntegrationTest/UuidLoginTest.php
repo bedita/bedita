@@ -25,7 +25,6 @@ use Cake\Utility\Text;
  */
 class UuidLoginTest extends IntegrationTestCase
 {
-
     /**
      * Test anonymous login with a UUID.
      *

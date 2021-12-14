@@ -27,7 +27,6 @@ use Cake\Utility\Hash;
  */
 class OAuth2Authenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *

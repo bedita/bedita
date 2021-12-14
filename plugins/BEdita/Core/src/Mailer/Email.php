@@ -25,7 +25,6 @@ use Cake\Mailer\Email as CakeEmail;
  */
 class Email extends CakeEmail
 {
-
     /**
      * Send a raw email.
      *

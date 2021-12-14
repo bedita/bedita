@@ -26,7 +26,6 @@ use Cake\Utility\Hash;
  */
 class AuthProviderTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

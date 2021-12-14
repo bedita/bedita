@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class GetObjectAction extends BaseAction
 {
-
     /**
      * Table.
      *
