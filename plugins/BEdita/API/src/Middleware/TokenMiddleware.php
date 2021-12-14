@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Middleware;
 
-use BadMethodCallException;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
@@ -39,8 +38,9 @@ class TokenMiddleware
      * - `header` The header where the token is stored. Defaults to `'Authorization'`.
      * - `headerPrefix` The prefix to the token in header. Defaults to `'Bearer'`.
      * - `queryParam` The query parameter where the token is passed as a fallback. Defaults to `'token'`.
-     * - `allowedAlgorithms` List of supported verification algorithms. Defaults to `['HS256']`.
-     *   See API of JWT::decode() for more info.
+     * - `apiKey` The `header` or `query` string used to contain API KEY. Defaults to 'X-Api-Key' header.
+     * - `clientAuth` The request data used to identify a `client_credentials` grant type request.
+     *      Default is `/auth` path and `client_credentials` ad value of `grant_type` field in request body.
      *
      * @var array
      */
