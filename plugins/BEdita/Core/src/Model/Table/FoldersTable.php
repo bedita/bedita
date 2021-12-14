@@ -40,7 +40,6 @@ use Cake\ORM\Rule\ValidCount;
  */
 class FoldersTable extends ObjectsTable
 {
-
     /**
      * {@inheritDoc}
      *

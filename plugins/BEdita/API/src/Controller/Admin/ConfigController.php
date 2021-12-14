@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Admin;
  */
 class ConfigController extends AdminController
 {
-
     /**
      * {@inheritDoc}
      */

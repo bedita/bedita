@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Admin;
  */
 class ApplicationsController extends AdminController
 {
-
     /**
      * {@inheritDoc}
      */

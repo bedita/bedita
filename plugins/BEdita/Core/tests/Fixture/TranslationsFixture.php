@@ -21,7 +21,6 @@ use Cake\I18n\Time;
  */
 class TranslationsFixture extends TestFixture
 {
-
     /**
      * {@inheritDoc}
      */

@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class BaseActionTest extends TestCase
 {
-
     /**
      * Test constructor method.
      *

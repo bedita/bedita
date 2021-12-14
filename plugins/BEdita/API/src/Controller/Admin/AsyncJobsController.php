@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Admin;
  */
 class AsyncJobsController extends AdminController
 {
-
     /**
      * {@inheritDoc}
      */

@@ -27,7 +27,6 @@ use Cake\ORM\Entity;
  */
 class RolesUser extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

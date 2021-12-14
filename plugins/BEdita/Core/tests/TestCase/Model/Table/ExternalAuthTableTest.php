@@ -29,7 +29,6 @@ use Cake\Utility\Hash;
  */
 class ExternalAuthTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

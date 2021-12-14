@@ -24,7 +24,6 @@ use Cake\Datasource\EntityInterface;
  */
 abstract class UpdateAssociatedAction extends BaseAction
 {
-
     /**
      * Association.
      *

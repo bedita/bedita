@@ -31,7 +31,6 @@ use Cake\Utility\Hash;
  */
 class StreamsController extends ResourcesController
 {
-
     /**
      * {@inheritDoc}
      */

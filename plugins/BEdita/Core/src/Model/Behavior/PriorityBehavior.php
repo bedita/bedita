@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class PriorityBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

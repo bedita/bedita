@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class GetEntityActionTest extends TestCase
 {
-
     /**
      * Fixtures
      *

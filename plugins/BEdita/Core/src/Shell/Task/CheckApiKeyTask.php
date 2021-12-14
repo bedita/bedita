@@ -26,7 +26,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  */
 class CheckApiKeyTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      *

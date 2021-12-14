@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  */
 class I18nTest extends IntegrationTestCase
 {
-
     /**
      * Test wrong lang tag.
      *

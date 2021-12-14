@@ -44,7 +44,6 @@ use Cake\ORM\TableRegistry;
  */
 class StaticPropertiesTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

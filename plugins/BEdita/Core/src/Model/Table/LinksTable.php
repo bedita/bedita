@@ -31,7 +31,6 @@ use Cake\Validation\Validator;
  */
 class LinksTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

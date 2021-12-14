@@ -24,7 +24,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * Applications table.
      *

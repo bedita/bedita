@@ -30,7 +30,6 @@ use BEdita\Core\Model\Entity\Stream;
  */
 interface GeneratorInterface
 {
-
     /**
      * Get URL for a generated thumbnail.
      *

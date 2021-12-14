@@ -29,7 +29,6 @@ use Cake\Utility\Hash;
  */
 class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

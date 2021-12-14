@@ -29,7 +29,6 @@ use Cake\TestSuite\TestCase;
  */
 class JwtAuthenticateTest extends TestCase
 {
-
     /**
      * Fixtures
      *

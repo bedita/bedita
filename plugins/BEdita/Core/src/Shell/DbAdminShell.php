@@ -31,7 +31,6 @@ use Cake\Datasource\ConnectionManager;
  */
 class DbAdminShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

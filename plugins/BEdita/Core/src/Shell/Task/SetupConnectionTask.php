@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class SetupConnectionTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      *

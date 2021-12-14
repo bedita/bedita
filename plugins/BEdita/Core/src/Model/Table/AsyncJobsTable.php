@@ -27,7 +27,6 @@ use Cake\Validation\Validator;
  */
 class AsyncJobsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

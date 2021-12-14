@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class AsyncJobTest extends TestCase
 {
-
     /**
      * Test subject
      *

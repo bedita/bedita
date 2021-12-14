@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class RolesUsersTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

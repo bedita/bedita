@@ -35,7 +35,6 @@ use Cake\Utility\Hash;
  */
 class CustomPropertiesBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

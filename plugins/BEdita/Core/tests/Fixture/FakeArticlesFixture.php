@@ -20,7 +20,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class FakeArticlesFixture extends TestFixture
 {
-
     /**
      * {@inheritDoc}
      */

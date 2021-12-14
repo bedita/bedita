@@ -27,7 +27,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  */
 class InitSchemaTaskTest extends ConsoleIntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

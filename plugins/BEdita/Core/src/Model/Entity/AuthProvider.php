@@ -38,7 +38,6 @@ use Cake\Utility\Text;
  */
 class AuthProvider extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

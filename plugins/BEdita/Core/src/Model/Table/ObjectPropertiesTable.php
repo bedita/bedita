@@ -21,7 +21,6 @@ use Cake\Validation\Validator;
  */
 class ObjectPropertiesTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

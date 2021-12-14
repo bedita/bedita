@@ -28,7 +28,6 @@ use Cake\ORM\Table;
  */
 class SearchableBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

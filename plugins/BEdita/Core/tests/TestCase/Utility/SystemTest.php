@@ -25,7 +25,6 @@ use Cake\TestSuite\TestCase;
  */
 class SystemTest extends TestCase
 {
-
     /**
      * Test status method
      *

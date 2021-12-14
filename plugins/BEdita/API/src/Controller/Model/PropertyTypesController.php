@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Model;
  */
 class PropertyTypesController extends ModelController
 {
-
     /**
      * {@inheritDoc}
      */

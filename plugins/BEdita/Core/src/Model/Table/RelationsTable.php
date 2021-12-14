@@ -44,7 +44,6 @@ use Cake\Validation\Validator;
  */
 class RelationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *

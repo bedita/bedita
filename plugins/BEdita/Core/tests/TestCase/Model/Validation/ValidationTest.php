@@ -26,7 +26,6 @@ use DateTime;
  */
 class ValidationTest extends TestCase
 {
-
     /**
      * Data provider for `testReserved` test case.
      *

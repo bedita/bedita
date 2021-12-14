@@ -31,7 +31,6 @@ use Cake\Validation\Validator;
  */
 class PublicationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      */

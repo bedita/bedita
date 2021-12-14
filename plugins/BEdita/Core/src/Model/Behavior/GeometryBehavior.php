@@ -29,7 +29,6 @@ use Cake\Utility\Hash;
  */
 class GeometryBehavior extends Behavior
 {
-
     /**
      * {@inheritDoc}
      */

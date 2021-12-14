@@ -20,7 +20,6 @@ use BEdita\Core\Utility\System;
  */
 class StatusControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test index method.
      *

@@ -25,7 +25,6 @@ use Cake\Http\Exception\HttpException;
  */
 class ExceptionRendererTest extends IntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

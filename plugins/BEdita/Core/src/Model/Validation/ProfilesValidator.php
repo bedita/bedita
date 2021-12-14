@@ -22,7 +22,6 @@ use Cake\ORM\TableRegistry;
  */
 class ProfilesValidator extends ObjectsValidator
 {
-
     /**
      * {@inheritDoc}
      *

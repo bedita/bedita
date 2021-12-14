@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  */
 class JsonApiPaginatorTest extends TestCase
 {
-
     /**
      * Fixtures.
      *

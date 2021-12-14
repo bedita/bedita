@@ -24,7 +24,6 @@ use DateTime;
  */
 class DateTypeTest extends TestCase
 {
-
     /**
      * Data provider for `testMarshal`.
      *

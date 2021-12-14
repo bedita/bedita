@@ -43,7 +43,6 @@ use Cake\Utility\Hash;
  */
 class JwtAuthenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *

@@ -22,7 +22,6 @@ use Cake\Utility\Text;
  */
 class AsyncJobsControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test index method.
      *

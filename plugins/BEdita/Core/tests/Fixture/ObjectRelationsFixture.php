@@ -8,7 +8,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class ObjectRelationsFixture extends TestFixture
 {
-
     /**
      * Records
      *

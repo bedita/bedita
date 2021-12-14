@@ -23,7 +23,6 @@ use Cake\Validation\Validator;
  */
 class ObjectsValidator extends Validator
 {
-
     /**
      * {@inheritDoc}
      *

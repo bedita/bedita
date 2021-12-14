@@ -22,7 +22,6 @@ use Cake\Console\Shell;
  */
 class CheckFilesystemTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      *

@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class UserTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

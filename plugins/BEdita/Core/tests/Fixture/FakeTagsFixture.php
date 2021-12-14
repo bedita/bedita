@@ -20,7 +20,6 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class FakeTagsFixture extends TestFixture
 {
-
     /**
      * {@inheritDoc}
      */

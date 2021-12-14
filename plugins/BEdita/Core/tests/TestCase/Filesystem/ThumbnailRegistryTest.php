@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class ThumbnailRegistryTest extends TestCase
 {
-
     /**
      * Test load when everything goes just fine.
      *

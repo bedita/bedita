@@ -39,7 +39,6 @@ use Cake\ORM\TableRegistry;
  */
 class EndpointPermission extends Entity
 {
-
     /**
      * Bits to shift for read permissions.
      *

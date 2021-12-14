@@ -28,7 +28,6 @@ use Cake\Utility\Hash;
  */
 class CheckTreeTask extends Shell
 {
-
     /**
      * {@inheritDoc}
      */

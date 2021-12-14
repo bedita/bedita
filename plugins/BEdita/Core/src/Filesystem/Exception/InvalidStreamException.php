@@ -22,5 +22,4 @@ use Cake\Core\Exception\Exception;
  */
 class InvalidStreamException extends Exception
 {
-
 }

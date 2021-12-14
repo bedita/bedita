@@ -23,7 +23,6 @@ use Cake\Validation\Validation;
  */
 class StreamsControllerTest extends IntegrationTestCase
 {
-
     /**
      * {@inheritDoc}
      */

@@ -22,7 +22,6 @@ use Cake\ORM\TableRegistry;
  */
 class ApplicationsControllerTest extends IntegrationTestCase
 {
-
     /**
      * Test index method.
      *

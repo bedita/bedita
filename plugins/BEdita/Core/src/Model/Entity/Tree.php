@@ -41,7 +41,6 @@ use Cake\ORM\TableRegistry;
  */
 class Tree extends Entity
 {
-
     /**
      * {@inheritDoc}
      */

@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class DateRangesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

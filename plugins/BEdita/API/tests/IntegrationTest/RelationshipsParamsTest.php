@@ -20,7 +20,6 @@ use Cake\ORM\TableRegistry;
  */
 class RelationshipsParamsTest extends IntegrationTestCase
 {
-
     /**
      * Locations table.
      *

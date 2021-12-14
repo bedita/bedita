@@ -21,7 +21,6 @@ use Cake\Utility\Hash;
  */
 class DeleteFolderTest extends IntegrationTestCase
 {
-
     /**
      * Test that restoring a folder is allowed only if no ancestors are deleted.
      *

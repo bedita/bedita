@@ -28,7 +28,6 @@ use Laminas\Diactoros\Uri;
  */
 class HomeController extends AppController
 {
-
     /**
      * Default endpoints with:
      *  - supported methods, where 'ALL' means 'GET', 'POST', 'PATCH' and 'DELETE' are supported

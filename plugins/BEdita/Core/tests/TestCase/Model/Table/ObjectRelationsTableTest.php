@@ -11,7 +11,6 @@ use Cake\Utility\Hash;
  */
 class ObjectRelationsTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

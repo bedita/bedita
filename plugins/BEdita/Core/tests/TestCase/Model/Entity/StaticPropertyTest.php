@@ -28,7 +28,6 @@ use Cake\TestSuite\TestCase;
  */
 class StaticPropertyTest extends TestCase
 {
-
     /**
      * Test subject's table
      *

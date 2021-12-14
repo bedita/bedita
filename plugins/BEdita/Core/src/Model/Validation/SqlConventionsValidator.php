@@ -52,7 +52,6 @@ use Cake\Validation\Validator;
  */
 class SqlConventionsValidator extends Validator
 {
-
     /**
      * Comma-separated list of reserved words to be allowed anyway.
      *

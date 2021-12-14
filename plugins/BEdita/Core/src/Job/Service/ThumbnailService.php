@@ -27,7 +27,6 @@ use Cake\Utility\Hash;
  */
 class ThumbnailService implements JobService
 {
-
     /**
      * {@inheritDoc}
      */

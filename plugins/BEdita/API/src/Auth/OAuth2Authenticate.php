@@ -13,11 +13,12 @@
 
 namespace BEdita\API\Auth;
 
+use BEdita\Core\Utility\OAuth2;
 use Cake\Auth\BaseAuthenticate;
-use Cake\Http\Client;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
+use Cake\Utility\Hash;
 
 /**
  * Authenticate users via OAuth2 providers.
@@ -26,7 +27,6 @@ use Cake\Http\ServerRequest;
  */
 class OAuth2Authenticate extends BaseAuthenticate
 {
-
     /**
      * Default config for this object.
      *
@@ -74,7 +74,12 @@ class OAuth2Authenticate extends BaseAuthenticate
         }
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
         $authProvider = $authProviders[$data['auth_provider']];
-        $providerResponse = $this->getOAuth2Response($authProvider->get('url'), $data['access_token']);
+        $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
+        $providerResponse = $this->getOAuth2Response(
+            $authProvider->get('url'),
+            $data['access_token'],
+            $options
+        );
         if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
             return false;
         }
@@ -101,15 +106,13 @@ class OAuth2Authenticate extends BaseAuthenticate
      *
      * @param string $url OAuth2 provider URL
      * @param string $accessToken Access token to use in request
+     * @param array $options OAuth2 request options
      * @return array Response from an OAuth2 provider
      * @codeCoverageIgnore
      */
-    protected function getOAuth2Response(string $url, string $accessToken): array
+    protected function getOAuth2Response(string $url, string $accessToken, array $options = []): array
     {
-        /** @var \Cake\Http\Client\Response $response */
-        $response = (new Client())->get($url, [], ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
-
-        return (array)$response->getJson();
+        return (new OAuth2())->response($url, $accessToken, $options);
     }
 
     /**

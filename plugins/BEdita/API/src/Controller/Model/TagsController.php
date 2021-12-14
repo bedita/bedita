@@ -22,7 +22,6 @@ namespace BEdita\API\Controller\Model;
  */
 class TagsController extends ModelController
 {
-
     /**
      * {@inheritDoc}
      */

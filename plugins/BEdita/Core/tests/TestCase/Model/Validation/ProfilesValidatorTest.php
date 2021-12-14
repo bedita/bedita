@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  */
 class ProfilesValidatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
