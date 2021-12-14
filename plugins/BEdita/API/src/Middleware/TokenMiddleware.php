@@ -104,9 +104,11 @@ class TokenMiddleware
         if (!empty($app) && !empty($app['id'])) {
             $application = new Application($app);
             CurrentApplication::setApplication($application);
-        } else {
-            $this->applicationFromApiKey($request);
+            
+            return;
         }
+        
+        $this->applicationFromApiKey($request);
     }
 
     /**

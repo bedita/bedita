@@ -83,7 +83,7 @@ class AuthenticationTest extends IntegrationTestCase
         $jwt = Hash::get($body, 'meta.jwt');
         static::assertNotNull($jwt);
         $renew = Hash::get($body, 'meta.renew');
-        static::assertNotNull($jwt);
+        static::assertNotNull($renew);
 
         // renew token
         $headers['Authorization'] = 'Bearer ' . $renew;
@@ -98,7 +98,7 @@ class AuthenticationTest extends IntegrationTestCase
         $jwt = Hash::get($body, 'meta.jwt');
         static::assertNotNull($jwt);
         $renew = Hash::get($body, 'meta.renew');
-        static::assertNotNull($jwt);
+        static::assertNotNull($renew);
     }
 
     /**
@@ -160,6 +160,6 @@ class AuthenticationTest extends IntegrationTestCase
         $jwt = Hash::get($body, 'meta.jwt');
         static::assertNotNull($jwt);
         $renew = Hash::get($body, 'meta.renew');
-        static::assertNotNull($jwt);
+        static::assertNotNull($renew);
     }
 }

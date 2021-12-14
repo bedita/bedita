@@ -124,7 +124,9 @@ class JwtAuthenticate extends BaseAuthenticate
 
         if ($this->getConfig('authenticate') && !empty($this->payload['sub'])) {
             return $this->_findUser($this->payload['sub']);
-        } elseif (empty($this->payload['sub']) && !empty($this->payload['app'])) {
+        }
+        
+        if (empty($this->payload['sub']) && !empty($this->payload['app'])) {
             $this->_registry->getController()->Auth->setConfig('renewClientCredentials', true);
         }
 

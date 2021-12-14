@@ -144,7 +144,7 @@ class LoginController extends AppController
             $this->request = $this->request->withData('grant_type', 'refresh_token');
         } elseif (!empty($data['username']) && !empty($data['password'])) {
             $this->request = $this->request->withData('grant_type', 'password');
-        } elseif (!empty(['client_id'])) {
+        } elseif (!empty($data['client_id'])) {
             $this->request = $this->request->withData('grant_type', 'client_credentials');
         }
     }
