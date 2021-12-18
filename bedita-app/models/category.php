@@ -42,6 +42,13 @@ class Category extends BEAppModel {
 
     // static vars used by reorderTag static function
     static $dirTag, $orderTag;
+
+    /**
+     * Special key used in pagination count to remove unwanted options during the count
+     * 
+     * @var string
+     */
+    const COUNT_DENY_OPTIONS = '_countDenyOptions';
     
     function afterFind($result) {
         foreach ($result as &$res) {
@@ -49,6 +56,28 @@ class Category extends BEAppModel {
                 $res['url_label'] = $res['name'];
         }
         return $result;			
+    }
+
+    /**
+     * Custom pagination count.
+     *
+     * @param array $conditions The conditions
+     * @param int $recursive Recursive option
+     * @param array $extra Extra options
+     * @return int
+     */
+    function paginateCount($conditions = null, $recursive = 0, $extra = array()) {
+        if (!empty($extra[static::COUNT_DENY_OPTIONS])) {
+            $extra[static::COUNT_DENY_OPTIONS] = (array)$extra[static::COUNT_DENY_OPTIONS];
+            $extra = array_diff_key($extra, array_flip($extra[static::COUNT_DENY_OPTIONS]));
+        }
+        
+        $parameters = compact('conditions');
+        if ($recursive != $this->recursive) {
+            $parameters['recursive'] = $recursive;
+        }
+        
+        return $this->find('count', array_merge($parameters, $extra));
     }
 
     public function tagLabelPresent($label, $exclude_id=null) {

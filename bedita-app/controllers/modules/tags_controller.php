@@ -19,32 +19,62 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import('Model', 'Category');
+
 /**
  * Tags handling
  * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * @property-read Category $Category
  */
 class TagsController extends ModulesController {
 
-    var $helpers 	= array('BeTree', 'BeToolbar');
+    var $helpers 	= array('BeTree', 'BeUsersToolbar');
     var $components = array('BeTree', 'BeSecurity');
     var $uses = array('Category') ;
     
     protected $moduleName = 'tags';
 
+    /**
+     * Pagination options.
+     *
+     * @var array
+     */
+    public $paginate = array(
+        'fields' => array(
+            'Category.id',
+            'Category.name',
+            'Category.label',
+            'Category.status',
+            'count(ObjectCategory.object_id) as weight',
+        ),
+        'limit' => 20,
+        'page' => 1,
+        'order' => array('label' => 'asc'),
+        'conditions' => array('Category.object_type_id' => null),
+        'joins' => array(
+            array(
+                'table' => 'object_categories',
+                'alias' => 'ObjectCategory',
+                'conditions' => 'ObjectCategory.category_id = Category.id',
+            ),
+        ),
+        'group' => array('Category.id', 'Category.name', 'Category.label', 'Category.status'),
+        Category::COUNT_DENY_OPTIONS => array('joins', 'group'),
+    );
+
     public function index($order = "label", $dir = 1) {
-        $data = $this->Category->getTags(array(
-            "cloud" => true,
-            "order" => $order,
-            "dir" => $dir
-        ));
+        // $data = $this->Category->getTags(array(
+        // 	"cloud" => true,
+        // 	"order" => $order,
+        // 	"dir" => $dir
+        // ));
+        // $this->Category->Behaviors->disable('CompactResult');
+        $data = $this->paginate();
+        // $this->Category->Behaviors->enable('CompactResult');
+
+        // debug($data);exit;
         $this->set("numTags", count($data));
-        $this->set('tags', $data);
+        $this->set('tags', $data /*Set::classicExtract($data, '{n}.Category')*/);
         $this->set("order", $order);
         $this->set("dir", (($dir)? 0 : 1) );
     }

@@ -21,7 +21,11 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 {include file = './inc/menucommands.tpl'}
 
-{include file="inc/toolbar.tpl"}
+<div class="head">
+    <div class="toolbar" style="white-space:nowrap">
+        {include file="./inc/toolbar.tpl" label_items='tags'}
+    </div>
+</div>
 
 <div class="main">
 
@@ -64,21 +68,6 @@ var no_items_checked_msg = "{t}No items selected{/t}";
         <tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 
     {/foreach}
-    </tbody>
-
-    <tbody id="tagcloud">
-        <tr>
-            <td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px 10px;">
-                {foreach from=$tags item=tag}
-                <span class="obj {$tag.status}">
-                    <a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">
-                        {$tag.label|escape}
-                    </a>
-                </span>
-                {/foreach}
-            </td>
-        </tr>
-
     </tbody>
 
     </table>

@@ -120,11 +120,19 @@ class BeUsersToolbarHelper extends AppHelper
      * @param string $type The view type, can be 'compact' or default
      * @return string
      */
-    public function show($type = 'default') {
-        $itemNameEng = ($this->_view->action === 'index') ? 'User' : 'Group';
+    public function show($type = 'default', $options = array()) {
+        $itemNameEng = Set::classicExtract($options, 'name');
+        // if ($itemNameEng === null) {
+        //     $itemNameEng = ($this->_view->action === 'index') ? 'User' : 'Group';
+        // }
+        if ($itemNameEng === null) {
+            $itemNameEng = $this->_currentModule['name'];
+        }
+
         $this->_itemName = __($itemNameEng, true);
         $this->_noitem = null;
         $this->_name = Inflector::pluralize($itemNameEng);
+        
         if ($type === 'compact') {
             $content = $this->pageCount(); // i.e. '12823 documents'
             $separator = ' <span class="separator"></span> ';
@@ -140,8 +148,8 @@ class BeUsersToolbarHelper extends AppHelper
             return sprintf('<div class="toolbar">%s</div>', $content);
         }
 
-        $content = sprintf('<h2>%s %s</h2>', $this->pageHeader(), $this->pageQuery());
-        $content.= $this->pagePagination();
+        $content = sprintf('<h2>%s %s</h2>', $this->pageHeader($options), $this->pageQuery());
+        $content.= $this->pagePagination($options);
 
         return sprintf('<div class="toolbar">%s</div>', $content);
     }
@@ -164,15 +172,19 @@ class BeUsersToolbarHelper extends AppHelper
      *
      * @return string
      */
-    public function pageHeader() {
-        if ($this->_view->action === 'index') {
-            return __('System users', true);
-        }
-        if ($this->_view->action === 'groups') {
-            return __('User groups', true);
+    public function pageHeader(array $options) {
+        // if ($this->_view->action === 'index') {
+        //     return __('System users', true);
+        // }
+        // if ($this->_view->action === 'groups') {
+        //     return __('User groups', true);
+        // }
+        $headerName = Set::classicExtract($options, 'headerName');
+        if ($headerName === null) {
+            return Inflector::humanize($this->_name);
         }
         
-        return null;
+        return Inflector::humanize(__($headerName, true));
     }
 
     /**
@@ -198,12 +210,17 @@ class BeUsersToolbarHelper extends AppHelper
      *
      * @return string
      */
-    public function pagePagination() {
+    public function pagePagination(array $options) {
+        $newAction = Set::classicExtract($options, 'newAction');
+        if ($newAction === null) {
+            $newAction = 'view';
+        }
         $cells = '';
         $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
         if ($moduleModify === "1" && empty($_noitem)) {
             $title = __('Create new', true) . '&nbsp;' . $this->_itemName;
-            $anchor = sprintf('<a href="%s">%s</a>', $this->Html->url(sprintf('/users/view%s', $this->_itemName)), $title);
+            $url = $this->Html->url(sprintf('/%s/%s', $this->_currentModule['name'], $newAction));
+            $anchor = sprintf('<a href="%s">%s</a>', $url, $title);
             $cells = sprintf('<td>%s</td>', $anchor);
         }
         $cells.= sprintf('<td>%s</td>', $this->pageCount());

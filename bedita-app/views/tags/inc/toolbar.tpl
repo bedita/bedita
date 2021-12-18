@@ -1,4 +1,4 @@
-<div class="head">
+{* <div class="head">
     
     <div class="toolbar" style="white-space:nowrap">
         
@@ -29,4 +29,6 @@
 
     </div>
 
-</div> 
+</div>  *}
+
+{$beUsersToolbar->show('default')}
