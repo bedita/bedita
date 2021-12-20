@@ -63,13 +63,11 @@ class TagsController extends ModulesController {
         Category::COUNT_DENY_OPTIONS => array('joins', 'group'),
     );
 
-    public function index($order = 'label', $dir = 1) {
+    public function index() {
         $this->setupFilter();
         $data = $this->paginate();
         
         $this->set('tags', $data);
-        $this->set('order', $order);
-        $this->set('dir', $dir ? 0 : 1);
     }
 
     /**

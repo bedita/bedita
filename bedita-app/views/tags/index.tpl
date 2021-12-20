@@ -52,10 +52,9 @@ var no_items_checked_msg = "{t}No items selected{/t}";
     <thead>
         <tr>
             <th></th>
-            <th >
-                <a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
-            <th><a href="{$html->url('/tags/index/')}status/{if $order == "status"}{$dir}{else}1{/if}">{t}Status{/t}</a></th>
-            <th><a href="{$html->url('/tags/index/')}weight/{if $order == "weight"}{$dir}{else}1{/if}">{t}Occurrences{/t}</a></th>
+            <th>{$paginator->sort($tr->t('Name', true), 'name')}</th>
+            <th>{$paginator->sort($tr->t('Status', true), 'status')}</th>
+            <th>{t}Weight{/t}</th>
             <th>Id</th>
             <th>
                 <img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
