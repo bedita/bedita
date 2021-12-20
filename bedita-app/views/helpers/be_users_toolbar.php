@@ -327,7 +327,12 @@ class BeUsersToolbarHelper extends AppHelper
      * @return void
      */
     public function last() {
-        return $this->Paginator->last(Set::classicExtract($this->Paginator->params(), 'pageCount', '1'));
+        $pageCount = Set::classicExtract($this->Paginator->params(), 'pageCount');
+        if (!$this->Paginator->hasNext()) {
+            return (string)$pageCount; 
+        }
+
+        return $this->Paginator->last($pageCount);
     }
 
     /**
@@ -337,7 +342,7 @@ class BeUsersToolbarHelper extends AppHelper
      * @return string
      */
     public function changePageInput() {
-        if ($this->last() <= 1) {
+        if (!$this->Paginator->hasNext()) {
             return "1";
         }
         $current = $this->current();
@@ -357,7 +362,7 @@ class BeUsersToolbarHelper extends AppHelper
             'onkeypress' => 'if (event.keyCode === 13) { event.preventDefault(); event.stopPropagation(); this.blur(); }',
         );
 
-        return $this->Form->input('', $options);
+        return $this->Form->input('paginationPage', $options);
     }
 
     /**
