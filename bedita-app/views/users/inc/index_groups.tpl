@@ -65,6 +65,6 @@ $(document).ready(function(){
 {if !empty($groups)}
 	<br/>
 	<div style="white-space:nowrap">
-		{$beUsersToolbar->show('compact')}
+		{$bePaginatorToolbar->show('compact')}
 	</div>
 {/if}
