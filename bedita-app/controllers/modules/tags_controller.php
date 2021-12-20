@@ -28,7 +28,7 @@ App::import('Model', 'Category');
  */
 class TagsController extends ModulesController {
 
-    var $helpers 	= array('BeTree', 'BeUsersToolbar');
+    var $helpers 	= array('BeTree', 'BePaginatorToolbar');
     var $components = array('BeTree', 'BeSecurity');
     var $uses = array('Category') ;
     

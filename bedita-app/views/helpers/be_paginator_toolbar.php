@@ -20,9 +20,13 @@
  */
 
 /**
- * Users toolbar for pagination
+ * Help to build a toolbar for pagination.
+ * 
+ * Internally it uses PaginatorHelper.
+ * It can be used when resources are paginated with CakePHP pagination.
+ * Do not use with BEdita objects, use `BeToolbarHelper` instead.
  */
-class BeUsersToolbarHelper extends AppHelper
+class BePaginatorToolbarHelper extends AppHelper
 {
     /**
      * Included helpers.
@@ -122,14 +126,11 @@ class BeUsersToolbarHelper extends AppHelper
      */
     public function show($type = 'default', $options = array()) {
         $itemNameEng = Set::classicExtract($options, 'name');
-        // if ($itemNameEng === null) {
-        //     $itemNameEng = ($this->_view->action === 'index') ? 'User' : 'Group';
-        // }
         if ($itemNameEng === null) {
             $itemNameEng = $this->_currentModule['name'];
         }
 
-        $this->_itemName = __($itemNameEng, true);
+        $this->_itemName = __(Inflector::singularize($itemNameEng), true);
         $this->_noitem = null;
         $this->_name = Inflector::pluralize($itemNameEng);
         
@@ -173,12 +174,6 @@ class BeUsersToolbarHelper extends AppHelper
      * @return string
      */
     public function pageHeader(array $options) {
-        // if ($this->_view->action === 'index') {
-        //     return __('System users', true);
-        // }
-        // if ($this->_view->action === 'groups') {
-        //     return __('User groups', true);
-        // }
         $headerName = Set::classicExtract($options, 'headerName');
         if ($headerName === null) {
             return Inflector::humanize($this->_name);
