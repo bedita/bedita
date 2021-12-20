@@ -13,12 +13,16 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\LoginController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
+use Cake\Http\Exception\UnauthorizedException;
+use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Utility\Hash;
 
 /**
@@ -59,7 +63,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::login()
      * @covers ::identify()
      * @covers ::reducedUserData()
-     * @covers ::jwtTokens()
+     * @covers ::initialize()
      */
     public function testLoginOkJson()
     {
@@ -88,6 +92,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::login()
      * @covers ::reducedUserData()
      * @covers ::jwtTokens()
+     * @covers ::initialize()
      */
     public function testLoginOkForm()
     {
@@ -132,6 +137,138 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
+    }
+
+    /**
+     * Data provider for `testSetGrantType`
+     *
+     * @return array
+     */
+    public function setGrantTypeProvider(): array
+    {
+        return [
+            'password' => [
+                'password',
+                ['username' => 'first user', 'password' => 'password1'],
+            ],
+            'refresh_token' => [
+                'refresh_token',
+                [],
+            ],
+            'client_credentials' => [
+                'client_credentials',
+                ['client_id' => API_KEY],
+            ],
+        ];
+    }
+
+    /**
+     * Test `setGrantType()` method
+     *
+     * @param string $expected Expected result.
+     * @param array $post POST data.
+     * @return void
+     *
+     * @dataProvider setGrantTypeProvider
+     *
+     * @covers ::setGrantType()
+     */
+    public function testSetGrantType(string $expected, array $post): void
+    {
+        $request = new ServerRequest(compact('post') + [
+            'environment' => [
+                'REQUEST_METHOD' => 'POST',
+            ],
+        ]);
+        $controller = new LoginController($request);
+        $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        try {
+            $controller->login();
+        } catch (\Cake\Routing\Exception\MissingRouteException $e) {
+        }
+
+        static::assertEquals($expected, $controller->request->getData('grant_type'));
+    }
+
+    /**
+     * Data provider for `testCheckClientCredentials`
+     *
+     * @return array
+     */
+    public function checkClientCredentialsProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                ['username' => 'first user', 'password' => 'password1'],
+            ],
+            'client_credentials' => [
+                1,
+                [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => API_KEY,
+                ],
+            ],
+            'fail' => [
+                new UnauthorizedException('App authentication failed'),
+                ['client_id' => 'gustavo'],
+            ]
+        ];
+    }
+
+    /**
+     * Test `checkClientCredentials()` method
+     *
+     * @param mixed $expected Expected result.
+     * @param array $post POST data.
+     * @return void
+     *
+     * @dataProvider checkClientCredentialsProvider
+     *
+     * @covers ::checkClientCredentials()
+     * @covers ::clientCredentialsOnly()
+     */
+    public function testCheckClientCredentials($expected, array $post): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        CurrentApplication::setApplication(null);
+        $request = new ServerRequest(compact('post') + [
+            'environment' => [
+                'REQUEST_METHOD' => 'POST',
+            ],
+        ]);
+        $controller = new LoginController($request);
+        $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        try {
+            $controller->login();
+        } catch (\Cake\Routing\Exception\MissingRouteException $e) {
+        }
+
+        static::assertEquals($expected, CurrentApplication::getApplicationId());
+    }
+
+    /**
+     * Test login with client credentials
+     *
+     * @return void
+     *
+     * @covers ::checkClientCredentials()
+     * @covers ::identify()
+     */
+    public function testClientCredentials(): void
+    {
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', ['client_id' => API_KEY, 'grant_type' => 'client_credentials']);
+
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('meta', $result);
+        static::assertArrayHasKey('jwt', $result['meta']);
+        static::assertArrayHasKey('renew', $result['meta']);
     }
 
     /**
@@ -218,11 +355,25 @@ class LoginControllerTest extends IntegrationTestCase
     {
         // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
         // POST /auth with role id 2 on application id 2 MUST fail
-        CurrentApplication::setApplication(TableRegistry::getTableLocator()->get('Applications')->get(2));
+        $table = TableRegistry::getTableLocator()->get('Applications');
+        $app = $table->get(2);
+        $app->set('enabled', true);
+        $app->set('client_secret', null);
+        $table->saveOrFail($app);
 
-        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-
-        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'X-Api-Key' => 'abcdef12345',
+            ],
+        ]);
+        $data = [
+            'username' => 'second user',
+            'password' => 'password2',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($data));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);
@@ -400,6 +551,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::change()
+     * @covers ::initialize()
      */
     public function testChangeRequest()
     {
@@ -762,6 +914,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::login()
+     * @covers ::setGrantType()
      * @covers ::identify()
      */
     public function testOTPRequestLogin()

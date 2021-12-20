@@ -16,6 +16,8 @@ namespace BEdita\Core\Test\TestCase\State;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -51,6 +53,9 @@ class CurrentApplicationTest extends TestCase
         parent::setUp();
 
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
+        CurrentApplication::setApplication(null);
+        Configure::delete('appVal');
+        Configure::delete('someVal');
         Cache::clear(false, '_bedita_core_');
     }
 

@@ -16,9 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\Controller\AppController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
 
@@ -39,6 +37,7 @@ class AppControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
 
@@ -96,102 +95,6 @@ class AppControllerTest extends IntegrationTestCase
         $controller->dispatchEvent('Controller.initialize');
 
         static::assertTrue($expected);
-    }
-
-    /**
-     * Data provider for `testGetApplication` test case.
-     *
-     * @return array
-     */
-    public function getApplicationProvider()
-    {
-        return [
-            'standard' => [
-                1,
-                [
-                    'HTTP_X_API_KEY' => API_KEY,
-                ],
-            ],
-            'invalid API key' => [
-                new ForbiddenException('Invalid API key'),
-                [
-                    'HTTP_X_API_KEY' => 'this API key is invalid!',
-                ],
-            ],
-            'missing API key' => [
-                new ForbiddenException('Missing API key'),
-                [],
-                [],
-                true,
-            ],
-            'anonymous application' => [
-                null,
-                [],
-            ],
-            'query string api key' => [
-                1,
-                [],
-                [
-                    'api_key' => API_KEY,
-                ],
-            ],
-            'query string failure' => [
-                new ForbiddenException('Invalid API key'),
-                [],
-                [
-                    'api_key' => 'this API key is invalid!',
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * Test getting application from request headers.
-     *
-     * @param int|\Exception $expected Expected application ID.
-     * @param array $environment Request headers.
-     * @param array $query Request query strings.
-     * @param bool $blockAnonymous Block anonymous apps flag.
-     * @return void
-     *
-     * @dataProvider getApplicationProvider()
-     * @covers ::getApplication()
-     */
-    public function testGetApplication($expected, array $environment, array $query = [], $blockAnonymous = false)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        Configure::write('Security.blockAnonymousApps', $blockAnonymous);
-        CurrentApplication::getInstance()->set(null);
-        $environment += ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment', 'query'));
-
-        $controller = new AppController($request);
-        $controller->dispatchEvent('Controller.initialize');
-
-        static::assertEquals($expected, CurrentApplication::getApplicationId());
-    }
-
-    /**
-     * Test default behavior on missing 'Security.blockAnonymousApps' key
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testGetApplicationDefault()
-    {
-        $this->expectException(ForbiddenException::class);
-        $this->expectExceptionMessage('Missing API key');
-
-        Configure::delete('Security.blockAnonymousApps');
-        CurrentApplication::getInstance()->set(null);
-        $environment = ['HTTP_ACCEPT' => 'application/json'];
-        $request = new ServerRequest(compact('environment'));
-        $controller = new AppController($request);
-        $controller->dispatchEvent('Controller.initialize');
     }
 
     /**

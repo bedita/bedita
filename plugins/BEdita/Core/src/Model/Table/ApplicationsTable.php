@@ -15,11 +15,13 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -168,6 +170,32 @@ class ApplicationsTable extends Table
         ]);
 
         return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
+    }
+
+    /**
+     * Find an active application by client_id and client_secret.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array. It requires an `apiKey` key.
+     * @return \Cake\ORM\Query
+     */
+    protected function findCredentials(Query $query, array $options): Query
+    {
+        if (empty($options['client_id'])) {
+            throw new \BadMethodCallException('Required option "client_id" must be a not empty string');
+        }
+
+        return $query->where(function (QueryExpression $exp) use ($options) {
+            $secret = Hash::get($options, 'client_secret');
+            if ($secret !== null) {
+                $exp = $exp->eq($this->aliasField('client_secret'), $secret);
+            } else {
+                $exp = $exp->isNull($this->aliasField('client_secret'));
+            }
+            $exp = $exp->eq($this->aliasField('enabled'), true);
+
+            return $exp->eq($this->aliasField('api_key'), $options['client_id']);
+        });
     }
 
     /**

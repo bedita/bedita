@@ -214,6 +214,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                 [
                     'Host' => 'api.example.com',
                     'Accept' => 'application/vnd.api+json',
+                    'X-Api-Key' => 'API_KEY',
                 ],
                 'GET',
             ],
@@ -222,6 +223,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'Host' => 'api.example.com',
                     'Accept' => 'application/vnd.api+json',
                     'Content-Type' => 'application/vnd.api+json',
+                    'X-Api-Key' => 'API_KEY',
                 ],
                 'POST',
             ],
@@ -229,6 +231,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                 [
                     'Host' => 'api.example.com',
                     'Accept' => 'application/json',
+                    'X-Api-Key' => 'API_KEY',
                 ],
                 'GET',
                 [
@@ -240,6 +243,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'Host' => 'myapi.example.com',
                     'Accept' => 'application/vnd.api+json',
                     'Content-Type' => 'application/json',
+                    'X-Api-Key' => 'API_KEY',
                 ],
                 'PATCH',
                 [

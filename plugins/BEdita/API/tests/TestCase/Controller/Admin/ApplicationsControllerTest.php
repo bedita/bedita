@@ -67,6 +67,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'api_key' => API_KEY,
+                        'client_secret' => null,
                         'created' => '2016-10-28T07:10:57+00:00',
                         'modified' => '2016-10-28T07:10:57+00:00',
                     ],
@@ -84,6 +85,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
                     ],
                     'meta' => [
                         'api_key' => 'abcdef12345',
+                        'client_secret' => 'topsecretstring',
                         'created' => '2017-02-17T15:51:29+00:00',
                         'modified' => '2017-02-17T15:51:29+00:00',
                     ],
@@ -172,6 +174,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
                 ],
                 'meta' => [
                     'api_key' => API_KEY,
+                    'client_secret' => null,
                     'created' => '2016-10-28T07:10:57+00:00',
                     'modified' => '2016-10-28T07:10:57+00:00',
                 ],

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2018-2021 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,24 +13,25 @@
 
 namespace BEdita\API\Controller;
 
+use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\PasswordHasherFactory;
 use Cake\Controller\Component\AuthComponent;
-use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * Controller for `/auth` endpoint.
@@ -57,8 +58,6 @@ class LoginController extends AppController
 
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize()
     {
@@ -83,9 +82,7 @@ class LoginController extends AppController
                     ],
                     'passwordHasher' => self::PASSWORD_HASHER,
                 ],
-                'BEdita/API.Jwt' => [
-                    'queryDatasource' => true,
-                ],
+                'BEdita/API.Jwt',
             ];
 
             $authenticationComponents += $this->AuthProviders
@@ -114,6 +111,10 @@ class LoginController extends AppController
     public function login(): void
     {
         $this->set('_serialize', []);
+
+        $this->setGrantType();
+        $this->checkClientCredentials();
+
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
@@ -124,6 +125,28 @@ class LoginController extends AppController
         $user = $this->reducedUserData($result);
         $meta = $this->jwtTokens($user);
         $this->set('_meta', $meta);
+    }
+
+    /**
+     * Try to setup appropriate grant type if missing looking at request data.
+     * `grant_type` should be always set explicitly in request data.
+     *
+     * @return void
+     */
+    protected function setGrantType(): void
+    {
+        if (!empty($this->request->getData('grant_type'))) {
+            return;
+        }
+
+        $data = $this->request->getData();
+        if (empty($data)) {
+            $this->request = $this->request->withData('grant_type', 'refresh_token');
+        } elseif (!empty($data['username']) && !empty($data['password'])) {
+            $this->request = $this->request->withData('grant_type', 'password');
+        } elseif (!empty($data['client_id'])) {
+            $this->request = $this->request->withData('grant_type', 'client_credentials');
+        }
     }
 
     /**
@@ -164,6 +187,7 @@ class LoginController extends AppController
      *  - classic username and password
      *  - only with username, first step of OTP login
      *  - with username, authorization code and secret token as OTP login or 2FA access
+     *  - via JWT on refresh token grant type
      *
      * @return array
      * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user credentials are invalid or access is unauthorized
@@ -171,6 +195,10 @@ class LoginController extends AppController
     protected function identify(): array
     {
         $this->request->allowMethod('post');
+
+        if ($this->clientCredentialsOnly()) {
+            return [];
+        }
 
         if ($this->request->getData('password')) {
             $this->request = $this->request
@@ -182,7 +210,7 @@ class LoginController extends AppController
         if (!$result || !is_array($result)) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
-            // Result is a user; check endpoint permission on `/auth`
+        // Result is a user; check endpoint permission on `/auth`
         if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
             throw new UnauthorizedException(__('Login not authorized'));
         }
@@ -191,25 +219,74 @@ class LoginController extends AppController
     }
 
     /**
+     * Check if we are dealing with client credentials only.
+     * In case of `client_credentials` grant type or `refresh_token` grant type
+     * with only client credentials renew we avoid user identification and return
+     * only application related tokens.
+     *
+     * @return bool
+     */
+    protected function clientCredentialsOnly(): bool
+    {
+        $grant = $this->request->getData('grant_type');
+        if (
+            $grant === 'client_credentials' ||
+            ($grant === 'refresh_token' && $this->Auth->getConfig('renewClientCredentials') === true)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Verify client application credentials `client_id/client_secret`.
+     * Upon success the matching application is set via `CurrentApplication` otherwise
+     * an `UnauthorizedException` will be thrown.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\UnauthorizedException
+     */
+    protected function checkClientCredentials(): void
+    {
+        $grantType = $this->request->getData('grant_type');
+        if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
+            return;
+        }
+        /** @var \BEdita\Core\Model\Entity\Application $application */
+        $application = TableRegistry::getTableLocator()->get('Applications')
+            ->find('credentials', [
+                'client_id' => $this->request->getData('client_id'),
+                'client_secret' => $this->request->getData('client_secret'),
+            ])
+            ->first();
+        if (empty($application)) {
+            throw new UnauthorizedException(__('App authentication failed'));
+        }
+        CurrentApplication::setApplication($application);
+    }
+
+    /**
      * Return a reduced version of user data with only
      * `id`, `username` and for each role `id` and `name
      *
      * @param array $userInput Complete user data
-     * @return array Reduced user data
+     * @return array Reduced user data (can be empty in case of client credentials)
      */
     protected function reducedUserData(array $userInput)
     {
-        $roles = [];
-        foreach ($userInput['roles'] as $role) {
-            $roles[] = [
-                'id' => $role['id'],
-                'name' => $role['name'],
-            ];
-        }
         $user = array_intersect_key($userInput, array_flip(['id', 'username']));
-        $user['roles'] = $roles;
+        $user['roles'] = array_map(
+            function ($role) {
+                return [
+                    'id' => $role['id'],
+                    'name' => $role['name'],
+                ];
+            },
+            (array)Hash::get($userInput, 'roles')
+        );
 
-        return $user;
+        return array_filter($user);
     }
 
     /**
@@ -220,27 +297,7 @@ class LoginController extends AppController
      */
     protected function jwtTokens(array $user)
     {
-        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+20 minutes';
-        $currentUrl = Router::reverse($this->request, true);
-        $claims = [
-            'iss' => Router::fullBaseUrl(),
-            'iat' => time(),
-            'nbf' => time(),
-        ];
-
-        $jwt = JWT::encode(
-            $user + $claims + ['exp' => strtotime($duration)],
-            Security::getSalt(),
-            $algorithm
-        );
-        $renew = JWT::encode(
-            $claims + ['sub' => $user['id'], 'aud' => $currentUrl],
-            Security::getSalt(),
-            $algorithm
-        );
-
-        return compact('jwt', 'renew');
+        return JWTHandler::tokens($user, Router::reverse($this->request, true));
     }
 
     /**

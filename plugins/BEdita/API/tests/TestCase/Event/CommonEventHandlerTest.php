@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Event;
 use BEdita\API\Event\CommonEventHandler;
 use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
+use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
@@ -67,10 +68,11 @@ class CommonEventHandlerTest extends TestCase
 
         $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
         EventManager::instance()->dispatch($event);
-        static::assertCount(3, $middleware);
+        static::assertCount(4, $middleware);
         static::assertInstanceOf(AnalyticsMiddleware::class, $middleware->get(0));
         static::assertInstanceOf(CorsMiddleware::class, $middleware->get(1));
         static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(2));
+        static::assertInstanceOf(TokenMiddleware::class, $middleware->get(3));
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2016-2021 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -13,14 +13,13 @@
 
 namespace BEdita\API\Auth;
 
-use BEdita\API\Exception\ExpiredTokenException;
+use BEdita\API\Middleware\TokenMiddleware;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
+use Cake\Utility\Hash;
 
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
@@ -47,65 +46,33 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Default config for this object.
      *
-     * - `header` The header where the token is stored. Defaults to `'Authorization'`.
-     * - `headerPrefix` The prefix to the token in header. Defaults to `'Bearer'`.
-     * - `queryParam` The query parameter where the token is passed as a fallback. Defaults to `'token'`.
-     * - `allowedAlgorithms` List of supported verification algorithms. Defaults to `['HS256']`.
-     *   See API of JWT::decode() for more info.
      * - `fields` The fields to use to identify a user by.
      * - `userModel` The alias for users table, defaults to Users.
      * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
      *   You can set finder name as string or an array where key is finder name and value
      *   is an array passed to `Table::find()` options.
      *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
-     * - `passwordHasher` Password hasher class. Can be a string specifying class name
-     *    or an array containing `className` key, any other keys will be passed as
-     *    config to the class. Defaults to 'Default'.
-     * - Options `scope` and `contain` have been deprecated since 3.1. Use custom
-     *   finder instead to modify the query to fetch user record.
+     * - `authenticate` Boolean field indicating if we are performing an explicit `authenticate` action,
+     *   used in `refresh_token` grant use case
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'header' => 'Authorization',
-        'headerPrefix' => 'Bearer',
-        'queryParam' => 'token',
-        'allowedAlgorithms' => [
-            'HS256',
-            'HS512',
-        ],
         'fields' => [
             'username' => 'id',
             'password' => null,
         ],
         'userModel' => 'Users',
-        'scope' => [],
         'finder' => 'login',
-        'contain' => null,
-        'passwordHasher' => 'Default',
-        'queryDatasource' => false,
+        'authenticate' => false,
     ];
-
-    /**
-     * Parsed token.
-     *
-     * @var string|null
-     */
-    protected $token = null;
 
     /**
      * Payload data.
      *
-     * @var object|null
+     * @var array|null
      */
     protected $payload = null;
-
-    /**
-     * Exception.
-     *
-     * @var \Exception
-     */
-    protected $error;
 
     /**
      * Get user record based on info available in JWT.
@@ -116,6 +83,8 @@ class JwtAuthenticate extends BaseAuthenticate
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
+        $this->setConfig('authenticate', true);
+
         return $this->getUser($request);
     }
 
@@ -128,93 +97,80 @@ class JwtAuthenticate extends BaseAuthenticate
     public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
-
-        if (!empty($this->error)) {
-            throw new UnauthorizedException($this->error->getMessage());
-        }
-
-        if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
-            return $payload;
-        }
-
-        if (!isset($payload['sub'])) {
+        if (empty($payload)) {
             return false;
         }
 
-        $user = $this->_findUser($payload['sub']);
+        if ((string)$request->getData('grant_type') === 'refresh_token') {
+            return $this->handleRefreshToken($request);
+        }
 
-        return $user;
+        return isset($payload['id']) ? $payload : false;
+    }
+
+    /**
+     * Handle refresh token grant looking at payload:
+     *  - first `aud` (audience) claim is checked
+     *  - if `sub` claim is not null and `authenticate()` was called => renew user access token
+     *  - if `sub` claim is null and `app` claim is not => renew client credential token
+     *
+     * @param \Cake\Http\ServerRequest $request Request object.
+     * @return array|false User record array, `false` on failure.
+     */
+    protected function handleRefreshToken(ServerRequest $request)
+    {
+        $this->checkAudience($request);
+
+        if ($this->getConfig('authenticate') && !empty($this->payload['sub'])) {
+            return $this->_findUser($this->payload['sub']);
+        }
+
+        if (empty($this->payload['sub']) && !empty($this->payload['app'])) {
+            $this->_registry->getController()->Auth->setConfig('renewClientCredentials', true);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check audience claim.
+     * If claim is missing or 'audience` check fails an exception is thrown.
+     *
+     * @param \Cake\Http\ServerRequest $request Request instance or null
+     * @return void
+     * @throws \DomainException|\Cake\Http\Exception\UnauthorizedException
+     */
+    protected function checkAudience(ServerRequest $request): void
+    {
+        $audience = Hash::get($this->payload, 'aud');
+        if (empty($audience)) {
+            throw new \DomainException('Missing audience');
+        }
+        try {
+            $url = Router::url($audience, true);
+            if (strpos($url, Router::reverse($request, true)) !== 0) {
+                throw new \DomainException(sprintf('Invalid audience %s', $url));
+            }
+        } catch (\Exception $ex) {
+            throw new UnauthorizedException($ex->getMessage());
+        }
     }
 
     /**
      * Get payload data.
      *
      * @param \Cake\Http\ServerRequest $request Request instance or null
-     * @return object|false Payload object on success, `false` on failure.
-     * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
+     * @return array Payload array.
+     * @throws \DomainException|\Cake\Http\Exception\UnauthorizedException If 'audience` check fails.
      */
-    public function getPayload(ServerRequest $request)
+    public function getPayload(ServerRequest $request): array
     {
-        $token = $this->getToken($request);
-        if ($token) {
-            return $this->payload = $this->decode($token, $request);
+        if (!empty($this->payload)) {
+            return $this->payload;
         }
+        $payload = $request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE);
 
-        return false;
-    }
-
-    /**
-     * Get token from header or query string.
-     *
-     * @param \Cake\Http\ServerRequest $request Request object.
-     * @return string|null Token string if found else null.
-     */
-    public function getToken(ServerRequest $request)
-    {
-        $config = $this->_config;
-
-        $header = trim($request->getHeaderLine($config['header']));
-        $headerPrefix = strtolower(trim($config['headerPrefix'])) . ' ';
-        $headerPrefixLength = strlen($headerPrefix);
-        if ($header && strtolower(substr($header, 0, $headerPrefixLength)) == $headerPrefix) {
-            return $this->token = substr($header, $headerPrefixLength);
-        }
-
-        if (!empty($this->_config['queryParam'])) {
-            return $this->token = $request->getQuery($this->_config['queryParam']);
-        }
-
-        return null;
-    }
-
-    /**
-     * Decode JWT token.
-     *
-     * @param string $token JWT token to decode.
-     * @param \Cake\Http\ServerRequest $request Request object.
-     * @return array|false The token's payload as a PHP object, `false` on failure.
-     * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
-     */
-    protected function decode($token, ServerRequest $request)
-    {
-        try {
-            $payload = JWT::decode($token, Security::getSalt(), $this->_config['allowedAlgorithms']);
-
-            if (isset($payload->aud)) {
-                $audience = Router::url($payload->aud, true);
-                if (strpos($audience, Router::reverse($request, true)) !== 0) {
-                    throw new \DomainException('Invalid audience');
-                }
-            }
-
-            return (array)$payload;
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new ExpiredTokenException();
-        } catch (\Exception $e) {
-            $this->error = $e;
-        }
-
-        return false;
+        return $this->payload = (array)$payload;
     }
 
     /**
@@ -228,10 +184,6 @@ class JwtAuthenticate extends BaseAuthenticate
     public function unauthenticated(ServerRequest $request, Response $response)
     {
         $message = $this->_registry->getController()->Auth->getConfig('authError');
-        if ($this->error) {
-            $message = $this->error->getMessage();
-        }
-
         throw new UnauthorizedException($message);
     }
 }
