@@ -63,11 +63,36 @@ class TagsController extends ModulesController {
         Category::COUNT_DENY_OPTIONS => array('joins', 'group'),
     );
 
-    public function index($order = "label", $dir = 1) {
+    public function index($order = 'label', $dir = 1) {
+        $this->setupFilter();
         $data = $this->paginate();
+        
         $this->set('tags', $data);
         $this->set('order', $order);
         $this->set('dir', $dir ? 0 : 1);
+    }
+
+    /**
+     * Setup filter.
+     *
+     * @return void
+     */
+    protected function setupFilter() {
+        $query = $this->SessionFilter->read('query');
+        if (($this->RequestHandler->isPost() && empty($this->params['form']['filter'])) || ($query && strlen($query) <= 3)) {
+            $this->SessionFilter->clean();
+
+            return;
+        }
+        
+        if ($query) {
+            $this->paginate['conditions'][] = array(
+                'OR' => array(
+                    'Category.name LIKE' => '%' . $query . '%',
+                    'Category.label LIKE' => '%' . $query . '%',
+                ),
+            );
+        }
     }
 
     public function view($id = null) {

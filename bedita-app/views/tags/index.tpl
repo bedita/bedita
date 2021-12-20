@@ -29,6 +29,21 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 <div class="main">
 
+{$view->element('filters', [
+    'options' => [
+        'tree' => false,
+        'treeDescendants' => false,
+        'relations' => false,
+        'language' => false,
+        'user' => false,
+        'customProp' => false,
+        'categories' => false,
+        'tags' => false,
+        'status' => false,
+        'editorialContents' => false
+    ]
+])}
+
 <form method="post" action="" id="formObject">
     {$beForm->csrf()}
 

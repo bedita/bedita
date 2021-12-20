@@ -36,6 +36,7 @@
     ]),
     'tags' => true,
     'status' => false,
+    'editorialContents' => true,
     'append' => [
         'before' => '',
         'after' => ''
