@@ -55,6 +55,7 @@ class TagsController extends ModulesController {
             array(
                 'table' => 'object_categories',
                 'alias' => 'ObjectCategory',
+                'type' => 'LEFT',
                 'conditions' => 'ObjectCategory.category_id = Category.id',
             ),
         ),
@@ -63,20 +64,10 @@ class TagsController extends ModulesController {
     );
 
     public function index($order = "label", $dir = 1) {
-        // $data = $this->Category->getTags(array(
-        // 	"cloud" => true,
-        // 	"order" => $order,
-        // 	"dir" => $dir
-        // ));
-        // $this->Category->Behaviors->disable('CompactResult');
         $data = $this->paginate();
-        // $this->Category->Behaviors->enable('CompactResult');
-
-        // debug($data);exit;
-        $this->set("numTags", count($data));
-        $this->set('tags', $data /*Set::classicExtract($data, '{n}.Category')*/);
-        $this->set("order", $order);
-        $this->set("dir", (($dir)? 0 : 1) );
+        $this->set('tags', $data);
+        $this->set('order', $order);
+        $this->set('dir', $dir ? 0 : 1);
     }
 
     public function view($id = null) {
