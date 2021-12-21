@@ -301,7 +301,7 @@ class BePaginatorToolbarHelper extends AppHelper
     /**
      * Return the link (html anchor tag) for the previous page
      *
-     * @return void
+     * @return string
      */
     public function prev() {
         return $this->Paginator->prev(__('prev', true), null, __('prev', true), array('style' => 'display: inline'));
@@ -310,7 +310,7 @@ class BePaginatorToolbarHelper extends AppHelper
     /**
      * Return the link (html anchor tag) for the next page
      *
-     * @return void
+     * @return string
      */
     public function next() {
         return $this->Paginator->next(__('next', true), null, __('next', true), array('style' => 'display: inline'));
@@ -319,7 +319,7 @@ class BePaginatorToolbarHelper extends AppHelper
     /**
      * Return the link (html anchor tag) for the last page
      *
-     * @return void
+     * @return string
      */
     public function last() {
         $pageCount = Set::classicExtract($this->Paginator->params(), 'pageCount');
@@ -394,7 +394,6 @@ class BePaginatorToolbarHelper extends AppHelper
      * @return array
      */
     public function getPassedArgs() {
-        $params = $this->Paginator->params();
         $query = array_diff_assoc($this->params['url'], $this->params['named'], $this->Paginator->params());
         unset($query['url']);
 
