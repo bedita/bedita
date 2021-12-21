@@ -120,11 +120,17 @@ class BePaginatorToolbarHelper extends AppHelper
 
     /**
      * Return toolbar by type.
+     * 
+     * `$options` available are:
+     * - `name` the name of the resource paginated
+     * - `headerName` if present override `name` in the toolbar header
+     * - `newAction` the name of the controller action corresponding to the creation page of new resources
      *
      * @param string $type The view type, can be 'compact' or default
+     * @param array $options Toolbar options
      * @return string
      */
-    public function show($type = 'default', $options = array()) {
+    public function show($type = 'default', array $options = array()) {
         $itemNameEng = Set::classicExtract($options, 'name');
         if ($itemNameEng === null) {
             $itemNameEng = $this->_currentModule['name'];
@@ -171,6 +177,10 @@ class BePaginatorToolbarHelper extends AppHelper
     /**
      * Page title, System users or Users groups
      *
+     * `$options` available:
+     * - `headerName` to override default name
+     * 
+     * @param array $options Toolbar header options
      * @return string
      */
     public function pageHeader(array $options) {
@@ -202,7 +212,11 @@ class BePaginatorToolbarHelper extends AppHelper
 
     /**
      * Page pagination data, info about page(s), links, etc.
+     * 
+     * `$options` available:
+     * - `newAction` the name of the controller action corresponding to the creation page of new resources
      *
+     * @param array $options Toolbar options
      * @return string
      */
     public function pagePagination(array $options) {
@@ -212,7 +226,7 @@ class BePaginatorToolbarHelper extends AppHelper
         }
         $cells = '';
         $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
-        if ($moduleModify === "1" && empty($_noitem)) {
+        if ($moduleModify === "1" && empty($this->_noitem)) {
             $title = __('Create new', true) . '&nbsp;' . $this->_itemName;
             $url = $this->Html->url(sprintf('/%s/%s', $this->_currentModule['name'], $newAction));
             $anchor = sprintf('<a href="%s">%s</a>', $url, $title);
