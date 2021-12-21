@@ -1,1 +1,1 @@
-{$bePaginatorToolbar->show('default')}
+{$bePaginatorToolbar->show()}

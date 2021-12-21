@@ -23,7 +23,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 <div class="head">
     <div class="toolbar" style="white-space:nowrap">
-        {include file="./inc/toolbar.tpl" label_items='tags'}
+        {include file="./inc/toolbar.tpl"}
     </div>
 </div>
 
