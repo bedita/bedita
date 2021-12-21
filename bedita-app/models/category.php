@@ -68,8 +68,7 @@ class Category extends BEAppModel {
      */
     function paginateCount($conditions = null, $recursive = 0, $extra = array()) {
         if (!empty($extra[static::COUNT_DENY_OPTIONS])) {
-            $extra[static::COUNT_DENY_OPTIONS] = (array)$extra[static::COUNT_DENY_OPTIONS];
-            $extra = array_diff_key($extra, array_flip($extra[static::COUNT_DENY_OPTIONS]));
+            $extra = array_diff_key($extra, array_flip((array)$extra[static::COUNT_DENY_OPTIONS]));
         }
         
         $parameters = compact('conditions');
