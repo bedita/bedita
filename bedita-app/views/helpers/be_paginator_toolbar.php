@@ -110,11 +110,11 @@ class BePaginatorToolbarHelper extends AppHelper
      */
     public function __construct() {
         $this->_view = ClassRegistry::getObject('view');
-        $this->_publication = Set::classicExtract($this->_view->viewVars, 'publication', null);
-        $this->_section =  Set::classicExtract($this->_view->viewVars, 'section', null);
-        $this->_currentContent = Set::classicExtract($this->_view->viewVars, 'section.currentContent', null);
-        $this->_moduleName = Set::classicExtract($this->_view->viewVars, 'moduleName', null);
-        $this->_currentModule = Set::classicExtract($this->_view->viewVars, 'currentModule', null);
+        $this->_publication = Set::classicExtract($this->_view->viewVars, 'publication');
+        $this->_section =  Set::classicExtract($this->_view->viewVars, 'section');
+        $this->_currentContent = Set::classicExtract($this->_view->viewVars, 'section.currentContent');
+        $this->_moduleName = Set::classicExtract($this->_view->viewVars, 'moduleName');
+        $this->_currentModule = Set::classicExtract($this->_view->viewVars, 'currentModule');
         $this->_conf = Configure::getInstance();
     }
 
@@ -225,7 +225,7 @@ class BePaginatorToolbarHelper extends AppHelper
             $newAction = 'view';
         }
         $cells = '';
-        $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
+        $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify');
         if ($moduleModify === "1" && empty($this->_noitem)) {
             $title = __('Create new', true) . '&nbsp;' . $this->_itemName;
             $url = $this->Html->url(sprintf('/%s/%s', $this->_currentModule['name'], $newAction));
@@ -300,7 +300,12 @@ class BePaginatorToolbarHelper extends AppHelper
      * @return mixed int|string
      */
     public function size() {
-        return Set::classicExtract($this->Paginator->params(), 'count', '');
+        $size = Set::classicExtract($this->Paginator->params(), 'count');
+        if ($size !== null) {
+            return $size;
+        }
+
+        return '';
     }
 
     /**
@@ -309,7 +314,12 @@ class BePaginatorToolbarHelper extends AppHelper
      * @return mixed int|string
      */
     public function current() {
-        return Set::classicExtract($this->Paginator->params(), 'page', '');
+        $current = Set::classicExtract($this->Paginator->params(), 'page');
+        if ($current !== null) {
+            return $current;
+        }
+
+        return '';
     }
 
     /**
