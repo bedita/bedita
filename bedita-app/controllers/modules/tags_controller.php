@@ -211,8 +211,12 @@ class TagsController extends ModulesController {
         $moduleRedirect = array(
             'addMultipleTags' => array(
                 'OK' => $this->referer(),
-                'ERROR' => $this->referer()
-            )
+                'ERROR' => $this->referer(),
+            ),
+            'changeStatus' =>  array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer(),
+            ),
         );
         return $this->moduleForward($action, $result, $moduleRedirect);
     }
