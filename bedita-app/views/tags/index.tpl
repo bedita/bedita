@@ -21,9 +21,28 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 {include file = './inc/menucommands.tpl'}
 
-{include file="inc/toolbar.tpl"}
+<div class="head">
+    <div class="toolbar" style="white-space:nowrap">
+        {include file="./inc/toolbar.tpl"}
+    </div>
+</div>
 
 <div class="main">
+
+{$view->element('filters', [
+    'options' => [
+        'tree' => false,
+        'treeDescendants' => false,
+        'relations' => false,
+        'language' => false,
+        'user' => false,
+        'customProp' => false,
+        'categories' => false,
+        'tags' => false,
+        'status' => false,
+        'editorialContents' => false
+    ]
+])}
 
 <form method="post" action="" id="formObject">
     {$beForm->csrf()}
@@ -33,10 +52,9 @@ var no_items_checked_msg = "{t}No items selected{/t}";
     <thead>
         <tr>
             <th></th>
-            <th >
-                <a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
-            <th><a href="{$html->url('/tags/index/')}status/{if $order == "status"}{$dir}{else}1{/if}">{t}Status{/t}</a></th>
-            <th><a href="{$html->url('/tags/index/')}weight/{if $order == "weight"}{$dir}{else}1{/if}">{t}Occurrences{/t}</a></th>
+            <th>{$paginator->sort($tr->t('Name', true), 'name')}</th>
+            <th>{$paginator->sort($tr->t('Status', true), 'status')}</th>
+            <th>{t}Weight{/t}</th>
             <th>Id</th>
             <th>
                 <img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
@@ -64,21 +82,6 @@ var no_items_checked_msg = "{t}No items selected{/t}";
         <tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 
     {/foreach}
-    </tbody>
-
-    <tbody id="tagcloud">
-        <tr>
-            <td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px 10px;">
-                {foreach from=$tags item=tag}
-                <span class="obj {$tag.status}">
-                    <a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">
-                        {$tag.label|escape}
-                    </a>
-                </span>
-                {/foreach}
-            </td>
-        </tr>
-
     </tbody>
 
     </table>

@@ -91,6 +91,6 @@ $(document).ready(function(){
 {if !empty($users)}
 	<br/>
 	<div style="white-space:nowrap">
-		{$beUsersToolbar->show('compact')}
+		{$bePaginatorToolbar->show('compact')}
 	</div>
 {/if}

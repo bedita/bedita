@@ -20,9 +20,13 @@
  */
 
 /**
- * Users toolbar for pagination
+ * Help to build a toolbar for pagination.
+ * 
+ * Internally it uses PaginatorHelper.
+ * It can be used when resources are paginated with CakePHP pagination.
+ * Do not use with BEdita objects, use `BeToolbarHelper` instead.
  */
-class BeUsersToolbarHelper extends AppHelper
+class BePaginatorToolbarHelper extends AppHelper
 {
     /**
      * Included helpers.
@@ -106,25 +110,36 @@ class BeUsersToolbarHelper extends AppHelper
      */
     public function __construct() {
         $this->_view = ClassRegistry::getObject('view');
-        $this->_publication = Set::classicExtract($this->_view->viewVars, 'publication', null);
-        $this->_section =  Set::classicExtract($this->_view->viewVars, 'section', null);
-        $this->_currentContent = Set::classicExtract($this->_view->viewVars, 'section.currentContent', null);
-        $this->_moduleName = Set::classicExtract($this->_view->viewVars, 'moduleName', null);
-        $this->_currentModule = Set::classicExtract($this->_view->viewVars, 'currentModule', null);
+        $this->_publication = Set::classicExtract($this->_view->viewVars, 'publication');
+        $this->_section =  Set::classicExtract($this->_view->viewVars, 'section');
+        $this->_currentContent = Set::classicExtract($this->_view->viewVars, 'section.currentContent');
+        $this->_moduleName = Set::classicExtract($this->_view->viewVars, 'moduleName');
+        $this->_currentModule = Set::classicExtract($this->_view->viewVars, 'currentModule');
         $this->_conf = Configure::getInstance();
     }
 
     /**
      * Return toolbar by type.
+     * 
+     * `$options` available are:
+     * - `name` the name of the resource paginated
+     * - `headerName` if present override `name` in the toolbar header
+     * - `newAction` the name of the controller action corresponding to the creation page of new resources
      *
      * @param string $type The view type, can be 'compact' or default
+     * @param array $options Toolbar options
      * @return string
      */
-    public function show($type = 'default') {
-        $itemNameEng = ($this->_view->action === 'index') ? 'User' : 'Group';
-        $this->_itemName = __($itemNameEng, true);
+    public function show($type = 'default', array $options = array()) {
+        $itemNameEng = Set::classicExtract($options, 'name');
+        if ($itemNameEng === null) {
+            $itemNameEng = $this->_currentModule['name'];
+        }
+
+        $this->_itemName = __(Inflector::singularize($itemNameEng), true);
         $this->_noitem = null;
         $this->_name = Inflector::pluralize($itemNameEng);
+        
         if ($type === 'compact') {
             $content = $this->pageCount(); // i.e. '12823 documents'
             $separator = ' <span class="separator"></span> ';
@@ -140,8 +155,8 @@ class BeUsersToolbarHelper extends AppHelper
             return sprintf('<div class="toolbar">%s</div>', $content);
         }
 
-        $content = sprintf('<h2>%s %s</h2>', $this->pageHeader(), $this->pageQuery());
-        $content.= $this->pagePagination();
+        $content = sprintf('<h2>%s %s</h2>', $this->pageHeader($options), $this->pageQuery());
+        $content.= $this->pagePagination($options);
 
         return sprintf('<div class="toolbar">%s</div>', $content);
     }
@@ -162,17 +177,19 @@ class BeUsersToolbarHelper extends AppHelper
     /**
      * Page title, System users or Users groups
      *
+     * `$options` available:
+     * - `headerName` to override default name
+     * 
+     * @param array $options Toolbar header options
      * @return string
      */
-    public function pageHeader() {
-        if ($this->_view->action === 'index') {
-            return __('System users', true);
-        }
-        if ($this->_view->action === 'groups') {
-            return __('User groups', true);
+    public function pageHeader(array $options) {
+        $headerName = Set::classicExtract($options, 'headerName');
+        if ($headerName === null) {
+            return Inflector::humanize($this->_name);
         }
         
-        return null;
+        return Inflector::humanize(__($headerName, true));
     }
 
     /**
@@ -195,15 +212,24 @@ class BeUsersToolbarHelper extends AppHelper
 
     /**
      * Page pagination data, info about page(s), links, etc.
+     * 
+     * `$options` available:
+     * - `newAction` the name of the controller action corresponding to the creation page of new resources
      *
+     * @param array $options Toolbar options
      * @return string
      */
-    public function pagePagination() {
+    public function pagePagination(array $options) {
+        $newAction = Set::classicExtract($options, 'newAction');
+        if ($newAction === null) {
+            $newAction = 'view';
+        }
         $cells = '';
-        $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify', null);
-        if ($moduleModify === "1" && empty($_noitem)) {
+        $moduleModify = Set::classicExtract($this->_view, 'viewVars.module_modify');
+        if ($moduleModify === "1" && empty($this->_noitem)) {
             $title = __('Create new', true) . '&nbsp;' . $this->_itemName;
-            $anchor = sprintf('<a href="%s">%s</a>', $this->Html->url(sprintf('/users/view%s', $this->_itemName)), $title);
+            $url = $this->Html->url(sprintf('/%s/%s', $this->_currentModule['name'], $newAction));
+            $anchor = sprintf('<a href="%s">%s</a>', $url, $title);
             $cells = sprintf('<td>%s</td>', $anchor);
         }
         $cells.= sprintf('<td>%s</td>', $this->pageCount());
@@ -274,7 +300,12 @@ class BeUsersToolbarHelper extends AppHelper
      * @return mixed int|string
      */
     public function size() {
-        return Set::classicExtract($this->Paginator->params(), 'count', '');
+        $size = Set::classicExtract($this->Paginator->params(), 'count');
+        if ($size !== null) {
+            return $size;
+        }
+
+        return '';
     }
 
     /**
@@ -283,13 +314,18 @@ class BeUsersToolbarHelper extends AppHelper
      * @return mixed int|string
      */
     public function current() {
-        return Set::classicExtract($this->Paginator->params(), 'page', '');
+        $current = Set::classicExtract($this->Paginator->params(), 'page');
+        if ($current !== null) {
+            return $current;
+        }
+
+        return '';
     }
 
     /**
      * Return the link (html anchor tag) for the previous page
      *
-     * @return void
+     * @return string
      */
     public function prev() {
         return $this->Paginator->prev(__('prev', true), null, __('prev', true), array('style' => 'display: inline'));
@@ -298,7 +334,7 @@ class BeUsersToolbarHelper extends AppHelper
     /**
      * Return the link (html anchor tag) for the next page
      *
-     * @return void
+     * @return string
      */
     public function next() {
         return $this->Paginator->next(__('next', true), null, __('next', true), array('style' => 'display: inline'));
@@ -307,10 +343,15 @@ class BeUsersToolbarHelper extends AppHelper
     /**
      * Return the link (html anchor tag) for the last page
      *
-     * @return void
+     * @return string
      */
     public function last() {
-        return $this->Paginator->last(Set::classicExtract($this->Paginator->params(), 'pageCount', '1'));
+        $pageCount = Set::classicExtract($this->Paginator->params(), 'pageCount');
+        if (!$this->Paginator->hasNext()) {
+            return (string)$pageCount; 
+        }
+
+        return $this->Paginator->last($pageCount);
     }
 
     /**
@@ -320,7 +361,7 @@ class BeUsersToolbarHelper extends AppHelper
      * @return string
      */
     public function changePageInput() {
-        if ($this->last() <= 1) {
+        if (!$this->Paginator->hasNext()) {
             return "1";
         }
         $current = $this->current();
@@ -340,7 +381,7 @@ class BeUsersToolbarHelper extends AppHelper
             'onkeypress' => 'if (event.keyCode === 13) { event.preventDefault(); event.stopPropagation(); this.blur(); }',
         );
 
-        return $this->Form->input('', $options);
+        return $this->Form->input('paginationPage', $options);
     }
 
     /**
@@ -377,7 +418,6 @@ class BeUsersToolbarHelper extends AppHelper
      * @return array
      */
     public function getPassedArgs() {
-        $params = $this->Paginator->params();
         $query = array_diff_assoc($this->params['url'], $this->params['named'], $this->Paginator->params());
         unset($query['url']);
 

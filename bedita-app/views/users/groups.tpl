@@ -8,7 +8,8 @@
 
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
-	{include file="./inc/toolbar.tpl" label_items='groups'}
+	{$toolbarOptions = ['headerName' => 'System groups', 'name' => 'Group', 'newAction' => 'viewGroup']}
+	{include file="./inc/toolbar.tpl" toolbarOptions=$toolbarOptions}
 	</div>
 </div>
 

@@ -268,7 +268,7 @@ available options:
 			</div>
 		{/if}
 
-		{if !empty($conf->editorialContents)}
+		{if !empty($filters.editorialContents) && !empty($conf->editorialContents)}
 			<div class="cell editorial">
 				<label>{t}editorial and user contents{/t}:</label>
 				<select name="filter[editorial]" id="editorial">

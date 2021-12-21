@@ -32,7 +32,7 @@ class UsersController extends ModulesController {
     
     public $uses = array('User', 'Group');
     
-    public $helpers = array('Paginator', 'BeUsersToolbar');
+    public $helpers = array('Paginator', 'BePaginatorToolbar');
 
     public $components = array('BeSecurity');
      

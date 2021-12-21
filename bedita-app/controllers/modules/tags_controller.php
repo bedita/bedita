@@ -19,34 +19,82 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import('Model', 'Category');
+
 /**
  * Tags handling
  * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * @property-read Category $Category
  */
 class TagsController extends ModulesController {
 
-    var $helpers 	= array('BeTree', 'BeToolbar');
+    var $helpers 	= array('BeTree', 'BePaginatorToolbar');
     var $components = array('BeTree', 'BeSecurity');
     var $uses = array('Category') ;
     
     protected $moduleName = 'tags';
 
-    public function index($order = "label", $dir = 1) {
-        $data = $this->Category->getTags(array(
-            "cloud" => true,
-            "order" => $order,
-            "dir" => $dir
-        ));
-        $this->set("numTags", count($data));
-        $this->set('tags', $data);
-        $this->set("order", $order);
-        $this->set("dir", (($dir)? 0 : 1) );
+    /**
+     * Pagination options.
+     *
+     * @var array
+     */
+    public $paginate = array(
+        'fields' => array(
+            'Category.id',
+            'Category.name',
+            'Category.label',
+            'Category.status',
+            'count(ObjectCategory.object_id) as weight',
+        ),
+        'limit' => 20,
+        'page' => 1,
+        'order' => array('label' => 'asc'),
+        'conditions' => array('Category.object_type_id' => null),
+        'joins' => array(
+            array(
+                'table' => 'object_categories',
+                'alias' => 'ObjectCategory',
+                'type' => 'LEFT',
+                'conditions' => 'ObjectCategory.category_id = Category.id',
+            ),
+        ),
+        'group' => array('Category.id', 'Category.name', 'Category.label', 'Category.status'),
+        Category::COUNT_DENY_OPTIONS => array('joins', 'group'),
+    );
+
+    /**
+     * Index tags.
+     *
+     * @return void
+     */
+    public function index() {
+        $this->setupFilter();
+
+        $this->set('tags', $this->paginate());
+    }
+
+    /**
+     * Setup filter.
+     *
+     * @return void
+     */
+    protected function setupFilter() {
+        $query = $this->SessionFilter->read('query');
+        if (($this->RequestHandler->isPost() && empty($this->params['form']['filter'])) || ($query && strlen($query) <= 3)) {
+            $this->SessionFilter->clean();
+
+            return;
+        }
+        
+        if ($query) {
+            $this->paginate['conditions'][] = array(
+                'OR' => array(
+                    'Category.name LIKE' => '%' . $query . '%',
+                    'Category.label LIKE' => '%' . $query . '%',
+                ),
+            );
+        }
     }
 
     public function view($id = null) {
@@ -163,8 +211,12 @@ class TagsController extends ModulesController {
         $moduleRedirect = array(
             'addMultipleTags' => array(
                 'OK' => $this->referer(),
-                'ERROR' => $this->referer()
-            )
+                'ERROR' => $this->referer(),
+            ),
+            'changeStatus' =>  array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer(),
+            ),
         );
         return $this->moduleForward($action, $result, $moduleRedirect);
     }
