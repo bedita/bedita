@@ -1,5 +1,33 @@
 # ChangeLog
 
+## Version 4.6.0 - Cactus
+
+### API changes (4.6.0)
+
+* [#1844](https://github.com/bedita/bedita/pull/1844) Improve external OAuth2 providers check
+* [#1836](https://github.com/bedita/bedita/pull/1836) New `/applications` endpoint
+* [#1830](https://github.com/bedita/bedita/pull/1830) Add `private` URLs to Streams
+* [#1829](https://github.com/bedita/bedita/pull/1829) Implement proper OAuth2 flow on `/auth`
+* [#1827](https://github.com/bedita/bedita/pull/1827) get /model/schema/:type, all relations
+
+### Core changes (4.6.0)
+
+* [#1841](https://github.com/bedita/bedita/pull/1841) Add `pseudonym` to Profiles
+* [#1840](https://github.com/bedita/bedita/pull/1840) `password_modified` read-only property
+* [#1839](https://github.com/bedita/bedita/pull/1839) `Trees.menu` is default off
+* [#1834](https://github.com/bedita/bedita/pull/1834) Lighter async mail payload
+* [#1826](https://github.com/bedita/bedita/pull/1826) Fix `filter[]` error on related objects
+* [#1825](https://github.com/bedita/bedita/pull/1825) Fix `UpdateRelatedObjectsActions::prepareData()` on multiple relatedEntities
+* [#1823](https://github.com/bedita/bedita/pull/1823) Fix unique uname generation use cases
+* [#1822](https://github.com/bedita/bedita/pull/1822) Add file metadata to Streams
+* [#1821](https://github.com/bedita/bedita/pull/1821) New `fix_history` command
+
+### Integration changes (4.6.0)
+
+* [#1837](https://github.com/bedita/bedita/pull/1837) Docker: update PHP and composer versions
+* [#1831](https://github.com/bedita/bedita/pull/1831) Use MySQL 8 as default for dump file & CI
+* [#1845](https://github.com/bedita/bedita/pull/1845) Bulk coding style fix
+
 ## Version 4.5.0 - Cactus
 
 ### API changes (4.5.0)
