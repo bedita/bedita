@@ -25,6 +25,7 @@ App::import('Model', 'Category');
  * Tags handling
  * 
  * @property-read Category $Category
+ * @property RequestHandlerComponent $RequestHandler
  * @property ResponseHandlerComponent $ResponseHandler
  */
 class TagsController extends ModulesController {
@@ -214,6 +215,10 @@ class TagsController extends ModulesController {
      * @return void
      */
     public function search() {
+        if (!$this->RequestHandler->isAjax()) {
+            throw new BeditaBadRequestException();
+        }
+        
         $this->ResponseHandler->setType('json');
         unset($this->paginate['fields'], $this->paginate['joins'], $this->paginate['group']);
         if (!empty($this->params['url']['q'])) {
