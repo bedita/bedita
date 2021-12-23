@@ -180,7 +180,7 @@ class TagsController extends ModulesController {
         $options = array_intersect_key((array)$this->data, array_flip(array('limit', 'order', 'dir')));
         $options['cloud'] = true;
 
-        $this->set('listTags',$this->Category->getTags($options));
+        $this->set('listTags', $this->Category->getTags($options));
         if ($href) {
             $this->set('href', true);
         }
