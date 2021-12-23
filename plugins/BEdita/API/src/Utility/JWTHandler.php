@@ -91,11 +91,10 @@ class JWTHandler
             'iss' => Router::fullBaseUrl(),
             'iat' => time(),
             'nbf' => time(),
-            'exp' => strtotime($duration),
             'app' => static::applicationData(),
         ];
         // Access token payload
-        $payload = $claims + $user;
+        $payload = $claims + $user + ['exp' => strtotime($duration)];
         $jwt = JWT::encode($payload, $salt, $algorithm);
 
         // Renew token payload

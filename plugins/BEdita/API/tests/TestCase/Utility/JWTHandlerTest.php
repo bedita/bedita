@@ -121,7 +121,7 @@ class JWTHandlerTest extends TestCase
 
         static::assertArrayHasKey('iat', $renew);
         static::assertArrayHasKey('nbf', $renew);
-        static::assertArrayHasKey('exp', $renew);
+        static::assertArrayNotHasKey('exp', $renew);
 
         $expected = [
             'iss' => Router::fullBaseUrl(),
