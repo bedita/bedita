@@ -169,11 +169,21 @@ class TagsController extends ModulesController {
         $this->eventInfo("Tag $tagsListDeleted deleted");
     }
 
-    public function listAllTags($href=false) {
-        $this->layout = "ajax";
-        $this->set("listTags",$this->Category->getTags(array("cloud" => true)));
-        if ($href) 
-            $this->set("href", true);
+    /**
+     * List all tags.
+     *
+     * @param bool $href If set href view vars to true
+     * @return void
+     */
+    public function listAllTags($href = false) {
+        $this->layout = 'ajax';
+        $options = array_intersect_key((array)$this->data, array_flip(array('limit', 'order', 'dir')));
+        $options['cloud'] = true;
+
+        $this->set('listTags',$this->Category->getTags($options));
+        if ($href) {
+            $this->set('href', true);
+        }
     }
     
     /**
@@ -218,7 +228,7 @@ class TagsController extends ModulesController {
         if (!$this->RequestHandler->isAjax()) {
             throw new BeditaBadRequestException();
         }
-        
+
         $this->ResponseHandler->setType('json');
         unset($this->paginate['fields'], $this->paginate['joins'], $this->paginate['group']);
         if (!empty($this->params['url']['q'])) {

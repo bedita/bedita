@@ -734,14 +734,18 @@ $(document).ready(function(){
             }
         });
 
-    $('input[name="filter[tag]"]').select2({
+    initTagsFilter('input[name="filter[tag]"]');
+});
+
+var initTagsFilter = function(selector) {
+    $(selector).select2({
         dropdownAutoWidth: true,
         allowClear: true,
         initSelection: function(element, callback) {
             var id = $(element).val();
             if (id !== '') {
                 $.ajax({
-                    url: $('input[name="filter[tag]"]').attr('rel'),
+                    url: $(selector).attr('rel'),
                     data: { id: id },
                     dataType: 'json',
                 })
@@ -759,7 +763,7 @@ $(document).ready(function(){
             }
         },
         ajax: {
-            url: $('input[name="filter[tag]"]').attr('rel'),
+            url: $(selector).attr('rel'),
             dataType: 'json',
             quietMillis: 250,
             data: function (term, page) {
@@ -786,7 +790,7 @@ $(document).ready(function(){
             },
         },
     });
-});
+};
 
 /* end of document ready() */
 

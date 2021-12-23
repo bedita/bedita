@@ -40,8 +40,6 @@ class EventsController extends ModulesController {
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		$this->loadCategories($filter["object_type_id"]);
-        $this->set("listTags",$this->Category->getTags(array("cloud" => false)));
-
 	}
 
     public function calendar() {

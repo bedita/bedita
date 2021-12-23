@@ -141,6 +141,8 @@ $(document).ready(function() {
 	$("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2(select2optionsSimple);
 
 	$('#modal select.areaSectionAssociation, [name="filter[parent_id]"]').select2(select2optionsTree);
+
+	initTagsFilter('input[name="filter[tag]"]');
 });
 
 //-->
