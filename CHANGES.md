@@ -1,5 +1,11 @@
 # ChangeLog
 
+## Version 4.6.1 - Cactus
+
+### API changes (4.6.1)
+
+* [#1849](https://github.com/bedita/bedita/pull/1849) Fix renew token expiry
+
 ## Version 4.6.0 - Cactus
 
 ### API changes (4.6.0)
