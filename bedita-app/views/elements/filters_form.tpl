@@ -223,19 +223,14 @@ available options:
 			</div>
 		{/if}
 	
-		{if !empty($filters.tags) && !empty($listTags)}
+		{if !empty($filters.tags)}
 			<div class="cell categories">
 				<label>{t}tags{/t}:</label>
-				<select name="filter[tag]">
-					<option value="">{t}all{/t}</option>
-					{foreach $listTags as $tag}
-						{strip}
-						<option value="{$tag.id}" {if $view->SessionFilter->read('tag') == $tag.id}selected="selected"{/if}>
-							{$tag.label|escape}
-						</option>
-						{/strip}
-					{/foreach}
-				</select>
+				<input name="filter[tag]" 
+					type="hidden"
+					rel="{$html->url('/tags/search')}"
+					data-placeholder="{t}Search{/t}"
+					value="{$view->SessionFilter->read('tag')}" />
 			</div>
 		{/if}
 

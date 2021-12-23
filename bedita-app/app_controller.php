@@ -1232,9 +1232,6 @@ abstract class ModulesController extends AppController {
             }
         }
 
-        // get Tags
-        $listTags = ClassRegistry::init("Category")->getTags(array("cloud" => false));
-
         // template data
         $this->set('tree', $tree);
         $this->set('sectionSel',$sectionSel);
@@ -1243,7 +1240,6 @@ abstract class ModulesController extends AppController {
         $this->set('objectsToolbar', $objects['toolbar']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
-        $this->set('listTags', $listTags);
 
         // set prevNext array to session
         $this->setSessionForObjectDetail($objects['items']);

@@ -303,10 +303,6 @@ class PagesController extends AppController {
             }
         }
 
-        // get Tags
-        $tags = ClassRegistry::init("Category");
-        $this->set("listTags",$tags->getTags(array("cloud" => false)));
-
         $this->set("objectsToAssoc", $objects);
         $this->set('tree', $tree);
         $this->set('availableRelations', $availableRelations);

@@ -25,6 +25,8 @@ App::import('Model', 'Category');
  * Tags handling
  * 
  * @property-read Category $Category
+ * @property RequestHandlerComponent $RequestHandler
+ * @property ResponseHandlerComponent $ResponseHandler
  */
 class TagsController extends ModulesController {
 
@@ -167,11 +169,21 @@ class TagsController extends ModulesController {
         $this->eventInfo("Tag $tagsListDeleted deleted");
     }
 
-    public function listAllTags($href=false) {
-        $this->layout = "ajax";
-        $this->set("listTags",$this->Category->getTags(array("cloud" => true)));
-        if ($href) 
-            $this->set("href", true);
+    /**
+     * List all tags.
+     *
+     * @param bool $href If set href view vars to true
+     * @return void
+     */
+    public function listAllTags($href = false) {
+        $this->layout = 'ajax';
+        $options = array_intersect_key((array)$this->data, array_flip(array('limit', 'order', 'dir')));
+        $options['cloud'] = true;
+
+        $this->set('listTags', $this->Category->getTags($options));
+        if ($href) {
+            $this->set('href', true);
+        }
     }
     
     /**
@@ -205,6 +217,33 @@ class TagsController extends ModulesController {
             $this->Category->saveField("status", $this->params["form"]["newStatus"]); 
         }
         $this->Transaction->commit();
+    }
+
+    /**
+     * Search tag by label or id.
+     *
+     * @return void
+     */
+    public function search() {
+        if (!$this->RequestHandler->isAjax()) {
+            throw new BeditaBadRequestException();
+        }
+
+        $this->ResponseHandler->setType('json');
+        unset($this->paginate['fields'], $this->paginate['joins'], $this->paginate['group']);
+        if (!empty($this->params['url']['q'])) {
+            $this->paginate['conditions']['Category.label LIKE'] = sprintf('%s%%', $this->params['url']['q']);
+        }
+        if (!empty($this->params['url']['id'])) {
+            $this->paginate['conditions']['Category.id'] = $this->params['url']['id'];
+        }
+        $tags = $this->paginate();
+
+        $this->set(array(
+            'tags' => $tags,
+            'paging' => $this->params['paging']['Category'],
+            '_serialize' => array('tags', 'paging'),
+        ));
     }
 
     protected function forward($action, $result) {

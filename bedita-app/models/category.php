@@ -320,6 +320,7 @@ class Category extends BEAppModel {
         
         $orderSql = ($options["order"] != "weight")? $options["order"] : "label";
         $dirSql = ($options["dir"])? "ASC" : "DESC";
+        $limitSql = !empty($options['limit']) ? $options['limit'] : null;
 
         $joinsBEObject = array();
         $joins = array();
@@ -366,9 +367,10 @@ class Category extends BEAppModel {
 
         $allTags = $this->find('all', array(
             'conditions'=> $conditions,
-            'order' 	=> array("Category." . $orderSql => $dirSql),
-            'group' => $this->fieldsString("Category"),
-            'joins' => $joins
+            'order' => array('Category.' . $orderSql => $dirSql),
+            'group' => $this->fieldsString('Category'),
+            'joins' => $joins,
+            'limit' => $limitSql,
         ));
         
         $tags = array();

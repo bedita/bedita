@@ -132,12 +132,25 @@ $(document).ready(function() {
 		$("#tags").on("slideToggle", function() {
 			if (!showTagsFirst) {
 				$("#loadingTags").show();
-				$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
-					$("#loadingTags").slideUp("fast");
-					$("#listExistingTags").slideDown("fast");
-					showTagsFirst = true;
-					showTags = true;
-				});
+				$("#listExistingTags").load(
+					"{$html->url('/tags/listAllTags/1')}",
+					{
+						data: {
+							order: 'id',
+							dir: false,
+							limit: 30,
+							_csrfToken: {
+								key: "{$view->params['_csrfToken']['key']}"
+							},
+						},
+					},
+					function() {
+						$("#loadingTags").slideUp("fast");
+						$("#listExistingTags").slideDown("fast");
+						showTagsFirst = true;
+						showTags = true;
+					}
+				);
 			} else {
 				if (showTags) {
 					$("#listExistingTags").slideUp("fast");
@@ -155,7 +168,7 @@ $(document).ready(function() {
 
 
 	{if isset($moduleList.tags)}	
-	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
+	<div class="tab"><h2 id="callTags">{t}last tags{/t}</h2></div>
 	<div id="tags">
 		<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
 		<div id="listExistingTags" class="tag graced"></div>

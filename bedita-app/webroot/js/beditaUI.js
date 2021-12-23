@@ -733,7 +733,66 @@ $(document).ready(function(){
                 }
             }
         });
+
+    initTagsFilter('input[name="filter[tag]"]');
 });
+
+var initTagsFilter = function(selector) {
+    $(selector).select2({
+        dropdownAutoWidth: true,
+        allowClear: true,
+        initSelection: function(element, callback) {
+            var id = $(element).val();
+            if (!id) {
+                return;
+            }
+
+            $.ajax({
+                url: $(selector).attr('rel'),
+                data: { id: id },
+                dataType: 'json',
+            })
+            .done(function(data) {
+                if (!data || !data.tags || data.tags.length === 0) {
+
+                    return;
+                }
+
+                callback({
+                    id: data.tags[0].id,
+                    text: data.tags[0].label,
+                });
+            });
+        },
+        ajax: {
+            url: $(selector).attr('rel'),
+            dataType: 'json',
+            quietMillis: 250,
+            data: function (term, page) {
+                return {
+                    q: term,
+                    page: page,
+                };
+            },
+            results: function (data, page) {
+                if (!data || !data.tags) {
+                    return { results: [] };
+                }
+                
+                var more = data.paging && data.paging.pageCount && page < data.paging.pageCount;
+
+                data = data.tags.map(function(tag) {
+                    return {
+                        id: tag.id,
+                        text: tag.label,
+                    };
+                });
+
+                return { results: data, more: more };
+            },
+        },
+    });
+};
 
 /* end of document ready() */
 
