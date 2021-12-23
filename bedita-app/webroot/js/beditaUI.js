@@ -743,24 +743,26 @@ var initTagsFilter = function(selector) {
         allowClear: true,
         initSelection: function(element, callback) {
             var id = $(element).val();
-            if (id !== '') {
-                $.ajax({
-                    url: $(selector).attr('rel'),
-                    data: { id: id },
-                    dataType: 'json',
-                })
-                .done(function(data) {
-                    if (!data || !data.tags || data.tags.length === 0) {
-
-                        return;
-                    }
-
-                    callback({
-                        id: data.tags[0].id,
-                        text: data.tags[0].label,
-                    });
-                });
+            if (!id) {
+                return;
             }
+
+            $.ajax({
+                url: $(selector).attr('rel'),
+                data: { id: id },
+                dataType: 'json',
+            })
+            .done(function(data) {
+                if (!data || !data.tags || data.tags.length === 0) {
+
+                    return;
+                }
+
+                callback({
+                    id: data.tags[0].id,
+                    text: data.tags[0].label,
+                });
+            });
         },
         ajax: {
             url: $(selector).attr('rel'),
