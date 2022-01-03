@@ -33,6 +33,7 @@ class Installer
         'logs',
         'tmp',
         'tmp/cache',
+        'tmp/cache/bedita_core',
         'tmp/cache/models',
         'tmp/cache/object_types',
         'tmp/cache/persistent',
