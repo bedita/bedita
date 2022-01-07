@@ -108,6 +108,7 @@ class CommentsController extends ModulesController {
                 'ERROR' => '/comments/view'
             ]
         ];
+
         return $this->moduleForward($action, $result, $moduleRedirect);
     }
 }
