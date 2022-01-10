@@ -279,8 +279,8 @@ class LoginController extends AppController
         $user['roles'] = array_map(
             function ($role) {
                 return [
-                    'id' => $role['id'],
-                    'name' => $role['name'],
+                    'id' => Hash::get($role, 'id'),
+                    'name' => Hash::get($role, 'name'),
                 ];
             },
             (array)Hash::get($userInput, 'roles')
