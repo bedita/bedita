@@ -24,9 +24,9 @@
  */
 class CommentsController extends ModulesController {
 
-    var $helpers = ['BeTree', 'BeToolbar'];
-    var $components = ['BeTree', 'BeLangText', 'BeSecurity'];
-    var $uses = ['BannedIp', 'BEObject', 'Comment'];
+    public $helpers = ['BeTree', 'BeToolbar'];
+    public $components = ['BeTree', 'BeLangText', 'BeSecurity'];
+    public $uses = ['BannedIp', 'BEObject', 'Comment'];
 
     protected $moduleName = 'comments';
 
