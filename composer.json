@@ -32,7 +32,7 @@
         "cakephp/debug_kit": "^3.23.0",
         "cakephp/cakephp-codesniffer": "~3.2.1",
         "psy/psysh": "@stable",
-        "bedita/dev-tools": "1.4.*",
+        "bedita/dev-tools": "1.5.*",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^6.5"
     },
