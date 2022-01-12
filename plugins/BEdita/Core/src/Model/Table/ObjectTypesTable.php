@@ -21,6 +21,7 @@ use Cake\Core\App;
 use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -91,7 +92,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -155,7 +156,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules
             ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
@@ -175,7 +176,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('associations', 'json');
         $schema->setColumnType('hidden', 'json');
@@ -188,7 +189,7 @@ class ObjectTypesTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, $options = [])
+    public function get($primaryKey, array $options = []): EntityInterface
     {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
@@ -238,7 +239,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
-    public function beforeRules(Event $event, EntityInterface $entity)
+    public function beforeRules(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isNew()) {
             if (empty($entity->get('parent_id'))) {
@@ -269,7 +270,7 @@ class ObjectTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(self::CACHE_CONFIG);
     }
 
     /**
@@ -284,7 +285,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
@@ -324,7 +325,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
@@ -338,13 +339,13 @@ class ObjectTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(self::CACHE_CONFIG);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findAll(Query $query, array $options)
+    public function findAll(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -438,7 +439,7 @@ class ObjectTypesTable extends Table
         // This could be achieved more efficiently using two left joins, but if we need to find also
         // descendants it's simpler done this way.
         $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
-            return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+            return $exp->or(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
                 return $exp
                     ->in($this->aliasField('id'), $leftSubQuery->select(['id']))
                     ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
@@ -460,16 +461,16 @@ class ObjectTypesTable extends Table
                 if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
-                    return $exp->add(new Comparison(1, 1, 'integer', '<>'));
+                    return $exp->add(new \Cake\Database\Expression\ComparisonExpression(1, 1, 'integer', '<>'));
                 }
 
                 // Find descendants for all found nodes using NSM rules.
                 // If the nodes found are [l = 3, r = 8] and [l = 9, r = 10], the conditions will be built as follows:
                 // ... WHERE (tree_left >= 3 AND tree_right <= 8) OR (tree_left >= 9 AND tree_right <= 10)
-                return $exp->or_(
+                return $exp->or(
                     $nsmCounters
                         ->map(function (array $row) use ($exp) {
-                            return $exp->and_(function (QueryExpression $exp) use ($row) {
+                            return $exp->and(function (QueryExpression $exp) use ($row) {
                                 return $exp
                                     ->gte($this->aliasField('tree_left'), $row['tree_left'])
                                     ->lte($this->aliasField('tree_right'), $row['tree_right']);

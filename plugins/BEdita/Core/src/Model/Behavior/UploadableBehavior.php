@@ -131,7 +131,7 @@ class UploadableBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave(\Cake\Event\EventInterface $event, Entity $entity)
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processUpload($entity, $file['path'], $file['contents']);
@@ -146,7 +146,7 @@ class UploadableBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterDelete(Event $event, Entity $entity)
+    public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity)
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processDelete($entity, $file['path']);

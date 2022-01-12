@@ -116,7 +116,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     /**
      * {@inheritdoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.signupActivation' => 'sendMail',

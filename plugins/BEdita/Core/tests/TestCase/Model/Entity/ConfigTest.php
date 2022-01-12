@@ -43,7 +43,7 @@ class ConfigTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Config = TableRegistry::getTableLocator()->get('Config');
@@ -52,7 +52,7 @@ class ConfigTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Config);
 

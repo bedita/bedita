@@ -45,7 +45,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -65,7 +65,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -88,7 +88,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));

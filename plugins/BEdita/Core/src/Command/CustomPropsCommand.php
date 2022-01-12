@@ -106,7 +106,7 @@ class CustomPropsCommand extends Command
             try {
                 $this->Table->saveOrFail($object);
                 $count++;
-            } catch (Exception $ex) {
+            } catch (\Cake\Core\Exception\CakeException $ex) {
                 $msg = sprintf(
                     'Failed update on %s "%s" [id %d] - exception: %s',
                     $type,

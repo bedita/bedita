@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Shell\Task;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 
 /**
@@ -34,7 +35,7 @@ class RecoverTreeTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

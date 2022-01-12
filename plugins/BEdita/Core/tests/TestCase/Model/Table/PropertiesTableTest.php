@@ -43,7 +43,7 @@ class PropertiesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class PropertiesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Properties);
 
@@ -212,7 +212,9 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**
@@ -350,7 +352,9 @@ class PropertiesTableTest extends TestCase
             ->toList();
 
         static::assertCount($count, $result);
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**
@@ -400,7 +404,9 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**
@@ -422,6 +428,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 }

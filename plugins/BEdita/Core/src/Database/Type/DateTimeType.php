@@ -15,6 +15,7 @@ namespace BEdita\Core\Database\Type;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Type\DateTimeType as CakeDateTimeType;
+use DateTimeInterface;
 
 /**
  * Custom DateTimeType class with simplified marshal
@@ -24,7 +25,7 @@ class DateTimeType extends CakeDateTimeType
     /**
      * {@inheritDoc}
      */
-    public function marshal($value)
+    public function marshal($value): ?DateTimeInterface
     {
         return static::marshalDateTime($value, $this->getDateTimeClassName());
     }

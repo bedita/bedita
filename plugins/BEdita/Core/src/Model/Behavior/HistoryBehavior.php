@@ -81,7 +81,7 @@ class HistoryBehavior extends Behavior
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         // Behavior config may be set via `Configure` but
         // $config array takes precedence
@@ -122,7 +122,7 @@ class HistoryBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity data.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity): void
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
     {
         foreach (array_keys($this->changed) as $prop) {
             if (!$entity->isDirty($prop)) {
@@ -138,7 +138,7 @@ class HistoryBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity data.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity): void
+    public function afterSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
     {
         if (empty($this->Table) || (empty($this->changed) && !$entity->isDirty('deleted'))) {
             return;
@@ -199,7 +199,7 @@ class HistoryBehavior extends Behavior
 
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity)
+    public function afterDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (empty($this->Table)) {
             return;
@@ -243,7 +243,7 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->newExpr()->equalFields($field, $this->getTable()->aliasField('id'))
+            $query->newExpr()->equalFields($field, $this->table()->aliasField('id'))
         );
     }
 }

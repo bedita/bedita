@@ -28,7 +28,7 @@ class ExceptionRendererTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         ConnectionManager::alias('test', 'default');
         ConnectionManager::drop('__fail_db_connection');

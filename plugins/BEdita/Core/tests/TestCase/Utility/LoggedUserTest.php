@@ -25,7 +25,7 @@ class LoggedUserTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         LoggedUser::resetUser();
     }

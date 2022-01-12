@@ -39,7 +39,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->UserTokens = TableRegistry::getTableLocator()->get('UserTokens');
@@ -50,7 +50,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->UserTokens);
 

@@ -173,10 +173,38 @@ class LayeredEngine extends CacheEngine
     /**
      * {@inheritDoc}
      */
-    public function clear($check): bool
+    public function clear(): bool
     {
-        $this->memory->clear($check);
+        $this->memory->clear();
 
-        return $this->persistent->clear($check);
+        return $this->persistent->clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        $this->memory->set($key, $value, $ttl);
+
+        return $this->persistent->set($key, $value, $ttl);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function get($key, $default = null)
+    {
+        return $this->memory->get($key, $default);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearGroup(string $group): bool
+    {
+        $this->memory->clearGroup($group);
+
+        return $this->persistent->clearGroup($group);
     }
 }

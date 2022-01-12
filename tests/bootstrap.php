@@ -95,5 +95,5 @@ Configure::write('debug', true);
 
 Configure::write('Plugins', []);
 
-Cache::clear(false, '_cake_core_');
-Cache::clear(false, '_cake_model_');
+Cache::clear('_cake_core_');
+Cache::clear('_cake_model_');

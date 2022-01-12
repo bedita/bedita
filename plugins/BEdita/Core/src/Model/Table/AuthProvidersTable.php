@@ -17,6 +17,7 @@ use Cake\Collection\Collection;
 use Cake\Core\App;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Log\Log;
@@ -47,7 +48,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -68,7 +69,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->naturalNumber('id')
@@ -91,7 +92,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
 
@@ -103,7 +104,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 

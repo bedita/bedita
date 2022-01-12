@@ -45,7 +45,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -74,7 +74,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules = parent::buildRules($rules);
 
@@ -159,7 +159,7 @@ class FoldersTable extends ObjectsTable
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         parent::beforeSave($event, $entity);
 
@@ -173,7 +173,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity persisted
      * @return void
      */
-    public function afterSave(Event $event, Folder $entity)
+    public function afterSave(\Cake\Event\EventInterface $event, Folder $entity)
     {
         $this->updateChildrenDeletedField($entity);
 
@@ -218,7 +218,7 @@ class FoldersTable extends ObjectsTable
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function beforeDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         if (!empty($options['_isDescendant'])) {
             return;
@@ -240,7 +240,7 @@ class FoldersTable extends ObjectsTable
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(\Cake\Event\EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         if (empty($options['descendants'])) {
             return;

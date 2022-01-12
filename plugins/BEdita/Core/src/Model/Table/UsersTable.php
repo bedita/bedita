@@ -73,7 +73,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -162,7 +162,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['username']));
         $rules->add($rules->isUnique(['email']));
@@ -175,7 +175,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $implementedEvents = parent::implementedEvents();
         $implementedEvents += [
@@ -272,7 +272,7 @@ class UsersTable extends Table
             $items = $this->rolesNamesIds($options);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
-                return $exp->or_(function (QueryExpression $exp) use ($items) {
+                return $exp->or(function (QueryExpression $exp) use ($items) {
                     if (!empty($items['ids'])) {
                         $exp->in($this->Roles->aliasField('id'), $items['ids']);
                     }
@@ -362,7 +362,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -428,7 +428,7 @@ class UsersTable extends Table
      *
      * Override Table delete: in case of constraints avoid delete and anonymize user data
      */
-    public function delete(EntityInterface $entity, $options = [])
+    public function delete(EntityInterface $entity, $options = []): bool
     {
         $exists = TableRegistry::getTableLocator()->get('Objects')->exists([
             'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],
@@ -454,7 +454,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));

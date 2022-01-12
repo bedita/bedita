@@ -46,7 +46,7 @@ class ObjectsHandlerTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -56,7 +56,7 @@ class ObjectsHandlerTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -78,7 +78,7 @@ class ObjectsHandlerTest extends TestCase
         $entity = ObjectsHandler::save('users', $data);
         $this->assertNotEmpty($entity);
         $userId = $entity->id;
-        $this->assertInternalType('integer', $userId);
+        $this->assertIsInt($userId);
 
         $data = [
             'title' => 'a pragmatic title',
@@ -88,7 +88,7 @@ class ObjectsHandlerTest extends TestCase
         $entity = ObjectsHandler::save('documents', $data, ['id' => $userId]);
         $this->assertNotEmpty($entity);
         $docId = $entity->id;
-        $this->assertInternalType('integer', $docId);
+        $this->assertIsInt($docId);
 
         $result = ObjectsHandler::remove('agile-uname');
         $this->assertTrue($result);
@@ -102,10 +102,10 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::save()
-     * @expectedException \Cake\ORM\Exception\PersistenceFailedException
      */
     public function testSaveException()
     {
+        $this->expectException(\Cake\ORM\Exception\PersistenceFailedException::class);
         $data = [];
         ObjectsHandler::save('users', $data);
     }
@@ -144,10 +144,10 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::remove()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testDeleteException()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         ObjectsHandler::remove(123456);
     }
 
@@ -156,11 +156,11 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      * @covers ::checkEnvironment()
-     * @expectedException \Cake\Console\Exception\StopException
-     * @expectedExceptionMessage Operation avilable only in CLI environment
      */
     public function testEnvironment()
     {
+        $this->expectException(\Cake\Console\Exception\StopException::class);
+        $this->expectExceptionMessage('Operation avilable only in CLI environment');
         $testClass = new class extends ObjectsHandler {
             protected static function isCli(): bool
             {

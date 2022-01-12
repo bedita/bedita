@@ -50,7 +50,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +60,7 @@ class UniqueNameBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

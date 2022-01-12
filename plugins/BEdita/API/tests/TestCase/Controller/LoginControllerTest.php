@@ -49,10 +49,10 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
@@ -79,7 +79,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '', 1);
+        static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '');
+        static::assertEqualsWithDelta(Time::now()->timestamp, $lastLogin->timestamp, 1, '');
 
         return $result['meta'];
     }

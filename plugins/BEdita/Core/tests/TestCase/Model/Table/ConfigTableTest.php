@@ -48,7 +48,7 @@ class ConfigTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Config = TableRegistry::getTableLocator()->get('Config');
@@ -57,7 +57,7 @@ class ConfigTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Config);
 
@@ -269,7 +269,7 @@ class ConfigTableTest extends TestCase
     public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
         $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');
-        Cache::clear(false, $cacheConf);
+        Cache::clear($cacheConf);
         $result = $this->Config->fetchConfig($appId, $context)->toArray();
         static::assertEquals($expected, $result);
     }

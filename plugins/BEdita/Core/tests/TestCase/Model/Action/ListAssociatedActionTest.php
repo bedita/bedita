@@ -42,7 +42,7 @@ class ListAssociatedActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -211,12 +211,11 @@ class ListAssociatedActionTest extends TestCase
      * Test invocation of command with an unknown association type.
      *
      * @return void
-     *
-     * @expectedException \LogicException
-     * @expectedExceptionMessageRegExp /^Unknown association type "\w+"$/
      */
     public function testUnknownAssociationType()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessageRegExp('/^Unknown association type "\w+"$/');
         $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
         $association = static::getMockForAbstractClass(Association::class, [
             'TestAssociation',

@@ -19,7 +19,7 @@ use Cake\Core\Exception\Exception;
  * Exception raised when performing delete or update on immutable resource
  */
 
-class ImmutableResourceException extends Exception
+class ImmutableResourceException extends \Cake\Core\Exception\CakeException
 {
     /**
      * {@inheritDoc}

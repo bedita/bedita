@@ -55,7 +55,7 @@ class ObjectsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,7 +66,7 @@ class ObjectsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Objects);
         LoggedUser::resetUser();

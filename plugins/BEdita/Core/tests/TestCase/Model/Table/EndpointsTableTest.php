@@ -49,7 +49,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
@@ -60,7 +60,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Endpoints);
 
@@ -219,7 +219,7 @@ class EndpointsTableTest extends TestCase
     public function testFetchId($expected, string $path): void
     {
         $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');
-        Cache::clear(false, $cacheConf);
+        Cache::clear($cacheConf);
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());

@@ -47,7 +47,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -92,7 +92,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $this->validationRules($validator);
 
@@ -119,7 +119,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(
             ['object_type_id'],
@@ -144,7 +144,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    public function beforeFind(\Cake\Event\EventInterface $event, Query $query, \ArrayObject $options, $primary)
     {
         $query->andWhere([$this->aliasField('object_type_id') . ' IS NOT NULL']);
         if ($primary) {

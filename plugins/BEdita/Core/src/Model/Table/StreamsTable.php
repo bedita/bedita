@@ -44,7 +44,7 @@ class StreamsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -70,7 +70,7 @@ class StreamsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->uuid('uuid')
@@ -128,7 +128,7 @@ class StreamsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['uri']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
@@ -143,7 +143,7 @@ class StreamsTable extends Table
      * @param \BEdita\Core\Model\Entity\Stream $entity Entity.
      * @return void
      */
-    public function beforeSave(Event $event, Stream $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, Stream $entity)
     {
         if (!$entity->isNew()) {
             return;
@@ -162,7 +162,7 @@ class StreamsTable extends Table
      * @param \BEdita\Core\Model\Entity\Stream $stream Entity.
      * @return void
      */
-    public function afterDelete(Event $event, Stream $stream)
+    public function afterDelete(\Cake\Event\EventInterface $event, Stream $stream)
     {
         Thumbnail::delete($stream);
     }

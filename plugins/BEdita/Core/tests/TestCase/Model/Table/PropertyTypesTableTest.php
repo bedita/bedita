@@ -57,7 +57,7 @@ class PropertyTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -70,11 +70,11 @@ class PropertyTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->PropertyTypes);
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
@@ -192,12 +192,12 @@ class PropertyTypesTableTest extends TestCase
      * @return void
      *
      * @covers ::beforeDelete()
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Property type with existing properties
      */
     public function testBeforeDeleteInUse()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Property type with existing properties');
         $propertyType = $this->PropertyTypes->get(1);
 
         $this->PropertyTypes->delete($propertyType);
@@ -311,12 +311,12 @@ class PropertyTypesTableTest extends TestCase
      * @return void
      *
      * @covers ::beforeSave()
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not modify core property
      */
     public function testBeforeSaveForbidden()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not modify core property');
         $propertyType = $this->PropertyTypes->get(1);
         $propertyType->set('name', 'gustavo');
         $this->PropertyTypes->save($propertyType);

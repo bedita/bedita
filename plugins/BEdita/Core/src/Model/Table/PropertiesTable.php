@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -51,7 +52,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -84,7 +85,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->naturalNumber('id')
@@ -109,7 +110,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name', 'object_type_id']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
@@ -123,7 +124,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         return parent::_initializeSchema($schema)
             ->setColumnType('id', 'string');
@@ -136,7 +137,7 @@ class PropertiesTable extends Table
      * @param \Cake\ORM\Query $query Query object.
      * @return void
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(\Cake\Event\EventInterface $event, Query $query)
     {
         $from = $query->clause('from');
         if (empty($from)) {

@@ -36,7 +36,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +48,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectRelations);
 
@@ -261,7 +261,7 @@ class ObjectRelationsTableTest extends TestCase
         if ($expected === true) {
             static::assertTrue($result);
         } else {
-            static::assertContains($expected, $result);
+            static::assertStringContainsString($expected, $result);
         }
     }
 }

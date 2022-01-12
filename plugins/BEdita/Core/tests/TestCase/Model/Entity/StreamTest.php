@@ -53,7 +53,7 @@ class StreamTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup();
@@ -63,7 +63,7 @@ class StreamTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);

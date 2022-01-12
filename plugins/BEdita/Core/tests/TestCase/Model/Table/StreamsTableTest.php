@@ -51,7 +51,7 @@ class StreamsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
@@ -61,7 +61,7 @@ class StreamsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);
@@ -155,7 +155,9 @@ class StreamsTableTest extends TestCase
         } else {
             $errors = array_keys(Hash::flatten($stream->getErrors()));
 
-            static::assertEquals($expected, $errors, '', 0, 10, true);
+            static::assertEquals($expected, $errors, '');
+            static::assertEqualsCanonicalizing($expected, $errors, '');
+            static::assertEqualsWithDelta($expected, $errors, 0, '');
         }
     }
 

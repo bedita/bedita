@@ -14,11 +14,13 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -49,7 +51,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -95,7 +97,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->setProvider('bedita', Validation::class)
@@ -133,7 +135,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules
             ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
@@ -153,7 +155,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'jsonobject');
 
@@ -165,7 +167,7 @@ class RelationsTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\Relation
      */
-    public function get($primaryKey, $options = [])
+    public function get($primaryKey, array $options = []): EntityInterface
     {
         if (!is_numeric($primaryKey)) {
             $relation = $this->find('byName', ['name' => $primaryKey])
@@ -193,7 +195,7 @@ class RelationsTable extends Table
         $name = Inflector::underscore($options['name']);
 
         return $query->where(function (QueryExpression $exp) use ($name) {
-            return $exp->or_(function (QueryExpression $exp) use ($name) {
+            return $exp->or(function (QueryExpression $exp) use ($name) {
                 return $exp
                     ->eq($this->aliasField('name'), $name)
                     ->eq($this->aliasField('inverse_name'), $name);
@@ -206,7 +208,7 @@ class RelationsTable extends Table
      *
      * {@inheritDoc}
      */
-    public function beforeSave(Event $event, EntityInterface $entity): void
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew()) {
             return;
@@ -226,7 +228,7 @@ class RelationsTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -236,6 +238,6 @@ class RelationsTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 }

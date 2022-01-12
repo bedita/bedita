@@ -19,6 +19,7 @@ use BEdita\Core\Shell\Task\CheckSchemaTask;
 use BEdita\Core\Shell\Task\InitSchemaTask;
 use BEdita\Core\Shell\Task\SetupAdminUserTask;
 use BEdita\Core\Shell\Task\SetupConnectionTask;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
 
@@ -57,7 +58,7 @@ class BeditaShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 

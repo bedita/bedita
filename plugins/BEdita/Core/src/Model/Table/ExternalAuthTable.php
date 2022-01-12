@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
@@ -46,7 +47,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -71,7 +72,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->naturalNumber('id')
@@ -90,7 +91,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['auth_provider_id'], 'AuthProviders'));
@@ -106,7 +107,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -120,7 +121,7 @@ class ExternalAuthTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->has('user_id')) {
             $authProvider = $this->AuthProviders->get($entity->get($this->AuthProviders->getForeignKey()));

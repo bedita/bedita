@@ -23,6 +23,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
+use Cake\TestSuite\MiddlewareDispatcher;
 
 /**
  * Base class for API integration tests.
@@ -95,7 +96,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -113,7 +114,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -149,7 +150,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    protected function _makeDispatcher()
+    protected function _makeDispatcher(): MiddlewareDispatcher
     {
         Router::setRouteCollection(new RouteCollection());
 

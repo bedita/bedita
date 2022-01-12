@@ -20,6 +20,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
@@ -80,7 +81,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -152,7 +153,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
@@ -169,7 +170,7 @@ class ObjectsTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         $objectType = $this->ObjectTypes->get($entity->get('type'));
         if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
@@ -244,7 +245,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('custom_props', 'json');
         $schema->setColumnType('extra', 'json');
@@ -549,15 +550,15 @@ class ObjectsTable extends Table
         $now = $query->func()->now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and_([
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+            return $exp->and([
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_start');
 
                     return $exp
                         ->isNull($field)
                         ->lte($field, $now);
                 }),
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_end');
 
                     return $exp

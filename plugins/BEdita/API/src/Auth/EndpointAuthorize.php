@@ -60,7 +60,7 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * {@inheritDoc}
      */
-    public function authorize($user, ServerRequest $request)
+    public function authorize($user, ServerRequest $request): bool
     {
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
         if (

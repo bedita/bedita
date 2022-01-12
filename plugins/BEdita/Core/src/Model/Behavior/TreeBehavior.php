@@ -48,19 +48,19 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function getCurrentPosition(EntityInterface $node)
     {
-        return $this->_scope($this->getTable()->find())
+        return $this->_scope($this->table()->find())
             ->where(function (QueryExpression $exp) use ($node) {
                 $parentField = $this->getConfig('parent');
                 $leftField = $this->getConfig('left');
 
                 if (!$node->has($parentField)) {
-                    $exp = $exp->isNull($this->getTable()->aliasField($parentField));
+                    $exp = $exp->isNull($this->table()->aliasField($parentField));
                 } else {
-                    $exp = $exp->eq($this->getTable()->aliasField($parentField), $node->get($parentField));
+                    $exp = $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));
                 }
 
                 return $exp
-                    ->lte($this->getTable()->aliasField($leftField), $node->get($leftField));
+                    ->lte($this->table()->aliasField($leftField), $node->get($leftField));
             })
             ->count();
     }
@@ -75,7 +75,7 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function moveAt(EntityInterface $node, $position)
     {
-        return $this->getTable()->getConnection()->transactional(function () use ($node, $position) {
+        return $this->table()->getConnection()->transactional(function () use ($node, $position) {
             $position = static::validatePosition($position);
             if ($position === false) {
                 return false;
@@ -92,15 +92,15 @@ class TreeBehavior extends CakeTreeBehavior
                 return $node;
             }
 
-            $childrenCount = $this->_scope($this->getTable()->find())
+            $childrenCount = $this->_scope($this->table()->find())
                 ->where(function (QueryExpression $exp) use ($node) {
                     $parentField = $this->getConfig('parent');
 
                     if (!$node->has($parentField)) {
-                        return $exp->isNull($this->getTable()->aliasField($parentField));
+                        return $exp->isNull($this->table()->aliasField($parentField));
                     }
 
-                    return $exp->eq($this->getTable()->aliasField($parentField), $node->get($parentField));
+                    return $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));
                 })
                 ->count();
 

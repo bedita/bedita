@@ -14,7 +14,7 @@
 namespace BEdita\Core\TestSuite\Fixture;
 
 use Cake\Core\Plugin;
-use Cake\Database\Schema\Table as Schema;
+use Cake\Database\Schema\TableSchema;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
@@ -44,7 +44,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * If `self::$fields` is empty trying to use table schema loaded in configuration
      */
-    public function init()
+    public function init(): void
     {
         $this->getEventManager()->on($this);
 
@@ -96,7 +96,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
     protected function fieldsFromConf()
     {
         $table = $this->getTableSchemaFromConf();
-        if (!($table instanceof Schema)) {
+        if (!($table instanceof TableSchema)) {
             return [];
         }
 
@@ -144,7 +144,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $eventMap = ['TestFixture.beforeBuildSchema' => 'beforeBuildSchema'];
         $events = [];

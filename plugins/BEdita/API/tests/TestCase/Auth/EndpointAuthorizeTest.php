@@ -47,10 +47,10 @@ class EndpointAuthorizeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
@@ -273,11 +273,11 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::isAnonymous()
      * @covers ::checkPermissions()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Unauthorized
      */
     public function testBlockAnonymousWritesByDefault()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 
@@ -314,11 +314,11 @@ class EndpointAuthorizeTest extends TestCase
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Unauthorized
      */
     public function testBlockUnloggedByDefault()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 

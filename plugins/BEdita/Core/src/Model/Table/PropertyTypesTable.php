@@ -14,9 +14,11 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
@@ -45,7 +47,7 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -69,7 +71,7 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->setProvider('bedita', Validation::class)
@@ -92,7 +94,7 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -104,7 +106,7 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
 
@@ -119,7 +121,7 @@ class PropertyTypesTable extends Table
      * @return void
      * @throws ImmutableResourceException
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
             throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
@@ -133,7 +135,7 @@ class PropertyTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -145,7 +147,7 @@ class PropertyTypesTable extends Table
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($this->Properties->exists([$this->Properties->getForeignKey() => $entity->get($this->Properties->getBindingKey())])) {
             throw new ForbiddenException(__d('bedita', 'Property type with existing properties'));
@@ -159,7 +161,7 @@ class PropertyTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**

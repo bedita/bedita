@@ -59,7 +59,7 @@ class AppController extends Controller
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -104,7 +104,7 @@ class AppController extends Controller
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         if (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException(

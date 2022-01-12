@@ -44,7 +44,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (in_array(static::TEMP_CONNECTION, ConnectionManager::configured())) {
             ConnectionManager::drop(static::TEMP_CONNECTION);

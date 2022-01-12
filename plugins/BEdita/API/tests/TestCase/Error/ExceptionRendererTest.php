@@ -52,7 +52,7 @@ class ExceptionRendererTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->backupConf = [
@@ -65,7 +65,7 @@ class ExceptionRendererTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->backupConf as $key => $val) {
             Configure::write($key, $val);

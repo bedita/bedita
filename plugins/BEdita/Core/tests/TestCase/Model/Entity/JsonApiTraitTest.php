@@ -65,7 +65,7 @@ class JsonApiTraitTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -78,7 +78,7 @@ class JsonApiTraitTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Roles);
         unset($this->ObjectTypes);
@@ -362,14 +362,14 @@ class JsonApiTraitTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedNotSerializable()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead');
         $role = $this->Roles->get(2);
         $role->users = 'Gustavo';
         $role->jsonApiSerialize();
@@ -395,14 +395,18 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($role, 'meta', []));
 
-        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertEquals($expected, $meta, '');
+        static::assertEqualsCanonicalizing($expected, $meta, '');
+        static::assertEqualsWithDelta($expected, $meta, 0, '');
 
         // test with `fields`
         $role = $this->Roles->get(1)->jsonApiSerialize(0, ['created', 'modified', 'unchangeable']);
 
         $meta = array_keys(Hash::get($role, 'meta', []));
 
-        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertEquals($expected, $meta, '');
+        static::assertEqualsCanonicalizing($expected, $meta, '');
+        static::assertEqualsWithDelta($expected, $meta, 0, '');
     }
 
     /**
@@ -447,7 +451,9 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($role, 'meta', []));
         $extra = Hash::get($role, 'meta.extra');
 
-        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertEquals($expected, $meta, '');
+        static::assertEqualsCanonicalizing($expected, $meta, '');
+        static::assertEqualsWithDelta($expected, $meta, 0, '');
         static::assertSame($expectedExtra, $extra);
     }
 
@@ -483,7 +489,9 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($user, 'meta', []));
 
-        static::assertEquals($expected, $meta, '', 0, 10, true);
+        static::assertEquals($expected, $meta, '');
+        static::assertEqualsCanonicalizing($expected, $meta, '');
+        static::assertEqualsWithDelta($expected, $meta, 0, '');
     }
 
     /**
@@ -558,8 +566,12 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($user, 'meta', []));
         $relation = array_keys(Hash::get($user, 'meta.relation', []));
 
-        static::assertEquals($expected, $meta, '', 0, 10, true);
-        static::assertEquals($expectedRelation, $relation, '', 0, 10, true);
+        static::assertEquals($expected, $meta, '');
+        static::assertEqualsCanonicalizing($expected, $meta, '');
+        static::assertEqualsWithDelta($expected, $meta, 0, '');
+        static::assertEquals($expectedRelation, $relation, '');
+        static::assertEqualsCanonicalizing($expectedRelation, $relation, '');
+        static::assertEqualsWithDelta($expectedRelation, $relation, 0, '');
     }
 
     /**

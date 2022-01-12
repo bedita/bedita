@@ -51,7 +51,7 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
-        $this->fixtureManager->shutDown();
+        static::$fixtureManager->shutDown();
 
         $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
         $this->loadFixtures(...$fixtures);
@@ -77,11 +77,11 @@ class DatabaseTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Datasource\Exception\MissingDatasourceConfigException
      * @covers ::currentSchema()
      */
     public function testMissingDatasourceConfigException()
     {
+        $this->expectException(\Cake\Datasource\Exception\MissingDatasourceConfigException::class);
         Database::currentSchema('zzzzzzzz');
     }
 
@@ -95,7 +95,7 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
-        $this->fixtureManager->shutDown();
+        static::$fixtureManager->shutDown();
 
         $fixtures1 = ['Applications', 'Config', 'ObjectTypes'];
         $this->loadFixtures(...$fixtures1);

@@ -20,7 +20,7 @@ use Cake\Core\Exception\Exception;
  *
  * @since 4.0.0
  */
-class InvalidThumbnailOptionsException extends Exception
+class InvalidThumbnailOptionsException extends \Cake\Core\Exception\CakeException
 {
     /**
      * {@inheritDoc}

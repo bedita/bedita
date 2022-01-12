@@ -40,7 +40,7 @@ class RelationTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -65,7 +65,7 @@ class RelationTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->inList('side', ['left', 'right'])
@@ -80,7 +80,7 @@ class RelationTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['relation_id', 'object_type_id', 'side']));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));
@@ -96,7 +96,7 @@ class RelationTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -106,6 +106,6 @@ class RelationTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 }

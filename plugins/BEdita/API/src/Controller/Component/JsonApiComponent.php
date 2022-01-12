@@ -55,7 +55,7 @@ class JsonApiComponent extends Component
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $contentType = self::CONTENT_TYPE;
         if (!empty($config['contentType'])) {
@@ -130,7 +130,7 @@ class JsonApiComponent extends Component
             'home' => Router::url(['_name' => 'api:home'], true),
         ];
 
-        $paging = $request->getParam('paging');
+        $paging = $request->getAttribute('paging');
         if (!empty($paging) && is_array($paging)) {
             $paging = reset($paging);
             $query = $request->getQueryParams();
@@ -166,7 +166,7 @@ class JsonApiComponent extends Component
     {
         $meta = [];
 
-        $paging = $this->getController()->request->getParam('paging');
+        $paging = $this->getController()->request->getAttribute('paging');
         if (!empty($paging) && is_array($paging)) {
             $paging = reset($paging);
             $paging += [

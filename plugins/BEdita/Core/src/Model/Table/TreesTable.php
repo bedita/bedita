@@ -50,7 +50,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -97,7 +97,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -131,7 +131,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['root_id'], 'RootObjects'));
@@ -206,7 +206,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The entity persisted
      * @return void
      */
-    public function afterSave(Event $event, Tree $entity)
+    public function afterSave(\Cake\Event\EventInterface $event, Tree $entity)
     {
         if ($entity->has('position')) {
             if ($this->moveAt($entity, $entity->get('position')) === false) {
@@ -250,7 +250,7 @@ class TreesTable extends Table
      * @throws \BEdita\Core\Exception\ImmutableResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
-    public function beforeDelete(Event $event, Tree $entity, \ArrayObject $options)
+    public function beforeDelete(\Cake\Event\EventInterface $event, Tree $entity, \ArrayObject $options)
     {
         if (empty($options['_primary'])) {
             return;

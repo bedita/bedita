@@ -54,7 +54,7 @@ class ObjectTypeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,7 +66,7 @@ class ObjectTypeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectTypes);
 
@@ -267,7 +267,9 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get($name);
         $relations = array_keys($objectType->getRelations($side));
 
-        static::assertEquals($expected, $relations, '', 0, 10, true);
+        static::assertEquals($expected, $relations, '');
+        static::assertEqualsCanonicalizing($expected, $relations, '');
+        static::assertEqualsWithDelta($expected, $relations, 0, '');
     }
 
     /**
@@ -284,7 +286,9 @@ class ObjectTypeTest extends TestCase
         ];
         $objectType = $this->ObjectTypes->get(3);
 
-        static::assertEquals($expected, $objectType->relations, '', 0, 10, true);
+        static::assertEquals($expected, $objectType->relations, '');
+        static::assertEqualsCanonicalizing($expected, $objectType->relations, '');
+        static::assertEqualsWithDelta($expected, $objectType->relations, 0, '');
     }
 
     /**

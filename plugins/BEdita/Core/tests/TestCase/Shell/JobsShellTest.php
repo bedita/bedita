@@ -38,7 +38,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -49,7 +49,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
      * Get mock service.
      *
      * @param bool|\Exception $return Return value for `run()` method.
-     * @return \BEdita\Core\Job\JobService|\PHPUnit_Framework_MockObject_MockObject
+     * @return \BEdita\Core\Job\JobService|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getMockService($return = true)
     {

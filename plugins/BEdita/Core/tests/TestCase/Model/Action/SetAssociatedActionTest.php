@@ -46,7 +46,7 @@ class SetAssociatedActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -266,12 +266,11 @@ class SetAssociatedActionTest extends TestCase
      * Test that an exception is raised with details about the validation error.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\BadRequestException
-     * @expectedExceptionCode 400
      */
     public function testInvocationWithLinkErrors()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectExceptionCode('400');
         try {
             $table = TableRegistry::getTableLocator()->get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
@@ -330,11 +329,11 @@ class SetAssociatedActionTest extends TestCase
      * @return void
      *
      * @dataProvider invocationWithValidationErrorsProvider()
-     * @expectedException \Cake\Http\Exception\BadRequestException
-     * @expectedExceptionCode 400
      */
     public function testInvocationWithValidationErrors($source, $target)
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectExceptionCode('400');
         $field = 'some_field';
         $validationErrorMessage = 'Invalid email';
 

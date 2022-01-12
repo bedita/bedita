@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
@@ -30,7 +31,7 @@ class AsyncJobsTable extends Table
     /**
      * {@inheritDoc}
      */
-    public static function defaultConnectionName()
+    public static function defaultConnectionName(): string
     {
         if (in_array('async_jobs', ConnectionManager::configured())) {
             return 'async_jobs';
@@ -44,7 +45,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -71,7 +72,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->uuid('uuid')
@@ -116,7 +117,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('payload', 'json');
 
@@ -182,22 +183,22 @@ class AsyncJobsTable extends Table
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
-                return $exp->and_([
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                return $exp->and([
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('scheduled_from');
 
                         return $exp
                             ->isNull($field)
                             ->lte($field, $now);
                     }),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('expires');
 
                         return $exp
                             ->isNull($field)
                             ->gte($field, $now);
                     }),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('locked_until');
 
                         return $exp
@@ -227,19 +228,19 @@ class AsyncJobsTable extends Table
         $now = $query->func()->now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and_([
+            return $exp->and([
                 function (QueryExpression $exp) {
                     return $exp->isNull($this->aliasField('completed'));
                 },
-                $exp->or_([
+                $exp->or([
                     function (QueryExpression $exp) use ($now) {
                         return $exp->lt($this->aliasField('expires'), $now);
                     },
-                    $exp->and_([
+                    $exp->and([
                         function (QueryExpression $exp) {
                             return $exp->eq($this->aliasField('max_attempts'), 0);
                         },
-                        $exp->or_(function (QueryExpression $exp) use ($now) {
+                        $exp->or(function (QueryExpression $exp) use ($now) {
                             $field = $this->aliasField('locked_until');
 
                             return $exp

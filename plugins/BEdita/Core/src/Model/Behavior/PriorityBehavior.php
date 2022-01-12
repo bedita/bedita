@@ -34,7 +34,7 @@ class PriorityBehavior extends Behavior
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -62,7 +62,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         $fields = $this->getConfig('fields');
 
@@ -88,11 +88,11 @@ class PriorityBehavior extends Behavior
     {
         $conditions = [];
         foreach ($scope as $item) {
-            $conditions[$this->getTable()->aliasField($item)] = $entity->get($item);
+            $conditions[$this->table()->aliasField($item)] = $entity->get($item);
         }
-        $query = $this->getTable()->find()->where($conditions);
+        $query = $this->table()->find()->where($conditions);
         $query->select([
-            'max_value' => $query->func()->max($this->getTable()->aliasField($field)),
+            'max_value' => $query->func()->max($this->table()->aliasField($field)),
         ]);
 
         return (int)Hash::get($query->toArray(), '0.max_value');
@@ -107,7 +107,7 @@ class PriorityBehavior extends Behavior
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         return;
     }

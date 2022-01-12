@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Shell\Task;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -38,7 +39,7 @@ class CheckTreeTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 
@@ -48,7 +49,7 @@ class CheckTreeTask extends Shell
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 

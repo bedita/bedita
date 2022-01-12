@@ -119,7 +119,7 @@ class GeometryBehavior extends Behavior
      */
     public function checkGeoSupport()
     {
-        $connection = $this->getTable()->getConnection();
+        $connection = $this->table()->getConnection();
         if (!isset($this->hasGeoSupport)) {
             try {
                 $query = new DatabaseQuery($connection);
@@ -182,7 +182,7 @@ class GeometryBehavior extends Behavior
         $center = static::parseCoordinates(Hash::get($options, 'center'));
         $distanceCenter = static::parseCoordinates(Hash::get($options, 'from', $center));
         $radius = filter_var(Hash::get($options, 'radius'), FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]);
-        $field = $this->getTable()->aliasField($this->getConfig('field'));
+        $field = $this->table()->aliasField($this->getConfig('field'));
 
         if (!$this->checkGeoSupport()) {
             throw new BadFilterException([

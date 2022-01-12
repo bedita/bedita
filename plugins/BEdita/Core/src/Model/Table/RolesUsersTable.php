@@ -41,7 +41,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -66,7 +66,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -80,7 +80,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['role_id', 'user_id']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
@@ -97,7 +97,7 @@ class RolesUsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException; if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));

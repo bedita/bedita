@@ -58,7 +58,7 @@ class ApplicationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -82,7 +82,7 @@ class ApplicationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -108,7 +108,7 @@ class ApplicationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
         $rules->add($rules->isUnique(['api_key']));
@@ -127,7 +127,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not disableable
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (
             !$entity->isNew() && $entity->get('enabled') == false &&
@@ -206,7 +206,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Application" {0}', $entity->id));

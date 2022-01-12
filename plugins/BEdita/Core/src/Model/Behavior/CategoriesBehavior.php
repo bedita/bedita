@@ -35,7 +35,7 @@ class CategoriesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->get('tags')) {
             $this->prepareData('tags', $entity);
@@ -60,7 +60,7 @@ class CategoriesBehavior extends Behavior
             return;
         }
         // Check if `Tags` or `Categories` associations are enabled
-        $objectType = $this->getTable()
+        $objectType = $this->table()
             ->getAssociation('ObjectTypes')
             ->get($entity->get('type'));
         if (!in_array(Inflector::humanize($item), (array)$objectType->get('associations'))) {

@@ -3,6 +3,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -29,7 +30,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -70,7 +71,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->nonNegativeInteger('priority');
@@ -120,7 +121,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['left_id'], 'LeftObjects'));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));
@@ -134,7 +135,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 

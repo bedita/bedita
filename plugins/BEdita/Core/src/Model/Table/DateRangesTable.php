@@ -18,6 +18,7 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -49,7 +50,7 @@ class DateRangesTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -71,7 +72,7 @@ class DateRangesTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -99,7 +100,7 @@ class DateRangesTable extends Table
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
@@ -111,7 +112,7 @@ class DateRangesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -233,7 +234,7 @@ class DateRangesTable extends Table
     protected function fromDateFilter(Query $query, Time $from): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from) {
-                return $exp->or_([
+                return $exp->or([
                     $q->newExpr()
                         ->gte($this->aliasField('start_date'), $from)
                         ->isNull($this->aliasField('end_date')),
@@ -253,7 +254,7 @@ class DateRangesTable extends Table
     protected function toDateFilter(Query $query, Time $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($to) {
-                return $exp->or_([
+                return $exp->or([
                     $q->newExpr()
                         ->lte($this->aliasField('start_date'), $to)
                         ->isNull($this->aliasField('end_date')),
@@ -274,7 +275,7 @@ class DateRangesTable extends Table
     protected function betweenDatesFilter(Query $query, Time $from, Time $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
-            return $exp->or_([
+            return $exp->or([
                 $q->newExpr()
                     ->gte($this->aliasField('start_date'), $from)
                     ->lte($this->aliasField('start_date'), $to),

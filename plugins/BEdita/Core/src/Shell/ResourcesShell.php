@@ -15,6 +15,7 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Table\ApplicationsTable;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -47,7 +48,7 @@ class ResourcesShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 

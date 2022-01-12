@@ -211,7 +211,9 @@ class AddRelatedObjectsActionTest extends TestCase
         static::assertSame(1, $beforeSaveTriggered);
         static::assertSame(1, $afterSaveTriggered);
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**

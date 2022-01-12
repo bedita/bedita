@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
@@ -44,7 +45,7 @@ class AnnotationsTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -83,7 +84,7 @@ class AnnotationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -108,7 +109,7 @@ class AnnotationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -121,7 +122,7 @@ class AnnotationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -138,7 +139,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(
@@ -169,7 +170,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if ($entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(

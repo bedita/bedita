@@ -28,7 +28,7 @@ class Marshaller extends CakeMarshaller
      *
      * Build the map of property of all inheritance chain.
      */
-    protected function _buildPropertyMap($data, $options)
+    protected function _buildPropertyMap($data, $options): array
     {
         $propertyMap = parent::_buildPropertyMap($data, $options);
         $inheritedTables = $this->_table->inheritedTables();
@@ -63,7 +63,7 @@ class Marshaller extends CakeMarshaller
             }
 
             $map[$prop] = function ($value, $entity) use ($columnType) {
-                return Type::build($columnType)->marshal($value);
+                return \Cake\Database\TypeFactory::build($columnType)->marshal($value);
             };
         }
 

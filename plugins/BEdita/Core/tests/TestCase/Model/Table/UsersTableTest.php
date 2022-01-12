@@ -64,7 +64,7 @@ class UsersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -75,7 +75,7 @@ class UsersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Users);
         LoggedUser::resetUser();
@@ -352,13 +352,13 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "User" 1
      * @covers ::beforeSave
      */
     public function testSoftDeleteAdminUser()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         $user->deleted = true;
         $this->Users->save($user);
@@ -369,13 +369,13 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\BadRequestException
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Logged users cannot delete their own account
      * @covers ::beforeSave
      */
     public function testSoftDeleteLoggedUser()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectExceptionCode('400');
+        $this->expectExceptionMessage('Logged users cannot delete their own account');
         LoggedUser::setUser(['id' => 5]);
         $user = $this->Users->get(5);
         $user->deleted = true;
@@ -401,13 +401,13 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "User" 1
      * @covers ::beforeDelete
      */
     public function testHardDeleteAdminUser()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         $this->Users->delete($user);
     }
@@ -619,12 +619,12 @@ class UsersTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\BadFilterException
-     * @expectedExceptionMessage Missing required parameter "roles"
      * @covers ::findRoles()
      */
     public function testFindRolesFail()
     {
+        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectExceptionMessage('Missing required parameter "roles"');
         $this->Users->find('roles', [])
             ->toArray();
     }

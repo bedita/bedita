@@ -48,7 +48,7 @@ class StreamsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
@@ -69,7 +69,7 @@ class StreamsController extends ResourcesController
      *
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         if ($this->request->getParam('action') === 'download') {
             return;

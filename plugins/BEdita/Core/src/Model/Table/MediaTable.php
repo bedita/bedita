@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
 use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 
 /**
  * Media Model
@@ -30,7 +31,7 @@ class MediaTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -66,7 +67,7 @@ class MediaTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('provider_extra', 'json');
 

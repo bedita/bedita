@@ -51,7 +51,7 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * {@inheritDoc}
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         if (is_object($class)) {
             return $class;
@@ -63,7 +63,7 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * {@inheritDoc}
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         throw new \BadMethodCallException(sprintf('Filesystem adapter %s is not available.', $class));
     }

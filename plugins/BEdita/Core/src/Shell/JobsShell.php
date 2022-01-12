@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Shell;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
 
@@ -34,7 +35,7 @@ class JobsShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $options = [
             'exit-on-error' => [

@@ -140,9 +140,9 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function _getContents()
     {
-        if (!empty($this->_properties['contents'])) {
+        if (!empty($this->_fields['contents'])) {
             // Downloaded already.
-            return $this->_properties['contents'];
+            return $this->_fields['contents'];
         }
 
         if (!$this->has('uri')) {
@@ -161,7 +161,7 @@ class Stream extends Entity implements JsonApiSerializable
 
         $stream = new LaminasStream($readStream, 'r');
 
-        return $this->_properties['contents'] = $stream;
+        return $this->_fields['contents'] = $stream;
     }
 
     /**
@@ -253,9 +253,9 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function _getUrl()
     {
-        if (!empty($this->_properties['url'])) {
+        if (!empty($this->_fields['url'])) {
             // Already computed the public URL. Let's avoid requesting it again.
-            return $this->_properties['url'];
+            return $this->_fields['url'];
         }
 
         if (!$this->has('uri') || $this->get('private_url')) {
@@ -263,7 +263,7 @@ class Stream extends Entity implements JsonApiSerializable
             return null;
         }
 
-        return $this->_properties['url'] = FilesystemRegistry::getPublicUrl($this->uri);
+        return $this->_fields['url'] = FilesystemRegistry::getPublicUrl($this->uri);
     }
 
     /**

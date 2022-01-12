@@ -78,7 +78,7 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
@@ -151,7 +151,7 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         if (
             $this->request->getParam('action') === 'relationships'

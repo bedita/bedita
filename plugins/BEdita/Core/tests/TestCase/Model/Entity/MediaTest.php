@@ -55,7 +55,7 @@ class MediaTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
@@ -65,7 +65,7 @@ class MediaTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         FilesystemRegistry::dropAll();
         parent::tearDown();

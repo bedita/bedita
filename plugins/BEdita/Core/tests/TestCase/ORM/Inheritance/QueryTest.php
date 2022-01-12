@@ -32,7 +32,7 @@ class QueryTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -109,7 +109,9 @@ class QueryTest extends TestCase
         $query->sql();
 
         $selected = array_values($query->clause('select'));
-        static::assertEquals($expected, $selected, '', 0, 10, true);
+        static::assertEquals($expected, $selected, '');
+        static::assertEqualsCanonicalizing($expected, $selected, '');
+        static::assertEqualsWithDelta($expected, $selected, 0, '');
     }
 
     /**

@@ -187,7 +187,7 @@ class Folder extends ObjectEntity
      */
     public function isParentSet()
     {
-        return array_key_exists('parents', $this->_properties);
+        return array_key_exists('parents', $this->_fields);
     }
 
     /**

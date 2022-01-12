@@ -60,7 +60,7 @@ class ObjectTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -73,11 +73,11 @@ class ObjectTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectTypes);
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
@@ -529,7 +529,9 @@ class ObjectTypesTableTest extends TestCase
             ->find('list')
             ->toArray();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**
@@ -682,12 +684,11 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return void
      * @covers ::beforeRules()
-     *
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionMessage('Parent type change forbidden: objects of this type exist');
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
         $this->ObjectTypes->save($objectType);

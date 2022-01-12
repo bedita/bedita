@@ -148,8 +148,8 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function _getSingular(): ?string
     {
-        if (!empty($this->_properties['singular'])) {
-            return $this->_properties['singular'];
+        if (!empty($this->_fields['singular'])) {
+            return $this->_fields['singular'];
         }
 
         return Inflector::singularize($this->name);

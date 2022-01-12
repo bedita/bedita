@@ -50,7 +50,7 @@ class JwtAuthenticateTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -260,12 +260,12 @@ class JwtAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('MyExceptionMessage');
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authError' => 'MyExceptionMessage',
@@ -281,12 +281,12 @@ class JwtAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Invalid audience
      * @covers ::unauthenticated()
      */
     public function testUnauthenticatedWithInternalErrorMessage()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Invalid audience');
         $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',

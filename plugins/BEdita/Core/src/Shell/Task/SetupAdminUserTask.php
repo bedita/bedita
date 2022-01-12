@@ -14,6 +14,7 @@
 namespace BEdita\Core\Shell\Task;
 
 use BEdita\Core\Model\Table\UsersTable;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
@@ -39,7 +40,7 @@ class SetupAdminUserTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

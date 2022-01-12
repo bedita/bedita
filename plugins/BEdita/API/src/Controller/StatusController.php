@@ -25,7 +25,7 @@ class StatusController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         $htmlRequest = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
         if (!$this->request->is('jsonapi') && !$htmlRequest) {

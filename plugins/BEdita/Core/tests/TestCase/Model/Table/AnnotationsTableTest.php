@@ -40,7 +40,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Annotations);
 
@@ -201,12 +201,11 @@ class AnnotationsTableTest extends TestCase
      * Test `beforeDelete` failure.
      *
      * @covers ::beforeDelete()
-     *
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionMessage Could not delete annotation "1" of user "1"
      */
     public function testBeforeDeleteFailure()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionMessage('Could not delete annotation "1" of user "1"');
         LoggedUser::setUser(['id' => 5]);
         $annotation = $this->Annotations->get(1);
         $success = $this->Annotations->delete($annotation);

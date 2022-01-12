@@ -60,7 +60,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Trees);
 
@@ -280,10 +280,10 @@ class TreesTableTest extends TestCase
      *
      * @return void
      * @coversNothing
-     * @expectedException \RuntimeException
      */
     public function testMoveParentAsChild()
     {
+        $this->expectException(\RuntimeException::class);
         // create new Folder
         LoggedUser::setUser(['id' => 1]);
         $Folders = TableRegistry::getTableLocator()->get('Folders');

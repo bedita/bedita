@@ -52,7 +52,7 @@ class SearchableBehavior extends Behavior
      * If fields or column types are specified - do *not* merge them with existing config,
      * overwrite the fields to search on.
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         foreach (['columnTypes', 'fields'] as $key) {
             if (isset($config[$key])) {
@@ -95,7 +95,7 @@ class SearchableBehavior extends Behavior
         $wildCard = $this->getConfig('fields.*');
 
         $fields = (array)$this->getConfig('fields');
-        $allFields = $this->getAllFields($this->getTable());
+        $allFields = $this->getAllFields($this->table());
 
         $fields = array_intersect_key($fields, array_flip($allFields));
         if ($wildCard !== null) {

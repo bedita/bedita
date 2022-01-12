@@ -65,12 +65,12 @@ class SaveEntityActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\BadRequestException
      * @covers ::initialize()
      * @covers ::execute()
      */
     public function testExecuteValitationErrors()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $table->setValidator(
             $table::DEFAULT_VALIDATOR,
@@ -93,12 +93,12 @@ class SaveEntityActionTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\InternalErrorException
      * @covers ::initialize()
      * @covers ::execute()
      */
     public function testExecuteSaveErrors()
     {
+        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
         $table = $this->getMockBuilder(Table::class)

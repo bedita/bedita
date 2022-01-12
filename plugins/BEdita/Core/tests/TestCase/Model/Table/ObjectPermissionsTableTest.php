@@ -34,7 +34,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $config = TableRegistry::exists('ObjectPermissions') ? [] : ['className' => 'BEdita\Core\Model\Table\ObjectPermissionsTable'];
@@ -46,7 +46,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectPermissions);
 

@@ -196,7 +196,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * {@inheritdoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.credentialsChangeRequest' => 'sendMail',

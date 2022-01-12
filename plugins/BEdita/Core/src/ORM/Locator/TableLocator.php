@@ -34,7 +34,7 @@ class TableLocator extends CakeLocator
      * @param array $options Table options array.
      * @return string
      */
-    protected function _getClassName($alias, array $options = [])
+    protected function _getClassName($alias, array $options = []): ?string
     {
         if (empty($options['className'])) {
             $options['className'] = Inflector::camelize($alias);

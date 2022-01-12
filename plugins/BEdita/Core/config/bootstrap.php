@@ -45,12 +45,12 @@ if (!Configure::isConfigured('ini')) {
  * locale specific date formats. For details see
  * @link https://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
-Type::build('time')
-    ->useImmutable();
-Type::build('date')
-    ->useImmutable();
-Type::build('datetime')
-    ->useImmutable();
+// Type::build('time')
+//     ->useImmutable();
+// Type::build('date')
+//     ->useImmutable();
+// Type::build('datetime')
+//     ->useImmutable();
 
 /*
  * Set the default format used converting a date to json
@@ -68,8 +68,8 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
  * See https://github.com/cakephp/cakephp/issues/13646
  */
 Type::set('date', new DateType());
-Type::set('datetime', (new DateTimeType())->setTimezone(date_default_timezone_get()));
-Type::set('timestamp', (new DateTimeType())->setTimezone(date_default_timezone_get()));
+Type::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+Type::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 
 /**
  * Use custom BoolType

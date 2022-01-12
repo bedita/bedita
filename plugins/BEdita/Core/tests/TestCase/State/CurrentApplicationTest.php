@@ -48,7 +48,7 @@ class CurrentApplicationTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -56,13 +56,13 @@ class CurrentApplicationTest extends TestCase
         CurrentApplication::setApplication(null);
         Configure::delete('appVal');
         Configure::delete('someVal');
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
 
@@ -182,10 +182,10 @@ class CurrentApplicationTest extends TestCase
      * @return void
      *
      * @covers ::setFromApiKey()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testSetFromApiKeyFailure()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         CurrentApplication::setFromApiKey('INVALID_API_KEY');
     }
 }

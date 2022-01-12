@@ -57,7 +57,7 @@ class GlideGeneratorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class GlideGeneratorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->generator, $this->Streams);

@@ -27,11 +27,11 @@ class ObjectModelBehavior extends Behavior
      *
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $table = $this->getTable();
+        $table = $this->table();
         $table->addBehavior('BEdita/Core.History');
         $table->addBehavior('Timestamp');
         $table->addBehavior('BEdita/Core.DataCleanup');

@@ -52,7 +52,7 @@ class SetRelatedObjectsActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class SetRelatedObjectsActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -234,7 +234,9 @@ class SetRelatedObjectsActionTest extends TestCase
         static::assertSame(1, $beforeSaveTriggered);
         static::assertSame(1, $afterSaveTriggered);
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**

@@ -47,11 +47,11 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DatabaseConfig = new DatabaseConfig();
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
@@ -59,7 +59,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->DatabaseConfig);
         parent::tearDown();

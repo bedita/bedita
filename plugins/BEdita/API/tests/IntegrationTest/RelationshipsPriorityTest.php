@@ -33,7 +33,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
@@ -42,7 +42,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         FilesystemRegistry::dropAll();
         parent::tearDown();

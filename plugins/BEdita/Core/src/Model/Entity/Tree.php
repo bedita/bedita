@@ -70,7 +70,7 @@ class Tree extends Entity
      */
     protected function _setParentId($parentId)
     {
-        if (array_key_exists('parent_id', $this->_properties) && $this->_properties['parent_id'] === $parentId) {
+        if (array_key_exists('parent_id', $this->_fields) && $this->_fields['parent_id'] === $parentId) {
             return $parentId;
         }
 

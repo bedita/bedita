@@ -65,11 +65,11 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $table = $this->getTable();
+        $table = $this->table();
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }
@@ -83,7 +83,7 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected function objectType(...$args)
     {
-        return $this->getTable()->behaviors()->call('objectType', $args);
+        return $this->table()->behaviors()->call('objectType', $args);
     }
 
     /**
@@ -129,7 +129,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    public function beforeFind(Event $event, Query $query): Query
+    public function beforeFind(\Cake\Event\EventInterface $event, Query $query): Query
     {
         return $query->formatResults(
             function (CollectionInterface $results) {
@@ -148,7 +148,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return false|void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {
@@ -312,9 +312,9 @@ class CustomPropertiesBehavior extends Behavior
         unset($value);
 
         return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
-            $field = $this->getTable()->aliasField($this->getConfig('field'));
+            $field = $this->table()->aliasField($this->getConfig('field'));
 
-            return $exp->and_(array_map(
+            return $exp->and(array_map(
                 function ($key, $value) use ($field, $query) {
                     return $query->newExpr()->eq(
                         new FunctionExpression(

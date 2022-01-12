@@ -32,7 +32,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(static::TEMP_DIR)) {
             if (!is_writable(static::TEMP_DIR)) {

@@ -29,7 +29,7 @@ class FilesystemRegistryTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -219,11 +219,11 @@ class FilesystemRegistryTest extends TestCase
      * @return void
      *
      * @covers ::dropAll()
-     * @expectedException \League\Flysystem\FilesystemNotFoundException
-     * @expectedExceptionMessage No filesystem mounted with prefix default
      */
     public function testDropAll()
     {
+        $this->expectException(\League\Flysystem\FilesystemNotFoundException::class);
+        $this->expectExceptionMessage('No filesystem mounted with prefix default');
         FilesystemRegistry::setConfig('default', [
             'className' => LocalAdapter::class,
         ]);

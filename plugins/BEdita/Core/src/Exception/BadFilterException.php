@@ -18,7 +18,7 @@ use Cake\Core\Exception\Exception;
 /**
  * Exception raised when bad filter data are passed to Model/ORM classes
  */
-class BadFilterException extends Exception
+class BadFilterException extends \Cake\Core\Exception\CakeException
 {
     /**
      * {@inheritDoc}

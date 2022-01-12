@@ -51,7 +51,7 @@ class UserModifiedBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class UserModifiedBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -157,13 +157,13 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
     public function testHandleEventFailure()
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [
                 'modified_by' => 'sometimes',

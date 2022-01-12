@@ -41,7 +41,7 @@ class ProjectController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event): void
+    public function beforeFilter(\Cake\Event\EventInterface $event): void
     {
         if (!$this->request->is(['json'])) {
             throw new NotAcceptableException(

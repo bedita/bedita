@@ -45,7 +45,7 @@ class RelatedTo extends BelongsToMany
     /**
      * {@inheritDoc}
      */
-    protected function _options(array $opts)
+    protected function _options(array $opts): void
     {
         parent::_options($opts);
 
@@ -81,7 +81,7 @@ class RelatedTo extends BelongsToMany
     }
 
     /** @inheritDoc */
-    public function getTarget()
+    public function getTarget(): Table
     {
         $targetOT = $this->getObjectType();
         /** @var \Cake\ORM\Table&\BEdita\Core\Model\Behavior\ObjectTypeBehavior&\BEdita\Core\Model\Behavior\RelationsBehavior $target */

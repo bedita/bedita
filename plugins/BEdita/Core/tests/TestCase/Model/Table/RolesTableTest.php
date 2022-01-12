@@ -54,7 +54,7 @@ class RolesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -65,7 +65,7 @@ class RolesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Roles);
         LoggedUser::resetUser();
@@ -162,13 +162,13 @@ class RolesTableTest extends TestCase
     /**
      * Test delete admin role
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "Role" 1
      * @covers ::beforeDelete
      */
     public function testDeleteAdminRole()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "Role" 1');
         $role = $this->Roles->get(RolesTable::ADMIN_ROLE);
         $this->Roles->delete($role);
     }

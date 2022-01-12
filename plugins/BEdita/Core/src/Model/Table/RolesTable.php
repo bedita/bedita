@@ -52,7 +52,7 @@ class RolesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -79,7 +79,7 @@ class RolesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->naturalNumber('id')
@@ -105,7 +105,7 @@ class RolesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
 
@@ -141,7 +141,7 @@ class RolesTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
     {
         if (static::ADMIN_ROLE === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));

@@ -20,6 +20,6 @@ use Cake\Core\Exception\Exception;
  *
  * @since 4.0.0
  */
-class InvalidStreamException extends Exception
+class InvalidStreamException extends \Cake\Core\Exception\CakeException
 {
 }

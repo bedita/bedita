@@ -51,7 +51,7 @@ trait FakeAnimalsTrait
      *
      * @return array
      */
-    public function getFixtures()
+    public function getFixtures(): array
     {
         return [
             'plugin.BEdita/Core.FakeAnimals',

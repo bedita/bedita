@@ -35,7 +35,7 @@ class CommonEventHandler implements EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Server.buildMiddleware' => 'buildMiddlewareStack',

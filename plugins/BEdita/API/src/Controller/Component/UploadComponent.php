@@ -34,7 +34,7 @@ class UploadComponent extends Component
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event): void
+    public function beforeFilter(\Cake\Event\EventInterface $event): void
     {
         // avoid that RequestHandler tries to parse body
         $this->getController()->RequestHandler->setConfig('inputTypeMap', [], false);

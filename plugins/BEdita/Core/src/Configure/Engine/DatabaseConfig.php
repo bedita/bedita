@@ -96,7 +96,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param array $data The data to write.
      * @return bool Success.
      */
-    public function dump($key, array $data)
+    public function dump($key, array $data): bool
     {
         $context = $key;
         $entities = [];
@@ -110,7 +110,7 @@ class DatabaseConfig implements ConfigEngineInterface
         $this->Config->getConnection()->transactional(function () use ($entities) {
             foreach ($entities as $entity) {
                 if (!$this->Config->save($entity, ['atomic' => false])) {
-                    throw new Exception(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
+                    throw new \Cake\Database\Exception\DatabaseException(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
                 }
             }
         });

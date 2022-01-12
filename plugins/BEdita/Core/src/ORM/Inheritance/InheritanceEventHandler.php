@@ -39,7 +39,7 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Model.beforeSave' => [

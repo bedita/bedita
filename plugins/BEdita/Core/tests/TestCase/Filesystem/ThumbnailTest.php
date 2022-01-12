@@ -52,7 +52,7 @@ class ThumbnailTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class ThumbnailTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (Thumbnail::configured() as $config) {
             Thumbnail::drop($config);
@@ -269,13 +269,13 @@ class ThumbnailTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Preset "gustavo" not found
      * @covers ::getOptions()
      */
     public function testGetOptionsMissingPreset()
     {
+        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectExceptionCode('400');
+        $this->expectExceptionMessage('Preset "gustavo" not found');
         Configure::delete('Thumbnails.presets.gustavo');
 
         Thumbnail::get(new Stream(), 'gustavo');
@@ -286,13 +286,13 @@ class ThumbnailTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Thumbnails can only be generated for one of the configured presets
      * @covers ::getOptions()
      */
     public function testGetOptionsCustomNotAllowed()
     {
+        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectExceptionCode('400');
+        $this->expectExceptionMessage('Thumbnails can only be generated for one of the configured presets');
         Configure::write('Thumbnails.allowAny', false);
 
         Thumbnail::get(new Stream(), ['generator' => 'whatever', 'w' => -1, 'h' => 'maybe']);

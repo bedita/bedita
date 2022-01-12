@@ -35,7 +35,7 @@ class SchemaController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         if ($this->components()->has('JsonApi')) {
@@ -52,7 +52,7 @@ class SchemaController extends AppController
      *
      * @codeCoverageIgnore
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
     }
 

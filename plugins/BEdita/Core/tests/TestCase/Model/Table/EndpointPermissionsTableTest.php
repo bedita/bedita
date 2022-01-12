@@ -55,11 +55,11 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
@@ -67,7 +67,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->EndpointPermissions);
 

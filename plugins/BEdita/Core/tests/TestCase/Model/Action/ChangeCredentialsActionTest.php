@@ -54,7 +54,7 @@ class ChangeCredentialsActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -128,10 +128,10 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \Cake\Http\Exception\BadRequestException
      */
     public function testValidationFail()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
         $data = [
             'uuid' => 'whatatoken!',
         ];
@@ -151,10 +151,10 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testExecuteFail()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         $data = [
             'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
@@ -175,10 +175,10 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \LogicException
      */
     public function testPayloadFail()
     {
+        $this->expectException(\LogicException::class);
         $data = [
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',

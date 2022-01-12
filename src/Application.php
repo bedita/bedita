@@ -15,9 +15,9 @@
 namespace BEdita\App;
 
 use Cake\Core\Configure;
-use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
+use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
@@ -44,7 +44,7 @@ class Application extends BaseApplication
     /**
      * {@inheritDoc}
      */
-    public function bootstrap()
+    public function bootstrap(): void
     {
         // Call parent to load bootstrap from files.
         parent::bootstrap();
@@ -63,15 +63,10 @@ class Application extends BaseApplication
     /**
      * @return void
      */
-    protected function bootstrapCli()
+    protected function bootstrapCli(): void
     {
         $this->addPlugin('Migrations');
-        try {
-            $this->addPlugin('Bake');
-        } catch (MissingPluginException $e) {
-            // intentionally empty catch block
-            // allow missing `bake` plugin in no-dev environment
-        }
+        $this->addOptionalPlugin('Bake');
     }
 
     /**
@@ -118,7 +113,7 @@ class Application extends BaseApplication
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
      * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
      */
-    public function middleware($middlewareQueue)
+    public function middleware($middlewareQueue): \Cake\Http\MiddlewareQueue
     {
         $middlewareQueue
             // Catch any exceptions in the lower layers,
@@ -126,7 +121,12 @@ class Application extends BaseApplication
             ->add(ErrorHandlerMiddleware::class)
 
             // Add routing middleware.
-            ->add(new RoutingMiddleware($this, '_bedita_core_'));
+            ->add(new RoutingMiddleware($this, '_bedita_core_'))
+
+            // Parse various types of encoded request bodies so that they are
+            // available as array through $request->getData()
+            // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
+            ->add(new BodyParserMiddleware());
 
         return $middlewareQueue;
     }

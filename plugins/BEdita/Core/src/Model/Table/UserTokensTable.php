@@ -52,7 +52,7 @@ class UserTokensTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -79,7 +79,7 @@ class UserTokensTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->integer('id')
@@ -121,7 +121,7 @@ class UserTokensTable extends Table
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
@@ -153,9 +153,9 @@ class UserTokensTable extends Table
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
-                return $exp->and_([
+                return $exp->and([
                     $exp->isNull($this->aliasField('used')),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('expires');
 
                         return $exp
