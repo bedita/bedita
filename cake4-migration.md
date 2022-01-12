@@ -27,7 +27,7 @@
 
 ## Src
 
-* (N) Cache::clear(false, '#####'); ==>  Cache::clear('#####'');
+* (N) (B) Cache::clear(false, '#####'); ==>  Cache::clear('#####'');
 
 * public function initialize() ==> public function initialize(): void
     controllers, commands,...
