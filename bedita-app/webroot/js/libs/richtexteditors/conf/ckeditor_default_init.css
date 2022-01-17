@@ -96,21 +96,3 @@ aside, .aside {
     border: 1px dotted #009933;
     padding: 3px 0px 0px 8px;
 }
-
-DIV.stile-esercizio {
-	-moz-column-count: 4;
-	-webkit-column-count: 4;
-	column-count: 4;
-}
-
-DIV.raccordo {
-	-moz-column-count: 5;
-	-webkit-column-count: 5;
-	column-count: 5;
-}
-
-DIV#note {
-	-moz-column-count: 6;
-	-webkit-column-count: 6;
-	column-count: 6;
-}
