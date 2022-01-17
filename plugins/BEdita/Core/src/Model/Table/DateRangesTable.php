@@ -181,8 +181,8 @@ class DateRangesTable extends Table
     /**
      * Create Time object from $time string
      *
-     * @param string|\DateTimeInterface $time Input time.
-     * @return null|\DateTimeInterface
+     * @param \DateTimeInterface|string|null $time Input time.
+     * @return \DateTimeInterface|null
      */
     protected function getTime($time): ?DateTimeInterface
     {
