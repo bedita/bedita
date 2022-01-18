@@ -310,7 +310,7 @@ class Stream extends Entity implements JsonApiSerializable
             }, ARRAY_FILTER_USE_KEY);
         }, $exif);
         // Check if data is JSON-encodable
-        if (json_decode(json_encode($exif)) === null) {
+        if (json_encode($exif) === false) {
             return;
         }
 
