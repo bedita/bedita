@@ -52,6 +52,22 @@ class StreamsShell extends Shell
                 ],
             ]
         ]);
+        $parser->addSubcommand('refreshMetadata', [
+            'help' => 'read streams metadata from file and update database information',
+            'parser' => [
+                'description' => [
+                    'Refresh streams metadata in database.',
+                ],
+                'options' => [
+                    'force' => [
+                        'help' => 'Force refreshing all streams, not only those with empty metadata',
+                        'required' => false,
+                        'default' => false,
+                        'boolean' => true,
+                    ],
+                ],
+            ],
+        ]);
 
         return $parser;
     }
@@ -76,5 +92,84 @@ class StreamsShell extends Shell
             $count++;
         }
         $this->out(sprintf('%d stream(s) deleted', $count));
+    }
+
+    /**
+     * Re-read streams metadata from file and update information in database.
+     *
+     * @return void
+     */
+    public function refreshMetadata()
+    {
+        $conditions = [
+            'OR' => [
+                $this->Streams->aliasField('file_size') . ' IS' => null,
+                $this->Streams->aliasField('width') . ' IS' => null,
+                $this->Streams->aliasField('height') . ' IS' => null,
+            ],
+        ];
+        $force = (bool)$this->param('force');
+        if ($force) {
+            $conditions = [];
+        }
+
+        $count = $this->Streams->find('all', compact('conditions'))->count();
+        $this->info(sprintf('Checking %d streams', $count));
+
+        // Set custom error handler because Stream calls some PHP functions that use old error handling
+        set_error_handler(
+            function (int $code, string $message, string $filename, int $lineNumber): void {
+                throw new \ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
+            }
+        );
+        foreach ($this->streamsGenerator($conditions) as $stream) {
+            $this->updateStreamMetadata($stream);
+        }
+        restore_error_handler();
+    }
+
+    /**
+     * Update stream metadata.
+     *
+     * @param Stream $stream The stream to update
+     * @return void
+     */
+    protected function updateStreamMetadata(Stream $stream): void
+    {
+        try {
+            // Read current file's content...
+            $content = $stream->contents;
+            if ($content === null) {
+                $this->warn(sprintf('  stream %s (object %d) is empty or could not be read', $stream->uuid, $stream->object_id));
+
+                return;
+            }
+
+            // ...and write it back, triggering Stream model's methods to read metadata from file
+            $stream->contents = $content;
+            if ($stream->isDirty() && !$this->Streams->save($stream)) {
+                $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, print_r($stream->getErrors(), true)));
+            }
+        } catch (\Throwable $t) {
+            $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
+        }
+    }
+
+    /**
+     * Generator to paginate through all streams.
+     *
+     * @param array $conditions Optional filtering conditions
+     * @param int $pageSize Number of objects per page
+     * @return \Generator|Stream[]
+     */
+    protected function streamsGenerator(array $conditions = [], int $pageSize = 100): \Generator
+    {
+        $query = $this->Streams->find('all', compact('conditions'));
+        $pageCount = ceil($query->count() / $pageSize);
+
+        for ($page = 1; $page <= $pageCount; $page++) {
+            yield from $query->page($page, $pageSize)->all();
+            $this->info(sprintf('  processed %d streams', min($page * $pageSize, $query->count())));
+        }
     }
 }

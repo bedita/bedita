@@ -87,6 +87,13 @@ class Stream extends Entity implements JsonApiSerializable
     public const EXIF_MIME_TYPES = ['image/jpeg', 'image/tiff'];
 
     /**
+     * Exif sections to extract.
+     *
+     * @var array
+     */
+    public const EXIF_SECTIONS = ['FILE', 'COMPUTED', 'IFD0', 'THUMBNAIL', 'COMMENT', 'EXIF'];
+
+    /**
      * Get filesystem path (including mount point) under which file should be stored.
      *
      * Result of this method will be generally used as the entity `uri` on save.
@@ -289,9 +296,24 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         rewind($resource);
-        $exif = exif_read_data($resource);
-        if (!empty($exif)) {
-            $this->file_metadata = $exif;
+        $exif = exif_read_data($resource, null, true);
+        if ($exif === false) {
+            return;
         }
+
+        // Filter non-standard sections
+        $exif = array_intersect_key($exif, array_flip(static::EXIF_SECTIONS));
+        // Filter undefined tags, which may break JSON encoding
+        $exif = array_map(function ($section) {
+            return array_filter($section, function ($key) {
+                return strpos($key, 'UndefinedTag:') === false;
+            }, ARRAY_FILTER_USE_KEY);
+        }, $exif);
+        // Check if data is JSON-encodable
+        if (json_decode(json_encode($exif)) === null) {
+            return;
+        }
+
+        $this->file_metadata = $exif;
     }
 }
