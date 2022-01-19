@@ -1,3 +1,4 @@
+{if $smarty.const.BACKEND_APP}
 <script type="text/javascript" charset="utf-8">
 $(document).ready ( function ()  { 
 {if ($session->check('Message.info'))}
@@ -12,6 +13,7 @@ $(document).ready ( function ()  {
 
 });
 </script>
+{/if}
 
 <div id="messagesDiv">
 
