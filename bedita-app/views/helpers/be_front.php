@@ -846,7 +846,7 @@ class BeFrontHelper extends AppHelper {
 		 * Their are loaded here because in layout view doesn't work inline=false option.
 		 * In fact for the design of cakePHP layouts are simply parsed by PHP interpeter
 		 */
-		if ($this->_conf->staging) {
+		if ($this->_conf->staging && !empty($this->_conf->stagingToolbar)) {
 
 			// include js that staging toolbar needs
 			echo $this->Html->script(
