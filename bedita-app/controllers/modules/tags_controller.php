@@ -241,8 +241,9 @@ class TagsController extends ModulesController {
 
         $this->set(array(
             'tags' => $tags,
+            'query' => isset($this->params['url']['q']) ? $this->params['url']['q'] : null,
             'paging' => $this->params['paging']['Category'],
-            '_serialize' => array('tags', 'paging'),
+            '_serialize' => array('tags', 'query', 'paging'),
         ));
     }
 
