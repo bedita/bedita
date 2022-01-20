@@ -794,6 +794,54 @@ var initTagsFilter = function(selector) {
     });
 };
 
+var initTagsAutocomplete = function (selector) {
+    $(selector).select2({
+        tags: [],
+        tokenSeparators: [','],
+        placeholder: $(selector).data('placeholder'),
+        width: '100%',
+        initSelection: function (element, callback) {
+            var tags = $(element).val().split(/,\s*/);
+
+            callback(tags.map(function (tag) {
+                return { id: tag, text: tag };
+            }));
+        },
+        ajax: {
+            url: $(selector).attr('rel'),
+            dataType: 'json',
+            quietMillis: 250,
+            data: function (term, page) {
+                return {
+                    q: term,
+                    page: page,
+                };
+            },
+            results: function (data, page) {
+                if (!data || !data.tags) {
+                    return { results: data.query ? [{ id: data.query, text: data.query }] : [] };
+                }
+
+                var more = data.paging && data.paging.pageCount && page < data.paging.pageCount;
+
+                found = false;
+                results = data.tags.map(function (tag) {
+                    if (tag === data.query) {
+                        found = true;
+                    }
+
+                    return { id: tag.label, text: tag.label };
+                });
+                if (page === 1 && !found && data.query) {
+                    results.push({ id: data.query, text: data.query });
+                }
+
+                return { results: results, more: more };
+            },
+        },
+    });
+};
+
 /* end of document ready() */
 
 var toggleSelectTree = function(ev) {
