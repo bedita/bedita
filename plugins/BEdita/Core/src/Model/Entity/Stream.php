@@ -283,11 +283,13 @@ class Stream extends Entity implements JsonApiSerializable
     {
         if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
             rewind($resource);
-            $size = getimagesizefromstring(stream_get_contents($resource));
-
-            if (!empty($size)) {
-                $this->width = $size[0];
-                $this->height = $size[1];
+            $content = stream_get_contents($resource);
+            if (!empty($content)) {
+                $size = getimagesizefromstring($content);
+                if (!empty($size)) {
+                    $this->width = $size[0];
+                    $this->height = $size[1];
+                }
             }
         }
 
