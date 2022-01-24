@@ -14,6 +14,8 @@ namespace BEdita\Core\Shell;
 
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Console\Shell;
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
 
 /**
  * Stream shell commands: removeOrphans
@@ -101,22 +103,23 @@ class StreamsShell extends Shell
      */
     public function refreshMetadata()
     {
-        $conditions = [
-            'OR' => [
-                $this->Streams->aliasField('file_size') . ' IS' => null,
-                $this->Streams->aliasField('width') . ' IS' => null,
-                $this->Streams->aliasField('height') . ' IS' => null,
-            ],
-        ];
-        $force = (bool)$this->param('force');
-        if ($force) {
-            $conditions = [];
+        $query = $this->Streams->find('all');
+        if ((bool)$this->param('force') === false) {
+            $query = $query->where(function (QueryExpression $exp): QueryExpression {
+                return $exp->or_(function (QueryExpression $exp): QueryExpression {
+                    return $exp
+                        ->isNull($this->Streams->aliasField('file_size'))
+                        ->isNull($this->Streams->aliasField('width'))
+                        ->isNull($this->Streams->aliasField('height'));
+                });
+            });
         }
 
-        $count = $this->Streams->find('all', compact('conditions'))->count();
+        $count = $query->count();
+
         $this->info(sprintf('Checking %d streams', $count));
 
-        foreach ($this->streamsGenerator($conditions) as $stream) {
+        foreach ($this->streamsGenerator($query) as $stream) {
             $this->updateStreamMetadata($stream);
         }
     }
@@ -151,18 +154,18 @@ class StreamsShell extends Shell
     /**
      * Generator to paginate through all streams.
      *
-     * @param array $conditions Optional filtering conditions
+     * @param \Cake\ORM\Query $query Query to retrieve concerned streams
      * @param int $pageSize Number of objects per page
      * @return \Generator|Stream[]
      */
-    protected function streamsGenerator(array $conditions = [], int $pageSize = 100): \Generator
+    protected function streamsGenerator(Query $query, int $pageSize = 100): \Generator
     {
-        $query = $this->Streams->find('all', compact('conditions'));
-        $pageCount = ceil($query->count() / $pageSize);
+        $q = clone $query;
+        $pageCount = ceil($q->count() / $pageSize);
 
         for ($page = 1; $page <= $pageCount; $page++) {
-            yield from $query->page($page, $pageSize)->all();
-            $this->info(sprintf('  processed %d streams', min($page * $pageSize, $query->count())));
+            yield from $q->page($page, $pageSize)->all();
+            $this->info(sprintf('  processed %d streams', min($page * $pageSize, $q->count())));
         }
     }
 }
