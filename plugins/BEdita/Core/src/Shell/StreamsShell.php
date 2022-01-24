@@ -116,16 +116,9 @@ class StreamsShell extends Shell
         $count = $this->Streams->find('all', compact('conditions'))->count();
         $this->info(sprintf('Checking %d streams', $count));
 
-        // Set custom error handler because Stream calls some PHP functions that use old error handling
-        set_error_handler(
-            function (int $code, string $message, string $filename, int $lineNumber): void {
-                throw new \ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
-            }
-        );
         foreach ($this->streamsGenerator($conditions) as $stream) {
             $this->updateStreamMetadata($stream);
         }
-        restore_error_handler();
     }
 
     /**

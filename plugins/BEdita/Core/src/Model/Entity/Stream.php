@@ -296,7 +296,21 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         rewind($resource);
-        $exif = exif_read_data($resource, null, true);
+        // Set custom error handler to catch errors that still use "traditional" PHP error reporting.
+        // exif_read_data() is one such function, evading usual try-catch blocks.
+        set_error_handler(
+            function (int $code, string $message, string $filename, int $lineNumber): void {
+                throw new \ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
+            }
+        );
+
+        try {
+            $exif = exif_read_data($resource, null, true);
+        } finally {
+            // Restore previous error handler so that errors/exceptions are handled as before
+            restore_error_handler();
+        }
+
         if ($exif === false) {
             return;
         }
@@ -304,8 +318,8 @@ class Stream extends Entity implements JsonApiSerializable
         // Filter non-standard sections
         $exif = array_intersect_key($exif, array_flip(static::EXIF_SECTIONS));
         // Filter undefined tags, which may break JSON encoding
-        $exif = array_map(function ($section) {
-            return array_filter($section, function ($key) {
+        $exif = array_map(function (array $section): array {
+            return array_filter($section, function (string $key): bool {
                 return strpos($key, 'UndefinedTag:') === false;
             }, ARRAY_FILTER_USE_KEY);
         }, $exif);
