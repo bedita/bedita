@@ -160,12 +160,25 @@ class StreamsShell extends Shell
      */
     protected function streamsGenerator(Query $query, int $pageSize = 100): \Generator
     {
+        // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
+        // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently
+        // checking — but we still cover all streams created before our script starts!
+        $query = $query->orderAsc($this->Streams->aliasField('uuid'));
         $q = clone $query;
-        $pageCount = ceil($q->count() / $pageSize);
+        do {
+            $results = $q->all();
+            if ($results->isEmpty()) {
+                break;
+            }
 
-        for ($page = 1; $page <= $pageCount; $page++) {
-            yield from $q->page($page, $pageSize)->all();
-            $this->info(sprintf('  processed %d streams', min($page * $pageSize, $q->count())));
-        }
+            yield from $results;
+
+            /** @var Stream $last */
+            $last = $results->last();
+            $q = clone $query;
+            $q = $q->where(function (QueryExpression $exp) use ($last): QueryExpression {
+                return $exp->gt($this->Streams->aliasField('uuid'), $last->uuid);
+            });
+        } while ($q->count() > 0);
     }
 }
