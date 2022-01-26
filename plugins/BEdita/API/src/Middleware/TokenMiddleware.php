@@ -84,7 +84,8 @@ class TokenMiddleware
         if (empty($payload)) {
             $token = $this->getToken($request);
             if (!empty($token)) {
-                $request = $this->decodeToken($token, $request);
+                $payload = $this->decodeToken($token);
+                $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
             }
         }
         $this->readApplication($payload, $request);
@@ -93,25 +94,22 @@ class TokenMiddleware
     }
 
     /**
-     * Decode JWT token and add payload as attribute in request.
+     * Decode JWT token and return payload.
      *
-     * @param array $payload JWT Payload
-     * @param \Psr\Http\Message\ServerRequestInterface $request Request object
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @param string $token JWT token
+     * @return array
      * @throws \BEdita\API\Exception\ExpiredTokenException If he token is expired
      * @throws \Cake\Http\Exception\UnauthorizedException If the token could not be decoded.
      */
-    protected function decodeToken(string $token, ServerRequestInterface $request): ServerRequestInterface
+    protected function decodeToken(string $token): array
     {
         try {
-            $payload = JWTHandler::decode($token);
+            return JWTHandler::decode($token);
         } catch (\Firebase\JWT\ExpiredException $e) {
             throw new ExpiredTokenException();
         } catch (\Exception $e) {
             throw new UnauthorizedException($e->getMessage());
         }
-
-        return $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
     }
 
     /**
