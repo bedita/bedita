@@ -12,10 +12,8 @@
  */
 namespace BEdita\API\Utility;
 
-use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
-use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
