@@ -46,15 +46,11 @@ class JWTHandlerTest extends TestCase
                 $token,
             ],
             'invalidToken' => [
-                new UnauthorizedException('Wrong number of segments'),
+                new \UnexpectedValueException('Wrong number of segments'),
                 $invalidToken,
             ],
             'expiredToken' => [
-                new ExpiredTokenException([
-                    'title' => __d('bedita', 'Expired token'),
-                    'detail' => __d('bedita', 'Provided token has expired'),
-                    'code' => 'be_token_expired',
-                ]),
+                new \Firebase\JWT\ExpiredException('Expired token'),
                 $expiredToken,
             ],
         ];
