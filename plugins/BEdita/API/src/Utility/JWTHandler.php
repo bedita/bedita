@@ -56,7 +56,6 @@ class JWTHandler
      * @param string $token JWT token to decode.
      * @param array $options Decode options including key and algorithms.
      * @return array The token's payload as a PHP array.
-     * @throws \BEdita\API\Exception\ExpiredTokenException|\Cake\Http\Exception\UnauthorizedException Throws an exception if the token is expired or could not be decoded.
      */
     public static function decode(string $token, array $options = []): array
     {
@@ -65,15 +64,7 @@ class JWTHandler
             'algorithms' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
         ];
 
-        try {
-            $payload = JWT::decode($token, $options['key'], (array)$options['algorithms']);
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new ExpiredTokenException();
-        } catch (\Exception $e) {
-            throw new UnauthorizedException($e->getMessage());
-        }
-
-        return (array)$payload;
+        return (array)JWT::decode($token, $options['key'], (array)$options['algorithms']);
     }
 
     /**
