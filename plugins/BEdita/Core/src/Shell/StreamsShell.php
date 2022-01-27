@@ -116,21 +116,25 @@ class StreamsShell extends Shell
         }
 
         $count = $query->count();
-
         $this->info(sprintf('Checking %d streams', $count));
+        $success = 0;
 
         foreach ($this->streamsGenerator($query) as $stream) {
-            $this->updateStreamMetadata($stream);
+            if ($this->updateStreamMetadata($stream)) {
+                $success++;
+            }
         }
+
+        $this->info(sprintf('Refresh completed: %d streams updated successfully, %d failed', $success, ($count - $success)));
     }
 
     /**
      * Update stream metadata.
      *
      * @param Stream $stream The stream to update
-     * @return void
+     * @return bool Success status of the operation
      */
-    protected function updateStreamMetadata(Stream $stream): void
+    protected function updateStreamMetadata(Stream $stream): bool
     {
         try {
             // Read current file's content...
@@ -138,17 +142,23 @@ class StreamsShell extends Shell
             if ($content === null) {
                 $this->warn(sprintf('  stream %s (object %d) is empty or could not be read', $stream->uuid, $stream->object_id));
 
-                return;
+                return false;
             }
 
             // ...and write it back, triggering Stream model's methods to read metadata from file
             $stream->contents = $content;
             if ($stream->isDirty() && !$this->Streams->save($stream)) {
                 $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, print_r($stream->getErrors(), true)));
+
+                return false;
             }
         } catch (\Throwable $t) {
             $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
+
+            return false;
         }
+
+        return true;
     }
 
     /**
