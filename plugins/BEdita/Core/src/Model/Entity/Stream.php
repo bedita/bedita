@@ -22,6 +22,7 @@ use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Stream Entity
@@ -114,7 +115,7 @@ class Stream extends Entity implements JsonApiSerializable
         if ($this->has('file_name')) {
             $fileName = Text::transliterate($this->file_name);
             preg_match('/^(.+?)((?:\.[a-z0-9]+)*)$/i', strtolower(basename($fileName)), $matches);
-            list(, $fileName, $extension) = $matches + [null, '', ''];
+            [, $fileName, $extension] = $matches + [null, '', ''];
             $fileName = '-' . Text::slug($fileName);
         }
         $fileName = $this->uuid . $fileName . $extension;
@@ -308,6 +309,11 @@ class Stream extends Entity implements JsonApiSerializable
 
         try {
             $exif = exif_read_data($resource, null, true);
+        } catch (\ErrorException $e) {
+            // Log a warning if reading EXIF throws an error, but keep going
+            // so that other metadata is eventually updated
+            $this->log(sprintf('Error reading EXIF headers for stream %s (object ID: %d)', $this->uuid, $this->object_id), LogLevel::WARNING);
+            $exif = false;
         } finally {
             // Restore previous error handler so that errors/exceptions are handled as before
             restore_error_handler();
