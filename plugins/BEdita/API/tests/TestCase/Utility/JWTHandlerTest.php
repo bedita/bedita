@@ -17,11 +17,11 @@ use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
-use UnexpectedValueException;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JWTHandler
@@ -46,15 +46,11 @@ class JWTHandlerTest extends TestCase
                 $token,
             ],
             'invalidToken' => [
-                new UnexpectedValueException('Wrong number of segments'),
+                new \UnexpectedValueException('Wrong number of segments'),
                 $invalidToken,
             ],
             'expiredToken' => [
-                new ExpiredTokenException([
-                    'title' => __d('bedita', 'Expired token'),
-                    'detail' => __d('bedita', 'Provided token has expired'),
-                    'code' => 'be_token_expired',
-                ]),
+                new \Firebase\JWT\ExpiredException('Expired token'),
                 $expiredToken,
             ],
         ];
@@ -78,6 +74,7 @@ class JWTHandlerTest extends TestCase
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
+            $this->expectExceptionCode($expected->getCode());
         }
 
         $result = JWTHandler::decode($token, $options);
