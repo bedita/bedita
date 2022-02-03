@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Utility;
 
-use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
@@ -55,7 +54,6 @@ class JWTHandler
      * @param string $token JWT token to decode.
      * @param array $options Decode options including key and algorithms.
      * @return array The token's payload as a PHP array.
-     * @throws \Exception Throws an exception if the token could not be decoded.
      */
     public static function decode(string $token, array $options = []): array
     {
@@ -64,13 +62,7 @@ class JWTHandler
             'algorithms' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
         ];
 
-        try {
-            $payload = JWT::decode($token, $options['key'], (array)$options['algorithms']);
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new ExpiredTokenException();
-        }
-
-        return (array)$payload;
+        return (array)JWT::decode($token, $options['key'], (array)$options['algorithms']);
     }
 
     /**
