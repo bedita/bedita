@@ -430,7 +430,7 @@ class LoginController extends AppController
                 ->withStatus(204);
         }
 
-        $action = $this->createAction('ChangeCredentialsRequestAction');
+        $action = $this->createAction('ChangeCredentialsAction');
         $user = $action($this->request->getData());
 
         $meta = [];
