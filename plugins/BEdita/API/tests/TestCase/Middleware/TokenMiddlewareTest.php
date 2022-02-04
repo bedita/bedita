@@ -237,6 +237,36 @@ class TokenMiddlewareTest extends TestCase
     }
 
     /**
+     * Test behavior on OPTIONS request
+     *
+     * @return void
+     *
+     * @covers ::__invoke()
+     */
+    public function testOptionsRequest()
+    {
+        CurrentApplication::setApplication(null);
+
+        $request = new ServerRequest([
+            'environment' => [
+                'REQUEST_METHOD' => 'OPTIONS',
+            ],
+        ]);
+        $middleware = new TokenMiddleware();
+        /** @var \Zend\Diactoros\ServerRequest $result */
+        $result = $middleware(
+            $request,
+            new Response(),
+            function ($req, $res) {
+                return $req;
+            }
+        );
+
+        static::assertNull(CurrentApplication::getApplication());
+        static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
+    }
+
+    /**
      * Test expired token
      *
      * @return void

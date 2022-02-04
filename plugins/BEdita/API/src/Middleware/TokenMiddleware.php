@@ -80,6 +80,12 @@ class TokenMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
+        // Skip credentials checks on 'OPTIONS' request
+        // See https://fetch.spec.whatwg.org/#cors-protocol-and-credentials
+        if ($request->getMethod() === 'OPTIONS') {
+            return $next($request, $response);
+        }
+
         $payload = (array)$request->getAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE);
         if (empty($payload)) {
             $token = $this->getToken($request);
