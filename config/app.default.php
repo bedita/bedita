@@ -548,6 +548,8 @@ return [
      * This way some action beahavior can be overridden
      */
     // 'Actions' => [
+    //     'ChangeCredentialsAction' => '\MyPlugin\Model\Action\ChangeCredentialsAction',
+    //     'ChangeCredentialsRequestAction' => '\MyPlugin\Model\Action\ChangeCredentialsRequestAction',
     //     'SignupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
     //     'SignupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
     // ],
