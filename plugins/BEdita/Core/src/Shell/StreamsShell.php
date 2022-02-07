@@ -165,10 +165,10 @@ class StreamsShell extends Shell
      * Generator to paginate through all streams.
      *
      * @param \Cake\ORM\Query $query Query to retrieve concerned streams
-     * @param int $pageSize Number of objects per page
+     * @param int $limit Limit amount of objects retrieved with each internal iteration
      * @return \Generator|Stream[]
      */
-    protected function streamsGenerator(Query $query, int $pageSize = 100): \Generator
+    protected function streamsGenerator(Query $query, int $limit = 100): \Generator
     {
         // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
         // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently
@@ -176,7 +176,7 @@ class StreamsShell extends Shell
         $query = $query->orderAsc($this->Streams->aliasField('uuid'));
         $q = clone $query;
         do {
-            $results = $q->all();
+            $results = $q->limit($limit)->all();
             if ($results->isEmpty()) {
                 break;
             }
