@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -47,7 +48,28 @@ class AddRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.History',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
 
     /**
      * Data provider for `testInvocation` test case.
@@ -229,5 +251,57 @@ class AddRelatedObjectsActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         static::assertSame(1, $result);
+    }
+
+    /**
+     * Data provider for testLinkEntitiesRelatedToOtherObject()
+     *
+     * @return array
+     */
+    public function linkEntitiesRelatedToOtherObjectProvider(): array
+    {
+        return [
+            'direct' => [
+                2, // object id
+                'Documents', // table
+                'test', // relation
+            ],
+            'inverse' => [
+                4,
+                'Profiles',
+                'inverse_test',
+            ],
+        ];
+    }
+
+    /**
+     * Test that linking entities loaded from another entity works.
+     *
+     * @param int $id The object id with related entities
+     * @param string $tableName The table name of object id
+     * @param string $relation The relation to use
+     * @return void
+     *
+     * @dataProvider linkEntitiesRelatedToOtherObjectProvider()
+     */
+    public function testLinkEntitiesRelatedToOtherObject(int $id, string $tableName, string $relation): void
+    {
+        $Table = TableRegistry::getTableLocator()->get($tableName);
+        $association = $Table->associations()->getByProperty($relation);
+        $relatedEntities = ($Table->get($id, ['contain' => [$association->getName()]]))->get($relation);
+
+        // create new entity
+        $entity = $Table->newEntity(['title' => 'Test Object']);
+        $entity = $Table->save($entity);
+
+        $action = new AddRelatedObjectsAction(compact('association'));
+        $action(compact('entity', 'relatedEntities'));
+
+        $entity = $Table->get($entity->id, ['contain' => [$association->getName()]]);
+
+        $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();
+        $actual = collection($entity->get($relation))->sortBy('id')->extract('id')->toList();
+
+        static::assertEquals($expected, $actual);
     }
 }
