@@ -253,4 +253,30 @@ class SetRelatedObjectsActionTest extends TestCase
 
         static::assertSame(1, $result);
     }
+
+    /**
+     * Test that setting related entities loaded from another entity works.
+     *
+     * @return void
+     */
+    public function testSetEntitiesRelatedToOtherObject(): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $relatedEntities = ($Documents->get(3, ['contain' => ['Test']]))->get('test');
+
+        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        static::assertCount(2, $entity->get('test'));
+
+        $association = $Documents->getAssociation('Test');
+        $action = new SetRelatedObjectsAction(compact('association'));
+        $action(compact('entity', 'relatedEntities'));
+
+        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        static::assertCount(1, $entity->get('test'));
+
+        $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();
+        $actual = collection($entity->get('test'))->sortBy('id')->extract('id')->toList();
+
+        static::assertEquals($expected, $actual);
+    }
 }
