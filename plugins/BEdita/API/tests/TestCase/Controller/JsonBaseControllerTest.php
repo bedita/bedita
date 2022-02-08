@@ -6,16 +6,6 @@ use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 
 /**
- * Test case controller class
- */
-class TestController extends JsonBaseController
-{
-    public function index(): void
-    {
-    }
-}
-
-/**
  * BEdita\API\Controller\JsonBaseController Test Case
  *
  * @uses \BEdita\API\Controller\JsonBaseController
@@ -42,8 +32,7 @@ class JsonBaseControllerTest extends TestCase
             ]
         ]);
 
-        $controller = new TestController($request);
-        $controller->index();
+        $controller = new class($request) extends JsonBaseController {};
 
         static::assertEquals('Json', $controller->RequestHandler->getConfig('viewClassMap.json'));
         static::assertEquals(['json_decode', true], $controller->RequestHandler->getConfig('inputTypeMap.json'));
