@@ -32,7 +32,8 @@ class JsonBaseControllerTest extends TestCase
             ]
         ]);
 
-        $controller = new class($request) extends JsonBaseController {};
+        $controller = new class ($request) extends JsonBaseController {
+        };
 
         static::assertEquals('Json', $controller->RequestHandler->getConfig('viewClassMap.json'));
         static::assertEquals(['json_decode', true], $controller->RequestHandler->getConfig('inputTypeMap.json'));
