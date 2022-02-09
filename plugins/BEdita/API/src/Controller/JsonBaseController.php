@@ -11,8 +11,6 @@ abstract class JsonBaseController extends AppController
 {
     /**
      * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
      */
     public function initialize(): void
     {
