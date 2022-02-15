@@ -13,7 +13,7 @@
 // Otherwise it is strongly recommended to customize this file to match your
 // website requirements and design properly.
 
-CKEDITOR.stylesSet.add( 'default', [
+CKEDITOR.stylesSet.add('default', [
 
 	/* Block Styles */
 
@@ -28,28 +28,28 @@ CKEDITOR.stylesSet.add( 'default', [
 		element: 'P',
 		attributes: { 'class': 'trittico' }
 	},
-	
-	{		
+
+	{
 		name: 'Formula',
 		element: 'P',
 		attributes: { 'class': 'formula' }
 	},
-	
-	{		
+
+	{
 		name: 'Aside',
 		element: 'aside'
 	},
 
-	{		
-		name: 'Stile Esercizio',
+	{
+		name: 'Esercizio',
 		element: 'DIV',
-		attributes: { 'class': 'stile-esercizio' }
+		attributes: { 'class': 'esercizio-aule' }
 	},
 
-	{		
+	{
 		name: 'Raccordo',
 		element: 'DIV',
-		attributes: { 'class': 'raccordo' }
+		attributes: { 'class': 'raccordo-aule' }
 	},
 
 	{
@@ -60,19 +60,19 @@ CKEDITOR.stylesSet.add( 'default', [
 
 	/* Inline Styles */
 
-	{ name: 'Definition',		element: 'dfn'},
-	{ name: 'Marker',			element: 'mark'},
+	{ name: 'Definition', element: 'dfn' },
+	{ name: 'Marker', element: 'mark' },
 
-	{ name: 'Computer Code',	element: 'code' },
-	{ name: 'Keyboard Phrase',	element: 'kbd' },
-	{ name: 'Sample Text',		element: 'samp' },
-	{ name: 'Variable',			element: 'var' },
+	{ name: 'Computer Code', element: 'code' },
+	{ name: 'Keyboard Phrase', element: 'kbd' },
+	{ name: 'Sample Text', element: 'samp' },
+	{ name: 'Variable', element: 'var' },
 
-	{ name: 'Deleted Text',		element: 'del' },
-	{ name: 'Inserted Text',	element: 'ins' },
+	{ name: 'Deleted Text', element: 'del' },
+	{ name: 'Inserted Text', element: 'ins' },
 
-	{ name: 'Cited Work',		element: 'cite' },
-	{ name: 'Inline Quotation',	element: 'q' },
+	{ name: 'Cited Work', element: 'cite' },
+	{ name: 'Inline Quotation', element: 'q' },
 
 	{
 		name: 'Glossary term',
@@ -80,22 +80,24 @@ CKEDITOR.stylesSet.add( 'default', [
 		attributes: { 'class': 'glossario' }
 	},
 
-	{ name: 'column break',	
-		element: 'span', 
+	{
+		name: 'column break',
+		element: 'span',
 		attributes: { 'class': 'column-break' }
 	},
 
-	{ name: 'inline formula',	
-		element: 'span', 
+	{
+		name: 'inline formula',
+		element: 'span',
 		attributes: { 'class': 'formula' }
 	},
 
-	{ name: 'inline aside',	
-		element: 'span', 
+	{
+		name: 'inline aside',
+		element: 'span',
 		attributes: { 'class': 'aside' }
 	}
 	/* Object Styles */
-
 
 ]);
 
