@@ -232,6 +232,6 @@ class UuidAuthenticateTest extends TestCase
 
         $auth = new UuidAuthenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

@@ -240,7 +240,7 @@ class StaticPropertiesTable extends Table
     protected function prepareTableFields(ObjectType $objectType, Table $table)
     {
         $schema = $table->getSchema();
-        $sampleEntity = $table->newEntity();
+        $sampleEntity = $table->newEntity([]);
         $hiddenProperties = $sampleEntity->getHidden();
 
         $properties = [];

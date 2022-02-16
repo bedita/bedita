@@ -190,7 +190,7 @@ class ConfigTable extends Table
 
         return $this->queryCache(
             $query,
-            sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*')
+            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any')
         );
     }
 }

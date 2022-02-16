@@ -254,7 +254,7 @@ class EndpointPermissionsTable extends Table
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        $key = sprintf('perms_count_%s_%s', $applicationId ?: '*', $endpointId ?: '*');
+        $key = sprintf('perms_count_%s_%s', $applicationId ?: 'any', $endpointId ?: 'any');
 
         $query = $this->find('byApplication', compact('applicationId'))
             ->find('byEndpoint', compact('endpointIds'));
@@ -275,7 +275,7 @@ class EndpointPermissionsTable extends Table
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: '*', $endpointId ?: '*');
+        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: 'any', $endpointId ?: 'any');
 
         if (!empty($user['_anonymous'])) {
             $query = $this->find('byApplication', compact('applicationId', 'strict'))

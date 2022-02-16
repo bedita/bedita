@@ -80,7 +80,7 @@ class PublicationsTableTest extends TestCase
     public function testValidation(array $expected, array $data)
     {
         $this->Publications = TableRegistry::getTableLocator()->get('Publications');
-        $entity = $this->Publications->newEntity();
+        $entity = $this->Publications->newEntity([]);
         $entity = $this->Publications->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

@@ -87,6 +87,7 @@ class AnnotationsTableTest extends TestCase
             ],
             'invalid 1' => [
                 [
+                    'object_id._required',
                     'object_id.integer',
                 ],
                 [
@@ -116,7 +117,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Annotations->newEntity();
+        $entity = $this->Annotations->newEntity([]);
         $entity = $this->Annotations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
@@ -176,7 +177,7 @@ class AnnotationsTableTest extends TestCase
         if ($id) {
             $entity = $this->Annotations->get($id);
         } else {
-            $entity = $this->Annotations->newEntity();
+            $entity = $this->Annotations->newEntity([]);
         }
         $entity = $this->Annotations->patchEntity($entity, $data);
 

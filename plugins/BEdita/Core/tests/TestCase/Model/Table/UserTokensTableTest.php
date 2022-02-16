@@ -116,7 +116,7 @@ class UserTokensTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->UserTokens->newEntity();
+        $entity = $this->UserTokens->newEntity([]);
         $entity = $this->UserTokens->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

@@ -138,7 +138,7 @@ class AuthProvidersTable extends Table
             return $results
                 ->filter(function (EntityInterface $entity) {
                     $class = $entity->get('auth_class');
-                    $exists = (App::className($class, 'Auth', 'Authenticate') !== false);
+                    $exists = (App::className($class, 'Auth', 'Authenticate') !== null);
                     if (!$exists) {
                         Log::warning(sprintf('Authentication class "%s" not found', $class));
                     }

@@ -224,7 +224,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -428,11 +428,11 @@ class ObjectTypesTableTest extends TestCase
         $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -457,11 +457,11 @@ class ObjectTypesTableTest extends TestCase
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -527,7 +527,7 @@ class ObjectTypesTableTest extends TestCase
         $result = $this->ObjectTypes
             ->find('byRelation', $options)
             ->find('list')
-            ->toArray();
+            ->toList();
 
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
@@ -587,7 +587,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testDefaultModelRules(array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -660,7 +660,7 @@ class ObjectTypesTableTest extends TestCase
             'singular' => 'foo',
             'name' => 'foos',
         ];
-        $entity = $this->ObjectTypes->newEntity();
+        $entity = $this->ObjectTypes->newEntity([]);
         $entity = $this->ObjectTypes->patchEntity($entity, $data);
         $this->ObjectTypes->save($entity);
 
@@ -668,7 +668,7 @@ class ObjectTypesTableTest extends TestCase
             'title' => 'Foo',
         ];
         $table = TableRegistry::getTableLocator()->get('Foos');
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
@@ -764,7 +764,7 @@ class ObjectTypesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }

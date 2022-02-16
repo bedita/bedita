@@ -453,7 +453,7 @@ class ObjectTypeTest extends TestCase
             'is_abstract' => true,
             'enabled' => false,
         ];
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $this->ObjectTypes->patchEntity($objectType, $data);
         $success = $this->ObjectTypes->save($objectType);
         static::assertTrue((bool)$success);
@@ -1013,7 +1013,7 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetSchemaNoProperties()
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $objectType->is_abstract = false;
 
         $schema = $objectType->schema;

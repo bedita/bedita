@@ -106,7 +106,7 @@ class ObjectCategoriesTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->ObjectCategories->newEntity();
+        $entity = $this->ObjectCategories->newEntity([]);
         $entity = $this->ObjectCategories->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

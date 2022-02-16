@@ -313,7 +313,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         $data['status'] = $status;
-        $entity = $this->Users->newEntity();
+        $entity = $this->Users->newEntity([]);
         if ($verified === true) {
             $entity->set('verified', Time::now());
         }
@@ -414,7 +414,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $action = new SaveEntityAction(['table' => $this->AsyncJobs]);
 
         return $action([
-            'entity' => $this->AsyncJobs->newEntity(),
+            'entity' => $this->AsyncJobs->newEntity([]),
             'data' => [
                 'service' => 'signup',
                 'payload' => [

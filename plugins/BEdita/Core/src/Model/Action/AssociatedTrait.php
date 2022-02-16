@@ -186,7 +186,7 @@ trait AssociatedTrait
         }
 
         $data = $target->get('_joinData');
-        $joinData = $this->Association->junction()->newEntity();
+        $joinData = $this->Association->junction()->newEntity([]);
         if ($data instanceof EntityInterface) {
             $joinData = $data;
             $data = [];

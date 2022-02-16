@@ -156,7 +156,7 @@ class HistoryBehavior extends Behavior
     protected function historyEntity(EntityInterface $entity): EntityInterface
     {
         /** @var \BEdita\Core\Model\Entity\History $history */
-        $history = $this->Table->newEntity();
+        $history = $this->Table->newEntity([]);
         $history->resource_id = $entity->get('id');
         $history->resource_type = $this->getConfig('resource_type');
         $history->application_id = CurrentApplication::getApplicationId();

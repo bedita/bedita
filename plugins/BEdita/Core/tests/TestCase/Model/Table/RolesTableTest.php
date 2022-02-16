@@ -127,7 +127,7 @@ class RolesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $this->Roles->patchEntity($role, $data);
 
         $error = (bool)$role->getErrors();

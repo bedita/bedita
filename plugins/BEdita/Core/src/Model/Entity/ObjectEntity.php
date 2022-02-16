@@ -197,7 +197,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         $entity = $this;
         $table = $this->getTable();
         if ($table->getRegistryAlias() !== $this->getSource()) {
-            $entity = $table->newEntity();
+            $entity = $table->newEntity([]);
         }
 
         $associations = $entity::listAssociations($table, $entity->getHidden());

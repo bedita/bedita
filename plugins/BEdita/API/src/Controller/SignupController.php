@@ -56,7 +56,7 @@ class SignupController extends AppController
         $this->response = $this->response->withStatus(202);
 
         $this->set('data', $user);
-        $this->set('_serialize', ['data']);
+        $this->viewBuilder()->setOption('serialize', ['data']);
     }
 
     /**

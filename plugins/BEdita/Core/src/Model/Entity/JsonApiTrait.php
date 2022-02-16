@@ -224,7 +224,7 @@ trait JsonApiTrait
         }
 
         if ($joinData instanceof Tree) {
-            $joinData->unsetProperty([
+            $joinData->unset([
                 'id',
                 'parent_id',
                 'object_id',

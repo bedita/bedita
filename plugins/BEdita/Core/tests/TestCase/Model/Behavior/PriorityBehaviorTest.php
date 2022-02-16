@@ -114,7 +114,7 @@ class PriorityBehaviorTest extends TestCase
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $entity->set([
             'left_id' => 9,
             'relation_id' => 3,

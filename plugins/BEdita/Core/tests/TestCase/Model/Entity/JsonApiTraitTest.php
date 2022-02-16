@@ -95,7 +95,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetTable()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $table = $role->getTable();
 
         static::assertInstanceOf(get_class($this->Roles), $table);
@@ -126,7 +126,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetType()
     {
-        $role = $this->Roles->newEntity()->jsonApiSerialize();
+        $role = $this->Roles->newEntity([])->jsonApiSerialize();
 
         $type = $role['type'];
 
@@ -215,7 +215,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetRelationshipsHidden()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $role->setHidden(['users' => true], true);
         $role = $role->jsonApiSerialize();
 

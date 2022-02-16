@@ -164,7 +164,7 @@ class PropertyTypesTableTest extends TestCase
         $propertyType->name = 'gustavo';
         $this->PropertyTypes->save($propertyType);
 
-        static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -178,12 +178,12 @@ class PropertyTypesTableTest extends TestCase
     {
         $this->PropertyTypes->Properties->get(1);
 
-        static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
 
         $propertyType = $this->PropertyTypes->get(12);
         $this->PropertyTypes->delete($propertyType);
 
-        static::assertFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**

@@ -149,7 +149,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $externalAuth = $this->ExternalAuth->newEntity();
+        $externalAuth = $this->ExternalAuth->newEntity([]);
         $this->ExternalAuth->patchEntity($externalAuth, $data);
 
         $success = $this->ExternalAuth->save($externalAuth);

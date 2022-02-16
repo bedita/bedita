@@ -144,7 +144,7 @@ class TreesTableTest extends TestCase
      */
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         if ($objectId !== null) {
             $entity->object_id = $objectId;
         }
@@ -200,7 +200,7 @@ class TreesTableTest extends TestCase
         $this->Trees->deleteAll(['object_id' => 13]);
         $this->Trees->recover();
 
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));

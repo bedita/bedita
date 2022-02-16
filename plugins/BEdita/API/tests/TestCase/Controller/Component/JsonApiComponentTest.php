@@ -89,7 +89,7 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        static::assertEquals($expectedMimeType, $component->getController()->response->getHeaderLine('content-type'));
+        static::assertEquals($expectedMimeType, $component->getController()->getResponse()->getHeaderLine('content-type'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }

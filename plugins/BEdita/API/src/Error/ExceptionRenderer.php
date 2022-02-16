@@ -166,7 +166,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $view = $this->controller->createView();
 
-        return $this->controller->response->withStringBody($view->render());
+        return $this->controller->getResponse()->withStringBody($view->render());
     }
 
     /**

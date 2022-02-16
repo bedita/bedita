@@ -165,7 +165,7 @@ class ResourcesShell extends Shell
     public function add()
     {
         $table = $this->getTable();
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         if ($this->param('type') === 'endpoint_permissions') {
             $this->setupEndpointPermissionEntity($entity);
         } else {

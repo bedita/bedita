@@ -150,7 +150,7 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new MyExceptionRenderer($exception);
-        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', 'application/json');
+        $renderer->getController()->setRequest($renderer->getController()->getRequest()->withEnv('HTTP_ACCEPT', 'application/json'));
         $response = $renderer->render();
 
         $responseBody = json_decode((string)$response->getBody(), true);
@@ -231,7 +231,7 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new MyExceptionRenderer(new NotFoundException('test html'));
-        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', $accept);
+        $renderer->getController()->setRequest($renderer->getController()->getRequest->withEnv('HTTP_ACCEPT', $accept));
         $response = $renderer->render();
 
         $this->checkResponseJson($renderer, $response, $config['debug']);
@@ -257,7 +257,7 @@ class ExceptionRendererTest extends TestCase
         }
 
         $renderer = new MyExceptionRenderer(new NotFoundException('test html'));
-        $renderer->getController()->request = $renderer->getController()->request->withEnv('HTTP_ACCEPT', $accept);
+        $renderer->getController()->setRequest($renderer->getController()->getRequest()->withEnv('HTTP_ACCEPT', $accept));
 
         $renderer->getController()->getEventManager()->on('Controller.beforeRender', function () {
             throw new InternalErrorException();
@@ -278,7 +278,7 @@ class ExceptionRendererTest extends TestCase
      */
     protected function checkResponseJson(MyExceptionRenderer $renderer, Response $response, $debug)
     {
-        $accept = $renderer->getController()->request->getHeaderLine('accept');
+        $accept = $renderer->getController()->getRequest()->getHeaderLine('accept');
         $contentTypeExpected = ($accept == 'application/json') ? $accept : 'application/vnd.api+json';
         $this->assertStringStartsWith($contentTypeExpected, $response->getType());
         $responseBody = json_decode((string)$response->getBody(), true);

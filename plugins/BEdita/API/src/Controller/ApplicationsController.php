@@ -39,6 +39,6 @@ class ApplicationsController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->viewBuilder()->setOption('serialize', ['data']);
     }
 }

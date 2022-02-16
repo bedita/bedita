@@ -189,6 +189,6 @@ class OAuth2AuthenticateTest extends TestCase
 
         $auth = new OAuth2Authenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

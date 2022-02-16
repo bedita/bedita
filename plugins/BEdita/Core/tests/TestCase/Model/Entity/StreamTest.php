@@ -135,7 +135,7 @@ class StreamTest extends TestCase
      */
     public function testFilesystemPath($expected, array $data, $filesystem = 'default', $subLevels = 0)
     {
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->set($data, ['guard' => false]);
 
         $path = $stream->filesystemPath($filesystem, $subLevels);
@@ -187,7 +187,7 @@ class StreamTest extends TestCase
      */
     public function testGetContentsNotUploaded()
     {
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $contents = $stream->contents;
 
         static::assertNull($contents);
@@ -278,7 +278,7 @@ class StreamTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->contents = $contents;
 
         static::assertInstanceOf(StreamInterface::class, $stream->contents);
@@ -383,13 +383,13 @@ class StreamTest extends TestCase
         $imageTest = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $imageTest;
 
         $this->readDataFromImage($stream);
         // mime type not allowed
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->mime_type = 'image/gif';
         $stream->contents = $gifTest;
         $this->readDataFromImage($stream);
@@ -405,7 +405,7 @@ class StreamTest extends TestCase
     {
         $path = Configure::read('Filesystem.default.path');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $gifTest;
 

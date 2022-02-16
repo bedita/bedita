@@ -89,7 +89,7 @@ class StreamsController extends ResourcesController
         $data = $this->Upload->upload($fileName);
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->viewBuilder()->setOption('serialize', ['data']);
 
         $this->response = $this->response
             ->withStatus(201)

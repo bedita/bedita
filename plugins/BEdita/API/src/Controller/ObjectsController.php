@@ -181,7 +181,7 @@ class ObjectsController extends ResourcesController
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
             }
 
-            $entity = $this->Table->newEntity();
+            $entity = $this->Table->newEntity([]);
             $entity->set('type', $this->request->getData('type'));
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
@@ -212,7 +212,7 @@ class ObjectsController extends ResourcesController
         }
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->viewBuilder()->setOption('serialize', ['data']);
     }
 
     /**
@@ -276,7 +276,7 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->viewBuilder()->setOption('serialize', ['entity']);
 
         return null;
     }
@@ -336,7 +336,7 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
-        $this->set('_serialize', ['objects']);
+        $this->viewBuilder()->setOption('serialize', ['objects']);
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));

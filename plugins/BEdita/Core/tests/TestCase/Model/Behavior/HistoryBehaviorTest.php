@@ -216,7 +216,7 @@ class HistoryBehaviorTest extends TestCase
     public function testCreate()
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $entity = $Users->newEntity();
+        $entity = $Users->newEntity([]);
         $data = [
             'username' => 'aurelio',
             'name' => 'Aurelio',

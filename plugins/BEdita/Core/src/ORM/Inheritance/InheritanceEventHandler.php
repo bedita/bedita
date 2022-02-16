@@ -91,7 +91,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
+        $parentEntity = $inheritedTable->newEntity([]);
         $parentEntity->isNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
@@ -119,7 +119,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
+        $parentEntity = $inheritedTable->newEntity([]);
         $parentEntity->isNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
@@ -157,7 +157,7 @@ class InheritanceEventHandler implements EventListenerInterface
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
                 $entity->set($item, $entity->get('__' . $item));
-                $entity->unsetProperty('__' . $item);
+                $entity->unset('__' . $item);
             }
         }
     }
@@ -182,7 +182,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
+        $parentEntity = $inheritedTable->newEntity([]);
         $parentEntity->isNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 
@@ -251,7 +251,7 @@ class InheritanceEventHandler implements EventListenerInterface
             if ($entity->has($item)) {
                 $entity->set('__' . $item, $parent->get($item));
             }
-            $entity->unsetProperty($item);
+            $entity->unset($item);
         }
 
         return $entity;

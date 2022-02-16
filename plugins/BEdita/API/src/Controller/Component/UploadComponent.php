@@ -67,7 +67,7 @@ class UploadComponent extends Component
 
         $this->loadModel('Streams');
         // Add a new entity.
-        $entity = $this->Streams->newEntity();
+        $entity = $this->Streams->newEntity([]);
         $action = new SaveEntityAction(['table' => $this->Streams]);
 
         $data = [

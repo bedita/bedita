@@ -121,7 +121,7 @@ class EndpointAuthorize extends BaseAuthorize
         $controller = $this->_registry->getController();
         $controller
             ->Auth->getAuthenticate('BEdita/API.Jwt')
-            ->unauthenticated($controller->request, $controller->response);
+            ->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 
     /**

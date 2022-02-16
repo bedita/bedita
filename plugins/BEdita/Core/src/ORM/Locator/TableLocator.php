@@ -41,14 +41,14 @@ class TableLocator extends CakeLocator
         }
 
         $className = App::className($options['className'], 'Model/Table', 'Table');
-        if ($className !== false) {
+        if ($className !== null) {
             return $className;
         }
 
         $options['className'] = sprintf('BEdita/Core.%s', $options['className']);
 
         $className = App::className($options['className'], 'Model/Table', 'Table');
-        if ($className !== false) {
+        if ($className !== null) {
             return $className;
         }
 

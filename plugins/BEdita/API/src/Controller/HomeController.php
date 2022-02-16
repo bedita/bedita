@@ -102,7 +102,7 @@ class HomeController extends AppController
         $version = Configure::read('BEdita.version');
 
         $this->set('_meta', compact('resources', 'project', 'version'));
-        $this->set('_serialize', []);
+        $this->viewBuilder()->setOption('serialize', []);
     }
 
     /**

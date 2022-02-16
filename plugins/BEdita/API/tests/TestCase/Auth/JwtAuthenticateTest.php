@@ -273,7 +273,7 @@ class JwtAuthenticateTest extends TestCase
 
         $auth = new JwtAuthenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 
     /**
@@ -309,10 +309,10 @@ class JwtAuthenticateTest extends TestCase
 
         $auth = new JwtAuthenticate($controller->components(), []);
 
-        $result = $auth->authenticate($controller->request, $controller->response);
+        $result = $auth->authenticate($controller->getRequest(), $controller->getResponse());
 
         static::assertFalse($result);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

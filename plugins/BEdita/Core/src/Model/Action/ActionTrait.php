@@ -68,7 +68,7 @@ trait ActionTrait
     {
         // instantiate class in namespaced format like '\MyNamespace\MyClass'
         $className = App::className($class);
-        if ($className !== false) {
+        if ($className !== null) {
             return new $className($options);
         }
 
@@ -76,7 +76,7 @@ trait ActionTrait
         $defaultClass = sprintf('%s.%s', $prefix, $class);
         $class = Configure::read(sprintf('Actions.%s', $class), $defaultClass);
         $className = App::className($class, 'Model/Action');
-        if ($className === false) {
+        if ($className === null) {
             throw new \RuntimeException(__d('bedita', 'Unable to find class "{0}"', $class));
         }
 

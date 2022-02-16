@@ -103,7 +103,7 @@ class RolesUsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RolesUsers->newEntity();
+        $objectType = $this->RolesUsers->newEntity([]);
         $this->RolesUsers->patchEntity($objectType, $data);
 
         $success = $this->RolesUsers->save($objectType);

@@ -137,7 +137,7 @@ class TranslationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Translations->newEntity();
+        $entity = $this->Translations->newEntity([]);
         $entity = $this->Translations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

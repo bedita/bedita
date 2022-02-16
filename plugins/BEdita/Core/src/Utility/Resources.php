@@ -112,7 +112,7 @@ class Resources extends ResourcesBase
         $result = [];
 
         foreach ($data as $item) {
-            $resource = $Table->newEntity();
+            $resource = $Table->newEntity([]);
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
             foreach ($item as $k => $v) {

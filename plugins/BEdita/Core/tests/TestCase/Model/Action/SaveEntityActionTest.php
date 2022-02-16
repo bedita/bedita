@@ -48,7 +48,7 @@ class SaveEntityActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new SaveEntityAction(compact('table'));
 
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $data = [
             'name' => 'monkey',
             'legs' => 2,

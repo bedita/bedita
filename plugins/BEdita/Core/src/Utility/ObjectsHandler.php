@@ -81,7 +81,7 @@ class ObjectsHandler
         if (!empty($data['id'])) {
             $entity = $table->get($data['id']);
         } else {
-            $entity = $table->newEntity();
+            $entity = $table->newEntity([]);
         }
         $options = ['accessibleFields' => ['locked' => true]];
         $entity = $table->patchEntity($entity, $data, $options);

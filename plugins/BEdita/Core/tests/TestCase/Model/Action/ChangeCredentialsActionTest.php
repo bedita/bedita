@@ -74,7 +74,7 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity(),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [

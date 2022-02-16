@@ -121,7 +121,7 @@ class MediaController extends ObjectsController
         $this->fetchProviderThumbs($ids, $thumbnails);
 
         $this->set('_meta', compact('thumbnails'));
-        $this->set('_serialize', []);
+        $this->viewBuilder()->setOption('serialize', []);
     }
 
     /**

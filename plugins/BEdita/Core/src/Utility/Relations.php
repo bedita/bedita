@@ -237,7 +237,7 @@ class Relations extends ResourcesBase
                 static::addTypes($id, array_diff($newTypes, $currTypes), $side, $options);
             }
         }
-        $relation->unsetProperty(['left_object_types', 'right_object_types']);
+        $relation->unset(['left_object_types', 'right_object_types']);
     }
 
     /**

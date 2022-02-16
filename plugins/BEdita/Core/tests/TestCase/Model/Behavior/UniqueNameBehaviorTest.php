@@ -107,7 +107,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueUser($username, $uname)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity();
+        $user = $Users->newEntity([]);
 
         $user = $Users->patchEntity($user, compact('username'));
         $Users->uniqueName($user);
@@ -216,7 +216,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testGenerateUniqueName($username, $name, $config)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity();
+        $user = $Users->newEntity([]);
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, false, $config);
@@ -257,7 +257,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testRegenerateUniqueName($uname, $title)
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
-        $folder = $Folders->newEntity();
+        $folder = $Folders->newEntity([]);
         $Folders->patchEntity($folder, compact('uname', 'title'));
         $behavior = $Folders->behaviors()->get('UniqueName');
         $generated = $behavior->generateUniqueName($folder, true);
@@ -447,7 +447,7 @@ class UniqueNameBehaviorTest extends TestCase
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $document = $Documents->get(2);
         $document->set('title', 'a new title');
-        $document->unsetProperty('uname');
+        $document->unset('uname');
 
         $behavior = $Documents->behaviors()->get('UniqueName');
         $behavior->uniqueName($document);
