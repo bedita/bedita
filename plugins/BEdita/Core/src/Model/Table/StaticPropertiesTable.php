@@ -164,6 +164,7 @@ class StaticPropertiesTable extends Table
                     ->order([
                         $this->ObjectTypes->aliasField('tree_left') => 'ASC', // Ensure parent tables are processed first!
                     ])
+                    ->all()
                     ->reduce(
                         function (array $accumulator, ObjectType $objectType) {
                             $tables = $this->listOwnTables($objectType);

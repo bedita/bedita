@@ -240,13 +240,13 @@ class TreesTableTest extends TestCase
     {
         $node = $this->Trees->get(2);
         static::assertEquals(11, $node->root_id);
-        $children = $this->Trees->find('children', ['for' => 2])->toList();
+        $children = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         $node->parent_id = $parentId;
         static::assertTrue((bool)$this->Trees->save($node));
 
         $node = $this->Trees->get(2);
-        $actualChildren = $this->Trees->find('children', ['for' => 2])->toList();
+        $actualChildren = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         static::assertEquals($rootExpected, $node->root_id);
         static::assertCount(count($children), $actualChildren);

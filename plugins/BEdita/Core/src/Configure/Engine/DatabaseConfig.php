@@ -15,6 +15,7 @@ namespace BEdita\Core\Configure\Engine;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception;
 use Cake\Datasource\ModelAwareTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * BEdita database configuration engine.
@@ -35,7 +36,7 @@ use Cake\Datasource\ModelAwareTrait;
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Application id
@@ -59,7 +60,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function __construct($applicationId = null)
     {
         $this->applicationId = $applicationId;
-        $this->loadModel('Config');
+        $this->Config = $this->getTableLocator()->get('BEdita/Core.Config');
     }
 
     /**
@@ -73,6 +74,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function read($key): array
     {
         return $this->Config->fetchConfig($this->applicationId, $key)
+            ->all()
             ->filter(function (array $item): bool {
                 return !in_array($item['name'], self::RESERVED_KEYS);
             })

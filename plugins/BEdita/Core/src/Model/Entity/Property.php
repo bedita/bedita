@@ -137,6 +137,7 @@ class Property extends Entity implements JsonApiSerializable
             'property_types',
             function () {
                 return TableRegistry::getTableLocator()->get('PropertyTypes')->find()
+                    ->all()
                     ->indexBy('name')
                     ->toArray();
             },

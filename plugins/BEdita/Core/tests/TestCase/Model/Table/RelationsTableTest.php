@@ -200,6 +200,7 @@ class RelationsTableTest extends TestCase
 
         $result = $this->Relations
             ->find('byName', $options)
+            ->all()
             ->extract('id')
             ->toArray();
 

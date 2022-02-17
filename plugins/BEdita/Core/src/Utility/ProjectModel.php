@@ -93,8 +93,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
+            ->all()
             ->each(function (EntityInterface $row) {
-                $row->unsetProperty([
+                $row->unset([
                     'id',
                     'left_relations',
                     'right_relations',
@@ -117,12 +118,13 @@ class ProjectModel
         return TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
+            ->all()
             ->each(function (EntityInterface $row) {
                 $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
                 sort($right);
-                $row->unsetProperty('id');
+                $row->unset('id');
                 $row->set('left_object_types', $left);
                 $row->set('right_object_types', $right);
             })
@@ -138,8 +140,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Properties')
             ->find('type', ['dynamic'])
+            ->all()
             ->each(function (EntityInterface $row) {
-                $row->unsetProperty([
+                $row->unset([
                     'id',
                     'created',
                     'modified',

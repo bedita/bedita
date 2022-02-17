@@ -81,6 +81,7 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
          */
         $getTreeState = function () {
             return $this->Trees->find()
+                ->all()
                 ->combine('id', function (EntityInterface $node) {
                     return sprintf('%d / %d', $node['tree_left'], $node['tree_right']);
                 })

@@ -178,6 +178,7 @@ class PropertyTypesTable extends Table
             'property_types',
             function () {
                 return $this->find()
+                    ->all()
                     ->indexBy('name')
                     ->toArray();
             },

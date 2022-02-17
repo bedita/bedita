@@ -527,6 +527,7 @@ class ObjectTypesTableTest extends TestCase
         $result = $this->ObjectTypes
             ->find('byRelation', $options)
             ->find('list')
+            ->all()
             ->toList();
 
         static::assertEquals($expected, $result, '');

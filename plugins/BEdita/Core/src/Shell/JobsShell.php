@@ -153,13 +153,13 @@ class JobsShell extends Shell
             $query = $query->limit($this->param('limit'));
         }
 
-        if ($query->isEmpty()) {
+        if ($query->all()->isEmpty()) {
             $this->out('=====> <info>Nothing to do</info>');
 
             return;
         }
 
-        $query->each([$this, 'run']);
+        $query->all()->each([$this, 'run']);
 
         $this->out('=====> <success>Operation complete</success>');
     }
