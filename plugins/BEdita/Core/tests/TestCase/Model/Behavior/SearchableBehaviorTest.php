@@ -168,7 +168,6 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'cat',
                 ],
                 'eutheria cat',
-                [],
                 'FakeMammals',
             ],
             'bad type' => [
@@ -197,7 +196,6 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'hippo-tiger',
                 ],
                 'hippo-tiger',
-                [],
                 'FakeSearches',
             ],
             'search underscore' => [
@@ -205,7 +203,6 @@ class SearchableBehaviorTest extends TestCase
                     2 => 'lion_snake',
                 ],
                 'lion_snake',
-                [],
                 'FakeSearches',
             ],
             'search underscore 2' => [
@@ -213,7 +210,6 @@ class SearchableBehaviorTest extends TestCase
                    2 => 'lion_snake',
                 ],
                 'li_n',
-                [],
                 'FakeSearches',
             ],
             'search case' => [
@@ -221,14 +217,12 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'hippo-tiger',
                 ],
                 'HIPPO',
-                [],
                 'FakeSearches',
             ],
             'basic with "string" param' => [
                 [
                    1 => 'hippo-tiger',
                 ],
-                '',
                 [
                     'string' => 'hippo',
                 ],
@@ -239,7 +233,6 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'big mouse',
                     2 => 'mouse big',
                 ],
-                '',
                 [
                     'string' => 'big mouse',
                     'exact' => 0,
@@ -250,7 +243,6 @@ class SearchableBehaviorTest extends TestCase
                 [
                     2 => 'big mouse',
                 ],
-                '',
                 [
                     'string' => 'big mouse',
                     'exact' => 1,
@@ -264,15 +256,14 @@ class SearchableBehaviorTest extends TestCase
      * Test finder for query string.
      *
      * @param array|\Exception $expected Expected result.
-     * @param string $query Query string.
-     * @param array $options Array of options.
+     * @param string|array $query Query string.
      * @param string $table Table.
      * @return void
      *
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
      */
-    public function testFindQuery($expected, $query, $options = [], $table = 'FakeAnimals')
+    public function testFindQuery($expected, $query, $table = 'FakeAnimals')
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -285,10 +276,8 @@ class SearchableBehaviorTest extends TestCase
 
         static::assertTrue($table->hasFinder('query'));
 
-        $params = empty($options) ? [$query] : [$query, $options];
-
         $result = $table
-            ->find('query', $params)
+            ->find('query', (array)$query)
             ->find('list')
             ->toArray();
 
