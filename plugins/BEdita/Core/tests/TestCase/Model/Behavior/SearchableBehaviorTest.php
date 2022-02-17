@@ -272,7 +272,7 @@ class SearchableBehaviorTest extends TestCase
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
      */
-    public function testFindQuery($expected, $query, $options, $table = 'FakeAnimals')
+    public function testFindQuery($expected, $query, $options = null, $table = 'FakeAnimals')
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
