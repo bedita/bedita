@@ -128,7 +128,7 @@ class ProjectModelCommandTest extends TestCase
     public function testPluginFailure2(): void
     {
         $this->exec('project_model -p Test');
-        $expected = current(App::path('Plugin')) . 'Test' . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
+        $expected = current(App::classPath('Plugin')) . 'Test' . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
         $this->assertErrorContains('File not found ' . $expected);
         $this->assertExitError();
     }
