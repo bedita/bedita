@@ -205,19 +205,46 @@ class SearchableBehaviorTest extends TestCase
                 'lion_snake',
                 'FakeSearches',
             ],
-             'search underscore 2' => [
-                 [
-                     2 => 'lion_snake',
-                 ],
-                 'li_n',
-                 'FakeSearches',
-             ],
-             'search case' => [
+            'search underscore 2' => [
+                [
+                   2 => 'lion_snake',
+                ],
+                'li_n',
+                'FakeSearches',
+            ],
+            'search case' => [
                 [
                     1 => 'hippo-tiger',
                 ],
                 'HIPPO',
                 'FakeSearches',
+            ],
+            'basic with "string" param' => [
+                [
+                   2 => 'koala',
+                ],
+                [
+                    'string' => 'ala'
+                ],
+            ],
+            'exact false' => [
+                [
+                    1 => 'big mouse',
+                    2 => 'mouse',
+                ],
+                [
+                    'string' => 'big mouse',
+                    'exact' => 0,
+                ],
+            ],
+            'exact' => [
+                [
+                    2 => 'big mouse',
+                ],
+                [
+                    'string' => 'big mouse',
+                    'exact' => 1,
+                ],
             ],
         ];
     }
