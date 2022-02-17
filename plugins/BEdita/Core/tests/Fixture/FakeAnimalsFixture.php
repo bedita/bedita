@@ -44,5 +44,7 @@ class FakeAnimalsFixture extends TestFixture
         ['name' => 'cat', 'legs' => 4, 'updated_at' => '2018-02-20 09:50:00'],
         ['name' => 'koala', 'legs' => 4],
         ['name' => 'eagle', 'legs' => 2],
+        ['name' => 'big mouse', 'legs' => 4],
+        ['name' => 'mouse', 'legs' => 4],
     ];
 }
