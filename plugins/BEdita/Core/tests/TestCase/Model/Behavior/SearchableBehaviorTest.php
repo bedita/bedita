@@ -160,7 +160,7 @@ class SearchableBehaviorTest extends TestCase
                 'ala',
             ],
             'two words' => [
-                [],
+                null,
                 'koala eagle',
             ],
             'two words, different fields' => [
@@ -168,6 +168,7 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'cat',
                 ],
                 'eutheria cat',
+                null,
                 'FakeMammals',
             ],
             'bad type' => [
@@ -196,6 +197,7 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'hippo-tiger',
                 ],
                 'hippo-tiger',
+                null,
                 'FakeSearches',
             ],
             'search underscore' => [
@@ -203,6 +205,7 @@ class SearchableBehaviorTest extends TestCase
                     2 => 'lion_snake',
                 ],
                 'lion_snake',
+                null,
                 'FakeSearches',
             ],
             'search underscore 2' => [
@@ -210,6 +213,7 @@ class SearchableBehaviorTest extends TestCase
                    2 => 'lion_snake',
                 ],
                 'li_n',
+                null,
                 'FakeSearches',
             ],
             'search case' => [
@@ -217,34 +221,41 @@ class SearchableBehaviorTest extends TestCase
                     1 => 'hippo-tiger',
                 ],
                 'HIPPO',
+                null,
                 'FakeSearches',
             ],
             'basic with "string" param' => [
                 [
-                   2 => 'koala',
+                   1 => 'hippo-tiger',
                 ],
+                '',
                 [
-                    'string' => 'ala'
+                    'string' => 'hippo',
                 ],
+                'FakeSearches',
             ],
             'exact false' => [
                 [
                     1 => 'big mouse',
-                    2 => 'mouse',
+                    2 => 'mouse big',
                 ],
+                '',
                 [
                     'string' => 'big mouse',
                     'exact' => 0,
                 ],
+                'FakeSearches',
             ],
             'exact' => [
                 [
                     2 => 'big mouse',
                 ],
+                '',
                 [
                     'string' => 'big mouse',
                     'exact' => 1,
                 ],
+                'FakeSearches',
             ],
         ];
     }
@@ -254,13 +265,14 @@ class SearchableBehaviorTest extends TestCase
      *
      * @param array|\Exception $expected Expected result.
      * @param string $query Query string.
+     * @param array|null $options Array of options.
      * @param string $table Table.
      * @return void
      *
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
      */
-    public function testFindQuery($expected, $query, $table = 'FakeAnimals')
+    public function testFindQuery($expected, $query, $options, $table = 'FakeAnimals')
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -273,8 +285,10 @@ class SearchableBehaviorTest extends TestCase
 
         static::assertTrue($table->hasFinder('query'));
 
+        $params = isset($options) ? [$query, $options] : [$query];
+
         $result = $table
-            ->find('query', [$query])
+            ->find('query', $params)
             ->find('list')
             ->toArray();
 
