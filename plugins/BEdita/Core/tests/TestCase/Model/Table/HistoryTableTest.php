@@ -42,7 +42,7 @@ class HistoryTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -54,7 +54,7 @@ class HistoryTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->History);
 
@@ -100,7 +100,7 @@ class HistoryTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->History->newEntity();
+        $entity = $this->History->newEntity([]);
         $entity = $this->History->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

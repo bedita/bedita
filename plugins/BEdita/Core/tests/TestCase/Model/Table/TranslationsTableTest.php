@@ -46,7 +46,7 @@ class TranslationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -56,7 +56,7 @@ class TranslationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Translations);
 
@@ -137,7 +137,7 @@ class TranslationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Translations->newEntity();
+        $entity = $this->Translations->newEntity([]);
         $entity = $this->Translations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

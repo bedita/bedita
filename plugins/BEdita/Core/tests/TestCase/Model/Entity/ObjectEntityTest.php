@@ -58,7 +58,7 @@ class ObjectEntityTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -70,7 +70,7 @@ class ObjectEntityTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Objects);
 
@@ -394,7 +394,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity = $entity->jsonApiSerialize();
 
@@ -441,7 +441,7 @@ class ObjectEntityTest extends TestCase
             ],
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Users')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Users')->newEntity([]);
         $entity->set('id', 1);
         $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
@@ -467,7 +467,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEntity([]);
         $entity->set('type', 'profile');
         $entity = $entity->jsonApiSerialize();
 
@@ -494,7 +494,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Objects')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Objects')->newEntity([]);
         $entity->set('type', 'folders');
         $entity = $entity->jsonApiSerialize();
 
@@ -514,7 +514,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsDeleted()
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity->set('deleted', true);
         $entity = $entity->jsonApiSerialize();
@@ -572,7 +572,7 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsCount(): void
     {
         $count = ['test' => 12];
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity->set('_countData', $count);
         $entity = $entity->jsonApiSerialize();

@@ -50,7 +50,7 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->ObjectCategories = TableRegistry::getTableLocator()->get('ObjectCategories');
@@ -61,7 +61,7 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectCategories);
 
@@ -106,7 +106,7 @@ class ObjectCategoriesTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->ObjectCategories->newEntity();
+        $entity = $this->ObjectCategories->newEntity([]);
         $entity = $this->ObjectCategories->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

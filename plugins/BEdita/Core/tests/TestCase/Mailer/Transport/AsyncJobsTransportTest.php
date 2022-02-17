@@ -43,7 +43,7 @@ class AsyncJobsTransportTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         TransportFactory::drop('test');
         TransportFactory::setConfig('test', [
@@ -69,7 +69,7 @@ class AsyncJobsTransportTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

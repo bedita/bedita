@@ -26,7 +26,7 @@ class ServiceRegistryTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -81,11 +81,11 @@ class ServiceRegistryTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \LogicException
      * @covers ::get()
      */
     public function testGetFail()
     {
+        $this->expectException(\LogicException::class);
         ServiceRegistry::get('gustavo');
     }
 

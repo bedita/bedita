@@ -54,7 +54,7 @@ class ObjectTypeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,7 +66,7 @@ class ObjectTypeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectTypes);
 
@@ -449,7 +449,7 @@ class ObjectTypeTest extends TestCase
             'is_abstract' => true,
             'enabled' => false,
         ];
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $this->ObjectTypes->patchEntity($objectType, $data);
         $success = $this->ObjectTypes->save($objectType);
         static::assertTrue((bool)$success);
@@ -1009,7 +1009,7 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetSchemaNoProperties()
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $objectType->is_abstract = false;
 
         $schema = $objectType->schema;

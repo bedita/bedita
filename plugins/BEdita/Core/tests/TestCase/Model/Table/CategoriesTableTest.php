@@ -51,7 +51,7 @@ class CategoriesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Categories = TableRegistry::getTableLocator()->get('Categories');
@@ -60,7 +60,7 @@ class CategoriesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Categories);
         parent::tearDown();

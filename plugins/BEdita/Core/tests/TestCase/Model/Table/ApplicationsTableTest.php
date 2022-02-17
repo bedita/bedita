@@ -60,7 +60,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
@@ -72,7 +72,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
         CurrentApplication::setApplication($this->currentApplication);
@@ -402,7 +402,7 @@ class ApplicationsTableTest extends TestCase
         $this->Applications->saveOrFail($app);
 
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
-        static::assertFalse($read);
+        static::assertassertFalseNull($read);
     }
 
     /**
@@ -410,13 +410,13 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "Application" 1
      * @covers ::beforeDelete()
      */
     public function testDeleteDefaultApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
         $this->Applications->delete($application);
     }
@@ -426,13 +426,13 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "Application" 2
      * @covers ::beforeDelete()
      */
     public function testDeleteCurrentApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "Application" 2');
         $application = $this->Applications->get(2);
         CurrentApplication::setApplication($application);
         $this->Applications->delete($application);
@@ -443,13 +443,13 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not disable "Application" 1
      * @covers ::beforeSave()
      */
     public function testDisableDefaultApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not disable "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
         $application->enabled = 0;
         $this->Applications->save($application);
@@ -460,13 +460,13 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not disable "Application" 2
      * @covers ::beforeSave()
      */
     public function testDisableCurrentApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not disable "Application" 2');
         $application = $this->Applications->get(2);
         $application->enabled = 1;
         $this->Applications->save($application);

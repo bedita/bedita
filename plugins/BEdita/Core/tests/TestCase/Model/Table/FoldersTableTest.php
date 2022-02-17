@@ -59,7 +59,7 @@ class FoldersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -70,7 +70,7 @@ class FoldersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Folders);
         LoggedUser::resetUser();
@@ -360,12 +360,12 @@ class FoldersTableTest extends TestCase
         $folderIds = [12];
 
         // add subfolders
-        $subfolder = $this->Folders->newEntity();
+        $subfolder = $this->Folders->newEntity([]);
         $subfolder->parent = $parentFolder;
         $this->Folders->save($subfolder);
         $folderIds[] = $subfolder->id;
 
-        $anotherSubfolder = $this->Folders->newEntity();
+        $anotherSubfolder = $this->Folders->newEntity([]);
         $anotherSubfolder->parent = $subfolder;
         $this->Folders->save($anotherSubfolder);
         $folderIds[] = $anotherSubfolder->id;
@@ -420,7 +420,7 @@ class FoldersTableTest extends TestCase
     public function testIsFolderRestorableNoCheckOnParents()
     {
         // new entity
-        $folder = $this->Folders->newEntity();
+        $folder = $this->Folders->newEntity([]);
         static::assertTrue($this->Folders->isFolderRestorable($folder));
 
         // deleted is not dirty

@@ -62,7 +62,7 @@ class SignupUserActionTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -370,11 +370,10 @@ class SignupUserActionTest extends TestCase
      * Test execute when exception was raised sending email
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\InternalErrorException
      */
     public function testExceptionSendMail()
     {
+        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
         $data = [
             'data' => [
                 'username' => 'testsignup',

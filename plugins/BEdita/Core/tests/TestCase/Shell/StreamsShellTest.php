@@ -31,7 +31,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup(true, true);
@@ -41,7 +41,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);

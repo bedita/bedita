@@ -21,22 +21,22 @@ use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckSchemaTask
  */
-class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
+class CheckSchemaTaskTest
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
-        parent::setUp();
-
-        $this->fixtureManager->shutDown();
+        static::$fixtureManager->shutDown();
 
         $this->exec('db_admin init -fs');
     }
@@ -44,7 +44,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
@@ -63,8 +63,6 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
                     }
                 }
             });
-
-        parent::tearDownAfterClass();
     }
 
     /**

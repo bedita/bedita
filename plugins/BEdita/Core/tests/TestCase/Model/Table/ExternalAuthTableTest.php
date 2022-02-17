@@ -60,7 +60,7 @@ class ExternalAuthTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -70,7 +70,7 @@ class ExternalAuthTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ExternalAuth);
         LoggedUser::resetUser();
@@ -149,7 +149,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $externalAuth = $this->ExternalAuth->newEntity();
+        $externalAuth = $this->ExternalAuth->newEntity([]);
         $this->ExternalAuth->patchEntity($externalAuth, $data);
 
         $success = $this->ExternalAuth->save($externalAuth);

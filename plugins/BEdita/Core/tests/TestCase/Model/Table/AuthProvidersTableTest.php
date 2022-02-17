@@ -42,7 +42,7 @@ class AuthProvidersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -52,7 +52,7 @@ class AuthProvidersTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->AuthProviders);
 
@@ -127,7 +127,7 @@ class AuthProvidersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $authProvider = $this->AuthProviders->newEntity();
+        $authProvider = $this->AuthProviders->newEntity([]);
         $this->AuthProviders->patchEntity($authProvider, $data);
 
         $error = (bool)$authProvider->getErrors();

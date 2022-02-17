@@ -55,7 +55,7 @@ class ObjectsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,7 +66,7 @@ class ObjectsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Objects);
         LoggedUser::resetUser();
@@ -353,7 +353,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testSaveDateRanges()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'events';
 
         $data = [
@@ -478,7 +478,7 @@ class ObjectsTableTest extends TestCase
             $this->expectException(PersistenceFailedException::class);
         }
 
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = $type;
 
         $result = $this->Objects->saveOrFail($object);

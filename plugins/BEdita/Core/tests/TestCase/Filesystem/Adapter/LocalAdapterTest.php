@@ -32,7 +32,7 @@ class LocalAdapterTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(self::FILES_PATH)) {
             rmdir(self::FILES_PATH);

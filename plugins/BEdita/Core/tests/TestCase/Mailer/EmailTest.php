@@ -25,7 +25,7 @@ class EmailTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         TransportFactory::setConfig('test', [
             'className' => 'Debug',
@@ -37,7 +37,7 @@ class EmailTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

@@ -49,7 +49,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -93,11 +93,10 @@ class ChangeCredentialsRequestActionTest extends TestCase
      * Test validate failure.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\BadRequestException
      */
     public function testValidationFail()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
         $data = [
             'contact' => 'ask gustavo',
         ];
@@ -114,11 +113,10 @@ class ChangeCredentialsRequestActionTest extends TestCase
      * Test find contact failure.
      *
      * @return void
-     *
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testExecuteFail()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         $data = [
             'contact' => 'mr.gustavo@example.com',
             'change_url' => 'http://users.example.com',
