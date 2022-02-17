@@ -129,7 +129,7 @@ class UsersTable extends Table
         $validator->requirePresence('password_hash', function () {
             return Configure::read('Signup.requirePassword', true);
         });
-        $validator->notEmpty('password_hash');
+        $validator->notEmptyString('password_hash');
 
         $validator->requirePresence('email', function () {
             return Configure::read('Signup.requireEmail', true);

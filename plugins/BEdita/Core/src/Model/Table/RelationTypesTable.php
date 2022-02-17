@@ -69,7 +69,7 @@ class RelationTypesTable extends Table
     {
         $validator
             ->inList('side', ['left', 'right'])
-            ->notEmpty('side')
+            ->notEmptyString('side')
             ->requirePresence('side', 'create');
 
         return $validator;

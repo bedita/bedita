@@ -92,7 +92,7 @@ class InheritanceEventHandler implements EventListenerInterface
 
         // Prepare parent entity.
         $parentEntity = $inheritedTable->newEntity([]);
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
         $inheritedTable->checkRules($parentEntity, $operation, $options);
@@ -120,7 +120,7 @@ class InheritanceEventHandler implements EventListenerInterface
 
         // Prepare parent entity.
         $parentEntity = $inheritedTable->newEntity([]);
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
             $parentEntity->setDirty($inheritedTable->getDisplayField(), true);
@@ -183,7 +183,7 @@ class InheritanceEventHandler implements EventListenerInterface
 
         // Prepare parent entity.
         $parentEntity = $inheritedTable->newEntity([]);
-        $parentEntity->isNew(false);
+        $parentEntity->setNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 
         // Delete parent entity.
