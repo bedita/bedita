@@ -118,7 +118,7 @@ class Application extends BaseApplication
         $middlewareQueue
             // Catch any exceptions in the lower layers,
             // and make an error page/response
-            ->add(ErrorHandlerMiddleware::class)
+            ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
 
             // Add routing middleware.
             ->add(new RoutingMiddleware($this, '_bedita_core_'))
