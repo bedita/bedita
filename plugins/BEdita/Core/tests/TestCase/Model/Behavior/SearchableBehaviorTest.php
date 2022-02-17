@@ -170,13 +170,6 @@ class SearchableBehaviorTest extends TestCase
                 'eutheria cat',
                 'FakeMammals',
             ],
-            'bad type' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query filter requires a non-empty query string',
-                ]),
-                ['not', 'a', 'string'],
-            ],
             'short words' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
@@ -230,8 +223,8 @@ class SearchableBehaviorTest extends TestCase
             ],
             'exact false' => [
                 [
-                    1 => 'big mouse',
-                    2 => 'mouse big',
+                    3 => 'big mouse',
+                    4 => 'mouse big',
                 ],
                 [
                     'string' => 'big mouse',
@@ -241,7 +234,7 @@ class SearchableBehaviorTest extends TestCase
             ],
             'exact' => [
                 [
-                    2 => 'big mouse',
+                    3 => 'big mouse',
                 ],
                 [
                     'string' => 'big mouse',
@@ -277,7 +270,7 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', (array)$query)
+            ->find('query', [$query])
             ->find('list')
             ->toArray();
 
