@@ -32,7 +32,7 @@ class SpecShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadPlugins(['BEdita/API' => []]);
@@ -41,7 +41,7 @@ class SpecShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);

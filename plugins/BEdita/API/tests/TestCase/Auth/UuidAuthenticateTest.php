@@ -219,12 +219,12 @@ class UuidAuthenticateTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('MyExceptionMessage');
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authError' => 'MyExceptionMessage',
@@ -232,6 +232,6 @@ class UuidAuthenticateTest extends TestCase
 
         $auth = new UuidAuthenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

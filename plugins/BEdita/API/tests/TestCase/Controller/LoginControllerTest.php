@@ -49,7 +49,7 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Cache::clear(false, '_bedita_core_');
@@ -187,7 +187,7 @@ class LoginControllerTest extends IntegrationTestCase
         } catch (\Cake\Routing\Exception\MissingRouteException $e) {
         }
 
-        static::assertEquals($expected, $controller->request->getData('grant_type'));
+        static::assertEquals($expected, $controller->getRequest()->getData('grant_type'));
     }
 
     /**
@@ -579,7 +579,7 @@ class LoginControllerTest extends IntegrationTestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity(),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [

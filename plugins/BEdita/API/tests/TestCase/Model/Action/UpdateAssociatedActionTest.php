@@ -43,7 +43,7 @@ class UpdateAssociatedActionTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -253,7 +253,7 @@ class UpdateAssociatedActionTest extends TestCase
     {
         // Prepare link with junction data.
         $junction = TableRegistry::getTableLocator()->get('FakeArticlesTags');
-        $junctionEntity = $junction->newEntity();
+        $junctionEntity = $junction->newEntity([]);
         $junction->patchEntity($junctionEntity, [
             'fake_article_id' => 2,
             'fake_tag_id' => 1,
