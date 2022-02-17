@@ -155,7 +155,7 @@ trait JsonApiTrait
             return $fields;
         }
 
-        return array_intersect($this->_fields, $fields);
+        return array_intersect(array_keys($this->_fields), $fields);
     }
 
     /**
