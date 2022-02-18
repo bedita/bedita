@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017-2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -112,12 +112,12 @@ Router::plugin(
 
         // Upload and thumbnails.
         $routes->connect(
-            '/streams/upload/:fileName',
+            '/streams/upload/{fileName}',
             ['controller' => 'Streams', 'action' => 'upload'],
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
         );
         $routes->connect(
-            '/media/thumbs/:id',
+            '/media/thumbs/{id}',
             ['controller' => 'Media', 'action' => 'thumbs'],
             ['_name' => 'media:thumbs', 'pass' => ['id']]
         );
@@ -128,7 +128,7 @@ Router::plugin(
         );
         // Download
         $routes->connect(
-            '/streams/download/:uuid',
+            '/streams/download/{uuid}',
             ['controller' => 'Streams', 'action' => 'download'],
             ['_name' => 'streams:download']
         )
@@ -139,22 +139,22 @@ Router::plugin(
 
             return function (RouteBuilder $routes) use ($controller) {
                 $routes->connect(
-                    '/:controller',
+                    '/{controller}',
                     ['action' => 'index'],
                     ['_name' => 'resources:index'] + compact('controller')
                 );
                 $routes->connect(
-                    '/:controller/:id',
+                    '/{controller}/{id}',
                     ['action' => 'resource'],
                     ['_name' => 'resources:resource', 'pass' => ['id']] + compact('controller')
                 );
                 $routes->connect(
-                    '/:controller/:related_id/:relationship',
+                    '/{controller}/{related_id}/{relationship}',
                     ['action' => 'related'],
                     ['_name' => 'resources:related'] + compact('controller')
                 );
                 $routes->connect(
-                    '/:controller/:id/relationships/:relationship',
+                    '/{controller}/{id}/relationships/{relationship}',
                     ['action' => 'relationships'],
                     ['_name' => 'resources:relationships'] + compact('controller')
                 );
@@ -180,7 +180,7 @@ Router::plugin(
                 $callback = $resourcesRoutes($modelingControllers);
                 $callback($routes);
                 $routes->connect(
-                    '/schema/:type',
+                    '/schema/{type}',
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
                     ['_name' => 'schema', 'pass' => ['type']]
                 );
@@ -203,17 +203,17 @@ Router::plugin(
             ['_name' => 'trash:index']
         );
         $routes->connect(
-            '/trash/:id',
+            '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
             ['_name' => 'trash:resource', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/:id',
+            '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'restore', '_method' => 'PATCH'],
             ['_name' => 'trash:restore', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/:id',
+            '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'trash:delete', 'pass' => ['id']]
         );
@@ -248,29 +248,29 @@ Router::plugin(
 
         // Upload file and create object.
         $routes->connect(
-            '/:object_type/upload/:fileName',
+            '/{object_type}/upload/{fileName}',
             ['controller' => 'Upload', 'action' => 'upload'],
             ['_name' => 'objects:upload', 'pass' => ['fileName']]
         );
 
         // Objects.
         $routes->connect(
-            '/:object_type',
+            '/{object_type}',
             ['controller' => 'Objects', 'action' => 'index'],
             ['_name' => 'objects:index']
         );
         $routes->connect(
-            '/:object_type/:id',
+            '/{object_type}/{id}',
             ['controller' => 'Objects', 'action' => 'resource'],
             ['_name' => 'objects:resource', 'pass' => ['id']]
         );
         $routes->connect(
-            '/:object_type/:related_id/:relationship',
+            '/{object_type}/{related_id}/{relationship}',
             ['controller' => 'Objects', 'action' => 'related'],
             ['_name' => 'objects:related']
         );
         $routes->connect(
-            '/:object_type/:id/relationships/:relationship',
+            '/{object_type}/{id}/relationships/{relationship}',
             ['controller' => 'Objects', 'action' => 'relationships'],
             ['_name' => 'objects:relationships']
         );
