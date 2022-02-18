@@ -90,12 +90,10 @@ I18n::translators()->registerLoader('bedita', function ($name, $locale) {
         new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']),
     ]);
 
-    return function () use ($chain) {
-        $package = $chain();
-        $package->setFormatter('default');
+    $package = $chain();
+    $package->setFormatter('default');
 
-        return $package;
-    };
+    return $package;
 });
 
 Configure::load('BEdita/Core.bedita', 'ini');
