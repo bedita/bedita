@@ -85,7 +85,7 @@ trait JsonApiTrait
      * @param string $property Property name to check
      * @return bool
      */
-    abstract public function isAccessible($property): bool;
+    abstract public function isAccessible($property);
 
     /**
      * Extract properties from an entity.
@@ -94,7 +94,7 @@ trait JsonApiTrait
      * @param bool $onlyDirty Return only dirty properties.
      * @return array
      */
-    abstract public function extract(array $properties, bool $onlyDirty = false): array;
+    abstract public function extract(array $properties, bool $onlyDirty = false);
 
     /**
      * Check if a property exists.
@@ -102,7 +102,7 @@ trait JsonApiTrait
      * @param string $property Property name.
      * @return bool
      */
-    abstract public function has($property): bool;
+    abstract public function has($property);
 
     /**
      * Getter for a property.
