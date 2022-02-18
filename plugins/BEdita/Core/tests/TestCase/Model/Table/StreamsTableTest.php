@@ -51,7 +51,7 @@ class StreamsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
@@ -61,7 +61,7 @@ class StreamsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);
@@ -139,7 +139,7 @@ class StreamsTableTest extends TestCase
      */
     public function testValidation($expected, array $data, $uuid = false)
     {
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         if ($uuid !== false) {
             $stream = $this->Streams->get($uuid);
         }
@@ -175,7 +175,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream = $this->Streams->patchEntity($stream, $data);
 
         $this->Streams->saveOrFail($stream);
@@ -205,7 +205,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->uuid = $uuid;
         $stream = $this->Streams->patchEntity($stream, $data);
 
