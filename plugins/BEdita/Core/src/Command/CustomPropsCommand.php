@@ -62,6 +62,7 @@ class CustomPropsCommand extends Command
         $types = TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find('list', ['valueField' => 'name'])
             ->where(['is_abstract' => false])
+            ->all()
             ->toList();
         if ($args->getOption('type')) {
             $types = [(string)$args->getOption('type')];

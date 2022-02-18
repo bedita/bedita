@@ -29,7 +29,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -70,7 +70,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->nonNegativeInteger('priority');
@@ -120,7 +120,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['left_id'], 'LeftObjects'));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));

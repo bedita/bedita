@@ -73,7 +73,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -129,7 +129,7 @@ class UsersTable extends Table
         $validator->requirePresence('password_hash', function () {
             return Configure::read('Signup.requirePassword', true);
         });
-        $validator->notEmpty('password_hash');
+        $validator->notEmptyString('password_hash');
 
         $validator->requirePresence('email', function () {
             return Configure::read('Signup.requireEmail', true);
@@ -162,7 +162,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['username']));
         $rules->add($rules->isUnique(['email']));
@@ -175,7 +175,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $implementedEvents = parent::implementedEvents();
         $implementedEvents += [
@@ -272,7 +272,7 @@ class UsersTable extends Table
             $items = $this->rolesNamesIds($options);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
-                return $exp->or_(function (QueryExpression $exp) use ($items) {
+                return $exp->or(function (QueryExpression $exp) use ($items) {
                     if (!empty($items['ids'])) {
                         $exp->in($this->Roles->aliasField('id'), $items['ids']);
                     }
@@ -428,7 +428,7 @@ class UsersTable extends Table
      *
      * Override Table delete: in case of constraints avoid delete and anonymize user data
      */
-    public function delete(EntityInterface $entity, $options = [])
+    public function delete(EntityInterface $entity, $options = []): bool
     {
         $exists = TableRegistry::getTableLocator()->get('Objects')->exists([
             'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],

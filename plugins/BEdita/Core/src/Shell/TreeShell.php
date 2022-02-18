@@ -13,8 +13,7 @@
 
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Shell\Task\CheckTreeTask;
-use BEdita\Core\Shell\Task\RecoverTreeTask;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 
 /**
@@ -40,7 +39,7 @@ class TreeShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

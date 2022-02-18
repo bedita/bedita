@@ -81,7 +81,7 @@ class HistoryBehavior extends Behavior
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         // Behavior config may be set via `Configure` but
         // $config array takes precedence
@@ -156,7 +156,7 @@ class HistoryBehavior extends Behavior
     protected function historyEntity(EntityInterface $entity): EntityInterface
     {
         /** @var \BEdita\Core\Model\Entity\History $history */
-        $history = $this->Table->newEntity();
+        $history = $this->Table->newEntity([]);
         $history->resource_id = $entity->get('id');
         $history->resource_type = $this->getConfig('resource_type');
         $history->application_id = CurrentApplication::getApplicationId();
@@ -199,7 +199,7 @@ class HistoryBehavior extends Behavior
 
      * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity)
+    public function afterDelete(Event $event, EntityInterface $entity): void
     {
         if (empty($this->Table)) {
             return;

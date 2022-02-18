@@ -80,7 +80,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -152,7 +152,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
@@ -549,15 +549,15 @@ class ObjectsTable extends Table
         $now = $query->func()->now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and_([
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+            return $exp->and([
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_start');
 
                     return $exp
                         ->isNull($field)
                         ->lte($field, $now);
                 }),
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_end');
 
                     return $exp

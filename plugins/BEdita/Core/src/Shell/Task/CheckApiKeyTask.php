@@ -14,6 +14,7 @@
 namespace BEdita\Core\Shell\Task;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
 
@@ -31,7 +32,7 @@ class CheckApiKeyTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

@@ -55,7 +55,7 @@ class CategoriesBehavior extends Behavior
     protected function prepareData(string $item, EntityInterface $entity): void
     {
         if (!$entity->isDirty($item)) {
-            $entity->unsetProperty($item);
+            unset($entity[$item]);
 
             return;
         }
@@ -64,7 +64,7 @@ class CategoriesBehavior extends Behavior
             ->getAssociation('ObjectTypes')
             ->get($entity->get('type'));
         if (!in_array(Inflector::humanize($item), (array)$objectType->get('associations'))) {
-            $entity->unsetProperty($item);
+            unset($entity[$item]);
 
             return;
         }

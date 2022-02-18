@@ -73,6 +73,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function read($key): array
     {
         return $this->Config->fetchConfig($this->applicationId, $key)
+            ->all()
             ->filter(function (array $item): bool {
                 return !in_array($item['name'], self::RESERVED_KEYS);
             })
@@ -96,7 +97,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param array $data The data to write.
      * @return bool Success.
      */
-    public function dump($key, array $data)
+    public function dump($key, array $data): bool
     {
         $context = $key;
         $entities = [];
@@ -124,7 +125,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected static function valueToString($value)
+    protected static function valueToString($value): string
     {
         if ($value === null) {
             return 'null';

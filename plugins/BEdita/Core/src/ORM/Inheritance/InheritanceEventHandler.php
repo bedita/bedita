@@ -39,7 +39,7 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * {@inheritDoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Model.beforeSave' => [
@@ -91,8 +91,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
         $inheritedTable->checkRules($parentEntity, $operation, $options);
@@ -119,8 +119,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
             $parentEntity->setDirty($inheritedTable->getDisplayField(), true);
@@ -157,7 +157,7 @@ class InheritanceEventHandler implements EventListenerInterface
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
                 $entity->set($item, $entity->get('__' . $item));
-                $entity->unsetProperty('__' . $item);
+                unset($entity['__' . $item]);
             }
         }
     }
@@ -182,8 +182,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew(false);
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 
         // Delete parent entity.
@@ -251,7 +251,7 @@ class InheritanceEventHandler implements EventListenerInterface
             if ($entity->has($item)) {
                 $entity->set('__' . $item, $parent->get($item));
             }
-            $entity->unsetProperty($item);
+            unset($entity[$item]);
         }
 
         return $entity;

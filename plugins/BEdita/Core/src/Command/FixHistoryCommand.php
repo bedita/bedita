@@ -96,7 +96,7 @@ class FixHistoryCommand extends Command
      *
      * @return void
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->History = $this->Objects->getBehavior('History')->Table;
         $application = TableRegistry::getTableLocator()->get('Applications')
@@ -227,7 +227,7 @@ class FixHistoryCommand extends Command
      */
     protected function historyEntity(ObjectEntity $object): History
     {
-        $history = $this->History->newEntity();
+        $history = $this->History->newEntity([]);
         $history->resource_id = $object->get('id');
         $history->resource_type = 'objects';
         $history->application_id = $this->appId;
@@ -251,7 +251,7 @@ class FixHistoryCommand extends Command
             [$this->History->getAlias() => $this->History->getTable()],
             $this->joinConditions($query, $created)
         )->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
-            return $exp->and_([
+            return $exp->and([
                 $q->newExpr()->between($this->Objects->aliasField('id'), $from, $to),
                 $q->newExpr()->isNull($this->History->aliasField('resource_id')),
             ]);

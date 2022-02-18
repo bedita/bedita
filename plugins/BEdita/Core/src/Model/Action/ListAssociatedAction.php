@@ -224,7 +224,7 @@ class ListAssociatedAction extends BaseAction
                     }
 
                     $joinData = Hash::get($entity, '_matchingData.' . $this->Association->junction()->getAlias());
-                    $entity->unsetProperty('_matchingData');
+                    unset($entity['_matchingData']);
                     $entity->setHidden([$inverseAssociation->getProperty()], true);
 
                     if (!empty($joinData)) {

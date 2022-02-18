@@ -152,7 +152,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             return $this->_properties['singular'];
         }
 
-        return Inflector::singularize($this->name);
+        return Inflector::singularize((string)$this->name);
     }
 
     /**
@@ -410,7 +410,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
-        $entity = $this->getTableLocator()->get($this->name)->newEntity();
+        $entity = $this->getTableLocator()->get($this->name)->newEntity([]);
         $hiddenProperties = $entity->getHidden();
 
         $required = [];

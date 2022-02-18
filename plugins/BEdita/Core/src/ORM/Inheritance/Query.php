@@ -52,7 +52,7 @@ class Query extends CakeQuery
     /**
      * {@inheritDoc}
      */
-    protected function _addDefaultFields()
+    protected function _addDefaultFields(): void
     {
         $select = $this->clause('select');
         $this->_hasFields = true;
@@ -76,7 +76,7 @@ class Query extends CakeQuery
     /**
      * {@inheritDoc}
      */
-    protected function _transformQuery()
+    protected function _transformQuery(): void
     {
         if ($this->_dirty && $this->_type === 'select' && empty($this->_parts['from']) && $this->_repository->inheritedTable() !== null) {
             // If no "from" was explicitly set, use CTI sub-query.
