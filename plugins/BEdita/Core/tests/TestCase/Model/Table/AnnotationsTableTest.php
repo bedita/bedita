@@ -87,6 +87,7 @@ class AnnotationsTableTest extends TestCase
             ],
             'invalid 1' => [
                 [
+                    'object_id._required',
                     'object_id.integer',
                 ],
                 [

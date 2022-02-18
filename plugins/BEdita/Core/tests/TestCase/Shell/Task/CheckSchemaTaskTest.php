@@ -21,22 +21,22 @@ use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckSchemaTask
  */
-class CheckSchemaTaskTest
+class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
 {
-    use ConsoleIntegrationTestTrait;
-
     /**
      * {@inheritDoc}
      */
     public function setUp(): void
     {
-        static::$fixtureManager->shutDown();
+        parent::setUp();
+
+        $this->fixtureManager->shutDown();
 
         $this->exec('db_admin init -fs');
     }

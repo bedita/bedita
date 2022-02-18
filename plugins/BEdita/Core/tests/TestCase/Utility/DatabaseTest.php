@@ -51,7 +51,9 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
-        static::$fixtureManager->shutDown();
+        parent::setUp();
+
+        $this->fixtureManager->shutDown();
 
         $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
         $this->loadFixtures(...$fixtures);
@@ -95,7 +97,7 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
-        static::$fixtureManager->shutDown();
+        $this->fixtureManager->shutDown();
 
         $fixtures1 = ['Applications', 'Config', 'ObjectTypes'];
         $this->loadFixtures(...$fixtures1);

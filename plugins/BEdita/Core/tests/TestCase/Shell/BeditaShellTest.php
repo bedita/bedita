@@ -18,16 +18,13 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest
+class BeditaShellTest extends ConsoleIntegrationTestCase
 {
-    use ConsoleIntegrationTestTrait;
-
     /**
      * Name for temporary configuration file.
      *
@@ -47,7 +44,9 @@ class BeditaShellTest
      */
     public function setUp(): void
     {
-        static::$fixtureManager->shutDown();
+        parent::setUp();
+
+        $this->fixtureManager->shutDown();
 
         // Try to avoid "database schema has changed" error on SQLite.
         try {

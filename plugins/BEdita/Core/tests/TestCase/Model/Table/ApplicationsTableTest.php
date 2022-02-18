@@ -402,7 +402,7 @@ class ApplicationsTableTest extends TestCase
         $this->Applications->saveOrFail($app);
 
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
-        static::assertassertFalseNull($read);
+        static::assertFalse($read);
     }
 
     /**

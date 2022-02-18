@@ -34,7 +34,7 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        static::$fixtureManager->shutDown();
+        $this->fixtureManager->shutDown();
     }
 
     /**
