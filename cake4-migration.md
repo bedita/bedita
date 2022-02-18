@@ -20,7 +20,7 @@ Legend
 
 * [improvement, not necessary] (**N**) extends ConsoleIntegrationTestCase  ==>  use ConsoleIntegrationTestTrait
 
-* (**N**) $this->fixtureManager ==>  static::$fixtureManager
+* (**N**)(**B**) $this->fixtureManager ==>  static::$fixtureManager
 
 * remove @expectedException & @expectedExceptionMessage annotations ==> $this->expectException() - $this->expectExceptionMessage()
 
