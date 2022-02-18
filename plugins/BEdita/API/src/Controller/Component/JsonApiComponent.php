@@ -55,13 +55,13 @@ class JsonApiComponent extends Component
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $contentType = self::CONTENT_TYPE;
         if (!empty($config['contentType'])) {
-            $contentType = $this->getController()->response->getMimeType($config['contentType']) ?: $config['contentType'];
+            $contentType = $this->getController()->getResponse()->getMimeType($config['contentType']) ?: $config['contentType'];
         }
-        $this->getController()->response = $this->getController()->response->withType($contentType);
+        $this->getController()->setResponse($this->getController()->getResponse()->withType($contentType));
 
         $this->RequestHandler->setConfig('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
         $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
@@ -124,7 +124,7 @@ class JsonApiComponent extends Component
      */
     public function getLinks()
     {
-        $request = $this->getController()->request->withParam('pass', []);
+        $request = $this->getController()->getRequest()->withParam('pass', []);
         $links = [
             'self' => Router::reverse($request, true),
             'home' => Router::url(['_name' => 'api:home'], true),
@@ -166,7 +166,7 @@ class JsonApiComponent extends Component
     {
         $meta = [];
 
-        $paging = $this->getController()->request->getParam('paging');
+        $paging = $this->getController()->getRequest()->getParam('paging');
         if (!empty($paging) && is_array($paging)) {
             $paging = reset($paging);
             $paging += [
@@ -199,7 +199,7 @@ class JsonApiComponent extends Component
      */
     protected function allowedResourceTypes($types, array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->request->getData() : $data;
+        $data = ($data === null) ? $this->getController()->getRequest()->getData() : $data;
         if (!$data || !$types) {
             return;
         }
@@ -234,7 +234,7 @@ class JsonApiComponent extends Component
      */
     protected function allowClientGeneratedIds($allow = true, array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->request->getData() : $data;
+        $data = ($data === null) ? $this->getController()->getRequest()->getData() : $data;
         if (!$data || $allow) {
             return;
         }
@@ -272,22 +272,22 @@ class JsonApiComponent extends Component
     {
         $controller = $this->getController();
 
-        if ($controller->request->is('jsonapi')) {
+        if ($controller->getRequest()->is('jsonapi')) {
             $this->RequestHandler->renderAs($controller, 'jsonapi');
         }
 
-        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
+        if ($this->getConfig('checkMediaType') && trim($controller->getRequest()->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
             throw new UnsupportedMediaTypeException(
-                __d('bedita', 'Bad request content type "{0}"', $controller->request->getHeaderLine('Accept'))
+                __d('bedita', 'Bad request content type "{0}"', $controller->getRequest()->getHeaderLine('Accept'))
             );
         }
 
-        if ($controller->request->is(['post', 'patch'])) {
+        if ($controller->getRequest()->is(['post', 'patch'])) {
             $this->allowedResourceTypes($this->getConfig('resourceTypes'));
         }
 
-        if ($controller->request->is('post') && !$this->getConfig('clientGeneratedIds')) {
+        if ($controller->getRequest()->is('post') && !$this->getConfig('clientGeneratedIds')) {
             $this->allowClientGeneratedIds(false);
         }
     }

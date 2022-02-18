@@ -21,7 +21,7 @@ class ErrorHandler extends CakeErrorHandler
     /**
      * {@inheritDoc}
      */
-    protected function _displayError($error, $debug)
+    protected function _displayError($error, $debug): void
     {
         if (!$debug) {
             return;

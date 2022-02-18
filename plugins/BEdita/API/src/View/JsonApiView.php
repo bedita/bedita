@@ -69,7 +69,7 @@ class JsonApiView extends JsonView
             return array_filter(compact('links', 'meta'));
         }
 
-        $data = parent::_dataToSerialize() ?: [];
+        $data = parent::_dataToSerialize($serialize) ?: [];
         $options = $this->get('_jsonApiOptions', 0);
         if ($data) {
             $included = [];

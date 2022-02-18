@@ -88,7 +88,7 @@ class TreesController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -123,7 +123,7 @@ class TreesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }

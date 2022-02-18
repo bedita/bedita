@@ -29,7 +29,7 @@ class UploadController extends ObjectsController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->loadComponent('BEdita/API.Upload');
         parent::initialize();

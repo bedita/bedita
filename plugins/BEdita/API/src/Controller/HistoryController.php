@@ -35,7 +35,7 @@ class HistoryController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -48,7 +48,7 @@ class HistoryController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $this->request->allowMethod('get');
 

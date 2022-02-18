@@ -25,7 +25,7 @@ class StatusController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         $htmlRequest = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
         if (!$this->request->is('jsonapi') && !$htmlRequest) {
@@ -55,7 +55,7 @@ class StatusController extends AppController
 
         $status = System::status();
         $this->set('_meta', compact('status'));
-        $this->set('_serialize', []);
+        $this->setSerialize([]);
 
         return null;
     }

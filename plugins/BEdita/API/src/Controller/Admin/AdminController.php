@@ -30,7 +30,7 @@ abstract class AdminController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
