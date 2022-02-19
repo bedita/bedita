@@ -52,7 +52,7 @@ class SchemaController extends AppController
      *
      * @codeCoverageIgnore
      */
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    public function beforeFilter(Event $event)
     {
     }
 
