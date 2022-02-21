@@ -170,13 +170,6 @@ class SearchableBehaviorTest extends TestCase
                 'eutheria cat',
                 'FakeMammals',
             ],
-            'bad type' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query filter requires a non-empty query string',
-                ]),
-                ['not', 'a', 'string'],
-            ],
             'short words' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
@@ -205,18 +198,48 @@ class SearchableBehaviorTest extends TestCase
                 'lion_snake',
                 'FakeSearches',
             ],
-             'search underscore 2' => [
-                 [
-                     2 => 'lion_snake',
-                 ],
-                 'li_n',
-                 'FakeSearches',
-             ],
-             'search case' => [
+            'search underscore 2' => [
+                [
+                   2 => 'lion_snake',
+                ],
+                'li_n',
+                'FakeSearches',
+            ],
+            'search case' => [
                 [
                     1 => 'hippo-tiger',
                 ],
                 'HIPPO',
+                'FakeSearches',
+            ],
+            'basic with "string" param' => [
+                [
+                   1 => 'hippo-tiger',
+                ],
+                [
+                    'string' => 'hippo',
+                ],
+                'FakeSearches',
+            ],
+            'exact false' => [
+                [
+                    3 => 'big mouse',
+                    4 => 'mouse big',
+                ],
+                [
+                    'string' => 'big mouse',
+                    'exact' => 0,
+                ],
+                'FakeSearches',
+            ],
+            'exact' => [
+                [
+                    3 => 'big mouse',
+                ],
+                [
+                    'string' => 'big mouse',
+                    'exact' => 1,
+                ],
                 'FakeSearches',
             ],
         ];
@@ -226,7 +249,7 @@ class SearchableBehaviorTest extends TestCase
      * Test finder for query string.
      *
      * @param array|\Exception $expected Expected result.
-     * @param string $query Query string.
+     * @param string|array $query Query string.
      * @param string $table Table.
      * @return void
      *
@@ -247,7 +270,7 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', [$query])
+            ->find('query', (array)$query)
             ->find('list')
             ->toArray();
 
