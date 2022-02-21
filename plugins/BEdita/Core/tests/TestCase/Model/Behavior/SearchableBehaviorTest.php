@@ -270,7 +270,7 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', [$query])
+            ->find('query', $query)
             ->find('list')
             ->toArray();
 
