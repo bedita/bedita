@@ -242,6 +242,16 @@ class SearchableBehaviorTest extends TestCase
                 ],
                 'FakeSearches',
             ],
+            'query with string param not a string' => [
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => 'query filter requires a non-empty query string',
+                ]),
+                [
+                    'string' => 1,
+                ],
+                'FakeSearches',
+            ],
         ];
     }
 
