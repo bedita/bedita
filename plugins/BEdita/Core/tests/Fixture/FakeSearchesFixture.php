@@ -42,5 +42,7 @@ class FakeSearchesFixture extends TestFixture
     public $records = [
         ['name' => 'hippo-tiger'],
         ['name' => 'lion_snake'],
+        ['name' => 'big mouse'],
+        ['name' => 'mouse big'],
     ];
 }
