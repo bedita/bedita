@@ -56,7 +56,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -71,7 +71,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Geometry);
 
@@ -183,7 +183,6 @@ class GeometryBehaviorTest extends TestCase
      *
      * @param array $conditions Filter options.
      * @return void
-     * @expectedException \BEdita\Core\Exception\BadFilterException
      *
      * @dataProvider badGeoProvider
      * @covers ::findGeo()
@@ -191,6 +190,7 @@ class GeometryBehaviorTest extends TestCase
      */
     public function testBadGeo($conditions)
     {
+        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
         $this->Locations->find('geo', $conditions)->toArray();
     }
 }

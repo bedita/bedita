@@ -45,7 +45,7 @@ class DateRangesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DateRanges = TableRegistry::getTableLocator()->get('DateRanges');
@@ -54,7 +54,7 @@ class DateRangesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->DateRanges);
 

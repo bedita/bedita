@@ -46,7 +46,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -61,7 +61,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->RelationTypes);
 
@@ -119,7 +119,7 @@ class RelationTypesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RelationTypes->newEntity();
+        $objectType = $this->RelationTypes->newEntity([]);
         $this->RelationTypes->patchEntity($objectType, $data);
 
         $success = $this->RelationTypes->save($objectType);

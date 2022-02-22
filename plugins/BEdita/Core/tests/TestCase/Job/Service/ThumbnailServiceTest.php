@@ -62,7 +62,7 @@ class ThumbnailServiceTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -84,7 +84,7 @@ class ThumbnailServiceTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (Thumbnail::configured() as $config) {
             Thumbnail::drop($config);

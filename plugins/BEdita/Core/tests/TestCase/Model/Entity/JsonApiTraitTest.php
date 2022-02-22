@@ -65,7 +65,7 @@ class JsonApiTraitTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -78,7 +78,7 @@ class JsonApiTraitTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Roles);
         unset($this->ObjectTypes);
@@ -95,7 +95,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetTable()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $table = $role->getTable();
 
         static::assertInstanceOf(get_class($this->Roles), $table);
@@ -126,7 +126,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetType()
     {
-        $role = $this->Roles->newEntity()->jsonApiSerialize();
+        $role = $this->Roles->newEntity([])->jsonApiSerialize();
 
         $type = $role['type'];
 
@@ -215,7 +215,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetRelationshipsHidden()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $role->setHidden(['users' => true], true);
         $role = $role->jsonApiSerialize();
 
@@ -362,14 +362,14 @@ class JsonApiTraitTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedNotSerializable()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead');
         $role = $this->Roles->get(2);
         $role->users = 'Gustavo';
         $role->jsonApiSerialize();

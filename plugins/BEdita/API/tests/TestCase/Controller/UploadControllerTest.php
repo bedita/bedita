@@ -34,7 +34,7 @@ class UploadControllerTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup();
@@ -43,7 +43,7 @@ class UploadControllerTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         parent::tearDown();

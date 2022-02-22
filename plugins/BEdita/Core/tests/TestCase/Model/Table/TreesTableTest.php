@@ -60,7 +60,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Trees);
 
@@ -144,7 +144,7 @@ class TreesTableTest extends TestCase
      */
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         if ($objectId !== null) {
             $entity->object_id = $objectId;
         }
@@ -200,7 +200,7 @@ class TreesTableTest extends TestCase
         $this->Trees->deleteAll(['object_id' => 13]);
         $this->Trees->recover();
 
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
@@ -240,13 +240,13 @@ class TreesTableTest extends TestCase
     {
         $node = $this->Trees->get(2);
         static::assertEquals(11, $node->root_id);
-        $children = $this->Trees->find('children', ['for' => 2])->toList();
+        $children = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         $node->parent_id = $parentId;
         static::assertTrue((bool)$this->Trees->save($node));
 
         $node = $this->Trees->get(2);
-        $actualChildren = $this->Trees->find('children', ['for' => 2])->toList();
+        $actualChildren = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         static::assertEquals($rootExpected, $node->root_id);
         static::assertCount(count($children), $actualChildren);
@@ -280,10 +280,10 @@ class TreesTableTest extends TestCase
      *
      * @return void
      * @coversNothing
-     * @expectedException \RuntimeException
      */
     public function testMoveParentAsChild()
     {
+        $this->expectException(\RuntimeException::class);
         // create new Folder
         LoggedUser::setUser(['id' => 1]);
         $Folders = TableRegistry::getTableLocator()->get('Folders');

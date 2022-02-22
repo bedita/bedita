@@ -43,7 +43,7 @@ class PropertiesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class PropertiesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Properties);
 
@@ -114,7 +114,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $property = $this->Properties->newEntity();
+        $property = $this->Properties->newEntity([]);
         $this->Properties->patchEntity($property, $data);
         $property->object_type_id = 1;
         $property->property_type_id = 1;

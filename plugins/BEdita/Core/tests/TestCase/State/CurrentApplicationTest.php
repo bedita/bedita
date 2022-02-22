@@ -48,7 +48,7 @@ class CurrentApplicationTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class CurrentApplicationTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
 
@@ -182,10 +182,10 @@ class CurrentApplicationTest extends TestCase
      * @return void
      *
      * @covers ::setFromApiKey()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testSetFromApiKeyFailure()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         CurrentApplication::setFromApiKey('INVALID_API_KEY');
     }
 }

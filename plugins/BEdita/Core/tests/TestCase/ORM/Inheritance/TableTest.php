@@ -36,7 +36,7 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -560,11 +560,11 @@ class TableTest extends TestCase
      * @return void
      *
      * @covers ::callFinder()
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Unknown finder method "gustavo"
      */
     public function testCallMissingFinder()
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('Unknown finder method "gustavo"');
         $this->fakeMammals->find('gustavo');
     }
 

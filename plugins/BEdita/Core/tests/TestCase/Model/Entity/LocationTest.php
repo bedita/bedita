@@ -44,7 +44,7 @@ class LocationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +60,7 @@ class LocationTest extends TestCase
      */
     public function testGetMeta()
     {
-        $location = $this->Locations->newEntity();
+        $location = $this->Locations->newEntity([]);
 
         static::assertFalse($location->isAccessible('distance'));
     }

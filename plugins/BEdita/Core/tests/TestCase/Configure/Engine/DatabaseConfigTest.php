@@ -47,7 +47,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DatabaseConfig = new DatabaseConfig();
@@ -59,7 +59,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->DatabaseConfig);
         parent::tearDown();

@@ -36,7 +36,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +48,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectRelations);
 
@@ -148,7 +148,7 @@ class ObjectRelationsTableTest extends TestCase
         $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
 
         $objectRelation = $this->ObjectRelations->newEntity();
-        $objectRelation->isNew($isNew);
+        $objectRelation->setNew($isNew);
         $this->ObjectRelations->patchEntity($objectRelation, $data);
         $objectRelation->left_id = 1;
         $objectRelation->relation_id = 1;

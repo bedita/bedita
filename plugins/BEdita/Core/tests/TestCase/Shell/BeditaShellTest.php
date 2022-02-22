@@ -42,7 +42,7 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -59,7 +59,7 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
         ConnectionManager::get('default')->getDriver()->disconnect();
@@ -86,8 +86,6 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);
         }
-
-        parent::tearDown();
     }
 
     /**

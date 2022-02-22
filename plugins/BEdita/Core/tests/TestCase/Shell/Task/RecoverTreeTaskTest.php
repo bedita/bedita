@@ -48,7 +48,7 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +60,7 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Trees);
 
@@ -81,6 +81,7 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
          */
         $getTreeState = function () {
             return $this->Trees->find()
+                ->all()
                 ->combine('id', function (EntityInterface $node) {
                     return sprintf('%d / %d', $node['tree_left'], $node['tree_right']);
                 })

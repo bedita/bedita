@@ -40,7 +40,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -57,7 +57,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->AsyncJobs);
 
@@ -128,10 +128,10 @@ class AsyncJobsTableTest extends TestCase
      * @return void
      *
      * @covers ::lock()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testLockNotPending()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         $this->AsyncJobs->lock('6407afa6-96a3-4aeb-90c1-1541756efdef');
     }
 

@@ -45,7 +45,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

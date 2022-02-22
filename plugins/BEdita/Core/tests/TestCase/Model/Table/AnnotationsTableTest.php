@@ -40,7 +40,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Annotations);
 
@@ -87,6 +87,7 @@ class AnnotationsTableTest extends TestCase
             ],
             'invalid 1' => [
                 [
+                    'object_id._required',
                     'object_id.integer',
                 ],
                 [
@@ -116,7 +117,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Annotations->newEntity();
+        $entity = $this->Annotations->newEntity([]);
         $entity = $this->Annotations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
@@ -176,7 +177,7 @@ class AnnotationsTableTest extends TestCase
         if ($id) {
             $entity = $this->Annotations->get($id);
         } else {
-            $entity = $this->Annotations->newEntity();
+            $entity = $this->Annotations->newEntity([]);
         }
         $entity = $this->Annotations->patchEntity($entity, $data);
 
@@ -201,12 +202,11 @@ class AnnotationsTableTest extends TestCase
      * Test `beforeDelete` failure.
      *
      * @covers ::beforeDelete()
-     *
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionMessage Could not delete annotation "1" of user "1"
      */
     public function testBeforeDeleteFailure()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionMessage('Could not delete annotation "1" of user "1"');
         LoggedUser::setUser(['id' => 5]);
         $annotation = $this->Annotations->get(1);
         $success = $this->Annotations->delete($annotation);

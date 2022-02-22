@@ -50,7 +50,7 @@ class RelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -65,7 +65,7 @@ class RelationsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Relations);
 
@@ -144,7 +144,7 @@ class RelationsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         if (empty($data['id'])) {
-            $objectType = $this->Relations->newEntity();
+            $objectType = $this->Relations->newEntity([]);
         } else {
             $objectType = $this->Relations->get($data['id']);
         }
@@ -200,6 +200,7 @@ class RelationsTableTest extends TestCase
 
         $result = $this->Relations
             ->find('byName', $options)
+            ->all()
             ->extract('id')
             ->toArray();
 

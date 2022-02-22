@@ -32,7 +32,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
@@ -63,8 +63,6 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
                     }
                 }
             });
-
-        parent::tearDownAfterClass();
     }
 
     /**

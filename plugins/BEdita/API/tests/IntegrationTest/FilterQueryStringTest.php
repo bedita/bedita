@@ -48,7 +48,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         if (!isset(static::$geoSupport)) {

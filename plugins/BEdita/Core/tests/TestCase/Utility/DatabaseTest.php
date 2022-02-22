@@ -51,6 +51,8 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
+        parent::setUp();
+
         $this->fixtureManager->shutDown();
 
         $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
@@ -77,11 +79,11 @@ class DatabaseTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \Cake\Datasource\Exception\MissingDatasourceConfigException
      * @covers ::currentSchema()
      */
     public function testMissingDatasourceConfigException()
     {
+        $this->expectException(\Cake\Datasource\Exception\MissingDatasourceConfigException::class);
         Database::currentSchema('zzzzzzzz');
     }
 

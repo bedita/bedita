@@ -51,7 +51,7 @@ class UserModifiedBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class UserModifiedBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -142,7 +142,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEvent()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
@@ -157,20 +157,20 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
     public function testHandleEventFailure()
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [
                 'modified_by' => 'sometimes',
             ],
         ], false);
 
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $this->Objects->save($object);
     }
@@ -225,7 +225,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testTouchUserDirtyField()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $object->created_by = 5;
         $this->Objects->saveOrFail($object);

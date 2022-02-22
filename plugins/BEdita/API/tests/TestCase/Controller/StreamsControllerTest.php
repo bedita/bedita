@@ -40,7 +40,7 @@ class StreamsControllerTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,7 @@ class StreamsControllerTest extends IntegrationTestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         // Cleanup test filesystem.
         $mountManager = FilesystemRegistry::getMountManager();

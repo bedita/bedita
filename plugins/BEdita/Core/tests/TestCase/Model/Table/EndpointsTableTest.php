@@ -49,7 +49,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
@@ -60,7 +60,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Endpoints);
 

@@ -52,7 +52,7 @@ class AsyncJobTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -69,7 +69,7 @@ class AsyncJobTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->AsyncJobs);
 
@@ -141,12 +141,12 @@ class AsyncJobTest extends TestCase
      *
      * @return void
      *
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Only locked jobs can be run
      * @covers ::run()
      */
     public function testRunNotLocked()
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('Only locked jobs can be run');
         $this->AsyncJobs->get('1e2d1c66-c0bb-47d7-be5a-5bc92202333e')->run();
     }
 

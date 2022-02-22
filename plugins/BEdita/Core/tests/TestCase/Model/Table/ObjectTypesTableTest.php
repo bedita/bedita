@@ -60,7 +60,7 @@ class ObjectTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -73,7 +73,7 @@ class ObjectTypesTableTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectTypes);
 
@@ -224,7 +224,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -527,7 +527,8 @@ class ObjectTypesTableTest extends TestCase
         $result = $this->ObjectTypes
             ->find('byRelation', $options)
             ->find('list')
-            ->toArray();
+            ->all()
+            ->toList();
 
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
@@ -585,7 +586,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testDefaultModelRules(array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -658,7 +659,7 @@ class ObjectTypesTableTest extends TestCase
             'singular' => 'foo',
             'name' => 'foos',
         ];
-        $entity = $this->ObjectTypes->newEntity();
+        $entity = $this->ObjectTypes->newEntity([]);
         $entity = $this->ObjectTypes->patchEntity($entity, $data);
         $this->ObjectTypes->save($entity);
 
@@ -666,7 +667,7 @@ class ObjectTypesTableTest extends TestCase
             'title' => 'Foo',
         ];
         $table = TableRegistry::getTableLocator()->get('Foos');
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
@@ -682,12 +683,11 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return void
      * @covers ::beforeRules()
-     *
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionMessage('Parent type change forbidden: objects of this type exist');
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
         $this->ObjectTypes->save($objectType);
@@ -763,7 +763,7 @@ class ObjectTypesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }

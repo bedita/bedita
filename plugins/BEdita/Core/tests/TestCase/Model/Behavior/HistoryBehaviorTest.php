@@ -48,7 +48,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         LoggedUser::setUser(['id' => 1]);
@@ -57,7 +57,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         LoggedUser::resetUser();
@@ -216,7 +216,7 @@ class HistoryBehaviorTest extends TestCase
     public function testCreate()
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $entity = $Users->newEntity();
+        $entity = $Users->newEntity([]);
         $data = [
             'username' => 'aurelio',
             'name' => 'Aurelio',

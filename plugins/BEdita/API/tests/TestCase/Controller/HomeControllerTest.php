@@ -382,7 +382,7 @@ class HomeControllerTest extends IntegrationTestCase
         // setup new permission to block `/documents` endpoint
         $EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
         $EndpointPermissions->deleteAll([]);
-        $permission = $EndpointPermissions->newEntity();
+        $permission = $EndpointPermissions->newEntity([]);
         $permission->permission = 0b0000;
         $permission->application_id = 1;
         $permission->role_id = 2;

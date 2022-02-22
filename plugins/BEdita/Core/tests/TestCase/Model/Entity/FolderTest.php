@@ -52,7 +52,7 @@ class FolderTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -64,7 +64,7 @@ class FolderTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Folders);
 
@@ -254,7 +254,7 @@ class FolderTest extends TestCase
      */
     public function testGetPathNull()
     {
-        $folder = $this->Folders->newEntity();
+        $folder = $this->Folders->newEntity([]);
         static::assertNull($folder->path);
     }
 
@@ -264,11 +264,11 @@ class FolderTest extends TestCase
      * @return void
      *
      * @covers ::_getPath()
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Folder "12" is not on the tree.
      */
     public function testGetPathOrphanFolder()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
 
