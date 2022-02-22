@@ -17,20 +17,19 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use DateTimeInterface;
 
 /**
  * DateRanges Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\DateRange get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange[] newEntities(array $data, array $options = [])
@@ -61,7 +60,7 @@ class DateRangesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 
@@ -181,16 +180,17 @@ class DateRangesTable extends Table
     /**
      * Create Time object from $time string
      *
-     * @param string $time Input time.
-     * @return null|\Cake\I18n\Time
+     * @param \DateTimeInterface|string|null $time Input time.
+     * @return \DateTimeInterface|null
      */
-    protected function getTime(string $time): ?Time
+    protected function getTime($time): ?DateTimeInterface
     {
         if (empty($time)) {
             return null;
         }
+
         try {
-            return new Time($time);
+            return new FrozenTime($time);
         } catch (\Exception $e) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -208,8 +208,8 @@ class DateRangesTable extends Table
      */
     protected function fromToDateFilter(Query $query, array $options): Query
     {
-        $from = $this->getTime((string)Hash::get($options, 'from_date'));
-        $to = $this->getTime((string)Hash::get($options, 'to_date'));
+        $from = $this->getTime(Hash::get($options, 'from_date'));
+        $to = $this->getTime(Hash::get($options, 'to_date'));
         if (empty($from) && empty($to)) {
             return $query;
         }
@@ -228,19 +228,20 @@ class DateRangesTable extends Table
      * Add `from_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param Time $from From date.
+     * @param \DateTimeInterface $from From date.
      * @return \Cake\ORM\Query
      */
-    protected function fromDateFilter(Query $query, Time $from): Query
+    protected function fromDateFilter(Query $query, DateTimeInterface $from): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from) {
-                return $exp->or([
-                    $q->newExpr()
-                        ->gte($this->aliasField('start_date'), $from)
-                        ->isNull($this->aliasField('end_date')),
-                    $q->newExpr()
-                        ->gte($this->aliasField('end_date'), $from),
-                ]);
+            return $exp->gte(
+                $q->func()->coalesce([
+                    $this->aliasField('end_date') => 'identifier',
+                    $this->aliasField('start_date') => 'identifier',
+                ]),
+                $from,
+                'datetime'
+            );
         });
     }
 
@@ -248,19 +249,20 @@ class DateRangesTable extends Table
      * Add `to_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param Time $to To date.
+     * @param \DateTimeInterface $to To date.
      * @return \Cake\ORM\Query
      */
-    protected function toDateFilter(Query $query, Time $to): Query
+    protected function toDateFilter(Query $query, DateTimeInterface $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($to) {
-                return $exp->or([
-                    $q->newExpr()
-                        ->lte($this->aliasField('start_date'), $to)
-                        ->isNull($this->aliasField('end_date')),
-                    $q->newExpr()
-                        ->lte($this->aliasField('end_date'), $to),
-                ]);
+            return $exp->lte(
+                $q->func()->coalesce([
+                    $this->aliasField('end_date') => 'identifier',
+                    $this->aliasField('start_date') => 'identifier',
+                ]),
+                $to,
+                'datetime'
+            );
         });
     }
 
@@ -268,21 +270,23 @@ class DateRangesTable extends Table
      * Add `from_date`/`to_date` query condition
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param Time $from From date.
-     * @param Time $to To date.
+     * @param \DateTimeInterface $from From date.
+     * @param \DateTimeInterface $to To date.
      * @return \Cake\ORM\Query
      */
-    protected function betweenDatesFilter(Query $query, Time $from, Time $to): Query
+    protected function betweenDatesFilter(Query $query, DateTimeInterface $from, DateTimeInterface $to): Query
     {
         return $query->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
-            return $exp->or([
-                $q->newExpr()
-                    ->gte($this->aliasField('start_date'), $from)
-                    ->lte($this->aliasField('start_date'), $to),
-                $q->newExpr()
-                    ->lte($this->aliasField('start_date'), $to)
-                    ->gte($this->aliasField('end_date'), $from),
-            ]);
+            return $exp
+                ->lte($this->aliasField('start_date'), $to, 'datetime')
+                ->gte(
+                    $q->func()->coalesce([
+                        $this->aliasField('end_date') => 'identifier',
+                        $this->aliasField('start_date') => 'identifier',
+                    ]),
+                    $from,
+                    'datetime'
+                );
         });
     }
 }

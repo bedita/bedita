@@ -13,6 +13,10 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\ORM\Behavior;
 
 /**
@@ -46,5 +50,53 @@ class ObjectModelBehavior extends Behavior
                 'body' => 5,
             ],
         ]);
+    }
+
+    /**
+     * Add related objects
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Object entity
+     * @param string $relation Relation name
+     * @param array $relatedEntities The related entities
+     * @return void
+     */
+    public function addRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
+    {
+        $action = new AddRelatedObjectsAction([
+            'association' => $entity->getTable()->associations()->getByProperty($relation)
+        ]);
+        $action(compact('entity', 'relatedEntities'));
+    }
+
+    /**
+     * Replace related objects
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Object entity
+     * @param string $relation Relation name
+     * @param array $relatedEntities The related entities
+     * @return void
+     */
+    public function replaceRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
+    {
+        $action = new SetRelatedObjectsAction([
+            'association' => $entity->getTable()->associations()->getByProperty($relation)
+        ]);
+        $action(compact('entity', 'relatedEntities'));
+    }
+
+    /**
+     * Remove related objects
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Object entity
+     * @param string $relation Relation name
+     * @param array $relatedEntities The related entities
+     * @return void
+     */
+    public function removeRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
+    {
+        $action = new RemoveRelatedObjectsAction([
+            'association' => $entity->getTable()->associations()->getByProperty($relation)
+        ]);
+        $action(compact('entity', 'relatedEntities'));
     }
 }

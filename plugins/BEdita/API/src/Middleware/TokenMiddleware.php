@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Middleware;
 
+use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
@@ -19,6 +20,7 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -78,17 +80,42 @@ class TokenMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
+        // Skip credentials checks on 'OPTIONS' request
+        // See https://fetch.spec.whatwg.org/#cors-protocol-and-credentials
+        if ($request->getMethod() === 'OPTIONS') {
+            return $next($request, $response);
+        }
+
         $payload = (array)$request->getAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE);
         if (empty($payload)) {
             $token = $this->getToken($request);
             if (!empty($token)) {
-                $payload = JWTHandler::decode($token);
+                $payload = $this->decodeToken($token);
                 $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
             }
         }
         $this->readApplication($payload, $request);
 
         return $next($request, $response);
+    }
+
+    /**
+     * Decode JWT token and return payload.
+     *
+     * @param string $token JWT token
+     * @return array
+     * @throws \BEdita\API\Exception\ExpiredTokenException If he token is expired
+     * @throws \Cake\Http\Exception\UnauthorizedException If the token could not be decoded.
+     */
+    protected function decodeToken(string $token): array
+    {
+        try {
+            return JWTHandler::decode($token);
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            throw new ExpiredTokenException();
+        } catch (\Exception $e) {
+            throw new UnauthorizedException($e->getMessage());
+        }
     }
 
     /**

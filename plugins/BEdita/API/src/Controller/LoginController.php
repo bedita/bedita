@@ -14,8 +14,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Utility\JWTHandler;
-use BEdita\Core\Model\Action\ChangeCredentialsAction;
-use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\User;
@@ -43,6 +42,8 @@ use Cake\Utility\Inflector;
  */
 class LoginController extends AppController
 {
+    use ActionTrait;
+
     /**
      * Default password hasher settings.
      *
@@ -422,14 +423,14 @@ class LoginController extends AppController
         $this->request->allowMethod(['patch', 'post']);
 
         if ($this->request->is('post')) {
-            $action = new ChangeCredentialsRequestAction();
+            $action = $this->createAction('ChangeCredentialsRequestAction');
             $action($this->request->getData());
 
             return $this->response
                 ->withStatus(204);
         }
 
-        $action = new ChangeCredentialsAction();
+        $action = $this->createAction('ChangeCredentialsAction');
         $user = $action($this->request->getData());
 
         $meta = [];
