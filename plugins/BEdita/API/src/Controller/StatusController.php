@@ -55,7 +55,7 @@ class StatusController extends AppController
 
         $status = System::status();
         $this->set('_meta', compact('status'));
-        $this->viewBuilder()->setOption('serialize', []);
+        $this->setSerialize([]);
 
         return null;
     }

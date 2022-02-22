@@ -123,7 +123,7 @@ class TreesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->viewBuilder()->setOption('serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }

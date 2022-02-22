@@ -72,7 +72,7 @@ class TrashController extends AppController
         $trash = $this->paginate($query);
 
         $this->set(compact('trash'));
-        $this->viewBuilder()->setOption('serialize', ['trash']);
+        $this->setSerialize(['trash']);
     }
 
     /**
@@ -87,7 +87,7 @@ class TrashController extends AppController
         $trash = $action(['primaryKey' => $id, 'deleted' => true, 'locked' => false]);
 
         $this->set(compact('trash'));
-        $this->viewBuilder()->setOption('serialize', ['trash']);
+        $this->setSerialize(['trash']);
     }
 
     /**

@@ -159,7 +159,7 @@ abstract class ResourcesController extends AppController
         }
 
         $this->set(compact('data'));
-        $this->viewBuilder()->setOption('serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class ResourcesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->viewBuilder()->setOption('serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }
@@ -263,7 +263,7 @@ abstract class ResourcesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
-        $this->viewBuilder()->setOption('serialize', ['data']);
+        $this->setSerialize(['data']);
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));

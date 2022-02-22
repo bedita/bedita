@@ -40,6 +40,6 @@ class ConfigController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->viewBuilder()->setOption('serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 }

@@ -169,4 +169,18 @@ class AppController extends Controller
     {
         throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
     }
+
+    /**
+     * Cake 4 compatibility wrapper method: set items to serialize for the view
+     *
+     * In Cake 3 => $this->set('_serialize', ['data']);
+     * In Cake 4 => $this->setSerialize(['data'])
+     *
+     * @param array $items Items to serialize
+     * @return void
+     */
+    protected function setSerialize(array $items): void
+    {
+        $this->set('_serialize', $items);
+    }
 }
