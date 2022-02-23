@@ -162,9 +162,6 @@ jobs:
       - name: 'Install dependencies with Composer'
         run: 'composer install --prefer-dist --no-interaction'
 
-      - name: 'Setup PCOV clobber'
-        run: 'composer require pcov/clobber && vendor/bin/pcov clobber'
-
       - name: 'Run PHPUnit with coverage'
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
