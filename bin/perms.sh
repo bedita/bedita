@@ -22,3 +22,9 @@ setfacl -R -d -m u:${HTTPDUSER}:rwx tmp
 
 echo "setfacl -R -m u:${HTTPDUSER}:rwx logs"
 setfacl -R -d -m u:${HTTPDUSER}:rwx logs
+
+echo "setfacl -R -m u:${HTTPDUSER}:rwx webroot"
+setfacl -R -m u:${HTTPDUSER}:rwx webroot
+
+echo "setfacl -R -d -m u:${HTTPDUSER}:rwx webroot"
+setfacl -R -d -m u:${HTTPDUSER}:rwx webroot
