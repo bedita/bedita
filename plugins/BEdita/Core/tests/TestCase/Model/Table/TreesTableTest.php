@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -321,7 +322,7 @@ class TreesTableTest extends TestCase
                 false,
             ],
             'primary' => [
-                new ImmutableResourceException('This operation would leave an orphaned folder'),
+                new LockedResourceException('This operation would leave an orphaned folder'),
                 12,
                 true,
             ],
