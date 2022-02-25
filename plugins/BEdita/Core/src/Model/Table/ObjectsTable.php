@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -23,7 +24,6 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -188,7 +188,6 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Http\Exception\BadRequestException If a wrong lang tag is specified
      */
     protected function checkLangTag(EntityInterface $entity)
     {
@@ -203,7 +202,7 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Http\Exception\ForbiddenException
+     * @throws \BEdita\Core\Exception\LockedResourceException
      */
     protected function checkLocked(EntityInterface $entity): void
     {
@@ -211,7 +210,7 @@ class ObjectsTable extends Table
             return;
         }
         if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
-            throw new ForbiddenException(__('Operation not allowed on "locked" objects'));
+            throw new LockedResourceException(__('Operation not allowed on "locked" objects'));
         }
     }
 
