@@ -32,7 +32,7 @@ abstract class JsonBaseController extends AppController
         $this->viewBuilder()->setClassName('Json');
         $this->RequestHandler->setConfig('viewClassMap.json', 'Json');
 
-        if ($this->request->contentType() === 'application/json') {
+        if ($this->getRequest()->contentType() === 'application/json') {
             $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
         }
     }
