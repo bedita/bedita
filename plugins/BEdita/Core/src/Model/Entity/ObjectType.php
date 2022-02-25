@@ -15,10 +15,11 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Generator;
 
@@ -52,8 +53,9 @@ use Generator;
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
  * @property mixed $schema
  */
-class ObjectType extends Entity implements JsonApiSerializable
+class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {
+    use EventDispatcherTrait;
     use JsonApiModelTrait {
         listAssociations as protected jsonApiListAssociations;
     }
@@ -354,7 +356,13 @@ class ObjectType extends Entity implements JsonApiSerializable
         $relations = static::objectTypeRelations($this->getRelations('right'), 'right') +
             static::objectTypeRelations($this->getRelations('left'), 'left');
 
-        return $this->objectTypeProperties() + compact('associations', 'relations');
+        $schema = $this->objectTypeProperties() + compact('associations', 'relations');
+        $event = $this->dispatchEvent('ObjectType.getSchema', ['schema' => $schema, 'objectType' => $this], $this);
+        if ($event->isStopped()) {
+            return false;
+        }
+
+        return $event->getResult() ?: $schema;
     }
 
     /**
