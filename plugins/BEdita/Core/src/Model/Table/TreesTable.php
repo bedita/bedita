@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
@@ -247,7 +247,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity Tree entity being deleted.
      * @param \ArrayObject $options Options.
      * @return void
-     * @throws \BEdita\Core\Exception\ImmutableResourceException Throws an exception when the delete operation would
+     * @throws \BEdita\Core\Exception\LockedResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
     public function beforeDelete(Event $event, Tree $entity, \ArrayObject $options)
@@ -258,7 +258,7 @@ class TreesTable extends Table
 
         // Refuse to delete a row that points to a folder.
         if ($this->isFolder($entity->object_id)) {
-            throw new ImmutableResourceException(__d('bedita', 'This operation would leave an orphaned folder'));
+            throw new LockedResourceException(__d('bedita', 'This operation would leave an orphaned folder'));
         }
     }
 
