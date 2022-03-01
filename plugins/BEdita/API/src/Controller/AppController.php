@@ -174,6 +174,7 @@ class AppController extends Controller
      *
      * @param array $items Items to serialize
      * @return void
+     * @codeCoverageIgnore
      */
     protected function setSerialize(array $items): void
     {
