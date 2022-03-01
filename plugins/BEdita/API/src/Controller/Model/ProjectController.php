@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Controller\Model;
 
-use BEdita\API\Controller\AppController;
+use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
 use Cake\Event\Event;
 use Cake\Http\Exception\NotAcceptableException;
@@ -24,20 +24,8 @@ use Cake\Http\Exception\NotAcceptableException;
  * @since 4.5.0
  *
  */
-class ProjectController extends AppController
+class ProjectController extends JsonBaseController
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function initialize(): void
-    {
-        parent::initialize();
-        if ($this->components()->has('JsonApi')) {
-            $this->components()->unload('JsonApi');
-        }
-        $this->RequestHandler->setConfig('viewClassMap.json', 'Json');
-    }
-
     /**
      * {@inheritDoc}
      */

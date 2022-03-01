@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 Atlas Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -16,9 +16,9 @@ namespace BEdita\Core\Exception;
 use Cake\Core\Exception\Exception;
 
 /**
- * Exception raised when performing delete or update on immutable resource
+ * Exception raised when performing write actions on a resource that is locked.
  */
-class ImmutableResourceException extends Exception
+class LockedResourceException extends Exception
 {
     /**
      * {@inheritDoc}
@@ -30,7 +30,7 @@ class ImmutableResourceException extends Exception
     public function __construct($message = null, $code = 403)
     {
         if ($message === null) {
-            $message = __d('bedita', 'This is an immutable resource required by the system');
+            $message = __d('bedita', 'This resource is locked');
         }
 
         parent::__construct($message, $code);
