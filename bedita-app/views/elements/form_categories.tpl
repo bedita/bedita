@@ -13,7 +13,7 @@
 		{foreach item="noareaC" from=$areaCategory.noarea}
 		<tr>
 			<td>
-			<input type="checkbox" id="cat_{$noareaC.id}" 
+			<input type="checkbox" id="cat_{$noareaC.id}"
 				name="data[Category][{$noareaC.id}]" value="{$noareaC.id}"
 				{if $object && in_array($noareaC.id, $object.assocCategory)}checked="checked"{/if}/>
 			<label for="cat_{$noareaC.id}">{$noareaC.label|escape}</label>
@@ -21,7 +21,7 @@
 		</tr>
 		{/foreach}
 	{/if}
-			
+
 	{if !empty($areaCategory.area)}
 		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
@@ -30,15 +30,15 @@
 			{foreach from=$areaC item="cat" name="fc"}
 			<tr>
 				<td>
-				<input type="checkbox" id="cat_{$cat.id}" 
+				<input type="checkbox" id="cat_{$cat.id}"
 					name="data[Category][{$cat.id}]" value="{$cat.id}"
 					{if $object && in_array($cat.id, $object.assocCategory)}checked="checked"{/if}/>
 				<label for="cat_{$cat.id}">{$cat.label|escape}</label>
+				{if $cat.status != 'on'}<em style="font-style: italic;">({$cat.status|escape})</em>{/if}
 				</td>
 			</tr>
 			{/foreach}
 		{/foreach}
-	
 	{/if}
 </table>
 </fieldset>
