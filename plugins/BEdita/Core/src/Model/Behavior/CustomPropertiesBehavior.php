@@ -65,7 +65,7 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -314,7 +314,7 @@ class CustomPropertiesBehavior extends Behavior
         return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
             $field = $this->getTable()->aliasField($this->getConfig('field'));
 
-            return $exp->and_(array_map(
+            return $exp->and(array_map(
                 function ($key, $value) use ($field, $query) {
                     return $query->newExpr()->eq(
                         new FunctionExpression(

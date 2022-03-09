@@ -52,7 +52,7 @@ class SearchableBehavior extends Behavior
      * If fields or column types are specified - do *not* merge them with existing config,
      * overwrite the fields to search on.
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         foreach (['columnTypes', 'fields'] as $key) {
             if (isset($config[$key])) {

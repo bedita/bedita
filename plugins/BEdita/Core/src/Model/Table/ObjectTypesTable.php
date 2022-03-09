@@ -91,7 +91,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -155,7 +155,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
             ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
@@ -188,7 +188,7 @@ class ObjectTypesTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, $options = [])
+    public function get($primaryKey, $options = []): EntityInterface
     {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
@@ -344,7 +344,7 @@ class ObjectTypesTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function findAll(Query $query, array $options)
+    public function findAll(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -438,7 +438,7 @@ class ObjectTypesTable extends Table
         // This could be achieved more efficiently using two left joins, but if we need to find also
         // descendants it's simpler done this way.
         $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
-            return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+            return $exp->or(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
                 return $exp
                     ->in($this->aliasField('id'), $leftSubQuery->select(['id']))
                     ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
@@ -466,10 +466,10 @@ class ObjectTypesTable extends Table
                 // Find descendants for all found nodes using NSM rules.
                 // If the nodes found are [l = 3, r = 8] and [l = 9, r = 10], the conditions will be built as follows:
                 // ... WHERE (tree_left >= 3 AND tree_right <= 8) OR (tree_left >= 9 AND tree_right <= 10)
-                return $exp->or_(
+                return $exp->or(
                     $nsmCounters
                         ->map(function (array $row) use ($exp) {
-                            return $exp->and_(function (QueryExpression $exp) use ($row) {
+                            return $exp->and(function (QueryExpression $exp) use ($row) {
                                 return $exp
                                     ->gte($this->aliasField('tree_left'), $row['tree_left'])
                                     ->lte($this->aliasField('tree_right'), $row['tree_right']);

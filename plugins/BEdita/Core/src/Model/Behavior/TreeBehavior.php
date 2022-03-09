@@ -82,8 +82,8 @@ class TreeBehavior extends CakeTreeBehavior
             }
 
             // ensure to use actual left and right fields
-            $node->unsetProperty($this->getConfig('left'));
-            $node->unsetProperty($this->getConfig('right'));
+            unset($node[$this->getConfig('left')]);
+            unset($node[$this->getConfig('right')]);
             $this->_ensureFields($node);
 
             $currentPosition = $this->getCurrentPosition($node);

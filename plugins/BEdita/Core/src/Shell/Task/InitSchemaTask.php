@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Shell\Task;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
@@ -30,7 +31,7 @@ class InitSchemaTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

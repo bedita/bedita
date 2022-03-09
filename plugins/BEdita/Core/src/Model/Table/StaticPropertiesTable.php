@@ -47,7 +47,7 @@ class StaticPropertiesTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -164,6 +164,7 @@ class StaticPropertiesTable extends Table
                     ->order([
                         $this->ObjectTypes->aliasField('tree_left') => 'ASC', // Ensure parent tables are processed first!
                     ])
+                    ->all()
                     ->reduce(
                         function (array $accumulator, ObjectType $objectType) {
                             $tables = $this->listOwnTables($objectType);
@@ -240,7 +241,7 @@ class StaticPropertiesTable extends Table
     protected function prepareTableFields(ObjectType $objectType, Table $table)
     {
         $schema = $table->getSchema();
-        $sampleEntity = $table->newEntity();
+        $sampleEntity = $table->newEntity([]);
         $hiddenProperties = $sampleEntity->getHidden();
 
         $properties = [];

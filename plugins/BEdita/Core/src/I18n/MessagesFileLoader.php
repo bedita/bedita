@@ -48,7 +48,7 @@ class MessagesFileLoader extends BaseLoader
     /**
      * {@inheritDoc}
      */
-    public function translationsFolders()
+    public function translationsFolders(): array
     {
         $searchPaths = parent::translationsFolders();
 

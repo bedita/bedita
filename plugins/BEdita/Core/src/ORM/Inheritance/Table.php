@@ -14,6 +14,7 @@
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
+use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
@@ -41,7 +42,7 @@ class Table extends CakeTable
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -52,7 +53,7 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      */
-    public function marshaller()
+    public function marshaller(): CakeMarshaller
     {
         return new Marshaller($this);
     }
@@ -60,7 +61,7 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      */
-    public function query()
+    public function query(): CakeQuery
     {
         return new Query($this->getConnection(), $this);
     }
@@ -181,7 +182,7 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      */
-    public function hasFinder($type)
+    public function hasFinder($type): bool
     {
         if (parent::hasFinder($type) === true) {
             return true;
@@ -198,7 +199,7 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      */
-    public function callFinder($type, CakeQuery $query, array $options = [])
+    public function callFinder($type, CakeQuery $query, array $options = []): CakeQuery
     {
         if (parent::hasFinder($type)) {
             return parent::callFinder($type, $query, $options);
@@ -227,7 +228,7 @@ class Table extends CakeTable
      *
      * @param bool $inheritedFields Should fields from inherited tables be considered?
      */
-    public function hasField($field, $inheritedFields = true)
+    public function hasField($field, $inheritedFields = true): bool
     {
         $result = parent::hasField($field);
         $inheritedTable = $this->inheritedTable();

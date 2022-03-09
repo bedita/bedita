@@ -150,7 +150,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
         $action = new SaveEntityAction(['table' => $asyncJobsTable]);
 
         return $action([
-            'entity' => $asyncJobsTable->newEntity(),
+            'entity' => $asyncJobsTable->newEntity([]),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
@@ -196,7 +196,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * {@inheritdoc}
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.credentialsChangeRequest' => 'sendMail',

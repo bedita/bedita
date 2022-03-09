@@ -45,7 +45,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -74,7 +74,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules = parent::buildRules($rules);
 

@@ -40,7 +40,7 @@ class EndpointPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -61,7 +61,7 @@ class EndpointPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -79,7 +79,7 @@ class EndpointPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['endpoint_id'], 'Endpoints'));
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
@@ -107,7 +107,7 @@ class EndpointPermissionsTable extends Table
         $strict = Hash::get($options, 'strict', false);
 
         return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($ids, $field, $strict) {
                 if (!empty($ids)) {
                     $expr = $expr->in($field, $ids);
                 }
@@ -144,7 +144,7 @@ class EndpointPermissionsTable extends Table
         $strict = Hash::get($options, 'strict', false);
 
         return $query->where(function (QueryExpression $expr) use ($id, $field, $strict) {
-            return $expr->or_(function (QueryExpression $expr) use ($id, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($id, $field, $strict) {
                 if (!empty($id)) {
                     $expr = $expr->eq($field, $id);
                 }
@@ -181,7 +181,7 @@ class EndpointPermissionsTable extends Table
         $strict = Hash::get($options, 'strict', false);
 
         return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($ids, $field, $strict) {
                 if (!empty($ids)) {
                     $expr = $expr->in($field, $ids);
                 }
@@ -254,7 +254,7 @@ class EndpointPermissionsTable extends Table
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        $key = sprintf('perms_count_%s_%s', $applicationId ?: '*', $endpointId ?: '*');
+        $key = sprintf('perms_count_%s_%s', $applicationId ?: 'any', $endpointId ?: 'any');
 
         $query = $this->find('byApplication', compact('applicationId'))
             ->find('byEndpoint', compact('endpointIds'));
@@ -275,7 +275,7 @@ class EndpointPermissionsTable extends Table
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
-        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: '*', $endpointId ?: '*');
+        $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: 'any', $endpointId ?: 'any');
 
         if (!empty($user['_anonymous'])) {
             $query = $this->find('byApplication', compact('applicationId', 'strict'))

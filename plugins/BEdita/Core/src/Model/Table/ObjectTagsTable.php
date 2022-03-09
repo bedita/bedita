@@ -39,7 +39,7 @@ class ObjectTagsTable extends ObjectCategoriesTable
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
         $this->setEntityClass(ObjectCategory::class);
