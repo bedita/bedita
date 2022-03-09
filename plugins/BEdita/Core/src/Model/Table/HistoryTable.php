@@ -12,10 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use Cake\Database\Schema\TableSchema;
-use Cake\Database\Schema\TableSchemaInterface;
-use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -71,7 +68,7 @@ class HistoryTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->nonNegativeInteger('id')

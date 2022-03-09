@@ -227,6 +227,7 @@ class FixHistoryCommand extends Command
      */
     protected function historyEntity(ObjectEntity $object): History
     {
+        /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->History->newEntity([]);
         $history->resource_id = $object->get('id');
         $history->resource_type = 'objects';

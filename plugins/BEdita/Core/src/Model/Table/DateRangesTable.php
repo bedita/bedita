@@ -71,7 +71,7 @@ class DateRangesTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -99,7 +99,7 @@ class DateRangesTable extends Table
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 

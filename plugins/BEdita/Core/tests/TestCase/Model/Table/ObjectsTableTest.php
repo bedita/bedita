@@ -2,13 +2,13 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\Time;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
@@ -762,7 +762,7 @@ class ObjectsTableTest extends TestCase
                 ],
             ],
             'forbidden' => [
-                new ForbiddenException('Operation not allowed on "locked" objects'),
+                new LockedResourceException('Operation not allowed on "locked" objects'),
                 [
                     'id' => 2,
                     'status' => 'off',

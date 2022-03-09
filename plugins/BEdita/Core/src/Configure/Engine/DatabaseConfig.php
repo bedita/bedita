@@ -126,7 +126,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected static function valueToString($value)
+    protected static function valueToString($value): string
     {
         if ($value === null) {
             return 'null';

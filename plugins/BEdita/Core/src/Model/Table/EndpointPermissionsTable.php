@@ -61,7 +61,7 @@ class EndpointPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -79,7 +79,7 @@ class EndpointPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['endpoint_id'], 'Endpoints'));
         $rules->add($rules->existsIn(['application_id'], 'Applications'));

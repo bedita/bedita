@@ -65,7 +65,7 @@ class RelationTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->inList('side', ['left', 'right'])
@@ -80,7 +80,7 @@ class RelationTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['relation_id', 'object_type_id', 'side']));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));

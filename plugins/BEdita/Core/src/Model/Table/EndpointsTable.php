@@ -65,7 +65,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -88,7 +88,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));

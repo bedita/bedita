@@ -13,35 +13,22 @@
 
 namespace BEdita\API\Controller\Model;
 
-use BEdita\API\Controller\AppController;
+use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotAcceptableException;
 
 /**
  * Controller for `/model/project` endpoint.
  *
  * @since 4.5.0
- *
  */
-class ProjectController extends AppController
+class ProjectController extends JsonBaseController
 {
     /**
      * {@inheritDoc}
      */
-    public function initialize(): void
-    {
-        parent::initialize();
-        if ($this->components()->has('JsonApi')) {
-            $this->components()->unload('JsonApi');
-        }
-        $this->RequestHandler->setConfig('viewClassMap.json', 'Json');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function beforeFilter(\Cake\Event\EventInterface $event): void
+    public function beforeFilter(EventInterface $event): void
     {
         if (!$this->request->is(['json'])) {
             throw new NotAcceptableException(

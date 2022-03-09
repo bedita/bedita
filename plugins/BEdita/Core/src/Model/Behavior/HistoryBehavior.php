@@ -20,6 +20,7 @@ use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -195,11 +196,10 @@ class HistoryBehavior extends Behavior
      * Process delete.
      *
      * @param \Cake\Event\Event $event Dispatched event.
-     * @param EntityInterface $entity Object entity.
-
+     * @param \Cake\Datasource\EntityInterface $entity Object entity.
      * @return void
      */
-    public function afterDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($this->Table)) {
             return;

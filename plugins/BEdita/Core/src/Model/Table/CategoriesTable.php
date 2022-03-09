@@ -92,7 +92,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $this->validationRules($validator);
 
@@ -119,7 +119,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(
             ['object_type_id'],

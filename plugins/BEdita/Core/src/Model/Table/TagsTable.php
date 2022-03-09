@@ -73,7 +73,7 @@ class TagsTable extends CategoriesTagsBaseTable
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $this->validationRules($validator);
 

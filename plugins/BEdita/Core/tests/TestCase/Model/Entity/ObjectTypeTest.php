@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -1002,6 +1003,113 @@ class ObjectTypeTest extends TestCase
         }
 
         static::assertEquals($expected, $schema);
+    }
+
+    /**
+     * Test getter for `schema` with an event listener which modifies the schema.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $name Object type name.
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaModified($expected, string $name): void
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $called = 0;
+        $objectType->getEventManager()->on(
+            'ObjectType.getSchema',
+            function (Event $event, array $schema, ObjectType $ot) use ($expected, $objectType, &$called): array {
+                $called++;
+
+                static::assertSame($objectType, $event->getSubject());
+                static::assertSame($objectType, $ot);
+                static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
+
+                return ['foo'];
+            }
+        );
+
+        $schema = $objectType->schema;
+        if ($expected !== false) {
+            static::assertSame(1, $called);
+            static::assertSame(['foo'], $schema);
+        } else {
+            static::assertSame(0, $called);
+            static::assertSame(false, $schema);
+        }
+    }
+
+    /**
+     * Test getter for `schema` with an event listener which does NOT modify the schema.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $name Object type name.
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaNotModified($expected, string $name): void
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $called = 0;
+        $objectType->getEventManager()->on(
+            'ObjectType.getSchema',
+            function (Event $event, array $schema, ObjectType $ot) use ($expected, $objectType, &$called): void {
+                $called++;
+
+                static::assertSame($objectType, $event->getSubject());
+                static::assertSame($objectType, $ot);
+                static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
+            }
+        );
+
+        $schema = $objectType->schema;
+        if ($expected !== false) {
+            static::assertSame(1, $called);
+            static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
+        } else {
+            static::assertSame(0, $called);
+            static::assertSame(false, $schema);
+        }
+    }
+
+    /**
+     * Test getter for `schema` with an event listener which aborts execution.
+     *
+     * @param mixed $expected Expected result.
+     * @param string $name Object type name.
+     * @return void
+     *
+     * @dataProvider getSchemaProvider()
+     * @covers ::_getSchema()
+     */
+    public function testGetSchemaStopped($expected, string $name): void
+    {
+        $objectType = $this->ObjectTypes->get($name);
+
+        $called = 0;
+        $objectType->getEventManager()->on(
+            'ObjectType.getSchema',
+            function (Event $event, array $schema, ObjectType $ot) use ($expected, $objectType, &$called): void {
+                $called++;
+
+                static::assertSame($objectType, $event->getSubject());
+                static::assertSame($objectType, $ot);
+                static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
+
+                $event->stopPropagation();
+            }
+        );
+
+        $schema = $objectType->schema;
+        static::assertSame($expected !== false ? 1 : 0, $called);
+        static::assertSame(false, $schema);
     }
 
     /**

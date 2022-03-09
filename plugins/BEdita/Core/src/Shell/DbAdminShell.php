@@ -12,8 +12,6 @@
  */
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Shell\Task\CheckSchemaTask;
-use BEdita\Core\Shell\Task\InitSchemaTask;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;

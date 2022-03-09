@@ -74,7 +74,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules = parent::buildRules($rules);
 

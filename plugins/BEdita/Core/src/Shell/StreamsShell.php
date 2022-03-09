@@ -12,7 +12,6 @@
  */
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Model\Entity\Stream;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 

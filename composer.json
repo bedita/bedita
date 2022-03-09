@@ -76,5 +76,11 @@
             "merge-extra-deep": false,
             "merge-scripts": false
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "cakephp/plugin-installer": true,
+            "wikimedia/composer-merge-plugin": true
+        }
     }
 }

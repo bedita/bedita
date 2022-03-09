@@ -157,7 +157,7 @@ class InheritanceEventHandler implements EventListenerInterface
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
                 $entity->set($item, $entity->get('__' . $item));
-                $entity->unset('__' . $item);
+                unset($entity['__' . $item]);
             }
         }
     }
@@ -251,7 +251,7 @@ class InheritanceEventHandler implements EventListenerInterface
             if ($entity->has($item)) {
                 $entity->set('__' . $item, $parent->get($item));
             }
-            $entity->unset($item);
+            unset($entity[$item]);
         }
 
         return $entity;

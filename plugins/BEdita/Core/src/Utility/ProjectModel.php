@@ -124,7 +124,7 @@ class ProjectModel
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
                 sort($right);
-                $row->unset('id');
+                unset($row['id']);
                 $row->set('left_object_types', $left);
                 $row->set('right_object_types', $right);
             })
