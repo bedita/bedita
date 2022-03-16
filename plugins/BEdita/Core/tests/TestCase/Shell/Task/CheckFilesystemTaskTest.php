@@ -27,10 +27,10 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      *
      * @string
      */
-    const TEMP_DIR = TMP . 'test-permissions';
+    public const TEMP_DIR = TMP . 'test-permissions';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -48,7 +48,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution when permissions are ok.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::getHttpdUser()
      * @covers ::checkPaths()
@@ -68,7 +67,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution with auto-detection of Web server user when Web server is running.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::getHttpdUser()
      */
@@ -93,7 +91,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution with auto-detection of Web server user when Web server is **NOT** running.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::getHttpdUser()
      */
@@ -118,7 +115,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution when the path to check does not exist.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::checkPaths()
      */
@@ -134,7 +130,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution when the path is not writable for the CLI user.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::checkPaths()
      */
@@ -171,7 +166,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      *
      * @param int $perms Permissions to be set on folder.
      * @return void
-     *
      * @dataProvider executeNotWritableWebServerProvider()
      * @covers ::main()
      * @covers ::checkPaths()
@@ -193,7 +187,6 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
      * Test execution when the path is world writable.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::checkPaths()
      */

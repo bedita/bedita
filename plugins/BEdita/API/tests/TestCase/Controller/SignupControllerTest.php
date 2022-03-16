@@ -34,7 +34,7 @@ class SignupControllerTest extends IntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -43,7 +43,7 @@ class SignupControllerTest extends IntegrationTestCase
         Configure::write('Signup', []);
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
     }
 
@@ -205,14 +205,13 @@ class SignupControllerTest extends IntegrationTestCase
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void
-     *
      * @dataProvider signupProvider
      * @covers ::signup()
      */
     public function testSignup($statusCode, $expected, $method, $data)
     {
         $this->configRequestHeaders($method, [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $methodName = strtolower($method);
         $this->$methodName('/signup', json_encode($data));
@@ -260,7 +259,7 @@ class SignupControllerTest extends IntegrationTestCase
                     ],
                 ],
                 'GET',
-                []
+                [],
             ],
             'missing uuid' => [
                 400,
@@ -275,7 +274,7 @@ class SignupControllerTest extends IntegrationTestCase
                     ],
                 ],
                 'POST',
-                []
+                [],
             ],
             'not found uuid' => [
                 404,
@@ -291,8 +290,8 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'uuid' => '9343b966-9102-49fd-a9d7-8502f1dc7110'
-                ]
+                    'uuid' => '9343b966-9102-49fd-a9d7-8502f1dc7110',
+                ],
             ],
             'not found user' => [
                 404,
@@ -308,8 +307,8 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a'
-                ]
+                    'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
+                ],
             ],
             'not valid async job' => [
                 400,
@@ -325,8 +324,8 @@ class SignupControllerTest extends IntegrationTestCase
                 ],
                 'POST',
                 [
-                    'uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c'
-                ]
+                    'uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c',
+                ],
             ],
         ];
     }
@@ -339,14 +338,13 @@ class SignupControllerTest extends IntegrationTestCase
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void
-     *
      * @dataProvider activationErrorProvider
      * @covers ::activation()
      */
     public function testActivationError($statusCode, $expected, $method, $data)
     {
         $this->configRequestHeaders($method, [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $methodName = strtolower($method);
         $this->$methodName('/signup/activation', json_encode($data));
@@ -367,14 +365,13 @@ class SignupControllerTest extends IntegrationTestCase
      * Test success in /signup/activation endpoint
      *
      * @return void
-     *
      * @covers ::activation()
      */
     public function testActivationOk()
     {
         // signup
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $data = [
             'username' => 'gustavo',
@@ -391,7 +388,7 @@ class SignupControllerTest extends IntegrationTestCase
         $activationData = ['uuid' => $asyncJob->uuid];
 
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $this->post('/signup/activation', json_encode($activationData));
 
@@ -403,14 +400,13 @@ class SignupControllerTest extends IntegrationTestCase
      * Test success in /signup/activation endpoint
      *
      * @return void
-     *
      * @covers ::activation()
      */
     public function testActivationConflict()
     {
         // signup
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $data = [
             'username' => 'gustavo',
@@ -436,7 +432,7 @@ class SignupControllerTest extends IntegrationTestCase
         $Users->save($user);
 
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ]);
         $this->post('/signup/activation', json_encode($activationData));
 

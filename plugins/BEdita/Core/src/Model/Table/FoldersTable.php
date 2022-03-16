@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\Folder;
-use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -27,7 +26,6 @@ use Cake\ORM\RulesChecker;
  *
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasOne $TreeParentNodes
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsToMany $Children
- *
  * @method \BEdita\Core\Model\Entity\Folder get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Folder newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder[] newEntities(array $data, array $options = [])
@@ -35,9 +33,7 @@ use Cake\ORM\RulesChecker;
  * @method \BEdita\Core\Model\Entity\Folder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
- *
  */
 class FoldersTable extends ObjectsTable
 {

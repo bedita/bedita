@@ -12,8 +12,8 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -27,14 +27,13 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Annotations'
+        'plugin.BEdita/Core.Annotations',
     ];
 
     /**
      * Test index method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIndex()
@@ -124,7 +123,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSingle()
@@ -171,7 +169,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAdd()
@@ -198,7 +195,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testEdit()
@@ -222,7 +218,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDelete()
@@ -239,7 +234,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test related objects.
      *
      * @return void
-     *
      * @covers ::getAvailableUrl()
      */
     public function testRelated()
@@ -325,7 +319,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     *
      * @covers ::getAssociatedAction()
      */
     public function testRelationships()

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,18 +11,22 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\API\Controller\Admin;
+namespace BEdita\API\Test\TestCase\Error;
+
+use BEdita\API\Error\ExceptionRenderer;
 
 /**
- * Controller for `/admin/async_jobs` endpoint.
- *
- * @since 4.0.0
- * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
+ * Extension class with utility methods use in tests
  */
-class AsyncJobsController extends AdminController
+class MyExceptionRenderer extends ExceptionRenderer
 {
-    /**
-     * @inheritDoc
-     */
-    public $modelClass = 'AsyncJobs';
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
+    }
 }

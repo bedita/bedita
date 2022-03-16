@@ -58,14 +58,14 @@ class CategoriesBehaviorTest extends TestCase
                             'name' => 'second-cat',
                             'id' => 2,
                             'object_type_name' => null,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 [
                     'categories' => [
                         ['name' => 'second-cat'],
                         ['name' => 'disabled-cat'],
-                    ]
+                    ],
                 ],
                 3,
                 'Documents',
@@ -76,33 +76,33 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'first-tag',
                             'id' => 4,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 [
                     'tags' => [
                         ['name' => 'first-tag'],
-                    ]
+                    ],
                 ],
                 4,
                 'Profiles',
             ],
             'missing categories' => [
                 [
-                    'categories' => []
+                    'categories' => [],
                 ],
                 [
                     'categories' => [
                         ['name' => 'some-category'],
                         ['name' => 'other-cat'],
-                    ]
+                    ],
                 ],
                 3,
                 'Documents',
             ],
             'no categories' => [
                 [
-                    'categories' => []
+                    'categories' => [],
                 ],
                 [
                     'description' => 'some description',
@@ -117,7 +117,7 @@ class CategoriesBehaviorTest extends TestCase
                 [
                     'tags' => [
                         ['name' => 'first-tag'],
-                    ]
+                    ],
                 ],
                 3,
                 'Documents',
@@ -129,7 +129,7 @@ class CategoriesBehaviorTest extends TestCase
                 [
                     'categories' => [
                         ['name' => 'second-cat'],
-                    ]
+                    ],
                 ],
                 4,
                 'Profiles',
@@ -167,7 +167,6 @@ class CategoriesBehaviorTest extends TestCase
      * @param int $id Entity ID.
      * @param string $tableName Table.
      * @return void
-     *
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::prepareData()
@@ -209,7 +208,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchCategories` method
      *
      * @return void
-     *
      * @covers ::fetchCategories()
      */
     public function testFetchCategories(): void
@@ -220,8 +218,8 @@ class CategoriesBehaviorTest extends TestCase
             'categories' => [
                 [
                     'name' => 'second-cat',
-                ]
-            ]
+                ],
+            ],
         ];
         $entity = $table->patchEntity($entity, $data);
         $entity = $table->save($entity);
@@ -236,7 +234,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchTags` method
      *
      * @return void
-     *
      * @covers ::fetchTags()
      * @covers ::checkTag()
      */
@@ -255,8 +252,8 @@ class CategoriesBehaviorTest extends TestCase
                 ],
                 [
                     'name' => 'third',
-                ]
-            ]
+                ],
+            ],
         ]);
         $entity = $table->save($entity);
         static::assertNotFalse($entity);
@@ -275,7 +272,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchTags` with a disabled tag
      *
      * @return void
-     *
      * @covers ::fetchTags()
      * @covers ::checkTag()
      */

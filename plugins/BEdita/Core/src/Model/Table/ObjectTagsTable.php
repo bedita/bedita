@@ -20,7 +20,6 @@ use BEdita\Core\Model\Entity\ObjectCategory;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\TagsTable&\Cake\ORM\Association\BelongsTo $Tags
- *
  * @method \BEdita\Core\Model\Entity\ObjectCategory get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory[] newEntities(array $data, array $options = [])
@@ -47,7 +46,7 @@ class ObjectTagsTable extends ObjectCategoriesTable
         $this->belongsTo('Tags', [
             'foreignKey' => 'category_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Tags'
+            'className' => 'BEdita/Core.Tags',
         ]);
         $this->associations()->remove('Categories');
     }

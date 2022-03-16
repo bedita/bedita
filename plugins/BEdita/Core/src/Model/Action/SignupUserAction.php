@@ -47,7 +47,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @var string
      */
-    const BE_USER_EXISTS = 'be_user_exists';
+    public const BE_USER_EXISTS = 'be_user_exists';
 
     /**
      * The UsersTable table
@@ -88,7 +88,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -297,7 +297,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param string $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
      * @param bool $verified Add `verified` value to entity
-     *
      * @return \BEdita\Core\Model\Entity\User The User entity created
      * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
@@ -473,13 +472,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         $baseUrl = $urlOptions['activation_url'];
         $redirectUrl = empty($urlOptions['redirect_url']) ? '' : '&redirect_url=' . rawurlencode($urlOptions['redirect_url']);
-        $baseUrl .= (strpos($baseUrl, '?') === false) ? '?' : '&';
+        $baseUrl .= strpos($baseUrl, '?') === false ? '?' : '&';
 
         return sprintf('%suuid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

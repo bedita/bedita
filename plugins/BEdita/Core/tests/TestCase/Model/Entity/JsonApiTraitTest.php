@@ -63,7 +63,7 @@ class JsonApiTraitTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -76,7 +76,7 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -90,7 +90,6 @@ class JsonApiTraitTest extends TestCase
      * Tet getter for table.
      *
      * @return void
-     *
      * @covers ::getTable()
      */
     public function testGetTable()
@@ -105,7 +104,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for ID.
      *
      * @return void
-     *
      * @covers ::getId()
      */
     public function testGetId()
@@ -121,7 +119,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for type.
      *
      * @return void
-     *
      * @covers ::getType()
      */
     public function testGetType()
@@ -137,7 +134,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for attributes.
      *
      * @return void
-     *
      * @covers ::getAttributes()
      * @covers ::filterFields()
      */
@@ -162,7 +158,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     *
      * @covers ::getLinks()
      * @covers ::routeNamePrefix()
      */
@@ -183,7 +178,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::listAssociations()
      */
@@ -209,7 +203,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::listAssociations()
      */
@@ -228,7 +221,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -263,7 +255,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -320,7 +311,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -361,7 +351,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -379,7 +368,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::filterFields()
      */
@@ -413,7 +401,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaNotAccessible()
@@ -431,7 +418,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaExtra()
@@ -461,7 +447,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::joinData()
      */
@@ -498,7 +483,6 @@ class JsonApiTraitTest extends TestCase
      * Test `tree` join data.
      *
      * @return void
-     *
      * @covers ::joinData()
      */
     public function testTreeJoinData(): void
@@ -518,7 +502,6 @@ class JsonApiTraitTest extends TestCase
      * Test missing join data.
      *
      * @return void
-     *
      * @covers ::joinData()
      */
     public function testMissingJoinData(): void
@@ -531,7 +514,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaJoinData()
@@ -618,7 +600,6 @@ class JsonApiTraitTest extends TestCase
      * @param int $options JSON API serializer options.
      * @param array $fields Fields filter data.
      * @return void
-     *
      * @covers ::jsonApiSerialize()
      * @covers ::setFields()
      * @dataProvider jsonApiSerializeProvider()
@@ -630,7 +611,7 @@ class JsonApiTraitTest extends TestCase
             'type' => 'roles',
             'attributes' => [
                 'name' => 'first role',
-                'description' => 'this is the very first role'
+                'description' => 'this is the very first role',
             ],
             'meta' => [
                 'created' => '2016-04-15T09:57:38+00:00',
@@ -680,7 +661,6 @@ class JsonApiTraitTest extends TestCase
      * Test that `count` is present in meta of relationships
      *
      * @return void
-     *
      * @covers ::jsonApiSerialize()
      * @covers ::getRelationshipCount()
      * @dataProvider metaCountProvider()

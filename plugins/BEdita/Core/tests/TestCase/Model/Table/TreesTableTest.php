@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -138,7 +137,6 @@ class TreesTableTest extends TestCase
      * @param int|null $parentId The parent id
      * @param int|null $objectId The object id
      * @return void
-     *
      * @dataProvider isParentValidProvider
      * @covers ::isParentValid()
      * @covers ::isFolder()
@@ -191,7 +189,6 @@ class TreesTableTest extends TestCase
      * @param int|null $objectId Object ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     *
      * @dataProvider isPositionUniqueProvider
      * @covers ::isPositionUnique()
      * @covers ::isFolder()
@@ -233,7 +230,6 @@ class TreesTableTest extends TestCase
      * @param int $rootExpected Expected root ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     *
      * @dataProvider changeRootProvider
      * @covers ::afterSave()
      */
@@ -260,7 +256,6 @@ class TreesTableTest extends TestCase
      * Test `afterSave` on new item
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testAfterSaveNew()
@@ -336,7 +331,6 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param bool $primary Is this a "primary" delete operation?
      * @return void
-     *
      * @dataProvider deleteOrphanedProvider()
      * @covers ::beforeDelete()
      * @covers ::isFolder()
@@ -391,7 +385,6 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param int|string $position Position.
      * @return void
-     *
      * @dataProvider setPositionProvider()
      * @covers ::afterSave()
      */
@@ -478,10 +471,8 @@ class TreesTableTest extends TestCase
      * @param array|\Exception $expected Expected array path or exception.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
-     *
      * @return void
      */
     public function testFindPathNodes($expected, array $options): void

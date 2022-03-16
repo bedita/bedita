@@ -52,7 +52,7 @@ class RolesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -63,7 +63,7 @@ class RolesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -120,7 +120,6 @@ class RolesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -143,7 +142,6 @@ class RolesTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     *
      * @covers ::findMine()
      */
     public function testFindMine()

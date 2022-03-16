@@ -63,7 +63,7 @@ class ObjectModelBehavior extends Behavior
     public function addRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
     {
         $action = new AddRelatedObjectsAction([
-            'association' => $entity->getTable()->associations()->getByProperty($relation)
+            'association' => $entity->getTable()->associations()->getByProperty($relation),
         ]);
         $action(compact('entity', 'relatedEntities'));
     }
@@ -79,7 +79,7 @@ class ObjectModelBehavior extends Behavior
     public function replaceRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
     {
         $action = new SetRelatedObjectsAction([
-            'association' => $entity->getTable()->associations()->getByProperty($relation)
+            'association' => $entity->getTable()->associations()->getByProperty($relation),
         ]);
         $action(compact('entity', 'relatedEntities'));
     }
@@ -95,7 +95,7 @@ class ObjectModelBehavior extends Behavior
     public function removeRelated(ObjectEntity $entity, string $relation, array $relatedEntities): void
     {
         $action = new RemoveRelatedObjectsAction([
-            'association' => $entity->getTable()->associations()->getByProperty($relation)
+            'association' => $entity->getTable()->associations()->getByProperty($relation),
         ]);
         $action(compact('entity', 'relatedEntities'));
     }

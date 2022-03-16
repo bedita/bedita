@@ -109,14 +109,14 @@ class ApplicationsTableTest extends TestCase
                 true,
                 [
                     'name' => 'Unique Application Name',
-                    'description' => 'app description'
+                    'description' => 'app description',
                 ],
             ],
             'notUniqueName' => [
                 false,
                 [
                     'name' => 'First app',
-                    'description' => 'app description'
+                    'description' => 'app description',
                 ],
             ],
             'missingName' => [
@@ -161,7 +161,6 @@ class ApplicationsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -210,7 +209,6 @@ class ApplicationsTableTest extends TestCase
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
      * @return void
-     *
      * @covers ::beforeSave()
      * @covers ::beforeDelete()
      * @covers ::generateApiKey()
@@ -223,7 +221,7 @@ class ApplicationsTableTest extends TestCase
         } else {
             $application = $this->Applications->newEntity([
                 'name' => 'Second App',
-                'description' => 'app description'
+                'description' => 'app description',
             ]);
         }
 
@@ -288,7 +286,6 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param string $apiKey API key.
      * @return void
-     *
      * @covers ::findApiKey()
      * @dataProvider findApiKeyProvider()
      */
@@ -316,14 +313,14 @@ class ApplicationsTableTest extends TestCase
                 1,
                 [
                     'client_id' => API_KEY,
-                ]
+                ],
             ],
             'secret' => [
                 2,
                 [
                     'client_id' => 'abcdef12345',
                     'client_secret' => 'topsecretstring',
-                ]
+                ],
             ],
             'badMethodException' => [
                 new \BadMethodCallException('Required option "client_id" must be a not empty string'),
@@ -338,7 +335,6 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findCredentialsProvider()
      * @covers ::findCredentials()
      */
@@ -362,7 +358,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAfterDelete(): void
@@ -387,7 +382,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAfterSave(): void
@@ -409,7 +403,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing default application
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testDeleteDefaultApplication()
@@ -425,7 +418,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing current application
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testDeleteCurrentApplication()
@@ -442,7 +434,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling default application
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testDisableDefaultApplication()
@@ -459,7 +450,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling current application in use
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testDisableCurrentApplication()

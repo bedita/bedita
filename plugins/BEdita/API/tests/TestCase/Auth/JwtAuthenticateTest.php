@@ -48,7 +48,7 @@ class JwtAuthenticateTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -62,7 +62,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `authenticate()` method
      *
      * @return void
-     *
      * @covers ::authenticate()
      */
     public function testAuthenticate(): void
@@ -80,7 +79,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getPayload()` method
      *
      * @return void
-     *
      * @covers ::getPayload()
      */
     public function testGetPayload(): void
@@ -103,7 +101,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getUser()` method
      *
      * @return void
-     *
      * @covers ::getUser()
      */
     public function testGetUser(): void
@@ -120,7 +117,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getUser()` method
      *
      * @return void
-     *
      * @covers ::getUser()
      */
     public function testGetUserFalse(): void
@@ -134,7 +130,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `handleRefreshToken()` method
      *
      * @return void
-     *
      * @covers ::handleRefreshToken()
      * @covers ::getUser()
      */
@@ -164,7 +159,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `handleRefreshToken()` method on renew client credentials case
      *
      * @return void
-     *
      * @covers ::handleRefreshToken()
      */
     public function testRenewClientCredentials(): void
@@ -222,7 +216,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `checkAudience()` method
      *
      * @return void
-     *
      * @dataProvider checkAudienceProvider
      * @covers ::checkAudience()
      */
@@ -259,7 +252,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
@@ -280,7 +272,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
      * @covers ::unauthenticated()
      */
     public function testUnauthenticatedWithInternalErrorMessage()

@@ -36,7 +36,6 @@ use Cake\Utility\Inflector;
  * Controller for `/auth` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  * @property \BEdita\Core\Model\Table\AuthProvidersTable $AuthProviders
  */
@@ -49,7 +48,7 @@ class LoginController extends AppController
      *
      * @var array
      */
-    const PASSWORD_HASHER = [
+    public const PASSWORD_HASHER = [
         'className' => 'Fallback',
         'hashers' => [
             'Default',
@@ -58,7 +57,7 @@ class LoginController extends AppController
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -398,9 +397,9 @@ class LoginController extends AppController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    protected function findAssociation(string $relationship, Table $table = null): Association
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
         $relationship = Inflector::underscore($relationship);
         $association = $this->Users->associations()->getByProperty($relationship);

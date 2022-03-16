@@ -43,7 +43,6 @@ class RelationsBehaviorTest extends TestCase
      * Test initial setup
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::objectType()
      * @covers ::setupRelations()
@@ -84,7 +83,6 @@ class RelationsBehaviorTest extends TestCase
      * Test that no error occurs on an unknown object type, and no associations are set up.
      *
      * @return void
-     *
      * @covers ::setupRelations()
      */
     public function testUnknownObjectType()
@@ -102,7 +100,6 @@ class RelationsBehaviorTest extends TestCase
      * Test getter of relations.
      *
      * @return void
-     *
      * @covers ::getRelations()
      */
     public function testGetRelations()

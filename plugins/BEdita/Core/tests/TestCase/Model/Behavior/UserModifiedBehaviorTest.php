@@ -49,7 +49,7 @@ class UserModifiedBehaviorTest extends TestCase
     protected $Objects;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -60,7 +60,7 @@ class UserModifiedBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -73,7 +73,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test behavior initialization process.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -98,7 +97,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test setting a custom user ID.
      *
      * @return void
-     *
      * @covers ::userId()
      */
     public function testUserId()
@@ -118,7 +116,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test implemented events.
      *
      * @return void
-     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -136,7 +133,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return \BEdita\Core\Model\Entity\ObjectEntity
-     *
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
@@ -156,7 +152,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return void
-     *
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
@@ -180,7 +175,6 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()
@@ -198,7 +192,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity with an unknown event.
      *
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()
@@ -218,7 +211,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity when one of the fields is dirty already.
      *
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()

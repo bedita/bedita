@@ -61,7 +61,6 @@ class CustomPropsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     *
      * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
@@ -75,7 +74,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::customPropsByType()
      * @covers ::objectsGenerator()
@@ -95,7 +93,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` with `id` and `type` option
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::customPropsByType()
      */
@@ -110,7 +107,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::customPropsByType()
      * @covers ::objectsGenerator()

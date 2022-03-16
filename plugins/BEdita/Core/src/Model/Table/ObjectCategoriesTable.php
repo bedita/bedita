@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -24,7 +23,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $Categories
- *
  * @method \BEdita\Core\Model\Entity\ObjectCategory get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory[] newEntities(array $data, array $options = [])
@@ -54,12 +52,12 @@ class ObjectCategoriesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
         $this->belongsTo('Categories', [
             'foreignKey' => 'category_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Categories'
+            'className' => 'BEdita/Core.Categories',
         ]);
     }
 

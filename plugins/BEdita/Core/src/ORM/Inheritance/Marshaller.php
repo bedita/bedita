@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
-use Cake\Database\Type;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Table as CakeTable;
 

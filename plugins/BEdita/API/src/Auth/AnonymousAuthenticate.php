@@ -25,7 +25,7 @@ use Cake\Http\ServerRequest;
 class AnonymousAuthenticate extends BaseAuthenticate
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
@@ -33,7 +33,7 @@ class AnonymousAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUser(ServerRequest $request)
     {

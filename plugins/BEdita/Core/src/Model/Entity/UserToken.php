@@ -33,7 +33,7 @@ use Cake\ORM\Entity;
 class UserToken extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

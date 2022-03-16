@@ -32,7 +32,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $RootObjects
  * @property \Cake\ORM\Association\BelongsTo $ParentNode
  * @property \Cake\ORM\Association\HasMany $ChildNodes
- *
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] newEntities(array $data, array $options = [])
@@ -40,7 +39,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  */
 class TreesTable extends Table
@@ -66,22 +64,22 @@ class TreesTable extends Table
         $this->belongsTo('ParentObjects', [
             'foreignKey' => 'parent_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Folders'
+            'className' => 'BEdita/Core.Folders',
         ]);
         $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Folders'
+            'className' => 'BEdita/Core.Folders',
         ]);
 
         // associations with trees
         $this->belongsTo('ParentNode', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_node_id'
+            'foreignKey' => 'parent_node_id',
         ]);
         $this->hasMany('ChildNodes', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_node_id'
+            'foreignKey' => 'parent_node_id',
         ]);
 
         $this->addBehavior('BEdita/Core.Tree', [

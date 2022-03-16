@@ -25,7 +25,7 @@ use Cake\Utility\Text;
 class MetadataTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Locations',
@@ -77,7 +77,6 @@ class MetadataTest extends IntegrationTestCase
      * @param string $type Object type.
      * @param array $attributes New attributes.
      * @return void
-     *
      * @dataProvider lastModifiedProvider
      * @coversNothing
      */

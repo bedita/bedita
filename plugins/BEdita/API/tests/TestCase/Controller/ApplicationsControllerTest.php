@@ -12,8 +12,8 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ApplicationsController
@@ -24,7 +24,6 @@ class ApplicationsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      */
     public function testIndex()
@@ -39,8 +38,8 @@ class ApplicationsControllerTest extends IntegrationTestCase
                         'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/admin/applications/1'
-                    ]
+                        'self' => 'http://api.example.com/admin/applications/1',
+                    ],
                 ],
                 [
                     'id' => '2',

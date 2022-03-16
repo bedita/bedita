@@ -49,7 +49,7 @@ class ListEntitiesActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -103,7 +103,6 @@ class ListEntitiesActionTest extends TestCase
      * @param array $expected Expected result.
      * @param string $filter Filter to be parsed
      * @return void
-     *
      * @dataProvider parseFilterProvider()
      * @covers ::parseFilter()
      */
@@ -231,7 +230,6 @@ class ListEntitiesActionTest extends TestCase
      * @param mixed $filter Filter.
      * @param string $table Table name.
      * @return void
-     *
      * @dataProvider executeProvider()
      * @covers ::initialize()
      * @covers ::buildFilter()
@@ -252,7 +250,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with custom prop filter.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::buildFilter()
      * @covers ::execute()
@@ -276,7 +273,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with contained entities.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::buildFilter()
      * @covers ::execute()
@@ -334,7 +330,6 @@ class ListEntitiesActionTest extends TestCase
      * Test filter error.
      *
      * @return void
-     *
      * @covers ::buildFilter()
      * @covers ::execute()
      */

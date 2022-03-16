@@ -95,7 +95,7 @@ class AssociationCollection extends CakeAssociationCollection
      * @param \Cake\ORM\Association|null $association Association being inherited.
      * @return \Cake\ORM\Association
      */
-    protected function inheritAssociation(Association $association = null)
+    protected function inheritAssociation(?Association $association = null)
     {
         if ($association === null) {
             return $association;
@@ -111,7 +111,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function get($alias): ?Association
     {
@@ -124,7 +124,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getByProperty($prop): ?Association
     {
@@ -137,7 +137,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function has($alias): bool
     {
@@ -145,7 +145,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function keys(): array
     {
@@ -153,7 +153,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getByType($class): array
     {
@@ -163,7 +163,7 @@ class AssociationCollection extends CakeAssociationCollection
     /**
      * {@inheritDoc}
      *
-     * @param bool $cascade Should removal be cascaded to parent table's associations?
+     * @param bool $alias Should removal be cascaded to parent table's associations?
      */
     public function remove($alias, $cascade = true): void
     {
@@ -174,7 +174,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function removeAll(): void
     {
@@ -183,7 +183,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _getNoCascadeItems($entity, $options)
     {
@@ -194,7 +194,7 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getIterator(): Traversable
     {

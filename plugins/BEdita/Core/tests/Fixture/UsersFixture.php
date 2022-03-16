@@ -23,7 +23,7 @@ use Cake\Auth\WeakPasswordHasher;
 class UsersFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function init(): void
     {

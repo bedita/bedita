@@ -52,7 +52,6 @@ use Cake\Routing\Router;
  * @property \BEdita\Core\Model\Entity\Folder[] $parents
  * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
  * @property \BEdita\Core\Model\Entity\Translation[] $translations
- *
  * @since 4.0.0
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
@@ -63,7 +62,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -81,14 +80,14 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'type',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'created_by_user',
@@ -128,7 +127,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getTable()
     {
@@ -136,7 +135,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getType()
     {
@@ -144,7 +143,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getMeta()
     {
@@ -152,7 +151,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getLinks()
     {
@@ -174,7 +173,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected static function listAssociations(Table $Table, array $hidden = [])
     {
@@ -185,7 +184,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getRelationships()
     {
@@ -249,7 +248,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getVisible(): array
     {

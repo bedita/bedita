@@ -60,8 +60,8 @@ abstract class CategoriesTagsBaseTable extends Table
     /**
      * Find enabled items
      *
-     * @param Query $query Query object
-     * @return Query
+     * @param \Cake\ORM\Query $query Query object
+     * @return \Cake\ORM\Query
      */
     protected function findEnabled(Query $query)
     {
@@ -76,9 +76,9 @@ abstract class CategoriesTagsBaseTable extends Table
      *  - `names`, categories names array
      *  - `typeId`, object typ id (in case of categories, with `_categories` option set)
      *
-     * @param Query $query Query object
+     * @param \Cake\ORM\Query $query Query object
      * @param array $options Array containing object type id and category names.
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function findIds(Query $query, array $options)
     {
@@ -119,7 +119,7 @@ abstract class CategoriesTagsBaseTable extends Table
             'tree_right',
             'enabled',
             'created',
-            'modified'
+            'modified',
         ];
         $query->formatResults(function (CollectionInterface $results) use ($hidden) {
             return $results->map(function ($row) use ($hidden) {

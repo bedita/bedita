@@ -58,7 +58,6 @@ class ProjectModelCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     *
      * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
@@ -72,7 +71,6 @@ class ProjectModelCommandTest extends TestCase
      * Test execute method
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
@@ -91,7 +89,6 @@ class ProjectModelCommandTest extends TestCase
      * Test file load failure
      *
      * @return void
-     *
      * @covers ::modelFilePath()
      * @covers ::execute()
      */
@@ -106,7 +103,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
@@ -121,7 +117,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
@@ -137,7 +132,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testContentFailure(): void
@@ -154,7 +148,6 @@ class ProjectModelCommandTest extends TestCase
      * Test remove from model
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testRemove(): void
@@ -173,7 +166,6 @@ class ProjectModelCommandTest extends TestCase
      * Test update model items
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testUpdate(): void

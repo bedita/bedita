@@ -22,7 +22,6 @@ use Cake\Validation\Validator;
  * Tags Model
  *
  * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectTags
- *
  * @method \BEdita\Core\Model\Entity\Tag get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tag newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tag[] newEntities(array $data, array $options = [])
@@ -31,7 +30,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tag patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tag[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tag findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class TagsTable extends CategoriesTagsBaseTable
@@ -61,7 +59,7 @@ class TagsTable extends CategoriesTagsBaseTable
 
         $this->hasMany('ObjectTags', [
             'foreignKey' => 'category_id',
-            'className' => 'BEdita/Core.ObjectTags'
+            'className' => 'BEdita/Core.ObjectTags',
         ]);
     }
 

@@ -26,7 +26,7 @@ use Swaggest\JsonSchema\Schema;
 class RelationsBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'implementedMethods' => [
@@ -36,7 +36,7 @@ class RelationsBehavior extends Behavior
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {

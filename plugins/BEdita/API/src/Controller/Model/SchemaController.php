@@ -22,7 +22,6 @@ use Cake\Http\Response;
  * Controller for `/model/schema/{type}` endpoint.
  *
  * @since 4.0.0
- *
  */
 class SchemaController extends JsonBaseController
 {
@@ -31,7 +30,7 @@ class SchemaController extends JsonBaseController
      *
      * @var string
      */
-    const CONTENT_TYPE = 'application/schema+json';
+    public const CONTENT_TYPE = 'application/schema+json';
 
     /**
      * {@inheritDoc}

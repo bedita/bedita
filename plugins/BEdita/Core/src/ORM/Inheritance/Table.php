@@ -51,7 +51,7 @@ class Table extends CakeTable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function marshaller(): CakeMarshaller
     {
@@ -59,7 +59,7 @@ class Table extends CakeTable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function query(): CakeQuery
     {
@@ -180,7 +180,7 @@ class Table extends CakeTable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function hasFinder($type): bool
     {
@@ -197,7 +197,7 @@ class Table extends CakeTable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function callFinder($type, CakeQuery $query, array $options = []): CakeQuery
     {
@@ -226,7 +226,7 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      *
-     * @param bool $inheritedFields Should fields from inherited tables be considered?
+     * @param bool $field Should fields from inherited tables be considered?
      */
     public function hasField($field, $inheritedFields = true): bool
     {

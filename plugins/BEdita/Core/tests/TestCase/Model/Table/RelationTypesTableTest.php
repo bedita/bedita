@@ -113,7 +113,6 @@ class RelationTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     *
      * @dataProvider validationProvider
      * @coversNothing
      */
@@ -130,7 +129,6 @@ class RelationTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -160,7 +158,6 @@ class RelationTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()

@@ -104,7 +104,6 @@ class ObjectTagsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider buildRulesProvider
      * @covers \BEdita\Core\Model\Table\ObjectCategoriesTable::buildRules()

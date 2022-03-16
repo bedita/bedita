@@ -44,7 +44,7 @@ class TokenMiddlewareTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -132,11 +132,9 @@ class TokenMiddlewareTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $server Request $_SERVER data.
      * @param array|null $query Request query data.
-     * @param boolean $blockAnonymous Block anonymous apps flag.
+     * @param bool $blockAnonymous Block anonymous apps flag.
      * @return void
-     *
      * @dataProvider invokeProvider
-     *
      * @covers ::__invoke()
      * @covers ::readApplication()
      * @covers ::getToken()
@@ -179,7 +177,6 @@ class TokenMiddlewareTest extends TestCase
      * Test default behavior on missing 'Security.blockAnonymousApps' key
      *
      * @return void
-     *
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
      */
@@ -202,7 +199,6 @@ class TokenMiddlewareTest extends TestCase
      * Test default behavior on `client_credentials` request
      *
      * @return void
-     *
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
      */
@@ -240,7 +236,6 @@ class TokenMiddlewareTest extends TestCase
      * Test behavior on OPTIONS request
      *
      * @return void
-     *
      * @covers ::__invoke()
      */
     public function testOptionsRequest()
@@ -270,7 +265,6 @@ class TokenMiddlewareTest extends TestCase
      * Test expired token
      *
      * @return void
-     *
      * @covers ::decodeToken()
      */
     public function testExpiredToken(): void
@@ -298,7 +292,6 @@ class TokenMiddlewareTest extends TestCase
      * Test malformed token
      *
      * @return void
-     *
      * @covers ::decodeToken()
      */
     public function testMalformedToken(): void

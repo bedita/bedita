@@ -51,7 +51,7 @@ class RelationsTest extends TestCase
             'description' => 'Document or event has a poster file',
             'left' => ['documents', 'events'],
             'right' => ['files'],
-        ]
+        ],
     ];
 
     /**

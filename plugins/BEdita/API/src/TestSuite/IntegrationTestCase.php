@@ -81,11 +81,11 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      */
     protected $defaultUser = [
         'username' => 'first user',
-        'password' => 'password1'
+        'password' => 'password1',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -94,7 +94,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -105,14 +105,14 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
 
         EventManager::instance()->on(new CommonEventHandler());
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -148,6 +148,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     protected function _makeDispatcher(): MiddlewareDispatcher

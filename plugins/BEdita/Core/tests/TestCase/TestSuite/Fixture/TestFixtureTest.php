@@ -12,37 +12,23 @@
  */
 namespace BEdita\Core\Test\TestCase\TestSuite\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
 use BEdita\Core\Test\Fixture\ObjectsFixture;
 use BEdita\Core\Test\Fixture\RolesFixture;
+use BEdita\Core\TestSuite\Fixture\TestFixture;
 use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\TestCase;
 
-/**
- * TestMissingSchemaFileFixture class
- */
+// @codingStandardsIgnoreStart
 class TestMissingSchemaFileFixture extends TestFixture
 {
-    /**
-     * {@inheritDoc}
-     */
     protected $schemaPlugin = 'BEdita/API';
 }
 
-/**
- * TestMissingSchemaPluginFixture class
- */
 class TestMissingSchemaPluginFixture extends TestFixture
 {
-    /**
-     * {@inheritDoc}
-     */
     protected $schemaPlugin = 'NotAPluginLoaded';
 }
 
-/**
- * TestMissingTableFromSchemaFixture class
- */
 class TestMissingTableFromSchemaFixture extends TestFixture
 {
 }
@@ -58,8 +44,8 @@ class TestFixtureTest extends TestCase
      * test init()
      *
      * @return void
-     *
      * @covers ::init()
+     * @codingStandardsIgnoreEnd
      */
     public function testInit()
     {
@@ -82,7 +68,6 @@ class TestFixtureTest extends TestCase
      * test implementedEvents()
      *
      * @return void
-     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -105,38 +90,38 @@ class TestFixtureTest extends TestCase
 
         return [
             'missingSchemaFile' => [
-                new \Cake\Core\Exception\Exception(
+                new \Cake\Core\Exception\CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_files',
                         TestMissingSchemaFileFixture::class
                     )
                 ),
-                TestMissingSchemaFileFixture::class
+                TestMissingSchemaFileFixture::class,
             ],
             'missingSchemaPlugin' => [
-                new \Cake\Core\Exception\Exception(
+                new \Cake\Core\Exception\CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_plugins',
                         TestMissingSchemaPluginFixture::class
                     )
                 ),
-                TestMissingSchemaPluginFixture::class
+                TestMissingSchemaPluginFixture::class,
             ],
             'missingTableFromSchema' => [
-                new \Cake\Core\Exception\Exception(
+                new \Cake\Core\Exception\CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_table_from_schemas',
                         TestMissingTableFromSchemaFixture::class
                     )
                 ),
-                TestMissingTableFromSchemaFixture::class
+                TestMissingTableFromSchemaFixture::class,
             ],
             'ok' => [
                 true,
-                RolesFixture::class
+                RolesFixture::class,
             ],
         ];
     }
@@ -147,7 +132,6 @@ class TestFixtureTest extends TestCase
      * @param mixed $expected The expected result
      * @param string $fixtureClass The fixture class to use
      * @return void
-     *
      * @dataProvider fieldsFromConfigProvider
      * @covers ::fieldsFromConf()
      * @covers ::getTableSchemaFromConf()
@@ -181,7 +165,7 @@ class TestFixtureTest extends TestCase
                         'precision' => null,
                         'null' => null,
                         'default' => null,
-                        'comment' => null
+                        'comment' => null,
                     ],
                     'name' => [
                         'type' => 'string',
@@ -190,24 +174,24 @@ class TestFixtureTest extends TestCase
                         'null' => null,
                         'default' => null,
                         'comment' => null,
-                        'fixed' => null
+                        'fixed' => null,
                     ],
                     '_constraints' => [
                         'primary' => [
                             'type' => 'primary',
                             'columns' => ['id'],
-                            'length' => []
+                            'length' => [],
                         ],
                     ],
                     '_indexes' => [
                         'test_name_idx' => [
                             'type' => 'index',
                             'columns' => ['name'],
-                            'length' => []
+                            'length' => [],
                         ],
                     ],
                     '_options' => [
-                        'collation' => 'utf8_general_ci'
+                        'collation' => 'utf8_general_ci',
                     ],
                 ],
                 [
@@ -216,7 +200,7 @@ class TestFixtureTest extends TestCase
                             'type' => 'integer',
                             'length' => 10,
                             'unsigned' => true,
-                            'autoIncrement' => true
+                            'autoIncrement' => true,
                         ],
                         'name' => [
                             'type' => 'string',
@@ -227,18 +211,18 @@ class TestFixtureTest extends TestCase
                     'constraints' => [
                         'primary' => [
                             'type' => 'primary',
-                            'columns' => ['id']
+                            'columns' => ['id'],
                         ],
                     ],
                     'indexes' => [
                         'test_name_idx' => [
                             'type' => 'index',
-                            'columns' => ['name']
+                            'columns' => ['name'],
                         ],
                     ],
-                    'options' => ['collation' => 'utf8_general_ci']
-                ]
-            ]
+                    'options' => ['collation' => 'utf8_general_ci'],
+                ],
+            ],
         ];
     }
 
@@ -248,7 +232,6 @@ class TestFixtureTest extends TestCase
      * @param array $expected The expected `Fixture::$fields`
      * @param array $data The schema data used to build `TableSchema`
      * @return void
-     *
      * @dataProvider schemaToFieldsProvider
      * @covers ::fieldsFromConf()
      */

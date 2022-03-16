@@ -51,7 +51,7 @@ class StreamTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -61,7 +61,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -129,7 +129,6 @@ class StreamTest extends TestCase
      * @param string $filesystem Filesystem name.
      * @param int $subLevels Number of sub-levels.
      * @return void
-     *
      * @dataProvider filesystemPathProvider()
      * @covers ::filesystemPath()
      */
@@ -147,7 +146,6 @@ class StreamTest extends TestCase
      * Test getter of contents.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContents()
@@ -166,7 +164,6 @@ class StreamTest extends TestCase
      * Test getter of contents for a missing file.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContentsFileNotReadable()
@@ -182,7 +179,6 @@ class StreamTest extends TestCase
      * Test getter of contents for a file not uploaded.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContentsNotUploaded()
@@ -265,7 +261,6 @@ class StreamTest extends TestCase
      * @param \Exception|string $expected Expected stream contents.
      * @param mixed $contents Contents.
      * @return void
-     *
      * @dataProvider setContentsProvider()
      * @covers ::_setContents()
      * @covers ::createStream()
@@ -314,7 +309,6 @@ class StreamTest extends TestCase
      * @param string|null $expected Expected result.
      * @param string $uuid UUID of stream to test.
      * @return void
-     *
      * @dataProvider getUrlProvider()
      * @covers ::_getUrl()
      */
@@ -334,7 +328,6 @@ class StreamTest extends TestCase
      * Test URL getter with private url.
      *
      * @return void
-     *
      * @covers ::_getUrl()
      */
     public function testGetUrlPrivate()
@@ -346,6 +339,7 @@ class StreamTest extends TestCase
 
     /**
      * Read data from image if is possible
+     *
      * @param Stream $stream stream entity
      */
 

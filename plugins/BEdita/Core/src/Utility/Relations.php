@@ -245,7 +245,7 @@ class Relations extends ResourcesBase
      *
      * @param array $data Relations data
      * @return void
-     * @throws BadRequestException
+     * @throws \Cake\Http\Exception\BadRequestException
      */
     protected static function validate(array $data): void
     {

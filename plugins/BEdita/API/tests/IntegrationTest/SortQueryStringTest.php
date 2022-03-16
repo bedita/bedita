@@ -26,7 +26,7 @@ class SortQueryStringTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.DateRanges'
+        'plugin.BEdita/Core.DateRanges',
     ];
 
     /**
@@ -55,12 +55,12 @@ class SortQueryStringTest extends IntegrationTestCase
             'notValidField' => [
                 400,
                 '/users',
-                'not_valid_field'
+                'not_valid_field',
             ],
             'roles' => [
                 200,
                 '/roles',
-                'name'
+                'name',
             ],
             'eventsSpecialSort' => [
                 200,
@@ -77,7 +77,6 @@ class SortQueryStringTest extends IntegrationTestCase
      * @param string $endpoint The object type
      * @param string $sort The field on which sort
      * @return void
-     *
      * @dataProvider sortProvider
      * @coversNothing
      */

@@ -22,7 +22,7 @@ use Cake\Core\Configure;
 class DefaultValuesTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
@@ -92,7 +92,6 @@ class DefaultValuesTest extends IntegrationTestCase
      * @param array $attributes Object attributes.
      * @param array $config DefaultValues config.
      * @return void
-     *
      * @dataProvider createProvider
      * @coversNothing
      */

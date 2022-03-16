@@ -41,7 +41,7 @@ class RelationTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -51,7 +51,7 @@ class RelationTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -87,7 +87,6 @@ class RelationTest extends TestCase
      * Test setter method for `name` and getter method for `alias`.
      *
      * @return void
-     *
      * @covers ::_setName()
      * @covers ::_getAlias()
      */
@@ -109,7 +108,6 @@ class RelationTest extends TestCase
      * Test setter method for `inverse_name` and getter method for `inverse_alias`.
      *
      * @return void
-     *
      * @covers ::_setInverseName()
      * @covers ::_getInverseAlias()
      */
@@ -131,7 +129,6 @@ class RelationTest extends TestCase
      * Test setter method for `params`.
      *
      * @return void
-     *
      * @covers ::_setParams()
      */
     public function testSetParams()
@@ -139,7 +136,7 @@ class RelationTest extends TestCase
         $properties = [
             'dummy' => [
                 'type' => 'string',
-                'description' => 'a dummy property'
+                'description' => 'a dummy property',
             ],
         ];
         $data = [

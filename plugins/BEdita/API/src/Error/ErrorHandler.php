@@ -19,7 +19,7 @@ use Cake\Utility\Hash;
 class ErrorHandler extends CakeErrorHandler
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _displayError(array $error, $debug): void
     {

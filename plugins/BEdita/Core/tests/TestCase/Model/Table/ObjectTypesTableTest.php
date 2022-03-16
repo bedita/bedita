@@ -15,7 +15,6 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -58,7 +57,7 @@ class ObjectTypesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -71,7 +70,7 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -217,7 +216,6 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
@@ -374,7 +372,6 @@ class ObjectTypesTableTest extends TestCase
      * @param array|false $expected Expected result.
      * @param string|int $primaryKey Primary key.
      * @return void
-     *
      * @dataProvider getProvider
      * @covers ::get()
      */
@@ -410,7 +407,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -439,7 +435,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
@@ -513,7 +508,6 @@ class ObjectTypesTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @covers ::findByRelation()
      * @dataProvider findByRelationProvider()
      */
@@ -539,7 +533,6 @@ class ObjectTypesTableTest extends TestCase
      * Test default finder.
      *
      * @return void
-     *
      * @covers ::findAll()
      */
     public function testFindAll()
@@ -563,7 +556,7 @@ class ObjectTypesTableTest extends TestCase
                 [
                     'singular' => 'foo',
                     'name' => 'foos',
-                ]
+                ],
             ],
             'cats' => [
                 [
@@ -572,7 +565,7 @@ class ObjectTypesTableTest extends TestCase
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'parent_name' => 'objects',
-                ]
+                ],
             ],
         ];
     }
@@ -582,7 +575,6 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param array $data Entity data.
      * @return void
-     *
      * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
@@ -807,7 +799,6 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param array $options The option passed to finder.
      * @return void
-     *
      * @covers ::findObjectId
      * @dataProvider findObjectIdProvider
      */
@@ -851,7 +842,6 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param array $options The option passed to finder.
      * @return void
-     *
      * @covers ::findParent()
      * @dataProvider findParentProvider
      */

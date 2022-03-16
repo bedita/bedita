@@ -33,7 +33,7 @@ class ThumbnailTest extends TestCase
      *
      * @var string
      */
-    const TEST_CONFIG = 'test';
+    public const TEST_CONFIG = 'test';
 
     /**
      * Original thumbnail registry.
@@ -50,7 +50,7 @@ class ThumbnailTest extends TestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -70,7 +70,7 @@ class ThumbnailTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -88,7 +88,6 @@ class ThumbnailTest extends TestCase
      * Test `setRegistry` method.
      *
      * @return void
-     *
      * @covers ::setRegistry()
      */
     public function testSetRegistry()
@@ -104,7 +103,6 @@ class ThumbnailTest extends TestCase
      * Test `getRegistry` method.
      *
      * @return void
-     *
      * @covers ::getRegistry()
      */
     public function testGetRegistry()
@@ -125,7 +123,6 @@ class ThumbnailTest extends TestCase
      * Test `getGenerator` with a generator that hasn't been loaded yet.
      *
      * @return void
-     *
      * @covers ::getGenerator()
      */
     public function testGetGeneratorNotLoaded()
@@ -144,7 +141,6 @@ class ThumbnailTest extends TestCase
      * Test `getGenerator` with a generator that has already been loaded.
      *
      * @return void
-     *
      * @covers ::getGenerator()
      */
     public function testGetGeneratorLoaded()
@@ -202,7 +198,7 @@ class ThumbnailTest extends TestCase
                 new \RuntimeException('Some exception', -1),
                 false,
                 new \RuntimeException('Some exception', -1),
-            ]
+            ],
         ];
     }
 
@@ -215,7 +211,6 @@ class ThumbnailTest extends TestCase
      *      of its generation? `true` for successful synchronous generation, `false` for successful
      *      asynchronous generation, exception for errors.
      * @return void
-     *
      * @dataProvider getProvider()
      * @covers ::get()
      * @covers ::getOptions()
@@ -268,7 +263,6 @@ class ThumbnailTest extends TestCase
      * Test `getOptions` method with a missing preset.
      *
      * @return void
-     *
      * @covers ::getOptions()
      */
     public function testGetOptionsMissingPreset()
@@ -285,7 +279,6 @@ class ThumbnailTest extends TestCase
      * Test `getOptions` method with custom options disallowed.
      *
      * @return void
-     *
      * @covers ::getOptions()
      */
     public function testGetOptionsCustomNotAllowed()
@@ -302,7 +295,6 @@ class ThumbnailTest extends TestCase
      * Test `delete` method.
      *
      * @return void
-     *
      * @covers ::delete()
      */
     public function testDelete()
@@ -325,7 +317,6 @@ class ThumbnailTest extends TestCase
      * Test `get` with private URL
      *
      * @covers ::get()
-     *
      * @return void
      */
     public function testGetPrivateUrl(): void

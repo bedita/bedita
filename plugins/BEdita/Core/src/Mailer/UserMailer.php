@@ -90,7 +90,7 @@ class UserMailer extends Mailer
         $this->set([
             'user' => $user,
             'activationUrl' => $options['params']['activationUrl'],
-            'projectName' => $projectName
+            'projectName' => $projectName,
         ]);
 
         $this->viewBuilder()
@@ -132,7 +132,7 @@ class UserMailer extends Mailer
         $this->set([
             'user' => $user,
             'changeUrl' => $options['params']['changeUrl'],
-            'projectName' => $projectName
+            'projectName' => $projectName,
         ]);
 
         $this->viewBuilder()
@@ -172,6 +172,6 @@ class UserMailer extends Mailer
     {
         $name = Configure::read('Project.name');
 
-        return ($name !== null) ? $name : 'BEdita';
+        return $name ?? 'BEdita';
     }
 }

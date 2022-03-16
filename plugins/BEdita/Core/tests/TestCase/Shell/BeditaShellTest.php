@@ -17,7 +17,6 @@ use BEdita\Core\Shell\Task\InitSchemaTask;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Utility\Hash;
 
@@ -33,17 +32,17 @@ class BeditaShellTest
      *
      * @var string
      */
-    const TEMP_CONNECTION = 'temporary_connection';
+    public const TEMP_CONNECTION = 'temporary_connection';
 
     /**
      * Name for temporary configuration file.
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'app.temp.php';
+    public const TEMP_FILE = TMP . 'app.temp.php';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -58,7 +57,7 @@ class BeditaShellTest
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {

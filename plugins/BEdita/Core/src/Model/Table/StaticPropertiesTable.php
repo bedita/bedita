@@ -31,7 +31,6 @@ use Cake\ORM\TableRegistry;
  *
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- *
  * @method \BEdita\Core\Model\Entity\StaticProperty get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty[] newEntities(array $data, array $options = [])
@@ -39,13 +38,12 @@ use Cake\ORM\TableRegistry;
  * @method \BEdita\Core\Model\Entity\StaticProperty patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class StaticPropertiesTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {

@@ -13,8 +13,6 @@
 namespace BEdita\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\Database\Exception;
-use Cake\Datasource\ModelAwareTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -31,7 +29,6 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * These values will be converted to their boolean equivalents or to null.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class DatabaseConfig implements ConfigEngineInterface
@@ -50,7 +47,7 @@ class DatabaseConfig implements ConfigEngineInterface
      *
      * @var array
      */
-    const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
+    public const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
      * Setup application `id` if provided.

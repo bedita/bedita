@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  * Provide authorization on a per-endpoint basis.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\EndpointsTable $Endpoints
  * @property \BEdita\Core\Model\Table\EndpointPermissionsTable $EndpointPermissions
  */
@@ -58,7 +57,7 @@ class EndpointAuthorize extends BaseAuthorize
     protected $authorized;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authorize($user, ServerRequest $request): bool
     {

@@ -32,7 +32,7 @@ use Cake\Http\MiddlewareQueue;
 class CommonEventHandler implements EventListenerInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

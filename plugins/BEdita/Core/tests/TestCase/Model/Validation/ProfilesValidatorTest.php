@@ -104,7 +104,6 @@ class ProfilesValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     *
      * @dataProvider validationProvider()
      */
     public function testValidation(array $expected, array $data, $newRecord = true)

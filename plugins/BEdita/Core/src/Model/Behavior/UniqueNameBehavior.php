@@ -37,14 +37,14 @@ class UniqueNameBehavior extends Behavior
      *
      * @var int
      */
-    const UNAME_MAX_REGENERATE = 10;
+    public const UNAME_MAX_REGENERATE = 10;
 
     /**
      * Max regenerate iterations to avoid duplicates.
      *
      * @var int
      */
-    const UNAME_MAX_LENGTH = 255;
+    public const UNAME_MAX_LENGTH = 255;
 
     /**
      * Default configuration.
@@ -174,7 +174,7 @@ class UniqueNameBehavior extends Behavior
      * @param int|null $id object id to exclude from check
      * @return bool
      */
-    public function uniqueNameExists(string $uname, int $id = null): bool
+    public function uniqueNameExists(string $uname, ?int $id = null): bool
     {
         $options = ['uname' => $uname];
         if (!empty($id)) {

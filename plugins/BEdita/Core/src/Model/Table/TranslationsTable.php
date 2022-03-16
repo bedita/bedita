@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -25,7 +24,6 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $ModifiedByUsers
- *
  * @method \BEdita\Core\Model\Entity\Translation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Translation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation[] newEntities(array $data, array $options = [])
@@ -33,7 +31,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Translation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */

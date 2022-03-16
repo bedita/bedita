@@ -31,7 +31,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
     protected $Trees = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -41,7 +41,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -54,7 +54,6 @@ class ChildrenRelationshipTest extends IntegrationTestCase
      * Test that moving children already on tree is consistent.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testMoveChildrenToCustomPosition()
@@ -165,7 +164,6 @@ class ChildrenRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `children` response
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testChildrenMeta()

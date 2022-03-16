@@ -75,7 +75,6 @@ class AsyncJobsTableTest extends TestCase
      * Test default connection name.
      *
      * @return void
-     *
      * @covers ::defaultConnectionName()
      */
     public function testDefaultConnectionName()
@@ -93,7 +92,6 @@ class AsyncJobsTableTest extends TestCase
      * Test locking.
      *
      * @return void
-     *
      * @covers ::lock()
      */
     public function testLock()
@@ -104,7 +102,7 @@ class AsyncJobsTableTest extends TestCase
         $this->AsyncJobs->getEventManager()->on('AsyncJob.lock', function () use (&$eventDispatched) {
             $eventDispatched++;
 
-            /* @var \Cake\Database\Connection $connection */
+            /** @var \Cake\Database\Connection $connection */
             $connection = ConnectionManager::get('default');
 
             static::assertInstanceOf(AsyncJob::class, func_get_arg(1));
@@ -126,7 +124,6 @@ class AsyncJobsTableTest extends TestCase
      * Test locking a job that is not pending.
      *
      * @return void
-     *
      * @covers ::lock()
      */
     public function testLockNotPending()
@@ -139,7 +136,6 @@ class AsyncJobsTableTest extends TestCase
      * Test unlocking a job after successful execution.
      *
      * @return void
-     *
      * @covers ::unlock()
      */
     public function testUnlockSuccess()
@@ -151,7 +147,7 @@ class AsyncJobsTableTest extends TestCase
         $this->AsyncJobs->getEventManager()->on('AsyncJob.complete', function () use (&$eventDispatched, $success) {
             $eventDispatched++;
 
-            /* @var \Cake\Database\Connection $connection */
+            /** @var \Cake\Database\Connection $connection */
             $connection = ConnectionManager::get('default');
 
             static::assertInstanceOf(AsyncJob::class, func_get_arg(1));
@@ -175,7 +171,6 @@ class AsyncJobsTableTest extends TestCase
      * Test unlocking a job after failed execution.
      *
      * @return void
-     *
      * @covers ::unlock()
      */
     public function testUnlockFail()
@@ -187,7 +182,7 @@ class AsyncJobsTableTest extends TestCase
         $this->AsyncJobs->getEventManager()->on('AsyncJob.fail', function () use (&$eventDispatched, $success) {
             $eventDispatched++;
 
-            /* @var \Cake\Database\Connection $connection */
+            /** @var \Cake\Database\Connection $connection */
             $connection = ConnectionManager::get('default');
 
             static::assertInstanceOf(AsyncJob::class, func_get_arg(1));
@@ -211,7 +206,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs.
      *
      * @return void
-     *
      * @covers ::findPending()
      */
     public function testFindPending()
@@ -239,7 +233,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for failed jobs.
      *
      * @return void
-     *
      * @covers ::findFailed()
      */
     public function testFindFailed()
@@ -264,7 +257,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for completed jobs.
      *
      * @return void
-     *
      * @covers ::findCompleted()
      */
     public function testFindCompleted()
@@ -284,7 +276,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for incomplete jobs.
      *
      * @return void
-     *
      * @covers ::findIncomplete()
      */
     public function testFindIncomplete()
@@ -325,7 +316,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority.
      *
      * @return void
-     *
      * @covers ::findPriority()
      */
     public function testFindPriority()
@@ -351,7 +341,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority and filtering by service type.
      *
      * @return void
-     *
      * @covers ::findPriority()
      */
     public function testFindPriorityFilterService()
@@ -371,7 +360,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority and filtering by priority.
      *
      * @return void
-     *
      * @covers ::findPriority()
      */
     public function testFindPriorityFilterPriority()

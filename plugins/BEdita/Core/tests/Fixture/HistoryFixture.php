@@ -22,7 +22,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class HistoryFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $table = 'history';
 

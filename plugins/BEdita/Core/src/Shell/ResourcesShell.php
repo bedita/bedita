@@ -64,7 +64,7 @@ class ResourcesShell extends Shell
         $arguments = [
             'name|id' => [
                 'help' => 'Resource\'s name or id',
-                'required' => true
+                'required' => true,
             ],
         ];
 
@@ -72,43 +72,43 @@ class ResourcesShell extends Shell
             'help' => 'create a new entity',
             'parser' => [
                 'description' => [
-                    'Create a new resource.'
+                    'Create a new resource.',
                 ],
                 'options' => $options,
-            ]
+            ],
         ]);
         $parser->addSubcommand('ls', [
             'help' => 'list entities',
             'parser' => [
                 'description' => [
                     'List entities.',
-                    'Option --filter (optional) provides listing filtered by comma separated key=value pairs.'
+                    'Option --filter (optional) provides listing filtered by comma separated key=value pairs.',
                 ],
                 'options' => $options + [
                     'filter' => [
                         'help' => 'List entities filtered by comma separated key=value pairs',
-                        'required' => false
+                        'required' => false,
                     ],
                 ],
-            ]
+            ],
         ]);
         $parser->addSubcommand('rm', [
             'help' => 'remove an entity',
             'parser' => [
                 'description' => [
                     'Remove an entity.',
-                    'First argument (required) indicates entity\'s id|name.'
+                    'First argument (required) indicates entity\'s id|name.',
                 ],
                 'arguments' => $arguments,
                 'options' => $options,
-            ]
+            ],
         ]);
         $parser->addSubcommand('edit', [
             'help' => 'modify an entity field',
             'parser' => [
                 'description' => [
                     'Modify a field on a single resource.',
-                    'Required entity\'s id|name and field'
+                    'Required entity\'s id|name and field',
                 ],
                 'arguments' => $arguments,
                 'options' => $options + [
@@ -119,7 +119,7 @@ class ResourcesShell extends Shell
                         'choices' => static::$editableFields,
                     ],
                 ],
-            ]
+            ],
         ]);
 
         return $parser;

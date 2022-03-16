@@ -26,7 +26,6 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $ParentCategories
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\HasMany $ChildCategories
  * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectCategories
- *
  * @method \BEdita\Core\Model\Entity\Category get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Category newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] newEntities(array $data, array $options = [])
@@ -35,7 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CategoriesTable extends CategoriesTagsBaseTable
@@ -65,15 +63,15 @@ class CategoriesTable extends CategoriesTagsBaseTable
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.ObjectTypes'
+            'className' => 'BEdita/Core.ObjectTypes',
         ]);
         $this->belongsTo('ParentCategories', [
             'className' => 'BEdita/Core.Categories',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
         $this->hasMany('ChildCategories', [
             'className' => 'BEdita/Core.Categories',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
         $this->addBehavior('Tree', [
             'left' => 'tree_left',
@@ -81,7 +79,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
         ]);
         $this->hasMany('ObjectCategories', [
             'foreignKey' => 'category_id',
-            'className' => 'BEdita/Core.ObjectCategories'
+            'className' => 'BEdita/Core.ObjectCategories',
         ]);
     }
 
@@ -159,7 +157,7 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
      * @return \Cake\ORM\Query
-     * @throws BadFilterException
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     public function findType(Query $query, array $options): Query
     {

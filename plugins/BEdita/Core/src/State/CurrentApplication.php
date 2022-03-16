@@ -82,7 +82,7 @@ class CurrentApplication
      * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return self
      */
-    public function set(Application $application = null)
+    public function set(?Application $application = null)
     {
         $this->application = $application;
         $this->loadConfiguration();
@@ -111,7 +111,7 @@ class CurrentApplication
      * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return void
      */
-    public static function setApplication(Application $application = null)
+    public static function setApplication(?Application $application = null)
     {
         static::getInstance()->set($application);
     }

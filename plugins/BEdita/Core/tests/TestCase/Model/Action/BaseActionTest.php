@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\BaseAction;
-use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -28,7 +27,6 @@ class BaseActionTest extends TestCase
      * Test constructor method.
      *
      * @return void
-     *
      * @covers ::__construct()
      * @covers ::initialize()
      */
@@ -47,7 +45,6 @@ class BaseActionTest extends TestCase
      * Test magic method for invoking command.
      *
      * @return void
-     *
      * @covers ::__invoke()
      */
     public function testInvoke()

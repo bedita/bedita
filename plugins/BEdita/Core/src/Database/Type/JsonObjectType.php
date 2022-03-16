@@ -24,7 +24,7 @@ use Cake\Database\Type\JsonType;
 class JsonObjectType extends JsonType
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function toPHP($value, DriverInterface $driver)
     {

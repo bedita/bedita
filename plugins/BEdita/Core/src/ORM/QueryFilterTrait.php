@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\ORM;
 
-use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 
@@ -105,11 +104,11 @@ trait QueryFilterTrait
      * Get query expression for an operator on a field with a value.
      * Unrecognized operators are ignored and have no effect.
      *
-     * @param QueryExpression $exp Current query expression
+     * @param \Cake\Database\Expression\QueryExpression $exp Current query expression
      * @param string $operator Filter operator
      * @param string $field Filter field
      * @param string $value Filter value
-     * @return QueryExpression Operator query expression
+     * @return \Cake\Database\Expression\QueryExpression Operator query expression
      */
     protected function operatorExpression(QueryExpression $exp, $operator, $field, $value)
     {

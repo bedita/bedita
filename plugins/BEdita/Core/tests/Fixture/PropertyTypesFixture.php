@@ -21,12 +21,12 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class PropertyTypesFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $table = 'property_types';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         // 1

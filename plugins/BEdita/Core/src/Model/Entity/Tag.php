@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\JsonApiModelTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
@@ -38,7 +37,7 @@ class Tag extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -47,7 +46,7 @@ class Tag extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         '_joinData',
@@ -59,6 +58,7 @@ class Tag extends Entity implements JsonApiSerializable
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     protected function getType()

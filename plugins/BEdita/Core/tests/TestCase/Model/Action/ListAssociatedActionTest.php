@@ -40,7 +40,7 @@ class ListAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -185,10 +185,9 @@ class ListAssociatedActionTest extends TestCase
      * @param int $id Entity ID to list relations for.
      * @param array $options Additional options for action.
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $table, $association, $id, array $options = null)
+    public function testInvocation($expected, $table, $association, $id, ?array $options = null)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));

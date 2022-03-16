@@ -17,13 +17,12 @@ namespace BEdita\API\Controller\Admin;
  * Controller for `/admin/config` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class ConfigController extends AdminController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -35,7 +34,7 @@ class ConfigController extends AdminController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Config';
 }

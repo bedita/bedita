@@ -53,7 +53,7 @@ class ObjectTypeTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -65,7 +65,7 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -153,7 +153,6 @@ class ObjectTypeTest extends TestCase
      * @param string $name Object type name.
      * @param string|null $singular Object type singular name.
      * @return void
-     *
      * @dataProvider getSetSingularProvider
      * @covers ::_getSingular()
      * @covers ::_setSingular()
@@ -203,7 +202,6 @@ class ObjectTypeTest extends TestCase
      * @param string $expectedModel Expected model.
      * @param string|null $table Object type table.
      * @return void
-     *
      * @dataProvider getSetTableProvider
      * @covers ::_getTable()
      * @covers ::_setTable()
@@ -259,7 +257,6 @@ class ObjectTypeTest extends TestCase
      * @param string $name Object type name to get relations for.
      * @param string $side Side to get relations for.
      * @return void
-     *
      * @dataProvider getRelationsByNameProvider()
      * @covers ::getRelations()
      */
@@ -277,7 +274,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for relations.
      *
      * @return void
-     *
      * @covers ::_getRelations()
      */
     public function testGetRelations()
@@ -296,7 +292,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for relations when associations haven't been loaded.
      *
      * @return void
-     *
      * @covers ::_getRelations()
      */
     public function testGetRelationsAssociationsNotLoaded()
@@ -314,7 +309,6 @@ class ObjectTypeTest extends TestCase
      * Test that `relations` association was removed serializing entity
      *
      * @return void
-     *
      * @covers ::listAssociations()
      */
     public function testListAssociations()
@@ -364,7 +358,6 @@ class ObjectTypeTest extends TestCase
      * @param string|null $expected Expected parent.
      * @param callable $subject Function that is expected to return an {@see ObjectType} entity.
      * @return void
-     *
      * @dataProvider getParentProvider()
      * @covers ::getParent()
      */
@@ -425,7 +418,6 @@ class ObjectTypeTest extends TestCase
      * @param string $newParent New parent name to set.
      * @param string|null $setExpected Parent name set expected result.
      * @return void
-     *
      * @dataProvider getSetParentNameProvider
      * @covers ::_getParentName()
      * @covers ::_setParentName()
@@ -443,7 +435,6 @@ class ObjectTypeTest extends TestCase
      * Test set failure if `parent_name` is not `enabled`.
      *
      * @return void
-     *
      * @covers ::_setParentName()
      */
     public function testSetParentNameDisabled()
@@ -747,7 +738,7 @@ class ObjectTypeTest extends TestCase
                         'media_property',
                     ],
                     'associations' => [
-                        'Streams'
+                        'Streams',
                     ],
                     'relations' => [
                         'inverse_test_abstract' => [
@@ -946,13 +937,13 @@ class ObjectTypeTest extends TestCase
                             'title' => 'Categories',
                             'oneOf' => [
                                 [
-                                    'type' => 'null'
+                                    'type' => 'null',
                                 ],
                                 [
                                     'type' => 'array',
                                     'uniqueItems' => true,
                                     'items' => [
-                                        'type' => 'object'
+                                        'type' => 'object',
                                     ],
                                 ],
                             ],
@@ -960,7 +951,7 @@ class ObjectTypeTest extends TestCase
                     ],
                     'required' => [],
                     'associations' => [
-                        'Categories'
+                        'Categories',
                     ],
                     'relations' => [
                         'inverse_test' => [
@@ -986,7 +977,6 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
      * @covers ::objectTypeRelations()
@@ -1011,7 +1001,6 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
      */
@@ -1049,7 +1038,6 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
      */
@@ -1085,7 +1073,6 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
      */
@@ -1116,7 +1103,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for `schema` when properties have not been loaded.
      *
      * @return void
-     *
      * @covers ::_getSchema()
      */
     public function testGetSchemaNoProperties()
@@ -1133,7 +1119,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for disabled `schema`.
      *
      * @return void
-     *
      * @covers ::_getSchema()
      */
     public function testGetSchemaDisabled()
@@ -1147,7 +1132,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for `schema` whith hidden properties.
      *
      * @return void
-     *
      * @covers ::_getSchema()
      * @covers ::objectTypeProperties()
      */
@@ -1169,7 +1153,6 @@ class ObjectTypeTest extends TestCase
      * Test `objectTypeProperties` method whith required properties.
      *
      * @return void
-     *
      * @covers ::objectTypeProperties()
      */
     public function testGetSchemaRequired(): void
@@ -1183,7 +1166,6 @@ class ObjectTypeTest extends TestCase
     /** Test static properties override in `schema`.
      *
      * @return void
-     *
      * @covers ::_getSchema()
      */
     public function testSchemaOverride()
@@ -1246,7 +1228,6 @@ class ObjectTypeTest extends TestCase
      * @param string[] $expected Expected chain.
      * @param string $name Test subject.
      * @return void
-     *
      * @dataProvider getFullInheritanceChainProvider()
      * @covers ::getFullInheritanceChain
      */
@@ -1294,7 +1275,6 @@ class ObjectTypeTest extends TestCase
      * @param string $descendantName Descendant object type name.
      * @param string $ancestorName Ancestor object type name.
      * @return void
-     *
      * @dataProvider isDescendantOfProvider()
      * @covers ::isDescendantOf()
      */
@@ -1329,7 +1309,6 @@ class ObjectTypeTest extends TestCase
      * @param string|null $expected Expected result.
      * @param ObjectType[]|string[] $names Object type names.
      * @return void
-     *
      * @dataProvider getClosestCommonAncestorProvider()
      * @covers ::getClosestCommonAncestor()
      */

@@ -17,7 +17,6 @@ use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
-use Exception;
 
 /**
  *  {@see \BEdita\Core\Model\Action\ActionTrait} Test Case
@@ -29,7 +28,7 @@ class ActionTraitTest extends TestCase
     use ActionTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -39,7 +38,7 @@ class ActionTraitTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -97,12 +96,10 @@ class ActionTraitTest extends TestCase
      * Test `createAction` method
      *
      * @return void
-     *
      * @param string|\Exception $expected Expected result
      * @param string $class Class name
      * @param array $options Class options
      * @param string $prefix Class prefix
-     *
      * @dataProvider createActionProvider
      * @covers ::createAction()
      */

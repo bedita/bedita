@@ -44,7 +44,7 @@ class TranslationsTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -54,7 +54,7 @@ class TranslationsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -67,7 +67,6 @@ class TranslationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testInitialize()
@@ -131,7 +130,6 @@ class TranslationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */

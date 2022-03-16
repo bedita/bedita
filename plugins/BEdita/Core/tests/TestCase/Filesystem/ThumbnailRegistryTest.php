@@ -27,7 +27,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test load when everything goes just fine.
      *
      * @return void
-     *
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
@@ -51,7 +50,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator is not an instance of the expected class.
      *
      * @return void
-     *
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
@@ -70,7 +68,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator initialization fails.
      *
      * @return void
-     *
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
@@ -98,7 +95,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_throwMissingClassError` method.
      *
      * @return void
-     *
      * @covers ::_throwMissingClassError()
      */
     public function testLoadMissingClass()

@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
@@ -35,7 +34,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $ObjectRelations
  * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
  * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
- *
  * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])

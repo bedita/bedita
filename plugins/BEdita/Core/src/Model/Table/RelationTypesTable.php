@@ -24,7 +24,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Relations
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- *
  * @method \BEdita\Core\Model\Entity\RelationType get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\RelationType newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\RelationType[] newEntities(array $data, array $options = [])

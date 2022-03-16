@@ -32,7 +32,6 @@ class AnalyticsMiddlewareTest extends TestCase
      * Test __invoke method response
      *
      * @return void
-     *
      * @covers ::__invoke()
      * @covers ::__construct()
      */
@@ -69,7 +68,7 @@ class AnalyticsMiddlewareTest extends TestCase
                 function () {
                     return null;
                 },
-                []
+                [],
             ],
             'simple' => [
                 function (Event $e, ServerRequestInterface $request, Response $response) {
@@ -84,7 +83,6 @@ class AnalyticsMiddlewareTest extends TestCase
      * Test callback methods
      *
      * @return void
-     *
      * @dataProvider customProvider
      * @covers ::readCustomData()
      */
@@ -138,7 +136,6 @@ class AnalyticsMiddlewareTest extends TestCase
      * Test getAppErrorCode() method
      *
      * @return void
-     *
      * @dataProvider errorCodeProvider
      * @covers ::getAppErrorCode()
      */

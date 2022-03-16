@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\JsonApiModelTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
@@ -42,7 +41,7 @@ class Category extends Entity implements JsonApiSerializable
     use ObjectTypeNameTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -51,7 +50,7 @@ class Category extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'object_type_id',
@@ -60,7 +59,7 @@ class Category extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'object_type_name',

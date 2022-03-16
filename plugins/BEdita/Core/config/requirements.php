@@ -8,6 +8,6 @@ return [
     'Requirements' => [
         'phpMin' => '5.5.9',
         'extensions' => ['mbstring', 'intl'],
-        'writable' => [TMP, LOGS]
+        'writable' => [TMP, LOGS],
      ],
 ];

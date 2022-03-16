@@ -58,7 +58,7 @@ class JsonApiTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -70,7 +70,7 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -141,8 +141,8 @@ class JsonApiTest extends TestCase
                         'roles' => [
                             '$id' => '/model/schema/roles',
                             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all');
@@ -202,8 +202,8 @@ class JsonApiTest extends TestCase
                         'roles' => [
                             '$id' => '/model/schema/roles',
                             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->all();
@@ -263,8 +263,8 @@ class JsonApiTest extends TestCase
                         'roles' => [
                             '$id' => '/model/schema/roles',
                             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->toArray();
@@ -295,8 +295,8 @@ class JsonApiTest extends TestCase
                         'roles' => [
                             '$id' => '/model/schema/roles',
                             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -327,8 +327,8 @@ class JsonApiTest extends TestCase
                         'roles' => [
                             '$id' => '/model/schema/roles',
                             'revision' => TestConstants::SCHEMA_REVISIONS['roles'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
@@ -344,7 +344,7 @@ class JsonApiTest extends TestCase
                 null,
                 function () {
                     return null;
-                }
+                },
             ],
             'unsupportedType' => [
                 false,
@@ -425,7 +425,7 @@ class JsonApiTest extends TestCase
                                     'id' => '3',
                                     'type' => 'documents',
                                 ],
-                            ]
+                            ],
                         ],
                         'inverse_test' => [
                             'links' => [
@@ -472,7 +472,6 @@ class JsonApiTest extends TestCase
      * @param callable $items A callable that returns the items to be converted.
      * @param int $options Format data options
      * @return void
-     *
      * @dataProvider formatDataProvider
      * @covers ::formatData()
      * @covers ::metaSchema()
@@ -601,7 +600,6 @@ class JsonApiTest extends TestCase
      * @param array|bool $expected Expected result. If `false`, an exception is expected.
      * @param array $items Items to be parsed.
      * @return void
-     *
      * @dataProvider parseDataProvider
      * @covers ::parseData
      * @covers ::parseItem
@@ -621,7 +619,6 @@ class JsonApiTest extends TestCase
      * Test generation of relationships links.
      *
      * @return void
-     *
      * @covers ::formatData
      */
     public function testFallbackLinks()
@@ -683,8 +680,8 @@ class JsonApiTest extends TestCase
                 'documents' => [
                     '$id' => '/model/schema/documents',
                     'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $result = JsonApi::formatData(TableRegistry::getTableLocator()->get('Documents')->get(2));
@@ -736,7 +733,6 @@ class JsonApiTest extends TestCase
      * Test `JsonApi.beforeFormatData` event.
      *
      * @return void
-     *
      * @covers ::formatData()
      * @covers ::dispatchEvent()
      */
@@ -767,7 +763,6 @@ class JsonApiTest extends TestCase
      * Test `JsonApi.afterFormatData` event.
      *
      * @return void
-     *
      * @covers ::formatData()
      * @covers ::dispatchEvent()
      */
@@ -802,7 +797,6 @@ class JsonApiTest extends TestCase
      * Test that an exception was raised if some item was not serializable.
      *
      * @return void
-     *
      * @covers ::formatData()
      */
     public function testNotJsonSerializable(): void

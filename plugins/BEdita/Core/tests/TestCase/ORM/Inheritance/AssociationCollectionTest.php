@@ -30,7 +30,7 @@ class AssociationCollectionTest extends TestCase
     use FakeAnimalsTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -50,7 +50,6 @@ class AssociationCollectionTest extends TestCase
      * Test constructor.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testConstruct()
@@ -93,7 +92,6 @@ class AssociationCollectionTest extends TestCase
      * @param string|null $expected Expected alias, or `null`.
      * @param string $alias Alias to search for.
      * @return void
-     *
      * @dataProvider getProvider()
      * @covers ::get()
      * @covers ::has()
@@ -123,7 +121,6 @@ class AssociationCollectionTest extends TestCase
      * @param string|null $expected Expected alias, or `null`.
      * @param string $alias Property to search for.
      * @return void
-     *
      * @dataProvider getProvider()
      * @covers ::getByProperty()
      * @covers ::inheritAssociation()
@@ -147,7 +144,6 @@ class AssociationCollectionTest extends TestCase
      * Test getter of association keys.
      *
      * @return void
-     *
      * @covers ::keys()
      * @covers ::inheritedAssociations()
      */
@@ -165,7 +161,6 @@ class AssociationCollectionTest extends TestCase
      * Test getter of associations by type.
      *
      * @return void
-     *
      * @covers ::getByType()
      * @covers ::inheritedAssociations()
      */
@@ -188,7 +183,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of association.
      *
      * @return void
-     *
      * @covers ::remove()
      */
     public function testRemove()
@@ -204,7 +198,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of inherited association.
      *
      * @return void
-     *
      * @covers ::remove()
      */
     public function testRemoveInner()
@@ -220,7 +213,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of association without cascading.
      *
      * @return void
-     *
      * @covers ::remove()
      */
     public function testRemoveNoCascade()
@@ -236,7 +228,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of all associations.
      *
      * @return void
-     *
      * @covers ::removeAll()
      */
     public function testRemoveAll()
@@ -252,7 +243,6 @@ class AssociationCollectionTest extends TestCase
      * Test cascading deletes to all associations with proper handling of callbacks.
      *
      * @return void
-     *
      * @covers ::_getNoCascadeItems()
      */
     public function testCascadeDelete()
@@ -272,7 +262,6 @@ class AssociationCollectionTest extends TestCase
      * Test empty inherited associations.
      *
      * @return void
-     *
      * @covers ::inheritedAssociations()
      */
     public function testInheritedAssociationsEmpty()
@@ -308,7 +297,6 @@ class AssociationCollectionTest extends TestCase
      * @param array $expected The expected associations keys
      * @param bool $isAbstract If the `RelatedTo` refers to abstract source
      * @return void
-     *
      * @dataProvider inheritedAssociationsRelatedToProvider
      * @covers ::inheritedAssociations()
      */
@@ -333,7 +321,6 @@ class AssociationCollectionTest extends TestCase
      * also if are removed from main table
      *
      * @return void
-     *
      * @covers ::inheritedAssociations()
      */
     public function testNotRemoveAssociationFromInhertedTable()
@@ -362,7 +349,6 @@ class AssociationCollectionTest extends TestCase
      * Test get iterator contains own and inherited associations.
      *
      * @return void
-     *
      * @covers ::getIterator()
      */
     public function testGetIterator()
@@ -384,7 +370,6 @@ class AssociationCollectionTest extends TestCase
      * Test clone hook.
      *
      * @return void
-     *
      * @covers ::__clone()
      */
     public function testClone()

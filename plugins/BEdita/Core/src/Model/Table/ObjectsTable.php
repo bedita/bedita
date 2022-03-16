@@ -39,7 +39,6 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\FoldersTable|\Cake\ORM\Association\BelongsToMany $Parents
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
- *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
@@ -47,18 +46,16 @@ use Cake\Utility\Hash;
  * @method \BEdita\Core\Model\Entity\ObjectEntity patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
- *
  * @since 4.0.0
  */
 class ObjectsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = ObjectsValidator::class;
 
@@ -68,7 +65,7 @@ class ObjectsTable extends Table
      *
      * @var array
      */
-    const DATERANGES_SORT_FIELDS = [
+    public const DATERANGES_SORT_FIELDS = [
         'date_ranges_min_start_date',
         'date_ranges_max_start_date',
         'date_ranges_min_end_date',
@@ -95,7 +92,7 @@ class ObjectsTable extends Table
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes'
+            'className' => 'BEdita/Core.ObjectTypes',
         ]);
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
@@ -105,11 +102,11 @@ class ObjectsTable extends Table
         ]);
         $this->belongsTo('CreatedByUsers', [
             'foreignKey' => 'created_by',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('ModifiedByUsers', [
             'foreignKey' => 'modified_by',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsToMany('Parents', [
             'className' => 'BEdita/Core.Folders',
@@ -329,9 +326,9 @@ class ObjectsTable extends Table
     /**
      * Create a date ranges subquery join if a special sort field is set.
      *
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
-     * @return Query|null
+     * @return \Cake\ORM\Query|null
      */
     protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
     {
@@ -409,7 +406,7 @@ class ObjectsTable extends Table
     /**
      * Finder for objects having a certain `ancestor` on the tree.
      *
-     * @param Query $query  Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Id or unique name of ancestor
      * @return \Cake\ORM\Query
      */
@@ -436,7 +433,7 @@ class ObjectsTable extends Table
     /**
      * Finder for objects having a certain `parent` on the tree.
      *
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Id or unique name of ancestor
      * @return \Cake\ORM\Query
      */
@@ -613,9 +610,9 @@ class ObjectsTable extends Table
      * $options array MUST contain a list of category/tag names or a single element with a comma separated list.
      *
      * @param string $assoc Association name, 'Tags' or 'Categories'
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Tag or category names.
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function categoriesQuery(string $assoc, Query $query, array $options)
     {
