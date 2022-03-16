@@ -59,7 +59,7 @@ class UploadController extends ObjectsController
             // create media object from POST request
             $this->index();
 
-            $objectId = (int)Hash::get($this->viewVars, 'data.id');
+            $objectId = (int)Hash::get((array)$this->viewBuilder()->getVar('data'), 'id');
             $this->Upload->upload($fileName, $objectId);
         });
     }
