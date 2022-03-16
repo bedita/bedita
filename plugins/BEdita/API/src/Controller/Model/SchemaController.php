@@ -65,7 +65,7 @@ class SchemaController extends JsonBaseController
         $schema = JsonSchema::generate($typeName, $url);
 
         $this->set($schema);
-        $this->set('_serialize', true);
+        $this->setSerialize(array_keys((array)$schema));
 
         $response = $this->render()
             ->withType(static::CONTENT_TYPE);

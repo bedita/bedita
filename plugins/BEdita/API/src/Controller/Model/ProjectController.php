@@ -49,6 +49,6 @@ class ProjectController extends JsonBaseController
         $model = ProjectModel::generate();
 
         $this->set($model);
-        $this->set('_serialize', true);
+        $this->setSerialize(array_keys($model));
     }
 }
