@@ -141,7 +141,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
      * @param \Exception $error Exception.
      * @return string Error code
      */
-    protected function appErrorCode(\Exception $error)
+    protected function appErrorCode(\Exception $error): string
     {
         if (!$error instanceof \Cake\Core\Exception\CakeException) {
             return '';

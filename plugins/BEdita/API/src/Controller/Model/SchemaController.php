@@ -16,6 +16,7 @@ namespace BEdita\API\Controller\Model;
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Event\Event;
+use Cake\Http\Response;
 
 /**
  * Controller for `/model/schema/{type}` endpoint.
@@ -50,7 +51,7 @@ class SchemaController extends JsonBaseController
      * @param string $typeName Name of an object type or of a resource type.
      * @return \Cake\Http\Response
      */
-    public function jsonSchema($typeName)
+    public function jsonSchema($typeName): Response
     {
         $this->request->allowMethod(['get']);
 

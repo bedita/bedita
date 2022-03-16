@@ -32,7 +32,7 @@ class ApplicationsController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $query = $this->Applications->find()
             ->select(['id', 'name', 'description']);

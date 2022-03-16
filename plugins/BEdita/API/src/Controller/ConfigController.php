@@ -32,7 +32,7 @@ class ConfigController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $query = $this->Config->find()
             ->find('mine')

@@ -12,15 +12,11 @@
  */
 namespace BEdita\API\Controller;
 
-use BadMethodCallException;
 use BEdita\API\Datasource\JsonApiPaginator;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
@@ -178,6 +174,7 @@ class AppController extends Controller
      *
      * @param array $items Items to serialize
      * @return void
+     * @codeCoverageIgnore
      */
     protected function setSerialize(array $items): void
     {
