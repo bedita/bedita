@@ -66,6 +66,7 @@ class ObjectTagsTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -88,6 +89,7 @@ class ObjectTagsTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
