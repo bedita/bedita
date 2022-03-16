@@ -58,7 +58,7 @@ class SystemTest extends TestCase
         Configure::write('Requirements', [
             'phpMin' => '9.1',
             'extensions' => ['gustavo', 'supporto'],
-            'writable' => [TMP . '____missing___']
+            'writable' => [TMP . '____missing___'],
         ]);
 
         $this->fakeDbSetup('__test-temp__');

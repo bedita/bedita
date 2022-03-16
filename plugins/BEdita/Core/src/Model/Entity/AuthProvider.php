@@ -33,13 +33,12 @@ use Cake\Utility\Text;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
- *
  * @since 4.0.0
  */
 class AuthProvider extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -53,7 +52,7 @@ class AuthProvider extends Entity
      */
     protected function _getSlug()
     {
-        list(, $name) = pluginSplit($this->name);
+        [, $name] = pluginSplit($this->name);
 
         return mb_strtolower(Text::slug($name));
     }
@@ -92,6 +91,6 @@ class AuthProvider extends Entity
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
         $userName = Hash::get($providerResponse, (string)$fieldPath);
 
-        return ($userName === $providerUsername);
+        return $userName === $providerUsername;
     }
 }

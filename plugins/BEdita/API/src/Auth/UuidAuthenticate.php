@@ -81,7 +81,7 @@ class UuidAuthenticate extends BaseAuthenticate
         $authProvider = collection($this->_config['authProviders'])->first();
         $this->setConfig('finder', [
             'externalAuth' => [
-                'auth_provider' => $authProvider
+                'auth_provider' => $authProvider,
             ],
         ]);
 
@@ -98,7 +98,7 @@ class UuidAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
@@ -106,7 +106,7 @@ class UuidAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUser(ServerRequest $request)
     {
@@ -145,7 +145,7 @@ class UuidAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function unauthenticated(ServerRequest $request, Response $response)
     {

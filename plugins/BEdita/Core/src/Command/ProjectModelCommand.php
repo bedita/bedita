@@ -38,7 +38,7 @@ class ProjectModelCommand extends Command
     public const PROJECT_MODEL_FILE = 'project_model.json';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -61,7 +61,7 @@ class ProjectModelCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {

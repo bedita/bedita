@@ -23,7 +23,7 @@ use Cake\TestSuite\TestCase;
 class LoggedUserTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {

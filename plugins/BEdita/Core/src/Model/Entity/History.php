@@ -12,7 +12,6 @@
  */
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\JsonApiTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 

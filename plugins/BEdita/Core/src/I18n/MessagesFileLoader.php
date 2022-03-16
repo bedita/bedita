@@ -21,7 +21,6 @@ use Locale;
  * Loader for translation messages.
  *
  * @see \Cake\I18n\MessagesFileLoader
- *
  * @since 4.0.0
  */
 class MessagesFileLoader extends BaseLoader
@@ -36,7 +35,7 @@ class MessagesFileLoader extends BaseLoader
     /**
      * {@inheritDoc}
      *
-     * @param string[] $plugins Additional plugins to look up in for translations.
+     * @param string[] $name Additional plugins to look up in for translations.
      */
     public function __construct($name, $locale, $extension = 'po', array $plugins = [])
     {
@@ -46,7 +45,7 @@ class MessagesFileLoader extends BaseLoader
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function translationsFolders(): array
     {
@@ -55,7 +54,7 @@ class MessagesFileLoader extends BaseLoader
         $locale = Locale::parseLocale($this->_locale) + ['region' => null];
         $folders = [
             implode('_', [$locale['language'], $locale['region']]),
-            $locale['language']
+            $locale['language'],
         ];
         foreach ($this->plugins as $pluginName) {
             if (Plugin::isLoaded($pluginName)) {

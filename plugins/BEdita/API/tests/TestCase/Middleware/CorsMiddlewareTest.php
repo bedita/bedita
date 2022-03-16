@@ -67,7 +67,7 @@ class CorsMiddlewareTest extends TestCase
             'allAllowedOrigin' => [
                 200,
                 [
-                    'Access-Control-Allow-Origin' => '*'
+                    'Access-Control-Allow-Origin' => '*',
                 ],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -83,7 +83,7 @@ class CorsMiddlewareTest extends TestCase
                 200,
                 [
                     'Access-Control-Allow-Origin' => 'http://example.com',
-                    'Vary' => 'Origin'
+                    'Vary' => 'Origin',
                 ],
                 [
                     'REQUEST_URI' => '/testpath',
@@ -313,7 +313,6 @@ class CorsMiddlewareTest extends TestCase
      * @param array $server The server vars (see $_SERVER)
      * @param array $corsConfig The specific CORS conf applied
      * @return void
-     *
      * @dataProvider corsProvider
      * @covers \BEdita\API\Middleware\CorsMiddleware
      */

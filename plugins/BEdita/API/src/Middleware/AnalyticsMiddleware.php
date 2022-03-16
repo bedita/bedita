@@ -44,7 +44,6 @@ class AnalyticsMiddleware
 
     /**
      * Configure analytics logger if not configured yet
-     *
      */
     public function __construct()
     {

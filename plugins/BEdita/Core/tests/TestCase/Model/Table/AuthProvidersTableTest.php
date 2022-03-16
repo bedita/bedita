@@ -40,7 +40,7 @@ class AuthProvidersTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -50,7 +50,7 @@ class AuthProvidersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -120,7 +120,6 @@ class AuthProvidersTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -143,7 +142,6 @@ class AuthProvidersTableTest extends TestCase
      * Test `findAuthenticate` method.
      *
      * @return void
-
      * @covers ::findAuthenticate()
      */
     public function testFindAuthenticate()
@@ -160,7 +158,6 @@ class AuthProvidersTableTest extends TestCase
      * Test `findEnabled` method.
      *
      * @return void
-
      * @covers ::findEnabled()
      */
     public function testFindEnabled()

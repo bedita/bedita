@@ -38,7 +38,7 @@ class SearchableBehaviorTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -56,7 +56,6 @@ class SearchableBehaviorTest extends TestCase
      * Test behavior initialization process.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -71,7 +70,7 @@ class SearchableBehaviorTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $table->addBehavior('BEdita/Core.Searchable', compact('columnTypes', 'fields'));
 
-        /* @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
+        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
         $behavior = $table->behaviors()->get('Searchable');
 
         static::assertEquals($columnTypes, $behavior->getConfig('columnTypes'));
@@ -127,7 +126,6 @@ class SearchableBehaviorTest extends TestCase
      * @param array $config Behavior configuration.
      * @param string $table Table.
      * @return void
-     *
      * @dataProvider getFieldsProvider()
      * @covers ::getAllFields()
      * @covers ::getFields()
@@ -137,7 +135,7 @@ class SearchableBehaviorTest extends TestCase
         $table = TableRegistry::getTableLocator()->get($table);
         $table->addBehavior('BEdita/Core.Searchable', $config);
 
-        /* @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
+        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
         $behavior = $table->behaviors()->get('Searchable');
 
         $fields = $behavior->getFields();
@@ -262,7 +260,6 @@ class SearchableBehaviorTest extends TestCase
      * @param string|array $query Query string.
      * @param string $table Table.
      * @return void
-     *
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
      */

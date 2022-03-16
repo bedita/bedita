@@ -15,13 +15,12 @@ use Cake\Database\Schema\TableSchema;
  * @method \BEdita\Core\Model\Entity\Media patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Media[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Media findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class MediaTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = MediaValidator::class;
 
@@ -42,7 +41,7 @@ class MediaTable extends Table
 
         $this->getBehavior('UniqueName')->setConfig([
             'sourceField' => 'title',
-            'prefix' => 'media-'
+            'prefix' => 'media-',
         ]);
 
         $this->getBehavior('Searchable')->setConfig([

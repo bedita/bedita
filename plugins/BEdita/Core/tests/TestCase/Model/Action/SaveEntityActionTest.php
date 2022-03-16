@@ -39,7 +39,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::execute()
      */
@@ -64,7 +63,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with validation errors.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::execute()
      */
@@ -92,7 +90,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with save error.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::execute()
      */

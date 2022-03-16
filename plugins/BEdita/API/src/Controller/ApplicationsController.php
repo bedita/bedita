@@ -17,13 +17,12 @@ namespace BEdita\API\Controller;
  * Controller for `/applications` endpoint.
  *
  * @since 4.6.0
- *
  * @property \BEdita\Core\Model\Table\ApplicationsTable $Applications
  */
 class ApplicationsController extends AppController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Applications';
 

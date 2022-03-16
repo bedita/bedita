@@ -57,7 +57,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     protected $AsyncJobs;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -68,7 +68,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {
@@ -141,7 +141,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * Create the credentials change async job
      *
-     * @param User $user The user requesting change
+     * @param \BEdita\Core\Model\Entity\User $user The user requesting change
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createJob(User $user)
@@ -158,7 +158,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
                 ],
                 'scheduled_from' => new Time('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
@@ -188,13 +188,13 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      */
     protected function getChangeUrl($uuid, $changeUrl)
     {
-        $changeUrl .= (strpos($changeUrl, '?') === false) ? '?' : '&';
+        $changeUrl .= strpos($changeUrl, '?') === false ? '?' : '&';
 
         return sprintf('%suuid=%s', $changeUrl, $uuid);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

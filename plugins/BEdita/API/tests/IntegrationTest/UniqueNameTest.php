@@ -15,7 +15,6 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Text;
 
 /**
  * Test on `uname` field
@@ -23,7 +22,7 @@ use Cake\Utility\Text;
 class UniqueNameTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Locations',
@@ -44,7 +43,7 @@ class UniqueNameTest extends IntegrationTestCase
                 ['title' => ''],
             ],
             'empty' => [
-                []
+                [],
             ],
         ];
     }
@@ -54,7 +53,6 @@ class UniqueNameTest extends IntegrationTestCase
      *
      * @param array $attributes Object attributes.
      * @return void
-     *
      * @dataProvider doubleInsertProvider
      * @coversNothing
      */
@@ -96,7 +94,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test unique name customization.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testCustomBehavior()

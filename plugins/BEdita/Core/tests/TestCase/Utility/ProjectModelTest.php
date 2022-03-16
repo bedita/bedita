@@ -322,7 +322,6 @@ class ProjectModelTest extends TestCase
      * Test `generate()` method
      *
      * @return void
-     *
      * @covers ::generate()
      * @covers ::applications()
      * @covers ::roles()
@@ -343,7 +342,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method adding items
      *
      * @return void
-     *
      * @covers ::diff()
      * @covers ::itemsToUpdate()
      */
@@ -369,7 +367,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method removing items
      *
      * @return void
-     *
      * @covers ::diff()
      */
     public function testDiffRemove(): void
@@ -407,7 +404,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method updating items
      *
      * @return void
-     *
      * @covers ::diff()
      * @covers ::itemsToUpdate()
      */

@@ -51,7 +51,7 @@ abstract class ResourcesMigration extends AbstractMigration
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up(): void
     {
@@ -60,7 +60,7 @@ abstract class ResourcesMigration extends AbstractMigration
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function down(): void
     {
@@ -99,8 +99,7 @@ abstract class ResourcesMigration extends AbstractMigration
     /**
      * Retrieve Db Connection
      *
-     * @return Connection
-     *
+     * @return \Cake\Database\Connection
      * @codeCoverageIgnore
      */
     protected function getConnection(): Connection
@@ -112,7 +111,6 @@ abstract class ResourcesMigration extends AbstractMigration
      * Retrieve Column Types
      *
      * @return array
-     *
      * @codeCoverageIgnore
      */
     protected function columnTypes(): array

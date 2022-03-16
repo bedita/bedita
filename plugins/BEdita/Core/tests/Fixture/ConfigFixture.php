@@ -21,12 +21,12 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class ConfigFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $table = 'config';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         [
@@ -114,6 +114,6 @@ class ConfigFixture extends TestFixture
             'created' => '2018-05-16 12:34:56',
             'modified' => '2018-05-16 12:38:02',
             'application_id' => 1,
-        ]
+        ],
     ];
 }

@@ -112,7 +112,6 @@ class UuidAuthenticateTest extends TestCase
      * @param array $config Configuration.
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
-     *
      * @dataProvider getTokenProvider
      * @covers ::getToken()
      */
@@ -177,7 +176,6 @@ class UuidAuthenticateTest extends TestCase
      * @param bool $newUser Should this request trigger a new user creation?
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
-     *
      * @dataProvider authenticateProvider
      * @covers ::authenticate()
      * @covers ::getUser()
@@ -218,7 +216,6 @@ class UuidAuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()

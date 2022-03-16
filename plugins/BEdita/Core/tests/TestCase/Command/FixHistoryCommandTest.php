@@ -49,7 +49,6 @@ class FixHistoryCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     *
      * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
@@ -63,7 +62,6 @@ class FixHistoryCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::initialize()
      * @covers ::fixHistoryCreate()
@@ -84,7 +82,6 @@ class FixHistoryCommandTest extends TestCase
      * Test `execute` with `id` and `type` option
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::objectDetails()
      * @covers ::joinConditions()

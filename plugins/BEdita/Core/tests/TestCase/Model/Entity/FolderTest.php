@@ -50,7 +50,7 @@ class FolderTest extends TestCase
     public $Folders;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -62,7 +62,7 @@ class FolderTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -75,7 +75,6 @@ class FolderTest extends TestCase
      * Test getter for `parent`
      *
      * @return void
-     *
      * @covers ::_getParent()
      */
     public function testGetParent()
@@ -92,7 +91,6 @@ class FolderTest extends TestCase
      * Test setter for `parent`
      *
      * @return void
-     *
      * @covers ::_setParent()
      */
     public function testSetParent()
@@ -110,7 +108,6 @@ class FolderTest extends TestCase
      * Test getter for `parent_id`
      *
      * @return void
-     *
      * @covers ::_getParentId()
      */
     public function testGetParentId()
@@ -126,7 +123,6 @@ class FolderTest extends TestCase
      * Test setter for `parent_id`
      *
      * @return void
-     *
      * @covers ::_setParentId()
      */
     public function testSetParentId()
@@ -146,7 +142,6 @@ class FolderTest extends TestCase
      * Test getter for `parent_uname`
      *
      * @return void
-     *
      * @covers ::_getParentUname()
      */
     public function testGetParentUname()
@@ -162,7 +157,6 @@ class FolderTest extends TestCase
      * Test setter for `parent_uname`
      *
      * @return void
-     *
      * @covers ::_setParentUname()
      */
     public function testSetParentUname()
@@ -184,7 +178,6 @@ class FolderTest extends TestCase
      * Test for isParentSet()
      *
      * @return void
-     *
      * @covers ::isParentSet()
      */
     public function testIsParentSet()
@@ -200,7 +193,6 @@ class FolderTest extends TestCase
      * Test the presence of `parent` association
      *
      * @return void
-     *
      * @covers ::listAssociations()
      */
     public function testListAssociations()
@@ -225,7 +217,7 @@ class FolderTest extends TestCase
             'subfolder' => [
                 '/11/12',
                 12,
-            ]
+            ],
         ];
     }
 
@@ -235,7 +227,6 @@ class FolderTest extends TestCase
      * @param string $expected The expected path
      * @param int $id The folder id
      * @return void
-     *
      * @dataProvider getPathProvider
      * @covers ::_getPath()
      */
@@ -249,7 +240,6 @@ class FolderTest extends TestCase
      * Test that `path` virtual property is null if folder id is empty.
      *
      * @return void
-     *
      * @covers ::_getPath()
      */
     public function testGetPathNull()
@@ -262,7 +252,6 @@ class FolderTest extends TestCase
      * Test getter for `path` throws RuntimeException if folder is orphan.
      *
      * @return void
-     *
      * @covers ::_getPath()
      */
     public function testGetPathOrphanFolder()

@@ -49,7 +49,7 @@ class StreamsTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -59,7 +59,7 @@ class StreamsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -72,7 +72,6 @@ class StreamsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testInitialization()
@@ -133,7 +132,6 @@ class StreamsTableTest extends TestCase
      * @param array $data Data to be validated.
      * @param string|bool $uuid UUID of stream to patch.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
@@ -163,7 +161,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSave()
@@ -189,7 +186,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with a custom UUID.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveWithUuid()
@@ -219,7 +215,6 @@ class StreamsTableTest extends TestCase
      * Test after save event.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testAfterDelete()
@@ -234,7 +229,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with an already persisted entity.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveNotNew()

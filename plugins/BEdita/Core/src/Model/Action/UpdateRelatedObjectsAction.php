@@ -22,13 +22,12 @@ use Cake\Utility\Hash;
  * Abstract class for updating relations between BEdita objects.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\ORM\Association\RelatedTo $Association
  */
 abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {
@@ -68,7 +67,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
             $relatedEntities = reset($relatedEntities);
         }
         if (!empty($relatedEntities)) {
-            /** @var EntityInterface $relatedEntities */
+            /** @var \BEdita\Core\Model\Action\EntityInterface $relatedEntities */
             $joinData = (array)$relatedEntities->get('_joinData');
             // set join data properties in Tree entity, on empty array no properties are set
             $entity->set($joinData);

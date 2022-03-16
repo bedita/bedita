@@ -14,8 +14,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
 use Cake\Core\Configure;
@@ -27,7 +27,7 @@ use Cake\Utility\Hash;
 class MediaControllerTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
@@ -62,7 +62,7 @@ class MediaControllerTest extends IntegrationTestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -101,7 +101,7 @@ class MediaControllerTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -211,7 +211,6 @@ class MediaControllerTest extends IntegrationTestCase
      * @param int|int[] $id List of IDs.
      * @param array $query Query options.
      * @return void
-     *
      * @dataProvider thumbsProvider()
      * @covers ::thumbs()
      * @covers ::getIds()
@@ -245,7 +244,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when media IDs are passed both as query string and in path.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      */
@@ -263,7 +261,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test thumbnails generation when number of IDs exceeds pagination limits.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      */
@@ -281,7 +278,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when no media IDs are passed.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      * @covers ::getAvailableIds()
@@ -300,7 +296,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test available IDs.
      *
      * @return void
-     *
      * @covers ::getAvailableIds()
      */
     public function testAvailableIds()
@@ -339,7 +334,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method with provider thumbnails.
      *
      * @return void
-     *
      * @covers ::fetchProviderThumbs()
      */
     public function testProviderThumbs()
@@ -383,7 +377,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIndex()
@@ -410,7 +403,7 @@ class MediaControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
                     ],
-                ]
+                ],
             ],
             'data' => [
                 [
@@ -456,7 +449,7 @@ class MediaControllerTest extends IntegrationTestCase
                                [
                                     'id' => '9e58fa47-db64-4479-a0ab-88a706180d59',
                                     'type' => 'streams',
-                               ]
+                               ],
                             ],
                         ],
                         'parents' => [
@@ -522,8 +515,8 @@ class MediaControllerTest extends IntegrationTestCase
                                 [
                                     'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                                     'type' => 'streams',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'parents' => [
                             'links' => [
@@ -629,7 +622,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test single view method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSingleView()
@@ -645,7 +637,7 @@ class MediaControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
                     ],
-                ]
+                ],
             ],
             'data' => [
                 'id' => '14',
@@ -688,8 +680,8 @@ class MediaControllerTest extends IntegrationTestCase
                             [
                                 'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                                 'type' => 'streams',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'parents' => [
                         'links' => [

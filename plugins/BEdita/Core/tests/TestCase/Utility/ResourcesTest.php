@@ -140,7 +140,7 @@ class ResourcesTest extends TestCase
                     [
                         'name' => 'pets',
                         'description' => 'handle pets with care',
-                    ]
+                    ],
                 ],
                 'endpoints with object type',
                 [
@@ -148,7 +148,7 @@ class ResourcesTest extends TestCase
                         'name' => 'pets',
                         'description' => 'handle pets with care',
                         'object_type_name' => 'documents',
-                    ]
+                    ],
                 ],
             ],
             'endpoint_permissions' => [
@@ -204,7 +204,6 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     *
      * @covers ::create()
      * @dataProvider createProvider
      */
@@ -311,7 +310,6 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     *
      * @covers ::remove()
      * @dataProvider removeProvider
      */
@@ -416,14 +414,14 @@ class ResourcesTest extends TestCase
                     [
                         'name' => 'disabled',
                         'enabled' => 1,
-                    ]
+                    ],
                 ],
                 'endpoints with object type',
                 [
                     [
                         'name' => 'disabled',
                         'object_type_name' => 'documents',
-                    ]
+                    ],
                 ],
             ],
             'endpoint_permissions' => [
@@ -446,7 +444,6 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     *
      * @covers ::update()
      * @covers ::loadEntity()
      * @covers ::findCondition()
@@ -540,7 +537,7 @@ class ResourcesTest extends TestCase
             'bad action' => [
                 [
                     'assign' => [
-                        'roles' => []
+                        'roles' => [],
                     ],
                 ],
                 new BadRequestException('Save action "assign" not allowed'),
@@ -549,7 +546,7 @@ class ResourcesTest extends TestCase
                 [
                     'remove' => [
                         'questions' => [
-                            []
+                            [],
                         ],
                     ],
                 ],
@@ -564,7 +561,6 @@ class ResourcesTest extends TestCase
      * @param array $resources Resource save input data.
      * @param \Exception|null $exception Expected expection.
      * @return void
-     *
      * @covers ::save()
      * @covers ::saveType()
      * @dataProvider saveProvider

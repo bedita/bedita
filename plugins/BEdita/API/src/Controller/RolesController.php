@@ -16,18 +16,17 @@ namespace BEdita\API\Controller;
  * Controller for `/roles` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\RolesTable $Roles
  */
 class RolesController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Roles';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

@@ -26,7 +26,7 @@ class MarshallerTest extends TestCase
     use FakeAnimalsTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -40,7 +40,6 @@ class MarshallerTest extends TestCase
      * Test marshall data using table without inheritance
      *
      * @return void
-     *
      * @covers ::_buildPropertyMap()
      * @covers ::buildTablePropertyMap()
      */
@@ -81,7 +80,7 @@ class MarshallerTest extends TestCase
                     'legs' => 4,
                     'updated_at' => new Time('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
-                ]
+                ],
             ],
             'marshallInheritedEmptyDate' => [
                 [
@@ -97,7 +96,7 @@ class MarshallerTest extends TestCase
                     'legs' => 4,
                     'updated_at' => null,
                     'family' => 'The big tiger family',
-                ]
+                ],
             ],
         ];
     }
@@ -108,7 +107,6 @@ class MarshallerTest extends TestCase
      * @param array $data The data to be marshalled
      * @param array $expected The array of entity visible properties
      * @return void
-     *
      * @dataProvider buildPropertyMapProvider()
      * @covers ::_buildPropertyMap()
      * @covers ::buildTablePropertyMap()

@@ -25,7 +25,7 @@ use League\Flysystem\Adapter\Local;
 class LocalAdapter extends FilesystemAdapter
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'baseUrl' => null,
@@ -37,7 +37,7 @@ class LocalAdapter extends FilesystemAdapter
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config)
     {

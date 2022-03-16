@@ -35,7 +35,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -400,7 +399,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -442,7 +440,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -491,7 +488,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -526,7 +522,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -554,7 +549,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -581,7 +575,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -614,7 +607,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -641,7 +633,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit failure on `core` type.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testEditFailure()
@@ -674,7 +665,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */

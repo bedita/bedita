@@ -41,7 +41,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CategoriesTable extends Table
@@ -201,7 +200,7 @@ class CategoriesTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
      * @return \Cake\ORM\Query
-     * @throws BadFilterException
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     protected function findType(Query $query, array $options): Query
     {

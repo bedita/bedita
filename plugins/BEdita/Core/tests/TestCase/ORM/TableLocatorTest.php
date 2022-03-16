@@ -41,7 +41,7 @@ class TableLocatorTest extends TestCase
     protected $TableLocator;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -76,7 +76,7 @@ class TableLocatorTest extends TestCase
             ],
             'fallbackObjectType' => [
                 'BEdita\Core\Model\Table\ObjectsTable',
-                'Documents'
+                'Documents',
             ],
         ];
     }
@@ -88,7 +88,6 @@ class TableLocatorTest extends TestCase
      * @param string $alias Table alias.
      * @param array $options Table options.
      * @return void
-     *
      * @dataProvider getClassNameProvider()
      * @covers ::_getClassName()
      */

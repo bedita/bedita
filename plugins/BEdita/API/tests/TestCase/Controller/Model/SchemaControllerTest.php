@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case
@@ -63,7 +63,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * @param string $type Type name
      * @param string $accept Accept request header
      * @return void
-     *
      * @covers ::jsonSchema()
      * @covers ::initialize()
      * @dataProvider jsonSchemaProvider
@@ -90,7 +89,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method with an abstract object type.
      *
      * @return void
-     *
      * @covers ::jsonSchema()
      * @covers ::initialize()
      */
@@ -109,7 +107,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method on a disabled object type.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testJsonSchemaDisabled()
@@ -127,7 +124,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test ETag response header and Not Modified response.
      *
      * @return void
-     *
      * @covers ::jsonSchema()
      */
     public function testETag()

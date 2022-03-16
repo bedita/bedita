@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
-use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -28,9 +27,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Association\BelongsTo $Roles
- *
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @since 4.0.0
  */
 class EndpointPermissionsTable extends Table

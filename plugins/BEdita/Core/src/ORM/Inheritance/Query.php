@@ -21,13 +21,12 @@ use Cake\ORM\Table as CakeTable;
  * Extends `\Cake\ORM\Query` to set `FROM` clause and add default types and fields.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\ORM\Inheritance\Table _repository
  */
 class Query extends CakeQuery
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function addDefaultTypes(CakeTable $table)
     {
@@ -50,7 +49,7 @@ class Query extends CakeQuery
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _addDefaultFields(): void
     {
@@ -74,7 +73,7 @@ class Query extends CakeQuery
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _transformQuery(): void
     {

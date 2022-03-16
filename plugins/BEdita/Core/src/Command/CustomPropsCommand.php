@@ -16,7 +16,6 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Core\Exception\Exception;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -39,7 +38,7 @@ class CustomPropsCommand extends Command
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -55,7 +54,7 @@ class CustomPropsCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -87,7 +86,7 @@ class CustomPropsCommand extends Command
      *
      * @param string $type Object type
      * @param int|null $id Object ID
-     * @param ConsoleIo $io Console IO
+     * @param \Cake\Console\ConsoleIo $io Console IO
      * @return int Number of errors found
      */
     protected function customPropsByType(string $type, ?int $id, ConsoleIo $io): int

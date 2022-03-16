@@ -29,7 +29,6 @@ use Cake\ORM\Entity;
  * @property bool $enabled
  *
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
- *
  * @since 4.0.0
  */
 class Application extends Entity implements JsonApiSerializable
@@ -37,7 +36,7 @@ class Application extends Entity implements JsonApiSerializable
     use JsonApiAdminTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

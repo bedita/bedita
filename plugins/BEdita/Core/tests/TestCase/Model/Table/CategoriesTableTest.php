@@ -49,7 +49,7 @@ class CategoriesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -58,7 +58,7 @@ class CategoriesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -195,7 +195,6 @@ class CategoriesTableTest extends TestCase
      * @param int|\Exception $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     *
      * @covers ::findResource()
      * @dataProvider findResourceProvider()
      */

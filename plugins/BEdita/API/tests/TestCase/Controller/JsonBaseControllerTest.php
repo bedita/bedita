@@ -39,7 +39,7 @@ class JsonBaseControllerTest extends TestCase
             ],
             'post' => [
                 'input' => true,
-            ]
+            ],
         ]);
 
         $controller = new class ($request) extends JsonBaseController {

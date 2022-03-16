@@ -17,13 +17,12 @@ namespace BEdita\API\Controller\Admin;
  * Controller for `/admin/async_jobs` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
 class AsyncJobsController extends AdminController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'AsyncJobs';
 }

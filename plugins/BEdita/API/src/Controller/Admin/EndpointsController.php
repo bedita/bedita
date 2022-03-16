@@ -17,13 +17,12 @@ namespace BEdita\API\Controller\Admin;
  * Controller for `/admin/endpoints` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\EndpointsTable $Endpoints
  */
 class EndpointsController extends AdminController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Endpoints';
 }

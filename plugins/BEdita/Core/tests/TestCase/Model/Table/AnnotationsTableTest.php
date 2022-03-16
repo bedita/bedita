@@ -38,7 +38,7 @@ class AnnotationsTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -48,7 +48,7 @@ class AnnotationsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -61,7 +61,6 @@ class AnnotationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -111,7 +110,6 @@ class AnnotationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */

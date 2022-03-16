@@ -22,7 +22,6 @@ use Cake\ORM\Association\BelongsToMany;
  * Trait to help with operations on and with associated entities.
  *
  * @since 4.0.0
- *
  * @property-read \Cake\ORM\Association\BelongsToMany|\Cake\ORM\Association\HasMany $Association
  */
 trait AssociatedTrait
@@ -132,7 +131,7 @@ trait AssociatedTrait
      */
     protected function existing(EntityInterface $source)
     {
-        if (!$source->has(($this->Association->getProperty()))) {
+        if (!$source->has($this->Association->getProperty())) {
             $this->Association->getSource()->loadInto($source, [$this->Association->getName()]);
         }
 

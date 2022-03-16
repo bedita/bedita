@@ -137,7 +137,6 @@ class RelationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     *
      * @dataProvider validationProvider
      * @coversNothing
      */
@@ -187,7 +186,6 @@ class RelationsTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @covers ::findByName()
      * @dataProvider findByNameProvider()
      */
@@ -211,7 +209,6 @@ class RelationsTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -238,7 +235,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback on an existing entity.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveExisting()
@@ -264,7 +260,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback with a new entity.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSave()
@@ -283,7 +278,6 @@ class RelationsTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
@@ -343,7 +337,6 @@ class RelationsTableTest extends TestCase
      * @param int|\Exception $expected The expected result
      * @param int|string $search The search value
      * @return void
-     *
      * @dataProvider getProvider
      * @covers ::get()
      */

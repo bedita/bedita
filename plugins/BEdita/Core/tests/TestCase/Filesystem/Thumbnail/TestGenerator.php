@@ -26,10 +26,10 @@ class TestGenerator extends ThumbnailGenerator
      *
      * @var string
      */
-    const THUMBNAIL_URL = 'https://assets.example.org/thumbnail.jpg';
+    public const THUMBNAIL_URL = 'https://assets.example.org/thumbnail.jpg';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUrl(Stream $stream, array $options = [])
     {
@@ -37,7 +37,7 @@ class TestGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function generate(Stream $stream, array $options = [])
     {
@@ -45,7 +45,7 @@ class TestGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function exists(Stream $stream, array $options = [])
     {
@@ -53,7 +53,7 @@ class TestGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function delete(Stream $stream)
     {

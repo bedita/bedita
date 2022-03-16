@@ -36,7 +36,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {

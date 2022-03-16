@@ -20,14 +20,13 @@ use Cake\Console\Shell;
  * Trees shell command.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Shell\Task\RecoverTreeTask $Recover
  * @property \BEdita\Core\Shell\Task\CheckTreeTask $Check
  */
 class TreeShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $tasks = [
         'Recover' => ['class' => 'BEdita/Core.RecoverTree', 'config' => []],

@@ -23,7 +23,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class StreamsFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         [

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,23 +11,22 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Database\Type;
+namespace BEdita\API\Test\TestCase\Error;
 
-use Cake\Database\Driver;
-use Cake\Database\Type\JsonType;
+use BEdita\API\Error\ExceptionRenderer;
 
 /**
- * Custom JSON type that marshals JSONs into objects.
- *
- * @since 4.0.0
+ * Extension class with utility methods use in tests
  */
-class JsonObjectType extends JsonType
+class MyExceptionRenderer extends ExceptionRenderer
 {
-    /**
-     * @inheritDoc
-     */
-    public function toPHP($value, Driver $driver)
+    public function getController()
     {
-        return json_decode($value, false);
+        return $this->controller;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
     }
 }

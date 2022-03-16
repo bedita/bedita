@@ -148,7 +148,7 @@ class Properties extends ResourcesBase
      *
      * @param array $data Properties data
      * @return void
-     * @throws BadRequestException
+     * @throws \Cake\Http\Exception\BadRequestException
      */
     protected static function validate(array $data): void
     {

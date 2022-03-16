@@ -44,6 +44,7 @@ class ChangeCredentialsAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     protected function initialize(array $config)
@@ -76,7 +77,7 @@ class ChangeCredentialsAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

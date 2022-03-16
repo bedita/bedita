@@ -33,7 +33,7 @@ class Tag extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -42,7 +42,7 @@ class Tag extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         '_joinData',

@@ -15,12 +15,10 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use BEdita\Core\Model\Entity\Folder;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Action\ListRelatedFoldersAction
@@ -45,7 +43,6 @@ class ListRelatedFoldersActionTest extends TestCase
      * Test execute for `Parents` association.
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testExecuteParents()
@@ -61,7 +58,6 @@ class ListRelatedFoldersActionTest extends TestCase
      * Test execute for `Children` association.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction::initialize()
      */

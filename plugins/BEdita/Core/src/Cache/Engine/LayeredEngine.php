@@ -56,7 +56,8 @@ class LayeredEngine extends CacheEngine
 
     /**
      * {@inheritDoc}
-     * @throws Exception If the configuration is wrong
+     *
+     * @throws \Exception If the configuration is wrong
      */
     public function init(array $config = []): bool
     {
@@ -73,8 +74,8 @@ class LayeredEngine extends CacheEngine
      * Get the engine instance from a configuration or an alias.
      *
      * @param array|string $config Engine configuration or an alias
-     * @return CacheEngine The engine instance
-     * @throws Exception If the configuration is wrong
+     * @return \Cake\Cache\CacheEngine The engine instance
+     * @throws \Exception If the configuration is wrong
      */
     protected function getEngineInstance($config): CacheEngine
     {
@@ -112,7 +113,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function write($key, $value): bool
     {
@@ -122,7 +123,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function read($key)
     {
@@ -139,7 +140,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function increment($key, $offset = 1)
     {
@@ -150,7 +151,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function decrement($key, $offset = 1)
     {
@@ -161,7 +162,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function delete($key): bool
     {
@@ -171,7 +172,7 @@ class LayeredEngine extends CacheEngine
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function clear($check): bool
     {

@@ -71,7 +71,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @param string $name Resource name.
      * @param string $description Resource description.
      * @return void
-     *
      * @dataProvider addProvider()
      * @covers ::add()
      * @covers ::getTable()
@@ -112,14 +111,14 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
                 'home',
                 2,
                 'mine',
-                'block'
+                'block',
             ],
             [
                 1,
                 3,
                 'first role',
                 'true',
-                'true'
+                'true',
             ],
         ];
     }
@@ -133,7 +132,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @param string $read Read permission
      * @param string $write Write permission
      * @return void
-     *
      * @dataProvider addPermissionProvider
      * @covers ::add()
      * @covers ::getTable()
@@ -185,7 +183,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @param string $field Field to be updated.
      * @param mixed|null $value New field value.
      * @return void
-     *
      * @dataProvider editProvider
      * @covers ::edit()
      * @covers ::getEntity()
@@ -223,7 +220,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * Test `edit` failure
      *
      * @return void
-     *
      * @covers ::edit()
      */
     public function testEditFail(): void
@@ -262,7 +258,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @param int $expected Expected count.
      * @param string $type Resource type.
      * @return void
-     *
      * @dataProvider listProvider()
      * @covers ::ls()
      */
@@ -308,7 +303,6 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      * @param int|string $id Resource ID or name.
      * @param string $answer Given answer (y/n).
      * @return void
-     *
      * @dataProvider removeProvider()
      * @covers ::rm()
      * @covers ::getEntity()

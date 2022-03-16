@@ -34,7 +34,7 @@ use Cake\Utility\Hash;
 class HistoryBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'table' => 'History',
@@ -79,7 +79,7 @@ class HistoryBehavior extends Behavior
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -150,8 +150,8 @@ class HistoryBehavior extends Behavior
     /**
      * Retrieve history event data.
      *
-     * @param EntityInterface $entity Object entity.
-     * @return EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity Object entity.
+     * @return \Cake\Datasource\EntityInterface
      */
     protected function historyEntity(EntityInterface $entity): EntityInterface
     {
@@ -171,7 +171,7 @@ class HistoryBehavior extends Behavior
      * See entity user action, can be 'create', 'update', 'trash' or 'restore'
      * 'remove' action defined in in `afterDelete`
      *
-     * @param EntityInterface $entity Object entity.
+     * @param \Cake\Datasource\EntityInterface $entity Object entity.
      * @return string
      */
     protected function entityUserAction(EntityInterface $entity): string

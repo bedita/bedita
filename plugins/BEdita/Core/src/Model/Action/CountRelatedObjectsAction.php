@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use BEdita\Core\Model\Action\BaseAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -76,6 +75,7 @@ class CountRelatedObjectsAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     protected function initialize(array $config): void
@@ -118,7 +118,7 @@ class CountRelatedObjectsAction extends BaseAction
      */
     public function execute(array $data = []): array
     {
-        list($directCount, $inverseCount) = $this->filterCount(Hash::get($data, 'count'));
+        [$directCount, $inverseCount] = $this->filterCount(Hash::get($data, 'count'));
         $count = array_merge($directCount, $inverseCount);
         /** @var \BEdita\Core\Model\Entity\ObjectEntity[] $entities*/
         $entities = (array)Hash::get($data, 'entities');
@@ -237,7 +237,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array|null $relations The list of direct relations
      * @param array $ids A list of object ids
      * @param bool $inverse If you want to count inverse relation
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function countRelations(array $relations, array $ids, bool $inverse = false): Query
     {
@@ -395,7 +395,7 @@ class CountRelatedObjectsAction extends BaseAction
      * Search entities by id looking in passed `$entity` properties.
      *
      * @param int $id The id to search
-     * @param EntityInterface $entity The starting entity
+     * @param \Cake\Datasource\EntityInterface $entity The starting entity
      * @param array $properties A list of properties to look in
      * @return array
      */

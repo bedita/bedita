@@ -19,13 +19,12 @@ use Cake\Console\Shell;
  * Stream shell commands: removeOrphans
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
 class StreamsShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Streams';
 
@@ -41,7 +40,7 @@ class StreamsShell extends Shell
             'help' => 'remove obsolete/orphans streams and related files',
             'parser' => [
                 'description' => [
-                    'Remove orphans streams.'
+                    'Remove orphans streams.',
                 ],
                 'options' => [
                     'days' => [
@@ -50,7 +49,7 @@ class StreamsShell extends Shell
                         'default' => 1,
                     ],
                 ],
-            ]
+            ],
         ]);
 
         return $parser;

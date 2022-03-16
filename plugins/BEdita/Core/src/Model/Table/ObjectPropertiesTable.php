@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Properties
  * @property \Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\ObjectProperty get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectProperty newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectProperty[] newEntities(array $data, array $options = [])
@@ -37,12 +36,12 @@ class ObjectPropertiesTable extends Table
         $this->belongsTo('Properties', [
             'foreignKey' => 'property_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Properties'
+            'className' => 'BEdita/Core.Properties',
         ]);
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 

@@ -26,13 +26,13 @@ use Cake\Utility\Hash;
  *
  * @property \BEdita\Core\Model\Entity\Folder|null $parent
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $children
- *
  * @since 4.0.0
  */
 class Folder extends ObjectEntity
 {
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     public function __construct(array $properties = [], array $options = [])
@@ -62,7 +62,7 @@ class Folder extends ObjectEntity
      * @param \BEdita\Core\Model\Entity\Folder|null $folder The folder entity to set as parent
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _setParent(Folder $folder = null)
+    protected function _setParent(?Folder $folder = null)
     {
         if ($folder === null) {
             $this->parents = [];
@@ -191,7 +191,7 @@ class Folder extends ObjectEntity
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected static function listAssociations(Table $Table, array $hidden = [])
     {

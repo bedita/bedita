@@ -43,7 +43,7 @@ class RelatedTo extends BelongsToMany
     private $objectType = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _options(array $opts): void
     {
@@ -63,7 +63,7 @@ class RelatedTo extends BelongsToMany
      * @param \BEdita\Core\Model\Entity\ObjectType|null $objectType Object type for the target table (if one exists).
      * @return $this
      */
-    public function setObjectType(?ObjectType $objectType): self
+    public function setObjectType(?ObjectType $objectType)
     {
         $this->objectType = $objectType;
 
@@ -108,7 +108,7 @@ class RelatedTo extends BelongsToMany
      * @param string|string[] $key The key or keys used for inverse relation check.
      * @return $this
      */
-    public function setInverseKey($key): self
+    public function setInverseKey($key)
     {
         $this->inverseKey = $key;
 
@@ -151,7 +151,7 @@ class RelatedTo extends BelongsToMany
 
         $assoc = $junction->getAssociation($this->getTarget()->getAlias());
         $conditions = $assoc->_joinCondition([
-            'foreignKey' => $this->getTargetForeignKey()
+            'foreignKey' => $this->getTargetForeignKey(),
         ]);
         $subQuery = $this->_appendJunctionJoin($subQuery, $conditions);
 
@@ -181,7 +181,7 @@ class RelatedTo extends BelongsToMany
     /**
      * Given a table says if it describes an abstract object type
      *
-     * @param Table $table The table to verify
+     * @param \Cake\ORM\Table $table The table to verify
      * @return bool
      */
     protected function isAbstract(Table $table)

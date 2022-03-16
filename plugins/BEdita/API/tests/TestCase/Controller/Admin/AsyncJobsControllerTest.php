@@ -26,7 +26,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -260,7 +259,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -302,7 +300,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -349,7 +346,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
@@ -386,7 +382,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -421,7 +416,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -449,7 +443,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -478,7 +471,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -507,7 +499,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */

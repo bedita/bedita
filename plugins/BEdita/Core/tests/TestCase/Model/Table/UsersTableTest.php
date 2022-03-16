@@ -62,7 +62,7 @@ class UsersTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -73,7 +73,7 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -190,7 +190,6 @@ class UsersTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -214,7 +213,6 @@ class UsersTableTest extends TestCase
      * Test handling of login event.
      *
      * @return void
-     *
      * @covers ::login()
      */
     public function testLogin()
@@ -232,7 +230,6 @@ class UsersTableTest extends TestCase
      * Test login with no data.
      *
      * @return void
-     *
      * @covers ::login()
      */
     public function testLoginNoData()
@@ -246,7 +243,6 @@ class UsersTableTest extends TestCase
      * Test `login` finder.
      *
      * @return void
-     *
      * @covers ::findLogin()
      */
     public function testFindLogin()
@@ -260,7 +256,6 @@ class UsersTableTest extends TestCase
      * Test `loginRoles` finder.
      *
      * @return void
-     *
      * @covers ::findLoginRoles()
      */
     public function testFindLoginRoles()
@@ -277,7 +272,6 @@ class UsersTableTest extends TestCase
      * Test `login` finder fail.
      *
      * @return void
-     *
      * @covers ::findLogin()
      */
     public function testFailFindLogin()
@@ -294,7 +288,6 @@ class UsersTableTest extends TestCase
      * Test handling of external auth login event.
      *
      * @return void
-     *
      * @covers ::externalAuthLogin()
      */
     public function testExternalAuthLogin()
@@ -307,7 +300,7 @@ class UsersTableTest extends TestCase
 
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
-        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
         $externalAuth = $event->result;
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
@@ -322,7 +315,7 @@ class UsersTableTest extends TestCase
 
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
-        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
         $externalAuth = $event->result;
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
@@ -334,7 +327,6 @@ class UsersTableTest extends TestCase
      * Test deleted field on user deleted.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeleted()
@@ -351,7 +343,6 @@ class UsersTableTest extends TestCase
      * Test soft delete admin user
      *
      * @return void
-     *
      * @covers ::beforeSave
      */
     public function testSoftDeleteAdminUser()
@@ -368,7 +359,6 @@ class UsersTableTest extends TestCase
      * Test soft delete logged user
      *
      * @return void
-     *
      * @covers ::beforeSave
      */
     public function testSoftDeleteLoggedUser()
@@ -386,7 +376,6 @@ class UsersTableTest extends TestCase
      * Test soft delete second user
      *
      * @return void
-     *
      * @covers ::beforeSave
      */
     public function testSoftDeleteSecondUser()
@@ -400,7 +389,6 @@ class UsersTableTest extends TestCase
      * Test delete admin user
      *
      * @return void
-     *
      * @covers ::beforeDelete
      */
     public function testHardDeleteAdminUser()
@@ -416,7 +404,6 @@ class UsersTableTest extends TestCase
      * Test hard delete second user
      *
      * @return void
-     *
      * @covers ::beforeDelete
      */
     public function testHardDeleteSecondUser()
@@ -466,7 +453,6 @@ class UsersTableTest extends TestCase
      * @param array $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @covers ::findExternalAuth()
      * @dataProvider findExternalAuthProvider()
      */
@@ -530,7 +516,6 @@ class UsersTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @param array $config Signup configuration.
-     *
      * @return void
      * @covers ::validationSignup()
      * @dataProvider validationSignupProvider
@@ -576,7 +561,6 @@ class UsersTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     *
      * @covers ::findMine()
      */
     public function testFindMine()
@@ -596,7 +580,6 @@ class UsersTableTest extends TestCase
      * Test `findRoles` method.
      *
      * @return void
-     *
      * @covers ::findRoles()
      * @covers ::rolesNamesIds()
      */
@@ -618,7 +601,6 @@ class UsersTableTest extends TestCase
      * Test `findRoles` failure method.
      *
      * @return void
-     *
      * @covers ::findRoles()
      */
     public function testFindRolesFail()
@@ -665,7 +647,6 @@ class UsersTableTest extends TestCase
      * @param string $passwdRule Password regexp rule
      * @param string $passwdMessage Password validation error message
      * @param bool|Exception $expected Save result or exception
-     *
      * @return void
      * @dataProvider beforeMarshalProvider
      * @covers ::beforeMarshal()
@@ -712,7 +693,7 @@ class UsersTableTest extends TestCase
                     'another_email' => 'supporto@gusta.vo',
                     'another_surname' => 'helpus',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -720,7 +701,6 @@ class UsersTableTest extends TestCase
      * Test create new user with custom properties
      *
      * @param array $data User data
-     *
      * @return void
      * @dataProvider customPropsCreateProvider
      * @coversNothing
@@ -873,7 +853,6 @@ class UsersTableTest extends TestCase
      *
      * @param bool|\Exception $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider prefixProvider
      * @covers ::beforeSave()

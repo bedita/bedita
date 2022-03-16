@@ -20,7 +20,7 @@ namespace BEdita\API\Controller;
 class UsersController extends ObjectsController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Users';
 
@@ -32,7 +32,7 @@ class UsersController extends ObjectsController
     protected const ADMIN_META_ACCESSIBLE = ['blocked', 'locked'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

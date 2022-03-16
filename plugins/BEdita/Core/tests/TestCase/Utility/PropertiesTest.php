@@ -22,7 +22,6 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Utility\Properties} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Utility\Properties
- *
  * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
 class PropertiesTest extends TestCase
@@ -67,7 +66,7 @@ class PropertiesTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -79,7 +78,6 @@ class PropertiesTest extends TestCase
      * Test `create` method.
      *
      * @return void
-     *
      * @covers ::create()
      * @covers ::validate()
      */
@@ -98,7 +96,6 @@ class PropertiesTest extends TestCase
      * Test `remove` method.
      *
      * @return void
-     *
      * @covers ::remove()
      */
     public function testRemove(): void
@@ -117,7 +114,6 @@ class PropertiesTest extends TestCase
      * Test `validate` failure.
      *
      * @return void
-     *
      * @covers ::validate()
      */
     public function testValidate(): void
@@ -133,7 +129,6 @@ class PropertiesTest extends TestCase
      * Test `update` method.
      *
      * @return void
-     *
      * @covers ::update()
      */
     public function testUpdate(): void
