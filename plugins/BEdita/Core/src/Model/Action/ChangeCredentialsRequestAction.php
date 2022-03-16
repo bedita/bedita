@@ -17,8 +17,8 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
@@ -165,13 +165,13 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * Send change request email to user
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\User $user The user.
      * @param \BEdita\Core\Model\Entity\AsyncJob $asyncJob Async job.
      * @param string $changeUrl Change URL
      * @return void
      */
-    public function sendMail(Event $event, User $user, AsyncJob $asyncJob, $changeUrl)
+    public function sendMail(EventInterface $event, User $user, AsyncJob $asyncJob, $changeUrl)
     {
         $options = [
             'params' => compact('user', 'changeUrl'),

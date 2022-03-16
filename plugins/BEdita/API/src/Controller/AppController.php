@@ -15,7 +15,7 @@ namespace BEdita\API\Controller;
 use BEdita\API\Datasource\JsonApiPaginator;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\Exception\NotFoundException;
@@ -100,7 +100,7 @@ class AppController extends Controller
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    public function beforeFilter(EventInterface $event)
     {
         if (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException(

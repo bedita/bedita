@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\Utility\Inflector;
 
@@ -46,11 +46,11 @@ class DataCleanupBehavior extends Behavior
      * Substitute NULL input data with defaults when a new Entity is being created
      * to avoid errors
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \ArrayObject $data The input data to save
      * @return void
      */
-    public function beforeMarshal(Event $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
     {
         // fill defaults only on new objects
         if (!empty($data['id'])) {

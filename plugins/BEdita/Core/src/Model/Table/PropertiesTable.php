@@ -18,10 +18,9 @@ use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ResultSetInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -133,11 +132,11 @@ class PropertiesTable extends Table
     /**
      * Find both static and dynamic properties by default.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\ORM\Query $query Query object.
      * @return void
      */
-    public function beforeFind(\Cake\Event\EventInterface $event, Query $query)
+    public function beforeFind(EventInterface $event, Query $query)
     {
         $from = $query->clause('from');
         if (empty($from)) {

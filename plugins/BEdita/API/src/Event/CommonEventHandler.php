@@ -18,10 +18,9 @@ use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\MiddlewareQueue;
-use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
  * CommonEventsHandler class.
@@ -57,12 +56,12 @@ class CommonEventHandler implements EventListenerInterface
      * ]
      * ```
      *
-     * @param \Cake\Event\Event $event The event object
+     * @param \Cake\Event\EventInterface $event The event object
      * @param \Cake\Http\MiddlewareQueue $middleware The middleware queue
      * @return void
      * @see \BEdita\API\Middleware\CorsMiddleware to more info on CORS configuration
      */
-    public function buildMiddlewareStack(Event $event, MiddlewareQueue $middleware)
+    public function buildMiddlewareStack(EventInterface $event, MiddlewareQueue $middleware)
     {
         $middleware
             ->prepend(new AnalyticsMiddleware())
@@ -80,12 +79,12 @@ class CommonEventHandler implements EventListenerInterface
      * Set the user identified.
      * Called after user authentication.
      *
-     * @param \Cake\Event\Event $event The event object
+     * @param \Cake\Event\EventInterface $event The event object
      * @param array $user The user data
      * @return void
      * @throws \Cake\Http\Exception\UnauthorizedException
      */
-    public function afterIdentify(Event $event, array $user)
+    public function afterIdentify(EventInterface $event, array $user)
     {
         LoggedUser::setUser($user);
     }

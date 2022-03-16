@@ -13,9 +13,8 @@
 
 namespace BEdita\API\Controller;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -69,7 +68,7 @@ class StreamsController extends ResourcesController
      *
      * {@inheritDoc}
      */
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    public function beforeFilter(EventInterface $event)
     {
         if ($this->request->getParam('action') === 'download') {
             return;

@@ -21,8 +21,7 @@ use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -125,11 +124,11 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Set custom properties keys as main properties
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
      */
-    public function beforeFind(\Cake\Event\EventInterface $event, Query $query): Query
+    public function beforeFind(EventInterface $event, Query $query): Query
     {
         return $query->formatResults(
             function (CollectionInterface $results) {
@@ -144,11 +143,11 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Set custom properties in their dedicated field.
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return false|void
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {

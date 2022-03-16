@@ -13,7 +13,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\Utility\Hash;
 
@@ -58,11 +58,11 @@ class PriorityBehavior extends Behavior
      * Use current max value + 1 if not set.
      * New values will start at 1.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         $fields = $this->getConfig('fields');
 
@@ -102,12 +102,12 @@ class PriorityBehavior extends Behavior
      * Compact other priorities before the entity is deleted.
      *
      * @todo Implement this method.
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         return;
     }

@@ -19,10 +19,9 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -208,7 +207,7 @@ class RelationsTable extends Table
      *
      * {@inheritDoc}
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew()) {
             return;

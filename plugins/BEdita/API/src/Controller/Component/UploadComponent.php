@@ -17,7 +17,7 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ModelAwareTrait;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Laminas\Diactoros\Stream;
 
 /**
@@ -34,7 +34,7 @@ class UploadComponent extends Component
     /**
      * {@inheritDoc}
      */
-    public function beforeFilter(\Cake\Event\EventInterface $event): void
+    public function beforeFilter(EventInterface $event): void
     {
         // avoid that RequestHandler tries to parse body
         $this->getController()->RequestHandler->setConfig('inputTypeMap', [], false);

@@ -14,9 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -89,13 +88,13 @@ class TagsTable extends CategoriesTagsBaseTable
     /**
      * Add `object_typ_id` condition and remove some fields when retrieved as association.
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
      * @param \ArrayObject $options Options array.
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(\Cake\Event\EventInterface $event, Query $query, \ArrayObject $options, $primary)
+    public function beforeFind(EventInterface $event, Query $query, \ArrayObject $options, $primary)
     {
         $query->andWhere([$this->aliasField('object_type_id') . ' IS NULL']);
         if ($primary) {

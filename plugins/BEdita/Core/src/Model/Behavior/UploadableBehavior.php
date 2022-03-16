@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use League\Flysystem\MountManager;
@@ -127,11 +127,11 @@ class UploadableBehavior extends Behavior
     /**
      * Process upload.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterSave(\Cake\Event\EventInterface $event, Entity $entity)
+    public function afterSave(EventInterface $event, Entity $entity)
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processUpload($entity, $file['path'], $file['contents']);
@@ -142,11 +142,11 @@ class UploadableBehavior extends Behavior
     /**
      * Process delete.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterDelete(\Cake\Event\EventInterface $event, Entity $entity)
+    public function afterDelete(EventInterface $event, Entity $entity)
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processDelete($entity, $file['path']);

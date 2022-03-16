@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\User;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
@@ -101,11 +101,11 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     /**
      * Send welcome email to user to inform him of successfully activation
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    public function sendMail(Event $event, User $user)
+    public function sendMail(EventInterface $event, User $user)
     {
         $options = [
             'params' => compact('user'),

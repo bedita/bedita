@@ -17,10 +17,9 @@ use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Cache\Cache;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -116,12 +115,12 @@ class PropertyTypesTable extends Table
     /**
      * Avoid modifications when `core_type` is true.
      *
-     * @param \Cake\Event\Event $event Event fired
+     * @param \Cake\Event\EventInterface $event Event fired
      * @param \Cake\Datasource\EntityInterface $entity Entity to be saved
      * @return void
      * @throws ImmutableResourceException
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
             throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
@@ -141,13 +140,13 @@ class PropertyTypesTable extends Table
     /**
      * Check that no properties exist linked to the property type before deleting it.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being deleted.
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
-    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($this->Properties->exists([$this->Properties->getForeignKey() => $entity->get($this->Properties->getBindingKey())])) {
             throw new ForbiddenException(__d('bedita', 'Property type with existing properties'));

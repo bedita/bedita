@@ -19,7 +19,6 @@ use Cake\Core\Configure;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
@@ -100,11 +99,11 @@ class HistoryBehavior extends Behavior
     /**
      * Collect user changed properties.
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \ArrayObject $data The input data being saved
      * @return void
      */
-    public function beforeMarshal(Event $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
     {
         $this->changed = $data->getArrayCopy();
         $exclude = (array)$this->getConfig('exclude');
@@ -119,11 +118,11 @@ class HistoryBehavior extends Behavior
     /**
      * Remove from `changed` array properties that are not dirty.
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity data.
      * @return void
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         foreach (array_keys($this->changed) as $prop) {
             if (!$entity->isDirty($prop)) {
@@ -135,11 +134,11 @@ class HistoryBehavior extends Behavior
     /**
      * Save user changed properties in history table or other datasource.
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity data.
      * @return void
      */
-    public function afterSave(\Cake\Event\EventInterface $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($this->Table) || (empty($this->changed) && !$entity->isDirty('deleted'))) {
             return;
@@ -195,7 +194,7 @@ class HistoryBehavior extends Behavior
     /**
      * Process delete.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Object entity.
      * @return void
      */

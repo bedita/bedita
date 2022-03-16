@@ -22,6 +22,7 @@ use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -189,10 +190,10 @@ class UsersTable extends Table
     /**
      * Update last login.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @return void
      */
-    public function login(Event $event)
+    public function login(EventInterface $event)
     {
         $data = $event->getData();
         if (empty($data[0]['id'])) {
@@ -211,13 +212,13 @@ class UsersTable extends Table
     /**
      * Create external auth record for this user.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $authProvider Auth provider entity.
      * @param string $providerUsername Provider username.
      * @param int $userId Existing user entity id, if null a new user is created.
      * @return \Cake\Datasource\EntityInterface|bool
      */
-    public function externalAuthLogin(Event $event, EntityInterface $authProvider, $providerUsername, $userId = null)
+    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, $providerUsername, $userId = null)
     {
         $params = $event->getData('params');
         $externalAuth = $this->ExternalAuth->newEntity([
@@ -357,12 +358,12 @@ class UsersTable extends Table
     /**
      * Before delete checks: if record is not deletable, raise a ImmutableResourceException
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if (static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -449,12 +450,12 @@ class UsersTable extends Table
      *  - logged user removing their account, but performing optout via `_optout` special property is allowed
      *  - `username` or `uname` cannot start with reserved `__deleted-` string
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -477,12 +478,12 @@ class UsersTable extends Table
     /**
      * If password is changed or created: check regexp rule if present
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \ArrayObject $data The input data to save
      * @return void
      * @throws \Cake\Http\Exception\BadRequestException if password is not valid
      */
-    public function beforeMarshal(Event $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
     {
         if (isset($data['password'])) {
             $passwdRule = Configure::read('Auth.passwordPolicy.rule');

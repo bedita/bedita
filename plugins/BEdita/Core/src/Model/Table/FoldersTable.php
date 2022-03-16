@@ -14,12 +14,13 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\ValidCount;
+use Cake\ORM\RulesChecker;
 
 /**
  * Folders Model
@@ -155,11 +156,11 @@ class FoldersTable extends ObjectsTable
      * Set `parents` as not dirty to prevent automatic save that could breaks the tree.
      * The tree is saved later in `afterSave()`
      *
-     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         parent::beforeSave($event, $entity);
 
@@ -169,11 +170,11 @@ class FoldersTable extends ObjectsTable
     /**
      * Update the tree setting the right parent.
      *
-     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Event\EventInterface $event The event
      * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity persisted
      * @return void
      */
-    public function afterSave(\Cake\Event\EventInterface $event, Folder $entity)
+    public function afterSave(EventInterface $event, Folder $entity)
     {
         $this->updateChildrenDeletedField($entity);
 
@@ -213,12 +214,12 @@ class FoldersTable extends ObjectsTable
      *
      * `_isDescendant` default empty. When not empty means that the deletion was cascading from a parent so no other action needed.
      *
-     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The folder entity to delete
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         if (!empty($options['_isDescendant'])) {
             return;
@@ -235,12 +236,12 @@ class FoldersTable extends ObjectsTable
     /**
      * Delete all descendants of type "folders" if exist.
      *
-     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The folder entity to delete
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function afterDelete(\Cake\Event\EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         if (empty($options['descendants'])) {
             return;

@@ -18,13 +18,11 @@ use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Core\App;
-use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
@@ -234,12 +232,12 @@ class ObjectTypesTable extends Table
      * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
      * in order to be executed before corresponding methods in `TreeBehavior`.
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
-    public function beforeRules(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isNew()) {
             if (empty($entity->get('parent_id'))) {
@@ -280,12 +278,12 @@ class ObjectTypesTable extends Table
      *  - `enabled` is set to false and objects of this type or subtypes exist
      *  - `table` is not a valid table model class
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
-    public function beforeSave(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
@@ -320,12 +318,12 @@ class ObjectTypesTable extends Table
     /**
      * Don't allow delete actions if at least an object of this type exists.
      *
-     * @param \Cake\Event\Event $event The beforeDelete event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeDelete event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be deleted
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
-    public function beforeDelete(\Cake\Event\EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
