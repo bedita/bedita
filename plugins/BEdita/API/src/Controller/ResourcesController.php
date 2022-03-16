@@ -69,7 +69,7 @@ abstract class ResourcesController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
