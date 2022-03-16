@@ -17,6 +17,8 @@ use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Utility\Hash;
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\ImageManager;
 use League\Glide\Api\Api as GlideApi;
@@ -54,10 +56,15 @@ class GlideGenerator extends ThumbnailGenerator
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
      * @param array $options Thumbnail options.
      * @return string
+     * @throws BadRequestException
      */
     protected function getFilename(Stream $stream, array $options = [])
     {
         $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
+        $fm = Hash::get($options, 'fm', 'jpg');
+        if (!in_array($fm, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
+            throw new BadRequestException(__d('bedita', 'Encoded the image to a specific format is not available.'));
+        }
         if ($ext) {
             $ext = '.' . $ext;
         }
