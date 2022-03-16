@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
