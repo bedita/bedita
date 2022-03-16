@@ -34,7 +34,6 @@ class TagsCategoriesTest extends IntegrationTestCase
                         [
                             'name' => 'first-tag',
                             'label' => 'First tag',
-                            'params' => null,
                         ]
                     ],
                 ],
@@ -144,7 +143,6 @@ class TagsCategoriesTest extends IntegrationTestCase
                         [
                             'name' => 'first-tag',
                             'label' => 'First tag',
-                            'params' => null,
                         ]
                     ],
                 ],
@@ -271,7 +269,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                 '/model/categories',
             ],
             'tags' => [
-                [4],
+                [1],
                 '/model/tags',
             ],
             'single cat' => [
@@ -279,16 +277,16 @@ class TagsCategoriesTest extends IntegrationTestCase
                 '/model/categories/2',
             ],
             'single tag' => [
-                [4],
-                '/model/tags/4',
+                [1],
+                '/model/tags/1',
             ],
             'obj categories' => [
                 [2],
                 '/model/categories/2/object_categories',
             ],
             'obj tags' => [
-                [4],
-                '/model/tags/4/object_tags',
+                [1],
+                '/model/tags/1/object_tags',
             ],
         ];
     }

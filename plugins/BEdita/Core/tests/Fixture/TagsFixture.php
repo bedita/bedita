@@ -10,14 +10,15 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * ObjectCategoriesFixture
+ * TagsFixture
  */
-class ObjectCategoriesFixture extends TestFixture
+class TagsFixture extends TestFixture
 {
     /**
      * Records
@@ -25,20 +26,13 @@ class ObjectCategoriesFixture extends TestFixture
      * @var array
      */
     public $records = [
+        // 1
         [
-            'object_id' => 2,
-            'category_id' => 1,
-            'params' => '100',
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 2,
-            'params' => null,
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 3,
-            'params' => null,
+            'name' => 'first-tag',
+            'label' => 'First tag',
+            'enabled' => 1,
+            'created' => '2019-11-26 12:15:51',
+            'modified' => '2019-11-26 12:15:51'
         ],
     ];
 }

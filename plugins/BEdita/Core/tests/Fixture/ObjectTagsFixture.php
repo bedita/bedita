@@ -15,9 +15,9 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * ObjectCategoriesFixture
+ * ObjectTagsFixture
  */
-class ObjectCategoriesFixture extends TestFixture
+class ObjectTagsFixture extends TestFixture
 {
     /**
      * Records
@@ -26,19 +26,8 @@ class ObjectCategoriesFixture extends TestFixture
      */
     public $records = [
         [
-            'object_id' => 2,
-            'category_id' => 1,
-            'params' => '100',
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 2,
-            'params' => null,
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 3,
-            'params' => null,
+            'object_id' => 4,
+            'tag_id' => 1,
         ],
     ];
 }

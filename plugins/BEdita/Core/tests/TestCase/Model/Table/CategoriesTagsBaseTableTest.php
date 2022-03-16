@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -92,7 +93,7 @@ class CategoriesTagsBaseTableTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('Tags');
         $tags = $table->find('ids', ['names' => ['first-tag']])->toArray();
         static::assertEquals(1, count($tags));
-        static::assertEquals(4, $tags[0]['id']);
+        static::assertEquals(1, $tags[0]['id']);
 
         $tags = $table->find('ids', ['names' => ['tag-1', 'tag-2']])->toArray();
         static::assertEmpty($tags);
@@ -106,7 +107,7 @@ class CategoriesTagsBaseTableTest extends TestCase
      */
     public function testFindTagsIdsFail()
     {
-        $this->expectException('\Cake\Http\Exception\BadRequestException');
+        $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing or wrong required parameter "names"');
         TableRegistry::getTableLocator()->get('Tags')
             ->find('ids', ['names' => 42])
@@ -142,10 +143,10 @@ class CategoriesTagsBaseTableTest extends TestCase
      */
     public function testFindCategoriesIdsFail2()
     {
-        $this->expectException('\Cake\Http\Exception\BadRequestException');
+        $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing required parameter "typeId"');
         TableRegistry::getTableLocator()->get('Categories')
-            ->find('ids', ['names' => 'unnamed'])
+            ->find('ids', ['names' => ['unnamed']])
             ->toArray();
     }
 }
