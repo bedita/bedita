@@ -119,7 +119,7 @@ class CategoriesTableTest extends TestCase
      * Test find enabled categories
      *
      * @return void
-     * @coversNothing
+     * @covers ::findEnabled()
      */
     public function testFindEnabledCategories()
     {
@@ -210,5 +210,39 @@ class CategoriesTableTest extends TestCase
 
         static::assertEquals(1, $query->count());
         static::assertEquals($expected, $entity->id);
+    }
+
+    /**
+     * Test `findIds` method.
+     *
+     * @return void
+     * @covers ::findIds()
+     */
+    public function testFindIds()
+    {
+        $categories = $this->Categories
+            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
+            ->toArray();
+        static::assertEquals(1, count($categories));
+        static::assertEquals(2, $categories[0]['id']);
+
+        $categories = $this->Categories
+            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
+            ->toArray();
+        static::assertEmpty($categories);
+    }
+
+    /**
+     * Test `findIds` failure.
+     *
+     * @return void
+     * @covers ::findIds()
+     */
+    public function testFindIdsFail()
+    {
+        $this->expectException(BadFilterException::class);
+        $this->expectExceptionMessage('Missing required parameter "typeId"');
+
+        $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
     }
 }
