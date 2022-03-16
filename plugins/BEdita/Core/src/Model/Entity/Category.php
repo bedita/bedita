@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\JsonApiModelTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
@@ -32,8 +31,8 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $modified
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
- * @property \BEdita\Core\Model\Entity\ParentCategory $parent_category
- * @property \BEdita\Core\Model\Entity\ChildCategory[] $child_categories
+ * @property \BEdita\Core\Model\Entity\Category $parent_category
+ * @property \BEdita\Core\Model\Entity\Category[] $child_categories
  * @property \BEdita\Core\Model\Entity\ObjectCategory[] $object_categories
  */
 class Category extends Entity implements JsonApiSerializable

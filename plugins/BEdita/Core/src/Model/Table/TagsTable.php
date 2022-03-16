@@ -13,7 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Validation\Validation;
+use ArrayObject;
+use BEdita\Core\Exception\BadFilterException;
+use Cake\Collection\CollectionInterface;
+use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -22,7 +26,8 @@ use Cake\Validation\Validator;
 /**
  * Tags Model
  *
- * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectTags
+ * @property \BEdita\Core\Model\Table\ObjectTagsTable&\Cake\ORM\Association\HasMany $ObjectTags
+ * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsToMany $Objects
  *
  * @method \BEdita\Core\Model\Entity\Tag get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tag newEntity($data = null, array $options = [])
@@ -35,7 +40,7 @@ use Cake\Validation\Validator;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class TagsTable extends CategoriesTagsBaseTable
+class TagsTable extends Table
 {
     /**
      * Initialize method
@@ -48,7 +53,7 @@ class TagsTable extends CategoriesTagsBaseTable
     {
         parent::initialize($config);
 
-        $this->setTable('categories');
+        $this->setTable('tags');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
@@ -61,13 +66,19 @@ class TagsTable extends CategoriesTagsBaseTable
         ]);
 
         $this->hasMany('ObjectTags', [
-            'foreignKey' => 'category_id',
+            'foreignKey' => 'tag_id',
             'className' => 'BEdita/Core.ObjectTags'
+        ]);
+        $this->belongsToMany('Objects', [
+            'className' => 'BEdita/Core.Objects',
+            'foreignKey' => 'tag_id',
+            'targetForeignKey' => 'object_id',
+            'through' => 'BEdita/Core.ObjectTags',
         ]);
     }
 
     /**
-     * Default validation rules.
+     * Common validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
@@ -75,19 +86,25 @@ class TagsTable extends CategoriesTagsBaseTable
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $this->validationRules($validator);
+        return $validator
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create')
 
-        $validator
-            ->add('object_type_id', 'requireNull', ['rule' => [Validation::class, 'requireNull']])
-            ->add('tree_left', 'requireNull', ['rule' => [Validation::class, 'requireNull']])
-            ->add('tree_right', 'requireNull', ['rule' => [Validation::class, 'requireNull']])
-            ->add('parent_id', 'requireNull', ['rule' => [Validation::class, 'requireNull']]);
+            ->scalar('name')
+            ->maxLength('name', 50)
+            ->requirePresence('name', 'create')
+            ->notEmptyString('name')
 
-        return $validator;
+            ->scalar('label')
+            ->maxLength('label', 255)
+            ->allowEmptyString('label')
+
+            ->boolean('enabled')
+            ->notEmptyString('enabled');
     }
 
     /**
-     * Add `object_typ_id` condition and remove some fields when retrieved as association.
+     * Hide read-only fields when fetched as an association.
      *
      * @param \Cake\Event\Event $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
@@ -95,12 +112,58 @@ class TagsTable extends CategoriesTagsBaseTable
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary): void
     {
-        $query->andWhere([$this->aliasField('object_type_id') . ' IS NULL']);
         if ($primary) {
             return;
         }
-        $this->hideFields($query);
+
+        $query->formatResults(function (CollectionInterface $results): CollectionInterface {
+            return $results->map(function ($row) {
+                if (!$row instanceof EntityInterface) {
+                    return $row;
+                }
+
+                return $row->setHidden(
+                    ['id', 'enabled', 'created', 'modified'],
+                    true
+                );
+            });
+        });
+    }
+
+    /**
+     * Filter only enabled tags.
+     *
+     * @param Query $query Query object
+     * @return Query
+     */
+    protected function findEnabled(Query $query): Query
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
+    }
+
+    /**
+     * Find tag IDs by their name.
+     *
+     * @param Query $query Query object.
+     * @param array $options Array containing key `names` as a list of strings.
+     * @return Query
+     */
+    protected function findIds(Query $query, array $options)
+    {
+        if (empty($options['names']) || !is_array($options['names'])) {
+            throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
+        }
+
+        return $query
+            ->find('enabled')
+            ->select([$this->aliasField('id'), $this->aliasField('name')])
+            ->where(function (QueryExpression $exp) use ($options): QueryExpression {
+                return $exp
+                    ->in($this->aliasField('name'), $options['names']);
+            });
     }
 }
