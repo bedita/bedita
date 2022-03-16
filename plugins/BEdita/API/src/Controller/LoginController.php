@@ -60,7 +60,7 @@ class LoginController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -111,7 +111,7 @@ class LoginController extends AppController
      */
     public function login(): void
     {
-        $this->set('_serialize', []);
+        $this->setSerialize([]);
 
         $this->setGrantType();
         $this->checkClientCredentials();
@@ -166,7 +166,7 @@ class LoginController extends AppController
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
             $meta = ['authorization_code' => $result['authorization_code']];
-            $this->set('_serialize', []);
+            $this->setSerialize([]);
             $this->set('_meta', $meta);
 
             return null;
@@ -314,7 +314,7 @@ class LoginController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->setSerialize(['user']);
     }
 
     /**
@@ -342,7 +342,7 @@ class LoginController extends AppController
         // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
         $entity = $this->userEntity();
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
     }
 
     /**
@@ -440,7 +440,7 @@ class LoginController extends AppController
         }
 
         $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->setSerialize(['user']);
         $this->set('_meta', $meta);
 
         return null;

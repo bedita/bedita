@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Shell;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Filesystem\File;
@@ -30,7 +31,7 @@ class SpecShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('generate', [
