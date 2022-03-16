@@ -280,6 +280,7 @@ class UpdateAssociatedActionTest extends TestCase
             ->select(['fake_article_id', 'fake_tag_id', 'fake_params'])
             ->where(['fake_article_id' => 2])
             ->enableHydration(false)
+            ->all()
             ->toList();
 
         $expected = [

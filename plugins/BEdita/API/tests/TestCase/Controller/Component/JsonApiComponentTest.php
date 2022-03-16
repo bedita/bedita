@@ -271,8 +271,8 @@ class JsonApiComponentTest extends TestCase
 
         $controller->dispatchEvent('Controller.beforeRender');
 
-        static::assertEquals($expectedLinks + $base, $controller->viewVars['_links']);
-        static::assertEquals($expectedMeta + $base, $controller->viewVars['_meta']);
+        static::assertEquals($expectedLinks + $base, $controller->viewBuilder()->getVar('_links'));
+        static::assertEquals($expectedMeta + $base, $controller->viewBuilder()->getVar('_meta'));
     }
 
     /**
@@ -299,7 +299,7 @@ class JsonApiComponentTest extends TestCase
 
         $component->error(500, 'Example error', 'Example description', 'my-code', ['key' => 'Example metadata']);
 
-        static::assertEquals($expected, $controller->viewVars['_error']);
+        static::assertEquals($expected, $controller->viewBuilder()->getVar('_error'));
     }
 
     /**

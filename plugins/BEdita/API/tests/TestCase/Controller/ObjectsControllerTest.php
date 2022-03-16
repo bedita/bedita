@@ -1610,7 +1610,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ->willReturn([]);
 
         $controller->related();
-        static::assertEquals(['available' => null], $controller->viewVars['_links']);
+        static::assertEquals(['available' => null], $controller->viewBuilder()->getVar('_links'));
     }
 
     /**
