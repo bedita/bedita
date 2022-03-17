@@ -145,7 +145,7 @@ class GlideGeneratorTest extends TestCase
     /**
      * Test extension thumb.
      *
-     * @param string $expected Expected URL.
+     * @param string $expected Expected extension file.
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
