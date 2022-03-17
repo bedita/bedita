@@ -45,6 +45,5 @@ class Tag extends Entity implements JsonApiSerializable
      * {@inheritDoc}
      */
     protected $_hidden = [
-        '_joinData',
     ];
 }
