@@ -113,6 +113,7 @@ class SetupAdminUserTask extends Shell
         $user->username = $this->param('admin-username');
         $user->password = $this->param('admin-password');
         $user->blocked = false;
+        $user->status = 'on';
 
         try {
             $this->verbose('=====> Saving user credentials... ', 0);
