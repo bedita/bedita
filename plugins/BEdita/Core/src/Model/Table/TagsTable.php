@@ -152,7 +152,7 @@ class TagsTable extends Table
      * @param array $options Array containing key `names` as a list of strings.
      * @return Query
      */
-    protected function findIds(Query $query, array $options)
+    protected function findIds(Query $query, array $options): Query
     {
         if (empty($options['names']) || !is_array($options['names'])) {
             throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
