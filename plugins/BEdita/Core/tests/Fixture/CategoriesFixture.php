@@ -62,17 +62,5 @@ class CategoriesFixture extends TestFixture
             'created' => '2019-11-26 12:15:51',
             'modified' => '2019-11-26 12:15:51'
         ],
-        // 4
-        [
-            'object_type_id' => null,
-            'name' => 'first-tag',
-            'label' => 'First tag',
-            'parent_id' => null,
-            'tree_left' => null,
-            'tree_right' => null,
-            'enabled' => 1,
-            'created' => '2019-11-26 12:15:51',
-            'modified' => '2019-11-26 12:15:51'
-        ],
     ];
 }

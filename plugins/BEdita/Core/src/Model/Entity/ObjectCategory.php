@@ -36,6 +36,6 @@ class ObjectCategory extends Entity implements JsonApiSerializable
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        'id' => false,
     ];
 }
