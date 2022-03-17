@@ -185,8 +185,8 @@ class CategoriesTable extends Table
     /**
      * Filter only enabled categories.
      *
-     * @param Query $query Query object
-     * @return Query
+     * @param \Cake\ORM\Query $query Query object
+     * @return \Cake\ORM\Query
      */
     protected function findEnabled(Query $query): Query
     {
@@ -217,9 +217,9 @@ class CategoriesTable extends Table
     /**
      * Find categories IDs by their name.
      *
-     * @param Query $query Query object.
+     * @param \Cake\ORM\Query $query Query object.
      * @param array $options Array containing key `names` as a list of strings, and `typeId` as an integer.
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function findIds(Query $query, array $options)
     {

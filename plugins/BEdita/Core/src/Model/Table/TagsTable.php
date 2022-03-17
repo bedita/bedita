@@ -135,8 +135,8 @@ class TagsTable extends Table
     /**
      * Filter only enabled tags.
      *
-     * @param Query $query Query object
-     * @return Query
+     * @param \Cake\ORM\Query $query Query object
+     * @return \Cake\ORM\Query
      */
     protected function findEnabled(Query $query): Query
     {
@@ -148,9 +148,9 @@ class TagsTable extends Table
     /**
      * Find tag IDs by their name.
      *
-     * @param Query $query Query object.
+     * @param \Cake\ORM\Query $query Query object.
      * @param array $options Array containing key `names` as a list of strings.
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function findIds(Query $query, array $options): Query
     {
