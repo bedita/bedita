@@ -56,27 +56,24 @@ class GlideGenerator extends ThumbnailGenerator
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
      * @param array $options Thumbnail options.
      * @return string
-     * @throws BadRequestException
+     * @throws \Cake\Http\Exception\BadRequestException
      */
     protected function getFilename(Stream $stream, array $options = [])
     {
         $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
         $fm = Hash::get($options, 'fm', 'jpg');
         if (!in_array($fm, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
-            throw new BadRequestException(__d('bedita', 'Encoded the image to a specific format is not available.'));
-        }
-        if ($ext) {
-            $ext = '.' . $ext;
+            throw new BadRequestException(__d('bedita', 'Invalid thumbnail format: {0}', $fm));
         }
         $filesystem = $this->getConfig('cache', 'thumbnails');
-        $base = $stream->filesystemPath($filesystem);
+        $base = str_replace('.' . $ext, '', $stream->filesystemPath($filesystem));
         $options = sha1(serialize($options));
 
         return sprintf(
-            '%s/%s%s',
+            '%s/%s.%s',
             $base,
             $options,
-            (string)$ext
+            (string)$fm
         );
     }
 

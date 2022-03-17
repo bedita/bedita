@@ -90,11 +90,11 @@ class GlideGeneratorTest extends TestCase
     {
         return [
             'text file' => [
-                'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/' . sha1(serialize([])) . '.txt',
+                'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample/' . sha1(serialize([])) . '.txt',
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
             ],
             'png file' => [
-                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png/' . sha1(serialize(['w' => 100])) . '.png',
+                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo/' . sha1(serialize(['w' => 100])) . '.png',
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 100],
             ],
@@ -123,6 +123,47 @@ class GlideGeneratorTest extends TestCase
     }
 
     /**
+     * Data provider for `testExtensionFile` test case.
+     *
+     * @return array
+     */
+    public function getExtensionThumb()
+    {
+        return [
+            'text file' => [
+                'txt',
+                '9e58fa47-db64-4479-a0ab-88a706180d59',
+            ],
+            'png file' => [
+                'jpeg',
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['w' => 100, 'fm' => 'jpeg'],
+            ],
+        ];
+    }
+
+    /**
+     * Test extension thumb.
+     *
+     * @param string $expected Expected URL.
+     * @param string $uuid Stream UUID.
+     * @param array $options Thumbnail options.
+     * @return void
+     *
+     * @dataProvider getExtensionThumb()
+     * @covers ::getUrl()
+     * @covers ::getFilename()
+     */
+    public function testExtensionFile($expected, $uuid, array $options = [])
+    {
+        $stream = $this->Streams->get($uuid);
+        $url = $this->generator->getUrl($stream, $options);
+        $result = pathinfo($url, PATHINFO_EXTENSION);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
      * Data provider for `testGenerate` test case.
      *
      * @return array
@@ -145,7 +186,7 @@ class GlideGeneratorTest extends TestCase
                 ['w' => 100, 'h' => 100, 'fm' => 'jpg'],
             ],
             'png file in txt' => [
-                new BadRequestException('Encoded the image to a specific format is not available.'),
+                new BadRequestException('Invalid thumbnail format: txt'),
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['fm' => 'txt'],
             ],
