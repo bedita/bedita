@@ -17,6 +17,7 @@ use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -142,6 +143,11 @@ class GlideGeneratorTest extends TestCase
                 true,
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 100, 'h' => 100, 'fm' => 'jpg'],
+            ],
+            'png file in txt' => [
+                new BadRequestException('Encoded the image to a specific format is not available.'),
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['fm' => 'txt'],
             ],
         ];
     }
