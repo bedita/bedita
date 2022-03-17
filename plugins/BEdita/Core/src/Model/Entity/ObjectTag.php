@@ -22,7 +22,6 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property int $tag_id
- *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Tag $tag
  */
