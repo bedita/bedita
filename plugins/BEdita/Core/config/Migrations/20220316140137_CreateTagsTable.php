@@ -149,6 +149,13 @@ class CreateTagsTable extends AbstractMigration
                 ->execute();
         });
 
+        /**
+         * Drop foreign key categories_objecttypesid_fk, before updating
+         */
+        $this->table('categories')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
         /*
          * Make `categories.object_type_id` not nullable.
          */
@@ -161,6 +168,21 @@ class CreateTagsTable extends AbstractMigration
                 'signed' => false,
             ])
             ->update();
+
+        /**
+         * Add categories_objecttypesid_fk foreign key
+         */
+        $this->table('categories')->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'categories_objecttypesid_fk',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'CASCADE',
+                ]
+            )
+            ->update();
     }
 
     /**
@@ -168,6 +190,13 @@ class CreateTagsTable extends AbstractMigration
      */
     public function down()
     {
+        /**
+         * Drop foreign key categories_objecttypesid_fk, before updating
+         */
+        $this->table('categories')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
         /*
          * Make `categories.object_type_id` nullable.
          */
@@ -180,6 +209,21 @@ class CreateTagsTable extends AbstractMigration
                 'signed' => false,
             ])
             ->update();
+
+        /**
+         * Add categories_objecttypesid_fk foreign key
+         */
+        $this->table('categories')->addForeignKey(
+            'object_type_id',
+            'object_types',
+            'id',
+            [
+                'constraint' => 'categories_objecttypesid_fk',
+                'update' => 'NO_ACTION',
+                'delete' => 'CASCADE',
+            ]
+        )
+        ->update();
 
         /*
          * Move tags from `tags` to `categories`.
