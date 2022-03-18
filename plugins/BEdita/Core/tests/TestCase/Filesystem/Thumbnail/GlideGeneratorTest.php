@@ -90,17 +90,21 @@ class GlideGeneratorTest extends TestCase
     {
         return [
             'text file' => [
+                new InvalidStreamException('Unable to generate thumbnail for stream 9e58fa47-db64-4479-a0ab-88a706180d59'),
+                '9e58fa47-db64-4479-a0ab-88a706180d59',
+            ],
+            'text file' => [
                 new BadRequestException('Invalid thumbnail format: txt'),
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
                 ['fm' => 'txt']
             ],
             'png file' => [
-                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo/' . sha1(serialize(['w' => 200, 'fm' => 'png'])) . '.png',
+                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png/' . sha1(serialize(['w' => 200, 'fm' => 'png'])) . '.png',
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 200, 'fm' => 'png'],
             ],
             'gif file to default jpg' => [
-                'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray/' . sha1(serialize(['w' => 200])) . '.jpg',
+                'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/' . sha1(serialize(['w' => 200])) . '.jpg',
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
             ],
@@ -147,15 +151,15 @@ class GlideGeneratorTest extends TestCase
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 200, 'fm' => 'png'],
             ],
-            'png file to default jpg' => [
-                'jpg',
-                'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 200],
-            ],
-            'gif file to default jpg' => [
+            'gif file' => [
                 'jpg',
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
+            ],
+            'png file to jpg' => [
+                'jpg',
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['w' => 200, 'fm' => 'jpg'],
             ],
         ];
     }
@@ -291,11 +295,10 @@ class GlideGeneratorTest extends TestCase
     public function testDelete()
     {
         $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
-        $path = 'e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo';
+        $path = 'e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png';
 
         $stream = $this->Streams->get($uuid);
 
-        $paths = Hash::extract(FilesystemRegistry::getMountManager()->listContents('thumbnails://'), '{*}.path');
         static::assertContains($path, Hash::extract(FilesystemRegistry::getMountManager()->listContents('thumbnails://'), '{*}.path'));
 
         $this->generator->delete($stream);

@@ -60,20 +60,19 @@ class GlideGenerator extends ThumbnailGenerator
      */
     protected function getFilename(Stream $stream, array $options = [])
     {
-        $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
-        $fm = Hash::get($options, 'fm', 'jpg');
-        if (!in_array($fm, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
-            throw new BadRequestException(__d('bedita', 'Invalid thumbnail format: {0}', $fm));
+        $ext = Hash::get($options, 'fm', 'jpg'); // jpg default
+        if (!in_array($ext, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
+            throw new BadRequestException(__d('bedita', 'Invalid thumbnail format: {0}', $ext));
         }
         $filesystem = $this->getConfig('cache', 'thumbnails');
-        $base = str_replace('.' . $ext, '', $stream->filesystemPath($filesystem));
+        $base = $stream->filesystemPath($filesystem);
         $options = sha1(serialize($options));
 
         return sprintf(
             '%s/%s.%s',
             $base,
             $options,
-            (string)$fm
+            (string)$ext
         );
     }
 
@@ -160,8 +159,7 @@ class GlideGenerator extends ThumbnailGenerator
     public function delete(Stream $stream)
     {
         $filesystem = $this->getConfig('cache', 'thumbnails');
-        $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
-        $base = str_replace('.' . $ext, '', $stream->filesystemPath($filesystem));
+        $base = $stream->filesystemPath($filesystem);
 
         FilesystemRegistry::getMountManager()->deleteDir($base);
     }
