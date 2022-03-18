@@ -160,7 +160,8 @@ class GlideGenerator extends ThumbnailGenerator
     public function delete(Stream $stream)
     {
         $filesystem = $this->getConfig('cache', 'thumbnails');
-        $base = $stream->filesystemPath($filesystem);
+        $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
+        $base = str_replace('.' . $ext, '', $stream->filesystemPath($filesystem));
 
         FilesystemRegistry::getMountManager()->deleteDir($base);
     }
