@@ -29,7 +29,7 @@ class SignupController extends AppController
      *
      * @codeCoverageIgnore
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
@@ -56,7 +56,7 @@ class SignupController extends AppController
         $this->response = $this->response->withStatus(202);
 
         $this->set('data', $user);
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 
     /**

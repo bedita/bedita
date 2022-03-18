@@ -69,7 +69,7 @@ abstract class ResourcesController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -130,7 +130,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('post')) {
             // Add a new entity.
-            $entity = $this->Table->newEntity();
+            $entity = $this->Table->newEntity([]);
             $action = new SaveEntityAction(['table' => $this->Table]);
 
             $data = $this->request->getData();
@@ -159,7 +159,7 @@ abstract class ResourcesController extends AppController
         }
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class ResourcesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }
@@ -263,7 +263,7 @@ abstract class ResourcesController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
@@ -375,7 +375,7 @@ abstract class ResourcesController extends AppController
      */
     protected function getAvailableUrl($relationship)
     {
-        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity();
+        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity([]);
         if (!($destinationEntity instanceof JsonApiSerializable)) {
             return null;
         }

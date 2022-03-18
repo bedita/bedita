@@ -62,7 +62,7 @@ class JsonApiPaginator extends Paginator
     /**
      * {@inheritDoc}
      */
-    public function checkLimit(array $options)
+    public function checkLimit(array $options): array
     {
         $options['maxLimit'] = min((int)$options['maxLimit'], static::MAX_LIMIT);
 
@@ -77,7 +77,7 @@ class JsonApiPaginator extends Paginator
     /**
      * {@inheritDoc}
      */
-    public function validateSort(RepositoryInterface $object, array $options)
+    public function validateSort(RepositoryInterface $object, array $options): array
     {
         $sortedRequest = false;
         if (!empty($options['sort'])) {

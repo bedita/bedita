@@ -16,6 +16,7 @@ namespace BEdita\API\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 
@@ -43,7 +44,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * {@inheritDoc}
      */
-    public function render()
+    public function render(): Response
     {
         $isDebug = Configure::read('debug');
 
@@ -59,8 +60,8 @@ class ExceptionRenderer extends CakeExceptionRenderer
         $this->controller->loadComponent('RequestHandler');
         $this->controller->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
         $this->controller->loadComponent('BEdita/API.JsonApi', [
-            'contentType' => $this->controller->request->is('json') ? 'json' : null,
-            'checkMediaType' => $this->controller->request->is('jsonapi'),
+            'contentType' => $this->controller->getRequest()->is('json') ? 'json' : null,
+            'checkMediaType' => $this->controller->getRequest()->is('jsonapi'),
         ]);
 
         $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
@@ -72,7 +73,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * {@inheritDoc}
      */
-    protected function _message(\Exception $error, $status)
+    protected function _message(\Exception $error, $status): string
     {
         $message = parent::_message($error, $status);
         if (empty($message) && $error instanceof CakeException) {
@@ -137,7 +138,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
      * @param \Exception $error Exception.
      * @return string Error code
      */
-    protected function appErrorCode(\Exception $error)
+    protected function appErrorCode(\Exception $error): string
     {
         if (!$error instanceof CakeException) {
             return '';
@@ -154,7 +155,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * {@inheritDoc}
      */
-    protected function _outputMessageSafe($template)
+    protected function _outputMessageSafe($template): Response
     {
         $this->controller
             ->viewBuilder()
@@ -162,13 +163,13 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $view = $this->controller->createView();
 
-        return $this->controller->response->withStringBody($view->render());
+        return $this->controller->getResponse()->withStringBody($view->render());
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function _template(\Exception $exception, $method, $status)
+    protected function _template(\Exception $exception, $method, $code): string
     {
         return $this->template = 'error';
     }

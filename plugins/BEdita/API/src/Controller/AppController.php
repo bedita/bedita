@@ -12,15 +12,11 @@
  */
 namespace BEdita\API\Controller;
 
-use BadMethodCallException;
 use BEdita\API\Datasource\JsonApiPaginator;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
@@ -59,7 +55,7 @@ class AppController extends Controller
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -168,5 +164,20 @@ class AppController extends Controller
     protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
         throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+    }
+
+    /**
+     * Cake 4 compatibility wrapper method: set items to serialize for the view
+     *
+     * In Cake 3 => $this->set('_serialize', ['data']);
+     * In Cake 4 => $this->viewBuilder()->setOption('serialize', ['data'])
+     *
+     * @param array $items Items to serialize
+     * @return void
+     * @codeCoverageIgnore
+     */
+    protected function setSerialize(array $items): void
+    {
+        $this->set('_serialize', $items);
     }
 }

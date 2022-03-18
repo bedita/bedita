@@ -25,7 +25,7 @@ class ConfigController extends AdminController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 

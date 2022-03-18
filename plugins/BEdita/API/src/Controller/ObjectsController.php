@@ -78,7 +78,7 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
@@ -181,7 +181,7 @@ class ObjectsController extends ResourcesController
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
             }
 
-            $entity = $this->Table->newEntity();
+            $entity = $this->Table->newEntity([]);
             $entity->set('type', $this->request->getData('type'));
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
@@ -212,7 +212,7 @@ class ObjectsController extends ResourcesController
         }
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 
     /**
@@ -276,7 +276,7 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }
@@ -336,7 +336,7 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
-        $this->set('_serialize', ['objects']);
+        $this->setSerialize(['objects']);
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));

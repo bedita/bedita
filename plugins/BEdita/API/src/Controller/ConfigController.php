@@ -32,7 +32,7 @@ class ConfigController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $query = $this->Config->find()
             ->find('mine')
@@ -40,6 +40,6 @@ class ConfigController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 }
