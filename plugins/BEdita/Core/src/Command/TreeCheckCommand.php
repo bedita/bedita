@@ -118,9 +118,7 @@ class TreeCheckCommand extends Command
      */
     protected function getUbiquitousFolders(): Query
     {
-        $query = $this->Objects->find('type', ['folders']);
-
-        return $query
+        return $this->Objects->find('type', ['folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -130,7 +128,7 @@ class TreeCheckCommand extends Command
             ->group([
                 $this->Objects->aliasField('id'),
             ])
-            ->having(function (QueryExpression $exp) use ($query) {
+            ->having(function (QueryExpression $exp, Query $query): QueryExpression {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
@@ -148,8 +146,8 @@ class TreeCheckCommand extends Command
                 $this->Objects->aliasField('uname'),
                 $this->Objects->aliasField('object_type_id'),
             ])
-            ->innerJoinWith('TreeNodes', function (Query $query) {
-                return $query->where(function (QueryExpression $exp) {
+            ->innerJoinWith('TreeNodes', function (Query $query): Query {
+                return $query->where(function (QueryExpression $exp): QueryExpression {
                     return $exp->isNull($this->Objects->TreeNodes->aliasField('parent_id'));
                 });
             });
@@ -185,9 +183,7 @@ class TreeCheckCommand extends Command
      */
     protected function getObjectsTwiceInFolder(): Query
     {
-        $query = $this->Objects->find('type', ['!=' => 'folders']);
-
-        return $query
+        return $this->Objects->find('type', ['!=' => 'folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -200,7 +196,7 @@ class TreeCheckCommand extends Command
                 $this->Objects->aliasField('id'),
                 $this->Objects->Parents->aliasField('id'),
             ])
-            ->having(function (QueryExpression $exp) use ($query) {
+            ->having(function (QueryExpression $exp, Query $query): QueryExpression {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
