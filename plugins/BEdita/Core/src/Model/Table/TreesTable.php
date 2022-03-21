@@ -87,6 +87,7 @@ class TreesTable extends Table
             'right' => 'tree_right',
             'parent' => 'parent_node_id',
             'level' => 'depth_level',
+            'recoverOrder' => ['tree_left' => 'ASC', 'tree_right' => 'DESC', 'object_id' => 'ASC'],
         ]);
     }
 
