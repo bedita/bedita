@@ -1,35 +1,23 @@
 <?php
-/**
- * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
- *
- * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
- */
+namespace BEdita\Core\Test\TestCase\Command;
 
-namespace BEdita\Core\Test\TestCase\Shell\Task;
-
-use BEdita\Core\Shell\Task\CheckTreeTask;
-use Cake\Console\Shell;
+use BEdita\Core\Command\TreeCheckCommand;
 use Cake\Database\Driver\Mysql;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Datasource\ModelAwareTrait;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Shell\Task\CheckTreeTask
+ * {@see \BEdita\Core\Command\TreeCheckCommand} Test Case.
+ *
+ * @property \BEdita\Core\Model\Table\TreesTable $Trees
+ *
+ * @covers \BEdita\Core\Command\TreeCheckCommand
  */
-class CheckTreeTaskTest extends ConsoleIntegrationTestCase
+class TreeCheckCommandTest extends TestCase
 {
-    /**
-     * Trees table.
-     *
-     * @var \BEdita\Core\Model\Table\TreesTable
-     */
-    public $Trees;
+    use ConsoleIntegrationTestTrait;
+    use ModelAwareTrait;
 
     /**
      * Fixtures
@@ -51,23 +39,12 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
      *
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->Trees);
-
-        parent::tearDown();
+        $this->useCommandRunner();
+        $this->loadModel('Trees');
     }
 
     /**
@@ -77,10 +54,10 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
      */
     public function testExecutionOk()
     {
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertOutputContains('There are no folders that are not in tree');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
@@ -100,9 +77,9 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             ['checkRules' => false, '_primary' => false]
         );
 
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitError();
         $this->assertOutputContains('Found 1 folders not in tree!');
         $this->assertOutputContains('folder <info>sub-folder</info> (#<info>12</info>) is not in the tree');
         $this->assertOutputContains('There are no ubiquitous folders');
@@ -126,10 +103,10 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             ['checkRules' => false]
         );
 
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
-        $this->assertOutputContains('There are no folders that are not in tree');
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('Found 1 ubiquitous folders!');
         $this->assertOutputContains('folder <info>sub-folder</info> (#<info>12</info>) is ubiquitous');
         $this->assertOutputContains('There are no other objects in root.');
@@ -152,10 +129,10 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             ['checkRules' => false]
         );
 
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
-        $this->assertOutputContains('There are no folders that are not in tree');
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('Found 1 other objects in root!');
         $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) is a root');
@@ -177,10 +154,10 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             ['checkRules' => false]
         );
 
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
-        $this->assertOutputContains('There are no folders that are not in tree');
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');
         $this->assertOutputContains('Found 1 other objects with children!');
@@ -211,14 +188,14 @@ class CheckTreeTaskTest extends ConsoleIntegrationTestCase
             ['checkRules' => false]
         );
 
-        $this->exec(sprintf('%s --verbose', CheckTreeTask::class));
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
-        $this->assertOutputContains('There are no folders that are not in tree');
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('Found 1 objects that are present multiple times within same parent!');
-        $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) is present multiple times within parent <info>root-folder</info> (#<info>11</info>)');
+        $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) is positioned multiple times within the same parent');
     }
 }
