@@ -7,6 +7,7 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
@@ -91,6 +92,20 @@ class TreeCheckCommand extends Command
             $code = static::CODE_ERROR;
         }
         $this->report($io, $results, 'objects that are present multiple times within same parent', 'is positioned multiple times within the same parent');
+
+        // Checks matching `parent_id` in parent tree node.
+        $results = $this->getNotMatchingParentId()->all();
+        if (!$results->isEmpty()) {
+            $code = static::CODE_ERROR;
+        }
+        $this->report($io, $results, 'tree nodes that reference a different parent than the object of the parent node', 'references a different parent_id than the object_id in the parent node');
+
+        // Checks matching `root_id` in parent tree node.
+        $results = $this->getNotMatchingRootId()->all();
+        if (!$results->isEmpty()) {
+            $code = static::CODE_ERROR;
+        }
+        $this->report($io, $results, 'tree nodes that reference a different root than the root of the parent node', 'references a different root_id than the one in the parent node');
 
         return $code;
     }
@@ -198,6 +213,53 @@ class TreeCheckCommand extends Command
             ])
             ->having(function (QueryExpression $exp, Query $query): QueryExpression {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
+            });
+    }
+
+    /**
+     * Return query to find all rows in `trees` table that reference a different `parent_id` than the `object_id` in the parent tree node.
+     *
+     * @return \Cake\ORM\Query
+     */
+    protected function getNotMatchingParentId(): Query
+    {
+        return $this->Objects->find()
+            ->select([
+                $this->Objects->aliasField('id'),
+                $this->Objects->aliasField('uname'),
+                $this->Objects->aliasField('object_type_id'),
+            ])
+            ->innerJoinWith('TreeNodes.ParentNode')
+            ->where(function (QueryExpression $exp): QueryExpression {
+                return $exp->notEq(
+                    $this->Objects->TreeNodes->aliasField('parent_id'),
+                    new IdentifierExpression($this->Objects->TreeNodes->ParentNode->aliasField('object_id'))
+                );
+            });
+    }
+
+    /**
+     * Return query to find all rows in `trees` table that reference a different `parent_id` than the `object_id` in the parent tree node.
+     *
+     * @return \Cake\ORM\Query
+     */
+    protected function getNotMatchingRootId(): Query
+    {
+        return $this->Objects->find()
+            ->select([
+                $this->Objects->aliasField('id'),
+                $this->Objects->aliasField('uname'),
+                $this->Objects->aliasField('object_type_id'),
+            ])
+            ->leftJoinWith('TreeNodes.ParentNode')
+            ->where(function (QueryExpression $exp, Query $query): QueryExpression {
+                return $exp->notEq(
+                    $this->Objects->TreeNodes->aliasField('root_id'),
+                    $query->func()->coalesce([
+                        $this->Objects->TreeNodes->ParentNode->aliasField('root_id') => 'identifier',
+                        $this->Objects->TreeNodes->aliasField('object_id') => 'identifier',
+                    ])
+                );
             });
     }
 

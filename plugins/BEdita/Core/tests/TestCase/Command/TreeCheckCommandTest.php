@@ -70,7 +70,7 @@ class TreeCheckCommandTest extends TestCase
      */
     public function testExecutionFolderNotInTree()
     {
-        $this->Trees->delete(
+        $this->Trees->deleteOrFail(
             $this->Trees->find()
                 ->where(['object_id' => 12])
                 ->firstOrFail(),
@@ -95,7 +95,7 @@ class TreeCheckCommandTest extends TestCase
      */
     public function testExecutionUbiquitousFolder()
     {
-        $this->Trees->save(
+        $this->Trees->saveOrFail(
             $this->Trees->newEntity([
                 'object_id' => 12,
                 'parent_id' => null,
@@ -112,6 +112,8 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('There are no other objects in root.');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
     /**
@@ -121,7 +123,7 @@ class TreeCheckCommandTest extends TestCase
      */
     public function testExecutionOtherObjectInRoot()
     {
-        $this->Trees->save(
+        $this->Trees->saveOrFail(
             $this->Trees->newEntity([
                 'object_id' => 2,
                 'parent_id' => null,
@@ -137,6 +139,8 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('Found 1 other objects in root!');
         $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) is a root');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
     /**
@@ -146,7 +150,7 @@ class TreeCheckCommandTest extends TestCase
      */
     public function testExecutionOtherObjectWithChildren()
     {
-        $this->Trees->save(
+        $this->Trees->saveOrFail(
             $this->Trees->newEntity([
                 'object_id' => 4,
                 'parent_id' => 2,
@@ -163,6 +167,8 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('Found 1 other objects with children!');
         $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) has children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
     /**
@@ -180,7 +186,7 @@ class TreeCheckCommandTest extends TestCase
         $this->Trees->getConnection()->execute(
             sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable())
         );
-        $this->Trees->save(
+        $this->Trees->saveOrFail(
             $this->Trees->newEntity([
                 'object_id' => 2,
                 'parent_id' => 11,
@@ -197,5 +203,51 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('Found 1 objects that are present multiple times within same parent!');
         $this->assertOutputContains('document <info>title-one</info> (#<info>2</info>) is positioned multiple times within the same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
+    }
+
+    /**
+     * Test execution when there are rows that reference a different `parent_id` than the parent node's `object_id`.
+     *
+     * @return void
+     */
+    public function testExecutionInconsistentParentId()
+    {
+        $this->Trees->updateAll(['parent_id' => 11], ['parent_id' => 12]);
+
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
+
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
+        $this->assertOutputContains('There are no ubiquitous folders');
+        $this->assertOutputContains('There are no other objects in root.');
+        $this->assertOutputContains('There are no other objects with children');
+        $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('Found 1 tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('profile <info>gustavo-supporto</info> (#<info>4</info>) references a different parent_id than the object_id in the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
+    }
+
+    /**
+     * Test execution when there are rows that reference a different `root_id` than the parent node's `root_id`.
+     *
+     * @return void
+     */
+    public function testExecutionInconsistentRootId()
+    {
+        $this->Trees->updateAll(['root_id' => 13], ['parent_id' => 12]);
+
+        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
+
+        $this->assertExitError();
+        $this->assertOutputContains('There are no folders not in tree');
+        $this->assertOutputContains('There are no ubiquitous folders');
+        $this->assertOutputContains('There are no other objects in root.');
+        $this->assertOutputContains('There are no other objects with children');
+        $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('Found 1 tree nodes that reference a different root than the root of the parent node');
+        $this->assertOutputContains('profile <info>gustavo-supporto</info> (#<info>4</info>) references a different root_id than the one in the parent node');
     }
 }
