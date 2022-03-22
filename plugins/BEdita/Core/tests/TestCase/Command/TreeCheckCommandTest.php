@@ -61,6 +61,8 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
     /**
@@ -86,6 +88,8 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('There are no other objects in root.');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
+        $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
+        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
     /**
