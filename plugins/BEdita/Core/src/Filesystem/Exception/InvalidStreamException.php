@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Filesystem\Exception;
 
+use Cake\Core\Exception\Exception;
+
 /**
  * Exception thrown when attempting to generate a thumbnail for a stream that cannot be "thumbnailized".
  *

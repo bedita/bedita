@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM;
 
+use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 
