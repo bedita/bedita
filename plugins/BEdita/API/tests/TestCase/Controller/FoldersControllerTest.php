@@ -12,8 +12,8 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Collection\Collection;
 use Cake\ORM\TableRegistry;

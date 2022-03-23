@@ -14,8 +14,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
 use Cake\Core\Configure;

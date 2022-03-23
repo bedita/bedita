@@ -12,9 +12,9 @@
  */
 namespace BEdita\Core\Test\TestCase\TestSuite\Fixture;
 
+use BEdita\Core\TestSuite\Fixture\TestFixture;
 use BEdita\Core\Test\Fixture\ObjectsFixture;
 use BEdita\Core\Test\Fixture\RolesFixture;
-use BEdita\Core\TestSuite\Fixture\TestFixture;
 use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\TestCase;
 

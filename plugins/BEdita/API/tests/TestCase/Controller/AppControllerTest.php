@@ -14,8 +14,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\AppController;
-use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\API\Test\TestConstants;
 use Cake\Core\Configure;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
