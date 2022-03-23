@@ -41,9 +41,9 @@ class JsonApiView extends JsonView
      * @inheritDoc
      */
     public function __construct(
-        ?ServerRequest $request = null,
-        ?Response $response = null,
-        ?EventManager $eventManager = null,
+        ServerRequest $request = null,
+        Response $response = null,
+        EventManager $eventManager = null,
         array $viewOptions = []
     ) {
         if ($request && $request->is('json')) {

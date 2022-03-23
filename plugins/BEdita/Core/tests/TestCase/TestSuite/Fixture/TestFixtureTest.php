@@ -90,7 +90,7 @@ class TestFixtureTest extends TestCase
 
         return [
             'missingSchemaFile' => [
-                new \Cake\Core\Exception\CakeException(
+                new \Cake\Core\Exception\Exception(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_files',
@@ -100,7 +100,7 @@ class TestFixtureTest extends TestCase
                 TestMissingSchemaFileFixture::class,
             ],
             'missingSchemaPlugin' => [
-                new \Cake\Core\Exception\CakeException(
+                new \Cake\Core\Exception\Exception(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_plugins',
@@ -110,7 +110,7 @@ class TestFixtureTest extends TestCase
                 TestMissingSchemaPluginFixture::class,
             ],
             'missingTableFromSchema' => [
-                new \Cake\Core\Exception\CakeException(
+                new \Cake\Core\Exception\Exception(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_table_from_schemas',
