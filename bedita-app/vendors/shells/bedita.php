@@ -46,7 +46,7 @@ class BeditaShell extends BeditaBaseShell {
 	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
 	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
 
-	var $tasks = array('Cleanup');
+	var $tasks = array('Cleanup', 'CleanupData');
 	
 	/**
 	 * Overrides base startup(), don't call initConfig...
