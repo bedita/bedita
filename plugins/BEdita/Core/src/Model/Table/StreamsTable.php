@@ -24,7 +24,6 @@ use Cake\Validation\Validator;
  * Streams Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\Stream get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Stream newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] newEntities(array $data, array $options = [])
@@ -32,9 +31,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Stream patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class StreamsTable extends Table

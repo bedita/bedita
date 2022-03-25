@@ -46,7 +46,7 @@ jobs:
       - name: 'Run PHP CodeSniffer'
         run: |
           vendor/bin/phpcs -n -p --extensions=php \
-            --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ \
+            --ignore=/Migrations/,/Seeds/ \
             ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests
 
   stan:

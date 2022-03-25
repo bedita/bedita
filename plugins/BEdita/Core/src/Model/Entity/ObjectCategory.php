@@ -32,10 +32,10 @@ class ObjectCategory extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        'id' => false,
     ];
 }

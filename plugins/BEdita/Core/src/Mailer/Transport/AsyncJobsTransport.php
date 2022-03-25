@@ -13,9 +13,7 @@
 
 namespace BEdita\Core\Mailer\Transport;
 
-use BEdita\Core\Mailer\Email as BeditaEmail;
 use Cake\Mailer\AbstractTransport;
-use Cake\Mailer\Email;
 use Cake\Mailer\Message;
 use Cake\Mailer\Transport\DebugTransport;
 use Cake\ORM\TableRegistry;
@@ -30,7 +28,7 @@ use Cake\ORM\TableRegistry;
 class AsyncJobsTransport extends AbstractTransport
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'service' => 'mail',
@@ -38,11 +36,11 @@ class AsyncJobsTransport extends AbstractTransport
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function send(Message $message): array
     {
-        /* @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
+        /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         $asyncJob = $table->newEntity([]);

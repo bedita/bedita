@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -28,7 +28,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test `index` method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::loadObject()
@@ -68,8 +67,8 @@ class TreesControllerTest extends IntegrationTestCase
                     'modified_by' => 1,
                     'path' => '/11/12',
                     'extra' => [
-                        'uname_path' => '/root-folder/sub-folder'
-                    ]
+                        'uname_path' => '/root-folder/sub-folder',
+                    ],
                 ],
                 'relationships' => [
                     'children' => [
@@ -103,7 +102,7 @@ class TreesControllerTest extends IntegrationTestCase
                         'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
                     ],
                 ],
-            ]
+            ],
         ];
 
         static::assertEquals($expected, $response);
@@ -165,7 +164,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test trees path check methods.
      *
      * @return void
-     *
      * @dataProvider treesProvider()
      * @covers ::checkPath()
      * @covers ::pathDetails()
@@ -198,7 +196,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test `include` query string.
      *
      * @return void
-     *
      * @covers ::getContain()
      * @covers ::findAssociation()
      */
@@ -224,7 +221,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test `include` failure.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      */
     public function testIncludeFail(): void
@@ -249,7 +245,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test failure when parent folder is in trashcan.
      *
      * @return void
-     *
      * @covers ::pathDetails()
      */
     public function testParentDeleted(): void
@@ -276,7 +271,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test failure when parent folder has unavailable status.
      *
      * @return void
-     *
      * @covers ::pathDetails()
      */
     public function testParentStatus(): void
@@ -305,7 +299,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test check path failure on folders.
      *
      * @return void
-     *
      * @covers ::checkPath()
      */
     public function testcheckPathFolderFail(): void

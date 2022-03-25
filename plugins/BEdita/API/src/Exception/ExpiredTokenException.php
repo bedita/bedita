@@ -25,10 +25,10 @@ class ExpiredTokenException extends UnauthorizedException
      *
      * @var string
      */
-    const BE_TOKEN_EXPIRED = 'be_token_expired';
+    public const BE_TOKEN_EXPIRED = 'be_token_expired';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct($message = null)
     {

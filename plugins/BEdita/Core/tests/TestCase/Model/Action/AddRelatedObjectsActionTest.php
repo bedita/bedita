@@ -52,7 +52,7 @@ class AddRelatedObjectsActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -62,7 +62,7 @@ class AddRelatedObjectsActionTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -173,7 +173,6 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
@@ -283,14 +282,13 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param string $tableName The table name of object id
      * @param string $relation The relation to use
      * @return void
-     *
      * @dataProvider linkEntitiesRelatedToOtherObjectProvider()
      */
     public function testLinkEntitiesRelatedToOtherObject(int $id, string $tableName, string $relation): void
     {
         $Table = TableRegistry::getTableLocator()->get($tableName);
         $association = $Table->associations()->getByProperty($relation);
-        $relatedEntities = ($Table->get($id, ['contain' => [$association->getName()]]))->get($relation);
+        $relatedEntities = $Table->get($id, ['contain' => [$association->getName()]])->get($relation);
 
         // create new entity
         $entity = $Table->newEntity(['title' => 'Test Object']);

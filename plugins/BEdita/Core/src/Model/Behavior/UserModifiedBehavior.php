@@ -61,7 +61,7 @@ class UserModifiedBehavior extends Behavior
     protected $userId = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -105,7 +105,7 @@ class UserModifiedBehavior extends Behavior
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

@@ -58,7 +58,7 @@ class ExternalAuthTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -68,7 +68,7 @@ class ExternalAuthTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -142,7 +142,6 @@ class ExternalAuthTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -160,7 +159,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback when everything is already ok.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveNothingToDo()
@@ -183,7 +181,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUser()
@@ -214,7 +211,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user and sets `created_by` to its own ID.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUserCreatedByThemselves()
@@ -306,7 +302,6 @@ class ExternalAuthTableTest extends TestCase
      * @param mixed $expected Expected result.
      * @param $authProvider
      * @return void
-     *
      * @covers ::findAuthProvider()
      * @dataProvider findAuthProviderProvider()
      */
@@ -400,7 +395,6 @@ class ExternalAuthTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param mixed $user The finder option
      * @return void
-     *
      * @covers ::findUser()
      * @dataProvider findByUserProvider()
      */

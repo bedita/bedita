@@ -19,7 +19,6 @@ use Cake\Datasource\EntityInterface;
  * Abstract class for updating associations between entities.
  *
  * @since 4.0.0
- *
  * @property \Cake\ORM\Association $Association
  */
 abstract class UpdateAssociatedAction extends BaseAction
@@ -32,7 +31,7 @@ abstract class UpdateAssociatedAction extends BaseAction
     protected $Association;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {

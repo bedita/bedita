@@ -21,7 +21,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class FakeAnimalsFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
@@ -33,12 +33,12 @@ class FakeAnimalsFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8_general_ci',
         ],
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         ['name' => 'cat', 'legs' => 4, 'updated_at' => '2018-02-20 09:50:00'],

@@ -24,14 +24,13 @@ use Cake\Utility\Hash;
  * Controller for `/streams` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\StreamsTable $Table
  * @property \BEdita\API\Controller\Component\UploadComponent $Upload
  */
 class StreamsController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -40,12 +39,12 @@ class StreamsController extends ResourcesController
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Streams';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

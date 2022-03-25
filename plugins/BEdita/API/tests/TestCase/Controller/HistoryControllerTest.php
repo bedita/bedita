@@ -23,7 +23,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -64,7 +63,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'user_action' => 'update',
                         'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
                     ],
-                ]
+                ],
             ],
             'meta' => [
                 'pagination' => [
@@ -89,7 +88,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test empty view method.
      *
      * @return void
-     *
      * @covers ::index()
      */
     public function testEmpty()
@@ -127,7 +125,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `user_id` filter method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testUser()
@@ -154,7 +151,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'user_action' => 'update',
                         'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
                     ],
-                ]
+                ],
             ],
             'meta' => [
                 'pagination' => [

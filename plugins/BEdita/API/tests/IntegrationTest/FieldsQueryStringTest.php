@@ -68,7 +68,6 @@ class FieldsQueryStringTest extends IntegrationTestCase
      * @param array $attributes Expected response attributes
      * @param array $meta Expected response meta
      * @return void
-     *
      * @dataProvider fieldsProvider
      * @coversNothing
      */

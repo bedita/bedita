@@ -17,18 +17,17 @@ namespace BEdita\API\Controller\Model;
  * Controller for `/model/relations` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\RelationsTable $Relations
  */
 class RelationsController extends ModelController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Relations';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

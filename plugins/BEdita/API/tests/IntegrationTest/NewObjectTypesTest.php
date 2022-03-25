@@ -21,7 +21,7 @@ use Cake\ORM\TableRegistry;
 class NewObjectTypesTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Media',
@@ -41,7 +41,7 @@ class NewObjectTypesTest extends IntegrationTestCase
                 ],
                 [
                     'description' => 'another cat',
-                ]
+                ],
             ],
             'songs' => [
                 [
@@ -53,7 +53,7 @@ class NewObjectTypesTest extends IntegrationTestCase
                 [
                     'description' => 'a new song',
                     'media_property' => true,
-                ]
+                ],
             ],
         ];
     }

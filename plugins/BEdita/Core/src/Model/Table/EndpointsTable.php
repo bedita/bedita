@@ -30,12 +30,9 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate($search, callable $callback = null, $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class EndpointsTable extends Table

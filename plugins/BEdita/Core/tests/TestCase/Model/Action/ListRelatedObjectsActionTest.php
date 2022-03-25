@@ -232,7 +232,7 @@ class ListRelatedObjectsActionTest extends TestCase
                 [
                     [
                         'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
-                        'url' => null
+                        'url' => null,
                     ],
                 ],
                 'Files',
@@ -256,10 +256,9 @@ class ListRelatedObjectsActionTest extends TestCase
      * @param array|null $only Filter related entities by ID.
      * @param string|null $statusLevel Status level.
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null, $statusLevel = null)
+    public function testInvocation($expected, $objectType, $relation, $id, $list = true, ?array $only = null, $statusLevel = null)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -282,7 +281,6 @@ class ListRelatedObjectsActionTest extends TestCase
      * Test that deleted objects will not show as related
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeleted(): void
@@ -309,7 +307,7 @@ class ListRelatedObjectsActionTest extends TestCase
                     'inv_priority' => 2,
                     'params' => null,
                 ],
-            ]
+            ],
         ];
         static::assertEquals($expected, $result);
     }

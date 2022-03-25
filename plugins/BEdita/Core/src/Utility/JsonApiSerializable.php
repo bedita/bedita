@@ -25,35 +25,35 @@ interface JsonApiSerializable
      *
      * @var int
      */
-    const JSONAPIOPT_EXCLUDE_ATTRIBUTES = 1;
+    public const JSONAPIOPT_EXCLUDE_ATTRIBUTES = 1;
 
     /**
      * Tell JSON API serializer to exclude `meta` from resource.
      *
      * @var int
      */
-    const JSONAPIOPT_EXCLUDE_META = 2;
+    public const JSONAPIOPT_EXCLUDE_META = 2;
 
     /**
      * Tell JSON API serializer to exclude `links` from resource.
      *
      * @var int
      */
-    const JSONAPIOPT_EXCLUDE_LINKS = 4;
+    public const JSONAPIOPT_EXCLUDE_LINKS = 4;
 
     /**
      * Tell JSON API serializer to exclude `relationships` from resource.
      *
      * @var int
      */
-    const JSONAPIOPT_EXCLUDE_RELATIONSHIPS = 8;
+    public const JSONAPIOPT_EXCLUDE_RELATIONSHIPS = 8;
 
     /**
      * Tell JSON API serializer to exclude all (`attributes`, `meta`, `links`, `relationships`) from resource
      *
      * @var int
      */
-    const JSONAPIOPT_BASIC = 15;
+    public const JSONAPIOPT_BASIC = 15;
 
     /**
      * JSON API serializer.

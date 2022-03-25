@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $Roles
- *
  * @method \BEdita\Core\Model\Entity\ObjectPermission get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission[] newEntities(array $data, array $options = [])
@@ -37,12 +36,12 @@ class ObjectPermissionsTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Roles'
+            'className' => 'BEdita/Core.Roles',
         ]);
     }
 

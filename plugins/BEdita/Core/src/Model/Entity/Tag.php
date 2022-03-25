@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\JsonApiModelTrait;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
@@ -21,24 +20,20 @@ use Cake\ORM\Entity;
  * Tag Entity
  *
  * @property int $id
- * @property int|null $object_type_id
  * @property string $name
  * @property string|null $label
- * @property int|null $parent_id
- * @property int|null $tree_left
- * @property int|null $tree_right
  * @property bool $enabled
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  *
- * @property \BEdita\Core\Model\Entity\ObjectCategory[] $object_tags
+ * @property \BEdita\Core\Model\Entity\ObjectTag[] $object_tags
  */
 class Tag extends Entity implements JsonApiSerializable
 {
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -47,22 +42,9 @@ class Tag extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         '_joinData',
-        'object_type_id',
-        'parent_id',
-        'tree_left',
-        'tree_right',
     ];
-
-    /**
-     * {@inheritDoc}
-     * @codeCoverageIgnore
-     */
-    protected function getType()
-    {
-        return 'tags';
-    }
 }

@@ -84,7 +84,6 @@ class JsonApiPaginatorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $options Paginator options.
      * @return void
-     *
      * @dataProvider checkLimitProvider()
      * @covers ::checkLimit()
      */
@@ -141,7 +140,6 @@ class JsonApiPaginatorTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param string|null $sort `sort` query parameter in request.
      * @return void
-     *
      * @dataProvider validateSortProvider()
      * @covers ::validateSort()
      */

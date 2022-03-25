@@ -56,7 +56,7 @@ class UserTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -66,7 +66,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -79,7 +79,6 @@ class UserTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testAccessible()
@@ -105,7 +104,6 @@ class UserTest extends TestCase
      * Test hidden properties.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testHidden()
@@ -171,7 +169,6 @@ class UserTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::getExternalAuthMeta()
      */
@@ -191,7 +188,6 @@ class UserTest extends TestCase
      * Test that external_auth is null for entity withoud id.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::getExternalAuthMeta()
      */

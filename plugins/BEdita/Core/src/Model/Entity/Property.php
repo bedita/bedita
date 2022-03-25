@@ -39,7 +39,6 @@ use Cake\Utility\Inflector;
  * @property int $property_type_id
  * @property string $property_type_name
  * @property \BEdita\Core\Model\Entity\PropertyType $property_type
- *
  * @since 4.0.0
  */
 class Property extends Entity implements JsonApiSerializable
@@ -48,7 +47,7 @@ class Property extends Entity implements JsonApiSerializable
     use ObjectTypeNameTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -67,7 +66,7 @@ class Property extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'property_type_name',
@@ -75,7 +74,7 @@ class Property extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'object_type_id',
@@ -132,7 +131,7 @@ class Property extends Entity implements JsonApiSerializable
      */
     protected function _setPropertyTypeName($propertyType)
     {
-        /* @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {

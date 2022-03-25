@@ -66,7 +66,6 @@ class ObjectTypeBehaviorTest extends TestCase
      * @param string $table Table.
      * @param int|string|null $objectType Object type being set.
      * @return void
-     *
      * @dataProvider objectTypeProvider()
      * @covers ::objectType()
      */

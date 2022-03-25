@@ -13,8 +13,6 @@
 
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\Exception;
-
 /**
  * Exception raised when bad filter data are passed to Model/ORM classes
  */

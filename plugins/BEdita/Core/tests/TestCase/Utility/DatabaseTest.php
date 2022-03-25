@@ -25,7 +25,7 @@ use Cake\Utility\Inflector;
 class DatabaseTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $autoFixtures = false;
 
@@ -46,7 +46,6 @@ class DatabaseTest extends TestCase
      * Test currentSchema method
      *
      * @return void
-     *
      * @covers ::currentSchema()
      */
     public function testCurrentSchema()
@@ -76,7 +75,6 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
-     *
      * @covers ::currentSchema()
      */
     public function testMissingDatasourceConfigException()
@@ -89,7 +87,6 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
-     *
      * @covers ::schemaCompare()
      * @covers ::compareSchemaItems()
      */
@@ -132,7 +129,6 @@ class DatabaseTest extends TestCase
      * Test basicInfo method
      *
      * @return void
-     *
      * @covers ::basicInfo()
      */
     public function testBasicInfo()
@@ -152,7 +148,6 @@ class DatabaseTest extends TestCase
      * Test supportedVersion method
      *
      * @return void
-     *
      * @covers ::supportedVersion()
      */
     public function testSupportedVersion()
@@ -170,7 +165,6 @@ class DatabaseTest extends TestCase
      * Test connectionTest method
      *
      * @return void
-     *
      * @covers ::connectionTest()
      */
     public function testConnectionTest()
@@ -194,14 +188,14 @@ class DatabaseTest extends TestCase
     public function sqlExecute()
     {
         return [
-            ["SELECT id from applications", true, 2, 1],
-            ["SELECT id from properties", false, 0, 0],
-            ["SELECT id from roles", false, 0, 0, 'zzzzzzzzz'],
+            ['SELECT id from applications', true, 2, 1],
+            ['SELECT id from properties', false, 0, 0],
+            ['SELECT id from roles', false, 0, 0, 'zzzzzzzzz'],
             ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
              "UPDATE applications SET name='Gustano' WHERE id = 1;", true, 2, 2],
-            ["SELECT name from config;\n" . "SELECT name from roles;", true, 14, 2],
-            ["SELECT something", false, 0, 0],
-            [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
+            ["SELECT name from config;\n" . 'SELECT name from roles;', true, 14, 2],
+            ['SELECT something', false, 0, 0],
+            [[' ', 'SAY NO TO SQL', 'NOSQL NOPARTY'], false, 0, 0],
         ];
     }
 
@@ -214,7 +208,6 @@ class DatabaseTest extends TestCase
      * @param int $queryCount Expected amount of returned rows.
      * @param string $dbConfig Connection name.
      * @return void
-     *
      * @dataProvider sqlExecute
      * @covers ::splitSqlQueries()
      * @covers ::executeTransaction()
@@ -239,20 +232,20 @@ class DatabaseTest extends TestCase
     {
         return [
             'errorExecute' => [
-                ['execute' => false]
+                ['execute' => false],
             ],
             'errorCodeTrue' => [
                 [
                     'execute' => true,
-                    'errorCode' => true
-                ]
+                    'errorCode' => true,
+                ],
             ],
             'errorCodeDefined' => [
                 [
                     'execute' => true,
-                    'errorCode' => '00001'
-                ]
-            ]
+                    'errorCode' => '00001',
+                ],
+            ],
         ];
     }
 
@@ -261,7 +254,6 @@ class DatabaseTest extends TestCase
      *
      * @param array $statementMethods An array of methods (array keys) and return values (array values) to mock on `\Cake\Database\StatementInterface`.
      * @return void
-     *
      * @dataProvider connectionErrorProvider
      * @covers ::executeTransaction()
      */

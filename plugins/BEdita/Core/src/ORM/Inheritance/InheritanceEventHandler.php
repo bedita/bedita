@@ -37,7 +37,7 @@ class InheritanceEventHandler implements EventListenerInterface
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {
@@ -111,7 +111,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
@@ -174,7 +174,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {

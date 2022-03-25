@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchemaInterface;
@@ -34,9 +33,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\PropertyType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate($search, callable $callback = null, $options = [])
- *
  * @property \Cake\ORM\Association\HasMany $Properties
- *
  * @since 4.0.0
  */
 class PropertyTypesTable extends Table
@@ -118,7 +115,7 @@ class PropertyTypesTable extends Table
      * @param \Cake\Event\EventInterface $event Event fired
      * @param \Cake\Datasource\EntityInterface $entity Entity to be saved
      * @return void
-     * @throws ImmutableResourceException
+     * @throws \BEdita\Core\Exception\ImmutableResourceException
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
@@ -172,7 +169,7 @@ class PropertyTypesTable extends Table
      */
     public function detect($name, Table $table)
     {
-        /* @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {

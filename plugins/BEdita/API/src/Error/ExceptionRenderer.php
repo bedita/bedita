@@ -44,7 +44,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function render(): ResponseInterface
     {
@@ -74,7 +74,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _message(Throwable $error, int $status): string
     {
@@ -96,8 +96,6 @@ class ExceptionRenderer extends CakeExceptionRenderer
      *    ['field1' => ['unique' => 'The provided value is invalid']],
      *    ['field2' => [...]],
      *  ],
-     *
-     *
      *
      * @param \Exception $error Exception.
      * @return string Error message
@@ -156,7 +154,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _outputMessageSafe(string $template): Response
     {
@@ -170,7 +168,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _template(Throwable $exception, string $method, int $code): string
     {

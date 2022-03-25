@@ -24,13 +24,12 @@ use Cake\Utility\Hash;
  * Task to check tree sanity and perform objects-aware tree recovery.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class CheckTreeTask extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 
@@ -47,7 +46,7 @@ class CheckTreeTask extends Shell
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -62,7 +61,7 @@ class CheckTreeTask extends Shell
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function main()
     {

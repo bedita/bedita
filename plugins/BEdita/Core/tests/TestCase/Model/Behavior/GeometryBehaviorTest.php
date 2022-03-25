@@ -120,7 +120,6 @@ class GeometryBehaviorTest extends TestCase
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider findGeoProvider
      * @covers ::findGeo()
      * @covers ::checkGeoSupport()
@@ -183,7 +182,6 @@ class GeometryBehaviorTest extends TestCase
      *
      * @param array $conditions Filter options.
      * @return void
-     *
      * @dataProvider badGeoProvider
      * @covers ::findGeo()
      * @covers ::parseCoordinates()

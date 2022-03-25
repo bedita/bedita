@@ -55,7 +55,7 @@ class GlideGeneratorTest extends TestCase
     protected $Streams;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -70,7 +70,7 @@ class GlideGeneratorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -107,7 +107,6 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     *
      * @dataProvider getUrlProvider()
      * @covers ::getUrl()
      * @covers ::getFilename()
@@ -153,7 +152,6 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     *
      * @dataProvider generateProvider()
      * @covers ::generate()
      * @covers ::getFilename()
@@ -207,7 +205,6 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     *
      * @dataProvider existsProvider()
      * @covers ::exists()
      * @covers ::getFilename()
@@ -225,7 +222,6 @@ class GlideGeneratorTest extends TestCase
      * Test deletion of thumbnails.
      *
      * @return void
-     *
      * @covers ::delete()
      */
     public function testDelete()

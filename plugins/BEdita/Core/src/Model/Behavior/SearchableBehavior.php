@@ -29,7 +29,7 @@ use Cake\ORM\Table;
 class SearchableBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'minLength' => 3,
@@ -157,7 +157,7 @@ class SearchableBehavior extends Behavior
             // Query contained only short words.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength)
+                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength),
             ]);
         }
         if ($maxWords > 0 && count($words) > $maxWords) {
@@ -170,7 +170,7 @@ class SearchableBehavior extends Behavior
 
         // Concat all fields into a single, lower-cased string.
         $fields = [];
-        /* @var \Cake\ORM\Table $table */
+        /** @var \Cake\ORM\Table $table */
         $table = $query->getRepository();
         foreach (array_keys($this->getFields()) as $field) {
             $fields[] = $query->func()->coalesce([

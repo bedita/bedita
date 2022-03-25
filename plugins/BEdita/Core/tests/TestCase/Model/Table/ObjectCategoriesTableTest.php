@@ -100,7 +100,6 @@ class ObjectCategoriesTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider
      * @covers ::validationDefault()
      */
@@ -143,7 +142,6 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider buildRulesProvider
      * @covers ::buildRules()

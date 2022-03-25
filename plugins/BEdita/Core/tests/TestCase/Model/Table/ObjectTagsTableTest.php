@@ -40,8 +40,8 @@ class ObjectTagsTableTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Categories',
-        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
@@ -79,21 +79,21 @@ class ObjectTagsTableTest extends TestCase
                 false,
                 [
                     'object_id' => 1234,
-                    'category_id' => 4,
+                    'tag_id' => 1,
                 ],
             ],
             'inValidTag' => [
                 false,
                 [
                     'object_id' => 4,
-                    'category_id' => 1234,
+                    'tag_id' => 1234,
                 ],
             ],
             'valid' => [
                 true,
                 [
                     'object_id' => 5,
-                    'category_id' => 4,
+                    'tag_id' => 1,
                 ],
             ],
         ];
@@ -104,7 +104,6 @@ class ObjectTagsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider buildRulesProvider
      * @covers \BEdita\Core\Model\Table\ObjectCategoriesTable::buildRules()

@@ -134,7 +134,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function belongsTo(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    protected function belongsTo(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
     {
         // `Tree` Entity can be dirty as join data are set in `ParentObjects`
         $dirty = $entity->isDirty();
@@ -172,7 +172,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function hasOne(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    protected function hasOne(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
     {
         $foreignKey = (array)$this->Association->getForeignKey();
         $bindingKeyValue = $entity->extract((array)$this->Association->getBindingKey());

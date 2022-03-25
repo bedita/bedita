@@ -3,7 +3,6 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Time;
@@ -21,15 +20,13 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\AsyncJob patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class AsyncJobsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public static function defaultConnectionName(): string
     {

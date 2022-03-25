@@ -20,18 +20,17 @@ use Cake\Routing\Router;
  * Controller for `/annotations` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\AnnotationsTable $Annotations
  */
 class AnnotationsController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Annotations';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -40,14 +39,14 @@ class AnnotationsController extends ResourcesController
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getAvailableUrl($relationship)
     {
         return Router::url(
             [
                 '_name' => 'api:objects:index',
-                'object_type' => 'objects'
+                'object_type' => 'objects',
             ],
             true
         );

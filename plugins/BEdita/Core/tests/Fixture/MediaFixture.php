@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * MediaFixture
- *
  */
 class MediaFixture extends TestFixture
 {

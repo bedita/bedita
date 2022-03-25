@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use BEdita\Core\Model\Entity\ObjectRelation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -42,7 +41,7 @@ class ListAssociatedAction extends BaseAction
      *
      * @var string
      */
-    const INVERSE_ASSOCIATION_NAME = '_InverseAssociation';
+    public const INVERSE_ASSOCIATION_NAME = '_InverseAssociation';
 
     /**
      * Association.
@@ -59,7 +58,7 @@ class ListAssociatedAction extends BaseAction
     protected $ListAction;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {

@@ -48,7 +48,7 @@ class ProfileTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -58,7 +58,7 @@ class ProfileTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -79,7 +79,7 @@ class ProfileTest extends TestCase
 
         $data = [
             'id' => 42,
-            'name' => 'Gust'
+            'name' => 'Gust',
         ];
         $profile = $this->Profiles->patchEntity($profile, $data);
         if (!($profile instanceof Profile)) {

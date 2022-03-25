@@ -24,53 +24,47 @@ class Text extends CakeText
      * Null UUID.
      *
      * @var string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      */
-    const UUID_NIL = '00000000-0000-0000-0000-000000000000';
+    public const UUID_NIL = '00000000-0000-0000-0000-000000000000';
 
     /**
      * Namespace for names that are fully-qualified domain names.
      *
      * @var string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      */
-    const NAMESPACE_DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+    public const NAMESPACE_DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * Namespace for names that are URLs.
      *
      * @var string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      */
-    const NAMESPACE_URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+    public const NAMESPACE_URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * Namespace for names that are ISO OIDs.
      *
      * @var string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      */
-    const NAMESPACE_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+    public const NAMESPACE_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * Namespace for names that are X.500 DNs (in DER or a text output format).
      *
      * @var string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      */
-    const NAMESPACE_X500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+    public const NAMESPACE_X500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * Utility function to convert hex into bin for a UUID.
      *
      * @param string $uuid A UUID to convert into binary format.
      * @return string
-     *
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */
     protected static function uuidToBin($uuid)
@@ -99,7 +93,6 @@ class Text extends CakeText
      * @param string $name Name to generate UUID v5 for.
      * @param string $namespace A valid UUID to be used as namespace.
      * @return string
-     *
      * @see https://www.ietf.org/rfc/rfc4122.txt
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */

@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
  * Trait implementing virtual object type getter/setter via its name.
  *
  * @since 4.2.0
- *
  * @property int $object_type_id
  * @property string $object_type_name
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type

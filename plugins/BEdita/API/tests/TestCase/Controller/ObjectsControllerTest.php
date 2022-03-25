@@ -13,8 +13,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\ObjectsController;
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -42,7 +42,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::addCount()
@@ -96,7 +95,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/folders',
                         'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
                     ],
-                ]
+                ],
             ],
             'data' => [
                 [
@@ -710,7 +709,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -753,7 +751,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      * @covers ::addCount()
@@ -788,7 +785,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'name' => 'second-cat',
                             'label' => 'Second category',
                             'params' => null,
-                        ]
+                        ],
                     ],
                     'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
@@ -836,9 +833,9 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
                         'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $this->configRequestHeaders();
@@ -854,7 +851,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test deleted object method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -920,9 +916,9 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'documents' => [
                         '$id' => 'http://api.example.com/model/schema/documents',
                         'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $this->configRequestHeaders();
@@ -956,7 +952,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -991,7 +986,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -1023,7 +1017,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test add method with an abstract object type.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -1055,7 +1048,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test add method with an abstract object type.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -1087,7 +1079,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test add not `enabled` object type.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testAddNotEnabled()
@@ -1117,7 +1108,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test add wrong type method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -1142,7 +1132,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      * @covers ::initObjectModel()
@@ -1178,7 +1167,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test edit method with ID and type conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -1213,7 +1201,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test edit method with invalid data.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -1248,7 +1235,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -1285,7 +1271,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test related method to list related objects.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
@@ -1333,7 +1318,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'name' => 'second-cat',
                                 'label' => 'Second category',
                                 'params' => null,
-                            ]
+                            ],
                         ],
                         'lang' => 'en',
                         'publish_start' => '2016-05-13T07:09:23+00:00',
@@ -1415,7 +1400,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1567,7 +1551,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @param string $expected Expected result
      * @param string $url Test URL
-     *
      * @dataProvider linksAvailableProvider
      * @covers ::getAvailableUrl()
      * @covers ::getAvailableTypes()
@@ -1587,7 +1570,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test `getAvailableUrl` in case of not available types.
      *
      * @return void
-     *
      * @covers ::getAvailableUrl()
      */
     public function testLinksAvailableEmpty()
@@ -1617,7 +1599,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1636,7 +1617,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1717,7 +1697,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1811,7 +1790,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1843,7 +1821,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1882,7 +1859,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1908,7 +1884,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -1989,7 +1964,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -2019,7 +1993,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -2062,7 +2035,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a non-existing object ID.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -2095,7 +2067,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method with a non-existing association.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -2121,7 +2092,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a wrong type.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -2154,7 +2124,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test failure on object type not found.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testObjectTypeNotFound()
@@ -2218,7 +2187,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param string $endpoint Endpoint.
      * @param array $data Request data.
      * @return void
-     *
      * @dataProvider missingAuthProvider
      * @coversNothing
      */
@@ -2235,7 +2203,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test included resources.
      *
      * @return void
-     *
      * @covers ::prepareInclude()
      */
     public function testInclude()
@@ -2268,7 +2235,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'name' => 'second-cat',
                             'label' => 'Second category',
                             'params' => null,
-                        ]
+                        ],
                     ],
                     'lang' => 'en',
                     'publish_start' => '2016-05-13T07:09:23+00:00',
@@ -2459,7 +2426,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test `?include` query parameter on related endpoint.
      *
      * @return void
-     *
      * @covers ::prepareInclude()
      */
     public function testRelatedInclude(): void
@@ -2480,7 +2446,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test listing streams for an object.
      *
      * @return void
-     *
      * @covers ::beforeFilter()
      */
     public function testStreamsRelationshipsList()
@@ -2523,7 +2488,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test that relationships can only be managed from the streams side.
      *
      * @return void
-     *
      * @covers ::beforeFilter()
      */
     public function testStreamsRelationshipsManage()
@@ -2593,7 +2557,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param array $expected The expected result
      * @param array $requestData The data needed to create the request
      * @return void
-     *
      * @dataProvider resourceTypeProvider
      * @covers ::initialize()
      */
@@ -2641,7 +2604,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param string $url The url
      * @param string $expected The expected error message
      * @return void
-     *
      * @dataProvider missingRouteProvider
      * @covers ::initObjectModel()
      */
@@ -2661,7 +2623,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test 'lang' filter.
      *
      * @return void
-     *
      * @covers ::resource()
      */
     public function testLang()
@@ -2716,7 +2677,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test addCount()
      *
      * @return void
-     *
      * @covers ::addCount()
      */
     public function testAddCount(): void
@@ -2735,7 +2695,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test prepareFilter()
      *
      * @return void
-     *
      * @covers ::prepareFilter()
      */
     public function testPrepareFilter(): void
@@ -2760,7 +2719,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 '3',
                 [
                     'locked' => true,
-                ]
+                ],
             ],
             'user' => [
                 false,
@@ -2791,7 +2750,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param array $meta Meta data
      * @param array $user User data
      * @return void
-     *
      * @dataProvider saveEntityOptionsProvider
      * @covers ::saveEntityOptions()
      */

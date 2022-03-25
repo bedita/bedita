@@ -48,7 +48,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     protected $AsyncJobs;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -114,7 +114,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

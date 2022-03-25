@@ -24,13 +24,12 @@ use Cake\TestSuite\TestCase;
  *
  * @coversDefaultClass \BEdita\App\Application
  */
-class BaseApplicationTest extends TestCase
+class ApplicationTest extends TestCase
 {
     /**
      * Test `middleware` method
      *
      * @return void
-     *
      * @covers ::middleware
      */
     public function testMiddleware(): void
@@ -49,7 +48,6 @@ class BaseApplicationTest extends TestCase
      * Test `bootstrap` method
      *
      * @return void
-     *
      * @covers ::bootstrap()
      * @covers ::bootstrapCli()
      */
@@ -101,7 +99,7 @@ class BaseApplicationTest extends TestCase
                     'Bake' => ['debugOnly' => true],
                 ],
                 true,
-            ]
+            ],
 
         ];
     }
@@ -110,7 +108,6 @@ class BaseApplicationTest extends TestCase
      * Test `addConfigPlugins` method using `Bake` Plugin
      *
      * @return void
-     *
      * @covers ::addConfigPlugins()
      * @covers ::addConfigPlugin()
      * @dataProvider configPluginsProvider

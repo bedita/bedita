@@ -80,7 +80,8 @@
     "config": {
         "allow-plugins": {
             "cakephp/plugin-installer": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

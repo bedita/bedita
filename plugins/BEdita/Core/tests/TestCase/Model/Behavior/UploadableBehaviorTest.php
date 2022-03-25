@@ -46,7 +46,7 @@ class UploadableBehaviorTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -56,7 +56,7 @@ class UploadableBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -78,7 +78,7 @@ class UploadableBehaviorTest extends TestCase
         return [
             'nothing to do' => [
                 [
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => $originalContents,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59.txt' => $originalContents,
                 ],
                 [
                     'version' => 99, // Update some useless field so that the save is actually triggered.
@@ -86,7 +86,7 @@ class UploadableBehaviorTest extends TestCase
             ],
             'updated contents' => [
                 [
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => $newContents,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59.txt' => $newContents,
                 ],
                 [
                     'contents' => $newContents,
@@ -94,8 +94,8 @@ class UploadableBehaviorTest extends TestCase
             ],
             'renamed file' => [
                 [
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => false,
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $originalContents,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59.txt' => false,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt' => $originalContents,
                 ],
                 [
                     'file_name' => 'new-file.txt',
@@ -103,8 +103,8 @@ class UploadableBehaviorTest extends TestCase
             ],
             'updated contents and renamed file' => [
                 [
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59.txt" => false,
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $newContents,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59.txt' => false,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt' => $newContents,
                 ],
                 [
                     'file_name' => 'new-file.txt',
@@ -113,7 +113,7 @@ class UploadableBehaviorTest extends TestCase
             ],
             'private file' => [
                 [
-                    "default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt" => $newContents,
+                    'default://9e58fa47-db64-4479-a0ab-88a706180d59-new-file.txt' => $newContents,
                 ],
                 [
                     'file_name' => 'new-file.txt',
@@ -130,7 +130,6 @@ class UploadableBehaviorTest extends TestCase
      * @param array $expected Expected files on filesystem and their contents.
      * @param array $data Data to patch entity with.
      * @return void
-     *
      * @dataProvider afterSaveProvider()
      * @covers ::afterSave()
      * @covers ::processUpload()
@@ -165,7 +164,6 @@ class UploadableBehaviorTest extends TestCase
      * Test file management after the entity is delete.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      * @covers ::processDelete()
      */

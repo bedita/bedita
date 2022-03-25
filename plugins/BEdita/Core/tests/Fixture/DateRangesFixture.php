@@ -17,7 +17,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * DateRangesFixture
- *
  */
 class DateRangesFixture extends TestFixture
 {
@@ -31,7 +30,7 @@ class DateRangesFixture extends TestFixture
             'object_id' => 9,
             'start_date' => '2017-03-07 12:40:19',
             'end_date' => '2017-03-08 21:40:19',
-            'params' => ''
+            'params' => '',
         ],
     ];
 }

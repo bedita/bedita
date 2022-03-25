@@ -71,9 +71,7 @@ class PublicationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
-     *
      * @covers ::initialize()
      * @covers ::validationDefault()
      */

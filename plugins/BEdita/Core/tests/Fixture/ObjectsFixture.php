@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * ObjectsFixture
- *
  */
 class ObjectsFixture extends TestFixture
 {
@@ -51,7 +50,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => '2016-05-13 07:09:23',
-            'publish_end' => '2016-05-13 07:09:23'
+            'publish_end' => '2016-05-13 07:09:23',
         ],
         // 3
         [
@@ -71,7 +70,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 5,
             'publish_start' => null,
-            'publish_end' => null
+            'publish_end' => null,
         ],
         // 4
         [
@@ -87,7 +86,7 @@ class ObjectsFixture extends TestFixture
             'description' => 'Some description about Gustavo',
             'lang' => 'en',
             'created_by' => 1,
-            'modified_by' => 1
+            'modified_by' => 1,
         ],
         // 5
         [
@@ -126,7 +125,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => '2016-10-13 07:09:23',
-            'publish_end' => '2016-10-13 07:09:23'
+            'publish_end' => '2016-10-13 07:09:23',
         ],
         // 7
         [
@@ -146,7 +145,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => '2016-10-13 07:09:23',
-            'publish_end' => '2016-10-13 07:09:23'
+            'publish_end' => '2016-10-13 07:09:23',
         ],
         // 8
         [
@@ -166,7 +165,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => null,
-            'publish_end' => null
+            'publish_end' => null,
         ],
         // 9
         [
@@ -186,7 +185,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => null,
-            'publish_end' => null
+            'publish_end' => null,
         ],
         // 10
         [
@@ -308,7 +307,7 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1,
             'publish_start' => null,
-            'publish_end' => null
+            'publish_end' => null,
         ],
     ];
 

@@ -37,7 +37,6 @@ class DeleteEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-
      * @covers ::initialize()
      * @covers ::execute()
      */

@@ -41,11 +41,11 @@ class BoolTypeTest extends TestCase
                 false,
             ],
             [
-                "1",
+                '1',
                 true,
             ],
             [
-                "0",
+                '0',
                 false,
             ],
             [
@@ -61,21 +61,21 @@ class BoolTypeTest extends TestCase
                 null,
             ],
             [
-                "true",
+                'true',
                 true,
             ],
             [
-                "false",
+                'false',
                 false,
             ],
             [
-                "gustavo",
+                'gustavo',
                 new InvalidArgumentException('Cannot convert value of type `string` to bool'),
             ],
             [
                 [1, 2, 3],
                 new InvalidArgumentException('Cannot convert value of type `array` to bool'),
-            ]
+            ],
         ];
     }
 
@@ -85,7 +85,6 @@ class BoolTypeTest extends TestCase
      * @param mixed $input Input data to be marshaled.
      * @param mixed $expected Expected result
      * @return void
-     *
      * @dataProvider toDatabaseProvider
      * @covers ::toDatabase()
      */

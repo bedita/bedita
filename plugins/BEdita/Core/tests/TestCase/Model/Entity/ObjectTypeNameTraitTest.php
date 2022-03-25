@@ -65,7 +65,6 @@ class ObjectTypeNameTraitTest extends TestCase
      * @param string|null $expected Expected object type name.
      * @param mixed $objectTypeId Object type ID.
      * @return void
-     *
      * @covers ::_getObjectTypeName()
      * @dataProvider getObjectTypeNameProvider()
      */
@@ -104,7 +103,6 @@ class ObjectTypeNameTraitTest extends TestCase
      * @param string|null $expected Expected object type ID.
      * @param mixed $objectTypeName Object type name.
      * @return void
-     *
      * @covers ::_setObjectTypeName()
      * @dataProvider setObjectTypeNameProvider()
      */

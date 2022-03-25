@@ -49,7 +49,7 @@ class IsUniqueAmongst extends IsUnique
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __invoke(EntityInterface $entity, array $options): bool
     {

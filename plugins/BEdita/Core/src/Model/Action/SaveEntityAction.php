@@ -35,7 +35,7 @@ class SaveEntityAction extends BaseAction
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -43,7 +43,7 @@ class SaveEntityAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

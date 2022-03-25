@@ -27,13 +27,12 @@ use Cake\ORM\Entity;
  * @property string $params
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
- *
  * @since 4.0.0
  */
 class ExternalAuth extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

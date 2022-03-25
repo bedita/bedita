@@ -44,7 +44,7 @@ class UpdateAssociatedAction extends BaseAction
     protected $request;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $data)
     {
@@ -53,7 +53,7 @@ class UpdateAssociatedAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

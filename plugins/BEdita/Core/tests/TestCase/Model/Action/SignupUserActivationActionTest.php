@@ -24,7 +24,6 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
 use Cake\I18n\Time;
-use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -72,7 +71,7 @@ class SignupUserActivationActionTest extends TestCase
     protected $AsyncJobs = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -84,7 +83,7 @@ class SignupUserActivationActionTest extends TestCase
         Configure::write('Signup', []);
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
     }
 
@@ -103,20 +102,20 @@ class SignupUserActivationActionTest extends TestCase
             'async job completed' => [
                 new RecordNotFoundException('Record not found in table "async_jobs"'),
                 [
-                    'uuid' => '1e2d1c66-c0bb-47d7-be5a-5bc92202333e'
+                    'uuid' => '1e2d1c66-c0bb-47d7-be5a-5bc92202333e',
                 ],
             ],
             'async job missing user_id' => [
                 new BadRequestException('Invalid async job, missing user_id'),
                 [
-                    'uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c'
-                ]
+                    'uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c',
+                ],
             ],
             'async job not valid user_id' => [
                 new RecordNotFoundException('Record not found in table "users"'),
                 [
-                    'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a'
-                ]
+                    'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
+                ],
             ],
         ];
     }
@@ -127,7 +126,6 @@ class SignupUserActivationActionTest extends TestCase
      * @param \Exception $expected The exception expected
      * @param array $data The data given to action
      * @return void
-     *
      * @dataProvider executeFailureProvider
      */
     public function testExecuteFailure($expected, $data)
@@ -153,7 +151,7 @@ class SignupUserActivationActionTest extends TestCase
         $this->expectException(ConflictException::class);
         $this->expectExceptionMessage('User already active');
 
-        list($user, $asyncJob) = $this->signup();
+        [$user, $asyncJob] = $this->signup();
 
         $user->status = 'on';
         $user->verified = new Time();
@@ -175,7 +173,7 @@ class SignupUserActivationActionTest extends TestCase
      */
     public function testExecuteOk()
     {
-        list($user, $asyncJob) = $this->signup();
+        [$user, $asyncJob] = $this->signup();
 
         static::assertEquals(1, $user->created_by);
         static::assertEquals(1, $user->modified_by);
@@ -229,7 +227,7 @@ class SignupUserActivationActionTest extends TestCase
         $signupAction = new SignupUserAction();
         $signupAction($data);
 
-        /* @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
+        /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()
             ->order(['AsyncJobs.created' => 'DESC'])
             ->first();

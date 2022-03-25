@@ -20,13 +20,12 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  * Shell class to run pending jobs
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
 class JobsShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'AsyncJobs';
 

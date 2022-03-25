@@ -17,13 +17,12 @@ namespace BEdita\API\Controller;
  * Controller for `/config` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class ConfigController extends AppController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Config';
 

@@ -184,7 +184,6 @@ class ProfilesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -207,7 +206,6 @@ class ProfilesTableTest extends TestCase
      * Test find method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testFind()

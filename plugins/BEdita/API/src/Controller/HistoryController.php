@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
  * Controller for `/history` endpoint.
  *
  * @since 4.1.0
- *
  */
 class HistoryController extends AppController
 {
@@ -33,7 +32,7 @@ class HistoryController extends AppController
     protected $HistoryTable;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

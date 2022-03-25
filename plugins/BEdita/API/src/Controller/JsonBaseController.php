@@ -12,16 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\API\Controller\AppController;
-
 /**
  * Base class for controllers handling pure `application/json` content-type, not using JSON API
- *
  */
 abstract class JsonBaseController extends AppController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

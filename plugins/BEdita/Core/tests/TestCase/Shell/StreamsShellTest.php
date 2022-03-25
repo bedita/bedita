@@ -29,7 +29,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -39,7 +39,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -69,7 +69,6 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      * @param int $expected Expected number of removed streams
      * @param int $days The days.
      * @return void
-     *
      * @dataProvider removeOrphansProvider()
      * @covers ::removeOrphans()
      */

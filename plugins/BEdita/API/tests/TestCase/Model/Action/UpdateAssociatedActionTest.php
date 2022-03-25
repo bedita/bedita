@@ -41,7 +41,7 @@ class UpdateAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -51,7 +51,7 @@ class UpdateAssociatedActionTest extends TestCase
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
-        /* @var \Cake\ORM\Association\BelongsToMany $association */
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
         $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
         $association->junction()
             ->getValidator()
@@ -208,7 +208,6 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $table, $association, $id, $data)

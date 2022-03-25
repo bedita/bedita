@@ -22,7 +22,7 @@ use Cake\Utility\Hash;
  * Integration test for `Publish.checkDate` configuration
  * using `publish_start` and `publish_date` values.
  */
-class PublisStartEndTest extends IntegrationTestCase
+class PublishStartEndTest extends IntegrationTestCase
 {
     /**
      * Provider for testListObjects()
@@ -52,7 +52,6 @@ class PublisStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param string $url The test URL
      * @return void
-     *
      * @dataProvider listProvider
      * @coversNothing
      */
@@ -83,21 +82,21 @@ class PublisStartEndTest extends IntegrationTestCase
                 true,
                 [
                     'publish_start' => Time::parse(time() + DAY),
-                ]
+                ],
             ],
             'no conf' => [
                 200,
                 false,
                 [
                     'publish_start' => Time::parse(time() + DAY),
-                ]
+                ],
             ],
             'ended' => [
                 404,
                 true,
                 [
                     'publish_end' => Time::parse(time() - DAY),
-                ]
+                ],
             ],
             'started' => [
                 200,
@@ -105,7 +104,7 @@ class PublisStartEndTest extends IntegrationTestCase
                 [
                     'publish_start' => Time::parse(time() - DAY),
                     'publish_end' => Time::parse(time() + DAY),
-                ]
+                ],
             ],
         ];
     }
@@ -117,7 +116,6 @@ class PublisStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param array $data The fields data
      * @return void
-     *
      * @dataProvider singleProvider
      * @coversNothing
      */

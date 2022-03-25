@@ -124,7 +124,7 @@ class DatabaseConfigTest extends TestCase
                     'Name4' => 'other data',
                     'nullConf' => null,
                     'trueConf' => true,
-                    'falseConf' => false
+                    'falseConf' => false,
                 ],
             ],
             'failure' => [
@@ -143,9 +143,9 @@ class DatabaseConfigTest extends TestCase
                 [
                     'Name5' => 'just another name',
                     'Datasources' => 'You cannot touch me!',
-                    'Cache' => 'Me too :('
-                ]
-            ]
+                    'Cache' => 'Me too :(',
+                ],
+            ],
         ];
     }
 
@@ -155,9 +155,7 @@ class DatabaseConfigTest extends TestCase
      * @param bool|array $expected Expected result.
      * @param string $context Config group context.
      * @param array $data Config data array.
-     *
      * @return void
-     *
      * @dataProvider configProvider
      * @covers ::dump()
      * @covers ::valueToString()
@@ -183,7 +181,6 @@ class DatabaseConfigTest extends TestCase
      * Test read method using Configure class
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testReadByConfigure()
@@ -202,9 +199,7 @@ class DatabaseConfigTest extends TestCase
      * @param bool|array $expected Expected result.
      * @param string $context Config group context.
      * @param array $data Config data array.
-     *
      * @return void
-     *
      * @dataProvider configProvider
      * @coversNothing
      */

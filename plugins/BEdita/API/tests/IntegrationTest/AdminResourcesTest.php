@@ -16,7 +16,6 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * Test CRUD operations on /admin resources
- *
  */
 class AdminResourcesTest extends IntegrationTestCase
 {
@@ -26,7 +25,7 @@ class AdminResourcesTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Config'
+        'plugin.BEdita/Core.Config',
     ];
 
     /**
@@ -87,7 +86,6 @@ class AdminResourcesTest extends IntegrationTestCase
      * @param $attributes array Resource attributes to insert
      * @param $modified array Resource attributes to modify
      * @return void
-     *
      * @dataProvider resourceProvider
      * @coversNothing
      */

@@ -13,10 +13,15 @@
 
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
+use Cake\Collection\CollectionInterface;
+use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -26,7 +31,7 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $ParentCategories
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\HasMany $ChildCategories
  * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectCategories
- *
+ * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsToMany $Objects
  * @method \BEdita\Core\Model\Entity\Category get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Category newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] newEntities(array $data, array $options = [])
@@ -35,10 +40,9 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CategoriesTable extends CategoriesTagsBaseTable
+class CategoriesTable extends Table
 {
     /**
      * Initialize method
@@ -62,31 +66,37 @@ class CategoriesTable extends CategoriesTagsBaseTable
                 'name' => 8,
             ],
         ]);
-
-        $this->belongsTo('ObjectTypes', [
-            'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.ObjectTypes'
-        ]);
-        $this->belongsTo('ParentCategories', [
-            'className' => 'BEdita/Core.Categories',
-            'foreignKey' => 'parent_id'
-        ]);
-        $this->hasMany('ChildCategories', [
-            'className' => 'BEdita/Core.Categories',
-            'foreignKey' => 'parent_id'
-        ]);
         $this->addBehavior('Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
+
+        $this->belongsTo('ObjectTypes', [
+            'foreignKey' => 'object_type_id',
+            'className' => 'BEdita/Core.ObjectTypes',
+        ]);
+        $this->belongsTo('ParentCategories', [
+            'className' => 'BEdita/Core.Categories',
+            'foreignKey' => 'parent_id',
+        ]);
+        $this->hasMany('ChildCategories', [
+            'className' => 'BEdita/Core.Categories',
+            'foreignKey' => 'parent_id',
+        ]);
         $this->hasMany('ObjectCategories', [
             'foreignKey' => 'category_id',
-            'className' => 'BEdita/Core.ObjectCategories'
+            'className' => 'BEdita/Core.ObjectCategories',
+        ]);
+        $this->belongsToMany('Objects', [
+            'className' => 'BEdita/Core.Objects',
+            'foreignKey' => 'category_id',
+            'targetForeignKey' => 'object_id',
+            'through' => 'BEdita/Core.ObjectCategories',
         ]);
     }
 
     /**
-     * Default validation rules.
+     * Common validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
@@ -94,21 +104,21 @@ class CategoriesTable extends CategoriesTagsBaseTable
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $this->validationRules($validator);
+        return $validator
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create')
 
-        $validator
-            ->integer('tree_left')
-            ->allowEmptyString('tree_left');
+            ->scalar('name')
+            ->maxLength('name', 50)
+            ->requirePresence('name', 'create')
+            ->notEmptyString('name')
 
-        $validator
-            ->integer('tree_right')
-            ->allowEmptyString('tree_right');
+            ->scalar('label')
+            ->maxLength('label', 255)
+            ->allowEmptyString('label')
 
-        $validator
             ->boolean('enabled')
             ->notEmptyString('enabled');
-
-        return $validator;
     }
 
     /**
@@ -121,22 +131,21 @@ class CategoriesTable extends CategoriesTagsBaseTable
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(
-            ['object_type_id'],
-            'ObjectTypes',
-            ['allowNullableNulls' => true]
-        ));
-        $rules->add($rules->existsIn(
-            ['parent_id'],
-            'ParentCategories',
-            ['allowNullableNulls' => true]
-        ));
-
-        return $rules;
+        return $rules
+            ->add(
+                $rules->existsIn(['object_type_id'], 'ObjectTypes'),
+                null,
+                ['errorField' => 'object_type_id']
+            )
+            ->add(
+                $rules->existsIn(['parent_id'], 'ParentCategories', ['allowNullableNulls' => true]),
+                null,
+                ['errorField' => 'parent_id']
+            );
     }
 
     /**
-     * Add `object_type_id` condition and hide some fields when retrieved as association.
+     * Hide read-only fields when fetched as an association.
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
@@ -144,13 +153,44 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(EventInterface $event, Query $query, \ArrayObject $options, $primary)
+    public function beforeFind(EventInterface $event, Query $query, ArrayObject $options, bool $primary)
     {
-        $query->andWhere([$this->aliasField('object_type_id') . ' IS NOT NULL']);
         if ($primary) {
             return;
         }
-        $this->hideFields($query);
+
+        $query->formatResults(function (CollectionInterface $results): CollectionInterface {
+            return $results->map(function ($row) {
+                if (!empty($row['_joinData'])) {
+                    $row['params'] = $row['_joinData']['params'] ?? null;
+                }
+                if (!$row instanceof EntityInterface) {
+                    return $row;
+                }
+
+                return $row->setHidden(
+                    [
+                        'id', 'enabled', 'created', 'modified',
+                        'object_type_id', 'object_type_name',
+                        'parent_id', 'tree_left', 'tree_right',
+                    ],
+                    true
+                );
+            });
+        });
+    }
+
+    /**
+     * Filter only enabled categories.
+     *
+     * @param \Cake\ORM\Query $query Query object
+     * @return \Cake\ORM\Query
+     */
+    protected function findEnabled(Query $query): Query
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
     }
 
     /**
@@ -159,9 +199,9 @@ class CategoriesTable extends CategoriesTagsBaseTable
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
      * @return \Cake\ORM\Query
-     * @throws BadFilterException
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
-    public function findType(Query $query, array $options): Query
+    protected function findType(Query $query, array $options): Query
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'type'));
@@ -170,6 +210,32 @@ class CategoriesTable extends CategoriesTagsBaseTable
         return $query->innerJoinWith('ObjectTypes', function (Query $query) use ($options) {
             return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
         });
+    }
+
+    /**
+     * Find categories IDs by their name.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Array containing key `names` as a list of strings, and `typeId` as an integer.
+     * @return \Cake\ORM\Query
+     */
+    protected function findIds(Query $query, array $options)
+    {
+        if (empty($options['names']) || !is_array($options['names'])) {
+            throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
+        }
+        if (empty($options['typeId'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'typeId'));
+        }
+
+        return $query
+            ->find('enabled')
+            ->select([$this->aliasField('id'), $this->aliasField('name')])
+            ->where(function (QueryExpression $exp) use ($options): QueryExpression {
+                return $exp
+                    ->eq($this->aliasField('object_type_id'), $options['typeId'])
+                    ->in($this->aliasField('name'), $options['names']);
+            });
     }
 
     /**

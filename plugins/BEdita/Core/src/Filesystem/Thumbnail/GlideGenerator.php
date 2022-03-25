@@ -38,10 +38,10 @@ class GlideGenerator extends ThumbnailGenerator
      *
      * @var int
      */
-    const MAX_IMAGE_SIZE = 1 << 22; // 2048 * 2048 === 2^11 * 2^11 === 2^22
+    public const MAX_IMAGE_SIZE = 1 << 22; // 2048 * 2048 === 2^11 * 2^11 === 2^22
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'cache' => 'thumbnails',
@@ -113,7 +113,7 @@ class GlideGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUrl(Stream $stream, array $options = [])
     {
@@ -123,7 +123,7 @@ class GlideGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function generate(Stream $stream, array $options = [])
     {
@@ -141,7 +141,7 @@ class GlideGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function exists(Stream $stream, array $options = [])
     {
@@ -151,7 +151,7 @@ class GlideGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function delete(Stream $stream)
     {

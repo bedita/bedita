@@ -19,7 +19,7 @@ class MockMigrationsTable extends Table
     public static $calls = [];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function addColumn($columnName, $type = null, $options = [])
     {
@@ -29,7 +29,7 @@ class MockMigrationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function removeColumn($columnName)
     {
@@ -39,7 +39,7 @@ class MockMigrationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function changeColumn($columnName, $newColumnType, array $options = [])
     {
@@ -49,7 +49,7 @@ class MockMigrationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function update()
     {

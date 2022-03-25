@@ -25,14 +25,14 @@ use Cake\Utility\Hash;
 class PriorityBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'fields' => [],
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -79,7 +79,7 @@ class PriorityBehavior extends Behavior
     /**
      * Get current max priority on an object relation
      *
-     * @param EntityInterface $entity Entity being saved
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved
      * @param string $field Priority field name.
      * @param array $scope Priority scope.
      * @return int

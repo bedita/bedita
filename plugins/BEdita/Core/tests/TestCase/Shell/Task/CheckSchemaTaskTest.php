@@ -19,7 +19,6 @@ use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Utility\Hash;
@@ -32,7 +31,7 @@ class CheckSchemaTaskTest
     use ConsoleIntegrationTestTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -42,7 +41,7 @@ class CheckSchemaTaskTest
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public static function tearDownAfterClass(): void
     {
@@ -114,7 +113,7 @@ class CheckSchemaTaskTest
      */
     public function testOffendedConventions()
     {
-        /* @var \Cake\Database\Connection $connection */
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
         $table = new TableSchema('foo_bar');
@@ -173,7 +172,7 @@ class CheckSchemaTaskTest
      */
     public function testCheckSchema()
     {
-        /* @var \Cake\Database\Connection $connection */
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
         $this->exec(CheckSchemaTask::class);
@@ -194,7 +193,7 @@ class CheckSchemaTaskTest
      */
     public function testAddTable()
     {
-        /* @var \Cake\Database\Connection $connection */
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -223,7 +222,7 @@ class CheckSchemaTaskTest
      */
     public function testRemoveTable()
     {
-        /* @var \Cake\Database\Connection $connection */
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
         $table = $connection->getSchemaCollection()->describe('config');
@@ -252,7 +251,7 @@ class CheckSchemaTaskTest
      */
     public function testUpdateConstraints()
     {
-        /* @var \Cake\Database\Connection $connection */
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
         $table = $connection->getSchemaCollection()->describe('objects');

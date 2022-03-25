@@ -27,6 +27,6 @@ class ObjectPermission extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        'id' => false,
     ];
 }

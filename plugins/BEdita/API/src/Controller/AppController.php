@@ -27,13 +27,12 @@ use Cake\Routing\Router;
  * Base class for all API Controller endpoints.
  *
  * @since 4.0.0
- *
  * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
  */
 class AppController extends Controller
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $paginate = [
         'order' => [
@@ -53,7 +52,7 @@ class AppController extends Controller
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -98,7 +97,7 @@ class AppController extends Controller
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
     {

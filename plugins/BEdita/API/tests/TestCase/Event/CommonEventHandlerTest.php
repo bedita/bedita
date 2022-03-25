@@ -34,7 +34,7 @@ class CommonEventHandlerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.FakeAnimals'
+        'plugin.BEdita/Core.FakeAnimals',
     ];
 
     /**
