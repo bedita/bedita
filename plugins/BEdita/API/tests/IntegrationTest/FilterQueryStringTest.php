@@ -367,7 +367,7 @@ class FilterQueryStringTest extends IntegrationTestCase
             'tags' => [
                 '/model/tags?q=first',
                 [
-                    '4',
+                    '1',
                 ],
             ],
         ];

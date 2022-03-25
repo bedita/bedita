@@ -40,6 +40,8 @@ class CategoriesBehaviorTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
@@ -75,7 +77,7 @@ class CategoriesBehaviorTest extends TestCase
                     'tags' => [
                         [
                             'name' => 'first-tag',
-                            'id' => 4,
+                            'id' => 1,
                         ],
                     ],
                 ],
@@ -139,11 +141,11 @@ class CategoriesBehaviorTest extends TestCase
                     'tags' => [
                         [
                             'name' => 'some-tag',
-                            'id' => 5,
+                            'id' => 2,
                         ],
                         [
                             'name' => 'other-tag',
-                            'id' => 6,
+                            'id' => 3,
                         ],
                     ],
                 ],
@@ -278,7 +280,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchTagsDisabled(): void
     {
         $table = TableRegistry::getTableLocator()->get('Tags');
-        $tag = $table->get(4);
+        $tag = $table->get(1);
         $tag->set('enabled', false);
         $table->saveOrFail($tag);
 

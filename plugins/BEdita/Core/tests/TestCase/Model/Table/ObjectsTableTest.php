@@ -49,6 +49,8 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.Translations',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 

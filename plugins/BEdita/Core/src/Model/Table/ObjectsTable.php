@@ -129,7 +129,7 @@ class ObjectsTable extends Table
             'className' => 'BEdita/Core.Tags',
             'through' => 'BEdita/Core.ObjectTags',
             'foreignKey' => 'object_id',
-            'targetForeignKey' => 'category_id',
+            'targetForeignKey' => 'tag_id',
             'sort' => ['name' => 'ASC'],
             'finder' => 'enabled',
             'cascadeCallbacks' => true,

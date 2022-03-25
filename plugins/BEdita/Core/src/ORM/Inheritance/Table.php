@@ -226,7 +226,9 @@ class Table extends CakeTable
     /**
      * {@inheritDoc}
      *
-     * @param bool $field Should fields from inherited tables be considered?
+     * @param string $field The field to check for.
+     * @param bool $inheritedFields Should fields from inherited tables be considered?
+     * @return bool
      */
     public function hasField($field, $inheritedFields = true): bool
     {

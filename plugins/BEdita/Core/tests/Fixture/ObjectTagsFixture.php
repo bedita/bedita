@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,9 +15,9 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * ObjectCategoriesFixture
+ * ObjectTagsFixture
  */
-class ObjectCategoriesFixture extends TestFixture
+class ObjectTagsFixture extends TestFixture
 {
     /**
      * Records
@@ -26,19 +26,8 @@ class ObjectCategoriesFixture extends TestFixture
      */
     public $records = [
         [
-            'object_id' => 2,
-            'category_id' => 1,
-            'params' => '100',
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 2,
-            'params' => null,
-        ],
-        [
-            'object_id' => 2,
-            'category_id' => 3,
-            'params' => null,
+            'object_id' => 4,
+            'tag_id' => 1,
         ],
     ];
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2020 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,34 +17,23 @@ use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
- * Tag Entity
+ * ObjectTag Entity
  *
  * @property int $id
- * @property string $name
- * @property string|null $label
- * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- *
- * @property \BEdita\Core\Model\Entity\ObjectTag[] $object_tags
+ * @property int $object_id
+ * @property int $tag_id
+ * @property \BEdita\Core\Model\Entity\ObjectEntity $object
+ * @property \BEdita\Core\Model\Entity\Tag $tag
  */
-class Tag extends Entity implements JsonApiSerializable
+class ObjectTag extends Entity implements JsonApiSerializable
 {
     use JsonApiModelTrait;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected $_accessible = [
         '*' => true,
-        'created' => false,
-        'modified' => false,
-    ];
-
-    /**
-     * @inheritDoc
-     */
-    protected $_hidden = [
-        '_joinData',
+        'id' => false,
     ];
 }
