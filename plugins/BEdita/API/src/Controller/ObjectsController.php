@@ -378,9 +378,7 @@ class ObjectsController extends ResourcesController
                 }
 
                 $this->set(compact('data'));
-                $this->set([
-                    '_serialize' => ['data'],
-                ]);
+                $this->setSerialize(['data']);
 
                 $available = $this->getAvailableUrl($relationship);
                 $this->set('_links', compact('available'));
@@ -412,7 +410,7 @@ class ObjectsController extends ResourcesController
             $this->set(compact('data'));
             $serialize = ['data'];
         }
-        $this->set(['_serialize' => $serialize]);
+        $this->setSerialize($serialize);
 
         return null;
     }

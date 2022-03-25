@@ -30,7 +30,6 @@ use DateTimeInterface;
  * DateRanges Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\DateRange get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange[] newEntities(array $data, array $options = [])
@@ -61,7 +60,7 @@ class DateRangesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 

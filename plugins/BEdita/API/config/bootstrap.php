@@ -18,7 +18,6 @@ use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
-use Cake\Network\Request;
 
 /**
  * Load 'api' configuration parameters
@@ -36,7 +35,7 @@ if ($exceptionRenderer !== ExceptionRenderer::class) {
 }
 
 /** Add custom request detectors. */
-ServerRequest::addDetector('jsonapi', function (Request $request) {
+ServerRequest::addDetector('jsonapi', function ($request) {
     return $request->accepts(JsonApiComponent::CONTENT_TYPE);
 });
 

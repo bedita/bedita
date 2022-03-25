@@ -22,7 +22,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\TagsTable&\Cake\ORM\Association\BelongsTo $Tags
- *
  * @method \BEdita\Core\Model\Entity\ObjectTag get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectTag newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectTag[] newEntities(array $data, array $options = [])
