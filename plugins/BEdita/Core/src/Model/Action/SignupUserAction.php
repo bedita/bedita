@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
@@ -23,7 +24,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
@@ -122,7 +122,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
-            throw new BadRequestException([
+            throw new InvalidDataException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => $errors,
             ]);
@@ -304,7 +304,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
-            throw new BadRequestException([
+            throw new InvalidDataException([
                 'title' => __d('bedita', 'User "{0}" already registered', $data['username']),
                 'code' => self::BE_USER_EXISTS,
             ]);

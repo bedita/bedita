@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Http\Exception\BadRequestException;
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Log\LogTrait;
 use Cake\Utility\Hash;
@@ -62,7 +62,7 @@ class SaveEntityAction extends BaseAction
             if (!empty($errors)) {
                 $this->log(sprintf('Entity save errors: %s', json_encode($errors)), 'warning');
 
-                throw new BadRequestException([
+                throw new InvalidDataException([
                     'title' => __d('bedita', 'Invalid data'),
                     'detail' => $errors,
                 ]);
