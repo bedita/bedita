@@ -148,8 +148,8 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * Update entities with previously kept back properties with `__` prefix
      *
-     * @param Event $event Dispatched event.
-     * @param EntityInterface $entity Entity.
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
     public function afterSave(Event $event, EntityInterface $entity)

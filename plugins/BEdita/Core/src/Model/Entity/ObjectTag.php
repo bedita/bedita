@@ -30,7 +30,7 @@ class ObjectTag extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

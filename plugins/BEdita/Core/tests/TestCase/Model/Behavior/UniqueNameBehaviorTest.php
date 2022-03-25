@@ -439,7 +439,7 @@ class UniqueNameBehaviorTest extends TestCase
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $document = $Documents->get(2);
         $document->set('title', 'a new title');
-        $document->unsetProperty('uname');
+        unset($document['uname']);
 
         $behavior = $Documents->behaviors()->get('UniqueName');
         $behavior->uniqueName($document);

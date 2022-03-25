@@ -32,7 +32,7 @@ class TagsFixture extends TestFixture
             'label' => 'First tag',
             'enabled' => 1,
             'created' => '2019-11-26 12:15:51',
-            'modified' => '2019-11-26 12:15:51'
+            'modified' => '2019-11-26 12:15:51',
         ],
     ];
 }

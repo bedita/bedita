@@ -144,7 +144,9 @@ class ObjectRelationsTableTest extends TestCase
      */
     public function testValidation($expected, array $data, $jsonSchema = null, $isNew = true)
     {
-        $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
+        if ($jsonSchema) {
+            $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
+        }
 
         $objectRelation = $this->ObjectRelations->newEntity();
         $objectRelation->setNew($isNew);
