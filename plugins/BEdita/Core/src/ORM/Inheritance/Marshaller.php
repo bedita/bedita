@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use Cake\Database\TypeFactory;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Table as CakeTable;
 
@@ -62,7 +63,7 @@ class Marshaller extends CakeMarshaller
             }
 
             $map[$prop] = function ($value, $entity) use ($columnType) {
-                return \Cake\Database\TypeFactory::build($columnType)->marshal($value);
+                return TypeFactory::build($columnType)->marshal($value);
             };
         }
 

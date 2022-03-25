@@ -99,7 +99,7 @@ class HistoryTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->History->newEntity([]);
+        $entity = $this->History->newEmptyEntity();
         $entity = $this->History->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

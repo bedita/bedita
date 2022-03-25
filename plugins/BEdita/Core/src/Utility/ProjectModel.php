@@ -95,14 +95,12 @@ class ProjectModel
             ->find()
             ->all()
             ->each(function (EntityInterface $row) {
-                $row->unset([
-                    'id',
-                    'left_relations',
-                    'right_relations',
-                    'created',
-                    'modified',
-                    'core_type',
-                ]);
+                unset($row['id']);
+                unset($row['left_relations']);
+                unset($row['right_relations']);
+                unset($row['created']);
+                unset($row['modified']);
+                unset($row['core_type']);
                 $row->setHidden(['relations', 'alias'], true);
             })
             ->toArray();
@@ -142,13 +140,11 @@ class ProjectModel
             ->find('type', ['dynamic'])
             ->all()
             ->each(function (EntityInterface $row) {
-                $row->unset([
-                    'id',
-                    'created',
-                    'modified',
-                    'label',
-                    'is_static',
-                ]);
+                unset($row['id']);
+                unset($row['created']);
+                unset($row['modified']);
+                unset($row['label']);
+                unset($row['is_static']);
             })
             ->toArray();
     }

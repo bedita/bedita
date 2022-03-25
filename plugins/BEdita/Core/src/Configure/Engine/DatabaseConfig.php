@@ -13,7 +13,8 @@
 namespace BEdita\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\Database\Exception\DatabaseException;
+use Cake\Datasource\ModelAwareTrait;
 
 /**
  * BEdita database configuration engine.
@@ -33,7 +34,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
-    use LocatorAwareTrait;
+    use ModelAwareTrait;
 
     /**
      * Application id
@@ -57,7 +58,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function __construct($applicationId = null)
     {
         $this->applicationId = $applicationId;
-        $this->Config = $this->getTableLocator()->get('BEdita/Core.Config');
+        $this->loadModel('Config');
     }
 
     /**
@@ -109,7 +110,7 @@ class DatabaseConfig implements ConfigEngineInterface
         $this->Config->getConnection()->transactional(function () use ($entities) {
             foreach ($entities as $entity) {
                 if (!$this->Config->save($entity, ['atomic' => false])) {
-                    throw new \Cake\Database\Exception\DatabaseException(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
+                    throw new DatabaseException(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
                 }
             }
         });

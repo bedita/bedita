@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -114,7 +115,7 @@ class EndpointPermissionsTable extends Table
                 if ($expr->count() === 0) {
                     // If no conditions have been applied so far, it means that `$ids` was empty
                     // and nulls are not allowed. So, no results must be returned. :)
-                    $expr = $expr->add(new \Cake\Database\Expression\ComparisonExpression('0', '0', 'integer', '!='));
+                    $expr = $expr->add(new ComparisonExpression('0', '0', 'integer', '!='));
                 }
 
                 return $expr;
@@ -151,7 +152,7 @@ class EndpointPermissionsTable extends Table
                 if ($expr->count() === 0) {
                     // If no conditions have been applied so far, it means that `$id` was empty
                     // and nulls are not allowed. So, no results must be returned. :)
-                    $expr = $expr->add(new \Cake\Database\Expression\ComparisonExpression('0', '0', 'integer', '!='));
+                    $expr = $expr->add(new ComparisonExpression('0', '0', 'integer', '!='));
                 }
 
                 return $expr;
@@ -188,7 +189,7 @@ class EndpointPermissionsTable extends Table
                 if ($expr->count() === 0) {
                     // If no conditions have been applied so far, it means that `$ids` was empty
                     // and nulls are not allowed. So, no results must be returned. :)
-                    $expr = $expr->add(new \Cake\Database\Expression\ComparisonExpression('0', '0', 'integer', '!='));
+                    $expr = $expr->add(new ComparisonExpression('0', '0', 'integer', '!='));
                 }
 
                 return $expr;

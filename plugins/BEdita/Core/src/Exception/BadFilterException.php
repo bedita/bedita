@@ -13,10 +13,12 @@
 
 namespace BEdita\Core\Exception;
 
+use Cake\Core\Exception\CakeException;
+
 /**
  * Exception raised when bad filter data are passed to Model/ORM classes
  */
-class BadFilterException extends \Cake\Core\Exception\CakeException
+class BadFilterException extends CakeException
 {
     /**
      * {@inheritDoc}

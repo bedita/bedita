@@ -18,6 +18,7 @@ use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Core\App;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
@@ -456,7 +457,7 @@ class ObjectTypesTable extends Table
                 if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
-                    return $exp->add(new \Cake\Database\Expression\ComparisonExpression(1, 1, 'integer', '<>'));
+                    return $exp->add(new ComparisonExpression(1, 1, 'integer', '<>'));
                 }
 
                 // Find descendants for all found nodes using NSM rules.

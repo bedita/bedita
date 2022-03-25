@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use Cake\Database\TypeFactory;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -171,7 +172,7 @@ class StaticProperty extends Property
             return $this->_fields['default'] = null;
         }
 
-        $type = \Cake\Database\TypeFactory::build($typeName);
+        $type = TypeFactory::build($typeName);
         $driver = $this->table->getConnection()->getDriver();
 
         return $this->_fields['default'] = $type->toPHP($default, $driver);

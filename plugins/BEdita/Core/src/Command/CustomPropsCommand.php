@@ -16,6 +16,7 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Core\Exception\CakeException as Exception;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -106,7 +107,7 @@ class CustomPropsCommand extends Command
             try {
                 $this->Table->saveOrFail($object);
                 $count++;
-            } catch (\Cake\Core\Exception\CakeException $ex) {
+            } catch (Exception $ex) {
                 $msg = sprintf(
                     'Failed update on %s "%s" [id %d] - exception: %s',
                     $type,
