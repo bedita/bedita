@@ -57,7 +57,6 @@ class MarshallInheritedPropertiesTest extends IntegrationTestCase
      * @param array $attributes The attributes to save
      * @param array $expected The expected results
      * @return void
-     *
      * @dataProvider marshallProvider()
      * @coversNothing
      */

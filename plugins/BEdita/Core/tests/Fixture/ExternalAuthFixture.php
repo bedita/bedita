@@ -21,12 +21,12 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class ExternalAuthFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $table = 'external_auth';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         [

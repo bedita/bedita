@@ -38,7 +38,7 @@ class Translation extends Entity implements JsonApiSerializable
     use JsonApiTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         'object_id' => true,
@@ -48,7 +48,7 @@ class Translation extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'created_by_user',

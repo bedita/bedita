@@ -48,7 +48,7 @@ class ObjectsHandler
      */
     protected static function isCli(): bool
     {
-        return (PHP_SAPI === 'cli');
+        return PHP_SAPI === 'cli';
     }
 
     /**

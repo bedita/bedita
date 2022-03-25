@@ -58,7 +58,7 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -100,7 +100,6 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $username Username.
      * @param string $uname Expected unique name.
      * @return void
-     *
      * @dataProvider uniqueUserProvider
      * @covers ::uniqueName()
      */
@@ -146,7 +145,6 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $value Original uname.
      * @param string $expected Expected sanitized uname.
      * @return void
-     *
      * @dataProvider uniqueNameProvider
      * @covers ::uniqueName()
      */
@@ -180,7 +178,7 @@ class UniqueNameBehaviorTest extends TestCase
                     'prefix' => 'u_',
                     'replacement' => ':',
                     'separator' => '|',
-                    'hashlength' => 3
+                    'hashlength' => 3,
                 ],
             ],
             'emptySourceField' => [
@@ -196,8 +194,8 @@ class UniqueNameBehaviorTest extends TestCase
                 [
                     'generator' => function ($entity) {
                         return str_shuffle($entity->get('username'));
-                    }
-                ]
+                    },
+                ],
             ],
         ];
     }
@@ -209,7 +207,6 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $name Full name.
      * @param array $config Configuration.
      * @return void
-     *
      * @dataProvider generateUniqueUserProvider
      * @covers ::generateUniqueName()
      */
@@ -239,7 +236,7 @@ class UniqueNameBehaviorTest extends TestCase
             ],
             'noUname' => [
                 null,
-                'my-title'
+                'my-title',
             ],
         ];
     }
@@ -250,7 +247,6 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $uname Uname.
      * @param string $title Title.
      * @return void
-     *
      * @dataProvider regenerateUniqueNameProvider
      * @covers ::generateUniqueName()
      */
@@ -345,7 +341,7 @@ class UniqueNameBehaviorTest extends TestCase
                     'prefix' => 'pre_',
                     'replacement' => '_',
                 ],
-                false
+                false,
             ],
             'regenerate' => [
                 'Romani ite domum!',
@@ -354,7 +350,7 @@ class UniqueNameBehaviorTest extends TestCase
                     'separator' => '_',
                     'hashlength' => 6,
                 ],
-                true
+                true,
             ],
             'underscoreValue' => [
                 'test this_value',
@@ -373,7 +369,6 @@ class UniqueNameBehaviorTest extends TestCase
      * @param array $cfg Configuration.
      * @param bool $regenerate Should unique name be regenerated?
      * @return void
-     *
      * @dataProvider uniqueFromValueProvider
      * @covers ::uniqueNameFromValue()
      */
@@ -393,7 +388,6 @@ class UniqueNameBehaviorTest extends TestCase
      * test uniqueName() conflicts / missing
      *
      * @return void
-     *
      * @covers ::uniqueName()
      */
     public function testUniqueNameMissing()
@@ -422,7 +416,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is valid an unchanged
      *
      * @return void
-     *
      * @covers ::uniqueName()
      */
     public function testUniqueNameUnchanged(): void
@@ -439,7 +432,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is unchanged and not in entity
      *
      * @return void
-     *
      * @covers ::uniqueName()
      */
     public function testUniqueNameIgnore(): void
@@ -466,7 +458,7 @@ class UniqueNameBehaviorTest extends TestCase
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $entity = $Documents->newEntity([
-            'title' => 'uh là la'
+            'title' => 'uh là la',
         ]);
 
         $Documents->getEventManager()->on('Model.beforeRules', function (Event $event, EntityInterface $entity) {
@@ -484,7 +476,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test unique name max lenght
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testUniqueNameMaxLen()

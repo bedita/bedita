@@ -23,12 +23,12 @@ use BEdita\API\Controller\ResourcesController;
 abstract class AdminController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $routeNamePrefix = 'api:admin:resources';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

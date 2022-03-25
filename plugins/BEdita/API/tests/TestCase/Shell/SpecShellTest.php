@@ -27,10 +27,10 @@ class SpecShellTest extends ConsoleIntegrationTestCase
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'spec.yaml';
+    public const TEMP_FILE = TMP . 'spec.yaml';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -39,7 +39,7 @@ class SpecShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -54,7 +54,6 @@ class SpecShellTest extends ConsoleIntegrationTestCase
      * Test generate method.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerate()

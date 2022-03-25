@@ -23,7 +23,6 @@ use Cake\Utility\Hash;
  *
  * @property mixed $default
  * @property \Cake\ORM\Table $table
- *
  * @since 4.0.0
  */
 class StaticProperty extends Property
@@ -106,7 +105,7 @@ class StaticProperty extends Property
      * @param \Cake\ORM\Table|null $table Table object instance.
      * @return array|mixed|null
      */
-    protected static function getSchemaColumnDefinition($name, Table $table = null)
+    protected static function getSchemaColumnDefinition($name, ?Table $table = null)
     {
         if ($name === null || $table === null) {
             return null;
@@ -122,7 +121,7 @@ class StaticProperty extends Property
      * @param \Cake\ORM\Table|null $table Table object instance.
      * @return void
      */
-    protected function inferFromSchema($name, Table $table = null)
+    protected function inferFromSchema($name, ?Table $table = null)
     {
         $schema = static::getSchemaColumnDefinition($name, $table);
         if ($schema === null) {
@@ -199,7 +198,7 @@ class StaticProperty extends Property
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getSchema($accessMode = null)
     {

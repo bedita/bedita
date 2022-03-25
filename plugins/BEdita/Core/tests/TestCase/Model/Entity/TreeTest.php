@@ -50,7 +50,7 @@ class TreeTest extends TestCase
     public $Trees;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -60,7 +60,7 @@ class TreeTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -73,7 +73,6 @@ class TreeTest extends TestCase
      * Test setter for `parent_id`
      *
      * @return void
-     *
      * @covers ::_setParentId()
      */
     public function testSetParentId()
@@ -97,7 +96,6 @@ class TreeTest extends TestCase
      * Test setter for `parent_object`
      *
      * @return void
-     *
      * @covers ::_setParentObject()
      */
     public function testSetParentObject()

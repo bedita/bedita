@@ -87,7 +87,6 @@ class PriorityBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $config Configuration.
      * @return void
-     *
      * @covers ::initialize()
      * @dataProvider initializeProvider()
      */
@@ -106,7 +105,6 @@ class PriorityBehaviorTest extends TestCase
      * Test setting of priority before entity is saved using `ObjectRelations` table
      *
      * @return void
-     *
      * @covers ::beforeSave()
      * @covers ::maxValue()
      */

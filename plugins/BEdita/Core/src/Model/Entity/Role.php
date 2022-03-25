@@ -27,7 +27,6 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\User[] $users
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
- *
  * @since 4.0.0
  */
 class Role extends Entity implements JsonApiSerializable
@@ -35,7 +34,7 @@ class Role extends Entity implements JsonApiSerializable
     use JsonApiTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -44,7 +43,7 @@ class Role extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'endpoint_permissions',

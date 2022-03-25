@@ -60,7 +60,7 @@ class SignupUserActionTest extends TestCase
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -91,7 +91,7 @@ class SignupUserActionTest extends TestCase
                         'activation_url' => 'http://sample.com?confirm=true',
                         'redirect_url' => 'http://sample.com/ok',
                     ],
-                ]
+                ],
             ],
             'ok custom url' => [
                 true,
@@ -103,7 +103,7 @@ class SignupUserActionTest extends TestCase
                         'activation_url' => 'myapp://activate',
                         'redirect_url' => 'myapp://',
                     ],
-                ]
+                ],
             ],
             'ok json api' => [
                 true,
@@ -118,10 +118,10 @@ class SignupUserActionTest extends TestCase
                             'meta' => [
                                 'activation_url' => 'myapp://activate',
                                 'redirect_url' => 'myapp://',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
-                ]
+                ],
             ],
 
             'existing user' => [
@@ -136,7 +136,7 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => 'myapp://activate',
                     ],
-                ]
+                ],
             ],
 
             'missing activation_url' => [
@@ -150,7 +150,7 @@ class SignupUserActionTest extends TestCase
                         'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
                     ],
-                ]
+                ],
             ],
             'activation url invalid' => [
                 new BadRequestException([
@@ -164,7 +164,7 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => '/activate',
                     ],
-                ]
+                ],
             ],
             'activation url invalid 2' => [
                 new BadRequestException([
@@ -178,7 +178,7 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => 'https://activate',
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -189,7 +189,6 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     *
      * @dataProvider executeProvider
      */
     public function testExecute($expected, array $data)
@@ -250,7 +249,7 @@ class SignupUserActionTest extends TestCase
                 ],
                 [
                     'owner_id' => 'test',
-                ]
+                ],
             ],
             'bad provider' => [
                 new UnauthorizedException('External auth provider not found'),
@@ -265,7 +264,7 @@ class SignupUserActionTest extends TestCase
                 ],
                 [
                     'owner_id' => 'test',
-                ]
+                ],
             ],
             'oauth2 fail' => [
                 new UnauthorizedException('External auth failed'),
@@ -292,7 +291,6 @@ class SignupUserActionTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     *
      * @dataProvider executeExtAuthProvider
      */
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
@@ -552,7 +550,7 @@ class SignupUserActionTest extends TestCase
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [
-                            '_required' => 'This field is required'
+                            '_required' => 'This field is required',
                         ],
                     ],
                 ]),
@@ -626,7 +624,6 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @param array $config Signup configuration.
-     *
      * @dataProvider rolesProvider
      * @return void
      */

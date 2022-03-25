@@ -23,13 +23,12 @@ use Cake\ORM\TableRegistry;
  * Controller for `/trash` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class TrashController extends AppController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 
@@ -41,7 +40,7 @@ class TrashController extends AppController
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

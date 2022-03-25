@@ -28,17 +28,17 @@ use Cake\View\JsonView;
 class JsonApiView extends JsonView
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_responseType = 'jsonapi';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta', '_fields', '_jsonApiOptions'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(
         ServerRequest $request = null,
@@ -54,7 +54,7 @@ class JsonApiView extends JsonView
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _dataToSerialize($serialize = true)
     {

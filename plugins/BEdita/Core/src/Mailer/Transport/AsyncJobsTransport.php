@@ -29,7 +29,7 @@ use Cake\ORM\TableRegistry;
 class AsyncJobsTransport extends AbstractTransport
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'service' => 'mail',
@@ -37,11 +37,11 @@ class AsyncJobsTransport extends AbstractTransport
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function send(Email $email)
     {
-        /* @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
+        /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
         $asyncJob = $table->newEntity();

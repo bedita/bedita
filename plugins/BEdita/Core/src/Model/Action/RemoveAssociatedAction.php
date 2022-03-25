@@ -22,7 +22,6 @@ use Cake\ORM\Association\HasMany;
  * Command to remove links between entities.
  *
  * @since 4.0.0
- *
  * @property \Cake\ORM\Association\BelongsToMany|\Cake\ORM\Association\HasMany $Association
  */
 class RemoveAssociatedAction extends UpdateAssociatedAction

@@ -58,9 +58,9 @@ class ObjectTypesValidator extends Validator
                         return true;
                     }
 
-                    return ($context['data']['name'] !== $value);
+                    return $context['data']['name'] !== $value;
                 },
-                'message' => __d('bedita', 'Name and singular fields must be different')
+                'message' => __d('bedita', 'Name and singular fields must be different'),
             ])
             ->add('singular', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->add('singular', 'notReserved', ['rule' => 'notReserved', 'provider' => 'bedita']);

@@ -77,7 +77,6 @@ class TextTest extends TestCase
      * @param string $name Name.
      * @param string $namespace Namespace.
      * @return void
-     *
      * @dataProvider uuid5Provider()
      * @covers ::uuid5()
      * @covers ::uuidToBin()

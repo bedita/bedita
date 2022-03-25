@@ -44,7 +44,7 @@ class SetAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -184,7 +184,6 @@ class SetAssociatedActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
@@ -327,7 +326,6 @@ class SetAssociatedActionTest extends TestCase
      * @param int $source Source entity ID.
      * @param int $target Target entity ID.
      * @return void
-     *
      * @dataProvider invocationWithValidationErrorsProvider()
      */
     public function testInvocationWithValidationErrors($source, $target)
@@ -397,7 +395,6 @@ class SetAssociatedActionTest extends TestCase
      * @param int $tagId Tag entity id.
      * @param bool $joinDataAsEntity It says if join data is to treat as entity.
      * @return void
-     *
      * @dataProvider joinDataProvider()
      */
     public function testInvocationOKWithJoinData($articleId, $tagId, $joinDataAsEntity)

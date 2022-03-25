@@ -47,7 +47,7 @@ class RolesUsersTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -57,7 +57,7 @@ class RolesUsersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -97,7 +97,6 @@ class RolesUsersTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */

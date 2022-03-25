@@ -31,7 +31,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     protected $Trees = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -41,7 +41,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -80,7 +80,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $folders = $foldersTable
             ->find('list', [
                 'keyField' => 'uname',
-                'valueField' => 'id'
+                'valueField' => 'id',
             ])
             ->where(['object_type_id' => $foldersTable->objectType()->id])
             ->order(['id' => 'ASC'])
@@ -183,7 +183,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test deleted objects as `parent`
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeletedParent()
@@ -223,7 +222,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test setting an object's parent with position.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSetParentPosition()
@@ -280,7 +278,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * @param string $expected Expected error.
      * @param int|string $position Desired position.
      * @return void
-     *
      * @dataProvider setParentPositionInvalidProvider()
      * @coversNothing
      */
@@ -316,7 +313,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `parents` and GET `parent` response
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testParentsMeta()

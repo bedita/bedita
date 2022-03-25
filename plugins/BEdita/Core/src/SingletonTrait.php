@@ -47,7 +47,6 @@ trait SingletonTrait
      * prevent existing instances from being cloned.
      *
      * @return void
-     *
      * @codeCoverageIgnore
      */
     final private function __clone()

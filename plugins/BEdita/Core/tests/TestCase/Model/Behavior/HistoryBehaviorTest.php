@@ -46,7 +46,7 @@ class HistoryBehaviorTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -55,7 +55,7 @@ class HistoryBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -149,7 +149,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $doc = $Documents->get(3);
         $data = [
-            'description' => 'new history desc'
+            'description' => 'new history desc',
         ];
         $entity = $Documents->patchEntity($doc, $data);
         $Documents->save($entity);
@@ -317,11 +317,11 @@ class HistoryBehaviorTest extends TestCase
         return [
             'logged' => [
                 [2],
-                []
+                [],
             ],
             'options' => [
                 [2],
-                [5]
+                [5],
             ],
         ];
     }
@@ -331,9 +331,7 @@ class HistoryBehaviorTest extends TestCase
      *
      * @param array $expected Expected result
      * @param array $options Filter options
-     *
      * @return void
-     *
      * @dataProvider findHistoryEditorProvider
      * @covers ::findHistoryEditor()
      */

@@ -103,7 +103,6 @@ class RemoveRelatedObjectsActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::prepareData()
      */

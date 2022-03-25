@@ -54,7 +54,7 @@ class Thumbnail
      * @param \BEdita\Core\Filesystem\ThumbnailRegistry|null $registry Thumbnail generator registry.
      * @return void
      */
-    public static function setRegistry(ThumbnailRegistry $registry = null)
+    public static function setRegistry(?ThumbnailRegistry $registry = null)
     {
         static::$_registry = $registry;
     }

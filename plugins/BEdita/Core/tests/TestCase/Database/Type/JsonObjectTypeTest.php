@@ -78,7 +78,6 @@ class JsonObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $value Value to be decoded.
      * @return void
-     *
      * @dataProvider toPHPProvider()
      * @covers ::toPHP()
      */

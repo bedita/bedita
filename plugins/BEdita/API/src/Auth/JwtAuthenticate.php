@@ -38,7 +38,6 @@ use Cake\Utility\Hash;
  *
  * @see http://jwt.io
  * @see http://tools.ietf.org/html/draft-ietf-oauth-json-web-token
- *
  * @since 4.0.0
  */
 class JwtAuthenticate extends BaseAuthenticate

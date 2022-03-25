@@ -82,7 +82,7 @@ class Validation
      */
     public static function requireNull($value)
     {
-        return ($value === null);
+        return $value === null;
     }
 
     /**

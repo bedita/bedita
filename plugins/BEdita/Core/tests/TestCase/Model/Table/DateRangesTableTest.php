@@ -43,7 +43,7 @@ class DateRangesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -52,7 +52,7 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -65,7 +65,6 @@ class DateRangesTableTest extends TestCase
      * Test marshalling of new entities.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testMarshal()
@@ -153,7 +152,6 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider findDateProvider
      * @covers ::findDateRanges()
      * @covers ::fromToDateFilter()
@@ -234,7 +232,6 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider fromToDateFilterProvider
      * @covers ::fromToDateFilter()
      * @covers ::getTime()

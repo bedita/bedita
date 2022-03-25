@@ -36,7 +36,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -551,7 +550,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -596,7 +594,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -676,7 +673,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -711,7 +707,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -725,7 +720,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'name' => 'my_object_types',
                 'alias' => 'My Object Type',
                 'description' => null,
-                'table' => 'BEdita/Core.Objects'
+                'table' => 'BEdita/Core.Objects',
             ],
         ];
 
@@ -742,7 +737,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -768,7 +762,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test with reserve words.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -795,7 +788,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test failure with same `name` and `singular`.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -822,7 +814,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -856,7 +847,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method with no change data.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -882,7 +872,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -909,7 +898,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */

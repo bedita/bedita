@@ -25,7 +25,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Users
- *
  * @method \BEdita\Core\Model\Entity\RolesUser get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser[] newEntities(array $data, array $options = [])
@@ -52,12 +51,12 @@ class RolesUsersTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Roles'
+            'className' => 'BEdita/Core.Roles',
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
     }
 

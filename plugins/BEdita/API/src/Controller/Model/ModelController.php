@@ -23,7 +23,7 @@ use BEdita\API\Controller\ResourcesController;
 abstract class ModelController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $routeNamePrefix = 'api:model:resources';
 }

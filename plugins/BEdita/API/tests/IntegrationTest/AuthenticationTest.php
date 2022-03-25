@@ -59,9 +59,7 @@ class AuthenticationTest extends IntegrationTestCase
      *
      * @param array $data Post data.
      * @param array $headers Additional headers.
-     *
      * @return void
-     *
      * @dataProvider authProvider
      * @coversNothing
      */
@@ -105,7 +103,6 @@ class AuthenticationTest extends IntegrationTestCase
      * Test /auth response with wrong formatted token.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testBadToken(): void

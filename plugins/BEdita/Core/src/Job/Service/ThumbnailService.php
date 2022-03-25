@@ -28,7 +28,7 @@ use Cake\Utility\Hash;
 class ThumbnailService implements JobService
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function run(array $payload, array $options = [])
     {

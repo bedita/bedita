@@ -27,7 +27,6 @@ use Cake\Validation\Validator;
  * Roles Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Users
- *
  * @method \BEdita\Core\Model\Entity\Role get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Role newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] newEntities(array $data, array $options = [])
@@ -35,7 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Role patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class RolesTable extends Table
@@ -45,7 +43,7 @@ class RolesTable extends Table
      *
      * @var int
      */
-    const ADMIN_ROLE = 1;
+    public const ADMIN_ROLE = 1;
 
     /**
      * {@inheritDoc}
@@ -143,7 +141,7 @@ class RolesTable extends Table
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (static::ADMIN_ROLE === $entity->id) {
+        if ($entity->id === static::ADMIN_ROLE) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));
         }
     }

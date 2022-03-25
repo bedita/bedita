@@ -34,7 +34,6 @@ use Cake\ORM\TableRegistry;
  * @property \BEdita\Core\Model\Entity\Endpoint|null $endpoint
  * @property \BEdita\Core\Model\Entity\Application|null $application
  * @property \BEdita\Core\Model\Entity\Role|null $role
- *
  * @since 4.0.0
  */
 class EndpointPermission extends Entity
@@ -44,45 +43,45 @@ class EndpointPermission extends Entity
      *
      * @var int
      */
-    const PERM_READ = 0;
+    public const PERM_READ = 0;
 
     /**
      * Bits to shift for write permissions.
      *
      * @var int
      */
-    const PERM_WRITE = 2;
+    public const PERM_WRITE = 2;
 
     /**
      * Do not grant permissions.
      *
      * @var int
      */
-    const PERM_NO = 0b00;
+    public const PERM_NO = 0b00;
 
     /**
      * Grant permissions only on my contents.
      *
      * @var int
      */
-    const PERM_MINE = 0b01;
+    public const PERM_MINE = 0b01;
 
     /**
      * Do not grant permissions and force other permissions to be ignored.
      *
      * @var int
      */
-    const PERM_BLOCK = 0b10;
+    public const PERM_BLOCK = 0b10;
 
     /**
      * Grant permissions.
      *
      * @var int
      */
-    const PERM_YES = 0b11;
+    public const PERM_YES = 0b11;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
@@ -91,14 +90,14 @@ class EndpointPermission extends Entity
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'permission',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'read',

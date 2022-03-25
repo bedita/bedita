@@ -22,12 +22,11 @@ use Cake\Utility\Hash;
 
 /**
  * Test CRUD operations on objects with associated entities
- *
  */
 class AssociatedEntitiesTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.DateRanges',
@@ -59,7 +58,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
             'noDates' => [
                 [
                     'title' => 'My Event',
-                    'date_ranges' => []
+                    'date_ranges' => [],
                 ],
                 [
                     'title' => 'Same Event',
@@ -71,19 +70,19 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                     'date_ranges' => [
                         [
                             'start_date' => '2017-12-31T23:59:59Z',
-                            'end_date' => '2018-01-01'
+                            'end_date' => '2018-01-01',
                         ],
-                    ]
+                    ],
                 ],
                 [
                     'title' => 'Happy new year!',
                     'date_ranges' => [
                         [
                             'start_date' => '2017-03-08T00:00:00+00:00',
-                            'end_date' => '2018-01-02 10:30'
+                            'end_date' => '2018-01-02 10:30',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
     }

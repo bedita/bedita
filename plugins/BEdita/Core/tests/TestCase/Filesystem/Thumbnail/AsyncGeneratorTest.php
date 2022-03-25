@@ -73,7 +73,7 @@ class AsyncGeneratorTest extends TestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -100,7 +100,7 @@ class AsyncGeneratorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -120,7 +120,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `getUrl` method.
      *
      * @return void
-     *
      * @covers ::getUrl()
      * @covers ::getBaseGenerator()
      */
@@ -139,7 +138,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerate()
@@ -169,7 +167,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method when a custom priority is set.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerateWithPriority()
@@ -201,7 +198,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `exists` method.
      *
      * @return void
-     *
      * @covers ::exists()
      * @covers ::getBaseGenerator()
      */

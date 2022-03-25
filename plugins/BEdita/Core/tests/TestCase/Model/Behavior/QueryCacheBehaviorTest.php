@@ -40,7 +40,6 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     *
      * @covers ::afterDelete()
      * @covers ::queryCache()
      */
@@ -63,7 +62,6 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testAfterSave(): void

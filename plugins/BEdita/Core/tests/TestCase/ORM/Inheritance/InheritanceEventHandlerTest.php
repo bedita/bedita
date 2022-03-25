@@ -48,7 +48,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test implemented events.
      *
      * @return void
-     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -72,31 +71,31 @@ class InheritanceEventHandlerTest extends TestCase
             'only ancestor field' => [
                 [
                     'id' => 4,
-                    'name' => 'lion'
+                    'name' => 'lion',
                 ],
                 [
-                    'name' => 'lion'
-                ]
+                    'name' => 'lion',
+                ],
             ],
             'no ancestors field' => [
                 [
                     'id' => 4,
-                    'family' => 'big cats'
+                    'family' => 'big cats',
                 ],
                 [
-                    'family' => 'big cats'
-                ]
+                    'family' => 'big cats',
+                ],
             ],
             'no parent field' => [
                 [
                     'id' => 4,
                     'name' => 'tiger',
-                    'family' => 'big cats'
+                    'family' => 'big cats',
                 ],
                 [
                     'name' => 'tiger',
-                    'family' => 'big cats'
-                ]
+                    'family' => 'big cats',
+                ],
             ],
             'simple' => [
                 [
@@ -104,14 +103,14 @@ class InheritanceEventHandlerTest extends TestCase
                     'name' => 'tiger',
                     'legs' => 4,
                     'subclass' => 'Eutheria',
-                    'family' => 'big cats'
+                    'family' => 'big cats',
                 ],
                 [
                     'name' => 'tiger',
                     'legs' => 4,
                     'subclass' => 'Eutheria',
-                    'family' => 'big cats'
-                ]
+                    'family' => 'big cats',
+                ],
             ],
             'advanced' => [
                 [
@@ -125,15 +124,15 @@ class InheritanceEventHandlerTest extends TestCase
                             'id' => 1,
                             'title' => 'The cat',
                             'body' => 'article body',
-                            'fake_animal_id' => 4
+                            'fake_animal_id' => 4,
                         ],
                         [
                             'id' => 2,
                             'title' => 'Puss in boots',
                             'body' => 'text',
-                            'fake_animal_id' => 4
-                        ]
-                    ]
+                            'fake_animal_id' => 4,
+                        ],
+                    ],
                 ],
                 [
                     'name' => 'tiger',
@@ -141,9 +140,9 @@ class InheritanceEventHandlerTest extends TestCase
                     'subclass' => 'Eutheria',
                     'family' => 'big cats',
                     'fake_articles' => [
-                        '_ids' => [1, 2]
-                    ]
-                ]
+                        '_ids' => [1, 2],
+                    ],
+                ],
             ],
             'advanced new articles' => [
                 [
@@ -157,15 +156,15 @@ class InheritanceEventHandlerTest extends TestCase
                             'id' => 3,
                             'title' => 'The white tiger',
                             'body' => 'Body of article',
-                            'fake_animal_id' => 4
+                            'fake_animal_id' => 4,
                         ],
                         [
                             'id' => 4,
                             'title' => 'Sandokan',
                             'body' => 'The Malaysian tiger',
-                            'fake_animal_id' => 4
-                        ]
-                    ]
+                            'fake_animal_id' => 4,
+                        ],
+                    ],
                 ],
                 [
                     'name' => 'tiger',
@@ -175,14 +174,14 @@ class InheritanceEventHandlerTest extends TestCase
                     'fake_articles' => [
                         [
                             'title' => 'The white tiger',
-                            'body' => 'Body of article'
+                            'body' => 'Body of article',
                         ],
                         [
                             'title' => 'Sandokan',
-                            'body' => 'The Malaysian tiger'
-                        ]
-                    ]
-                ]
+                            'body' => 'The Malaysian tiger',
+                        ],
+                    ],
+                ],
             ],
             'simple patch' => [
                 [
@@ -197,7 +196,7 @@ class InheritanceEventHandlerTest extends TestCase
                     'id' => 1,
                     'name' => 'The super cat',
                     'subclass' => 'None',
-                ]
+                ],
             ],
         ];
     }
@@ -208,7 +207,6 @@ class InheritanceEventHandlerTest extends TestCase
      * @param array $expected Expected result.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider saveProvider()
      * @covers ::beforeSave()
      * @covers ::toParent()
@@ -236,7 +234,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test rollback if save on a parent table fails.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      * @covers ::toParent()
      * @covers ::toDescendant()
@@ -257,7 +254,7 @@ class InheritanceEventHandlerTest extends TestCase
         $this->fakeAnimals->getEventManager()->on('Model.beforeSave', function () use (&$eventDispatched) {
             $eventDispatched++;
 
-            /* @var \Cake\Database\Connection $connection */
+            /** @var \Cake\Database\Connection $connection */
             $connection = $this->fakeFelines->getConnection();
             static::assertTrue($connection->inTransaction());
 
@@ -351,7 +348,6 @@ class InheritanceEventHandlerTest extends TestCase
      * @param array $expected The expected rule errors.
      * @param array $rulesConfig The rules configuration.
      * @return void
-     *
      * @dataProvider applicationRulesErrorsPropagationProvider
      * @covers ::beforeSave()
      * @covers ::afterRules()
@@ -392,7 +388,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test options passed in che chain
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveOptions()
@@ -447,7 +442,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test `afterDelete` event handler.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      * @covers ::toParent()
      */
@@ -467,7 +461,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test rollback if delete on a parent table fails.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      * @covers ::toParent()
      */
@@ -481,7 +474,7 @@ class InheritanceEventHandlerTest extends TestCase
         $this->fakeAnimals->getEventManager()->on('Model.beforeDelete', function () use (&$eventDispatched) {
             $eventDispatched++;
 
-            /* @var \Cake\Database\Connection $connection */
+            /** @var \Cake\Database\Connection $connection */
             $connection = $this->fakeFelines->getConnection();
             static::assertTrue($connection->inTransaction());
 

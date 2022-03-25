@@ -23,7 +23,6 @@ use Cake\ORM\Exception\PersistenceFailedException;
  * Task to setup admin user.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
 class SetupAdminUserTask extends Shell
@@ -33,7 +32,7 @@ class SetupAdminUserTask extends Shell
      *
      * @var string
      */
-    const DEFAULT_USERNAME = 'bedita';
+    public const DEFAULT_USERNAME = 'bedita';
 
     /**
      * {@inheritDoc}

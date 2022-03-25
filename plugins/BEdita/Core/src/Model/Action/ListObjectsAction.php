@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Core\Configure;
 use Cake\Utility\Hash;
 
 /**
@@ -38,7 +37,7 @@ class ListObjectsAction extends BaseAction
     protected $objectType;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {

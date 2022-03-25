@@ -39,7 +39,7 @@ class Relation extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -52,7 +52,7 @@ class Relation extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'object_relations',
@@ -63,7 +63,7 @@ class Relation extends Entity implements JsonApiSerializable
      *
      * @var string
      */
-    const DEFAULT_SCHEMA = 'http://json-schema.org/draft-06/schema#';
+    public const DEFAULT_SCHEMA = 'http://json-schema.org/draft-06/schema#';
 
     /**
      * Magic setter for relation name.

@@ -17,7 +17,6 @@ use BEdita\Core\Model\Entity\ObjectRelation;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
@@ -30,7 +29,7 @@ use Cake\ORM\TableRegistry;
 class ListRelatedObjectsAction extends ListAssociatedAction
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -61,7 +60,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function buildQuery($primaryKey, array $data, Association $inverseAssociation)
     {

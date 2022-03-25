@@ -13,29 +13,12 @@
 
 namespace BEdita\API\Test\TestCase\Error;
 
-use BEdita\API\Error\ExceptionRenderer;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
-
-/**
- * Extension class with utility methods use in tests
- */
-class MyExceptionRenderer extends ExceptionRenderer
-{
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    public function getTemplate()
-    {
-        return $this->template;
-    }
-}
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -50,7 +33,7 @@ class ExceptionRendererTest extends TestCase
     protected $backupConf = [];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -63,7 +46,7 @@ class ExceptionRendererTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -89,12 +72,12 @@ class ExceptionRendererTest extends TestCase
             'detail' => [
                 ['title' => 'err title', 'detail' => 'err detail'],
                 'err title',
-                'err detail'
+                'err detail',
             ],
             'detailArray' => [
                 ['title' => 'new title', 'detail' => [['field' => ['cause' => 'err detail']]]],
                 'new title',
-                '[0.field.cause]: err detail'
+                '[0.field.cause]: err detail',
             ],
             'detailArray2' => [
                 [
@@ -104,11 +87,11 @@ class ExceptionRendererTest extends TestCase
                         'nestedFields' => [
                             'field2' => ['cause2' => 'err detail2'],
                             'field3' => ['cause3' => 'err detail3'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'new title',
-                '[field.cause]: err detail [nestedFields.field2.cause2]: err detail2 [nestedFields.field3.cause3]: err detail3'
+                '[field.cause]: err detail [nestedFields.field2.cause2]: err detail2 [nestedFields.field3.cause3]: err detail3',
             ],
             'code' => [
                 ['title' => 'err title', 'code' => 'err-code'],
@@ -135,7 +118,6 @@ class ExceptionRendererTest extends TestCase
      * @param string $detail Additional details.
      * @param string $code Error code.
      * @return void
-     *
      * @dataProvider errorDetailsProvider
      * @covers ::render()
      * @covers ::_message()
@@ -187,8 +169,8 @@ class ExceptionRendererTest extends TestCase
                 [
                     'debug' => 0,
                     'Accept' => [
-                        'html' => false
-                    ]
+                        'html' => false,
+                    ],
                 ],
             ],
             'debugOnPluginOff' => [
@@ -196,17 +178,17 @@ class ExceptionRendererTest extends TestCase
                 [
                     'debug' => 1,
                 ],
-                true
+                true,
             ],
             'debugOffPluginOff' => [
                 'text/html',
                 [
                     'debug' => 0,
                     'Accept' => [
-                        'html' => false
-                    ]
+                        'html' => false,
+                    ],
                 ],
-                true
+                true,
             ],
         ];
     }
@@ -218,7 +200,6 @@ class ExceptionRendererTest extends TestCase
      * @param array $config The configuration to use.
      * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
-     *
      * @dataProvider renderJsonProvider
      * @coversNothing
      */
@@ -244,7 +225,6 @@ class ExceptionRendererTest extends TestCase
      * @param array $config The configuration to use.
      * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
-     *
      * @dataProvider renderJsonProvider
      * @covers ::_outputMessageSafe()
      */
@@ -279,7 +259,7 @@ class ExceptionRendererTest extends TestCase
     protected function checkResponseJson(MyExceptionRenderer $renderer, Response $response, $debug)
     {
         $accept = $renderer->getController()->getRequest()->getHeaderLine('accept');
-        $contentTypeExpected = ($accept == 'application/json') ? $accept : 'application/vnd.api+json';
+        $contentTypeExpected = $accept == 'application/json' ? $accept : 'application/vnd.api+json';
         $this->assertStringStartsWith($contentTypeExpected, $response->getType());
         $responseBody = json_decode((string)$response->getBody(), true);
         $this->assertTrue(is_array($responseBody));

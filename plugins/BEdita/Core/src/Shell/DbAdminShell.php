@@ -24,14 +24,13 @@ use Cake\Datasource\ConnectionManager;
  *  - create schema files
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  */
 class DbAdminShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $tasks = [
         'Init' => ['class' => 'BEdita/Core.InitSchema', 'config' => []],

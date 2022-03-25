@@ -26,7 +26,6 @@ class FilesystemAdapterTest extends TestCase
      * Test class initialization.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -37,7 +36,7 @@ class FilesystemAdapterTest extends TestCase
             'key' => 'value',
         ];
 
-        /* @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
+        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
         $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
 
         $result = $adapter->initialize($config);
@@ -76,7 +75,6 @@ class FilesystemAdapterTest extends TestCase
      * @param \Exception|bool $expected Expected result.
      * @param mixed $innerAdapter Built inner adapter.
      * @return void
-     *
      * @dataProvider getInnerAdapterProvider()
      * @covers ::getInnerAdapter()
      */
@@ -101,7 +99,7 @@ class FilesystemAdapterTest extends TestCase
             ->willReturn($innerAdapter)
             ->with(static::equalTo($config));
 
-        /* @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
+        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
         $adapter->initialize($config);
         $result = $adapter->getInnerAdapter();
         if ($expected === true) {
@@ -151,13 +149,12 @@ class FilesystemAdapterTest extends TestCase
      * @param string $baseUrl Base URL.
      * @param string $path Object path.
      * @return void
-     *
      * @dataProvider getPublicUrlProvider()
      * @covers ::getPublicUrl()
      */
     public function testGetPublicUrl($expected, $baseUrl, $path)
     {
-        /* @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
+        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
         $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
 
         $adapter->initialize(compact('baseUrl'));
@@ -170,12 +167,11 @@ class FilesystemAdapterTest extends TestCase
      * Test getter for default visibility.
      *
      * @return void
-     *
      * @covers ::getVisibility()
      */
     public function testGetVisibility()
     {
-        /* @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
+        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
         $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
         $visibility = 'private';
 

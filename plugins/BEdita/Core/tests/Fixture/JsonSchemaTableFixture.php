@@ -21,7 +21,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 class JsonSchemaTableFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $table = 'json_schema_table';
 
@@ -44,7 +44,7 @@ class JsonSchemaTableFixture extends TestFixture
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         [

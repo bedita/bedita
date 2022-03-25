@@ -44,7 +44,7 @@ class JsonApiComponentTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -81,7 +81,6 @@ class JsonApiComponentTest extends TestCase
      * @param string $expectedMimeType Expected response MIME Type.
      * @param array $config Component configuration.
      * @return void
-     *
      * @dataProvider initializeProvider
      * @covers ::initialize()
      */
@@ -98,7 +97,6 @@ class JsonApiComponentTest extends TestCase
      * Test component `getLinks()` method.
      *
      * @return void
-     *
      * @covers ::getLinks()
      */
     public function testLinks()
@@ -207,7 +205,6 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     *
      * @dataProvider paginationProvider
      * @covers ::getLinks()
      * @covers ::getMeta()
@@ -240,7 +237,6 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     *
      * @dataProvider paginationProvider
      * @covers ::beforeRender()
      */
@@ -279,7 +275,6 @@ class JsonApiComponentTest extends TestCase
      * Test `error()` method.
      *
      * @return void
-     *
      * @covers ::error()
      */
     public function testError()
@@ -315,7 +310,7 @@ class JsonApiComponentTest extends TestCase
                     'type' => 'customType',
                     'key' => 'value',
                 ],
-                '{"data":{"type":"customType","attributes":{"key":"value"}}}'
+                '{"data":{"type":"customType","attributes":{"key":"value"}}}',
             ],
             'invalidJson' => [
                 false,
@@ -342,7 +337,6 @@ class JsonApiComponentTest extends TestCase
      * @param array $expected Expected parsed array.
      * @param string $input Input to be parsed.
      * @return void
-     *
      * @dataProvider parseInputProvider
      * @covers ::parseInput()
      */
@@ -420,7 +414,6 @@ class JsonApiComponentTest extends TestCase
      * @param mixed $types Allowed types.
      * @param array $data Data to be checked.
      * @return void
-     *
      * @dataProvider allowedResourceTypesProvider
      * @covers ::allowedResourceTypes()
      * @covers ::startup()
@@ -481,7 +474,6 @@ class JsonApiComponentTest extends TestCase
      * @param string $accept Value of "Accept" header.
      * @param bool $checkMediaType Is media type check enabled?
      * @return void
-     *
      * @dataProvider checkMediaTypeProvider
      * @covers ::startup()
      */
@@ -557,7 +549,6 @@ class JsonApiComponentTest extends TestCase
      * @param bool $expected Expected success.
      * @param array $data Data to be checked.
      * @return void
-     *
      * @dataProvider allowClientGeneratedIdsProvider
      * @covers ::allowClientGeneratedIds()
      * @covers ::startup()

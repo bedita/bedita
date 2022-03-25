@@ -27,7 +27,7 @@ class TreeBehaviorTest extends TestCase
     public $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -41,7 +41,7 @@ class TreeBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -87,7 +87,6 @@ class TreeBehaviorTest extends TestCase
      * @param int $expected Expected position.
      * @param string $name Name of node.
      * @return void
-     *
      * @dataProvider getCurrentPositionProvider()
      * @covers ::getCurrentPosition()
      */
@@ -170,7 +169,6 @@ class TreeBehaviorTest extends TestCase
      * @param string $name Name of node.
      * @param int|string $position Position to move node at.
      * @return void
-     *
      * @dataProvider moveAtProvider()
      * @covers ::moveAt()
      * @covers ::validatePosition()

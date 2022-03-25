@@ -29,7 +29,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test API meta info header.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testMetaInfo()
@@ -71,7 +70,6 @@ class AppControllerTest extends IntegrationTestCase
      * @param true|\Exception $expected Expected success.
      * @param string $accept Value of "Accept" header.
      * @return void
-     *
      * @dataProvider checkAcceptProvider
      * @covers ::beforeFilter()
      */
@@ -101,7 +99,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test included resources.
      *
      * @return void
-     *
      * @covers ::prepareInclude()
      */
     public function testInclude()
@@ -192,7 +189,7 @@ class AppControllerTest extends IntegrationTestCase
                         'external_auth' => [
                             [
                                 'provider' => 'example',
-                                'username' => 'first_user'
+                                'username' => 'first_user',
                             ],
                         ],
                     ],
@@ -283,7 +280,6 @@ class AppControllerTest extends IntegrationTestCase
      * @param string $expectedErrorTitle Expected error message.
      * @param mixed $include `include` query parameter.
      * @return void
-     *
      * @dataProvider includeErrorProvider()
      * @covers ::prepareInclude()
      */
@@ -308,7 +304,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test that no resources are included unless asked.
      *
      * @return void
-     *
      * @covers ::prepareInclude()
      */
     public function testIncludeEmpty()

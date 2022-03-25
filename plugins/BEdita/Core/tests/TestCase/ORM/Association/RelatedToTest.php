@@ -104,7 +104,6 @@ class RelatedToTest extends TestCase
      * @param string $association Association name.
      * @param array $options Additional options.
      * @return void
-     *
      * @dataProvider getSubQueryForMatchingProvider()
      * @covers ::getSubQueryForMatching()
      */
@@ -160,7 +159,6 @@ class RelatedToTest extends TestCase
      * @param bool $expected The expected value
      * @param string $table The source table name
      * @return void
-     *
      * @dataProvider isAbstractProvider
      * @covers ::isSourceAbstract()
      * @covers ::isAbstract()
@@ -178,7 +176,6 @@ class RelatedToTest extends TestCase
      * @param bool $expected The expected value
      * @param string $table The target table name
      * @return void
-     *
      * @dataProvider isAbstractProvider
      * @covers ::isTargetAbstract()
      * @covers ::isAbstract()
@@ -233,7 +230,6 @@ class RelatedToTest extends TestCase
      * @param bool $expected The value expected.
      * @param array $options The options for the association.
      * @return void
-     *
      * @dataProvider isInverseProvider()
      * @covers ::isInverse()
      * @covers ::_options()
@@ -250,7 +246,6 @@ class RelatedToTest extends TestCase
      * Test setting and retrieving object type.
      *
      * @return void
-     *
      * @covers ::_options()
      * @covers ::setObjectType()
      * @covers ::getObjectType()
@@ -265,7 +260,6 @@ class RelatedToTest extends TestCase
      * Test setting and retrieving object type.
      *
      * @return void
-     *
      * @covers ::_options()
      * @covers ::setObjectType()
      * @covers ::getObjectType()
@@ -303,7 +297,6 @@ class RelatedToTest extends TestCase
      * @param string|null $objectType Object type to pass to association.
      * @param string $alias Relation alias.
      * @return void
-     *
      * @dataProvider getTargetProvider()
      * @covers ::getTarget()
      */
@@ -359,7 +352,7 @@ class RelatedToTest extends TestCase
                 ],
                 'Locations',
                 'inverse_another_test',
-                []
+                [],
             ],
             'related inheritance table with conditions' => [
                 [
@@ -369,7 +362,7 @@ class RelatedToTest extends TestCase
                 'inverse_another_test',
                 [
                     'username' => 'first user',
-                ]
+                ],
             ],
             'empty result' => [
                 [],
@@ -377,7 +370,7 @@ class RelatedToTest extends TestCase
                 'inverse_another_test',
                 [
                     'username' => 'none',
-                ]
+                ],
             ],
         ];
     }
@@ -390,7 +383,6 @@ class RelatedToTest extends TestCase
      * @param string $relation Relation name
      * @param array $joinConditions Conditions to apply
      * @return void
-     *
      * @covers ::attachTo()
      * @dataProvider attachToProvider
      */

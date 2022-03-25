@@ -67,7 +67,7 @@ abstract class ResourcesController extends AppController
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {

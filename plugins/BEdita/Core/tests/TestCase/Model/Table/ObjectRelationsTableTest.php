@@ -139,7 +139,6 @@ class ObjectRelationsTableTest extends TestCase
      * @param object|null $jsonSchema JSON Schema.
      * @param bool $isNew Should entity be treated as new?
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
@@ -246,7 +245,6 @@ class ObjectRelationsTableTest extends TestCase
      * @param mixed $value Value being validated.
      * @param object $jsonSchema JSON Schema.
      * @return void
-     *
      * @dataProvider jsonSchemaProvider()
      * @covers ::jsonSchema()
      */

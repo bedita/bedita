@@ -49,7 +49,7 @@ class FilesystemRegistry extends ObjectRegistry
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _resolveClassName($class)
     {
@@ -61,7 +61,7 @@ class FilesystemRegistry extends ObjectRegistry
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _throwMissingClassError($class, $plugin)
     {
@@ -69,7 +69,7 @@ class FilesystemRegistry extends ObjectRegistry
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _create($class, $alias, $config)
     {
@@ -104,7 +104,7 @@ class FilesystemRegistry extends ObjectRegistry
      */
     public function get($name)
     {
-        /* @var \BEdita\Core\Filesystem\FilesystemAdapter|null $adapter */
+        /** @var \BEdita\Core\Filesystem\FilesystemAdapter|null $adapter */
         $adapter = parent::get($name);
         if ($adapter !== null || !in_array($name, static::configured())) {
             return $adapter;
@@ -162,7 +162,7 @@ class FilesystemRegistry extends ObjectRegistry
      */
     public static function getPublicUrl($path)
     {
-        list($prefix, $path) = static::getPrefixAndPath($path);
+        [$prefix, $path] = static::getPrefixAndPath($path);
 
         $adapter = static::getInstance()->get($prefix);
         if ($adapter === null) {

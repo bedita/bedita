@@ -55,7 +55,7 @@ class PropertyTypesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -68,7 +68,7 @@ class PropertyTypesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -129,7 +129,6 @@ class PropertyTypesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -151,7 +150,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -171,7 +169,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
@@ -190,7 +187,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to delete a property type in use.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testBeforeDeleteInUse()
@@ -207,7 +203,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to delete a property type not in use.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testBeforeDeleteOk()
@@ -286,7 +281,6 @@ class PropertyTypesTableTest extends TestCase
      * @param string $table Table name.
      * @param string $overrideType Column type to override.
      * @return void
-     *
      * @dataProvider detectProvider()
      * @covers ::detect()
      */
@@ -309,7 +303,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to change a core property type.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveForbidden()
@@ -326,7 +319,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to change a non core property type.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveOk()

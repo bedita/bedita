@@ -53,7 +53,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => 'draft'
+                    'status' => 'draft',
                 ],
                 [],
             ],
@@ -64,7 +64,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'draft'
+                    'status' => 'draft',
                 ],
                 [],
             ],
@@ -75,7 +75,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'on'
+                    'status' => 'on',
                 ],
                 [
                     'users' => [
@@ -89,7 +89,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'password_hash' => 'ipsum',
                 ],
                 [
-                    'status' => 'on'
+                    'status' => 'on',
                 ],
                 [
                     'users' => [
@@ -104,7 +104,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'deleted' => null,
                 ],
                 [
-                    'deleted' => 0
+                    'deleted' => 0,
                 ],
                 [],
             ],
@@ -132,7 +132,6 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $defaultValues Defaults values per type
      * @return void
-     *
      * @dataProvider cleanupProvider
      * @covers ::beforeMarshal()
      * @covers ::defaultFields()
@@ -163,7 +162,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => 'draft'
+                    'status' => 'draft',
                 ],
                 'draft',
             ],
@@ -174,7 +173,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'on'
+                    'status' => 'on',
                 ],
                 'on',
             ],
@@ -185,7 +184,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'draft'
+                    'status' => 'draft',
                 ],
             ],
         ];
@@ -198,7 +197,6 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $level Status level.
      * @return void
-     *
      * @dataProvider statusLevelProvider
      * @covers ::defaultFields()
      */

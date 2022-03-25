@@ -27,7 +27,6 @@ use Cake\Validation\Validator;
  * AuthProviders Model
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
- *
  * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
@@ -35,7 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class AuthProvidersTable extends Table
@@ -145,7 +143,7 @@ class AuthProvidersTable extends Table
                 ->groupBy('auth_class')
                 ->map(function (array $entities) {
                     return [
-                        'authProviders' => collection($entities)->indexBy('name')->toArray()
+                        'authProviders' => collection($entities)->indexBy('name')->toArray(),
                     ];
                 });
         });

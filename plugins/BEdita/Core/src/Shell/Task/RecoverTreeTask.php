@@ -20,13 +20,12 @@ use Cake\Console\Shell;
  * Shell task to recover tree.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  */
 class RecoverTreeTask extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Trees';
 
@@ -45,7 +44,7 @@ class RecoverTreeTask extends Shell
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function main()
     {

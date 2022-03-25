@@ -29,7 +29,7 @@ use Cake\ORM\Query;
 class JsonApiPaginator extends Paginator
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'page' => 1,
@@ -43,7 +43,7 @@ class JsonApiPaginator extends Paginator
      *
      * @var int
      */
-    const MAX_LIMIT = 500;
+    public const MAX_LIMIT = 500;
 
     /**
      * Remove any other `order` clause if an explicit 'sort' is requested
@@ -60,7 +60,7 @@ class JsonApiPaginator extends Paginator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function checkLimit(array $options): array
     {
@@ -75,7 +75,7 @@ class JsonApiPaginator extends Paginator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function validateSort(RepositoryInterface $object, array $options): array
     {

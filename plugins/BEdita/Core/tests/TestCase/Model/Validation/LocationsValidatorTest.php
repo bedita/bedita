@@ -102,7 +102,6 @@ class LocationsValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
@@ -153,7 +152,6 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     *
      * @dataProvider checkWktProvider()
      * @covers ::checkWkt()
      */
@@ -206,7 +204,6 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     *
      * @dataProvider checkCoordinatesProvider()
      * @covers ::checkCoordinates()
      */

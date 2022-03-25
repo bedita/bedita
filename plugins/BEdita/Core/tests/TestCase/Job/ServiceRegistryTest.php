@@ -24,7 +24,7 @@ use Cake\TestSuite\TestCase;
 class ServiceRegistryTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -54,7 +54,6 @@ class ServiceRegistryTest extends TestCase
      * Test getService method
      *
      * @return void
-     *
      * @covers ::get()
      */
     public function testGet()
@@ -80,7 +79,6 @@ class ServiceRegistryTest extends TestCase
      * Test getService failure
      *
      * @return void
-     *
      * @covers ::get()
      */
     public function testGetFail()
@@ -93,7 +91,6 @@ class ServiceRegistryTest extends TestCase
      * Test register method
      *
      * @return void
-     *
      * @covers ::set()
      */
     public function testSet()
@@ -113,7 +110,6 @@ class ServiceRegistryTest extends TestCase
      * Test registry reset.
      *
      * @return void
-     *
      * @covers ::reset()
      */
     public function testReset()

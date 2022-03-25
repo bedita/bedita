@@ -29,7 +29,7 @@ class CountRelatedObjectsActionTest extends TestCase
     use LocatorAwareTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
@@ -53,7 +53,7 @@ class CountRelatedObjectsActionTest extends TestCase
     protected $Relations = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -353,7 +353,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * @param array $contain The contain option
      * @param mixed $count Relations to count
      * @return void
-     *
      * @covers ::execute()
      * @covers ::extractIds()
      * @covers ::getRelationsList()
@@ -414,7 +413,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * it will return an empty array
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::extractIds()
      */
@@ -432,7 +430,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that passing empty count will return empty array.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::filterCount()
      */
@@ -448,7 +445,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that setting `hydrate` to false the entity will be untouched.
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testNoHydrate(): void
@@ -470,7 +466,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that the entities hydration was skipped if missing `id` or `count`.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::hydrateCount()
      */
@@ -512,7 +507,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that entity count won't be hydrated if id of count data is not found.
      *
      * @return void
-     *
      * @covers ::hydrateCount()
      * @covers ::searchEntitiesById()
      */

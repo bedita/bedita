@@ -38,11 +38,11 @@ class Application extends BaseApplication
         'autoload' => false,
         'bootstrap' => true,
         'routes' => true,
-        'ignoreMissing' => true
+        'ignoreMissing' => true,
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function bootstrap()
     {

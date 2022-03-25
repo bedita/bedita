@@ -23,7 +23,7 @@ use Cake\TestSuite\TestCase;
 class EmailTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -35,7 +35,7 @@ class EmailTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -106,7 +106,6 @@ class EmailTest extends TestCase
      * @param array $config Email configuration.
      * @param bool $setTransport Should email transport be set?
      * @return void
-     *
      * @covers ::sendRaw()
      * @dataProvider sendRawProvider()
      */
@@ -142,7 +141,6 @@ class EmailTest extends TestCase
      * Test getter for boundary.
      *
      * @return void
-     *
      * @covers ::getBoundary()
      */
     public function testGetBoundary()

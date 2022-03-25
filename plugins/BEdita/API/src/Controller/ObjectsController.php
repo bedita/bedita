@@ -48,7 +48,7 @@ class ObjectsController extends ResourcesController
     use ActionTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 
@@ -60,7 +60,7 @@ class ObjectsController extends ResourcesController
     protected $objectType = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -76,7 +76,7 @@ class ObjectsController extends ResourcesController
     protected const ADMIN_META_ACCESSIBLE = ['locked'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -149,7 +149,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function beforeFilter(Event $event)
     {
@@ -168,7 +168,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function index()
     {
@@ -216,7 +216,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
@@ -231,7 +231,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function resource($id)
     {
@@ -312,7 +312,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function related()
     {
@@ -343,7 +343,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function relationships()
     {
@@ -437,7 +437,7 @@ class ObjectsController extends ResourcesController
 
         $url = [
             '_name' => 'api:objects:index',
-            'object_type' => 'objects'
+            'object_type' => 'objects',
         ];
         if (count(array_diff($types, ['objects'])) > 0) {
             natsort($types);

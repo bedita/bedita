@@ -32,17 +32,17 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      *
      * @var string
      */
-    const TEMP_CONNECTION = 'temporary_connection';
+    public const TEMP_CONNECTION = 'temporary_connection';
 
     /**
      * Name for temporary configuration file.
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'app.temp.php';
+    public const TEMP_FILE = TMP . 'app.temp.php';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -60,7 +60,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when specified connection is **NOT** a valid connection object.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteUnknownConnectionType()
@@ -80,7 +79,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is already configured and we're **NOT** able to connect.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::checkCanConnect()
@@ -111,7 +109,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is already configured and we're able to connect.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::checkCanConnect()
@@ -130,7 +127,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * provided credentials.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::readConnectionParams()
@@ -181,7 +177,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is not yet configured and the provided configuration file is **NOT** valid.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::readConnectionParams()
@@ -235,7 +230,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is not yet configured and everything goes alright.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::readConnectionParams()
@@ -314,7 +308,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is not yet configured and everything goes alright with an unattended run.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::readConnectionParams()
@@ -426,7 +419,6 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
      * Test execution when connection is not yet configured and everything goes alright with an unattended run.
      *
      * @return void
-     *
      * @covers ::main()
      * @covers ::isConnectionConfigured()
      * @covers ::readConnectionParams()

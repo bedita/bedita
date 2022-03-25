@@ -13,8 +13,6 @@
 
 namespace BEdita\Core\Model\Validation;
 
-use Cake\ORM\TableRegistry;
-
 /**
  * Validator for profiles.
  *

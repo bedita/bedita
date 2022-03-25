@@ -27,7 +27,7 @@ use Cake\Http\Exception\NotAcceptableException;
 class ProjectController extends JsonBaseController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function beforeFilter(Event $event): void
     {

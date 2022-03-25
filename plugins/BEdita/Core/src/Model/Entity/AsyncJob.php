@@ -21,7 +21,6 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $modified
  * @property \Cake\I18n\Time $completed
  * @property string $status
- *
  * @since 4.0.0
  */
 class AsyncJob extends Entity implements JsonApiSerializable
@@ -29,7 +28,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
     use JsonApiAdminTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         'uuid' => true,
@@ -42,7 +41,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'status',
