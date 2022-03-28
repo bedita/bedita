@@ -73,7 +73,7 @@
             ],
             "recurse": true,
             "replace": false,
-            "merge-dev": false,
+            "merge-dev": true,
             "merge-extra": false,
             "merge-extra-deep": false,
             "merge-scripts": false
