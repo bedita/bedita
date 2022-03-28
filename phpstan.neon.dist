@@ -1,0 +1,11 @@
+parameters:
+  bootstrapFiles:
+    - tests/bootstrap.php
+  paths:
+    - src
+    - tests
+    - plugins/BEdita/API/src
+    - plugins/BEdita/API/tests
+    - plugins/BEdita/Core/src
+    - plugins/BEdita/Core/tests
+  level: 0
