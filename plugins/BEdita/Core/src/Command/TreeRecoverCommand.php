@@ -10,7 +10,6 @@ use Cake\Console\ConsoleOptionParser;
  * Command to recover tree.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  */
 class TreeRecoverCommand extends Command

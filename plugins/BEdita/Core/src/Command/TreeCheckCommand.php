@@ -16,7 +16,6 @@ use Cake\ORM\Query;
  * Commend to check tree sanity and perform objects-aware tree recovery.
  *
  * @since 4.8.0
- *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class TreeCheckCommand extends Command
