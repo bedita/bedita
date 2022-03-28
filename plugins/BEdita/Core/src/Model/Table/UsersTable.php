@@ -175,11 +175,8 @@ class UsersTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema): TableSchema
     {
-        if ($schema->getColumnType('user_preferences') !== 'json') {
-            $schema->setColumnType('user_preferences', 'json');
-        }
-
-        return $schema;
+        return $schema
+            ->setColumnType('user_preferences', 'json');
     }
 
     /**
