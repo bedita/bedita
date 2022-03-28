@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
@@ -20,7 +21,6 @@ use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Mailer\TransportFactory;
@@ -125,7 +125,7 @@ class SignupUserActionTest extends TestCase
             ],
 
             'existing user' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'User "second user" already registered',
                     'code' => 'be_user_exists',
                 ]),
@@ -140,7 +140,7 @@ class SignupUserActionTest extends TestCase
             ],
 
             'missing activation_url' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => ['activation_url' => ['_required' => 'This field is required']],
                 ]),
@@ -153,7 +153,7 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             'activation url invalid' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ]),
@@ -167,7 +167,7 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             'activation url invalid 2' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ]),
@@ -485,7 +485,7 @@ class SignupUserActionTest extends TestCase
             ],
             // fail when no conf for roles is present and role are passed
             'failNoRoles' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [
@@ -507,7 +507,7 @@ class SignupUserActionTest extends TestCase
             ],
             // fail beacause admin role not allowed in signup
             'failAdminRole' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [
@@ -546,7 +546,7 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is not set with signup roles conf present
             'failRoleNotSetWithAllowed' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [
@@ -569,7 +569,7 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is an empty array with signup roles conf present
             'failEmptyRoleWithAllowed' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [
@@ -593,7 +593,7 @@ class SignupUserActionTest extends TestCase
             ],
             // fail two not allowed roles
             'failEmptyRoleWithAllowed' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [
                         'roles' => [

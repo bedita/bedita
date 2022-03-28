@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
@@ -95,7 +96,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
      */
     public function testValidationFail()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $data = [
             'contact' => 'ask gustavo',
         ];
