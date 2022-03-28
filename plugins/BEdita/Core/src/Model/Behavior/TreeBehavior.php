@@ -13,7 +13,10 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
 use Cake\ORM\Table;
@@ -35,6 +38,7 @@ class TreeBehavior extends CakeTreeBehavior
         $this->_defaultConfig['implementedMethods'] += [
             'getCurrentPosition' => 'getCurrentPosition',
             'moveAt' => 'moveAt',
+            'checkIntegrity' => 'checkIntegrity',
         ];
 
         parent::__construct($table, $config);
@@ -156,5 +160,107 @@ class TreeBehavior extends CakeTreeBehavior
     public function nonAtomicRecover(): void
     {
         $this->_recoverTree();
+    }
+
+    /**
+     * Run queries to check tree integrity.
+     *
+     * @return string[]
+     */
+    public function checkIntegrity(): array
+    {
+        $table = $this->getTable();
+        $pk = $table->aliasField($table->getPrimaryKey());
+        $left = $table->aliasField($this->getConfigOrFail('left'));
+        $right = $table->aliasField($this->getConfigOrFail('right'));
+        $parent = $table->aliasField($this->getConfigOrFail('parent'));
+        $childAlias = sprintf('Child%s', $table->getAlias());
+        $siblingAlias = sprintf('Sibling%s', $table->getAlias());
+
+        $exists = function (Query $query): bool {
+            return $query->select(['existing' => 1])->limit(1)->execute()->count() > 0;
+        };
+
+        $errors = [];
+
+        // Check that for every record `lft < rght`.
+        $query = $table->find()
+            ->where(function (QueryExpression $exp) use ($left, $right): QueryExpression {
+                return $exp->gte($left, new IdentifierExpression($right));
+            });
+        if ($exists($query)) {
+            $errors[] = sprintf('Found record where %s >= %s', $this->getConfigOrFail('left'), $this->getConfigOrFail('right'));
+        }
+
+        // Check that for every parent, `parent.lft + 1 = MIN(children.lft)`
+        $query = $table->find()
+            ->innerJoin(
+                [$childAlias => $table->getTable()],
+                function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
+                    return $exp
+                        ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
+                }
+            )
+            ->group([$pk, $left])
+            ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
+                return $exp->notEq(
+                    new Comparison($left, 1, null, '+'),
+                    $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left')))
+                );
+            });
+        if ($exists($query)) {
+            $errors[] = sprintf('Found record where parent.%s + 1 != MIN(children.%1$s)', $this->getConfigOrFail('left'));
+        }
+
+        // Check that for every parent, `parent.rght - 1 = MAX(children.rght)`
+        $query = $table->find()
+            ->innerJoin(
+                [$childAlias => $table->getTable()],
+                function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
+                    return $exp
+                        ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
+                }
+            )
+            ->group([$pk, $right])
+            ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
+                return $exp->notEq(
+                    new Comparison($right, 1, null, '-'),
+                    $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right')))
+                );
+            });
+        if ($exists($query)) {
+            $errors[] = sprintf('Found record where parent.%s - 1 != MAX(children.%1$s)', $this->getConfigOrFail('right'));
+        }
+
+        // Check that for every node, `node.lft - 1 = MAX(sibling.rght)` where `sibling.lft <= node.lft`.
+        $query = $table->find()
+            ->innerJoin(
+                [$siblingAlias => $table->getTable()],
+                function (QueryExpression $exp) use ($table, $left, $parent, $pk, $siblingAlias): QueryExpression {
+                    return $exp
+                        ->add($exp->or(function (QueryExpression $exp) use ($parent, $siblingAlias): QueryExpression {
+                            $siblingParent = sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('parent'));
+                            return $exp
+                                ->equalFields($parent, $siblingParent)
+                                ->add($exp->and(function (QueryExpression $exp) use ($parent, $siblingParent): QueryExpression {
+                                    return $exp->isNull($parent)->isNull($siblingParent);
+                                }));
+                        }))
+                        ->gte($left, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('left'))))
+                        ->notEq($pk, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $table->getPrimaryKey())));
+                }
+            )
+            ->group([$pk, $left])
+            ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
+                return $exp->notEq(
+                    new Comparison($left, 1, null, '-'),
+                    $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right')))
+                );
+            });
+        if ($exists($query)) {
+            $errors[] = sprintf('Found record where %s - 1 != MAX(previousSiblings.%s)', $this->getConfigOrFail('left'), $this->getConfigOrFail('right'));
+        }
+
+        return $errors;
     }
 }
