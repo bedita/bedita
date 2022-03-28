@@ -472,6 +472,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'another_username' => null, // custom property
                         'another_email' => null, // custom property
                         'pseudonym' => null,
+                        'user_preferences' => null,
                     ],
                     'meta' => [
                         'locked' => true,
