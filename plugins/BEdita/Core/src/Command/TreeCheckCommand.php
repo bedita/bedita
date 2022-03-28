@@ -58,6 +58,19 @@ class TreeCheckCommand extends Command
     {
         $code = static::CODE_SUCCESS;
 
+        // Run tree integrity checks.
+        $messages = $this->Objects->TreeNodes->checkIntegrity();
+        if (!empty($messages)) {
+            $io->out('=====> <error>Tree is corrupt!</error>');
+            foreach ($messages as $msg) {
+                $io->verbose(sprintf('=====>   - %s', $msg));
+            }
+
+            $code = static::CODE_ERROR;
+        } else {
+            $io->verbose('=====> <success>Tree integrity check passed.</success>');
+        }
+
         // Checks on folders not in tree.
         $results = $this->getFoldersNotInTree()->all();
         if (!$results->isEmpty()) {
