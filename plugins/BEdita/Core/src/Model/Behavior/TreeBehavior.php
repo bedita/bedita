@@ -240,6 +240,7 @@ class TreeBehavior extends CakeTreeBehavior
                     return $exp
                         ->add($exp->or(function (QueryExpression $exp) use ($parent, $siblingAlias): QueryExpression {
                             $siblingParent = sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('parent'));
+
                             return $exp
                                 ->equalFields($parent, $siblingParent)
                                 ->add($exp->and(function (QueryExpression $exp) use ($parent, $siblingParent): QueryExpression {
