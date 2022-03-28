@@ -14,9 +14,9 @@
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -179,7 +179,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ],
             ],
             'belongsToMany invalid parameters' => [
-                new BadRequestException([
+                new InvalidDataException([
                     'title' => 'Bad data',
                 ]),
                 'FakeTags',
