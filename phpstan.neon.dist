@@ -8,4 +8,4 @@ parameters:
     - plugins/BEdita/API/tests
     - plugins/BEdita/Core/src
     - plugins/BEdita/Core/tests
-  level: 0
+  level: 1

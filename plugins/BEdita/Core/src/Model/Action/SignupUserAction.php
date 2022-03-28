@@ -335,7 +335,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function checkExternalAuth(array $data)
     {
-        /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        /** @var \BEdita\Core\Model\Entity\AuthProvider|null $authProvider */
         $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->find('enabled')
             ->where(['name' => $data['auth_provider']])
             ->first();

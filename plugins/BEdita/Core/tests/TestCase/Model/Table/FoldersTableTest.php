@@ -246,6 +246,7 @@ class FoldersTableTest extends TestCase
     public function testSave($expected, $data)
     {
         $trees = TableRegistry::getTableLocator()->get('Trees');
+        $descendants = null;
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $descendants = $trees->childCount($node);
@@ -270,7 +271,7 @@ class FoldersTableTest extends TestCase
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $actual = $trees->childCount($node);
-            static::assertEquals($descendants, $actual);
+            static::assertSame($descendants, $actual);
         }
     }
 
