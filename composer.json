@@ -31,8 +31,9 @@
         "cakephp/debug_kit": "^4.7",
         "cakephp/cakephp-codesniffer": "~4.5.1",
         "psy/psysh": "@stable",
-        "phpstan/phpstan": "^0.12",
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.0",
+        "bedita/dev-tools": "1.5.*",
+        "phpstan/phpstan": "^1.5"
     },
     "autoload": {
         "psr-4": {

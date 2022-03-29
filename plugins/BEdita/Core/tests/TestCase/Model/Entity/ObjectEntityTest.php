@@ -569,7 +569,7 @@ class ObjectEntityTest extends TestCase
      * Test `hasProperty` method
      *
      * @covers ::hasProperty()
-     * @return bool
+     * @return void
      */
     public function testHasProperty()
     {

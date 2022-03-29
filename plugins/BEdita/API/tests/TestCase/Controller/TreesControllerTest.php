@@ -149,7 +149,7 @@ class TreesControllerTest extends IntegrationTestCase
                 compact('error'),
                 '/12/4',
             ],
-            'invalid 4' => [
+            'invalid 5' => [
                 compact('error'),
                 '/11/4',
             ],

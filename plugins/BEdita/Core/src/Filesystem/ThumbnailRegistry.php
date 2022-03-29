@@ -46,10 +46,13 @@ class ThumbnailRegistry extends ObjectRegistry
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param string|object $class The class to build.
      */
     protected function _create($class, $alias, $config)
     {
+        $instance = null;
         if (is_object($class)) {
             $instance = $class;
         }

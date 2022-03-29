@@ -172,7 +172,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryCreate(ObjectEntity $object): void
     {
-        /** @var \BEdita\Core\Model\Entity\History $history */
+        /** @var \BEdita\Core\Model\Entity\History|null $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -180,7 +180,6 @@ class FixHistoryCommand extends Command
                 $this->History->aliasField('user_action') => 'create',
             ])
             ->first();
-
         if (empty($history)) {
             $history = $this->historyEntity($object);
             $history->user_action = 'create';
@@ -199,7 +198,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryUpdate(ObjectEntity $object): void
     {
-        /** @var \BEdita\Core\Model\Entity\History $history */
+        /** @var \BEdita\Core\Model\Entity\History|null $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -207,7 +206,6 @@ class FixHistoryCommand extends Command
                 sprintf("%s != 'create'", $this->History->aliasField('user_action')),
             ])
             ->first();
-
         if (empty($history)) {
             $history = $this->historyEntity($object);
             $history->user_action = 'update';

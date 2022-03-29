@@ -9,6 +9,8 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
 /**
  * \BEdita\Core\Shell\StreamsShell Test Case
  *
+ * @property \BEdita\Core\Model\Table\StreamsTable $Streams
+ *
  * @coversDefaultClass \BEdita\Core\Shell\StreamsShell
  */
 class StreamsShellTest extends ConsoleIntegrationTestCase
