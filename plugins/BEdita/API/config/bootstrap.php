@@ -22,7 +22,7 @@ use Cake\Log\Log;
 /**
  * Load 'api' configuration parameters
  */
-if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
+if (!defined('UNIT_TEST_RUN') && !in_array(PHP_SAPI, ['cli', 'phpdbg'])) {
     Configure::load('api', 'database');
 }
 
