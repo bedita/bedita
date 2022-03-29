@@ -69,8 +69,8 @@ class CleanupDataTask extends BeditaBaseShell {
         $countTables = array_merge($this->cleanupTables, $tables);
         sort($countTables);
         $limitDate = date('Y')-2 . '-12-31 23:59:59';
-		if (isset($this->params['ld'])) {
-			$limitDate = $this->params['ld'] . ' 23:59:59';
+        if (isset($this->params['ld'])) {
+            $limitDate = $this->params['ld'] . ' 23:59:59';
         }
         $counts = [];
         foreach ($countTables as $tableName) {
