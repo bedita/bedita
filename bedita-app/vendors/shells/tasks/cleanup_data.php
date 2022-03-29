@@ -31,18 +31,18 @@ class CleanupDataTask extends BeditaBaseShell {
      */
     public $uses = ['BEObject'];
 
-    protected $truncateTables = ['event_logs', 'mail_jobs', 'mail_logs'];
+    protected $truncateTables = ['event_logs', 'mail_logs'];
 
-    protected $cleanupTables = ['history', 'versions'];
+    protected $cleanupTables = ['history', 'mail_jobs', 'versions'];
 
     public function help() {
         $this->hr();
         $this->out('cleanup data script shell usage:');
         $this->out('');
-        $this->out('./cake.sh bedita cleanupData // truncate event_logs, mail_jobs, mail_logs, clean old data from history and versions');
+        $this->out('./cake.sh bedita cleanupData // truncate event_logs, mail_logs, clean old data from history and versions');
         $this->out('./cake.sh bedita cleanupData -ld <limit date yyyy-MM-dd> // use custom limit date for clean');
         $this->out('./cake.sh bedita cleanupData -ni // no interactive mode');
-        $this->out('./cake.sh bedita cleanupData -tt <comma separated table names> // truncate event_logs, mail_jobs, mail_logs + more tables');
+        $this->out('./cake.sh bedita cleanupData -tt <comma separated table names> // truncate event_logs, mail_logs + more tables');
         $this->out('./cake.sh bedita cleanupData help // show this help');
         $this->out('');
     }
@@ -50,9 +50,9 @@ class CleanupDataTask extends BeditaBaseShell {
     /**
      * Tables to clean (truncate or delete data):
      * - event_logs (truncate)
-     * - mail_jobs (truncate, if no messages pending)
      * - mail_logs (truncate)
      * - history (cleanup: mantain only "CY-1 / CY" data (CY is the Current Year))
+     * - mail_jobs (cleanup: mantain only "CY-1 / CY" data (CY is the Current Year))
      * - versions (cleanup: mantain only "CY-1 / CY" data (CY is the Current Year))
      *
      * @return void
@@ -78,20 +78,6 @@ class CleanupDataTask extends BeditaBaseShell {
             } else {
                 $counts[$tableName] = $this->countRecords($tableName);
             }
-        }
-        // check if mail_jobs can be truncated
-        if ($counts['mail_jobs'] > 0) {
-            $query = 'SELECT COUNT(*) AS n FROM mail_jobs WHERE status NOT IN (\'sent\', \'failed\')';
-            $result = $this->BEObject->query($query);
-            $pending = $result[0][0]['n'];
-            $this->out(sprintf('%s => %s', $query, $pending));
-            if ($pending > 0) {
-                $this->out('mail_jobs won\'t be truncated, because there are pending jobs. cleanup instead');
-                if (($key = array_search('mail_jobs', $tables)) !== false) {
-                    unset($tables[$key]);
-                }
-                $this->cleanupTables[] = 'mail_jobs';
-            }    
         }
 
         // check if no data to remove
