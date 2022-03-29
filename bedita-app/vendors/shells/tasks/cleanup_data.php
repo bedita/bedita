@@ -39,11 +39,11 @@ class CleanupDataTask extends BeditaBaseShell {
         $this->hr();
         $this->out('cleanup data script shell usage:');
         $this->out('');
-        $this->out('./cake.sh cleanupData // truncate event_logs, mail_jobs, mail_logs, clean old data from history and versions');
-        $this->out('./cake.sh cleanupData -ld <limit date yyyy-MM-dd> // use custom limit date for clean');
-        $this->out('./cake.sh cleanupData -ni // no interactive mode');
-        $this->out('./cake.sh cleanupData -tt <comma separated table names> // truncate event_logs, mail_jobs, mail_logs + more tables');
-        $this->out('./cake.sh cleanupData help // show this help');
+        $this->out('./cake.sh bedita cleanupData // truncate event_logs, mail_jobs, mail_logs, clean old data from history and versions');
+        $this->out('./cake.sh bedita cleanupData -ld <limit date yyyy-MM-dd> // use custom limit date for clean');
+        $this->out('./cake.sh bedita cleanupData -ni // no interactive mode');
+        $this->out('./cake.sh bedita cleanupData -tt <comma separated table names> // truncate event_logs, mail_jobs, mail_logs + more tables');
+        $this->out('./cake.sh bedita cleanupData help // show this help');
         $this->out('');
     }
 
@@ -72,24 +72,41 @@ class CleanupDataTask extends BeditaBaseShell {
 		if (isset($this->params['ld'])) {
 			$limitDate = $this->params['ld'] . ' 23:59:59';
         }
-        $limitWhere = sprintf('WHERE created < \'%s\'', $limitDate);
         foreach ($countTables as $tableName) {
-            $this->countRecords($tableName);
-            $this->countRecords($tableName, $limitWhere);
+            if (in_array($tableName, $this->cleanupTables)) {
+                $counts[$tableName] = $this->countRecords($tableName, $limitDate);
+            } else {
+                $counts[$tableName] = $this->countRecords($tableName);
+            }
         }
         // check if mail_jobs can be truncated
-        $query = 'SELECT COUNT(*) AS n FROM mail_jobs WHERE status NOT IN (\'sent\', \'failed\')';
-        $result = $this->BEObject->query($query);
-        $pending = $result[0][0]['n'];
-        $this->out(sprintf('%s => %s', $query, $pending));
-        if ($pending > 0) {
-            $this->out('mail_jobs won\'t be truncated, because there are pending jobs. cleanup instead');
-            if (($key = array_search('mail_jobs', $tables)) !== false) {
-                unset($tables[$key]);
-            }
-            $this->cleanupTables[] = 'mail_jobs';
+        if ($counts['mail_jobs'] > 0) {
+            $query = 'SELECT COUNT(*) AS n FROM mail_jobs WHERE status NOT IN (\'sent\', \'failed\')';
+            $result = $this->BEObject->query($query);
+            $pending = $result[0][0]['n'];
+            $this->out(sprintf('%s => %s', $query, $pending));
+            if ($pending > 0) {
+                $this->out('mail_jobs won\'t be truncated, because there are pending jobs. cleanup instead');
+                if (($key = array_search('mail_jobs', $tables)) !== false) {
+                    unset($tables[$key]);
+                }
+                $this->cleanupTables[] = 'mail_jobs';
+            }    
         }
 
+        // check if no data to remove
+        $total = 0;
+        foreach ($counts as $tableName => $partial) {
+            $total += $partial;
+        }
+        if ($total === 0) {
+            $this->out('--- check if perform clean ---');
+            $this->out('All tables are clean. Nothing to do. Bye');
+
+            return;
+        }
+
+        $this->out('--- preparing clean ---');
         $this->out(sprintf('Truncate tables "%s"', implode(',', $tables)));
         $this->out(sprintf('Remove from tables "%s" records created before date limit: %s', implode(',', $this->cleanupTables), $limitDate));
         if (!isset($this->params['ni'])) { // no interactive
@@ -111,11 +128,21 @@ class CleanupDataTask extends BeditaBaseShell {
         $this->out('Done');        
     }
 
-    protected function countRecords($tableName, $where = '')
+    protected function countRecords($tableName, $limitDate = '')
     {
-        $query = trim(sprintf('SELECT COUNT(*) AS n FROM %s %s', $tableName, $where));
+        if (empty($limitDate)) {
+            $query = trim(sprintf('SELECT COUNT(*) AS n FROM %s', $tableName));
+            $result = $this->BEObject->query($query);
+            $this->out(sprintf('%s => %s', $query, $result[0][0]['n']));
+
+            return $result[0][0]['n'];
+        }
+
+        $query = trim(sprintf('SELECT COUNT(*) AS n FROM %s WHERE created < \'%s\'', $tableName, $limitDate));
         $result = $this->BEObject->query($query);
         $this->out(sprintf('%s => %s', $query, $result[0][0]['n']));
+
+        return $result[0][0]['n'];
     }
 
     protected function truncateTable($tableName)
