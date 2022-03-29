@@ -43,12 +43,11 @@ use Cake\Validation\Validation;
  */
 class Profile extends ObjectEntity
 {
-
     /**
      * Ensure URL is standardized by prefixing `http://` to it if necessary.
      *
-     * @param string $website Website URL.
-     * @return string
+     * @param mixed $website Website URL.
+     * @return mixed
      */
     protected function _setWebsite($website)
     {

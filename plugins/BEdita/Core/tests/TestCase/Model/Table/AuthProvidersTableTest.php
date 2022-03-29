@@ -138,7 +138,7 @@ class AuthProvidersTableTest extends TestCase
      * @dataProvider validationProvider
      * @coversNothing
      */
-    public function testValidation(array $expected, array $data)
+    public function testValidation(array $expected, array $data): void
     {
         $authProvider = $this->AuthProviders->newEntity([]);
         $this->AuthProviders->patchEntity($authProvider, $data);

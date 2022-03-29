@@ -96,7 +96,7 @@ class ProfileTest extends TestCase
      *
      * @return array
      */
-    public function setUrlProvider()
+    public function setUrlProvider(): array
     {
         return [
             'ok' => [
@@ -121,14 +121,14 @@ class ProfileTest extends TestCase
     /**
      * Test that Website URL is correctly standardized.
      *
-     * @param string $expected Expected result.
-     * @param string $website Website value.
+     * @param mixed $expected Expected result.
+     * @param mixed $website Website value.
      * @return void
      *
      * @dataProvider setUrlProvider()
      * @covers ::_setWebsite()
      */
-    public function testSetUrl($expected, $website)
+    public function testSetUrl($expected, $website): void
     {
         $profile = $this->Profiles->newEntity();
         $profile->website = $website;
