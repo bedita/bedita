@@ -300,7 +300,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '1',
                 ],
             ],
-            'role name' => [
+            'role name (multiple)' => [
                 '/users?filter[roles]=first role,second role',
                 [
                    '1',

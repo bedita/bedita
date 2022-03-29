@@ -594,7 +594,7 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             // fail two not allowed roles
-            'failEmptyRoleWithAllowed' => [
+            'filMultipleRolesNotAllowed' => [
                 new BadRequestException([
                     'title' => 'Invalid data',
                     'detail' => [
