@@ -72,6 +72,7 @@ class CleanupDataTask extends BeditaBaseShell {
 		if (isset($this->params['ld'])) {
 			$limitDate = $this->params['ld'] . ' 23:59:59';
         }
+        $counts = [];
         foreach ($countTables as $tableName) {
             if (in_array($tableName, $this->cleanupTables)) {
                 $counts[$tableName] = $this->countRecords($tableName, $limitDate);
@@ -105,6 +106,9 @@ class CleanupDataTask extends BeditaBaseShell {
         }
         $this->out('--- clean data ---');
         foreach ($this->cleanupTables as $tableName) {
+            if ($counts[$tableName] === 0) {
+                $this->out(sprintf('table %s clean, skip', $tableName));
+            }
             $this->cleanupTable($tableName, $limitDate);
         }
         foreach ($tables as $tableName) {
