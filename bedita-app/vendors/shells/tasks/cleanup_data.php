@@ -94,7 +94,7 @@ class CleanupDataTask extends BeditaBaseShell {
         $this->out(sprintf('Remove from tables "%s" records created before date limit: %s', implode(',', $this->cleanupTables), $limitDate));
         if (!isset($this->params['ni'])) { // no interactive
             $res = $this->in('Continue? [y/n]');
-            if ($res != 'y') {
+            if (strtolower($res) !== 'y') {
                 $this->out('Bye');
 
                 return;
