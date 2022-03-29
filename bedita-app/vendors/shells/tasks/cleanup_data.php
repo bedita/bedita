@@ -108,6 +108,7 @@ class CleanupDataTask extends BeditaBaseShell {
         foreach ($this->cleanupTables as $tableName) {
             if ($counts[$tableName] === 0) {
                 $this->out(sprintf('table %s clean, skip', $tableName));
+                continue;
             }
             $this->cleanupTable($tableName, $limitDate);
         }
