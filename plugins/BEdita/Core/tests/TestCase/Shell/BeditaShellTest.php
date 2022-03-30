@@ -18,12 +18,13 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest
+class BeditaShellTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 

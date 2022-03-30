@@ -21,12 +21,13 @@ use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckSchemaTask
  */
-class CheckSchemaTaskTest
+class CheckSchemaTaskTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
