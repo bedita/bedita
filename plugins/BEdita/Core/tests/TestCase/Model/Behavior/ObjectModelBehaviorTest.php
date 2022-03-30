@@ -22,7 +22,6 @@ use Cake\Utility\Hash;
  * {@see \BEdita\Core\Model\Behavior\ObjectModelBehavior} Test Case
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
- *
  * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
 class ObjectModelBehaviorTest extends TestCase
