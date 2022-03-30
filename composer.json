@@ -32,7 +32,7 @@
         "cakephp/cakephp-codesniffer": "~4.5.1",
         "psy/psysh": "@stable",
         "phpunit/phpunit": "^8.0",
-        "bedita/dev-tools": "1.5.*",
+        "bedita/dev-tools": "^2.0",
         "phpstan/phpstan": "^1.5"
     },
     "autoload": {
@@ -58,7 +58,7 @@
             "@test",
             "@cs-check"
         ],
-        "analyze": "vendor/bin/phpstan analyse src plugins/*/*/src",
+        "analyze": "vendor/bin/phpstan analyse",
         "cs-check": "vendor/bin/phpcs --colors -n -p --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "cs-fix": "vendor/bin/phpcbf --colors --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "test": "vendor/bin/phpunit --colors=always"
