@@ -20,7 +20,7 @@ use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
@@ -174,7 +174,7 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema): TableSchema
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         return $schema
             ->setColumnType('user_preferences', 'json');
