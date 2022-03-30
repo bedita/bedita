@@ -55,8 +55,10 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.History',
-        'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
@@ -592,7 +594,7 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             // fail two not allowed roles
-            'failEmptyRoleWithAllowed' => [
+            'filMultipleRolesNotAllowed' => [
                 new InvalidDataException([
                     'title' => 'Invalid data',
                     'detail' => [

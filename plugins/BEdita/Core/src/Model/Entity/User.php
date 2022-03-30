@@ -31,6 +31,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_modified
+ * @property array $user_preferences
  * @since 4.0.0
  */
 class User extends Profile

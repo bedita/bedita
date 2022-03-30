@@ -223,7 +223,7 @@ class TreesController extends AppController
         $id = Hash::get($this->pathInfo['ids'], $count - 1);
         $parentId = Hash::get($this->pathInfo['ids'], $count - 2);
 
-        /** @var \BEdita\Core\Model\Entity\Tree $node */
+        /** @var \BEdita\Core\Model\Entity\Tree|null $node */
         $node = $this->Trees->find()
             ->where([
                 'object_id' => $id,

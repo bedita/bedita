@@ -22,7 +22,6 @@ use Cake\Http\Exception\NotAcceptableException;
  * Controller for `/model/project` endpoint.
  *
  * @since 4.5.0
- *
  */
 class ProjectController extends JsonBaseController
 {
@@ -50,6 +49,6 @@ class ProjectController extends JsonBaseController
         $model = ProjectModel::generate();
 
         $this->set($model);
-        $this->set('_serialize', true);
+        $this->setSerialize(array_keys($model));
     }
 }

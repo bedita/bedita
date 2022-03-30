@@ -117,6 +117,7 @@ class JsonSchemaTest extends TestCase
                         'surname',
                         'title',
                         'uname',
+                        'user_preferences',
                         'username',
                         'vat_number',
                         'verified',

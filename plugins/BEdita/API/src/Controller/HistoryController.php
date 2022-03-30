@@ -58,10 +58,7 @@ class HistoryController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->set([
-            '_serialize' => ['data'],
-            '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS |
-                JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS
-        ]);
+        $this->setSerialize(['data']);
+        $this->set('_jsonApiOptions', JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS);
     }
 }

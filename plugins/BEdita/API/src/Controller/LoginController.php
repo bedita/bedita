@@ -253,7 +253,7 @@ class LoginController extends AppController
         if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
             return;
         }
-        /** @var \BEdita\Core\Model\Entity\Application $application */
+        /** @var \BEdita\Core\Model\Entity\Application|null $application */
         $application = TableRegistry::getTableLocator()->get('Applications')
             ->find('credentials', [
                 'client_id' => $this->request->getData('client_id'),
@@ -385,7 +385,7 @@ class LoginController extends AppController
         $contain = array_unique(array_merge($contain, ['Roles']));
         $conditions = ['id' => $userId];
 
-        /** @var \BEdita\Core\Model\Entity\User $user */
+        /** @var \BEdita\Core\Model\Entity\User|null $user */
         $user = $this->Users
             ->find('login', compact('conditions', 'contain'))
             ->first();

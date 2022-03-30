@@ -33,7 +33,7 @@
         "cakephp/cakephp-codesniffer": "~3.2.1",
         "psy/psysh": "@stable",
         "bedita/dev-tools": "1.5.*",
-        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan": "^1.5",
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {
