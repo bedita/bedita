@@ -88,12 +88,8 @@ class PriorityBehavior extends Behavior
     {
         $conditions = [];
         foreach ($scope as $item) {
-            $valueField = $entity->get($item);
-            $keyField = $this->getTable()->aliasField($item);
-            if ($valueField === null) {
-                $keyField .= ' IS';
-            }
-            $conditions[$keyField] = $valueField;
+            $keyField = sprintf('%s IS', $this->getTable()->aliasField($item));
+            $conditions[$keyField] = $entity->get($item);
         }
         $query = $this->getTable()->find()->where($conditions);
         $query->select([
