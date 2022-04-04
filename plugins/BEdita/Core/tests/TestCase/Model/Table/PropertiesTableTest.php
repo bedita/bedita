@@ -207,6 +207,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', $options)
             ->find('type', ['dynamic'])
+            ->all()
             ->extract('name')
             ->toList();
 
@@ -332,6 +333,7 @@ class PropertiesTableTest extends TestCase
         $result = $this->Properties->find('objectType', [$objectType])
             ->find('type', [$type])
             ->where(['enabled' => true])
+            ->all()
             ->each(function ($row) use (&$count) {
                 $count++;
                 static::assertTrue(is_object($row));
@@ -393,6 +395,7 @@ class PropertiesTableTest extends TestCase
         ];
 
         $result = $this->Properties->find('objectType', ['media'])
+            ->all()
             ->extract('name')
             ->toList();
 
