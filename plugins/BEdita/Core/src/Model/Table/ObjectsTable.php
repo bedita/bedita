@@ -281,6 +281,7 @@ class ObjectsTable extends Table
                         $this->ObjectTypes
                             ->find('children', ['for' => $value->id])
                             ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->all()
                             ->toList()
                     );
                 }

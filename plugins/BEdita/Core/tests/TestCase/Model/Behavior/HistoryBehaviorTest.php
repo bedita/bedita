@@ -43,6 +43,8 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
@@ -128,6 +130,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '5', 'resource_type' => 'objects'])
+                ->all()
                 ->last();
         static::assertNotEmpty($history);
         unset($data['username']);
@@ -160,6 +163,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
@@ -195,6 +199,7 @@ class HistoryBehaviorTest extends TestCase
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last();
         static::assertEquals('trash', $history->get('user_action'));
 
@@ -203,6 +208,7 @@ class HistoryBehaviorTest extends TestCase
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last();
         static::assertNotEmpty($history);
         static::assertEquals('restore', $history->get('user_action'));
