@@ -56,10 +56,10 @@ class AddAssociatedAction extends UpdateAssociatedAction
                 }
                 foreach ($relatedEntities as $relatedEntity) {
                     if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
-                        throw new InvalidDataException([
-                            'title' => __d('bedita', 'Error linking entities'),
-                            'detail' => $relatedEntity->get('_joinData')->getErrors(),
-                        ]);
+                        throw new InvalidDataException(
+                            __d('bedita', 'Error linking entities'),
+                            (array)$relatedEntity->get('_joinData')->getErrors(),
+                        );
                     }
                 }
                 $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);

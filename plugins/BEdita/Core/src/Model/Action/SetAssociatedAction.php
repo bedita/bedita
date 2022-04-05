@@ -55,10 +55,10 @@ class SetAssociatedAction extends UpdateAssociatedAction
                     ($relatedEntity->get('_joinData') instanceof EntityInterface) &&
                     $relatedEntity->get('_joinData')->getErrors()
                 ) {
-                    throw new InvalidDataException([
-                        'title' => __d('bedita', 'Error linking entities'),
-                        'detail' => $relatedEntity->get('_joinData')->getErrors(),
-                    ]);
+                    throw new InvalidDataException(
+                        __d('bedita', 'Error linking entities'),
+                        (array)$relatedEntity->get('_joinData')->getErrors()
+                    );
                 }
             }
 

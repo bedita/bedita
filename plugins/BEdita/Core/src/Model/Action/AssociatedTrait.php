@@ -203,10 +203,7 @@ trait AssociatedTrait
         $this->Association->junction()->patchEntity($joinData, $data ?: []);
         $errors = $joinData->getErrors();
         if (!empty($errors)) {
-            throw new InvalidDataException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         $target->set('_joinData', $joinData);
@@ -255,10 +252,7 @@ trait AssociatedTrait
         $existingJoin = $this->Association->junction()->patchEntity($existingJoin, $data);
         $errors = $existingJoin->getErrors();
         if (!empty($errors)) {
-            throw new InvalidDataException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         return $existing;

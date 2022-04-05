@@ -83,10 +83,7 @@ class ChangeCredentialsAction extends BaseAction
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
-            throw new InvalidDataException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);

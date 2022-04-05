@@ -16,10 +16,17 @@ namespace BEdita\Core\Exception;
 use Cake\Core\Exception\Exception;
 
 /**
- * Exception raised when invalid data are passed to Model/ORM classes
+ * Exception raised when an already existing user is found.
  */
-class InvalidDataException extends Exception
+class UserExistsException extends Exception
 {
+    /**
+     * Application error code
+     *
+     * @var string
+     */
+    public const BE_USER_EXISTS = 'be_user_exists';
+
     /**
      * {@inheritDoc}
      *
@@ -30,6 +37,7 @@ class InvalidDataException extends Exception
     public function __construct(string $message, ?array $details = null)
     {
         parent::__construct($message, 400);
+        $this->_attributes['code'] = static::BE_USER_EXISTS;
         $this->_attributes['detail'] = $details;
     }
 }

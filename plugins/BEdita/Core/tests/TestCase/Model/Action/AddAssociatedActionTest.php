@@ -227,7 +227,6 @@ class AddAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Error linking entities',
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
@@ -236,6 +235,7 @@ class AddAssociatedActionTest extends TestCase
             ];
 
             static::assertSame($expected, $e->getAttributes());
+            static::assertSame('Error linking entities', $e->getMessage());
 
             throw $e;
         }

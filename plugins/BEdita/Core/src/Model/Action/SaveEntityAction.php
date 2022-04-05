@@ -62,10 +62,7 @@ class SaveEntityAction extends BaseAction
             if (!empty($errors)) {
                 $this->log(sprintf('Entity save errors: %s', json_encode($errors)), 'warning');
 
-                throw new InvalidDataException([
-                    'title' => __d('bedita', 'Invalid data'),
-                    'detail' => $errors,
-                ]);
+                throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
             }
 
             $this->log(sprintf('Save failed - data: %s', json_encode($data['data'])), 'error');

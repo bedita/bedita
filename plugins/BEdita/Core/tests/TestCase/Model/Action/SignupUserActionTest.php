@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
@@ -127,10 +128,7 @@ class SignupUserActionTest extends TestCase
             ],
 
             'existing user' => [
-                new InvalidDataException([
-                    'title' => 'User "second user" already registered',
-                    'code' => 'be_user_exists',
-                ]),
+                new UserExistsException('User "second user" already registered'),
                 [
                     'data' => [
                         'username' => 'second user',
@@ -142,10 +140,10 @@ class SignupUserActionTest extends TestCase
             ],
 
             'missing activation_url' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['_required' => 'This field is required']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['_required' => 'This field is required']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -155,10 +153,10 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             'activation url invalid' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -169,10 +167,10 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             'activation url invalid 2' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -487,14 +485,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail when no conf for roles is present and role are passed
             'failNoRoles' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'Roles are not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -509,14 +507,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail beacause admin role not allowed in signup
             'failAdminRole' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'first role not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -548,14 +546,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is not set with signup roles conf present
             'failRoleNotSetWithAllowed' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             '_required' => 'This field is required',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -571,14 +569,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is an empty array with signup roles conf present
             'failEmptyRoleWithAllowed' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             '_empty' => 'This field cannot be left empty',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -595,14 +593,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail two not allowed roles
             'filMultipleRolesNotAllowed' => [
-                new InvalidDataException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'third_role, fourth_role not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',

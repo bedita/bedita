@@ -179,9 +179,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ],
             ],
             'belongsToMany invalid parameters' => [
-                new InvalidDataException([
-                    'title' => 'Bad data',
-                ]),
+                new InvalidDataException('Invalid data'),
                 'FakeTags',
                 'FakeArticles',
                 1,

@@ -74,10 +74,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
-            throw new InvalidDataException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         // operations are not in transaction: every failure stops following operations
