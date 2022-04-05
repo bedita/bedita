@@ -44,6 +44,14 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     use MailerAwareTrait;
 
     /**
+     * 400 Username already registered
+     *
+     * @var string
+     * @deprecated Will be dropped in 5.x, use `UserExistsException` to use this app error code.
+     */
+    public const BE_USER_EXISTS = 'be_user_exists';
+
+    /**
      * The UsersTable table
      *
      * @var \BEdita\Core\Model\Table\UsersTable
