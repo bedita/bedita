@@ -194,6 +194,7 @@ class SetRelatedObjectsActionTest extends TestCase
                 ->where(function (QueryExpression $exp) use ($association, $related) {
                     return $exp->in($association->getTarget()->getPrimaryKey(), array_keys($related));
                 })
+                ->all()
                 ->map(function (EntityInterface $entity) use ($association, $related) {
                     $data = $related[$entity->id];
                     if (!empty($data) && $association instanceof RelatedTo) {

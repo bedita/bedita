@@ -108,6 +108,7 @@ class MediaController extends ObjectsController
             ->where(function (QueryExpression $exp) use ($ids) {
                 return $exp->in('object_id', $ids);
             })
+            ->all()
             ->map(function (Stream $stream) use ($options, $preset) {
                 $id = $stream->object_id;
                 $uuid = $stream->uuid;

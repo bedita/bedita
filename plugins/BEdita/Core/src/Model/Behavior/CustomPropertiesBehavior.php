@@ -105,6 +105,7 @@ class CustomPropertiesBehavior extends Behavior
             ->find('type', ['dynamic'])
             ->find('objectType', [$objectType->id])
             ->where(['enabled' => true, 'is_static' => false])
+            ->all()
             ->indexBy('name')
             ->toArray();
 

@@ -51,12 +51,10 @@ class RolesUsersTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Roles',
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users',
         ]);
     }
 
