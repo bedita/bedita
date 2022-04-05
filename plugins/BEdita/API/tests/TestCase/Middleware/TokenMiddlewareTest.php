@@ -266,6 +266,7 @@ class TokenMiddlewareTest extends TestCase
      *
      * @return void
      * @covers ::decodeToken()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testExpiredToken(): void
     {
