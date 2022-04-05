@@ -58,7 +58,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
                     if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
                         throw new InvalidDataException(
                             __d('bedita', 'Error linking entities'),
-                            (array)$relatedEntity->get('_joinData')->getErrors(),
+                            (array)$relatedEntity->get('_joinData')->getErrors()
                         );
                     }
                 }
