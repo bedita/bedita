@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
@@ -23,7 +25,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
@@ -46,6 +47,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * 400 Username already registered
      *
      * @var string
+     * @deprecated Will be dropped in 5.x, use `UserExistsException` to use this app error code.
      */
     public const BE_USER_EXISTS = 'be_user_exists';
 
@@ -122,10 +124,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         // operations are not in transaction because AsyncJobs could use a different connection
@@ -304,10 +303,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
-            throw new BadRequestException([
-                'title' => __d('bedita', 'User "{0}" already registered', $data['username']),
-                'code' => self::BE_USER_EXISTS,
-            ]);
+            throw new UserExistsException(
+                __d('bedita', 'User "{0}" already registered', $data['username'])
+            );
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
 

@@ -16,29 +16,28 @@ namespace BEdita\API\Exception;
 use Cake\Http\Exception\UnauthorizedException;
 
 /**
- * Exception raised on an expired JWT token
+ * Exception raised on an expired JWT token.
  */
 class ExpiredTokenException extends UnauthorizedException
 {
     /**
-     * 401 Expired token
+     * Expired token internal application error code
      *
      * @var string
      */
     public const BE_TOKEN_EXPIRED = 'be_token_expired';
 
     /**
-     * @inheritDoc
+     * Constructor
+     *
+     * @param string $message If no message is given 'Expired token' will be the message
      */
-    public function __construct($message = null)
+    public function __construct(?string $message = null)
     {
         if (empty($message)) {
-            $message = [
-                'title' => __d('bedita', 'Expired token'),
-                'detail' => __d('bedita', 'Provided token has expired'),
-                'code' => self::BE_TOKEN_EXPIRED,
-            ];
+            $message = __d('bedita', 'Expired token');
         }
         parent::__construct($message);
+        $this->_attributes['code'] = static::BE_TOKEN_EXPIRED;
     }
 }

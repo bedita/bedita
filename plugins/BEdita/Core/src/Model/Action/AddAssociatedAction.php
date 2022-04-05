@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Action;
 
 use ArrayObject;
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Datasource\EntityInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 
@@ -56,10 +56,10 @@ class AddAssociatedAction extends UpdateAssociatedAction
                 }
                 foreach ($relatedEntities as $relatedEntity) {
                     if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
-                        throw new BadRequestException([
-                            'title' => __d('bedita', 'Error linking entities'),
-                            'detail' => $relatedEntity->get('_joinData')->getErrors(),
-                        ]);
+                        throw new InvalidDataException(
+                            __d('bedita', 'Error linking entities'),
+                            (array)$relatedEntity->get('_joinData')->getErrors()
+                        );
                     }
                 }
                 $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);

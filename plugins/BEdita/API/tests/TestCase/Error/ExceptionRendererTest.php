@@ -15,10 +15,12 @@ namespace BEdita\API\Test\TestCase\Error;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -102,6 +104,11 @@ class ExceptionRendererTest extends TestCase
             'badCode' => [
                 ['title' => 'err title', 'code' => ['err-code']],
                 'err title',
+            ],
+            'previous exception' => [
+                new BadRequestException('Bad', 400, new \LogicException('Logic Error')),
+                'Bad',
+                'Logic Error',
             ],
             'not a Cake exception' => [
                 new \LogicException('hello'),

@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\Validation;
@@ -20,7 +21,6 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
@@ -74,10 +74,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         // operations are not in transaction: every failure stops following operations
