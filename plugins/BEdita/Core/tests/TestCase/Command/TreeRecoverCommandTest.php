@@ -25,7 +25,6 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Command\TreeRecoverCommand} Test Case
  *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
- *
  * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
 class TreeRecoverCommandTest extends TestCase
