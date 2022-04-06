@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\Core\Exception\Exception;
 use Cake\Event\Event;
@@ -201,7 +202,7 @@ class AddAssociatedActionTest extends TestCase
      */
     public function testInvocationWithLinkErrors()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode('400');
         try {
             $table = TableRegistry::getTableLocator()->get('FakeArticles');
@@ -226,7 +227,6 @@ class AddAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Error linking entities',
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
@@ -235,6 +235,7 @@ class AddAssociatedActionTest extends TestCase
             ];
 
             static::assertSame($expected, $e->getAttributes());
+            static::assertSame('Error linking entities', $e->getMessage());
 
             throw $e;
         }

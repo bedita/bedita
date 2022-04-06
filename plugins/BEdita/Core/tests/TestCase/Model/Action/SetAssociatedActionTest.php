@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\Exception\Exception;
 use Cake\Event\Event;
@@ -268,7 +269,7 @@ class SetAssociatedActionTest extends TestCase
      */
     public function testInvocationWithLinkErrors()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode('400');
         try {
             $table = TableRegistry::getTableLocator()->get('FakeArticles');
@@ -293,7 +294,6 @@ class SetAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Error linking entities',
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
@@ -302,6 +302,7 @@ class SetAssociatedActionTest extends TestCase
             ];
 
             static::assertSame($expected, $e->getAttributes());
+            static::assertSame('Error linking entities', $e->getMessage());
 
             throw $e;
         }
@@ -330,7 +331,7 @@ class SetAssociatedActionTest extends TestCase
      */
     public function testInvocationWithValidationErrors($source, $target)
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode('400');
         $field = 'some_field';
         $validationErrorMessage = 'Invalid email';
@@ -353,7 +354,6 @@ class SetAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Invalid data',
                 'detail' => [
                     $field => [
                         'email' => $validationErrorMessage,

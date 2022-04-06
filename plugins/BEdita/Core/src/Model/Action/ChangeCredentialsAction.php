@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Event\EventDispatcherTrait;
-use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -83,10 +83,7 @@ class ChangeCredentialsAction extends BaseAction
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);

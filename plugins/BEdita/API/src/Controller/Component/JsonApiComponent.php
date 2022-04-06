@@ -86,10 +86,11 @@ class JsonApiComponent extends Component
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Bad JSON input'),
-                'detail' => $e->getMessage(),
-            ]);
+            throw new BadRequestException(
+                __d('bedita', 'Bad JSON input'),
+                400,
+                $e
+            );
         }
     }
 

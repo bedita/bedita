@@ -108,7 +108,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $errorAttributes = $error->getAttributes();
         if (empty($errorAttributes['detail'])) {
-            return '';
+            return $error->getPrevious() ? $error->getPrevious()->getMessage() : '';
         }
         $d = $errorAttributes['detail'];
         if (is_string($d)) {
