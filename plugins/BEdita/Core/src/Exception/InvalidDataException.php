@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException as Exception;
 
 /**
  * Exception raised when invalid data are passed to Model/ORM classes
