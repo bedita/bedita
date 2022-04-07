@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\Cache\Cache;
-use Cake\Datasource\ModelAwareTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -25,7 +25,7 @@ use Cake\TestSuite\TestCase;
  */
 class QueryCacheBehaviorTest extends TestCase
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Fixtures
@@ -46,7 +46,7 @@ class QueryCacheBehaviorTest extends TestCase
      */
     public function testAfterDelete(): void
     {
-        $this->loadModel('Config');
+        $this->Config = $this->fetchTable('Config');
         $this->Config->fetchConfig(null, null)->toArray();
         $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read('config_any_any', $cacheConf);
@@ -56,7 +56,7 @@ class QueryCacheBehaviorTest extends TestCase
         $this->Config->deleteOrFail($config);
 
         $read = Cache::read('config_any_any', $cacheConf);
-        static::assertFalse($read);
+        static::assertNull($read);
     }
 
     /**
@@ -67,7 +67,7 @@ class QueryCacheBehaviorTest extends TestCase
      */
     public function testAfterSave(): void
     {
-        $this->loadModel('Config');
+        $this->Config = $this->fetchTable('Config');
         $this->Config->fetchConfig(null, null)->toArray();
         $behavior = $this->Config->behaviors()->get('QueryCache');
         $read = Cache::read('config_any_any', $behavior->getConfig('cacheConfig'));
@@ -78,6 +78,6 @@ class QueryCacheBehaviorTest extends TestCase
         $this->Config->saveOrFail($config);
 
         $read = Cache::read('config_any_any', $behavior->getConfig('cacheConfig'));
-        static::assertFalse($read);
+        static::assertNull($read);
     }
 }
