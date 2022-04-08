@@ -389,6 +389,6 @@ class TreeBehaviorTest extends TestCase
 
         $errors = $this->Table->checkIntegrity();
 
-        $this->assertEmpty($errors);
+        static::assertEmpty($errors);
     }
 }
