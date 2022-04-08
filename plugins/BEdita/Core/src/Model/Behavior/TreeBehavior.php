@@ -18,6 +18,7 @@ use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
 use Cake\ORM\Table;
 
@@ -42,6 +43,19 @@ class TreeBehavior extends CakeTreeBehavior
         ];
 
         parent::__construct($table, $config);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function beforeDelete(Event $event, EntityInterface $entity)
+    {
+        // ensure to use actual left and right fields
+        unset($entity[$this->getConfig('left')]);
+        unset($entity[$this->getConfig('right')]);
+        $this->_ensureFields($entity);
+
+        parent::beforeDelete($event, $entity);
     }
 
     /**
