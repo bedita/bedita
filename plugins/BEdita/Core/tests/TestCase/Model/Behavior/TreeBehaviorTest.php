@@ -374,7 +374,6 @@ class TreeBehaviorTest extends TestCase
      * @return void
      *
      * @covers ::beforeDelete()
-     * @covers ::reloadPosition()
      */
     public function testUnorderedDelete()
     {
