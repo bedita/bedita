@@ -46,7 +46,7 @@ class TreeBehavior extends CakeTreeBehavior
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
