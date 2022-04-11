@@ -20,7 +20,6 @@ use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
-use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer

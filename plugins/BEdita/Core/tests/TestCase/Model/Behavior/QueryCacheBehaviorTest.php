@@ -21,7 +21,6 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Model\Behavior\QueryCacheBehavior} Test Case
  *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
- *
  * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
 class QueryCacheBehaviorTest extends TestCase

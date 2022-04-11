@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Command\TreeCheckCommand} Test Case.
  *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
- *
  * @covers \BEdita\Core\Command\TreeCheckCommand
  */
 class TreeCheckCommandTest extends TestCase

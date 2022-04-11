@@ -32,7 +32,6 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\HasMany $ChildCategories
  * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectCategories
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsToMany $Objects
- *
  * @method \BEdita\Core\Model\Entity\Category get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Category newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] newEntities(array $data, array $options = [])
