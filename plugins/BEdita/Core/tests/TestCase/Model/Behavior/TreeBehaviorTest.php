@@ -34,6 +34,12 @@ class TreeBehaviorTest extends TestCase
         parent::setUp();
 
         $this->Table = TableRegistry::getTableLocator()->get('FakeCategories');
+        $this->Table->belongsToMany('ChildCategories', [
+            'className' => 'FakeCategories',
+            'joinTable' => 'fake_categories',
+            'foreignKey' => 'parent_id',
+            'targetForeignKey' => 'id',
+        ]);
         $this->Table->addBehavior('BEdita/Core.Tree', [
             'left' => 'left_idx',
             'right' => 'right_idx',
@@ -360,5 +366,29 @@ class TreeBehaviorTest extends TestCase
         $errors = $this->Table->checkIntegrity();
 
         static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::beforeDelete()} method with two siblings nodes.
+     *
+     * @return void
+     *
+     * @covers ::beforeDelete()
+     */
+    public function testUnorderedDelete()
+    {
+        $parentNode = $this->Table->find()
+            ->where(['name' => 'Mathematics'])
+            ->contain(['ChildCategories'])
+            ->firstOrFail();
+
+        $this->Table->ChildCategories->unlink($parentNode, [
+            $parentNode->child_categories[0],
+            $parentNode->child_categories[2],
+        ]);
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertEmpty($errors);
     }
 }
