@@ -124,7 +124,6 @@ class ProfileTest extends TestCase
      * @param mixed $expected Expected result.
      * @param mixed $website Website value.
      * @return void
-     *
      * @dataProvider setUrlProvider()
      * @covers ::_setWebsite()
      */
