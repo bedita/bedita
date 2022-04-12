@@ -21,13 +21,12 @@ use Cake\Core\ObjectRegistry;
  *
  * @method \BEdita\Core\Filesystem\ThumbnailGenerator get($name)
  * @method \BEdita\Core\Filesystem\ThumbnailGenerator load($objectName, $config = [])
- *
  * @since 4.0.0
  */
 class ThumbnailRegistry extends ObjectRegistry
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _resolveClassName($class)
     {
@@ -39,7 +38,7 @@ class ThumbnailRegistry extends ObjectRegistry
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _throwMissingClassError($class, $plugin)
     {
@@ -48,9 +47,12 @@ class ThumbnailRegistry extends ObjectRegistry
 
     /**
      * {@inheritDoc}
+     *
+     * @param string|object $class The class to build.
      */
     protected function _create($class, $alias, $config)
     {
+        $instance = null;
         if (is_object($class)) {
             $instance = $class;
         }

@@ -44,7 +44,7 @@ class AuthProviderTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -54,7 +54,7 @@ class AuthProviderTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -90,7 +90,6 @@ class AuthProviderTest extends TestCase
      * Test getter for `slug` property.
      *
      * @return void
-     *
      * @covers ::_getSlug()
      */
     public function testGetSlug()
@@ -130,7 +129,6 @@ class AuthProviderTest extends TestCase
      * @param array $expected Expected result.
      * @param array $configuration Initial configuration.
      * @return void
-     *
      * @covers ::getRoles()
      * @dataProvider getRolesProvider()
      */
@@ -180,7 +178,6 @@ class AuthProviderTest extends TestCase
      * @param array $configuration Initial configuration.
      * @param string $username Initial configuration.
      * @return void
-     *
      * @covers ::checkAuthorization()
      * @dataProvider checkAuthorizationProvider()
      */

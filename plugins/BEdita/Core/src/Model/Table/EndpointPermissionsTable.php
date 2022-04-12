@@ -28,9 +28,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Association\BelongsTo $Roles
- *
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @since 4.0.0
  */
 class EndpointPermissionsTable extends Table

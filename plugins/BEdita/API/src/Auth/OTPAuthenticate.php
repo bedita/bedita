@@ -67,7 +67,7 @@ class OTPAuthenticate extends BaseAuthenticate
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -80,7 +80,7 @@ class OTPAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
@@ -103,7 +103,7 @@ class OTPAuthenticate extends BaseAuthenticate
      * Retrieve access grant using authorization code and secret token.
      *
      * @param string $username User name
-     * @param ServerRequest $request Request object
+     * @param \Cake\Http\ServerRequest $request Request object
      * @return array|bool User data array on success, false on failure
      */
     protected function otpAccess($username, ServerRequest $request)

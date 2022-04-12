@@ -46,7 +46,7 @@ class ConsoleShell extends Shell
             return self::CODE_ERROR;
         }
 
-        $this->out("You can exit with <info>`CTRL-C`</info> or <info>`exit`</info>");
+        $this->out('You can exit with <info>`CTRL-C`</info> or <info>`exit`</info>');
         $this->out('');
 
         Log::drop('debug');
@@ -65,7 +65,7 @@ class ConsoleShell extends Shell
      * @return \Cake\Console\ConsoleOptionParser
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = new ConsoleOptionParser('console');
         $parser->setDescription(

@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
@@ -20,7 +22,6 @@ use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Mailer\TransportFactory;
@@ -55,12 +56,14 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.History',
-        'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -91,7 +94,7 @@ class SignupUserActionTest extends TestCase
                         'activation_url' => 'http://sample.com?confirm=true',
                         'redirect_url' => 'http://sample.com/ok',
                     ],
-                ]
+                ],
             ],
             'ok custom url' => [
                 true,
@@ -103,7 +106,7 @@ class SignupUserActionTest extends TestCase
                         'activation_url' => 'myapp://activate',
                         'redirect_url' => 'myapp://',
                     ],
-                ]
+                ],
             ],
             'ok json api' => [
                 true,
@@ -118,17 +121,14 @@ class SignupUserActionTest extends TestCase
                             'meta' => [
                                 'activation_url' => 'myapp://activate',
                                 'redirect_url' => 'myapp://',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
-                ]
+                ],
             ],
 
             'existing user' => [
-                new BadRequestException([
-                    'title' => 'User "second user" already registered',
-                    'code' => 'be_user_exists',
-                ]),
+                new UserExistsException('User "second user" already registered'),
                 [
                     'data' => [
                         'username' => 'second user',
@@ -136,27 +136,27 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => 'myapp://activate',
                     ],
-                ]
+                ],
             ],
 
             'missing activation_url' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['_required' => 'This field is required']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['_required' => 'This field is required']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
                         'password' => 'testsignup',
                         'email' => 'test.signup@example.com',
                     ],
-                ]
+                ],
             ],
             'activation url invalid' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -164,13 +164,13 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => '/activate',
                     ],
-                ]
+                ],
             ],
             'activation url invalid 2' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => ['activation_url' => ['customUrl' => 'The provided value is invalid']],
-                ]),
+                new InvalidDataException(
+                    'Invalid data',
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -178,7 +178,7 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => 'https://activate',
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -189,7 +189,6 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     *
      * @dataProvider executeProvider
      */
     public function testExecute($expected, array $data)
@@ -250,7 +249,7 @@ class SignupUserActionTest extends TestCase
                 ],
                 [
                     'owner_id' => 'test',
-                ]
+                ],
             ],
             'bad provider' => [
                 new UnauthorizedException('External auth provider not found'),
@@ -265,7 +264,7 @@ class SignupUserActionTest extends TestCase
                 ],
                 [
                     'owner_id' => 'test',
-                ]
+                ],
             ],
             'oauth2 fail' => [
                 new UnauthorizedException('External auth failed'),
@@ -292,7 +291,6 @@ class SignupUserActionTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     *
      * @dataProvider executeExtAuthProvider
      */
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
@@ -487,14 +485,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail when no conf for roles is present and role are passed
             'failNoRoles' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'Roles are not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -509,14 +507,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail beacause admin role not allowed in signup
             'failAdminRole' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'first role not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -548,14 +546,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is not set with signup roles conf present
             'failRoleNotSetWithAllowed' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
-                            '_required' => 'This field is required'
+                            '_required' => 'This field is required',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -571,14 +569,14 @@ class SignupUserActionTest extends TestCase
             ],
             // fail because roles is an empty array with signup roles conf present
             'failEmptyRoleWithAllowed' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             '_empty' => 'This field cannot be left empty',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -594,15 +592,15 @@ class SignupUserActionTest extends TestCase
                 ],
             ],
             // fail two not allowed roles
-            'failEmptyRoleWithAllowed' => [
-                new BadRequestException([
-                    'title' => 'Invalid data',
-                    'detail' => [
+            'filMultipleRolesNotAllowed' => [
+                new InvalidDataException(
+                    'Invalid data',
+                    [
                         'roles' => [
                             'validateRoles' => 'third_role, fourth_role not allowed on signup',
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 [
                     'data' => [
                         'username' => 'testsignup',
@@ -626,7 +624,6 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @param array $config Signup configuration.
-     *
      * @dataProvider rolesProvider
      * @return void
      */

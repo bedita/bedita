@@ -23,7 +23,7 @@ use DateTimeInterface;
 class DateType extends CakeDateType
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function marshal($value): ?DateTimeInterface
     {

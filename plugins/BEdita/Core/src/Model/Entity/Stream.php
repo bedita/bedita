@@ -54,7 +54,7 @@ class Stream extends Entity implements JsonApiSerializable
     use LogTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -64,7 +64,7 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'object_id',
@@ -72,7 +72,7 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'url',
@@ -107,7 +107,7 @@ class Stream extends Entity implements JsonApiSerializable
         if ($this->has('file_name')) {
             $fileName = Text::transliterate($this->file_name);
             preg_match('/^(.+?)((?:\.[a-z0-9]+)*)$/i', strtolower(basename($fileName)), $matches);
-            list(, $fileName, $extension) = $matches + [null, '', ''];
+            [, $fileName, $extension] = $matches + [null, '', ''];
             $fileName = '-' . Text::slug($fileName);
         }
         $fileName = $this->uuid . $fileName . $extension;

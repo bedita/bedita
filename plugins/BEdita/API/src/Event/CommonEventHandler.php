@@ -33,7 +33,7 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 class CommonEventHandler implements EventListenerInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

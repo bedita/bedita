@@ -50,7 +50,7 @@ class SetRelatedObjectsActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -60,7 +60,7 @@ class SetRelatedObjectsActionTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -174,7 +174,6 @@ class SetRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
@@ -195,6 +194,7 @@ class SetRelatedObjectsActionTest extends TestCase
                 ->where(function (QueryExpression $exp) use ($association, $related) {
                     return $exp->in($association->getTarget()->getPrimaryKey(), array_keys($related));
                 })
+                ->all()
                 ->map(function (EntityInterface $entity) use ($association, $related) {
                     $data = $related[$entity->id];
                     if (!empty($data) && $association instanceof RelatedTo) {
@@ -262,7 +262,7 @@ class SetRelatedObjectsActionTest extends TestCase
     public function testSetEntitiesRelatedToOtherObject(): void
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
-        $relatedEntities = ($Documents->get(3, ['contain' => ['Test']]))->get('test');
+        $relatedEntities = $Documents->get(3, ['contain' => ['Test']])->get('test');
 
         $entity = $Documents->get(2, ['contain' => ['Test']]);
         static::assertCount(2, $entity->get('test'));

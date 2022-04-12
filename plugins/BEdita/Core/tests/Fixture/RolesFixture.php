@@ -21,7 +21,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class RolesFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         [

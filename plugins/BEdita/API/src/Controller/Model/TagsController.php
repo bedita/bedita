@@ -17,18 +17,17 @@ namespace BEdita\API\Controller\Model;
  * Controller for `/model/tags` endpoint.
  *
  * @since 4.4.0
- *
  * @property \BEdita\Core\Model\Table\TagsTable $Tags
  */
 class TagsController extends ModelController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Tags';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

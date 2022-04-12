@@ -70,13 +70,13 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     public const NULLABLE_OBJECT_ARRAY = [
         'oneOf' => [
             [
-                'type' => 'null'
+                'type' => 'null',
             ],
             [
                 'type' => 'array',
                 'uniqueItems' => true,
                 'items' => [
-                    'type' => 'object'
+                    'type' => 'object',
                 ],
             ],
         ],
@@ -90,7 +90,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -106,7 +106,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'alias',
@@ -116,7 +116,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'objects',
@@ -205,7 +205,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function _setTable(string $table): void
     {
-        list($plugin, $model) = pluginSplit($table);
+        [$plugin, $model] = pluginSplit($table);
 
         $this->plugin = $plugin;
         $this->model = $model;
@@ -289,7 +289,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected static function listAssociations(Table $Table, array $hidden = []): array
     {
@@ -397,7 +397,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             sort($types);
             $res[$relation->get($name)] = [
                 'label' => $relation->get($label),
-                'params' => $relation->params
+                'params' => $relation->params,
             ] + compact('types');
         }
 

@@ -30,7 +30,7 @@ class TrashControllerTest extends IntegrationTestCase
     protected $Objects;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -43,7 +43,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -146,7 +145,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -189,7 +187,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::view()
      * @covers ::initialize()
      */
@@ -285,7 +282,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete restore method.
      *
      * @return void
-     *
      * @dataProvider restoreProvider
      * @covers ::restore()
      * @covers ::initialize()
@@ -310,7 +306,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::delete()
      * @covers ::initialize()
      */
@@ -342,7 +337,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::view()
      * @covers ::initialize()
      */
@@ -377,7 +371,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash view on locked & deleted object.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testLockedView()
@@ -391,7 +384,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash restore on locked & deleted object.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testLockedRestore()
@@ -409,7 +401,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash delete on locked & deleted object.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testLockedDelete()

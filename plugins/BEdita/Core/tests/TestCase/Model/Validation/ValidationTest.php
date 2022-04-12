@@ -48,10 +48,9 @@ class ValidationTest extends TestCase
     /**
      * Test reserved word validation.
      *
-     * @param boolean $expected Expected result.
+     * @param bool $expected Expected result.
      * @param string $value Test value.
      * @return void
-     *
      * @dataProvider reservedProvider()
      * @covers ::notReserved()
      */
@@ -66,7 +65,6 @@ class ValidationTest extends TestCase
      * Test clear and load runtime cache.
      *
      * @return void
-     *
      * @covers ::clear()
      * @covers ::reservedWords()
      */
@@ -118,7 +116,6 @@ class ValidationTest extends TestCase
      * @param bool $expected Expected result.
      * @param string $url URL being validated.
      * @return void
-     *
      * @dataProvider urlProvider()
      * @covers ::url()
      */
@@ -215,7 +212,6 @@ class ValidationTest extends TestCase
      * @param mixed $value Value being validated.
      * @param mixed $jsonSchema JSON Schema.
      * @return void
-     *
      * @dataProvider jsonSchemaProvider()
      * @covers ::jsonSchema()
      */
@@ -267,7 +263,6 @@ class ValidationTest extends TestCase
      * @param array $config I18n config.
      * @param string $lang Lang tag being validated.
      * @return void
-     *
      * @dataProvider languageTagProvider()
      * @covers ::languageTag()
      */
@@ -329,7 +324,6 @@ class ValidationTest extends TestCase
      * @param bool|string $expected Expected result.
      * @param string|int $value Datetime validated.
      * @return void
-     *
      * @dataProvider dateTimeProvider()
      * @covers ::dateTime()
      */

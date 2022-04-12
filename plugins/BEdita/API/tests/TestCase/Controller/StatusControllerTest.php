@@ -24,7 +24,6 @@ class StatusControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -53,7 +52,6 @@ class StatusControllerTest extends IntegrationTestCase
      * Test index method with `Accept: * / *` header.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -82,7 +80,6 @@ class StatusControllerTest extends IntegrationTestCase
      * Test `HEAD` request.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */

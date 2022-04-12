@@ -37,7 +37,7 @@ class InheritanceEventHandler implements EventListenerInterface
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {
@@ -111,7 +111,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
@@ -148,8 +148,8 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * Update entities with previously kept back properties with `__` prefix
      *
-     * @param Event $event Dispatched event.
-     * @param EntityInterface $entity Entity.
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
     public function afterSave(Event $event, EntityInterface $entity)
@@ -174,7 +174,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {

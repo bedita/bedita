@@ -42,7 +42,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function render(): Response
     {
@@ -71,7 +71,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _message(\Exception $error, $status): string
     {
@@ -94,8 +94,6 @@ class ExceptionRenderer extends CakeExceptionRenderer
      *    ['field2' => [...]],
      *  ],
      *
-     *
-     *
      * @param \Exception $error Exception.
      * @return string Error message
      */
@@ -107,7 +105,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $errorAttributes = $error->getAttributes();
         if (empty($errorAttributes['detail'])) {
-            return '';
+            return $error->getPrevious() ? $error->getPrevious()->getMessage() : '';
         }
         $d = $errorAttributes['detail'];
         if (is_string($d)) {
@@ -153,7 +151,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _outputMessageSafe($template): Response
     {
@@ -167,7 +165,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _template(\Exception $exception, $method, $code): string
     {

@@ -22,7 +22,7 @@ use Cake\Database\Type\DateTimeType as CakeDateTimeType;
 class DateTimeType extends CakeDateTimeType
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function marshal($value)
     {
@@ -44,7 +44,6 @@ class DateTimeType extends CakeDateTimeType
      *
      * @param mixed $value DateTime input
      * @param string $dateTimeClassName DateTime class name to use to parse string
-     *
      * @return \DateTimeInterface|null|mixed
      */
     public static function marshalDateTime($value, $dateTimeClassName)
@@ -54,7 +53,7 @@ class DateTimeType extends CakeDateTimeType
         }
 
         if (Validation::dateTime($value) === true) {
-            /* @var \Cake\I18n\Time|\Cake\I18n\FrozenTime $value */
+            /** @var \Cake\I18n\Time|\Cake\I18n\FrozenTime $value */
             $value = call_user_func([$dateTimeClassName, 'parse'], $value);
             if ($value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');

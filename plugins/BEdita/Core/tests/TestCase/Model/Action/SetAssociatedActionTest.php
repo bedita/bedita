@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\Exception\Exception;
 use Cake\Event\Event;
@@ -44,7 +45,7 @@ class SetAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -184,7 +185,6 @@ class SetAssociatedActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
@@ -269,7 +269,7 @@ class SetAssociatedActionTest extends TestCase
      */
     public function testInvocationWithLinkErrors()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode('400');
         try {
             $table = TableRegistry::getTableLocator()->get('FakeArticles');
@@ -294,7 +294,6 @@ class SetAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Error linking entities',
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
@@ -303,6 +302,7 @@ class SetAssociatedActionTest extends TestCase
             ];
 
             static::assertSame($expected, $e->getAttributes());
+            static::assertSame('Error linking entities', $e->getMessage());
 
             throw $e;
         }
@@ -327,12 +327,11 @@ class SetAssociatedActionTest extends TestCase
      * @param int $source Source entity ID.
      * @param int $target Target entity ID.
      * @return void
-     *
      * @dataProvider invocationWithValidationErrorsProvider()
      */
     public function testInvocationWithValidationErrors($source, $target)
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode('400');
         $field = 'some_field';
         $validationErrorMessage = 'Invalid email';
@@ -355,7 +354,6 @@ class SetAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Invalid data',
                 'detail' => [
                     $field => [
                         'email' => $validationErrorMessage,
@@ -397,7 +395,6 @@ class SetAssociatedActionTest extends TestCase
      * @param int $tagId Tag entity id.
      * @param bool $joinDataAsEntity It says if join data is to treat as entity.
      * @return void
-     *
      * @dataProvider joinDataProvider()
      */
     public function testInvocationOKWithJoinData($articleId, $tagId, $joinDataAsEntity)

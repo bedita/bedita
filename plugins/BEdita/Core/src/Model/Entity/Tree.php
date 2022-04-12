@@ -36,13 +36,12 @@ use Cake\ORM\TableRegistry;
  * @property \BEdita\Core\Model\Entity\ObjectEntity $root_object
  * @property \BEdita\Core\Model\Entity\Tree $parent_node
  * @property \BEdita\Core\Model\Entity\Tree[] $child_nodes
- *
  * @since 4.0.0
  */
 class Tree extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -104,7 +103,7 @@ class Tree extends Entity
      * @param \BEdita\Core\Model\Entity\Folder|null $folder The folder entity to set as parent
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _setParentObject(Folder $folder = null)
+    protected function _setParentObject(?Folder $folder = null)
     {
         $parentId = null;
         if ($folder !== null) {

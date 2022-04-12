@@ -46,7 +46,7 @@ class ExternalAuthTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -56,7 +56,7 @@ class ExternalAuthTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {

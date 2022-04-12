@@ -13,16 +13,15 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventDispatcherTrait;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsToMany;
 
 /**
  * Trait to help with operations on and with associated entities.
  *
  * @since 4.0.0
- *
  * @property-read \Cake\ORM\Association\BelongsToMany|\Cake\ORM\Association\HasMany $Association
  */
 trait AssociatedTrait
@@ -132,7 +131,7 @@ trait AssociatedTrait
      */
     protected function existing(EntityInterface $source)
     {
-        if (!$source->has(($this->Association->getProperty()))) {
+        if (!$source->has($this->Association->getProperty())) {
             $this->Association->getSource()->loadInto($source, [$this->Association->getName()]);
         }
 
@@ -204,10 +203,7 @@ trait AssociatedTrait
         $this->Association->junction()->patchEntity($joinData, $data ?: []);
         $errors = $joinData->getErrors();
         if (!empty($errors)) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         $target->set('_joinData', $joinData);
@@ -256,10 +252,7 @@ trait AssociatedTrait
         $existingJoin = $this->Association->junction()->patchEntity($existingJoin, $data);
         $errors = $existingJoin->getErrors();
         if (!empty($errors)) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         return $existing;

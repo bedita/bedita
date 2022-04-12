@@ -22,7 +22,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  * Task to setup API key.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ApplicationsTable $Applications
  */
 class CheckApiKeyTask extends Shell
@@ -44,7 +43,7 @@ class CheckApiKeyTask extends Shell
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function main()
     {

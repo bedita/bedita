@@ -25,7 +25,6 @@ use Cake\Utility\Hash;
  * Handles JSON API data format in input and in output
  *
  * @since 4.0.0
- *
  * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  */
 class JsonApiComponent extends Component
@@ -35,15 +34,15 @@ class JsonApiComponent extends Component
      *
      * @var string
      */
-    const CONTENT_TYPE = 'application/vnd.api+json';
+    public const CONTENT_TYPE = 'application/vnd.api+json';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $components = ['RequestHandler'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'contentType' => null,
@@ -53,7 +52,7 @@ class JsonApiComponent extends Component
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -87,10 +86,11 @@ class JsonApiComponent extends Component
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Bad JSON input'),
-                'detail' => $e->getMessage(),
-            ]);
+            throw new BadRequestException(
+                __d('bedita', 'Bad JSON input'),
+                400,
+                $e
+            );
         }
     }
 
@@ -104,7 +104,7 @@ class JsonApiComponent extends Component
      * @param array|null $meta Additional metadata about error.
      * @return void
      */
-    public function error($status, $title, $detail = null, $code = null, array $meta = null)
+    public function error($status, $title, $detail = null, $code = null, ?array $meta = null)
     {
         $controller = $this->getController();
 
@@ -138,12 +138,12 @@ class JsonApiComponent extends Component
             $query['page'] = null;
             $links['first'] = Router::reverse($request->withQueryParams($query), true);
 
-            $query['page'] = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
+            $query['page'] = $paging['pageCount'] > 1 ? $paging['pageCount'] : null;
             $links['last'] = Router::reverse($request->withQueryParams($query), true);
 
             $links['prev'] = null;
             if ($paging['prevPage']) {
-                $query['page'] = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
+                $query['page'] = $paging['page'] > 2 ? $paging['page'] - 1 : null;
                 $links['prev'] = Router::reverse($request->withQueryParams($query), true);
             }
 
@@ -197,9 +197,9 @@ class JsonApiComponent extends Component
      * @return void
      * @throws \Cake\Http\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
      */
-    protected function allowedResourceTypes($types, array $data = null)
+    protected function allowedResourceTypes($types, ?array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->getRequest()->getData() : $data;
+        $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || !$types) {
             return;
         }
@@ -232,9 +232,9 @@ class JsonApiComponent extends Component
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
      */
-    protected function allowClientGeneratedIds($allow = true, array $data = null)
+    protected function allowClientGeneratedIds($allow = true, ?array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->getRequest()->getData() : $data;
+        $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || $allow) {
             return;
         }

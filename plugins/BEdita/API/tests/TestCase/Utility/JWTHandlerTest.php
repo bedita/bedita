@@ -13,11 +13,9 @@
 
 namespace BEdita\API\Test\TestCase\Utility;
 
-use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
@@ -63,11 +61,8 @@ class JWTHandlerTest extends TestCase
      * @param string $token Token.
      * @param array $options Decode options.
      * @return void
-     *
      * @dataProvider decodeProvider
-     *
      * @covers ::decode()
-     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testDecode($expected, string $token, array $options = []): void
     {
@@ -85,7 +80,6 @@ class JWTHandlerTest extends TestCase
      * Test `tokens` method.
      *
      * @return void
-     *
      * @covers ::tokens()
      * @covers ::applicationData()
      */
@@ -134,7 +128,6 @@ class JWTHandlerTest extends TestCase
      * Test `applicationData` method.
      *
      * @return void
-     *
      * @covers ::applicationData()
      */
     public function testApplicationData(): void

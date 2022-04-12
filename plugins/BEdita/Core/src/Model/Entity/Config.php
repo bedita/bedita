@@ -28,7 +28,6 @@ use Cake\ORM\TableRegistry;
  * @property int $application_id
  *
  * @property \BEdita\Core\Model\Entity\Application|null $application
- *
  * @since 4.0.0
  */
 class Config extends Entity implements JsonApiSerializable
@@ -36,7 +35,7 @@ class Config extends Entity implements JsonApiSerializable
     use JsonApiAdminTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

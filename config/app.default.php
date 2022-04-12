@@ -465,7 +465,7 @@ return [
         'passwordPolicy' => [
             'rule' => '',
             'message' => '',
-        ]
+        ],
     ],
 
     /**

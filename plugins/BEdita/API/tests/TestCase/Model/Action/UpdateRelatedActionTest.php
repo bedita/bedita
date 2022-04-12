@@ -146,7 +146,6 @@ class UpdateRelatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, string $table, string $association, int $id, $data): void

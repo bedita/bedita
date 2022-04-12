@@ -58,7 +58,7 @@ class LinksTableTest extends TestCase
                     'title' => 'gustavo link',
                     'url' => 'https://www.gustavo.com',
                     'http_status' => '200 OK',
-                    'last_update' => '2020-04-29 16:15:00'
+                    'last_update' => '2020-04-29 16:15:00',
                 ],
             ],
         ];
@@ -70,9 +70,7 @@ class LinksTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
-     *
      * @covers ::initialize()
      * @covers ::validationDefault()
      */

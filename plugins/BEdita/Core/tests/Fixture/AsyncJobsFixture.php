@@ -131,7 +131,7 @@ class AsyncJobsFixture extends TestFixture
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct()
     {

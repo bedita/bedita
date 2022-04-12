@@ -22,7 +22,6 @@ use Cake\Http\Response;
  * Controller for `/model/schema/{type}` endpoint.
  *
  * @since 4.0.0
- *
  */
 class SchemaController extends JsonBaseController
 {
@@ -31,7 +30,7 @@ class SchemaController extends JsonBaseController
      *
      * @var string
      */
-    const CONTENT_TYPE = 'application/schema+json';
+    public const CONTENT_TYPE = 'application/schema+json';
 
     /**
      * {@inheritDoc}
@@ -65,7 +64,7 @@ class SchemaController extends JsonBaseController
         $schema = JsonSchema::generate($typeName, $url);
 
         $this->set($schema);
-        $this->set('_serialize', true);
+        $this->setSerialize(array_keys((array)$schema));
 
         $response = $this->render()
             ->withType(static::CONTENT_TYPE);

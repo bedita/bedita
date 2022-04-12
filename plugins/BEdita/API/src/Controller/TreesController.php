@@ -14,7 +14,6 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Entity\Tree;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\NotFoundException;
@@ -86,7 +85,7 @@ class TreesController extends AppController
     protected $treesNode;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -131,7 +130,7 @@ class TreesController extends AppController
     /**
      * Check path validity.
      *
-     * @param EntityInterface $entity Object entity.
+     * @param \Cake\Datasource\EntityInterface $entity Object entity.
      * @param array $parents Parents ID array.
      * @return void
      */
@@ -224,7 +223,7 @@ class TreesController extends AppController
         $id = Hash::get($this->pathInfo['ids'], $count - 1);
         $parentId = Hash::get($this->pathInfo['ids'], $count - 2);
 
-        /** @var Tree $node */
+        /** @var \BEdita\Core\Model\Entity\Tree|null $node */
         $node = $this->Trees->find()
             ->where([
                 'object_id' => $id,
@@ -242,7 +241,7 @@ class TreesController extends AppController
      * Load object entity
      *
      * @param int $id Object ID
-     * @return EntityInterface
+     * @return \Cake\Datasource\EntityInterface
      */
     protected function loadObject(int $id): EntityInterface
     {
@@ -263,7 +262,7 @@ class TreesController extends AppController
     /**
      * Retrieve `contain` associations array
      *
-     * @param ObjectType $objectType Object type entity
+     * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type entity
      * @return array
      */
     protected function getContain(ObjectType $objectType): array

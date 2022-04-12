@@ -24,7 +24,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -103,7 +102,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -123,7 +121,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -158,7 +155,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -197,7 +193,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -223,7 +218,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -250,7 +244,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             'error' => [
                 'status' => '403',
                 'title' => 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE',
-            ]
+            ],
         ];
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
@@ -299,7 +293,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -346,7 +339,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -381,7 +373,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -406,7 +397,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -428,7 +418,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -448,7 +437,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -474,7 +462,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a non-existing object ID.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -508,7 +495,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method with a non-existing association.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
@@ -535,7 +521,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a wrong type.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()

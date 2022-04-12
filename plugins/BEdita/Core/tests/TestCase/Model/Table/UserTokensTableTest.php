@@ -10,6 +10,7 @@ use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
+ *
  * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
  */
 class UserTokensTableTest extends TestCase
@@ -110,7 +111,6 @@ class UserTokensTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider
      * @covers ::validationDefault()
      */

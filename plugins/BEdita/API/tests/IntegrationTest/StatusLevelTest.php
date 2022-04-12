@@ -64,7 +64,6 @@ class StatusLevelTest extends IntegrationTestCase
      * @param string $config The `Status.level` config
      * @param string $url The test URL
      * @return void
-     *
      * @dataProvider listProvider
      * @coversNothing
      */
@@ -115,7 +114,6 @@ class StatusLevelTest extends IntegrationTestCase
      * @param string $config The `Status.level` config
      * @param string $url The test URL
      * @return void
-     *
      * @dataProvider singleProvider
      * @coversNothing
      */

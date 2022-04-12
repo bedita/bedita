@@ -31,7 +31,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_modified
- *
+ * @property array $user_preferences
  * @since 4.0.0
  */
 class User extends Profile
@@ -39,7 +39,7 @@ class User extends Profile
     use LocatorAwareTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $properties = [], array $options = [])
     {
@@ -93,6 +93,7 @@ class User extends Profile
         return $this->getTableLocator()
             ->get('ExternalAuth')
             ->find('user', ['user' => $this->id])
+            ->all()
             ->map(function (ExternalAuth $item) {
                 return [
                     'provider' => $item->auth_provider->name,

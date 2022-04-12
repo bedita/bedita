@@ -26,7 +26,6 @@ class ProjectControllerTest extends IntegrationTestCase
      * Test `index()` method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -319,7 +318,6 @@ class ProjectControllerTest extends IntegrationTestCase
      * Test `beforeFilter()` method.
      *
      * @return void
-     *
      * @covers ::beforeFilter()
      */
     public function testBeforeFilter(): void

@@ -41,7 +41,7 @@ class PropertiesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -51,7 +51,7 @@ class PropertiesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -108,7 +108,6 @@ class PropertiesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      */
@@ -195,7 +194,6 @@ class PropertiesTableTest extends TestCase
      * @param array|\Exception $expected List of expected properties names.
      * @param array $options Options to be passed to finder.
      * @return void
-     *
      * @dataProvider findObjectTypeProvider()
      * @covers ::findObjectType()
      */
@@ -209,6 +207,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', $options)
             ->find('type', ['dynamic'])
+            ->all()
             ->extract('name')
             ->toList();
 
@@ -319,7 +318,6 @@ class PropertiesTableTest extends TestCase
      * @param string $objectType Object type to find properties for
      * @param string $type Type of properties to be returned.
      * @return void
-     *
      * @dataProvider findTypeProvider()
      * @covers ::findType()
      */
@@ -335,6 +333,7 @@ class PropertiesTableTest extends TestCase
         $result = $this->Properties->find('objectType', [$objectType])
             ->find('type', [$type])
             ->where(['enabled' => true])
+            ->all()
             ->each(function ($row) use (&$count) {
                 $count++;
                 static::assertTrue(is_object($row));
@@ -357,7 +356,6 @@ class PropertiesTableTest extends TestCase
      * Test that by default both static and custom properties are returned.
      *
      * @return void
-     *
      * @covers ::beforeFind()
      */
     public function testBeforeFindDefault()
@@ -397,6 +395,7 @@ class PropertiesTableTest extends TestCase
         ];
 
         $result = $this->Properties->find('objectType', ['media'])
+            ->all()
             ->extract('name')
             ->toList();
 
@@ -407,7 +406,6 @@ class PropertiesTableTest extends TestCase
      * Test that default options do not overwrite user-defined options.
      *
      * @return void
-     *
      * @covers ::beforeFind()
      */
     public function testBeforeFindDoNotOverwrite()

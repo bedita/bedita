@@ -24,7 +24,7 @@ namespace BEdita\Core\Model\Action;
 class ListRelatedFoldersAction extends ListRelatedObjectsAction
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

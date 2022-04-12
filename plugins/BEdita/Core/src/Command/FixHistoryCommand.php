@@ -29,13 +29,12 @@ use Generator;
  * looking at `objects.created_by` and `objects.modified_by` properties.
  *
  * @since 4.6.0
- *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class FixHistoryCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 
@@ -75,7 +74,7 @@ class FixHistoryCommand extends Command
     protected $maxId;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -105,7 +104,7 @@ class FixHistoryCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -173,7 +172,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryCreate(ObjectEntity $object): void
     {
-        /** @var \BEdita\Core\Model\Entity\History $history */
+        /** @var \BEdita\Core\Model\Entity\History|null $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -181,7 +180,6 @@ class FixHistoryCommand extends Command
                 $this->History->aliasField('user_action') => 'create',
             ])
             ->first();
-
         if (empty($history)) {
             $history = $this->historyEntity($object);
             $history->user_action = 'create';
@@ -200,7 +198,7 @@ class FixHistoryCommand extends Command
      */
     protected function fixHistoryUpdate(ObjectEntity $object): void
     {
-        /** @var \BEdita\Core\Model\Entity\History $history */
+        /** @var \BEdita\Core\Model\Entity\History|null $history */
         $history = $this->History
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
@@ -208,7 +206,6 @@ class FixHistoryCommand extends Command
                 sprintf("%s != 'create'", $this->History->aliasField('user_action')),
             ])
             ->first();
-
         if (empty($history)) {
             $history = $this->historyEntity($object);
             $history->user_action = 'update';
@@ -242,7 +239,7 @@ class FixHistoryCommand extends Command
      * @param bool $created Created flag, if true look for `create` action in history
      * @param int $from From ID
      * @param int $to To ID
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function missingHistoryQuery(bool $created, int $from, int $to): Query
     {

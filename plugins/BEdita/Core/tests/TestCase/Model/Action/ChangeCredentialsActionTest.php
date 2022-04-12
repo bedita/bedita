@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\AsyncJob;
@@ -20,7 +21,6 @@ use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\I18n\Time;
-use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -52,7 +52,7 @@ class ChangeCredentialsActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -60,7 +60,7 @@ class ChangeCredentialsActionTest extends TestCase
 
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
     }
 
@@ -82,7 +82,7 @@ class ChangeCredentialsActionTest extends TestCase
                 ],
                 'scheduled_from' => new Time('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
@@ -90,7 +90,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test invocation of command.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
      */
@@ -125,13 +124,12 @@ class ChangeCredentialsActionTest extends TestCase
      * Test validate failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
      */
     public function testValidationFail()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $data = [
             'uuid' => 'whatatoken!',
         ];
@@ -148,7 +146,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test find job failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
      */
@@ -172,7 +169,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test payload failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
      */

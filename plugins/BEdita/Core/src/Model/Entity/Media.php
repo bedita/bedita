@@ -30,7 +30,7 @@ use Cake\Utility\Hash;
 class Media extends ObjectEntity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $properties = [], array $options = [])
     {

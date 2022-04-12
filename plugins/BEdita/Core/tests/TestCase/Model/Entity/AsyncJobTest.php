@@ -124,7 +124,6 @@ class AsyncJobTest extends TestCase
      * @param string $expected Expected status.
      * @param string $uuid UUID of
      * @return void
-     *
      * @dataProvider getStatusProvider()
      * @covers ::_getStatus()
      */
@@ -140,7 +139,6 @@ class AsyncJobTest extends TestCase
      * Test running a non-locked asynchronous job.
      *
      * @return void
-     *
      * @covers ::run()
      */
     public function testRunNotLocked()
@@ -154,7 +152,6 @@ class AsyncJobTest extends TestCase
      * Test running an asynchronous job.
      *
      * @return void
-     *
      * @covers ::run()
      */
     public function testRun()

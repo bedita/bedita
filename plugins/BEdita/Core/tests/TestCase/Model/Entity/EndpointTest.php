@@ -48,7 +48,7 @@ class EndpointTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -58,7 +58,7 @@ class EndpointTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -128,7 +128,6 @@ class EndpointTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The object type name
      * @return void
-     *
      * @covers ::_setObjectTypeName()
      * @dataProvider setObjectTypeNameProvider()
      */

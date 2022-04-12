@@ -49,7 +49,7 @@ class JsonSchemaTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -117,6 +117,7 @@ class JsonSchemaTest extends TestCase
                         'surname',
                         'title',
                         'uname',
+                        'user_preferences',
                         'username',
                         'vat_number',
                         'verified',
@@ -212,7 +213,6 @@ class JsonSchemaTest extends TestCase
      * @param array|bool|\Exception $expected Expected result.
      * @param string $name Type name.
      * @return void
-     *
      * @dataProvider generateProvider()
      * @covers ::generate()
      * @covers ::typeSchema()

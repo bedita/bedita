@@ -21,7 +21,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 class AuthProvidersFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $records = [
         // 1

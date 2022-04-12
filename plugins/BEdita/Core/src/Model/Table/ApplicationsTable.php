@@ -37,11 +37,8 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class ApplicationsTable extends Table
@@ -51,7 +48,7 @@ class ApplicationsTable extends Table
      *
      * @var int
      */
-    const DEFAULT_APPLICATION = 1;
+    public const DEFAULT_APPLICATION = 1;
 
     /**
      * {@inheritDoc}

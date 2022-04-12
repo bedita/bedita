@@ -32,7 +32,7 @@ class FoldersControllerTest extends IntegrationTestCase
     public $Folders;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -42,7 +42,7 @@ class FoldersControllerTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -55,7 +55,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIndex()
@@ -242,7 +241,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testEmpty()
@@ -284,7 +282,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSingle()
@@ -361,7 +358,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testMissing()
@@ -395,7 +391,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAdd()
@@ -422,7 +417,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testEdit()
@@ -453,7 +447,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDelete()
@@ -495,7 +488,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test related method to get `parent` folder.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
@@ -516,7 +508,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test that an error is returned getting `parents` folder.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
@@ -541,7 +532,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test related method to get `children` objects.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      * @covers ::getAvailableTypes()
      * @covers ::getAssociatedAction()
@@ -576,7 +566,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test `?include` query parameter on related endpoint.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      */
     public function testRelatedIncludeSiblings(): void
@@ -596,7 +585,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test `?include` query parameter on related endpoint.
      *
      * @return void
-     *
      * @covers ::findAssociation()
      */
     public function testRelatedIncludeCreatorWithRoles(): void
@@ -680,7 +668,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param string $method The http method.
      * @param array $data Payload to use for the request.
      * @return void
-     *
      * @dataProvider setRelationshipsAllowedMethodsProvider
      * @covers ::setRelationshipsAllowedMethods()
      */
@@ -699,7 +686,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test set `parent` folder relationship
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSetParent()
@@ -734,7 +720,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test patch `parent` relationship with metadata
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testPatchParentMeta()
@@ -793,7 +778,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test set children relationship
      *
      * @return void
-     *
      * @covers ::relationships()
      * @covers ::getDataSortedByPosition()
      */
@@ -826,7 +810,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test deleted objects as `children`
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeletedChildren()
@@ -854,7 +837,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test `?include=children` query
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIncludeChildren()
@@ -872,7 +854,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test `?include=parent` query
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIncludeParent()
@@ -903,7 +884,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @param int|null $id Folder ID to get.
      * @return void
-     *
      * @dataProvider getOrphanFolderProvider
      * @coversNothing
      */
@@ -956,7 +936,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param int $folderId The folder to move
      * @param int|null $parentId the new parent
      * @return void
-     *
      * @dataProvider moveFolderProvider
      * @coversNothing
      */
@@ -1018,7 +997,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test setting a folder's children with position.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSetChildrenPosition()
@@ -1082,7 +1060,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param string $expected Expected error.
      * @param int|string $position Desired position.
      * @return void
-     *
      * @dataProvider setChildrenPositionInvalidProvider()
      * @coversNothing
      */
@@ -1116,7 +1093,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * Test updating an object's position within its parent using `POST`.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testUpdateChildPosition()
@@ -1245,7 +1221,7 @@ class FoldersControllerTest extends IntegrationTestCase
                 [
                     'orphan doc one' => null,
                     'orphan doc two' => '2',
-                ]
+                ],
             ],
         ];
     }
@@ -1257,7 +1233,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param array $objData The data for object to create as child and move.
      * @param array $orphansToAdd The data for object to add as new children.
      * @return void
-     *
      * @dataProvider moveChildrenProvider
      * @covers ::relationships()
      * @covers ::getDataSortedByPosition()

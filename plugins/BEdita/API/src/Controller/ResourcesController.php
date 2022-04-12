@@ -67,7 +67,7 @@ abstract class ResourcesController extends AppController
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(): void
     {
@@ -339,10 +339,8 @@ abstract class ResourcesController extends AppController
                 }
 
                 $this->set(compact('data'));
-                $this->set([
-                    '_serialize' => ['data'],
-                    '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META
-                ]);
+                $this->setSerialize(['data']);
+                $this->set('_jsonApiOptions', JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META);
 
                 $available = $this->getAvailableUrl($relationship);
                 $this->set('_links', compact('available'));
@@ -362,7 +360,7 @@ abstract class ResourcesController extends AppController
                 ->withStatus(204);
         }
 
-        $this->set(['_serialize' => []]);
+        $this->setSerialize([]);
 
         return null;
     }

@@ -13,12 +13,12 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 
@@ -47,7 +47,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -55,7 +55,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
 
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
     }
 
@@ -96,7 +96,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
      */
     public function testValidationFail()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(InvalidDataException::class);
         $data = [
             'contact' => 'ask gustavo',
         ];

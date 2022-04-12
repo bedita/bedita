@@ -28,7 +28,6 @@ class HomeControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::endpointFeatures()
      * @covers ::objectTypesEndpoints()
@@ -50,11 +49,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/auth',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST'
+                                'GET', 'POST',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Auth',
@@ -67,11 +66,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/documents',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Documents',
@@ -84,11 +83,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/profiles',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Profiles',
@@ -101,11 +100,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/objects',
                         'hints' => [
                             'allow' => [
-                                'GET', 'DELETE'
+                                'GET', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Objects',
@@ -118,11 +117,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/users',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Users',
@@ -135,11 +134,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/locations',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Locations',
@@ -152,11 +151,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/events',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Events',
@@ -169,11 +168,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/roles',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Roles',
@@ -186,11 +185,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/model',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Model',
@@ -203,11 +202,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/admin',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Admin',
@@ -220,11 +219,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/status',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Status',
@@ -237,11 +236,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/signup',
                         'hints' => [
                             'allow' => [
-                                'POST'
+                                'POST',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Signup',
@@ -254,11 +253,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/translations',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Translations',
@@ -271,11 +270,11 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/trash',
                         'hints' => [
                             'allow' => [
-                                'GET', 'POST', 'PATCH', 'DELETE'
+                                'GET', 'POST', 'PATCH', 'DELETE',
                             ],
                             'formats' => [
                                 'application/json',
-                                'application/vnd.api+json'
+                                'application/vnd.api+json',
                             ],
                             'display' => [
                                 'label' => 'Trash',
@@ -369,7 +368,6 @@ class HomeControllerTest extends IntegrationTestCase
      * Test `/home` endpoint with blocked `/documents` endpoint
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::endpointFeatures()
      */

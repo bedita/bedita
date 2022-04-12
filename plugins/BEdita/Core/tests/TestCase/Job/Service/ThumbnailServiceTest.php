@@ -60,7 +60,7 @@ class ThumbnailServiceTest extends TestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -82,7 +82,7 @@ class ThumbnailServiceTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -151,7 +151,6 @@ class ThumbnailServiceTest extends TestCase
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
-     *
      * @dataProvider runProvider()
      * @covers ::run()
      */

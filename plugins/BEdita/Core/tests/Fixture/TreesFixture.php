@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * TreesFixture
- *
  */
 class TreesFixture extends TestFixture
 {

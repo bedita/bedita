@@ -14,8 +14,8 @@
 namespace BEdita\Core\Model\Action;
 
 use ArrayObject;
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Datasource\EntityInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
@@ -55,10 +55,10 @@ class SetAssociatedAction extends UpdateAssociatedAction
                     ($relatedEntity->get('_joinData') instanceof EntityInterface) &&
                     $relatedEntity->get('_joinData')->getErrors()
                 ) {
-                    throw new BadRequestException([
-                        'title' => __d('bedita', 'Error linking entities'),
-                        'detail' => $relatedEntity->get('_joinData')->getErrors(),
-                    ]);
+                    throw new InvalidDataException(
+                        __d('bedita', 'Error linking entities'),
+                        (array)$relatedEntity->get('_joinData')->getErrors()
+                    );
                 }
             }
 
@@ -134,7 +134,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function belongsTo(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    protected function belongsTo(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
     {
         // `Tree` Entity can be dirty as join data are set in `ParentObjects`
         $dirty = $entity->isDirty();
@@ -172,7 +172,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function hasOne(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    protected function hasOne(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
     {
         $foreignKey = (array)$this->Association->getForeignKey();
         $bindingKeyValue = $entity->extract((array)$this->Association->getBindingKey());

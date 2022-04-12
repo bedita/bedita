@@ -23,7 +23,7 @@ use Cake\Core\Exception\Exception;
 class InvalidThumbnailOptionsException extends Exception
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultCode = 400;
 }

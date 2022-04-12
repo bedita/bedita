@@ -44,7 +44,7 @@ class UpdateAssociatedAction extends BaseAction
     protected $request;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $data)
     {
@@ -53,7 +53,7 @@ class UpdateAssociatedAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {
@@ -102,7 +102,7 @@ class UpdateAssociatedAction extends BaseAction
             ->where(function (QueryExpression $exp) use ($targetPKField, $targetPrimaryKeys) {
                 return $exp->in($targetPKField, $targetPrimaryKeys);
             });
-        $targetEntities = $targetEntities->indexBy($primaryKeyField)->toArray();
+        $targetEntities = $targetEntities->all()->indexBy($primaryKeyField)->toArray();
         /** @var \Cake\Datasource\EntityInterface[] $targetEntities */
 
         // sort following the original order

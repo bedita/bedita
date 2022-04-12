@@ -28,7 +28,7 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
 class InitSchemaTaskTest extends ConsoleIntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -38,7 +38,7 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -139,7 +139,6 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
      * Test successful initialization on empty database and `--seed` argument passed.
      *
      * @return void
-     *
      * @depends testDatabaseEmpty
      */
     public function testDatabaseSeed()
@@ -163,7 +162,6 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
      *
      * @param int $notSeededCount Count of object types in a not-seeded database.
      * @return void
-     *
      * @depends testDatabaseEmpty
      */
     public function testInteractive($notSeededCount)

@@ -20,6 +20,8 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\QueryCacheBehavior} Test Case
  *
+ * @property \BEdita\Core\Model\Table\ConfigTable $Config
+ *
  * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
 class QueryCacheBehaviorTest extends TestCase
@@ -40,14 +42,13 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     *
      * @covers ::afterDelete()
      * @covers ::queryCache()
      */
     public function testAfterDelete(): void
     {
         $this->loadModel('Config');
-        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $this->Config->fetchConfig(null, null)->toArray();
         $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read('config_any_any', $cacheConf);
         static::assertNotEmpty($read);
@@ -63,13 +64,12 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testAfterSave(): void
     {
         $this->loadModel('Config');
-        $config = $this->Config->fetchConfig(null, null)->toArray();
+        $this->Config->fetchConfig(null, null)->toArray();
         $behavior = $this->Config->behaviors()->get('QueryCache');
         $read = Cache::read('config_any_any', $behavior->getConfig('cacheConfig'));
         static::assertNotEmpty($read);

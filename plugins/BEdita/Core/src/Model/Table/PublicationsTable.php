@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
-use BEdita\Core\Model\Validation\Validation;
 use Cake\Validation\Validator;
 
 /**
@@ -32,7 +31,7 @@ use Cake\Validation\Validator;
 class PublicationsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -46,7 +45,7 @@ class PublicationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function validationDefault(Validator $validator): Validator
     {

@@ -15,7 +15,6 @@ namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\Utility\Hash;
 
 /**
  * Database utilities class
@@ -30,7 +29,6 @@ class Database
      * Using $dbConfig database connection ('default' as default)
      *
      * @param string $dbConfig Input database configuration ('default' as default)
-     *
      * @return array containing complete schema information, table names as keys
      *     and details on columns, indexes and constraints for every table
      */
@@ -73,7 +71,6 @@ class Database
      *
      * @param array $expected Expected db schema
      * @param array $current Current db schema from DbUtils::currentSchema()
-     *
      * @return array containing information on differences found
      */
     public static function schemaCompare(array $expected, array $current)
@@ -184,7 +181,6 @@ class Database
      * See if Database connection is available and working correctly
      *
      * @param string $dbConfig input database configuration ('default' as default)
-     *
      * @return array containing keys: 'success' (boolean), 'error' (string with error message)
      */
     public static function connectionTest($dbConfig = 'default')
@@ -204,7 +200,6 @@ class Database
      * Split a multi-statement SQL query into chunks.
      *
      * @param string $sql SQL to be split.
-     *
      * @return array
      */
     protected static function splitSqlQueries($sql)
@@ -233,7 +228,6 @@ class Database
      *
      * @param string|string[] $sql      SQL query to execute.
      * @param string $dbConfig Database config to use ('default' as default)
-     *
      * @return array containing keys: 'success' (boolean), 'error' (string with error message),
      *      'rowCount' (number of affected rows), 'queryCount' (number of queries executed)
      * @throws \Cake\Datasource\Exception\MissingDatasourceConfigException Throws an exception
@@ -278,7 +272,7 @@ class Database
                 return [
                     'rowCount' => $rowCount,
                     'queryCount' => $queryCount,
-                    'success' => true
+                    'success' => true,
                 ];
             });
         } catch (\Exception $e) {

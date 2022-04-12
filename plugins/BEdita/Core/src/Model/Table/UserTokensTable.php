@@ -25,7 +25,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable|\Cake\ORM\Association\BelongsTo $Applications
- *
  * @method \BEdita\Core\Model\Entity\UserToken get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken[] newEntities(array $data, array $options = [])
@@ -33,7 +32,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\UserToken patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UserTokensTable extends Table
@@ -43,7 +41,7 @@ class UserTokensTable extends Table
      *
      * @var array
      */
-    const DEFAULT_TOKEN_TYPES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
+    public const DEFAULT_TOKEN_TYPES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
 
     /**
      * Initialize method
@@ -65,11 +63,11 @@ class UserTokensTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('Applications', [
             'foreignKey' => 'application_id',
-            'className' => 'BEdita/Core.Applications'
+            'className' => 'BEdita/Core.Applications',
         ]);
     }
 

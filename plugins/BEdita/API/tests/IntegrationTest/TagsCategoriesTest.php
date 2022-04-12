@@ -34,7 +34,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                         [
                             'name' => 'first-tag',
                             'label' => 'First tag',
-                        ]
+                        ],
                     ],
                 ],
                 'profiles',
@@ -95,7 +95,6 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param string $type Object type
      * @param array $attributes New object attributes
      * @return void
-     *
      * @dataProvider createProvider
      * @coversNothing
      */
@@ -143,7 +142,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                         [
                             'name' => 'first-tag',
                             'label' => 'First tag',
-                        ]
+                        ],
                     ],
                 ],
                 'profiles',
@@ -167,7 +166,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                             'name' => 'second-cat',
                             'label' => 'Second category',
                             'params' => null,
-                        ]
+                        ],
                     ],
                 ],
                 'documents',
@@ -186,7 +185,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                             'name' => 'first-cat',
                             'label' => 'First category',
                             'params' => '100',
-                        ]
+                        ],
                     ],
                 ],
                 'documents',
@@ -225,7 +224,6 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param string $type Object type
      * @param array $attributes Object update attributes
      * @return void
-     *
      * @dataProvider updateProvider
      * @coversNothing
      */
@@ -297,7 +295,6 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $url Endpoint url
      * @return void
-     *
      * @dataProvider modelEndpointsProvider
      * @coversNothing
      */

@@ -41,7 +41,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -51,7 +51,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -64,7 +64,6 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default application is missing.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteMissingApplication()
@@ -81,7 +80,6 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default application has empty API key.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteApplicationEmptyApiKey()
@@ -98,7 +96,6 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
      * Test execution when everything looks OK.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteOk()

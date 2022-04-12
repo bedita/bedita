@@ -39,16 +39,13 @@ use Cake\Utility\Inflector;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
- *
  * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TreeBehavior
- *
  * @since 4.0.0
  */
 class ObjectTypesTable extends Table
@@ -58,31 +55,31 @@ class ObjectTypesTable extends Table
      *
      * @var string
      */
-    const CACHE_CONFIG = '_bedita_object_types_';
+    public const CACHE_CONFIG = '_bedita_object_types_';
 
     /**
      * Default parent id 1 for `objects`.
      *
      * @var int
      */
-    const DEFAULT_PARENT_ID = 1;
+    public const DEFAULT_PARENT_ID = 1;
 
     /**
      * Default `plugin` if not specified.
      *
      * @var string
      */
-    const DEFAULT_PLUGIN = 'BEdita/Core';
+    public const DEFAULT_PLUGIN = 'BEdita/Core';
 
     /**
      * Default `model` if not specified.
      *
      * @var string
      */
-    const DEFAULT_MODEL = 'Objects';
+    public const DEFAULT_MODEL = 'Objects';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = ObjectTypesValidator::class;
 
@@ -342,7 +339,7 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function findAll(Query $query, array $options): Query
     {

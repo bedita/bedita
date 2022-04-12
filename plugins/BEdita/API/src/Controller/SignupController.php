@@ -18,7 +18,6 @@ use BEdita\Core\Model\Action\ActionTrait;
  * Controller for `/signup` endpoint.
  *
  * @since 4.0.0
- *
  */
 class SignupController extends AppController
 {

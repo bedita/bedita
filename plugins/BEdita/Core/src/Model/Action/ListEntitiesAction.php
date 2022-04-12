@@ -35,7 +35,7 @@ class ListEntitiesAction extends BaseAction
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $data)
     {
@@ -61,7 +61,7 @@ class ListEntitiesAction extends BaseAction
 
         $result = [];
         foreach ($filter as $condition) {
-            list($key, $value) = explode('=', $condition, 2) + [null, true];
+            [$key, $value] = explode('=', $condition, 2) + [null, true];
 
             $key = trim($key);
             if ($key === '') {
@@ -133,13 +133,13 @@ class ListEntitiesAction extends BaseAction
             }
 
             if ($this->Table->behaviors()->has('CustomProperties')) {
-                /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior */
+                /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
                 $behavior = $this->Table->behaviors()->get('CustomProperties');
                 if (in_array($key, array_keys($behavior->getAvailable()))) {
                     $customPropsOptions[$key] = $value;
 
                     continue;
-                };
+                }
             }
 
             // No suitable filter was found

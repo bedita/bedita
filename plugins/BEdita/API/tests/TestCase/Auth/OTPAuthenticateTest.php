@@ -14,12 +14,9 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\OTPAuthenticate;
-use BEdita\API\Auth\OTPdAuthenticate;
-use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Model\Entity\UserToken;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
-use Cake\Controller\Controller;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
@@ -153,7 +150,6 @@ class OTPAuthenticateTest extends TestCase
      * @param array|false $expected Expected result.
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
-     *
      * @dataProvider authenticateProvider
      * @covers ::authenticate()
      * @covers ::otpAccess()

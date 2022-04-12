@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
@@ -23,7 +25,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\I18n\Time;
 use Cake\Mailer\MailerAwareTrait;
@@ -46,8 +47,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * 400 Username already registered
      *
      * @var string
+     * @deprecated Will be dropped in 5.x, use `UserExistsException` to use this app error code.
      */
-    const BE_USER_EXISTS = 'be_user_exists';
+    public const BE_USER_EXISTS = 'be_user_exists';
 
     /**
      * The UsersTable table
@@ -88,7 +90,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -122,10 +124,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         $errors = $this->validate($data['data']);
         if (!empty($errors)) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         // operations are not in transaction because AsyncJobs could use a different connection
@@ -297,7 +296,6 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param string $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
      * @param bool $verified Add `verified` value to entity
-     *
      * @return \BEdita\Core\Model\Entity\User The User entity created
      * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
@@ -305,10 +303,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
-            throw new BadRequestException([
-                'title' => __d('bedita', 'User "{0}" already registered', $data['username']),
-                'code' => self::BE_USER_EXISTS,
-            ]);
+            throw new UserExistsException(
+                __d('bedita', 'User "{0}" already registered', $data['username'])
+            );
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
 
@@ -336,7 +333,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      */
     protected function checkExternalAuth(array $data)
     {
-        /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        /** @var \BEdita\Core\Model\Entity\AuthProvider|null $authProvider */
         $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->find('enabled')
             ->where(['name' => $data['auth_provider']])
             ->first();
@@ -473,13 +470,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         $baseUrl = $urlOptions['activation_url'];
         $redirectUrl = empty($urlOptions['redirect_url']) ? '' : '&redirect_url=' . rawurlencode($urlOptions['redirect_url']);
-        $baseUrl .= (strpos($baseUrl, '?') === false) ? '?' : '&';
+        $baseUrl .= strpos($baseUrl, '?') === false ? '?' : '&';
 
         return sprintf('%suuid=%s%s', $baseUrl, $job->uuid, $redirectUrl);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function implementedEvents(): array
     {

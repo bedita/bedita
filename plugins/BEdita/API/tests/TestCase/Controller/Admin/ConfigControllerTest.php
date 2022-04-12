@@ -34,7 +34,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -74,7 +73,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -104,7 +102,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -132,7 +129,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */

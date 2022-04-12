@@ -139,13 +139,14 @@ class ObjectRelationsTableTest extends TestCase
      * @param object|null $jsonSchema JSON Schema.
      * @param bool $isNew Should entity be treated as new?
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
     public function testValidation($expected, array $data, $jsonSchema = null, $isNew = true)
     {
-        $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
+        if ($jsonSchema) {
+            $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
+        }
 
         $objectRelation = $this->ObjectRelations->newEntity();
         $objectRelation->setNew($isNew);
@@ -246,7 +247,6 @@ class ObjectRelationsTableTest extends TestCase
      * @param mixed $value Value being validated.
      * @param object $jsonSchema JSON Schema.
      * @return void
-     *
      * @dataProvider jsonSchemaProvider()
      * @covers ::jsonSchema()
      */

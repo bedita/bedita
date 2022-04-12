@@ -14,9 +14,9 @@
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -41,7 +41,7 @@ class UpdateAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -51,7 +51,7 @@ class UpdateAssociatedActionTest extends TestCase
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
-        /* @var \Cake\ORM\Association\BelongsToMany $association */
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
         $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
         $association->junction()
             ->getValidator()
@@ -179,9 +179,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ],
             ],
             'belongsToMany invalid parameters' => [
-                new BadRequestException([
-                    'title' => 'Bad data',
-                ]),
+                new InvalidDataException('Invalid data'),
                 'FakeTags',
                 'FakeArticles',
                 1,
@@ -208,7 +206,6 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $table, $association, $id, $data)
@@ -280,6 +277,7 @@ class UpdateAssociatedActionTest extends TestCase
             ->select(['fake_article_id', 'fake_tag_id', 'fake_params'])
             ->where(['fake_article_id' => 2])
             ->enableHydration(false)
+            ->all()
             ->toList();
 
         $expected = [

@@ -63,7 +63,7 @@ class UserMailerTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -88,7 +88,7 @@ class UserMailerTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -115,7 +115,7 @@ class UserMailerTest extends TestCase
                     'params' => [
                         'userId' => 5,
                         'activationUrl' => 'http://example.com',
-                    ]
+                    ],
                 ],
             ],
             'missing user' => [
@@ -123,7 +123,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'activationUrl' => 'http://example.com',
-                    ]
+                    ],
                 ],
             ],
             'invalid user entity' => [
@@ -132,7 +132,7 @@ class UserMailerTest extends TestCase
                     'params' => [
                         'user' => ['id' => 1],
                         'activationUrl' => 'http://example.com',
-                    ]
+                    ],
                 ],
             ],
             'missing activationUrl' => [
@@ -140,7 +140,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'userId' => 5,
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -152,7 +152,6 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     *
      * @dataProvider signupProvider
      * @covers ::signup()
      * @covers ::checkUser()
@@ -178,7 +177,6 @@ class UserMailerTest extends TestCase
      * Test fail sending email to user without email
      *
      * @return void
-     *
      * @covers ::signup()
      * @covers ::checkUser()
      */
@@ -215,7 +213,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'userId' => 5,
-                    ]
+                    ],
                 ],
             ],
             'missing user' => [
@@ -227,7 +225,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'user' => ['id' => 1],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -239,7 +237,6 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     *
      * @dataProvider welcomeProvider
      * @covers ::welcome()
      * @covers ::checkUser()
@@ -274,7 +271,7 @@ class UserMailerTest extends TestCase
                     'params' => [
                         'userId' => 1,
                         'changeUrl' => 'http://example.com',
-                    ]
+                    ],
                 ],
             ],
             'missing userId' => [
@@ -282,7 +279,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'changeUrl' => 'http://example.com',
-                    ]
+                    ],
                 ],
             ],
             'missing changeUrl' => [
@@ -290,7 +287,7 @@ class UserMailerTest extends TestCase
                 [
                     'params' => [
                         'userId' => 1,
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -302,7 +299,6 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     *
      * @dataProvider changeRequestProvider
      * @covers ::changeRequest()
      * @covers ::checkUser()
@@ -337,7 +333,7 @@ class UserMailerTest extends TestCase
             ],
             'custom name' => [
                 'Superunknown :(',
-                'Superunknown :('
+                'Superunknown :(',
             ],
         ];
     }
@@ -348,7 +344,6 @@ class UserMailerTest extends TestCase
      * @param string $expected The project name expected
      * @param string $configured The project name to put in configuration
      * @return void
-     *
      * @dataProvider getProjectNameProvider
      * @covers ::getProjectName()
      */
@@ -359,9 +354,9 @@ class UserMailerTest extends TestCase
         $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [
             [
                 'params' => [
-                    'user' => $this->Users->get(5)
-                ]
-            ]
+                    'user' => $this->Users->get(5),
+                ],
+            ],
         ]);
 
         $viewVars = $this->Email->getViewVars();

@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * LinksFixture
- *
  */
 class LinksFixture extends TestFixture
 {

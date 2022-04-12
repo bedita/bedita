@@ -17,18 +17,17 @@ namespace BEdita\API\Controller\Model;
  * Controller for `/model/object_types` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
  */
 class ObjectTypesController extends ModelController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'ObjectTypes';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

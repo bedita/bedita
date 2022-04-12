@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * LocationsFixture
- *
  */
 class LocationsFixture extends TestFixture
 {
@@ -22,7 +21,7 @@ class LocationsFixture extends TestFixture
             'locality' => 'Bologna',
             'postal_code' => '40126',
             'country_name' => 'Italy',
-            'region' => 'Emilia-romagna'
+            'region' => 'Emilia-romagna',
         ],
     ];
 }

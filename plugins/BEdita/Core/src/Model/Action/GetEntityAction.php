@@ -28,7 +28,7 @@ class GetEntityAction extends BaseAction
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $data)
     {
@@ -36,7 +36,7 @@ class GetEntityAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

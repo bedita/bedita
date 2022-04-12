@@ -53,11 +53,13 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -68,7 +70,7 @@ class FoldersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {
@@ -132,7 +134,6 @@ class FoldersTableTest extends TestCase
      * Test hasAtMostOneParent method
      *
      * @return void
-     *
      * @dataProvider hasAtMostOneParentProvider()
      * @covers ::hasAtMostOneParent()
      */
@@ -217,7 +218,7 @@ class FoldersTableTest extends TestCase
                 [
                     'id' => 12,
                     'parents' => [
-                        '_ids' => [13, 11]
+                        '_ids' => [13, 11],
                     ],
                 ],
             ],
@@ -239,7 +240,6 @@ class FoldersTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param array $data The data to save
      * @return void
-     *
      * @dataProvider saveProvider
      * @covers ::beforeSave()
      * @covers ::afterSave()
@@ -248,6 +248,7 @@ class FoldersTableTest extends TestCase
     public function testSave($expected, $data)
     {
         $trees = TableRegistry::getTableLocator()->get('Trees');
+        $descendants = null;
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $descendants = $trees->childCount($node);
@@ -272,7 +273,7 @@ class FoldersTableTest extends TestCase
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $actual = $trees->childCount($node);
-            static::assertEquals($descendants, $actual);
+            static::assertSame($descendants, $actual);
         }
     }
 
@@ -296,7 +297,6 @@ class FoldersTableTest extends TestCase
      * Test also that restoring the folder restores subfolders too.
      *
      * @return void
-     *
      * @covers ::updateChildrenDeletedField()
      */
     public function testSoftDeleteAndRestore()
@@ -350,7 +350,6 @@ class FoldersTableTest extends TestCase
      * Test that deleting a folder all its subfolders (descendants) are deleted too.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      * @covers ::afterDelete()
      */
@@ -414,7 +413,6 @@ class FoldersTableTest extends TestCase
      * Test `isFolderRestorable()` in case of no check on parents.
      *
      * @return void
-     *
      * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableNoCheckOnParents()
@@ -438,7 +436,6 @@ class FoldersTableTest extends TestCase
      * trying to resume a folder deleted with parent not deleted.
      *
      * @return void
-     *
      * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableOK()
@@ -459,7 +456,6 @@ class FoldersTableTest extends TestCase
      * trying to resume a folder deleted with parent deleted.
      *
      * @return void
-     *
      * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableKO()
@@ -487,7 +483,6 @@ class FoldersTableTest extends TestCase
      * Test that only available children are returned.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testChildrenAvailable(): void

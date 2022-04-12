@@ -32,7 +32,7 @@ use Cake\Validation\Validator;
 class LinksTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -46,7 +46,7 @@ class LinksTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function validationDefault(Validator $validator): Validator
     {

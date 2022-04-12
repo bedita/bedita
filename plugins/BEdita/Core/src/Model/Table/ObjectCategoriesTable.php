@@ -23,7 +23,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $Categories
- *
  * @method \BEdita\Core\Model\Entity\ObjectCategory get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory[] newEntities(array $data, array $options = [])

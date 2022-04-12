@@ -20,6 +20,7 @@ use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -34,7 +35,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  * @property \Cake\ORM\Association\BelongsToMany $Roles
- *
  * @method \BEdita\Core\Model\Entity\User get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\User newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\User[] newEntities(array $data, array $options = [])
@@ -42,9 +42,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class UsersTable extends Table
@@ -54,17 +52,17 @@ class UsersTable extends Table
      *
      * @var int
      */
-    const ADMIN_USER = 1;
+    public const ADMIN_USER = 1;
 
     /**
      * Deleted user prefix
      *
      * @var string
      */
-    const DELETED_USER_PREFIX = '__deleted-';
+    public const DELETED_USER_PREFIX = '__deleted-';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = UsersValidator::class;
 
@@ -85,7 +83,7 @@ class UsersTable extends Table
 
         $this->getBehavior('UniqueName')->setConfig([
             'sourceField' => 'username',
-            'prefix' => 'user-'
+            'prefix' => 'user-',
         ]);
 
         $this->getBehavior('Searchable')->setConfig([
@@ -168,6 +166,17 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema): TableSchema
+    {
+        return $schema
+            ->setColumnType('user_preferences', 'json');
     }
 
     /**
@@ -364,7 +373,7 @@ class UsersTable extends Table
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (static::ADMIN_USER === $entity->id) {
+        if ($entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
     }
@@ -456,7 +465,7 @@ class UsersTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        if ($entity->deleted === true && static::ADMIN_USER === $entity->id) {
+        if ($entity->deleted === true && $entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
         }
         if ($entity->deleted === true && LoggedUser::id() === $entity->id && empty($entity->get('_optout'))) {

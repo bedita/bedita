@@ -36,7 +36,7 @@ use Cake\Utility\Hash;
 class CustomPropertiesBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'field' => 'custom_props',
@@ -63,7 +63,7 @@ class CustomPropertiesBehavior extends Behavior
     protected $available = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -106,6 +106,7 @@ class CustomPropertiesBehavior extends Behavior
             ->find('type', ['dynamic'])
             ->find('objectType', [$objectType->id])
             ->where(['enabled' => true, 'is_static' => false])
+            ->all()
             ->indexBy('name')
             ->toArray();
 

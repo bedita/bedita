@@ -24,7 +24,7 @@ use Cake\Utility\Hash;
 class FilterQueryStringTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Annotations',
@@ -68,31 +68,31 @@ class FilterQueryStringTest extends IntegrationTestCase
         return [
             'simple' => [
                'filter[date_ranges][start_date][gt]=2017-01-01',
-               1
+               1,
             ],
             'simple 2' => [
                 'filter[date_ranges][from_date]=2017-01-01T14:00:00',
-                1
+                1,
              ],
              'simple 3' => [
                 'filter[date_ranges][from_date]=2017-03-08T21:41:00',
-                0
+                0,
              ],
              'none' => [
                'filter[date_ranges][end_date][le]=2017-01-01',
-               0
+               0,
             ],
             'none 2' => [
                 'filter[date_ranges][to_date]=2017-01-01',
-                0
+                0,
              ],
              'combined' => [
                'filter[date_ranges][start_date][gt]=2017-01-01&filter[date_ranges][end_date][lt]=2017-04-01',
-               1
+               1,
             ],
             'absurd' => [
                'filter[date_ranges][start_date][ge]=2018-01-01&filter[date_ranges][end_date][le]=2017-01-01',
-               0
+               0,
             ],
         ];
     }
@@ -104,7 +104,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $expected int Number of objects id expected in response
      * @param $endpoint string Endpoint to use
      * @return void
-     *
      * @dataProvider filterDateProvider
      * @coversNothing
      */
@@ -130,14 +129,14 @@ class FilterQueryStringTest extends IntegrationTestCase
                'filter[geo][center][]=44.4944183&filter[geo][center][]=11.3464055',
                [
                    0,
-               ]
+               ],
             ],
             'array' => [
                'filter[geo][center]=44.4944183,11.3464055',
                [
                    0,
-               ]
-            ]
+               ],
+            ],
         ];
     }
 
@@ -147,7 +146,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $query string URL with query filter string
      * @param $expected array Distance expected in response for every item
      * @param $endpoint string Endpoint to use
-     *
      * @dataProvider filterGeoProvider
      * @coversNothing
      */
@@ -201,7 +199,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $query string URL with query filter string
      * @param $endpoint string Endpoint to use
      * @return void
-     *
      * @dataProvider badFilterProvider
      * @coversNothing
      */
@@ -217,7 +214,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * Test finder of object types by relation.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testFindByRelation()
@@ -239,7 +235,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * Test finder of object types by parent name.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testFindParent()
@@ -305,7 +300,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '1',
                 ],
             ],
-            'role name' => [
+            'role name (multiple)' => [
                 '/users?filter[roles]=first role,second role',
                 [
                    '1',
@@ -384,7 +379,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @return void
      * @param string $url Url string.
      * @param array $expected Expected result.
-     *
      * @dataProvider searchFilterProvider
      * @coversNothing
      */
@@ -413,7 +407,7 @@ class FilterQueryStringTest extends IntegrationTestCase
             'type' => 'users',
             'attributes' => [
                 'username' => 'gustavo',
-            ]
+            ],
         ];
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/users', json_encode(compact('data')));
@@ -476,7 +470,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     *
      * @dataProvider typeFilterProvider
      * @coversNothing
      */
@@ -558,7 +551,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected results ids.
      * @return void
-     *
      * @dataProvider fieldsFilterProvider
      * @coversNothing
      */
@@ -660,7 +652,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     *
      * @dataProvider trashFilterProvider
      * @coversNothing
      */
@@ -727,7 +718,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     *
      * @dataProvider parentAncestorFilterProvider
      * @coversNothing
      */
@@ -807,7 +797,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     *
      * @dataProvider categoriesTagsProvider
      * @coversNothing
      */
@@ -871,7 +860,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $url Request URL
      * @return void
-     *
      * @dataProvider relatedFilterProvider
      * @coversNothing
      */

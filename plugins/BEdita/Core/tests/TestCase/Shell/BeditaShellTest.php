@@ -30,17 +30,17 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
      *
      * @var string
      */
-    const TEMP_CONNECTION = 'temporary_connection';
+    public const TEMP_CONNECTION = 'temporary_connection';
 
     /**
      * Name for temporary configuration file.
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'app.temp.php';
+    public const TEMP_FILE = TMP . 'app.temp.php';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -57,7 +57,7 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function tearDown(): void
     {

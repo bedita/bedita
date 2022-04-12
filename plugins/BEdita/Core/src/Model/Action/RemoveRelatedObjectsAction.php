@@ -20,7 +20,6 @@ use Cake\Event\EventDispatcherTrait;
  * Command to remove links between related objects or objects and associated entities.
  *
  * @since 4.0.0
- *
  * @property \Cake\ORM\Association\BelongsToMany|\Cake\ORM\Association\HasMany $Association
  */
 class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
