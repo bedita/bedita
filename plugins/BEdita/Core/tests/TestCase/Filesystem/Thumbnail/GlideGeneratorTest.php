@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -89,12 +89,8 @@ class GlideGeneratorTest extends TestCase
     public function getUrlProvider()
     {
         return [
-            'text file' => [
-                new InvalidStreamException('Unable to generate thumbnail for stream 9e58fa47-db64-4479-a0ab-88a706180d59'),
-                '9e58fa47-db64-4479-a0ab-88a706180d59',
-            ],
-            'text file' => [
-                new BadRequestException('Invalid thumbnail format: txt'),
+            'invalid txt file' => [
+                new InvalidDataException('Invalid thumbnail format: txt'),
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
                 ['fm' => 'txt']
             ],
@@ -197,7 +193,7 @@ class GlideGeneratorTest extends TestCase
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
             ],
             'png file in txt' => [
-                new BadRequestException('Invalid thumbnail format: txt'),
+                new InvalidDataException('Invalid thumbnail format: txt'),
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['fm' => 'txt'],
             ],
