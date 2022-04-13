@@ -98,8 +98,8 @@ class AuthProvidersTableTest extends TestCase
             ],
             'notUnique' => [
                 [
-                    'name._required'
-                    'name.unique'
+                    'name._required',
+                    'name.unique',
                 ],
                 [
                     'name' => 'example',
