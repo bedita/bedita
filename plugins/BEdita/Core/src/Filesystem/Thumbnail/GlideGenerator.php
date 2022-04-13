@@ -13,10 +13,12 @@
 
 namespace BEdita\Core\Filesystem\Thumbnail;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
+use Cake\Utility\Hash;
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\ImageManager;
 use League\Glide\Api\Api as GlideApi;
@@ -54,19 +56,20 @@ class GlideGenerator extends ThumbnailGenerator
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
      * @param array $options Thumbnail options.
      * @return string
+     * @throws \BEdita\Core\Exception\InvalidDataException
      */
     protected function getFilename(Stream $stream, array $options = [])
     {
-        $ext = pathinfo($stream->file_name, PATHINFO_EXTENSION);
-        if ($ext) {
-            $ext = '.' . $ext;
+        $ext = Hash::get($options, 'fm', 'jpg'); // jpg default
+        if (!in_array($ext, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
+            throw new InvalidDataException(__d('bedita', 'Invalid thumbnail format: {0}', $ext));
         }
         $filesystem = $this->getConfig('cache', 'thumbnails');
         $base = $stream->filesystemPath($filesystem);
         $options = sha1(serialize($options));
 
         return sprintf(
-            '%s/%s%s',
+            '%s/%s.%s',
             $base,
             $options,
             (string)$ext

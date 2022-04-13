@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
@@ -88,14 +89,20 @@ class GlideGeneratorTest extends TestCase
     public function getUrlProvider()
     {
         return [
-            'text file' => [
-                'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/' . sha1(serialize([])) . '.txt',
+            'invalid txt file' => [
+                new InvalidDataException('Invalid thumbnail format: txt'),
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
+                ['fm' => 'txt']
             ],
             'png file' => [
-                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png/' . sha1(serialize(['w' => 100])) . '.png',
+                'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png/' . sha1(serialize(['w' => 200, 'fm' => 'png'])) . '.png',
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 100],
+                ['w' => 200, 'fm' => 'png'],
+            ],
+            'gif file to default jpg' => [
+                'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/' . sha1(serialize(['w' => 200])) . '.jpg',
+                '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                ['w' => 200],
             ],
         ];
     }
@@ -113,11 +120,64 @@ class GlideGeneratorTest extends TestCase
      */
     public function testGetUrl($expected, $uuid, array $options = [])
     {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
         $stream = $this->Streams->get($uuid);
 
         $url = $this->generator->getUrl($stream, $options);
 
         static::assertSame($expected, $url);
+    }
+
+    /**
+     * Data provider for `testExtensionFile` test case.
+     *
+     * @return array
+     */
+    public function getExtensionThumb()
+    {
+        return [
+            'png file' => [
+                'png',
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['w' => 200, 'fm' => 'png'],
+            ],
+            'gif file' => [
+                'jpg',
+                '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                ['w' => 200],
+            ],
+            'png file to jpg' => [
+                'jpg',
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['w' => 200, 'fm' => 'jpg'],
+            ],
+        ];
+    }
+
+    /**
+     * Test extension thumb.
+     *
+     * @param string $expected Expected extension file.
+     * @param string $uuid Stream UUID.
+     * @param array $options Thumbnail options.
+     * @return void
+     *
+     * @dataProvider getExtensionThumb()
+     * @covers ::getUrl()
+     * @covers ::getFilename()
+     */
+    public function testExtensionFile($expected, $uuid, array $options = [])
+    {
+        $stream = $this->Streams->get($uuid);
+        $url = $this->generator->getUrl($stream, $options);
+        $result = pathinfo($url, PATHINFO_EXTENSION);
+
+        static::assertSame($expected, $result);
     }
 
     /**
@@ -132,15 +192,20 @@ class GlideGeneratorTest extends TestCase
                 new InvalidStreamException('Unable to generate thumbnail for stream 9e58fa47-db64-4479-a0ab-88a706180d59'),
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
             ],
+            'png file in txt' => [
+                new InvalidDataException('Invalid thumbnail format: txt'),
+                'e5afe167-7341-458d-a1e6-042e8791b0fe',
+                ['fm' => 'txt'],
+            ],
             'png file' => [
                 true,
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 100, 'h' => 100],
+                ['w' => 200, 'fm' => 'png'],
             ],
-            'png file in jpg' => [
+            'gif file to default jpg' => [
                 true,
-                'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 100, 'h' => 100, 'fm' => 'jpg'],
+                '6aceb0eb-bd30-4f60-ac74-273083b921b6',
+                ['w' => 200],
             ],
         ];
     }
@@ -185,15 +250,10 @@ class GlideGeneratorTest extends TestCase
                 false,
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
             ],
-            'existing' => [
+            'existing png file' => [
                 true,
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 100, 'h' => 100],
-            ],
-            'missing' => [
-                false,
-                'e5afe167-7341-458d-a1e6-042e8791b0fe',
-                ['w' => 100, 'h' => 100, 'fm' => 'jpg'],
+                ['w' => 200, 'fm' => 'png'],
             ],
         ];
     }

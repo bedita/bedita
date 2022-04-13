@@ -74,7 +74,10 @@ class AuthProvidersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
 
-            ->url('url')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('url', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmptyString('url', null, 'create')
 
             ->allowEmptyArray('params');
