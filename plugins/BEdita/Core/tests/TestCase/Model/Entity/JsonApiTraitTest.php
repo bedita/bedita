@@ -384,7 +384,7 @@ class JsonApiTraitTest extends TestCase
         $role = $this->Roles->get(1)->jsonApiSerialize();
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '');
         static::assertEqualsCanonicalizing($expected, $meta, '');
         static::assertEqualsWithDelta($expected, $meta, 0, '');
@@ -393,7 +393,7 @@ class JsonApiTraitTest extends TestCase
         $role = $this->Roles->get(1)->jsonApiSerialize(0, ['created', 'modified', 'unchangeable']);
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '');
         static::assertEqualsCanonicalizing($expected, $meta, '');
         static::assertEqualsWithDelta($expected, $meta, 0, '');
@@ -426,9 +426,9 @@ class JsonApiTraitTest extends TestCase
     {
         $expected = [
             'created',
+            'extra',
             'modified',
             'unchangeable',
-            'extra',
         ];
         $expectedExtra = ['my_computed_field' => pi()];
 
@@ -438,7 +438,7 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($role, 'meta', []));
         $extra = Hash::get($role, 'meta.extra');
-
+        sort($meta);
         static::assertEquals($expected, $meta, '');
         static::assertEqualsCanonicalizing($expected, $meta, '');
         static::assertEqualsWithDelta($expected, $meta, 0, '');

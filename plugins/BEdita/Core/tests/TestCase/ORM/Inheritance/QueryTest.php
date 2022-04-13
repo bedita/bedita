@@ -107,6 +107,8 @@ class QueryTest extends TestCase
         $query->sql();
 
         $selected = array_values($query->clause('select'));
+        sort($selected);
+        sort($expected);
         static::assertEquals($expected, $selected, '');
         static::assertEqualsCanonicalizing($expected, $selected, '');
         static::assertEqualsWithDelta($expected, $selected, 0, '');

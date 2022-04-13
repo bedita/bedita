@@ -152,7 +152,8 @@ class StreamsTableTest extends TestCase
             static::assertTrue((bool)$success);
         } else {
             $errors = array_keys(Hash::flatten($stream->getErrors()));
-
+            sort($errors);
+            sort($expected);
             static::assertEquals($expected, $errors, '');
             static::assertEqualsCanonicalizing($expected, $errors, '');
             static::assertEqualsWithDelta($expected, $errors, 0, '');

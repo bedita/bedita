@@ -182,7 +182,7 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function checkIntegrity(): array
     {
-        $table = $this->getTable();
+        $table = $this->table();
         $pk = $table->aliasField($table->getPrimaryKey());
         $left = $table->aliasField($this->getConfigOrFail('left'));
         $right = $table->aliasField($this->getConfigOrFail('right'));
