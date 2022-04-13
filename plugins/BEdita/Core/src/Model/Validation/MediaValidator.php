@@ -39,10 +39,16 @@ class MediaValidator extends ObjectsValidator
                 return !empty($context['data']['provider']); // Required if provider is set.
             })
 
-            ->url('provider_url')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('provider_url', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmptyString('provider_url')
 
-            ->url('provider_thumbnail')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('provider_thumbnail', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmptyString('provider_thumbnail');
     }
 }
