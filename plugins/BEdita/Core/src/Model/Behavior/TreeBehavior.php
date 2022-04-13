@@ -18,7 +18,7 @@ use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
 use Cake\ORM\Table;
 
@@ -48,7 +48,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * @inheritDoc
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         // ensure to use actual left and right fields
         unset($entity[$this->getConfig('left')], $entity[$this->getConfig('right')]);
