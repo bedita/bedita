@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BEdita\Core\ORM\Inheritance\InheritanceEventHandler;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -190,7 +190,7 @@ class InheritanceEventHandlerTest extends TestCase
                     'family' => 'purring cats',
                     'legs' => 4,
                     'subclass' => 'None',
-                    'updated_at' => new Time('2018-02-20 09:50:00'),
+                    'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                 ],
                 [
                     'id' => 1,

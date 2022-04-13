@@ -20,7 +20,7 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -77,8 +77,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '');
-        static::assertEqualsWithDelta(Time::now()->timestamp, $lastLogin->timestamp, 1, '');
+        static::assertEquals(FrozenTime::now()->timestamp, $lastLogin->timestamp, '');
+        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $lastLogin->timestamp, 1, '');
 
         return $result['meta'];
     }
@@ -567,7 +567,7 @@ class LoginControllerTest extends IntegrationTestCase
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
             ],
         ]);

@@ -16,7 +16,6 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -149,7 +148,7 @@ class UserTest extends TestCase
     public function testSetPasswordHash()
     {
         $user = $this->Users->get(1);
-        $now = Time::now();
+        $now = FrozenTime::now();
 
         $data = [
             'password_hash' => 'myPassword',

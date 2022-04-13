@@ -14,7 +14,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -428,7 +428,7 @@ class SignupControllerTest extends IntegrationTestCase
             ->first();
 
         $user->status = 'on';
-        $user->verified = new Time();
+        $user->verified = new FrozenTime();
         $Users->save($user);
 
         $this->configRequestHeaders('POST', [

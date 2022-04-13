@@ -14,7 +14,6 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -81,29 +80,29 @@ class PublishStartEndTest extends IntegrationTestCase
                 404,
                 true,
                 [
-                    'publish_start' => Time::parse(time() + DAY),
+                    'publish_start' => FrozenTime::parse(time() + DAY),
                 ],
             ],
             'no conf' => [
                 200,
                 false,
                 [
-                    'publish_start' => Time::parse(time() + DAY),
+                    'publish_start' => FrozenTime::parse(time() + DAY),
                 ],
             ],
             'ended' => [
                 404,
                 true,
                 [
-                    'publish_end' => Time::parse(time() - DAY),
+                    'publish_end' => FrozenTime::parse(time() - DAY),
                 ],
             ],
             'started' => [
                 200,
                 true,
                 [
-                    'publish_start' => Time::parse(time() - DAY),
-                    'publish_end' => Time::parse(time() + DAY),
+                    'publish_start' => FrozenTime::parse(time() - DAY),
+                    'publish_end' => FrozenTime::parse(time() + DAY),
                 ],
             ],
         ];

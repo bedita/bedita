@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\Time;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -124,7 +123,7 @@ class User extends Profile
      */
     protected function _setPasswordHash($password)
     {
-        $this->password_modified = Time::now();
+        $this->password_modified = FrozenTime::now();
 
         return (new DefaultPasswordHasher())->hash($password);
     }

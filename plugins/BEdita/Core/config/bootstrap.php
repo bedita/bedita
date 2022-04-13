@@ -10,7 +10,7 @@ use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
-use Cake\Database\Type;
+use Cake\Database\TypeFactory;
 use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\Date;
 use Cake\I18n\FrozenDate;
@@ -67,19 +67,19 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
  *
  * See https://github.com/cakephp/cakephp/issues/13646
  */
-Type::set('date', new DateType());
-Type::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
-Type::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('date', new DateType());
+TypeFactory::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 
 /**
  * Use custom BoolType
  */
-Type::set('boolean', new BoolType());
+TypeFactory::set('boolean', new BoolType());
 
 /**
  * Register custom JSON Object type.
  */
-Type::map('jsonobject', JsonObjectType::class);
+TypeFactory::map('jsonobject', JsonObjectType::class);
 
 /**
  * Set loader for translation domain "bedita".

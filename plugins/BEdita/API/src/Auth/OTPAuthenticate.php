@@ -20,7 +20,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
@@ -155,7 +155,7 @@ class OTPAuthenticate extends BaseAuthenticate
             'client_token' => $this->generateClientToken(),
             'secret_token' => $this->generateSecretToken(),
             'token_type' => 'otp',
-            'expires' => new Time($this->getConfig('expiry')),
+            'expires' => new FrozenTime($this->getConfig('expiry')),
         ];
 
         $UserTokens = TableRegistry::getTableLocator()->get('UserTokens');

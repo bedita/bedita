@@ -15,7 +15,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\Thumbnail\AsyncGenerator;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -154,7 +154,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => Time::now(),
+                'created' => FrozenTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';
@@ -185,7 +185,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => Time::now(),
+                'created' => FrozenTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';
