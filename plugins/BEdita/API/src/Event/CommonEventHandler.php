@@ -21,7 +21,6 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\MiddlewareQueue;
-use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
  * CommonEventsHandler class.

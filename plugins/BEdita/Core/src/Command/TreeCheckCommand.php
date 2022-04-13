@@ -33,7 +33,7 @@ use Cake\ORM\Query;
 class TreeCheckCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 

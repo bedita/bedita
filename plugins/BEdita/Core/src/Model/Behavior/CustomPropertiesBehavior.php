@@ -22,7 +22,6 @@ use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;

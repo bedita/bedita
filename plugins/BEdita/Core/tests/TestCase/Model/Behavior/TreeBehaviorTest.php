@@ -257,7 +257,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a sane tree.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySuccess(): void
@@ -271,7 +270,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a record where `left_idx >= right_idx`.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySwappedIndexes(): void
@@ -291,7 +289,6 @@ class TreeBehaviorTest extends TestCase
      * and its first child's `left_idx`.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegrityFirstChildGap(): void
@@ -312,7 +309,6 @@ class TreeBehaviorTest extends TestCase
      * and its last child's `right_idx`.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegrityLastChildGap(): void
@@ -332,7 +328,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a record where there's a gap between two consecutive siblings.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySiblingsGap(): void
@@ -352,7 +347,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with two siblings overlapping each other.
      *
      * @return void
-     *
      * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySiblingsOverlapping(): void

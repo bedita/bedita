@@ -27,7 +27,7 @@ use Cake\Console\ConsoleOptionParser;
 class TreeRecoverCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Trees';
 

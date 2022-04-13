@@ -195,8 +195,7 @@ class HistoryBehavior extends Behavior
      * Process delete.
      *
      * @param \Cake\Event\Event $event Dispatched event.
-     * @param EntityInterface $entity Object entity.
-
+     * @param \Cake\Datasource\EntityInterface $entity Object entity.
      * @return void
      */
     public function afterDelete(Event $event, EntityInterface $entity): void
