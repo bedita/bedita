@@ -105,7 +105,7 @@ class ProfileTest extends TestCase
             ],
             'non-standard' => [
                 'http://www.example.com/hello/world.html',
-                'www.example.com/hello/world.html'
+                'www.example.com/hello/world.html',
             ],
             'not valid' => [
                 'I am not a valid URL',

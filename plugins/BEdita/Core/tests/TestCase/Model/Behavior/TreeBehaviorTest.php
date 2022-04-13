@@ -366,7 +366,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::beforeDelete()} method with two siblings nodes.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testUnorderedDelete()
