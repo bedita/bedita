@@ -116,7 +116,7 @@ class StreamsShell extends Shell
         }
 
         $count = $query->count();
-        $this->info(sprintf('Checking %d streams', $count));
+        $this->info(sprintf('Approximately %d streams to be processed', $count));
         $success = 0;
 
         foreach ($this->streamsGenerator($query) as $stream) {
