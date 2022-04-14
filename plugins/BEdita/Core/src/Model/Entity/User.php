@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**

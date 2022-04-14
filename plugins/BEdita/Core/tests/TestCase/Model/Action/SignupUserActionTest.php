@@ -19,7 +19,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Core\Configure;
-use Cake\Core\Exception\Exception as CakeException;
+use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\InternalErrorException;

@@ -13,6 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\DateType;
+use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use DateTime;
 

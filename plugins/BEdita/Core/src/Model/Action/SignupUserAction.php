@@ -312,7 +312,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $data['status'] = $status;
         $entity = $this->Users->newEntity([]);
         if ($verified === true) {
-            $entity->set('verified', FrozenFrozenTime::now());
+            $entity->set('verified', FrozenTime::now());
         }
         $entityOptions = compact('validate');
 
