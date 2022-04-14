@@ -190,7 +190,7 @@ class AssociationCollection extends CakeAssociationCollection
     {
         if (!parent::cascadeDelete($entity, $options)) {
             return false;
-        };
+        }
 
         return $this->inheritedAssociations()->cascadeDelete($entity, $options);
     }
