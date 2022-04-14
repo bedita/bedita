@@ -19,7 +19,7 @@ use BEdita\Core\Job\Service\ThumbnailService;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
-use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
  * @coversDefaultClass \BEdita\Core\Job\Service\ThumbnailService
@@ -147,19 +147,19 @@ class ThumbnailServiceTest extends TestCase
      * Test `run` method.
      *
      * @param bool $expected Expected result.
-     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $count Invocation count of base generator method.
+     * @param \PHPUnit\Framework\MockObject\Rule\InvocationOrder $count Invocation count of base generator method.
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
      * @dataProvider runProvider()
      * @covers ::run()
      */
-    public function testRun($expected, InvokedCount $count, array $payload, $shouldThrow = false)
+    public function testRun($expected, InvocationOrder $count, array $payload, $shouldThrow = false)
     {
         $stream = $this->Streams->find()->where(['uuid' => $payload['uuid']])->first();
 
         $generator = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->setMethods(['generate'])
+            ->onlyMethods(['generate'])
             ->getMockForAbstractClass();
         $method = $generator->expects($count)
             ->method('generate')
