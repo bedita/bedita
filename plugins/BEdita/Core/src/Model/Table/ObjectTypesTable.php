@@ -341,7 +341,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    public function findAll(Query $query, array $options): Query
+    public function findContainRelations(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
