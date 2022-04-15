@@ -81,12 +81,12 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * Mime types tipically containing EXIF headers.
+     * Mime types typically containing EXIF headers.
      * Used to reduce possible errors in `exif_read_data()`
      *
      * @var array
      */
-    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/tiff'];
+    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/tiff'];
 
     /**
      * Exif sections to extract.
@@ -284,6 +284,29 @@ class Stream extends Entity implements JsonApiSerializable
     protected function readFileMetadata($resource): void
     {
         if (!preg_match('/image\//', $this->mime_type)) {
+            return;
+        }
+
+        // Use getimagesizefromstring for image formats not supported by exif_read_data
+        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES)) {
+            if (!function_exists('getimagesizefromstring')) {
+                return;
+            }
+
+            rewind($resource);
+            $content = stream_get_contents($resource);
+            if (!empty($content)) {
+                $size = getimagesizefromstring($content);
+                if (!empty($size)) {
+                    $this->width = $size[0];
+                    $this->height = $size[1];
+                }
+            }
+
+            return;
+        }
+
+        if (!function_exists('exif_read_data')) {
             return;
         }
 
