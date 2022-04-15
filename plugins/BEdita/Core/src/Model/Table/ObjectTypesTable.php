@@ -478,7 +478,9 @@ class ObjectTypesTable extends Table
         }
 
         // Everything is said and done by now. Fingers crossed!
-        return $query->where($conditionsBuilder);
+        return $query
+            ->where($conditionsBuilder)
+            ->order([$this->aliasField('tree_left') => 'asc']);
     }
 
     /**
