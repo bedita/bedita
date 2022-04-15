@@ -310,7 +310,7 @@ class ObjectTypesTable extends Table
      */
     protected function objectsExist($typeId)
     {
-        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id' => $typeId]);
+        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
 
     /**
