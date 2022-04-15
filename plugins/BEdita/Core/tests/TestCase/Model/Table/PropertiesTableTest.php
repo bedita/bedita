@@ -350,6 +350,9 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
+
         static::assertCount($count, $result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
