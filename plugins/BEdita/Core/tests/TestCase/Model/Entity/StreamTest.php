@@ -346,7 +346,7 @@ class StreamTest extends TestCase
 
     /**
      * Read data from image if is possible
-     * @param Stream $stream stream entity
+     * @param EntityStream $stream stream entity
      */
 
     public function readDataFromImage($stream): void
@@ -355,7 +355,7 @@ class StreamTest extends TestCase
             static::assertNull($stream->width);
             static::assertNull($stream->height);
         } else {
-            if (function_exists('getimagesizefromstring')) {
+            if (in_array($stream->mime_type, EntityStream::EXIF_MIME_TYPES) || function_exists('getimagesizefromstring')) {
                 static::assertNotNull($stream->width);
                 static::assertNotNull($stream->height);
             } else {
