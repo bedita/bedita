@@ -18,6 +18,7 @@ use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\FileNotFoundException;
@@ -282,19 +283,7 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function readFileMetadata($resource): void
     {
-        if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
-            rewind($resource);
-            $content = stream_get_contents($resource);
-            if (!empty($content)) {
-                $size = getimagesizefromstring($content);
-                if (!empty($size)) {
-                    $this->width = $size[0];
-                    $this->height = $size[1];
-                }
-            }
-        }
-
-        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
+        if (!preg_match('/image\//', $this->mime_type)) {
             return;
         }
 
@@ -322,6 +311,10 @@ class Stream extends Entity implements JsonApiSerializable
         if ($exif === false) {
             return;
         }
+
+        // Extract image width/height
+        $this->width = Hash::get($exif, 'COMPUTED.Width', null);
+        $this->height = Hash::get($exif, 'COMPUTED.Height', null);
 
         // Filter non-standard sections
         $exif = array_intersect_key($exif, array_flip(static::EXIF_SECTIONS));
