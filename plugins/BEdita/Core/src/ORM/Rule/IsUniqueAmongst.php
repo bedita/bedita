@@ -69,4 +69,17 @@ class IsUniqueAmongst extends IsUnique
 
         return !$options['repository']->exists($conditions);
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function _alias(string $alias, array $conditions): array
+    {
+        $aliased = [];
+        foreach ($conditions as $key => $value) {
+            $aliased["$alias.$key"] = $value;
+        }
+
+        return $aliased;
+    }
 }
