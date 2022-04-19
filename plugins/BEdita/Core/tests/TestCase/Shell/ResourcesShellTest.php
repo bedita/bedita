@@ -107,15 +107,15 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
     {
         return [
             [
-                1,
+                '1',
                 'home',
-                2,
+                '2',
                 'mine',
                 'block',
             ],
             [
-                1,
-                3,
+                '1',
+                '3',
                 'first role',
                 'true',
                 'true',

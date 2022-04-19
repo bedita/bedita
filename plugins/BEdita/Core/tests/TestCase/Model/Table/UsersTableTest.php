@@ -301,7 +301,7 @@ class UsersTableTest extends TestCase
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
@@ -316,7 +316,7 @@ class UsersTableTest extends TestCase
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);

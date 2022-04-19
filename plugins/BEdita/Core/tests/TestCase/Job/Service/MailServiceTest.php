@@ -70,10 +70,10 @@ class MailServiceTest extends TestCase
                     ],
                 ],
                 [
-                    '_from' => ['gustavo.supporto@example.org' => 'Gustavo'],
-                    '_to' => ['evermannella@example.org' => 'Evermannella'],
-                    '_subject' => 'Re: Have you installed the latest version of Synapse?',
-                    '_message' => [
+                    'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
+                    'to' => ['evermannella@example.org' => 'Evermannella'],
+                    'subject' => 'Re: Have you installed the latest version of Synapse?',
+                    'message' => [
                         'Not yet. Please write a story on our Scrum board.',
                         '',
                         'Regards,',

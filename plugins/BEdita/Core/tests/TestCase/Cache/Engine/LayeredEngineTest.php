@@ -279,7 +279,7 @@ class LayeredEngineTest extends TestCase
         static::assertTrue($result);
 
         $result = Cache::read('delete', 'test-layered');
-        static::assertFalse($result);
+        static::assertNull($result);
     }
 
     /**
@@ -298,6 +298,6 @@ class LayeredEngineTest extends TestCase
         static::assertTrue($result);
 
         $result = Cache::read('clear', 'test-layered');
-        static::assertFalse($result);
+        static::assertNull($result);
     }
 }

@@ -426,6 +426,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', ['media'])
             ->find('type', ['dynamic'])
+            ->all()
             ->extract('name')
             ->toList();
 
