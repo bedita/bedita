@@ -43,6 +43,7 @@ class TokenMiddleware
      * - `apiKey` The `header` or `query` string used to contain API KEY. Defaults to 'X-Api-Key' header.
      * - `clientAuth` The request data used to identify a `client_credentials` grant type request.
      *      Default is `/auth` path and `client_credentials` ad value of `grant_type` field in request body.
+     * - `ignoreEndpoints` List of endpoints for which to ignore reading application. Default is `/status`.
      *
      * @var array
      */
@@ -60,6 +61,9 @@ class TokenMiddleware
                 'name' => 'grant_type',
                 'value' => 'client_credentials',
             ],
+        ],
+        'ignoreEndpoints' => [
+            '/status',
         ],
     ];
 
@@ -94,7 +98,11 @@ class TokenMiddleware
                 $request = $request->withAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE, $payload);
             }
         }
-        $this->readApplication($payload, $request);
+        $ignoreEndpoints = (array)$this->getConfig('ignoreEndpoints');
+        $path = (string)$request->getPath();
+        if (!in_array($path, $ignoreEndpoints)) {
+            $this->readApplication($payload, $request);
+        }
 
         return $next($request, $response);
     }
