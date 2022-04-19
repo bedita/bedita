@@ -276,7 +276,7 @@ class TreesTable extends Table
 
         return $this->Objects->exists([
             $this->Objects->aliasField('object_type_id') => $foldersType,
-            $this->Objects->aliasField('id') => $id,
+            $this->Objects->aliasField('id') . ' IS' => $id,
         ]);
     }
 

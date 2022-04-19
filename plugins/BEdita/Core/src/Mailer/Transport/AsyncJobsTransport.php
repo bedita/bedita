@@ -51,12 +51,12 @@ class AsyncJobsTransport extends AbstractTransport
         }
 
         $payload = $message->jsonSerialize();
-        $payload += [
-            // '_boundary' => BeditaEmail::getBoundary($email),
-            '_message' => $message->getBodyString(),
-            '_htmlMessage' => $message->getBodyHtml(),
-            '_textMessage' => $message->getBodyText(),
-        ];
+        // $payload += [
+        //     // '_boundary' => BeditaEmail::getBoundary($email),
+        //     '_message' => $message->getBodyString(),
+        //     '_htmlMessage' => $message->getBodyHtml(),
+        //     '_textMessage' => $message->getBodyText(),
+        // ];
         // Remove unnecessary attributes from payload since templates have already been rendered
         // `viewVars` may contain objects that are "heavy" to serialize (like some entities)
         unset($payload['viewVars'], $payload['viewConfig']);

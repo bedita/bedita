@@ -115,26 +115,16 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function write($key, $value): bool
-    {
-        $this->memory->write($key, $value);
-
-        return $this->persistent->write($key, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function read($key)
     {
-        $value = $this->memory->read($key);
+        $value = $this->memory->get($key);
 
-        if ($value !== false) {
+        if ($value !== null) {
             return $value;
         }
 
-        $value = $this->persistent->read($key);
-        $this->memory->write($key, $value);
+        $value = $this->persistent->get($key);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -145,7 +135,7 @@ class LayeredEngine extends CacheEngine
     public function increment($key, $offset = 1)
     {
         $value = $this->persistent->increment($key, $offset);
-        $this->memory->write($key, $value);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -156,7 +146,7 @@ class LayeredEngine extends CacheEngine
     public function decrement($key, $offset = 1)
     {
         $value = $this->persistent->decrement($key, $offset);
-        $this->memory->write($key, $value);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -196,7 +186,12 @@ class LayeredEngine extends CacheEngine
      */
     public function get($key, $default = null)
     {
-        return $this->memory->get($key, $default);
+        $value = $this->read($key);
+        if ($value !== null) {
+            return $value;
+        }
+
+        return $default;
     }
 
     /**

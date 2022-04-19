@@ -397,6 +397,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         return $this->Roles->find()
             ->where(['name IN' => $roles])
+            ->all()
             ->toList();
     }
 

@@ -27,7 +27,12 @@ class DateTimeType extends CakeDateTimeType
      */
     public function marshal($value): ?DateTimeInterface
     {
-        return static::marshalDateTime($value, $this->getDateTimeClassName());
+        $value = static::marshalDateTime($value, $this->getDateTimeClassName());
+        if ($value instanceof \DateTimeInterface) {
+            return $value;
+        }
+
+        return null;
     }
 
     /**
