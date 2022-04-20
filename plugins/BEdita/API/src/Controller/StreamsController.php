@@ -52,6 +52,7 @@ class StreamsController extends ResourcesController
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
+            ->all()
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
 
