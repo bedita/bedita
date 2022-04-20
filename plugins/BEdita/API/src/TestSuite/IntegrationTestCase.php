@@ -184,14 +184,11 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
         $this->_request = [];
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content-Type' => 'application/json',
         ]);
         $username = $username ?: $this->defaultUser['username'];
         $password = $password ?: $this->defaultUser['password'];
-        $this->post('/auth', [
-            'username' => $username,
-            'password' => $password,
-        ]);
+        $this->post('/auth', json_encode(compact('username', 'password')));
 
         Router::fullBaseUrl($fullBaseUrl);
 
