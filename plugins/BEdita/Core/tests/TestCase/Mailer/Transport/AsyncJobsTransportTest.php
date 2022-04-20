@@ -19,12 +19,15 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\Transport\AsyncJobsTransport
  */
 class AsyncJobsTransportTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Fixtures
      *

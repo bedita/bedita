@@ -21,12 +21,15 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\OTPAuthenticate
  */
 class OTPAuthenticateTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Fixtures
      *

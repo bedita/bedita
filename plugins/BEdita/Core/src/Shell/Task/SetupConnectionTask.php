@@ -120,7 +120,7 @@ class SetupConnectionTask extends Shell
         $this->verbose('=====> Replacing old connection and flushing models');
         ConnectionManager::drop($connectionName);
         ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
 
         $this->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');
     }

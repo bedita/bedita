@@ -32,6 +32,7 @@
         "cakephp/cakephp-codesniffer": "~4.5.1",
         "psy/psysh": "@stable",
         "phpunit/phpunit": "^8.0",
+        "dms/phpunit-arraysubset-asserts": "^0.4",
         "bedita/dev-tools": "^2.0",
         "phpstan/phpstan": "^1.5"
     },
