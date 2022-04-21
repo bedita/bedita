@@ -509,7 +509,7 @@ class InheritanceEventHandlerTest extends TestCase
         $feline = $this->fakeFelines->get(1);
         $data = [
             'name' => 'Big cat',
-            'family' => 'The big cat familiy',
+            'family' => 'The big cat family',
         ];
         $feline = $this->fakeFelines->patchEntity($feline, $data);
 
