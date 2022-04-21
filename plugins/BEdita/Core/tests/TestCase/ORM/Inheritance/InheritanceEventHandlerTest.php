@@ -496,4 +496,52 @@ class InheritanceEventHandlerTest extends TestCase
         static::assertSame($expectedMammals, $this->fakeMammals->find()->count());
         static::assertSame($expectedAnimals, $this->fakeAnimals->find()->count());
     }
+
+    /**
+     * Test dirty properties consistency during save process.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::toDescendant()
+     */
+    public function testDirtyPropertiesSaving(): void
+    {
+        $feline = $this->fakeFelines->get(1);
+        $data = [
+            'name' => 'Big cat',
+            'family' => 'The big cat family',
+        ];
+        $feline = $this->fakeFelines->patchEntity($feline, $data);
+
+        $properties = array_keys($feline->toArray());
+        $dirtyProps = array_keys($data);
+        $cleanProps = array_diff($properties, $dirtyProps);
+
+        foreach ($dirtyProps as $prop) {
+            static::assertTrue($feline->isDirty($prop));
+        }
+        foreach ($cleanProps as $prop) {
+            static::assertFalse($feline->isDirty($prop));
+        }
+
+        $eventDispatched = 0;
+        $this->fakeFelines->getEventManager()->on(
+            'Model.afterSave',
+            function (Event $event, EntityInterface $entity) use (&$eventDispatched, $dirtyProps, $cleanProps) {
+                $eventDispatched++;
+
+                foreach ($dirtyProps as $prop) {
+                    static::assertTrue($entity->isDirty($prop));
+                }
+                foreach ($cleanProps as $prop) {
+                    static::assertFalse($entity->isDirty($prop));
+                }
+            }
+        );
+
+        $feline = $this->fakeFelines->save($feline);
+
+        static::assertEquals(1, $eventDispatched);
+        static::assertFalse($feline->isDirty()); // after save is committed the entity must be clean
+    }
 }

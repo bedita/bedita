@@ -235,7 +235,13 @@ class InheritanceEventHandler implements EventListenerInterface
     protected function toDescendant(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
     {
         $properties = array_merge(array_keys($parent->toArray()), $parent->getHidden()); // All properties.
-        $entity->set(array_filter($parent->extract($properties)), ['guard' => false]); // Copy properties.
+        // Copy properties.
+        foreach (array_filter($parent->extract($properties)) as $prop => $val) {
+            if ($entity->get($prop) !== $val) {
+                $entity->set($prop, $val);
+            }
+        }
+
         if ($entity->isNew()) {
             $entity->set(
                 array_combine(
