@@ -525,16 +525,19 @@ class InheritanceEventHandlerTest extends TestCase
         }
 
         $eventDispatched = 0;
-        $this->fakeFelines->getEventManager()->on('Model.afterSave', function () use (&$eventDispatched, $feline, $dirtyProps, $cleanProps) {
-            $eventDispatched++;
+        $this->fakeFelines->getEventManager()->on(
+            'Model.afterSave',
+            function (Event $event, EntityInterface $entity) use (&$eventDispatched, $dirtyProps, $cleanProps) {
+                $eventDispatched++;
 
-            foreach ($dirtyProps as $prop) {
-                static::assertTrue($feline->isDirty($prop));
+                foreach ($dirtyProps as $prop) {
+                    static::assertTrue($entity->isDirty($prop));
+                }
+                foreach ($cleanProps as $prop) {
+                    static::assertFalse($entity->isDirty($prop));
+                }
             }
-            foreach ($cleanProps as $prop) {
-                static::assertFalse($feline->isDirty($prop));
-            }
-        });
+        );
 
         $feline = $this->fakeFelines->save($feline);
 
