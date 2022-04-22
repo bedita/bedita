@@ -144,7 +144,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
-        $endpointPermission = TableRegistry::getTableLocator()->get('EndpointPermissions')->find()->last();
+        $endpointPermission = TableRegistry::getTableLocator()->get('EndpointPermissions')->find()->all()->last();
 
         $read = EndpointPermission::decode(EndpointPermission::encode($read));
         $write = EndpointPermission::decode(EndpointPermission::encode($write));
