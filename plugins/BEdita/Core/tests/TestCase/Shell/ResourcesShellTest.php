@@ -170,7 +170,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
                 'applications',
                 2,
                 'enabled',
-                1,
+                '1',
             ],
         ];
     }
@@ -224,7 +224,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
      */
     public function testEditFail(): void
     {
-        $this->exec('resources edit -t applications 1111');
+        $this->exec('resources edit -t applications -f description 1111');
         $this->assertErrorContains('Resource with id 1111 not found');
         $this->assertExitCode(Shell::CODE_ERROR);
     }
