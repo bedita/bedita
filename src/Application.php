@@ -133,8 +133,7 @@ class Application extends BaseApplication
                 ->addParser(
                     ['application/vnd.api+json'],
                     Closure::fromCallable([JsonApi::class, 'parseInput'])
-                )
-            );
+                ));
 
         return $middlewareQueue;
     }
