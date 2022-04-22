@@ -49,7 +49,7 @@ class JsonApiPaginatorTest extends TestCase
                     'page' => 1,
                     'limit' => 20,
                     'maxLimit' => 100,
-                    'whitelist' => ['page', 'page_size', 'sort'],
+                    'allowedParameters' => ['page', 'page_size', 'sort'],
                 ],
                 [],
             ],
@@ -58,7 +58,7 @@ class JsonApiPaginatorTest extends TestCase
                     'page' => 1,
                     'limit' => 5,
                     'maxLimit' => 100,
-                    'whitelist' => ['page', 'page_size', 'sort'],
+                    'allowedParameters' => ['page', 'page_size', 'sort'],
                 ],
                 [
                     'limit' => 5,
@@ -69,7 +69,7 @@ class JsonApiPaginatorTest extends TestCase
                     'page' => 1,
                     'limit' => 5,
                     'maxLimit' => 100,
-                    'whitelist' => ['page', 'page_size', 'sort'],
+                    'allowedParameters' => ['page', 'page_size', 'sort'],
                 ],
                 [
                     'page_size' => 5,

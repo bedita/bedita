@@ -86,7 +86,7 @@ class ActionTraitTest extends TestCase
                 'ListObjectsAction',
             ],
             'direct fail' => [
-                new \Error("Class '\My\Class' not found"),
+                new \RuntimeException('Unable to find class "BEdita/Core.\My\Class'),
                 '\My\Class',
             ],
         ];

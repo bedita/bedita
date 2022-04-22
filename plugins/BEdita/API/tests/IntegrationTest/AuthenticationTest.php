@@ -70,7 +70,7 @@ class AuthenticationTest extends IntegrationTestCase
             'Content-Type' => 'application/json',
             'Accept' => 'application/vnd.api+json',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode($data));
 
         $this->assertResponseCode(200);

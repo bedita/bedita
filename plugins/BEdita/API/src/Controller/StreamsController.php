@@ -56,11 +56,14 @@ class StreamsController extends ResourcesController
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
 
+        parent::initialize();
+
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
+            if ($this->components()->has('JsonApi')) {
+                $this->components()->unload('JsonApi');
+            }
         }
-
-        parent::initialize();
     }
 
     /**

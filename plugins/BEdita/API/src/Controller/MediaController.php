@@ -35,7 +35,7 @@ class MediaController extends ObjectsController
     {
         $id = $this->request->getParam('id');
         $ids = $this->request->getQuery('ids');
-        if ($id !== false) {
+        if ($id !== null) {
             if ($ids !== null) {
                 throw new BadRequestException(__d('bedita', 'Cannot specify IDs in both path and query string'));
             }

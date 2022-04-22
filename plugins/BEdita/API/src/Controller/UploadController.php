@@ -32,6 +32,9 @@ class UploadController extends ObjectsController
     {
         $this->loadComponent('BEdita/API.Upload');
         parent::initialize();
+        if ($this->components()->has('JsonApi')) {
+            $this->components()->unload('JsonApi');
+        }
     }
 
     /**

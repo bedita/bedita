@@ -305,6 +305,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
 
         static::assertEquals([4], $childrenIds);

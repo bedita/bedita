@@ -211,6 +211,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
@@ -406,6 +408,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
