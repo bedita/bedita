@@ -1584,7 +1584,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $controller = $this->getMockBuilder(ObjectsController::class)
             ->setConstructorArgs([$request])
-            ->setMethods(['getAvailableTypes'])
+            ->onlyMethods(['getAvailableTypes'])
             ->getMock();
 
         $controller
