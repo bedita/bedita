@@ -15,6 +15,7 @@ namespace BEdita\API\Controller\Component;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
@@ -49,6 +50,7 @@ class JsonApiComponent extends Component
         'checkMediaType' => true,
         'resourceTypes' => null,
         'clientGeneratedIds' => false,
+        'parseJson' => true,
     ];
 
     /**
@@ -62,32 +64,46 @@ class JsonApiComponent extends Component
         }
         $this->getController()->setResponse($this->getController()->getResponse()->withType($contentType));
 
-        $this->RequestHandler->setConfig('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
         $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
     }
 
     /**
-     * Input data parser for JSON API format.
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
+
+        $contentType = $this->getController()->getRequest()->getHeaderLine('Content-Type');
+        if ($contentType === self::CONTENT_TYPE || !$this->getConfig('parseJson')) {
+            return;
+        }
+
+        $data = $this->parseJsonInput();
+        $this->getController()->setRequest($this->getController()->getRequest()->withParsedBody($data));
+    }
+
+    /**
+     * Input data parser for JSON API format when `application/json` was used as content type.
      *
-     * @param string $json JSON string.
      * @return array JSON API input data array
      * @throws \Cake\Http\Exception\BadRequestException When the request is malformed
      */
-    public function parseInput($json)
+    protected function parseJsonInput()
     {
-        if (empty($json)) {
+        $data = $this->getController()->getRequest()->getData();
+        if (empty($data)) {
             return [];
         }
         try {
-            $json = json_decode($json, true);
-            if (json_last_error() || !is_array($json) || !array_key_exists('data', $json)) {
+            if (!is_array($data) || !array_key_exists('data', $data)) {
                 throw new BadRequestException(__d('bedita', 'Invalid JSON input'));
             }
 
-            return JsonApi::parseData((array)$json['data']);
+            return JsonApi::parseData((array)$data['data']);
         } catch (\InvalidArgumentException $e) {
             throw new BadRequestException(
-                __d('bedita', 'Bad JSON input'),
+                __d('bedita', 'Bad JSON API input'),
                 400,
                 $e
             );

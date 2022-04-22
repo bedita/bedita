@@ -806,4 +806,58 @@ class JsonApiTest extends TestCase
 
         JsonApi::formatData(['name' => 'Gustavo']);
     }
+
+    /**
+     * Data provider for `testParseInput` test case.
+     *
+     * @return array
+     */
+    public function parseInputProvider()
+    {
+        return [
+            'valid' => [
+                [
+                    'type' => 'customType',
+                    'key' => 'value',
+                ],
+                '{"data":{"type":"customType","attributes":{"key":"value"}}}',
+            ],
+            'invalidJson' => [
+                false,
+                '{"some", "invalid":"json"',
+            ],
+            'invalidJsonApi' => [
+                false,
+                '{"data":{"type":null,"attributes":{"key":"value"}}}',
+            ],
+            'empty' => [
+                [],
+                '',
+            ],
+            'dataNull' => [
+                [],
+                '{"data":null}',
+            ],
+        ];
+    }
+
+    /**
+     * Test `parseInput()` method.
+     *
+     * @param array $expected Expected parsed array.
+     * @param string $input Input to be parsed.
+     * @return void
+     * @dataProvider parseInputProvider
+     * @covers ::parseInput()
+     */
+    public function testParseInput($expected, $input)
+    {
+        if ($expected === false) {
+            $this->expectException('\Cake\Http\Exception\BadRequestException');
+        }
+
+        $result = JsonApi::parseInput($input);
+
+        static::assertEquals($expected, $result);
+    }
 }
