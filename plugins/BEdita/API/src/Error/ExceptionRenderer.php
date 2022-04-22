@@ -14,7 +14,7 @@
 namespace BEdita\API\Error;
 
 use Cake\Core\Configure;
-use Cake\Core\Exception\Exception as CakeException;
+use Cake\Core\Exception\CakeException;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -34,7 +34,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
      *
      * @codeCoverageIgnore
      */
-    public function __construct(\Exception $exception)
+    public function __construct(Throwable $exception)
     {
         parent::__construct($exception);
 
@@ -97,12 +97,12 @@ class ExceptionRenderer extends CakeExceptionRenderer
      *    ['field2' => [...]],
      *  ],
      *
-     * @param \Exception $error Exception.
+     * @param \Throwable $error Exception.
      * @return string Error message
      */
-    protected function errorDetail(\Exception $error)
+    protected function errorDetail(Throwable $error)
     {
-        if (!$error instanceof \Cake\Core\Exception\CakeException) {
+        if (!$error instanceof CakeException) {
             return '';
         }
 
@@ -136,12 +136,12 @@ class ExceptionRenderer extends CakeExceptionRenderer
     /**
      * Application specific error code.
      *
-     * @param \Exception $error Exception.
+     * @param \Throwable $error Exception.
      * @return string Error code
      */
-    protected function appErrorCode(\Exception $error): string
+    protected function appErrorCode(Throwable $error): string
     {
-        if (!$error instanceof \Cake\Core\Exception\CakeException) {
+        if (!$error instanceof CakeException) {
             return '';
         }
 
