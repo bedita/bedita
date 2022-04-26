@@ -177,7 +177,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function _getAlias(): string
     {
-        return Inflector::camelize($this->name);
+        return Inflector::camelize((string)$this->name);
     }
 
     /**

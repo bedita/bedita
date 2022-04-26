@@ -28,6 +28,6 @@ class JsonObjectType extends JsonType
      */
     public function toPHP($value, DriverInterface $driver)
     {
-        return json_decode($value, false);
+        return json_decode((string)$value, false);
     }
 }
