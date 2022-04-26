@@ -353,7 +353,9 @@ class JsonApiComponentTest extends TestCase
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
         $component->setConfig($config);
         $request = $component->getController()->getRequest();
-        $component->getController()->setRequest($request->withParsedBody($input));
+        $component->getController()->setRequest(
+            $request->withParsedBody($input)->withHeader('Content-Type', 'application/json')
+        );
 
         $component->beforeFilter(new Event('test'));
 

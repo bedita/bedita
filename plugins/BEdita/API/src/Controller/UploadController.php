@@ -33,7 +33,7 @@ class UploadController extends ObjectsController
         $this->loadComponent('BEdita/API.Upload');
         parent::initialize();
         if ($this->components()->has('JsonApi')) {
-            $this->components()->unload('JsonApi');
+            $this->JsonApi->setConfig('parseJson', false);
         }
     }
 
@@ -61,7 +61,9 @@ class UploadController extends ObjectsController
             // create media object from POST request
             $this->index();
 
-            $objectId = (int)Hash::get((array)$this->viewBuilder()->getVar('data'), 'id');
+            /** @var \Cake\Datasource\EntityInterface $data */
+            $data = $this->viewBuilder()->getVar('data');
+            $objectId = (int)Hash::get($data, 'id');
             $this->Upload->upload($fileName, $objectId);
         });
     }

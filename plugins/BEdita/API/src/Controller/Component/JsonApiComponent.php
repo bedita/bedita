@@ -38,6 +38,16 @@ class JsonApiComponent extends Component
     public const CONTENT_TYPE = 'application/vnd.api+json';
 
     /**
+     * Allowed JSON API content types.
+     *
+     * @var array
+     */
+    public const ALLOWED_CONTENT_TYPES = [
+        'application/json',
+        'application/vnd.api+json',
+    ];
+
+    /**
      * @inheritDoc
      */
     public $components = ['RequestHandler'];
@@ -75,21 +85,22 @@ class JsonApiComponent extends Component
         $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
 
         $contentType = $this->getController()->getRequest()->getHeaderLine('Content-Type');
-        if ($contentType === self::CONTENT_TYPE || !$this->getConfig('parseJson')) {
+        if (!in_array($contentType, static::ALLOWED_CONTENT_TYPES) || !$this->getConfig('parseJson')) {
             return;
         }
 
-        $data = $this->parseJsonInput();
+        $data = $this->parseInput();
         $this->getController()->setRequest($this->getController()->getRequest()->withParsedBody($data));
     }
 
     /**
-     * Input data parser for JSON API format when `application/json` was used as content type.
+     * Input data parser for JSON API format.
+     * Request body has already been parsed by BodyParserMiddlare as simple JSON.
      *
      * @return array JSON API input data array
      * @throws \Cake\Http\Exception\BadRequestException When the request is malformed
      */
-    protected function parseJsonInput()
+    protected function parseInput(): array
     {
         $data = $this->getController()->getRequest()->getData();
         if (empty($data)) {
@@ -216,7 +227,7 @@ class JsonApiComponent extends Component
     protected function allowedResourceTypes($types, ?array $data = null)
     {
         $data = $data ?? $this->getController()->getRequest()->getData();
-        if (!$data || !$types) {
+        if (!$data || !$types || !$this->getConfig('parseJson')) {
             return;
         }
         $data = (array)$data;

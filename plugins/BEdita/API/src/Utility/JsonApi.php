@@ -31,34 +31,6 @@ use Cake\Utility\Hash;
 class JsonApi
 {
     /**
-     * Input data parser for JSON API format.
-     *
-     * @param string $json JSON string.
-     * @return array JSON API input data array
-     * @throws \Cake\Http\Exception\BadRequestException When the request is malformed
-     */
-    public static function parseInput(string $json): array
-    {
-        if (empty($json)) {
-            return [];
-        }
-        try {
-            $json = json_decode($json, true);
-            if (json_last_error() || !is_array($json) || !array_key_exists('data', $json)) {
-                throw new BadRequestException(__d('bedita', 'Invalid JSON input'));
-            }
-
-            return static::parseData((array)$json['data']);
-        } catch (\InvalidArgumentException $e) {
-            throw new BadRequestException(
-                __d('bedita', 'Bad JSON input'),
-                400,
-                $e
-            );
-        }
-    }
-
-    /**
      * Format single or multiple data items in JSON API format.
      *
      * Two events will be dispatched:
