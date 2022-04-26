@@ -14,14 +14,12 @@
  */
 namespace BEdita\App;
 
-use BEdita\API\Utility\JsonApi;
+use BEdita\Core\Middleware\BodyParserMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
-use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Middleware\RoutingMiddleware;
-use Closure;
 
 /**
  * Application setup class.
@@ -129,11 +127,7 @@ class Application extends BaseApplication
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
-            ->add((new BodyParserMiddleware())
-                ->addParser(
-                    ['application/vnd.api+json'],
-                    Closure::fromCallable([JsonApi::class, 'parseInput'])
-                ));
+            ->add(new BodyParserMiddleware());
 
         return $middlewareQueue;
     }
