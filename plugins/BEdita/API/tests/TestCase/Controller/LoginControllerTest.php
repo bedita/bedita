@@ -328,8 +328,11 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST');
 
         $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(401);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals('Login request not successful', $result['error']['title']);
     }
 
     /**

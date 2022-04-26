@@ -15,6 +15,8 @@ namespace BEdita\Core\Test\TestCase\Command;
 use BEdita\Core\Command\ProjectModelCommand;
 use BEdita\Core\Test\TestCase\Utility\ProjectModelTest;
 use Cake\Core\App;
+use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -123,7 +125,7 @@ class ProjectModelCommandTest extends TestCase
     public function testPluginFailure2(): void
     {
         $this->exec('project_model -p Test');
-        $expected = current(App::classPath('Plugin')) . 'Test' . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
+        $expected = current(Configure::read('App.paths.plugins')) . ('Test') . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
         $this->assertErrorContains('File not found ' . $expected);
         $this->assertExitError();
     }
