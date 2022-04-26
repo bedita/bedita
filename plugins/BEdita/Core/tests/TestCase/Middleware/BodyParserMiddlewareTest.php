@@ -60,7 +60,7 @@ class BodyParserMiddlewareTest extends TestCase
             'simple' => [
                 ['name' => 'Gustavo', 'surname' => 'Supporto'],
                 'name=Gustavo&surname=Supporto',
-            ]
+            ],
         ];
     }
 

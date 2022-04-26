@@ -17,7 +17,6 @@ use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
