@@ -159,7 +159,7 @@ class QueryTest extends TestCase
             /** @var \Cake\Database\Expression\QueryExpression $exp */
             $exp = $joins[$alias]['conditions'];
             static::assertSame(
-                $alias . '.id = (fake_felines.id)',
+                $alias . '.id = fake_felines.id',
                 $exp->sql(new ValueBinder())
             );
         }
