@@ -42,7 +42,7 @@ class MediaController extends ObjectsController
 
             $ids = [$id];
         } elseif (!is_array($ids)) {
-            $ids = explode(',', $ids);
+            $ids = explode(',', (string)$ids);
         }
 
         $validateOptions = [

@@ -274,7 +274,7 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function readFileMetadata($resource): void
     {
-        if (preg_match('/image\//', $this->mime_type) && function_exists('getimagesizefromstring')) {
+        if (preg_match('/image\//', (string)$this->mime_type) && function_exists('getimagesizefromstring')) {
             rewind($resource);
             $size = getimagesizefromstring(stream_get_contents($resource));
 
