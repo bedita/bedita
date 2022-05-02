@@ -207,7 +207,7 @@ class SetupConnectionTask extends Shell
 
         // Database port.
         if (!$this->param('connection-port')) {
-            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? 3306 : 5432);
+            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
         }
         $config['port'] = $this->param('connection-port');
 
