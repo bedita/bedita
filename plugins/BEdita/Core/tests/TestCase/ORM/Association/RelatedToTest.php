@@ -283,8 +283,8 @@ class RelatedToTest extends TestCase
         return [
             'no object type set' => [null, [], 'BEdita/Core.Objects', null],
             'not an object table' => [null, [], 'BEdita/Core.ObjectTypes', 'locations'],
-            'profiles' => ['profiles', ['inversetest'], 'BEdita/Core.Profiles', 'profiles'],
-            'override' => ['events', ['test', 'inversetest', 'testabstract'], null, 'events', 'Documents'],
+            'profiles' => ['profiles', ['InverseTest'], 'BEdita/Core.Profiles', 'profiles'],
+            'override' => ['events', ['Test', 'InverseTest', 'TestAbstract'], null, 'events', 'Documents'],
         ];
     }
 
