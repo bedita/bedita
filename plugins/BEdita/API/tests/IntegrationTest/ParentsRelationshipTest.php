@@ -125,7 +125,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         $this->configRequestHeaders();
         $this->get($relatedEndpoint);
+        $this->assertResponseCode(200);
         $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $body);
         static::assertCount(2, $body['data']);
         $parentIds = Hash::extract($body['data'], '{n}.id');
         sort($parentIds);
