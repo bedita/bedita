@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query;
@@ -217,7 +217,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($left, 1, null, '+'),
+                    new ComparisonExpression($left, 1, null, '+'),
                     $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left')))
                 );
             });
@@ -237,7 +237,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $right])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($right, 1, null, '-'),
+                    new ComparisonExpression($right, 1, null, '-'),
                     $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right')))
                 );
             });
@@ -267,7 +267,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($left, 1, null, '-'),
+                    new ComparisonExpression($left, 1, null, '-'),
                     $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right')))
                 );
             });
