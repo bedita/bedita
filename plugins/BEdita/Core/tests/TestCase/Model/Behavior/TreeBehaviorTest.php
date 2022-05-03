@@ -34,9 +34,27 @@ class TreeBehaviorTest extends TestCase
         parent::setUp();
 
         $this->Table = TableRegistry::getTableLocator()->get('FakeCategories');
+
+        $through = TableRegistry::getTableLocator()->get('FakeCategoriesJunction', [
+            'className' => 'FakeCategories',
+        ]);
+        $through->belongsTo('FakeCategories', [
+            'foreignKey' => 'parent_id',
+            'joinType' => 'INNER',
+        ]);
+        $through->belongsTo('ChildCategories', [
+            'className' => 'FakeCategories',
+            'foreignKey' => 'id',
+            'joinType' => 'INNER',
+        ]);
+        $through->addBehavior('BEdita/Core.Tree', [
+            'left' => 'left_idx',
+            'right' => 'right_idx',
+        ]);
+
         $this->Table->belongsToMany('ChildCategories', [
             'className' => 'FakeCategories',
-            'joinTable' => 'fake_categories',
+            'through' => $through,
             'foreignKey' => 'parent_id',
             'targetForeignKey' => 'id',
         ]);
