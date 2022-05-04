@@ -72,6 +72,7 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
 TypeFactory::set('date', new DateType());
 TypeFactory::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 TypeFactory::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('timestampfractional', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 
 /**
  * Use custom BoolType

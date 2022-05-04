@@ -167,7 +167,8 @@ class StaticProperty extends Property
         }
 
         $typeName = $this->table->getSchema()->getColumnType($this->name);
-        if (in_array($default, ['CURRENT_TIMESTAMP', 'now()', 'current_timestamp()']) && in_array($typeName, ['date', 'datetime', 'time', 'timestamp'])) {
+        $dateTimeTypes = ['date', 'datetime', 'time', 'timestamp', 'timestampfractional'];
+        if (in_array($default, ['CURRENT_TIMESTAMP', 'now()', 'current_timestamp()']) && in_array($typeName, $dateTimeTypes)) {
             // Default value is not meaningful in this case.
             return $this->_fields['default'] = null;
         }
