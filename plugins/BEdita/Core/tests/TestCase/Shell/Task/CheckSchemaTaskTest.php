@@ -186,97 +186,100 @@ class CheckSchemaTaskTest extends TestCase
     }
 
     /**
+     * [Schema check removed for now - will be restored in a future release]
      * Test check on new table.
      *
      * @return void
      * @covers ::checkDiff()
      * @covers ::formatMessages()
      */
-    public function testAddTable()
-    {
-        /** @var \Cake\Database\Connection $connection */
-        $connection = ConnectionManager::get('default');
+    // public function testAddTable()
+    // {
+    //     /** @var \Cake\Database\Connection $connection */
+    //     $connection = ConnectionManager::get('default');
 
-        $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
-        foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
-        }
+    //     $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
+    //     foreach ($table->createSql($connection) as $statement) {
+    //         $connection->query($statement);
+    //     }
 
-        $this->exec(CheckSchemaTask::class);
+    //     $this->exec(CheckSchemaTask::class);
 
-        if ($this->checkAvailable($connection)) {
-            $this->assertExitCode(Shell::CODE_ERROR);
-            $this->assertOutputContains('Table "foo_bar" has been added');
-        } else {
-            $this->assertExitCode(Shell::CODE_SUCCESS);
-            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-        }
-        $this->assertErrorEmpty();
-    }
+    //     if ($this->checkAvailable($connection)) {
+    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         $this->assertOutputContains('Table "foo_bar" has been added');
+    //     } else {
+    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+    //     }
+    //     $this->assertErrorEmpty();
+    // }
 
     /**
+     * [Schema check removed for now - will be restored in a future release]
      * Test check on removed table.
      *
      * @return void
      * @covers ::checkDiff()
      * @covers ::formatMessages()
      */
-    public function testRemoveTable()
-    {
-        /** @var \Cake\Database\Connection $connection */
-        $connection = ConnectionManager::get('default');
+    // public function testRemoveTable()
+    // {
+    //     /** @var \Cake\Database\Connection $connection */
+    //     $connection = ConnectionManager::get('default');
 
-        $table = $connection->getSchemaCollection()->describe('config');
-        foreach ($table->dropSql($connection) as $statement) {
-            $connection->query($statement);
-        }
+    //     $table = $connection->getSchemaCollection()->describe('config');
+    //     foreach ($table->dropSql($connection) as $statement) {
+    //         $connection->query($statement);
+    //     }
 
-        $this->exec(CheckSchemaTask::class);
+    //     $this->exec(CheckSchemaTask::class);
 
-        if ($this->checkAvailable($connection)) {
-            $this->assertExitCode(Shell::CODE_ERROR);
-            $this->assertOutputContains('Table "config" has been removed');
-        } else {
-            $this->assertExitCode(Shell::CODE_SUCCESS);
-            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-        }
-        $this->assertErrorEmpty();
-    }
+    //     if ($this->checkAvailable($connection)) {
+    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         $this->assertOutputContains('Table "config" has been removed');
+    //     } else {
+    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+    //     }
+    //     $this->assertErrorEmpty();
+    // }
 
     /**
+     * [Schema check removed for now - will be restored in a future release]
      * Test check on removed constraint.
      *
      * @return void
      * @covers ::checkDiff()
      * @covers ::formatMessages()
      */
-    public function testUpdateConstraints()
-    {
-        /** @var \Cake\Database\Connection $connection */
-        $connection = ConnectionManager::get('default');
+    // public function testUpdateConstraints()
+    // {
+    //     /** @var \Cake\Database\Connection $connection */
+    //     $connection = ConnectionManager::get('default');
 
-        $table = $connection->getSchemaCollection()->describe('objects');
-        $constraints = $table->constraints();
-        foreach ($table->dropConstraintSql($connection) as $statement) {
-            $connection->query($statement);
-        }
+    //     $table = $connection->getSchemaCollection()->describe('objects');
+    //     $constraints = $table->constraints();
+    //     foreach ($table->dropConstraintSql($connection) as $statement) {
+    //         $connection->query($statement);
+    //     }
 
-        $this->exec(CheckSchemaTask::class);
+    //     $this->exec(CheckSchemaTask::class);
 
-        if ($this->checkAvailable($connection)) {
-            $this->assertExitCode(Shell::CODE_ERROR);
-            foreach ($constraints as $constraint) {
-                $info = $table->getConstraint($constraint);
-                if ($info && isset($info['type']) && $info['type'] !== TableSchema::CONSTRAINT_FOREIGN) {
-                    continue;
-                }
+    //     if ($this->checkAvailable($connection)) {
+    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         foreach ($constraints as $constraint) {
+    //             $info = $table->getConstraint($constraint);
+    //             if ($info && isset($info['type']) && $info['type'] !== TableSchema::CONSTRAINT_FOREIGN) {
+    //                 continue;
+    //             }
 
-                $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
-            }
-        } else {
-            $this->assertExitCode(Shell::CODE_SUCCESS);
-            $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-        }
-        $this->assertErrorEmpty();
-    }
+    //             $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
+    //         }
+    //     } else {
+    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
+    //     }
+    //     $this->assertErrorEmpty();
+    // }
 }
