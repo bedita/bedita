@@ -91,6 +91,7 @@ class DeleteFolderTest extends IntegrationTestCase
         // check that all children are restored
         $this->configRequestHeaders();
         $this->get(sprintf('/folders/%s/children', $folderId));
+        $this->assertResponseCode(200);
         $actualResult = json_decode((string)$this->_response->getBody(), true);
         static::assertNotEmpty($actualResult['data']);
         static::assertEquals(Hash::extract($expectedChildren, 'data.{n}.id'), Hash::extract($actualResult, 'data.{n}.id'));

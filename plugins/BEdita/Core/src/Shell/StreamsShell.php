@@ -66,7 +66,7 @@ class StreamsShell extends Shell
         $query = $this->Streams->find()
             ->where([
                 'object_id IS NULL',
-                'created <' => \Cake\I18n\Time::now()->subDays($days),
+                'created <' => \Cake\I18n\FrozenTime::now()->subDays($days),
             ]);
         $count = 0;
         foreach ($query as $stream) {

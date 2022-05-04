@@ -23,7 +23,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -154,7 +154,7 @@ class SignupUserActivationActionTest extends TestCase
         [$user, $asyncJob] = $this->signup();
 
         $user->status = 'on';
-        $user->verified = new Time();
+        $user->verified = new FrozenTime();
         $Users = TableRegistry::getTableLocator()->get('Users');
         $Users->save($user);
 

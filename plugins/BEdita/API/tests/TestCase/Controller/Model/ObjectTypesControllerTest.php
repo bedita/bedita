@@ -38,6 +38,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::prepareInclude()
      */
     public function testIndex()
     {

@@ -92,7 +92,7 @@ class GlideGeneratorTest extends TestCase
             'invalid txt file' => [
                 new InvalidDataException('Invalid thumbnail format: txt'),
                 '9e58fa47-db64-4479-a0ab-88a706180d59',
-                ['fm' => 'txt']
+                ['fm' => 'txt'],
             ],
             'png file' => [
                 'https://static.example.org/thumbs/e5afe167-7341-458d-a1e6-042e8791b0fe-bedita-logo.png/' . sha1(serialize(['w' => 200, 'fm' => 'png'])) . '.png',
@@ -166,7 +166,6 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     *
      * @dataProvider getExtensionThumb()
      * @covers ::getUrl()
      * @covers ::getFilename()

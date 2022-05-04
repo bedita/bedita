@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 
 /**
  * Fixture for `translations` table.
@@ -31,8 +31,8 @@ class TranslationsFixture extends TestFixture
                 'object_id' => 2,
                 'lang' => 'it-IT',
                 'status' => 'on',
-                'created' => Time::now(),
-                'modified' => Time::now(),
+                'created' => FrozenTime::now(),
+                'modified' => FrozenTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => json_encode([
@@ -49,8 +49,8 @@ class TranslationsFixture extends TestFixture
                 'object_id' => 2,
                 'lang' => 'fr',
                 'status' => 'on',
-                'created' => Time::now(),
-                'modified' => Time::now(),
+                'created' => FrozenTime::now(),
+                'modified' => FrozenTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => json_encode([

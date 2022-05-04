@@ -23,6 +23,7 @@
 !/vendor/.gitkeep
 /webroot/_files/*
 !/webroot/_files/.gitkeep
+.phpunit.result.cache
 
 # BEdita plugins folders #
 ##########################

@@ -117,10 +117,7 @@ class UpdateAssociatedAction extends BaseAction
             $id = Hash::get($datum, 'id');
             $type = Hash::get($datum, 'type');
             if (!isset($targetEntities[$id]) || ($targetEntities[$id]->has('type') && $targetEntities[$id]->get('type') !== $type)) {
-                throw new RecordNotFoundException(
-                    __('Record not found in table "{0}"', $type ?: $target->getTable()),
-                    400
-                );
+                throw new RecordNotFoundException(__('Record not found in table "{0}"', $type ?: $target->getTable()));
             }
 
             $meta = Hash::get($datum, '_meta.relation');

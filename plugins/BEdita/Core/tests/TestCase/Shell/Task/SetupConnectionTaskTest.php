@@ -21,12 +21,15 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupConnectionTask
  */
 class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Name for temporary connection.
      *
@@ -102,7 +105,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
-        $this->assertErrorContains('Connection to database could not be established');
+        $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
     }
 
     /**
@@ -147,7 +150,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
 
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
-        $defaultPort = $driver === 'Mysql' ? 3306 : 5432;
+        $defaultPort = $driver === 'Mysql' ? '3306' : '5432';
 
         // Mock input values.
         $returnValues = [
@@ -170,7 +173,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
-        $this->assertErrorContains('Connection to database could not be established');
+        $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
     }
 
     /**

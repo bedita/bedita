@@ -13,6 +13,8 @@
 
 namespace BEdita\API\Controller\Model;
 
+use Cake\ORM\Table;
+
 /**
  * Controller for `/model/object_types` endpoint.
  *
@@ -36,4 +38,15 @@ class ObjectTypesController extends ModelController
             'parent' => ['object_types'],
         ],
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected function prepareInclude($include, ?Table $table = null): array
+    {
+        $contain = parent::prepareInclude($include, $table);
+        $contain = array_merge($contain, ['LeftRelations', 'RightRelations']);
+
+        return $contain;
+    }
 }

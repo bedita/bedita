@@ -80,7 +80,7 @@ class ObjectsHandlerTest extends TestCase
         $entity = ObjectsHandler::save('users', $data);
         $this->assertNotEmpty($entity);
         $userId = $entity->id;
-        $this->assertInternalType('integer', $userId);
+        $this->assertIsInt($userId);
 
         $data = [
             'title' => 'a pragmatic title',
@@ -90,7 +90,7 @@ class ObjectsHandlerTest extends TestCase
         $entity = ObjectsHandler::save('documents', $data, ['id' => $userId]);
         $this->assertNotEmpty($entity);
         $docId = $entity->id;
-        $this->assertInternalType('integer', $docId);
+        $this->assertIsInt($docId);
 
         $result = ObjectsHandler::remove('agile-uname');
         $this->assertTrue($result);
