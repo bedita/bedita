@@ -52,14 +52,15 @@ class StreamsController extends ResourcesController
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
+            ->all()
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
+
+        parent::initialize();
 
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
         }
-
-        parent::initialize();
     }
 
     /**

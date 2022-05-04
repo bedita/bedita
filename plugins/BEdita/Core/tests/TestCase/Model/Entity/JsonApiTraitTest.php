@@ -384,14 +384,14 @@ class JsonApiTraitTest extends TestCase
         $role = $this->Roles->get(1)->jsonApiSerialize();
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
 
         // test with `fields`
         $role = $this->Roles->get(1)->jsonApiSerialize(0, ['created', 'modified', 'unchangeable']);
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
     }
 
@@ -422,9 +422,9 @@ class JsonApiTraitTest extends TestCase
     {
         $expected = [
             'created',
+            'extra',
             'modified',
             'unchangeable',
-            'extra',
         ];
         $expectedExtra = ['my_computed_field' => pi()];
 
@@ -434,7 +434,7 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($role, 'meta', []));
         $extra = Hash::get($role, 'meta.extra');
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
         static::assertSame($expectedExtra, $extra);
     }
@@ -470,6 +470,8 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($user, 'meta', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
     }
 
@@ -542,6 +544,8 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($user, 'meta', []));
         $relation = array_keys(Hash::get($user, 'meta.relation', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
         static::assertEquals($expectedRelation, $relation, '', 0, 10, true);
     }
@@ -591,7 +595,7 @@ class JsonApiTraitTest extends TestCase
      * @param array $fields Fields filter data.
      * @return void
      * @covers ::jsonApiSerialize()
-     * @covers ::setFields()
+     * @covers ::setSelected()
      * @dataProvider jsonApiSerializeProvider()
      */
     public function testJsonApiSerialize($excludedKeys, $options, $fields = null)
