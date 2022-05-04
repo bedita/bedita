@@ -22,7 +22,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Middleware\BodyParserMiddleware} Test Case.
  *
- * @covers \BEdita\Core\Middleware\BodyParserMiddleware
+ * @coversDefaultClass \BEdita\Core\Middleware\BodyParserMiddleware
  */
 class BodyParserMiddlewareTest extends TestCase
 {
