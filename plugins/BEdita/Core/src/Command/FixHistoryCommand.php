@@ -19,6 +19,7 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -278,7 +279,7 @@ class FixHistoryCommand extends Command
         }
         $joinConditions = [
             $query->newExpr()->eq($this->History->aliasField('resource_type'), 'objects'),
-            $query->newExpr()->equalFields($idField, $this->Objects->aliasField('id')),
+            $query->newExpr()->eq($idField, new IdentifierExpression($this->Objects->aliasField('id'))),
             $query->newExpr()->equalFields(
                 $this->History->aliasField('user_id'),
                 $this->Objects->aliasField($userField)
