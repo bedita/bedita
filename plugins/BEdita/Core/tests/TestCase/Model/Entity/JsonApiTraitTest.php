@@ -476,6 +476,8 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($user, 'meta', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '');
         static::assertEqualsCanonicalizing($expected, $meta, '');
         static::assertEqualsWithDelta($expected, $meta, 0, '');
@@ -550,6 +552,8 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($user, 'meta', []));
         $relation = array_keys(Hash::get($user, 'meta.relation', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '');
         static::assertEqualsCanonicalizing($expected, $meta, '');
         static::assertEqualsWithDelta($expected, $meta, 0, '');
@@ -603,7 +607,7 @@ class JsonApiTraitTest extends TestCase
      * @param array $fields Fields filter data.
      * @return void
      * @covers ::jsonApiSerialize()
-     * @covers ::setFields()
+     * @covers ::setSelected()
      * @dataProvider jsonApiSerializeProvider()
      */
     public function testJsonApiSerialize($excludedKeys, $options, $fields = null)

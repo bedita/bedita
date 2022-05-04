@@ -50,7 +50,7 @@ class RelationsBehaviorTest extends TestCase
      */
     public function testInitialization()
     {
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
 
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $Profiles = TableRegistry::getTableLocator()->get('Profiles');

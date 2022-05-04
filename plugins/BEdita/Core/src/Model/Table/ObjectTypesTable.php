@@ -310,7 +310,7 @@ class ObjectTypesTable extends Table
      */
     protected function objectsExist($typeId)
     {
-        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id' => $typeId]);
+        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
 
     /**
@@ -341,7 +341,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    public function findAll(Query $query, array $options): Query
+    public function findContainRelations(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -478,7 +478,9 @@ class ObjectTypesTable extends Table
         }
 
         // Everything is said and done by now. Fingers crossed!
-        return $query->where($conditionsBuilder);
+        return $query
+            ->where($conditionsBuilder)
+            ->order([$this->aliasField('tree_left') => 'asc']);
     }
 
     /**

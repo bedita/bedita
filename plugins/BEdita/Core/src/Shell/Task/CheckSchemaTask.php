@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Shell\Task;
 
+use ArrayObject;
 use BEdita\Core\Model\Validation\SqlConventionsValidator;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Console\Exception\MissingTaskException;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -98,7 +98,8 @@ class CheckSchemaTask extends Shell
         $realVendor = Hash::get((array)$connection->config(), 'realVendor');
         if (($connection->getDriver() instanceof Mysql) && empty($realVendor)) {
             $this->checkConventions($connection);
-            $this->checkDiff($connection);
+            // Schema check removed for now - will be restored in a future release
+            // $this->checkDiff($connection);
         } else {
             $this->out('=====> <warning>SQL conventions and schema differences can only be checked on MySQL</warning>');
         }
@@ -161,6 +162,9 @@ class CheckSchemaTask extends Shell
     {
         $validator = new SqlConventionsValidator();
         foreach ($context as $key => $value) {
+            if (is_array($value)) {
+                $value = new ArrayObject($value);
+            }
             $validator->setProvider($key, $value);
         }
 
@@ -219,60 +223,61 @@ class CheckSchemaTask extends Shell
     }
 
     /**
+     * [Schema check removed for now - will be restored in a future release]
      * Check if changes in schema occurred.
      *
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkDiff(Connection $connection)
-    {
-        try {
-            $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
-        } catch (MissingTaskException $e) {
-            $this->out(sprintf('=====> <error>Unable to check schema differences: %s</error>', $e->getMessage()));
+    // protected function checkDiff(Connection $connection)
+    // {
+    //     try {
+    //         $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
+    //     } catch (MissingTaskException $e) {
+    //         $this->out(sprintf('=====> <error>Unable to check schema differences: %s</error>', $e->getMessage()));
 
-            return;
-        }
+    //         return;
+    //     }
 
-        $this->verbose('=====> Checking schema differences:');
+    //     $this->verbose('=====> Checking schema differences:');
 
-        $diffTask->connection = $connection->configName();
-        $diffTask->params['plugin'] = 'BEdita/Core';
-        $diffTask->setup();
+    //     $diffTask->connection = $connection->configName();
+    //     $diffTask->params['plugin'] = 'BEdita/Core';
+    //     $diffTask->setup();
 
-        $diff = $diffTask->templateData();
-        if (empty($diff['data'])) {
-            return;
-        }
-        $diff = $diff['data'];
+    //     $diff = $diffTask->templateData();
+    //     if (empty($diff['data'])) {
+    //         return;
+    //     }
+    //     $diff = $diff['data'];
 
-        $this->verbose('=====>  - Checking tables added or removed... ', 0);
-        foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['add'])) as $table) {
-            $this->messages[$table]['table'][$table]['add'] = true;
-        }
-        foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['remove'])) as $table) {
-            $this->messages[$table]['table'][$table]['remove'] = true;
-        }
-        unset($diff['fullTables']);
-        $this->verbose('<info>DONE</info>');
+    //     $this->verbose('=====>  - Checking tables added or removed... ', 0);
+    //     foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['add'])) as $table) {
+    //         $this->messages[$table]['table'][$table]['add'] = true;
+    //     }
+    //     foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['remove'])) as $table) {
+    //         $this->messages[$table]['table'][$table]['remove'] = true;
+    //     }
+    //     unset($diff['fullTables']);
+    //     $this->verbose('<info>DONE</info>');
 
-        foreach ($diff as $table => $elements) {
-            $this->verbose(sprintf('=====>  - Checking table <comment>%s</comment>... ', $table), 0);
+    //     foreach ($diff as $table => $elements) {
+    //         $this->verbose(sprintf('=====>  - Checking table <comment>%s</comment>... ', $table), 0);
 
-            foreach ($elements as $type => $changes) {
-                $type = Inflector::singularize($type);
-                foreach ($changes as $action => $list) {
-                    foreach (array_keys($list) as $symbol) {
-                        $this->messages[$table][$type][$symbol][$action] = true;
-                    }
-                }
-            }
+    //         foreach ($elements as $type => $changes) {
+    //             $type = Inflector::singularize($type);
+    //             foreach ($changes as $action => $list) {
+    //                 foreach (array_keys($list) as $symbol) {
+    //                     $this->messages[$table][$type][$symbol][$action] = true;
+    //                 }
+    //             }
+    //         }
 
-            $this->verbose('<info>DONE</info>');
-        }
+    //         $this->verbose('<info>DONE</info>');
+    //     }
 
-        $this->verbose('=====> ');
-    }
+    //     $this->verbose('=====> ');
+    // }
 
     /**
      * Send all messages to output.

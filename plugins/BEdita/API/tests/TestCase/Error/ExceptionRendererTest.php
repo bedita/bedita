@@ -13,13 +13,16 @@
 
 namespace BEdita\API\Test\TestCase\Error;
 
+use BEdita\Core\Exception\InvalidDataException;
 use Cake\Core\Configure;
+use Cake\Core\Exception\CakeException;
 use Cake\Core\Plugin;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -67,41 +70,38 @@ class ExceptionRendererTest extends TestCase
     {
         return [
             'simple' => [
-                'err msg',
+                new Exception('err msg'),
                 'err msg',
             ],
             'detail' => [
-                ['title' => 'err title', 'detail' => 'err detail'],
+                new InvalidDataException('err title', ['err detail']),
                 'err title',
-                'err detail',
+                '[0]: err detail',
             ],
             'detailArray' => [
-                ['title' => 'new title', 'detail' => [['field' => ['cause' => 'err detail']]]],
+                new InvalidDataException('new title', [['field' => ['cause' => 'err detail']]]),
                 'new title',
                 '[0.field.cause]: err detail',
             ],
             'detailArray2' => [
-                [
-                    'title' => 'new title',
-                    'detail' => [
-                        'field' => ['cause' => 'err detail'],
-                        'nestedFields' => [
-                            'field2' => ['cause2' => 'err detail2'],
-                            'field3' => ['cause3' => 'err detail3'],
-                        ],
+                new InvalidDataException('new title', [
+                    'field' => ['cause' => 'err detail'],
+                    'nestedFields' => [
+                        'field2' => ['cause2' => 'err detail2'],
+                        'field3' => ['cause3' => 'err detail3'],
                     ],
-                ],
+                ]),
                 'new title',
                 '[field.cause]: err detail [nestedFields.field2.cause2]: err detail2 [nestedFields.field3.cause3]: err detail3',
             ],
             'code' => [
-                ['title' => 'err title', 'code' => 'err-code'],
+                new CakeException(['title' => 'err title', 'code' => 'err-code']),
                 'err title',
                 null,
                 'err-code',
             ],
             'badCode' => [
-                ['title' => 'err title', 'code' => ['err-code']],
+                new CakeException(['title' => 'err title', 'code' => ['err-code']]),
                 'err title',
             ],
             'previous exception' => [
@@ -119,7 +119,7 @@ class ExceptionRendererTest extends TestCase
     /**
      * Test error detail on response
      *
-     * @param array|string|\Exception $exception Expected error.
+     * @param \Exception $exception Expected error.
      * @param string $title Expected error title.
      * @param string $detail Additional details.
      * @param string $code Error code.
@@ -133,10 +133,6 @@ class ExceptionRendererTest extends TestCase
      */
     public function testErrorDetails($exception, $title, $detail = '', $code = '')
     {
-        if (!($exception instanceof \Exception)) {
-            $exception = new NotFoundException($exception);
-        }
-
         $renderer = new MyExceptionRenderer($exception);
         $renderer->getController()->setRequest($renderer->getController()->getRequest()->withEnv('HTTP_ACCEPT', 'application/json'));
         $response = $renderer->render();

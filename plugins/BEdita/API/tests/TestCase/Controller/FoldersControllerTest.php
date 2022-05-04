@@ -904,7 +904,9 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArrayHasKey('title', $result['error']);
-        static::assertEquals('Folder "12" is not on the tree.', $result['error']['title']);
+        static::assertEquals('Serialization of View data failed.', $result['error']['title']);
+        static::assertArrayHasKey('detail', $result['error']);
+        static::assertEquals('Folder "12" is not on the tree.', $result['error']['detail']);
     }
 
     /**

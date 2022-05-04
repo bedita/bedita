@@ -157,6 +157,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
         return $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => $parentId])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
     }
 

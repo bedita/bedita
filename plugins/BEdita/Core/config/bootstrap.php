@@ -20,7 +20,9 @@ use Cake\ORM\TableRegistry;
 /**
  * Plug table locator.
  */
-TableRegistry::setTableLocator(new TableLocator());
+if (!TableRegistry::getTableLocator() instanceof TableLocator) {
+    TableRegistry::setTableLocator(new TableLocator());
+}
 
 /**
  * Load 'core' configuration parameters
@@ -70,6 +72,7 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
 TypeFactory::set('date', new DateType());
 TypeFactory::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 TypeFactory::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('timestampfractional', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 
 /**
  * Use custom BoolType

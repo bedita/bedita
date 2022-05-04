@@ -530,14 +530,14 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * Test default finder.
+     * Test findContainRelations custom finder.
      *
      * @return void
-     * @covers ::findAll()
+     * @covers ::findContainRelations()
      */
-    public function testFindAll()
+    public function testFindContainRelations()
     {
-        $query = $this->ObjectTypes->find();
+        $query = $this->ObjectTypes->find('containRelations');
         $contain = $query->getContain();
 
         static::assertArrayHasKey('LeftRelations', $contain);

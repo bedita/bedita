@@ -17,6 +17,8 @@ use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -89,7 +91,6 @@ class JsonApiComponentTest extends TestCase
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
         static::assertEquals($expectedMimeType, $component->getController()->getResponse()->getHeaderLine('content-type'));
-        static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
 
@@ -298,11 +299,11 @@ class JsonApiComponentTest extends TestCase
     }
 
     /**
-     * Data provider for `testParseInput` test case.
+     * Data provider for `beforeFilter` test case.
      *
      * @return array
      */
-    public function parseInputProvider()
+    public function beforeFilterProvider()
     {
         return [
             'valid' => [
@@ -310,45 +311,55 @@ class JsonApiComponentTest extends TestCase
                     'type' => 'customType',
                     'key' => 'value',
                 ],
-                '{"data":{"type":"customType","attributes":{"key":"value"}}}',
+                json_decode('{"data":{"type":"customType","attributes":{"key":"value"}}}', true),
             ],
-            'invalidJson' => [
-                false,
-                '{"some", "invalid":"json"',
-            ],
-            'invalidJsonApi' => [
-                false,
-                '{"data":{"type":null,"attributes":{"key":"value"}}}',
+            'no parse' => [
+                ['some' => 'value'],
+                ['some' => 'value'],
+                ['parseJson' => false],
             ],
             'empty' => [
                 [],
-                '',
-            ],
-            'dataNull' => [
                 [],
-                '{"data":null}',
+            ],
+            'missing data' => [
+                new BadRequestException('Invalid JSON input'),
+                ['some' => 'value'],
+            ],
+            'bad json api' => [
+                new BadRequestException('Bad JSON API input'),
+                ['data' => ['id' => 'a']],
             ],
         ];
     }
 
     /**
-     * Test `parseInput()` method.
+     * Test `beforeFilter()` method.
      *
-     * @param array $expected Expected parsed array.
+     * @param \Excepion|array $expected Exception or expected parsed array.
      * @param string $input Input to be parsed.
      * @return void
-     * @dataProvider parseInputProvider
+     * @dataProvider beforeFilterProvider
+     * @covers ::beforeFilter()
      * @covers ::parseInput()
      */
-    public function testParseInput($expected, $input)
+    public function testParseJsonInput($expected, array $input, array $config = []): void
     {
-        if ($expected === false) {
-            $this->expectException('\Cake\Http\Exception\BadRequestException');
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+        $component->setConfig($config);
+        $request = $component->getController()->getRequest();
+        $component->getController()->setRequest(
+            $request->withParsedBody($input)->withHeader('Content-Type', 'application/json')
+        );
 
-        $result = $component->parseInput($input);
+        $component->beforeFilter(new Event('test'));
+
+        $result = $component->getController()->getRequest()->getData();
 
         static::assertEquals($expected, $result);
     }

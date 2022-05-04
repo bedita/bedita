@@ -292,7 +292,7 @@ class ListRelatedObjectsActionTest extends TestCase
         $entity->set('deleted', true);
         $table->saveOrFail($entity);
 
-        $association = $table->getAssociation('test');
+        $association = $table->getAssociation('Test');
         $action = new ListRelatedObjectsAction(compact('association'));
 
         $result = $action(['primaryKey' => 2, 'list' => true]);

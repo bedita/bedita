@@ -205,7 +205,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
 
         if (!empty($this->getConfig('roles'))) {
-            $validator->requirePresence('roles');
+            $validator
+            ->requirePresence('roles')
+            ->notEmptyArray('roles');
         }
 
         $validator->add('roles', 'validateRoles', [
@@ -397,6 +399,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         return $this->Roles->find()
             ->where(['name IN' => $roles])
+            ->all()
             ->toList();
     }
 

@@ -125,7 +125,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         $this->configRequestHeaders();
         $this->get($relatedEndpoint);
+        $this->assertResponseCode(200);
         $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $body);
         static::assertCount(2, $body['data']);
         $parentIds = Hash::extract($body['data'], '{n}.id');
         sort($parentIds);
@@ -244,6 +246,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
 
         static::assertEquals([2, 4], $childrenIds);
@@ -304,6 +307,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
 
         static::assertEquals([4], $childrenIds);

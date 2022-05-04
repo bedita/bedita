@@ -134,9 +134,6 @@ class DateTimeTypeTest extends TestCase
             [
                 [1, 2, 3],
             ],
-            [
-                new \stdClass(),
-            ],
         ];
     }
 
@@ -153,7 +150,7 @@ class DateTimeTypeTest extends TestCase
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
 
-        static::assertSame($input, $result);
+        static::assertNull($result);
     }
 
     /**

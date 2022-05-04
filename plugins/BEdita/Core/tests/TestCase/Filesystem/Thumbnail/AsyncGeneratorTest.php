@@ -18,12 +18,15 @@ use BEdita\Core\Filesystem\Thumbnail\AsyncGenerator;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail\AsyncGenerator
  */
 class AsyncGeneratorTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Fixtures.
      *

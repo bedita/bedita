@@ -15,15 +15,19 @@ namespace BEdita\Core\Test\TestCase\Mailer\Transport;
 
 use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\Transport\AsyncJobsTransport
  */
 class AsyncJobsTransportTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Fixtures
      *
@@ -53,8 +57,8 @@ class AsyncJobsTransportTest extends TestCase
         TransportFactory::setConfig('debug', [
             'className' => 'Debug',
         ]);
-        Email::drop('test');
-        Email::setConfig('test', [
+        Mailer::drop('test');
+        Mailer::setConfig('test', [
             'transport' => 'test',
             'from' => [
                 'gustavo.supporto@example.org' => 'Gustavo',
@@ -73,7 +77,7 @@ class AsyncJobsTransportTest extends TestCase
     {
         parent::tearDown();
 
-        Email::drop('test');
+        Mailer::drop('test');
         TransportFactory::drop('test');
         TransportFactory::drop('debug');
     }

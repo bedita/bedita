@@ -39,6 +39,17 @@ use Cake\Validation\Validator;
 class PropertyTypesTable extends Table
 {
     /**
+     * Map between specific column types and property types names.
+     *
+     * @var array
+     */
+    protected const COLUMN_TYPE_MAP = [
+        'float' => 'number',
+        'timestamp' => 'datetime',
+        'timestampfractional' => 'datetime',
+    ];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -199,14 +210,9 @@ class PropertyTypesTable extends Table
         if (isset($propertyTypes[$type])) {
             return $propertyTypes[$type];
         }
-        switch ($type) {
-            // Try to convert specific types to more generic ones.
-            case 'float':
-                $type = 'number';
-                break;
-            case 'timestamp':
-                $type = 'datetime';
-                break;
+        // Try to convert specific types to more generic ones.
+        if (isset(static::COLUMN_TYPE_MAP[$type])) {
+            $type = static::COLUMN_TYPE_MAP[$type];
         }
         if (isset($propertyTypes[$type])) {
             return $propertyTypes[$type];

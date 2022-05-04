@@ -122,7 +122,7 @@ class ObjectsController extends ResourcesController
      */
     protected function initObjectModel()
     {
-        $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
+        $type = $this->request->getParam('object_type', Inflector::underscore((string)$this->request->getParam('controller')));
         try {
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
@@ -439,7 +439,7 @@ class ObjectsController extends ResourcesController
         ];
         if (count(array_diff($types, ['objects'])) > 0) {
             natsort($types);
-            $url['filter'] = ['type' => array_values($types)];
+            $url['?']['filter'] = ['type' => array_values($types)];
         }
 
         return Router::url($url, true);

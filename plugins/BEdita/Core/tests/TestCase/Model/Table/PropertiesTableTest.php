@@ -211,6 +211,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
@@ -350,6 +352,9 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
+
         static::assertCount($count, $result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
@@ -403,6 +408,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '');
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
@@ -423,6 +430,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', ['media'])
             ->find('type', ['dynamic'])
+            ->all()
             ->extract('name')
             ->toList();
 

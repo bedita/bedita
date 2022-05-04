@@ -498,7 +498,7 @@ class ObjectsTableTest extends TestCase
                 'this-uname-doesnt-exist',
             ],
             'null' => [
-                new RecordNotFoundException('Record not found in table "objects"'),
+                new \InvalidArgumentException('Expression `Objects.uname` is missing operator (IS, IS NOT) with `null` value.'),
                 null,
             ],
             'emptyString' => [

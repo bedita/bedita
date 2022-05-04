@@ -17,6 +17,7 @@ use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -242,7 +243,7 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->newExpr()->equalFields($field, $this->table()->aliasField('id'))
+            $query->newExpr()->eq($field, new IdentifierExpression($this->table()->aliasField('id')))
         );
     }
 }
