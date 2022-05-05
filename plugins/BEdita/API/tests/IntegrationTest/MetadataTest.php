@@ -103,7 +103,6 @@ class MetadataTest extends IntegrationTestCase
             FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(),
             '`modified` field not updated'
         );
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');
     }
 }
