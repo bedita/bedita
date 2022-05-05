@@ -528,6 +528,21 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
+     * Test default finder.
+     *
+     * @return void
+     * @covers ::findAll()
+     */
+    public function testFindAll()
+    {
+        $query = $this->ObjectTypes->find();
+        $contain = $query->getContain();
+
+        static::assertArrayHasKey('LeftRelations', $contain);
+        static::assertArrayHasKey('RightRelations', $contain);
+    }
+
+    /**
      * Provider for `testModelRules`
      *
      * @return array
