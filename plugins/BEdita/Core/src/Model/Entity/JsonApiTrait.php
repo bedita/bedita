@@ -38,7 +38,7 @@ trait JsonApiTrait
      *
      * @var array
      */
-    protected $_selected = [];
+    protected $_fields = [];
 
     /**
      * Getter for entity's visible properties.
@@ -132,29 +132,29 @@ trait JsonApiTrait
     }
 
     /**
-     * Setter for `_selected`.
+     * Setter for `_fields`.
      *
      * @param array $fields List of fields.
      * @return void
      */
-    protected function setSelected(array $fields)
+    protected function setFields(array $fields)
     {
-        $this->_selected = $fields;
+        $this->_fields = $fields;
     }
 
     /**
-     * Filter fields list depending on requested fields in `$_selected`.
+     * Filter fields list depending on requested fields in `$_fields`.
      *
      * @param array $fields List of fields.
      * @return array
      */
     protected function filterFields(array $fields)
     {
-        if (empty($this->_selected)) {
+        if (empty($this->_fields)) {
             return $fields;
         }
 
-        return array_intersect($this->_selected, $fields);
+        return array_intersect($this->_fields, $fields);
     }
 
     /**
@@ -421,9 +421,9 @@ trait JsonApiTrait
         $id = $this->getId();
         $type = $this->getType();
         if (!empty($fields[$type])) {
-            $this->setSelected($fields[$type]);
+            $this->setFields($fields[$type]);
         } elseif (!empty($fields['_common'])) {
-            $this->setSelected($fields['_common']);
+            $this->setFields($fields['_common']);
         }
 
         $attributes = $meta = $links = $relationships = $included = null;

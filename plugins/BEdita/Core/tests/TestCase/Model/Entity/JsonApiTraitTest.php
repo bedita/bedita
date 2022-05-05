@@ -595,7 +595,7 @@ class JsonApiTraitTest extends TestCase
      * @param array $fields Fields filter data.
      * @return void
      * @covers ::jsonApiSerialize()
-     * @covers ::setSelected()
+     * @covers ::setFields()
      * @dataProvider jsonApiSerializeProvider()
      */
     public function testJsonApiSerialize($excludedKeys, $options, $fields = null)
