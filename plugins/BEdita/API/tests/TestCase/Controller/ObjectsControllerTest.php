@@ -2042,7 +2042,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     public function testUpdateAssociationsMissingId()
     {
         $expected = [
-            'status' => '400',
+            'status' => '404',
             'title' => 'Record not found in table "profiles"',
         ];
 
@@ -2057,7 +2057,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('error', $result);
         static::assertArraySubset($expected, $result['error']);

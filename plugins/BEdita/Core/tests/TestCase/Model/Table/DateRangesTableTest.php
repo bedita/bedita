@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -74,8 +74,8 @@ class DateRangesTableTest extends TestCase
             'end_date' => '2017-01-10T17:18:19Z',
         ]);
 
-        static::assertInstanceOf(FrozenTime::class, $dateRange->start_date);
-        static::assertInstanceOf(FrozenTime::class, $dateRange->end_date);
+        static::assertInstanceOf(Time::class, $dateRange->start_date);
+        static::assertInstanceOf(Time::class, $dateRange->end_date);
     }
 
     /**

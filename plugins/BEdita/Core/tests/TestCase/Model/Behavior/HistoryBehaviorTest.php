@@ -15,7 +15,6 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -178,7 +177,7 @@ class HistoryBehaviorTest extends TestCase
             'changed' => $data,
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals('Cake\I18n\Time', get_class($history['created']));
         unset($history['created']);
         $history['changed'] = (array)$history['changed'];
         static::assertEquals($expected, $history);
@@ -271,7 +270,7 @@ class HistoryBehaviorTest extends TestCase
             'changed' => [],
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals('Cake\I18n\Time', get_class($history['created']));
         unset($history['created']);
         static::assertEquals($expected, $history);
     }
