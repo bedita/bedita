@@ -17,7 +17,6 @@ use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
@@ -26,8 +25,6 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  */
 class UserModifiedBehaviorTest extends TestCase
 {
-    use ArraySubsetAsserts;
-
     /**
      * Fixtures
      *

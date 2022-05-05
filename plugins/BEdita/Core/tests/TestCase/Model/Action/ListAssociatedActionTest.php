@@ -220,7 +220,7 @@ class ListAssociatedActionTest extends TestCase
     public function testUnknownAssociationType()
     {
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageMatches('/^Unknown association type "\w+"$/');
+        $this->expectExceptionMessageRegExp('/^Unknown association type "\w+"$/');
         $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
         $association = static::getMockForAbstractClass(Association::class, [
             'TestAssociation',

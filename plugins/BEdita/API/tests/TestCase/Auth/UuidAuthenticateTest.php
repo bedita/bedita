@@ -21,15 +21,12 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\UuidAuthenticate
  */
 class UuidAuthenticateTest extends TestCase
 {
-    use ArraySubsetAsserts;
-
     /**
      * Fixtures
      *

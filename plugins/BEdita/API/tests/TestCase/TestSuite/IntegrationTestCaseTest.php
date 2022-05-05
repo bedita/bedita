@@ -201,7 +201,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         static::assertArrayHasKey('renew', $tokens);
 
         $this->expectException('Cake\Http\Exception\UnauthorizedException');
-        $this->expectExceptionMessageMatches('/^User is not authorized. Status: 401/');
+        $this->expectExceptionMessageRegExp('/^User is not authorized. Status: 401/');
         $this->authUser('gustavo', 'supporto');
     }
 

@@ -310,7 +310,7 @@ class SignupUserActionTest extends TestCase
         });
 
         $action = $this->getMockBuilder(SignupUserAction::class)
-            ->onlyMethods(['getOAuth2Response'])
+            ->setMethods(['getOAuth2Response'])
             ->getMock();
 
         $action

@@ -525,7 +525,7 @@ class ObjectTypesTableTest extends TestCase
             ->toList();
 
             static::assertEquals($expected, $result, '', 0, 10, true);
-        }
+    }
 
     /**
      * Test findContainRelations custom finder.

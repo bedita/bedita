@@ -20,7 +20,6 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  *  {@see \BEdita\API\Auth\OAuth2Authenticate} Test Case
@@ -29,8 +28,6 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  */
 class OAuth2AuthenticateTest extends TestCase
 {
-    use ArraySubsetAsserts;
-
     /**
      * Fixtures
      *

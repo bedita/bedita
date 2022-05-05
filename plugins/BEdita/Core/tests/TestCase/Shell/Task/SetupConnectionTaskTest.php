@@ -21,15 +21,12 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupConnectionTask
  */
 class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 {
-    use ArraySubsetAsserts;
-
     /**
      * Name for temporary connection.
      *
