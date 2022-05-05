@@ -37,17 +37,4 @@ class RelationsController extends ModelController
             'right_object_types' => ['object_types'],
         ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareInclude($include, ?Table $table = null): array
-    {
-        $contain = parent::prepareInclude($include, $table);
-        if ($this->request->getParam('action') !== 'related') {
-            return $contain;
-        }
-
-        return array_merge($contain, ['LeftRelations', 'RightRelations']);
-    }
 }

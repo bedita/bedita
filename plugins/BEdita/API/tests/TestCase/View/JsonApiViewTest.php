@@ -452,10 +452,6 @@ class JsonApiViewTest extends TestCase
         }
 
         $Controller = new Controller(new ServerRequest(), new Response());
-        if (isset($data['_serialize'])) {
-            $Controller->viewBuilder()->setOption('serialize', $data['_serialize']);
-            unset($data['_serialize']);
-        }
         $Controller->set($data);
         $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 

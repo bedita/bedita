@@ -38,15 +38,4 @@ class ObjectTypesController extends ModelController
             'parent' => ['object_types'],
         ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareInclude($include, ?Table $table = null): array
-    {
-        $contain = parent::prepareInclude($include, $table);
-        $contain = array_merge($contain, ['LeftRelations', 'RightRelations']);
-
-        return $contain;
-    }
 }

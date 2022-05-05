@@ -409,7 +409,7 @@ class UniqueNameBehaviorTest extends TestCase
         $document->set('uname', '');
         $document->set('title', '');
         $behavior->uniqueName($document);
-        static::assertStringContainsString('documents-', $document->get('uname'));
+        static::assertContains('documents-', $document->get('uname'));
     }
 
     /**

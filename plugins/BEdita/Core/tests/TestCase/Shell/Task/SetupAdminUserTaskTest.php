@@ -126,7 +126,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
-        static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
+        static::assertNotContains('Do you want to overwrite current admin user?', $output);
         $this->assertOutputContains('Existing administrator user has been preserved. Don\'t panic!');
         $this->assertErrorEmpty();
 
@@ -183,9 +183,9 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
-        static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
-        static::assertStringNotContainsString('Enter new username for default admin user:', $output);
-        static::assertStringNotContainsString('Enter new password for default admin user:', $output);
+        static::assertNotContains('Do you want to overwrite current admin user?', $output);
+        static::assertNotContains('Enter new username for default admin user:', $output);
+        static::assertNotContains('Enter new password for default admin user:', $output);
         $this->assertOutputContains('Administrator user set up. You are now ready to rock BEdita!');
         $this->assertErrorEmpty();
 
@@ -212,10 +212,10 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
-        static::assertStringNotContainsString('has already been configured', $output);
-        static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
-        static::assertStringNotContainsString('Enter new username for default admin user:', $output);
-        static::assertStringNotContainsString('Enter new password for default admin user:', $output);
+        static::assertNotContains('has already been configured', $output);
+        static::assertNotContains('Do you want to overwrite current admin user?', $output);
+        static::assertNotContains('Enter new username for default admin user:', $output);
+        static::assertNotContains('Enter new password for default admin user:', $output);
         $this->assertOutputContains('Administrator user set up. You are now ready to rock BEdita!');
         $this->assertErrorEmpty();
 
@@ -242,10 +242,10 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $output = implode(PHP_EOL, $this->_out->messages());
-        static::assertStringNotContainsString('has already been configured', $output);
-        static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
-        static::assertStringNotContainsString('Enter new username for default admin user:', $output);
-        static::assertStringNotContainsString('Enter new password for default admin user:', $output);
+        static::assertNotContains('has already been configured', $output);
+        static::assertNotContains('Do you want to overwrite current admin user?', $output);
+        static::assertNotContains('Enter new username for default admin user:', $output);
+        static::assertNotContains('Enter new password for default admin user:', $output);
         $this->assertErrorContains('Entity save failure');
 
         $user = $this->Users->get(UsersTable::ADMIN_USER);

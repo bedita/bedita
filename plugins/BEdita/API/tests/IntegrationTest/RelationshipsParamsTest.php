@@ -240,7 +240,7 @@ class RelationshipsParamsTest extends IntegrationTestCase
         $body = json_decode((string)$this->_response->getBody(), true);
         static::assertArrayHasKey('error', $body);
         static::assertArrayHasKey('detail', $body['error']);
-        static::assertStringContainsString($expected, $body['error']['detail']);
+        static::assertContains($expected, $body['error']['detail']);
     }
 
     /**

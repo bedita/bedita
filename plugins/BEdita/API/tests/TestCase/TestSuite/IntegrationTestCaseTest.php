@@ -185,7 +185,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $authHeader = $this->getUserAuthHeader();
         static::assertArrayHasKey('Authorization', $authHeader);
-        static::assertStringContainsString('Bearer ', $authHeader['Authorization']);
+        static::assertContains('Bearer ', $authHeader['Authorization']);
     }
 
     /**

@@ -102,7 +102,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
-        $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
+        $this->assertErrorContains('Connection to database could not be established');
     }
 
     /**
@@ -170,7 +170,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
 
         $this->assertExitCode(Shell::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
-        $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
+        $this->assertErrorContains('Connection to database could not be established');
     }
 
     /**

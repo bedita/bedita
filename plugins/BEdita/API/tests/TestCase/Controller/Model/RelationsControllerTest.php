@@ -28,7 +28,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::initialize()
-     * @covers ::prepareInclude()
      */
     public function testIndex()
     {
@@ -444,7 +443,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
-     * @covers ::prepareInclude()
      */
     public function testRelated()
     {
