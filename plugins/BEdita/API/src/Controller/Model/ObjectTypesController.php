@@ -13,8 +13,6 @@
 
 namespace BEdita\API\Controller\Model;
 
-use Cake\ORM\Table;
-
 /**
  * Controller for `/model/object_types` endpoint.
  *
