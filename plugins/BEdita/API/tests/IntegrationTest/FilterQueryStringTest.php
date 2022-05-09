@@ -689,9 +689,9 @@ class FilterQueryStringTest extends IntegrationTestCase
                 '/objects',
                 'filter[ancestor]=root-folder',
                 [
-                    '12',
-                    '4',
                     '2',
+                    '4',
+                    '12',
                 ],
             ],
             'documents' => [
