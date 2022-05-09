@@ -2,7 +2,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -133,7 +133,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 

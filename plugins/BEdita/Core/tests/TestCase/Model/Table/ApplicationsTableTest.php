@@ -375,7 +375,7 @@ class ApplicationsTableTest extends TestCase
         $this->Applications->deleteOrFail($app);
 
         $read = Cache::read(sprintf('app_%s', $apiKey), $cacheConf);
-        static::assertFalse($read);
+        static::assertNull($read);
     }
 
     /**
@@ -396,7 +396,7 @@ class ApplicationsTableTest extends TestCase
         $this->Applications->saveOrFail($app);
 
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
-        static::assertFalse($read);
+        static::assertNull($read);
     }
 
     /**

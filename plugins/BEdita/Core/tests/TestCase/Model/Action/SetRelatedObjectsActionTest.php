@@ -234,7 +234,11 @@ class SetRelatedObjectsActionTest extends TestCase
         static::assertSame(1, $beforeSaveTriggered);
         static::assertSame(1, $afterSaveTriggered);
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        sort($expected);
+        sort($result);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**

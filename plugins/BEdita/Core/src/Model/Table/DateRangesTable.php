@@ -17,7 +17,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -111,7 +111,7 @@ class DateRangesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 

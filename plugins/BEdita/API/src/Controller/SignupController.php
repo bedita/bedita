@@ -33,8 +33,8 @@ class SignupController extends AppController
         parent::initialize();
         $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
 
-        if ($this->request->contentType() === 'application/json') {
-            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->setConfig('parseJson', false);
         }
     }
 

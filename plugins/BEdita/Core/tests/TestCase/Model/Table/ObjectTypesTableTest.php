@@ -76,7 +76,7 @@ class ObjectTypesTableTest extends TestCase
     {
         unset($this->ObjectTypes);
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
@@ -424,11 +424,11 @@ class ObjectTypesTableTest extends TestCase
         $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -452,11 +452,11 @@ class ObjectTypesTableTest extends TestCase
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -524,18 +524,20 @@ class ObjectTypesTableTest extends TestCase
             ->all()
             ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**
-     * Test default finder.
+     * Test findContainRelations custom finder.
      *
      * @return void
-     * @covers ::findAll()
+     * @covers ::findContainRelations()
      */
-    public function testFindAll()
+    public function testFindContainRelations()
     {
-        $query = $this->ObjectTypes->find();
+        $query = $this->ObjectTypes->find('containRelations');
         $contain = $query->getContain();
 
         static::assertArrayHasKey('LeftRelations', $contain);

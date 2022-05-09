@@ -32,14 +32,14 @@ require CORE_PATH . 'config' . DS . 'bootstrap.php';
 use BEdita\API\Error\ErrorHandler;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
-use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Datasource\ConnectionManager;
+use Cake\Error\ConsoleErrorHandler;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
-use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Utility\Security;
 
@@ -168,7 +168,7 @@ if (!Configure::read('App.fullBaseUrl')) {
 Cache::setConfig(Configure::consume('Cache') ?: []);
 ConnectionManager::setConfig(Configure::consume('Datasources') ?: []);
 TransportFactory::setConfig(Configure::consume('EmailTransport') ?: []);
-Email::setConfig(Configure::consume('Email') ?: []);
+Mailer::setConfig(Configure::consume('Email') ?: []);
 Log::setConfig(Configure::consume('Log') ?: []);
 Security::setSalt((string)Configure::consume('Security.salt'));
 FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);

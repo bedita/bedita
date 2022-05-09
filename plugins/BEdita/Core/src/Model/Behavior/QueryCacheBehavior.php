@@ -39,7 +39,7 @@ class QueryCacheBehavior extends Behavior
      */
     public function afterSave(): void
     {
-        Cache::clear(false, $this->getConfig('cacheConfig'));
+        Cache::clear($this->getConfig('cacheConfig'));
     }
 
     /**
@@ -49,7 +49,7 @@ class QueryCacheBehavior extends Behavior
      */
     public function afterDelete(): void
     {
-        Cache::clear(false, $this->getConfig('cacheConfig'));
+        Cache::clear($this->getConfig('cacheConfig'));
     }
 
     /**

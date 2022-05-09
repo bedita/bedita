@@ -3,5 +3,7 @@
     <arg name="colors"/>
     <config name="installed_paths" value="../../cakephp/cakephp-codesniffer"/>
 
-    <rule ref="CakePHP"/>
+    <rule ref="CakePHP">
+        <exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes" />
+    </rule>
 </ruleset>

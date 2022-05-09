@@ -95,7 +95,7 @@ class RelationTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -105,6 +105,6 @@ class RelationTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 }

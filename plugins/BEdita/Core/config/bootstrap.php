@@ -10,7 +10,7 @@ use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
-use Cake\Database\Type;
+use Cake\Database\TypeFactory;
 use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\Date;
 use Cake\I18n\FrozenDate;
@@ -20,7 +20,9 @@ use Cake\ORM\TableRegistry;
 /**
  * Plug table locator.
  */
-TableRegistry::setTableLocator(new TableLocator());
+if (!TableRegistry::getTableLocator() instanceof TableLocator) {
+    TableRegistry::setTableLocator(new TableLocator());
+}
 
 /**
  * Load 'core' configuration parameters
@@ -45,12 +47,12 @@ if (!Configure::isConfigured('ini')) {
  * locale specific date formats. For details see
  * @link https://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
-Type::build('time')
-    ->useImmutable();
-Type::build('date')
-    ->useImmutable();
-Type::build('datetime')
-    ->useImmutable();
+// Type::build('time')
+//     ->useImmutable();
+// Type::build('date')
+//     ->useImmutable();
+// Type::build('datetime')
+//     ->useImmutable();
 
 /*
  * Set the default format used converting a date to json
@@ -67,19 +69,20 @@ Date::setJsonEncodeFormat('yyyy-MM-dd');
  *
  * See https://github.com/cakephp/cakephp/issues/13646
  */
-Type::set('date', new DateType());
-Type::set('datetime', (new DateTimeType())->setTimezone(date_default_timezone_get()));
-Type::set('timestamp', (new DateTimeType())->setTimezone(date_default_timezone_get()));
+TypeFactory::set('date', new DateType());
+TypeFactory::set('datetime', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('timestamp', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
+TypeFactory::set('timestampfractional', (new DateTimeType())->setDatabaseTimezone(date_default_timezone_get()));
 
 /**
  * Use custom BoolType
  */
-Type::set('boolean', new BoolType());
+TypeFactory::set('boolean', new BoolType());
 
 /**
  * Register custom JSON Object type.
  */
-Type::map('jsonobject', JsonObjectType::class);
+TypeFactory::map('jsonobject', JsonObjectType::class);
 
 /**
  * Set loader for translation domain "bedita".
@@ -89,7 +92,6 @@ I18n::translators()->registerLoader('bedita', function ($name, $locale) {
         new MessagesFileLoader($name, $locale, 'mo', ['BEdita/Core', 'BEdita/API']),
         new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']),
     ]);
-
     $package = $chain();
     $package->setFormatter('default');
 

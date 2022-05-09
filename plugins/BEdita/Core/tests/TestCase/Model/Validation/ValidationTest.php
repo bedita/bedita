@@ -222,7 +222,7 @@ class ValidationTest extends TestCase
         if ($expected === true) {
             static::assertTrue($result);
         } else {
-            static::assertContains($expected, $result);
+            static::assertStringContainsString($expected, $result);
         }
     }
 

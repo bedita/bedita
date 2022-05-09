@@ -35,10 +35,10 @@ class Email extends CakeEmail
      */
     public function sendRaw()
     {
-        if (empty($this->_from)) {
+        if (empty($this->message->getFrom())) {
             throw new \BadMethodCallException('From is not specified.');
         }
-        if (empty($this->_to) && empty($this->_cc) && empty($this->_bcc)) {
+        if (empty($this->message->getTo()) && empty($this->message->getCc()) && empty($this->message->getBcc())) {
             throw new \BadMethodCallException('You need specify one destination on to, cc or bcc.');
         }
 
@@ -48,7 +48,7 @@ class Email extends CakeEmail
                 'a transport in the set profile?';
             throw new \BadMethodCallException($msg);
         }
-        $contents = $transport->send($this);
+        $contents = $transport->send($this->message);
         $this->_logDelivery($contents);
 
         return $contents;
@@ -60,8 +60,8 @@ class Email extends CakeEmail
      * @param \Cake\Mailer\Email $email Email instance.
      * @return string|null
      */
-    public static function getBoundary(CakeEmail $email)
-    {
-        return $email->_boundary;
-    }
+    // public static function getBoundary(CakeEmail $email)
+    // {
+    //     return $email->getMessage()->getBou;
+    // }
 }

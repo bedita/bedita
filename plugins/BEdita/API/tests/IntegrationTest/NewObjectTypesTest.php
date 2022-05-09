@@ -14,12 +14,15 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * Test new object types creation, along with objects implementations
  */
 class NewObjectTypesTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @inheritDoc
      */
@@ -110,7 +113,7 @@ class NewObjectTypesTest extends IntegrationTestCase
         static::assertArraySubset($attributes, $result['data']['attributes']);
 
         // VIEW FROM PARENT
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders();
         $parentEndoint = empty($typeData['parent_name']) ? 'objects' : $typeData['parent_name'];
         $this->get("/$parentEndoint/$lastId");
@@ -123,21 +126,21 @@ class NewObjectTypesTest extends IntegrationTestCase
         static::assertArraySubset($attributes, $result['data']['attributes']);
 
         // DELETE
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/$type/$lastId");
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
 
         // EMPTY TRASH
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
 
         // REMOVE TYPE
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete("/model/object_types/$type");
         $this->assertResponseCode(204);

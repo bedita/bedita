@@ -71,6 +71,7 @@ class UpdateRelatedAction extends UpdateAssociatedAction
             })
             ->distinct()
             ->disableHydration()
+            ->all()
             ->combine('uname', 'id')
             ->toArray();
 

@@ -21,20 +21,20 @@
         }
     ],
     "require": {
-        "php": ">=7.2.0",
-        "cakephp/cakephp": "~3.10.0",
-        "cakephp/plugin-installer": "^1.3",
+        "php": ">=7.4",
+        "cakephp/cakephp": "~4.3.8",
         "guzzlehttp/psr7": "1.8.2",
         "wikimedia/composer-merge-plugin": "^2.0.1"
     },
     "require-dev": {
-        "cakephp/bake": "^1.12",
-        "cakephp/debug_kit": "^3.23.0",
-        "cakephp/cakephp-codesniffer": "~3.2.1",
+        "cakephp/bake": "^2.6",
+        "cakephp/debug_kit": "^4.7",
+        "cakephp/cakephp-codesniffer": "~4.5.1",
         "psy/psysh": "@stable",
-        "bedita/dev-tools": "1.5.*",
-        "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^8.5",
+        "dms/phpunit-arraysubset-asserts": "^0.4",
+        "bedita/dev-tools": "^2.0",
+        "phpstan/phpstan": "^1.5"
     },
     "autoload": {
         "psr-4": {
@@ -59,7 +59,7 @@
             "@test",
             "@cs-check"
         ],
-        "analyze": "vendor/bin/phpstan analyse src plugins/*/*/src",
+        "analyze": "vendor/bin/phpstan analyse",
         "cs-check": "vendor/bin/phpcs --colors -n -p --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "cs-fix": "vendor/bin/phpcbf --colors --extensions=php --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests",
         "test": "vendor/bin/phpunit --colors=always"
@@ -82,7 +82,8 @@
     "config": {
         "allow-plugins": {
             "cakephp/plugin-installer": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

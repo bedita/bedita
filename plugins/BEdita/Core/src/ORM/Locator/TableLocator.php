@@ -34,21 +34,21 @@ class TableLocator extends CakeLocator
      * @param array $options Table options array.
      * @return string
      */
-    protected function _getClassName($alias, array $options = [])
+    protected function _getClassName($alias, array $options = []): ?string
     {
         if (empty($options['className'])) {
             $options['className'] = Inflector::camelize($alias);
         }
 
         $className = App::className($options['className'], 'Model/Table', 'Table');
-        if ($className !== false) {
+        if ($className !== null) {
             return $className;
         }
 
         $options['className'] = sprintf('BEdita/Core.%s', $options['className']);
 
         $className = App::className($options['className'], 'Model/Table', 'Table');
-        if ($className !== false) {
+        if ($className !== null) {
             return $className;
         }
 

@@ -51,7 +51,7 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * @inheritDoc
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         if (is_object($class)) {
             return $class;
@@ -63,7 +63,7 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * @inheritDoc
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         throw new \BadMethodCallException(sprintf('Filesystem adapter %s is not available.', $class));
     }
@@ -106,10 +106,12 @@ class FilesystemRegistry extends ObjectRegistry
      */
     public function get($name)
     {
-        /** @var \BEdita\Core\Filesystem\FilesystemAdapter|null $adapter */
-        $adapter = parent::get($name);
-        if ($adapter !== null || !in_array($name, static::configured())) {
-            return $adapter;
+        if (!in_array($name, static::configured())) {
+            return null;
+        }
+
+        if ($this->has($name)) {
+            return parent::get($name);
         }
 
         return $this->load($name, static::getConfig($name));

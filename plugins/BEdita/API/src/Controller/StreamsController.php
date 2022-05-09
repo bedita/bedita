@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Controller;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
@@ -52,14 +52,18 @@ class StreamsController extends ResourcesController
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
+            ->all()
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
 
+        parent::initialize();
+
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
+            if (isset($this->JsonApi)) {
+                $this->JsonApi->setConfig('parseJson', false);
+            }
         }
-
-        parent::initialize();
     }
 
     /**
@@ -67,7 +71,7 @@ class StreamsController extends ResourcesController
      *
      * {@inheritDoc}
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(EventInterface $event)
     {
         if ($this->request->getParam('action') === 'download') {
             return;

@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\ORM;
 
-use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 
@@ -97,7 +97,7 @@ trait QueryFilterTrait
 
             // return the current expression if not empty
             // otherwise a trivial comparison to avoid SQL errors
-            return $exp->count() > 0 ? $exp : new Comparison('1', '1', 'integer', '=');
+            return $exp->count() > 0 ? $exp : new ComparisonExpression('1', '1', 'integer', '=');
         });
     }
 

@@ -14,7 +14,7 @@
 namespace BEdita\Core\ORM\Inheritance;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table as CakeTable;
 
@@ -71,14 +71,14 @@ class InheritanceEventHandler implements EventListenerInterface
      * that the collection of errors is not interrupted if a table
      * in the middle of the inheritance has no errors.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity The entity.
      * @param \ArrayObject $options Options.
      * @param bool $result The result of checked rules.
      * @param string $operation The operation being run. Either 'create', 'update' or 'delete'.
      * @return void
      */
-    public function afterRules(Event $event, EntityInterface $entity, \ArrayObject $options, $result, $operation)
+    public function afterRules(EventInterface $event, EntityInterface $entity, \ArrayObject $options, $result, $operation)
     {
         if ($result === true && empty($options['_inheritanceRulesErrors'])) {
             return;
@@ -104,12 +104,12 @@ class InheritanceEventHandler implements EventListenerInterface
      * A special `$options` key `_inherited` is set to true to let know
      * to other listeners if the save action affects an inherited table.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @param \ArrayObject $options Save options.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeSave(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
@@ -148,11 +148,11 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * Update entities with previously kept back properties with `__` prefix
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity)
+    public function afterSave(EventInterface $event, EntityInterface $entity)
     {
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
@@ -165,14 +165,14 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * Delete entities on inherited tables after the entity was deleted.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @param \ArrayObject $options Delete options.
      * @return void
      * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if delete operation on the
      *      parent table fails.
      */
-    public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
     {
         /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();

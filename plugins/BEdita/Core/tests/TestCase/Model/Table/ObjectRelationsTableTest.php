@@ -148,7 +148,7 @@ class ObjectRelationsTableTest extends TestCase
             $this->ObjectRelations->getValidator()->setProvider('jsonSchema', $jsonSchema);
         }
 
-        $objectRelation = $this->ObjectRelations->newEntity();
+        $objectRelation = $this->ObjectRelations->newEmptyEntity();
         $objectRelation->setNew($isNew);
         $this->ObjectRelations->patchEntity($objectRelation, $data);
         $objectRelation->left_id = 1;
@@ -261,7 +261,7 @@ class ObjectRelationsTableTest extends TestCase
         if ($expected === true) {
             static::assertTrue($result);
         } else {
-            static::assertContains($expected, $result);
+            static::assertStringContainsString($expected, $result);
         }
     }
 }

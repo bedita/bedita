@@ -14,6 +14,7 @@
  */
 namespace BEdita\App;
 
+use BEdita\Core\Middleware\BodyParserMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
@@ -118,10 +119,15 @@ class Application extends BaseApplication
         $middlewareQueue
             // Catch any exceptions in the lower layers,
             // and make an error page/response
-            ->add(ErrorHandlerMiddleware::class)
+            ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
 
             // Add routing middleware.
-            ->add(new RoutingMiddleware($this, '_bedita_core_'));
+            ->add(new RoutingMiddleware($this, '_bedita_core_'))
+
+            // Parse various types of encoded request bodies so that they are
+            // available as array through $request->getData()
+            // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
+            ->add(new BodyParserMiddleware());
 
         return $middlewareQueue;
     }

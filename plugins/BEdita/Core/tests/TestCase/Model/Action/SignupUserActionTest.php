@@ -19,7 +19,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Core\Configure;
-use Cake\Core\Exception\Exception as CakeException;
+use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\InternalErrorException;
@@ -310,7 +310,7 @@ class SignupUserActionTest extends TestCase
         });
 
         $action = $this->getMockBuilder(SignupUserAction::class)
-            ->setMethods(['getOAuth2Response'])
+            ->onlyMethods(['getOAuth2Response'])
             ->getMock();
 
         $action

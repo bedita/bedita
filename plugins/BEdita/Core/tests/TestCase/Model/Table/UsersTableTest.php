@@ -18,7 +18,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -218,7 +218,7 @@ class UsersTableTest extends TestCase
     public function testLogin()
     {
         $data = $this->Users->get(1)->toArray();
-        $expected = new Time();
+        $expected = new FrozenTime();
         $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
 
         $lastLogin = $this->Users->get(1)->last_login;
@@ -301,7 +301,7 @@ class UsersTableTest extends TestCase
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
@@ -316,7 +316,7 @@ class UsersTableTest extends TestCase
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);

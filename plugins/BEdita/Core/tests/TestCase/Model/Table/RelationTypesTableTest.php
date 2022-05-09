@@ -65,7 +65,7 @@ class RelationTypesTableTest extends TestCase
     {
         unset($this->RelationTypes);
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
@@ -147,11 +147,11 @@ class RelationTypesTableTest extends TestCase
         $entity->object_type = $this->RelationTypes->ObjectTypes->get(5);
         $this->RelationTypes->save($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -175,10 +175,10 @@ class RelationTypesTableTest extends TestCase
         $entity = $this->RelationTypes->get([1, 2, 'left']);
         $this->RelationTypes->delete($entity);
 
-        static::assertFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 }

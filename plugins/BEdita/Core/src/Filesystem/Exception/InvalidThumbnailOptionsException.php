@@ -13,14 +13,14 @@
 
 namespace BEdita\Core\Filesystem\Exception;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException;
 
 /**
  * Exception thrown when attempting to generate a thumbnail with invalid options.
  *
  * @since 4.0.0
  */
-class InvalidThumbnailOptionsException extends Exception
+class InvalidThumbnailOptionsException extends CakeException
 {
     /**
      * @inheritDoc

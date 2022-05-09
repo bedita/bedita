@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -78,7 +78,7 @@ class MarshallerTest extends TestCase
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => new Time('2018-02-20 12:05:00'),
+                    'updated_at' => new FrozenTime('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
                 ],
             ],

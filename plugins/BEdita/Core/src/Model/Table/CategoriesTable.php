@@ -18,7 +18,7 @@ use BEdita\Core\Exception\BadFilterException;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -147,13 +147,13 @@ class CategoriesTable extends Table
     /**
      * Hide read-only fields when fetched as an association.
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\ORM\Query $query Query object instance.
      * @param \ArrayObject $options Options array.
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary)
+    public function beforeFind(EventInterface $event, Query $query, ArrayObject $options, bool $primary)
     {
         if ($primary) {
             return;

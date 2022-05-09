@@ -28,7 +28,7 @@ class ThumbnailRegistry extends ObjectRegistry
     /**
      * @inheritDoc
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName(string $class): ?string
     {
         if (is_object($class)) {
             return $class;
@@ -40,7 +40,7 @@ class ThumbnailRegistry extends ObjectRegistry
     /**
      * @inheritDoc
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         throw new \BadMethodCallException(sprintf('Thumbnail generator %s is not available.', $class));
     }

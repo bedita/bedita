@@ -193,6 +193,7 @@ class AddRelatedObjectsActionTest extends TestCase
                 ->where(function (QueryExpression $exp) use ($association, $related) {
                     return $exp->in($association->getTarget()->getPrimaryKey(), array_keys($related));
                 })
+                ->all()
                 ->map(function (EntityInterface $entity) use ($association, $related) {
                     $data = $related[$entity->id];
                     if (!empty($data) && $association instanceof RelatedTo) {
@@ -232,7 +233,9 @@ class AddRelatedObjectsActionTest extends TestCase
         static::assertSame(1, $beforeSaveTriggered);
         static::assertSame(1, $afterSaveTriggered);
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+        static::assertEquals($expected, $result, '');
+        static::assertEqualsCanonicalizing($expected, $result, '');
+        static::assertEqualsWithDelta($expected, $result, 0, '');
     }
 
     /**

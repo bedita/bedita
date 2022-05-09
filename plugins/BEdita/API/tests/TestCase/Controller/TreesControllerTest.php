@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;

@@ -15,9 +15,9 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -104,7 +104,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -114,11 +114,11 @@ class ExternalAuthTable extends Table
     /**
      * Create user before saving if none was set.
      *
-     * @param \Cake\Event\Event $event beforeSave event instance.
+     * @param \Cake\Event\EventInterface $event beforeSave event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->has('user_id')) {
             $authProvider = $this->AuthProviders->get($entity->get($this->AuthProviders->getForeignKey()));

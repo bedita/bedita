@@ -149,7 +149,7 @@ class AssociationCollectionTest extends TestCase
      */
     public function testKeys()
     {
-        $expected = ['fakefelines', 'fakearticles'];
+        $expected = ['FakeFelines', 'FakeArticles'];
 
         $collection = new AssociationCollection($this->fakeMammals);
         $keys = $collection->keys();
@@ -243,7 +243,7 @@ class AssociationCollectionTest extends TestCase
      * Test cascading deletes to all associations with proper handling of callbacks.
      *
      * @return void
-     * @covers ::_getNoCascadeItems()
+     * @covers ::cascadeDelete()
      */
     public function testCascadeDelete()
     {
@@ -281,11 +281,11 @@ class AssociationCollectionTest extends TestCase
     {
         return [
             'isAbstract' => [
-                ['fakefelines', 'fakearticles', 'testrelatedto'],
+                ['FakeFelines', 'FakeArticles', 'TestRelatedTo'],
                 true,
             ],
             'isConcrete' => [
-                ['fakefelines', 'fakearticles'],
+                ['FakeFelines', 'FakeArticles'],
                 false,
             ],
         ];
@@ -341,7 +341,7 @@ class AssociationCollectionTest extends TestCase
         $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
         $collection = new AssociationCollection($this->fakeFelines);
 
-        static::assertEquals(['fakearticles'], $collection->keys());
+        static::assertEquals(['FakeArticles'], $collection->keys());
         static::assertTrue($this->fakeAnimals->associations()->has('TestRelatedTo'));
     }
 

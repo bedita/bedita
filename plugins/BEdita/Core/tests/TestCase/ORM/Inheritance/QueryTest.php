@@ -107,7 +107,11 @@ class QueryTest extends TestCase
         $query->sql();
 
         $selected = array_values($query->clause('select'));
-        static::assertEquals($expected, $selected, '', 0, 10, true);
+        sort($selected);
+        sort($expected);
+        static::assertEquals($expected, $selected, '');
+        static::assertEqualsCanonicalizing($expected, $selected, '');
+        static::assertEqualsWithDelta($expected, $selected, 0, '');
     }
 
     /**
@@ -155,7 +159,7 @@ class QueryTest extends TestCase
             /** @var \Cake\Database\Expression\QueryExpression $exp */
             $exp = $joins[$alias]['conditions'];
             static::assertSame(
-                $alias . '.id = (fake_felines.id)',
+                $alias . '.id = fake_felines.id',
                 $exp->sql(new ValueBinder())
             );
         }

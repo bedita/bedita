@@ -13,12 +13,13 @@
 
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException;
 
 /**
  * Exception raised when performing delete or update on immutable resource
  */
-class ImmutableResourceException extends Exception
+
+class ImmutableResourceException extends CakeException
 {
     /**
      * {@inheritDoc}

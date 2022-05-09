@@ -14,6 +14,7 @@
 namespace BEdita\Core\ORM\Inheritance;
 
 use BEdita\Core\ORM\Association\RelatedTo;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
 use Cake\ORM\AssociationCollection as CakeAssociationCollection;
 use Traversable;
@@ -185,12 +186,13 @@ class AssociationCollection extends CakeAssociationCollection
     /**
      * @inheritDoc
      */
-    protected function _getNoCascadeItems($entity, $options)
+    public function cascadeDelete(EntityInterface $entity, array $options): bool
     {
-        return array_merge(
-            parent::_getNoCascadeItems($entity, $options),
-            $this->inheritedAssociations()->_getNoCascadeItems($entity, $options)
-        );
+        if (!parent::cascadeDelete($entity, $options)) {
+            return false;
+        }
+
+        return $this->inheritedAssociations()->cascadeDelete($entity, $options);
     }
 
     /**

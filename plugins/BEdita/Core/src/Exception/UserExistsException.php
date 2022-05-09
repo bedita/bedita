@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException as Exception;
 
 /**
  * Exception raised when an already existing user is found.

@@ -13,12 +13,12 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
 use Cake\ORM\Table;
 
@@ -48,7 +48,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * @inheritDoc
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         // ensure to use actual left and right fields
         unset($entity[$this->getConfig('left')], $entity[$this->getConfig('right')]);
@@ -65,19 +65,19 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function getCurrentPosition(EntityInterface $node)
     {
-        return $this->_scope($this->getTable()->find())
+        return $this->_scope($this->table()->find())
             ->where(function (QueryExpression $exp) use ($node) {
                 $parentField = $this->getConfig('parent');
                 $leftField = $this->getConfig('left');
 
                 if (!$node->has($parentField)) {
-                    $exp = $exp->isNull($this->getTable()->aliasField($parentField));
+                    $exp = $exp->isNull($this->table()->aliasField($parentField));
                 } else {
-                    $exp = $exp->eq($this->getTable()->aliasField($parentField), $node->get($parentField));
+                    $exp = $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));
                 }
 
                 return $exp
-                    ->lte($this->getTable()->aliasField($leftField), $node->get($leftField));
+                    ->lte($this->table()->aliasField($leftField), $node->get($leftField));
             })
             ->count();
     }
@@ -92,7 +92,7 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function moveAt(EntityInterface $node, $position)
     {
-        return $this->getTable()->getConnection()->transactional(function () use ($node, $position) {
+        return $this->table()->getConnection()->transactional(function () use ($node, $position) {
             $position = static::validatePosition($position);
             if ($position === false) {
                 return false;
@@ -109,15 +109,15 @@ class TreeBehavior extends CakeTreeBehavior
                 return $node;
             }
 
-            $childrenCount = $this->_scope($this->getTable()->find())
+            $childrenCount = $this->_scope($this->table()->find())
                 ->where(function (QueryExpression $exp) use ($node) {
                     $parentField = $this->getConfig('parent');
 
                     if (!$node->has($parentField)) {
-                        return $exp->isNull($this->getTable()->aliasField($parentField));
+                        return $exp->isNull($this->table()->aliasField($parentField));
                     }
 
-                    return $exp->eq($this->getTable()->aliasField($parentField), $node->get($parentField));
+                    return $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));
                 })
                 ->count();
 
@@ -182,7 +182,7 @@ class TreeBehavior extends CakeTreeBehavior
      */
     public function checkIntegrity(): array
     {
-        $table = $this->getTable();
+        $table = $this->table();
         $pk = $table->aliasField($table->getPrimaryKey());
         $left = $table->aliasField($this->getConfigOrFail('left'));
         $right = $table->aliasField($this->getConfigOrFail('right'));
@@ -217,7 +217,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($left, 1, null, '+'),
+                    new ComparisonExpression($left, 1, null, '+'),
                     $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left')))
                 );
             });
@@ -237,7 +237,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $right])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($right, 1, null, '-'),
+                    new ComparisonExpression($right, 1, null, '-'),
                     $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right')))
                 );
             });
@@ -267,7 +267,7 @@ class TreeBehavior extends CakeTreeBehavior
             ->group([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
                 return $exp->notEq(
-                    new Comparison($left, 1, null, '-'),
+                    new ComparisonExpression($left, 1, null, '-'),
                     $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right')))
                 );
             });

@@ -15,10 +15,8 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\Date;
 use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
-use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 
@@ -48,10 +46,8 @@ if (getenv('DEBUG_LOG_QUERIES')) {
     ]);
 }
 
-$now = Time::parse('2018-01-01T00:00:00Z');
-Time::setTestNow($now);
+$now = FrozenTime::parse('2018-01-01T00:00:00Z');
 FrozenTime::setTestNow($now);
-Date::setTestNow($now);
 FrozenDate::setTestNow($now);
 
 FilesystemRegistry::dropAll();
@@ -95,5 +91,5 @@ Configure::write('debug', true);
 
 Configure::write('Plugins', []);
 
-Cache::clear(false, '_cake_core_');
-Cache::clear(false, '_cake_model_');
+Cache::clear('_cake_core_');
+Cache::clear('_cake_model_');

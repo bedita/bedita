@@ -35,7 +35,7 @@ class ObjectModelBehavior extends Behavior
     {
         parent::initialize($config);
 
-        $table = $this->getTable();
+        $table = $this->table();
         $table->addBehavior('BEdita/Core.History');
         $table->addBehavior('Timestamp');
         $table->addBehavior('BEdita/Core.DataCleanup');

@@ -20,9 +20,9 @@ use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -162,11 +162,11 @@ class ObjectsTable extends Table
     /**
      * Perform checks on abstract and not enabled types.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         $objectType = $this->ObjectTypes->get($entity->get('type'));
         if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
@@ -240,7 +240,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('custom_props', 'json');
         $schema->setColumnType('extra', 'json');

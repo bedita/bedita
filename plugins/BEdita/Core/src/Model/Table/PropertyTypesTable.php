@@ -16,9 +16,9 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Cache\Cache;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -38,6 +38,17 @@ use Cake\Validation\Validator;
  */
 class PropertyTypesTable extends Table
 {
+    /**
+     * Map between specific column types and property types names.
+     *
+     * @var array
+     */
+    protected const COLUMN_TYPE_MAP = [
+        'float' => 'number',
+        'timestamp' => 'datetime',
+        'timestampfractional' => 'datetime',
+    ];
+
     /**
      * {@inheritDoc}
      *
@@ -90,7 +101,7 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -112,12 +123,12 @@ class PropertyTypesTable extends Table
     /**
      * Avoid modifications when `core_type` is true.
      *
-     * @param \Cake\Event\Event $event Event fired
+     * @param \Cake\Event\EventInterface $event Event fired
      * @param \Cake\Datasource\EntityInterface $entity Entity to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
             throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
@@ -131,19 +142,19 @@ class PropertyTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
      * Check that no properties exist linked to the property type before deleting it.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being deleted.
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($this->Properties->exists([$this->Properties->getForeignKey() => $entity->get($this->Properties->getBindingKey())])) {
             throw new ForbiddenException(__d('bedita', 'Property type with existing properties'));
@@ -157,7 +168,7 @@ class PropertyTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -199,14 +210,9 @@ class PropertyTypesTable extends Table
         if (isset($propertyTypes[$type])) {
             return $propertyTypes[$type];
         }
-        switch ($type) {
-            // Try to convert specific types to more generic ones.
-            case 'float':
-                $type = 'number';
-                break;
-            case 'timestamp':
-                $type = 'datetime';
-                break;
+        // Try to convert specific types to more generic ones.
+        if (isset(static::COLUMN_TYPE_MAP[$type])) {
+            $type = static::COLUMN_TYPE_MAP[$type];
         }
         if (isset($propertyTypes[$type])) {
             return $propertyTypes[$type];

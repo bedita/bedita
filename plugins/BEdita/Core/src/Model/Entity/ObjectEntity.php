@@ -112,10 +112,10 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     public function hasProperty(string $property, bool $hidden = true, bool $virtual = false)
     {
         if ($hidden && !$virtual) {
-            return array_key_exists($property, $this->_properties);
+            return array_key_exists($property, $this->_fields);
         }
 
-        $properties = array_keys($this->_properties);
+        $properties = array_keys($this->_fields);
         if (!$hidden) {
             $properties = array_diff($properties, $this->_hidden);
         }

@@ -15,7 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException as Exception;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;

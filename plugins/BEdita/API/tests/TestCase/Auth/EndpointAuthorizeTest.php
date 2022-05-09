@@ -50,7 +50,7 @@ class EndpointAuthorizeTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**

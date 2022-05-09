@@ -16,7 +16,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\ProfilesValidator;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Utility\Hash;
 
 /**
@@ -82,11 +82,11 @@ class ProfilesTable extends Table
      *  - if `title` was not modified and one of `name`, `surname` or `company_name` was
      *      update `title` accordingly
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (empty($entity->get('email'))) {
             $entity->set('email', null);

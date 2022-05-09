@@ -20,7 +20,7 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -80,7 +80,7 @@ class ChangeCredentialsActionTest extends TestCase
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
             ],
         ]);

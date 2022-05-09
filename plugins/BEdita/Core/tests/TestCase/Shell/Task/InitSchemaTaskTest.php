@@ -20,13 +20,16 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * @covers \BEdita\Core\Shell\Task\InitSchemaTask
  */
-class InitSchemaTaskTest extends ConsoleIntegrationTestCase
+class InitSchemaTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * @inheritDoc
      */
@@ -34,7 +37,7 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        $this->fixtureManager->shutDown();
+        static::$fixtureManager->shutDown();
     }
 
     /**

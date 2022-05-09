@@ -99,7 +99,7 @@ class InitSchemaTask extends Shell
         if ($this->param('no-force')) {
             $this->params['force'] = false;
         } elseif (!$this->param('force')) {
-            $this->_io->styles('blink', ['text' => 'red', 'blink' => true, 'bold' => true]);
+            $this->_io->getStyle('blink', ['text' => 'red', 'blink' => true, 'bold' => true]);
             $this->quiet('<blink>CAREFUL!</blink> <warning>ALL CURRENT TABLES WILL BE DROPPED!</warning>');
 
             $this->params['force'] = ($this->in('Do you really want to proceed?', ['y', 'n'], 'n') === 'y');

@@ -18,12 +18,12 @@ use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Core\App;
-use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
@@ -172,7 +172,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('associations', 'json');
         $schema->setColumnType('hidden', 'json');
@@ -185,7 +185,7 @@ class ObjectTypesTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, $options = []): EntityInterface
+    public function get($primaryKey, array $options = []): EntityInterface
     {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
@@ -230,12 +230,12 @@ class ObjectTypesTable extends Table
      * Controls are performed here insted of `beforeSave()` or `beforeDelete()`
      * in order to be executed before corresponding methods in `TreeBehavior`.
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
-    public function beforeRules(Event $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isNew()) {
             if (empty($entity->get('parent_id'))) {
@@ -266,7 +266,7 @@ class ObjectTypesTable extends Table
      */
     public function afterSave()
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(self::CACHE_CONFIG);
     }
 
     /**
@@ -276,12 +276,12 @@ class ObjectTypesTable extends Table
      *  - `enabled` is set to false and objects of this type or subtypes exist
      *  - `table` is not a valid table model class
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
@@ -310,18 +310,18 @@ class ObjectTypesTable extends Table
      */
     protected function objectsExist($typeId)
     {
-        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id' => $typeId]);
+        return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
 
     /**
      * Don't allow delete actions if at least an object of this type exists.
      *
-     * @param \Cake\Event\Event $event The beforeDelete event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeDelete event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be deleted
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
@@ -335,13 +335,13 @@ class ObjectTypesTable extends Table
      */
     public function afterDelete()
     {
-        Cache::clear(false, self::CACHE_CONFIG);
+        Cache::clear(self::CACHE_CONFIG);
     }
 
     /**
      * @inheritDoc
      */
-    public function findAll(Query $query, array $options): Query
+    public function findContainRelations(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -457,7 +457,7 @@ class ObjectTypesTable extends Table
                 if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
-                    return $exp->add(new Comparison(1, 1, 'integer', '<>'));
+                    return $exp->add(new ComparisonExpression(1, 1, 'integer', '<>'));
                 }
 
                 // Find descendants for all found nodes using NSM rules.
@@ -478,7 +478,9 @@ class ObjectTypesTable extends Table
         }
 
         // Everything is said and done by now. Fingers crossed!
-        return $query->where($conditionsBuilder);
+        return $query
+            ->where($conditionsBuilder)
+            ->order([$this->aliasField('tree_left') => 'asc']);
     }
 
     /**

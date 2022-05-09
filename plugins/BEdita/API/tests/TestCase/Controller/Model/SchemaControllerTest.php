@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\API\Test\TestConstants;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case

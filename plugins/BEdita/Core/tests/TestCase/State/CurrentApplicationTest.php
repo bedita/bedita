@@ -54,7 +54,7 @@ class CurrentApplicationTest extends TestCase
         CurrentApplication::setApplication(null);
         Configure::delete('appVal');
         Configure::delete('someVal');
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**
@@ -76,7 +76,7 @@ class CurrentApplicationTest extends TestCase
      */
     public function testGetApplication()
     {
-        static::assertNull(null, CurrentApplication::getApplication());
+        static::assertNull(CurrentApplication::getApplication());
 
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
@@ -93,7 +93,7 @@ class CurrentApplicationTest extends TestCase
      */
     public function testGetApplicationId()
     {
-        static::assertNull(null, CurrentApplication::getApplicationId());
+        static::assertNull(CurrentApplication::getApplicationId());
 
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);

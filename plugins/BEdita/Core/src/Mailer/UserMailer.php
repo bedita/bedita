@@ -45,7 +45,7 @@ class UserMailer extends Mailer
         $projectName = $this->getProjectName();
         $subject = __d('bedita', 'Welcome to {0}', [$projectName]);
 
-        $this->set([
+        $this->setViewVars([
             'user' => $user,
             'projectName' => $projectName,
         ]);
@@ -87,7 +87,7 @@ class UserMailer extends Mailer
         $projectName = $this->getProjectName();
         $subject = __d('bedita', '{0} registration', [$projectName]);
 
-        $this->set([
+        $this->setViewVars([
             'user' => $user,
             'activationUrl' => $options['params']['activationUrl'],
             'projectName' => $projectName,
@@ -129,7 +129,7 @@ class UserMailer extends Mailer
         $projectName = $this->getProjectName();
         $subject = __d('bedita', '{0} change request', [$projectName]);
 
-        $this->set([
+        $this->setViewVars([
             'user' => $user,
             'changeUrl' => $options['params']['changeUrl'],
             'projectName' => $projectName,

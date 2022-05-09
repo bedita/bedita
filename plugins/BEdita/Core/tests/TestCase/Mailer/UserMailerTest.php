@@ -13,8 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Mailer;
 
+use BEdita\Core\Mailer\UserMailer;
 use Cake\Core\Configure;
-use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
@@ -26,13 +27,6 @@ use Cake\TestSuite\TestCase;
 class UserMailerTest extends TestCase
 {
     use MailerAwareTrait;
-
-    /**
-     * The Email instance
-     *
-     * @var \Cake\Mailer\Email
-     */
-    protected $Email;
 
     /**
      * The UsersTable instance
@@ -74,15 +68,13 @@ class UserMailerTest extends TestCase
             'className' => 'BEdita/Core.AsyncJobs',
         ]);
 
-        Email::drop('test');
-        Email::setConfig('test', [
+        Mailer::drop('test');
+        Mailer::setConfig('test', [
             'transport' => 'test',
             'from' => [
                 'gustavo.supporto@example.org' => 'Gustavo',
             ],
         ]);
-
-        $this->Email = new Email('test');
 
         $this->Users = TableRegistry::getTableLocator()->get('Users');
     }
@@ -95,9 +87,8 @@ class UserMailerTest extends TestCase
         parent::tearDown();
 
         $this->Users = null;
-        $this->Email = null;
 
-        Email::drop('test');
+        Mailer::drop('test');
         TransportFactory::drop('test');
     }
 
@@ -168,7 +159,7 @@ class UserMailerTest extends TestCase
             $options['params']['user'] = $this->Users->get($options['params']['userId']);
         }
 
-        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('signup', [$options]);
+        $result = $this->getMailer('BEdita/Core.User', 'test')->send('signup', [$options]);
 
         static::assertEquals($expected, (bool)$result);
     }
@@ -197,7 +188,7 @@ class UserMailerTest extends TestCase
             ],
         ];
 
-        $this->getMailer('BEdita/Core.User', $this->Email)->send('signup', [$options]);
+        $this->getMailer('BEdita/Core.User', 'test')->send('signup', [$options]);
     }
 
     /**
@@ -252,7 +243,7 @@ class UserMailerTest extends TestCase
             $options['params']['user'] = $this->Users->get($options['params']['userId']);
         }
 
-        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [$options]);
+        $result = $this->getMailer('BEdita/Core.User', 'test')->send('welcome', [$options]);
 
         static::assertEquals($expected, (bool)$result);
     }
@@ -314,7 +305,7 @@ class UserMailerTest extends TestCase
             $options['params']['user'] = $this->Users->get($options['params']['userId']);
         }
 
-        $result = $this->getMailer('BEdita/Core.User', $this->Email)->send('changeRequest', [$options]);
+        $result = $this->getMailer('BEdita/Core.User', 'test')->send('changeRequest', [$options]);
 
         static::assertEquals($expected, (bool)$result);
     }
@@ -351,16 +342,13 @@ class UserMailerTest extends TestCase
     {
         Configure::write('Project.name', $configured);
 
-        $this->getMailer('BEdita/Core.User', $this->Email)->send('welcome', [
-            [
-                'params' => [
-                    'user' => $this->Users->get(5),
-                ],
-            ],
-        ]);
-
-        $viewVars = $this->Email->getViewVars();
-        static::assertArrayHasKey('projectName', $viewVars);
-        static::assertEquals($expected, $viewVars['projectName']);
+        $mailer = new class extends UserMailer {
+            // make method public in
+            public function getProjectName()
+            {
+                return parent::getProjectName();
+            }
+        };
+        static::assertEquals($expected, $mailer->getProjectName());
     }
 }

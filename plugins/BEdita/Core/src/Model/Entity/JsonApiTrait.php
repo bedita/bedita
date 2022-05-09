@@ -38,7 +38,7 @@ trait JsonApiTrait
      *
      * @var array
      */
-    protected $_fields = [];
+    protected $_selected = [];
 
     /**
      * Getter for entity's visible properties.
@@ -84,7 +84,7 @@ trait JsonApiTrait
      * @param string $property Property name to check
      * @return bool
      */
-    abstract public function isAccessible($property);
+    abstract public function isAccessible(string $property): bool;
 
     /**
      * Extract properties from an entity.
@@ -93,7 +93,7 @@ trait JsonApiTrait
      * @param bool $onlyDirty Return only dirty properties.
      * @return array
      */
-    abstract public function extract(array $properties, bool $onlyDirty = false);
+    abstract public function extract(array $properties, bool $onlyDirty = false): array;
 
     /**
      * Check if a property exists.
@@ -101,7 +101,7 @@ trait JsonApiTrait
      * @param string $property Property name.
      * @return bool
      */
-    abstract public function has($property);
+    abstract public function has(string $property): bool;
 
     /**
      * Getter for a property.
@@ -132,29 +132,29 @@ trait JsonApiTrait
     }
 
     /**
-     * Setter for `_fields`.
+     * Setter for `_selected`.
      *
      * @param array $fields List of fields.
      * @return void
      */
-    protected function setFields(array $fields)
+    protected function setSelected(array $fields)
     {
-        $this->_fields = $fields;
+        $this->_selected = $fields;
     }
 
     /**
-     * Filter fields list depending on requested fields in `$_fields`.
+     * Filter fields list depending on requested fields in `$_selected`.
      *
      * @param array $fields List of fields.
      * @return array
      */
     protected function filterFields(array $fields)
     {
-        if (empty($this->_fields)) {
+        if (empty($this->_selected)) {
             return $fields;
         }
 
-        return array_intersect($this->_fields, $fields);
+        return array_intersect($this->_selected, $fields);
     }
 
     /**
@@ -223,7 +223,7 @@ trait JsonApiTrait
         }
 
         if ($joinData instanceof Tree) {
-            $joinData->unsetProperty([
+            $joinData->unset([
                 'id',
                 'parent_id',
                 'object_id',
@@ -421,9 +421,9 @@ trait JsonApiTrait
         $id = $this->getId();
         $type = $this->getType();
         if (!empty($fields[$type])) {
-            $this->setFields($fields[$type]);
+            $this->setSelected($fields[$type]);
         } elseif (!empty($fields['_common'])) {
-            $this->setFields($fields['_common']);
+            $this->setSelected($fields['_common']);
         }
 
         $attributes = $meta = $links = $relationships = $included = null;

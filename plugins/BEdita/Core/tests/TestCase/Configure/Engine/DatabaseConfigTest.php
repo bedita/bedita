@@ -51,7 +51,7 @@ class DatabaseConfigTest extends TestCase
     {
         parent::setUp();
         $this->DatabaseConfig = new DatabaseConfig();
-        Cache::clear(false, '_bedita_core_');
+        Cache::clear('_bedita_core_');
     }
 
     /**

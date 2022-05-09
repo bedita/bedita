@@ -28,6 +28,7 @@ class RelationsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::prepareInclude()
      */
     public function testIndex()
     {
@@ -327,7 +328,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $expected = array_merge(['id' => $relation->id], $data['attributes'], [
             'params' => [
-                'definitions' => [],
+                'definitions' => new \stdClass(),
                 '$schema' => 'http://json-schema.org/draft-06/schema#',
                 'type' => 'object',
                 'test' => 'ok',
@@ -443,6 +444,7 @@ class RelationsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
+     * @covers ::prepareInclude()
      */
     public function testRelated()
     {

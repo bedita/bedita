@@ -91,17 +91,17 @@ class Property extends Entity implements JsonApiSerializable
      */
     protected function _getPropertyType()
     {
-        if (array_key_exists('property_type', $this->_properties)) {
-            return $this->_properties['property_type'];
+        if (array_key_exists('property_type', $this->_fields)) {
+            return $this->_fields['property_type'];
         }
 
         try {
-            $this->_properties['property_type'] = TableRegistry::getTableLocator()->get('PropertyTypes')
+            $this->_fields['property_type'] = TableRegistry::getTableLocator()->get('PropertyTypes')
                 ->get($this->property_type_id, [
                     'cache' => ObjectTypesTable::CACHE_CONFIG,
                 ]);
 
-            return $this->_properties['property_type'];
+            return $this->_fields['property_type'];
         } catch (RecordNotFoundException $e) {
             return null;
         } catch (InvalidPrimaryKeyException $e) {

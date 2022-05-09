@@ -22,11 +22,11 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\OAuth2;
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\UnauthorizedException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -205,7 +205,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             ]);
 
         if (!empty($this->getConfig('roles'))) {
-            $validator->requirePresence('roles');
+            $validator
+            ->requirePresence('roles')
+            ->notEmptyArray('roles');
         }
 
         $validator->add('roles', 'validateRoles', [
@@ -312,7 +314,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $data['status'] = $status;
         $entity = $this->Users->newEntity([]);
         if ($verified === true) {
-            $entity->set('verified', Time::now());
+            $entity->set('verified', FrozenTime::now());
         }
         $entityOptions = compact('validate');
 
@@ -397,6 +399,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         return $this->Roles->find()
             ->where(['name IN' => $roles])
+            ->all()
             ->toList();
     }
 
@@ -417,7 +420,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -426,13 +429,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     /**
      * Send confirmation email to user
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @param \BEdita\Core\Model\Entity\AsyncJob $job The referred async job
      * @param string $activationUrl URL to be used for activation.
      * @return void
      */
-    public function sendMail(Event $event, User $user, AsyncJob $job, $activationUrl)
+    public function sendMail(EventInterface $event, User $user, AsyncJob $job, $activationUrl)
     {
         if (empty($user->get('email'))) {
             return;
@@ -447,11 +450,11 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Send welcome email to user to inform of successfully activation
      * External auth users are already activated
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    public function sendActivationMail(Event $event, User $user)
+    public function sendActivationMail(EventInterface $event, User $user)
     {
         $options = [
             'params' => compact('user'),

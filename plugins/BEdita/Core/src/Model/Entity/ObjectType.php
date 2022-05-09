@@ -150,8 +150,8 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function _getSingular(): ?string
     {
-        if (!empty($this->_properties['singular'])) {
-            return $this->_properties['singular'];
+        if (!empty($this->_fields['singular'])) {
+            return $this->_fields['singular'];
         }
 
         return Inflector::singularize((string)$this->name);
@@ -177,7 +177,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function _getAlias(): string
     {
-        return Inflector::camelize($this->name);
+        return Inflector::camelize((string)$this->name);
     }
 
     /**

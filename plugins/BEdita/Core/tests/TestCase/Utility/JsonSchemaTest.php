@@ -55,7 +55,7 @@ class JsonSchemaTest extends TestCase
     {
         parent::setUp();
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
 
     /**
@@ -236,8 +236,15 @@ class JsonSchemaTest extends TestCase
             $keys = ['definitions', '$id', '$schema', 'type', 'properties', 'required', 'associations', 'relations', 'revision'];
             $found = array_keys($result);
             static::assertEquals(sort($keys), sort($found));
-            static::assertEquals($expected['properties'], array_keys($result['properties']), '', 0, 10, true);
-            static::assertEquals($expected['required'], $result['required'], '', 0, 10, true);
+            $keys = array_keys($result['properties']);
+            sort($keys);
+            sort($expected['properties']);
+            static::assertEquals($expected['properties'], $keys, '');
+            static::assertEqualsCanonicalizing($expected['properties'], $keys, '');
+            static::assertEqualsWithDelta($expected['properties'], $keys, 0, '');
+            static::assertEquals($expected['required'], $result['required'], '');
+            static::assertEqualsCanonicalizing($expected['required'], $result['required'], '');
+            static::assertEqualsWithDelta($expected['required'], $result['required'], 0, '');
         }
     }
 

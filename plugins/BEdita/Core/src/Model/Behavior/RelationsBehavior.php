@@ -42,7 +42,7 @@ class RelationsBehavior extends Behavior
     {
         parent::initialize($config);
 
-        $table = $this->getTable();
+        $table = $this->table();
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }
@@ -58,7 +58,7 @@ class RelationsBehavior extends Behavior
      */
     protected function objectType(...$args)
     {
-        return $this->getTable()->behaviors()->call('objectType', $args);
+        return $this->table()->behaviors()->call('objectType', $args);
     }
 
     /**
@@ -80,10 +80,10 @@ class RelationsBehavior extends Behavior
      */
     protected function relatedTo($associated, array $options = [])
     {
-        $options += ['sourceTable' => $this->getTable()];
+        $options += ['sourceTable' => $this->table()];
         $association = new RelatedTo($associated, $options);
 
-        return $this->getTable()->associations()->add($association->getName(), $association);
+        return $this->table()->associations()->add($association->getName(), $association);
     }
 
     /**
@@ -95,7 +95,7 @@ class RelationsBehavior extends Behavior
     public function setupRelations($objectType = null)
     {
         if ($objectType === null) {
-            $objectType = $this->getTable()->getAlias();
+            $objectType = $this->table()->getAlias();
         }
 
         try {
@@ -106,7 +106,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the left side.
         foreach ($objectType->getRelations('left') as $relation) {
-            if ($this->getTable()->hasAssociation($relation->alias) === true) {
+            if ($this->table()->hasAssociation($relation->alias) === true) {
                 continue;
             }
 
@@ -138,7 +138,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the right side.
         foreach ($objectType->getRelations('right') as $relation) {
-            if ($this->getTable()->hasAssociation($relation->inverse_alias) === true) {
+            if ($this->table()->hasAssociation($relation->inverse_alias) === true) {
                 continue;
             }
 

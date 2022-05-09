@@ -66,8 +66,8 @@ class LoginController extends AppController
         $this->loadModel('Users');
         $this->loadModel('AuthProviders');
 
-        if ($this->request->contentType() === 'application/json') {
-            $this->RequestHandler->setConfig('inputTypeMap.json', ['json_decode', true], false);
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->setConfig('parseJson', false);
         }
 
         if (in_array($this->request->getParam('action'), ['login', 'optout'])) {

@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Database\Type;
 
-use Cake\Database\Driver;
+use Cake\Database\DriverInterface;
 use Cake\Database\Type\BoolType as CakeBoolType;
 use InvalidArgumentException;
 
@@ -27,10 +27,10 @@ class BoolType extends CakeBoolType
      * `true` and `false` as strings are accepted, other strings will cause an `InvalidArgumentException`
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\Driver $driver The driver instance to convert with.
+     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
      * @return bool|null
      */
-    public function toDatabase($value, Driver $driver)
+    public function toDatabase($value, DriverInterface $driver): ?bool
     {
         try {
             return parent::toDatabase($value, $driver);

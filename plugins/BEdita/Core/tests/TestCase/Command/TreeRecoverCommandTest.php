@@ -14,8 +14,8 @@
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\TreeRecoverCommand;
-use Cake\Console\Command;
-use Cake\Database\Expression\Comparison;
+use Cake\Command\Command;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
@@ -48,7 +48,7 @@ class TreeRecoverCommandTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -83,8 +83,8 @@ class TreeRecoverCommandTest extends TestCase
         // Corrupt tree: `UPDATE * FROM trees SET tree_left = id * 2, tree_right = id * 2 + 1`.
         $this->Trees->updateAll(
             [
-                'tree_left' => new Comparison('id', 2, 'integer', '*'),
-                'tree_right' => new Comparison(new Comparison('id', 2, 'integer', '*'), 1, 'integer', '+'),
+                'tree_left' => new ComparisonExpression('id', 2, 'integer', '*'),
+                'tree_right' => new ComparisonExpression(new ComparisonExpression('id', 2, 'integer', '*'), 1, 'integer', '+'),
             ],
             []
         );

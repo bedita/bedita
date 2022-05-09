@@ -15,11 +15,11 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Rule\IsUnique;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -201,11 +201,11 @@ class TreesTable extends Table
     /**
      * Update `root_id` of children if needed.
      *
-     * @param \Cake\Event\Event $event The event
+     * @param \Cake\Event\EventInterface $event The event
      * @param \BEdita\Core\Model\Entity\Tree $entity The entity persisted
      * @return void
      */
-    public function afterSave(Event $event, Tree $entity)
+    public function afterSave(EventInterface $event, Tree $entity)
     {
         if ($entity->has('position')) {
             if ($this->moveAt($entity, $entity->get('position')) === false) {
@@ -242,14 +242,14 @@ class TreesTable extends Table
     /**
      * Throw an exception when trying to remove a row that points to a folder, unless cascading.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \BEdita\Core\Model\Entity\Tree $entity Tree entity being deleted.
      * @param \ArrayObject $options Options.
      * @return void
      * @throws \BEdita\Core\Exception\LockedResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
-    public function beforeDelete(Event $event, Tree $entity, \ArrayObject $options)
+    public function beforeDelete(EventInterface $event, Tree $entity, \ArrayObject $options)
     {
         if (empty($options['_primary'])) {
             return;
@@ -276,7 +276,7 @@ class TreesTable extends Table
 
         return $this->Objects->exists([
             $this->Objects->aliasField('object_type_id') => $foldersType,
-            $this->Objects->aliasField('id') => $id,
+            $this->Objects->aliasField('id') . ' IS' => $id,
         ]);
     }
 

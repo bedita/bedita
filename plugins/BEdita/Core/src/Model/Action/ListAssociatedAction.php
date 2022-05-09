@@ -130,6 +130,7 @@ class ListAssociatedAction extends BaseAction
      */
     protected function buildInverseAssociation()
     {
+        $this->clearInverseAssociation();
         $sourceTable = $this->Association->getTarget();
         $targetTable = TableRegistry::getTableLocator()->get(static::INVERSE_ASSOCIATION_NAME, [
             'className' => $this->Association->getSource()->getRegistryAlias(),
@@ -154,7 +155,7 @@ class ListAssociatedAction extends BaseAction
             $association = new HasMany(static::INVERSE_ASSOCIATION_NAME, $options);
         } elseif ($this->Association instanceof BelongsToMany) {
             $options += [
-                'through' => $this->Association->junction()->getRegistryAlias(),
+                'through' => $this->Association->junction(),
                 'foreignKey' => $this->Association->getTargetForeignKey(),
                 'targetForeignKey' => $this->Association->getForeignKey(),
                 'conditions' => $this->Association->getConditions(),
@@ -166,6 +167,21 @@ class ListAssociatedAction extends BaseAction
         }
 
         return $sourceTable->associations()->add($association->getName(), $association);
+    }
+
+    /**
+     * Ensure to remove previously defined inverse assoications.
+     *
+     * @return void
+     */
+    protected function clearInverseAssociation(): void
+    {
+        $this->Association->getSource()->associations()->remove(static::INVERSE_ASSOCIATION_NAME);
+        $this->Association->getTarget()->associations()->remove(static::INVERSE_ASSOCIATION_NAME);
+
+        if ($this->Association instanceof BelongsToMany) {
+            $this->Association->junction()->associations()->remove(static::INVERSE_ASSOCIATION_NAME);
+        }
     }
 
     /**
@@ -262,7 +278,7 @@ class ListAssociatedAction extends BaseAction
         $query = $this->buildQuery($primaryKey, $data, $inverseAssociation);
 
         // remove temporary alias of inverse association from TableRegistry
-        TableRegistry::remove(static::INVERSE_ASSOCIATION_NAME);
+        TableRegistry::getTableLocator()->remove(static::INVERSE_ASSOCIATION_NAME);
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();

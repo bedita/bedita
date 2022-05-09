@@ -85,7 +85,7 @@ class LayeredEngineTest extends TestCase
     public function testInit()
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
-        Cache::clear(false, 'test-layered');
+        Cache::clear('test-layered');
 
         $instance = Cache::getRegistry()->get('test-layered');
         static::assertAttributeInstanceOf(ArrayEngine::class, 'memory', $instance);
@@ -125,7 +125,7 @@ class LayeredEngineTest extends TestCase
             $this->defaultConfig,
             ['persistent' => 1]
         ));
-        Cache::clear(false, 'test-layered-bad-persistent');
+        Cache::clear('test-layered-bad-persistent');
     }
 
     /**
@@ -141,7 +141,7 @@ class LayeredEngineTest extends TestCase
             $this->defaultConfig,
             ['persistent' => 'test-layered-persistent-missing']
         ));
-        Cache::clear(false, 'test-layered-missing-alias');
+        Cache::clear('test-layered-missing-alias');
     }
 
     /**
@@ -156,7 +156,7 @@ class LayeredEngineTest extends TestCase
             $this->defaultConfig,
             ['persistent' => 'test-layered-recursive']
         ));
-        Cache::clear(false, 'test-layered-recursive');
+        Cache::clear('test-layered-recursive');
     }
 
     /**
@@ -173,7 +173,7 @@ class LayeredEngineTest extends TestCase
             $this->defaultConfig,
             ['persistent' => 'test-layered-persistent-wrong']
         ));
-        Cache::clear(false, 'test-layered-wrong-object');
+        Cache::clear('test-layered-wrong-object');
     }
 
     /**
@@ -279,7 +279,7 @@ class LayeredEngineTest extends TestCase
         static::assertTrue($result);
 
         $result = Cache::read('delete', 'test-layered');
-        static::assertFalse($result);
+        static::assertNull($result);
     }
 
     /**
@@ -294,10 +294,10 @@ class LayeredEngineTest extends TestCase
         $result = Cache::write('clear', 42, 'test-layered');
         static::assertTrue($result);
 
-        $result = Cache::clear(false, 'test-layered');
+        $result = Cache::clear('test-layered');
         static::assertTrue($result);
 
         $result = Cache::read('clear', 'test-layered');
-        static::assertFalse($result);
+        static::assertNull($result);
     }
 }

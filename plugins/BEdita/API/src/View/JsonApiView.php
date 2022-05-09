@@ -41,9 +41,9 @@ class JsonApiView extends JsonView
      * @inheritDoc
      */
     public function __construct(
-        ServerRequest $request = null,
-        Response $response = null,
-        EventManager $eventManager = null,
+        ?ServerRequest $request = null,
+        ?Response $response = null,
+        ?EventManager $eventManager = null,
         array $viewOptions = []
     ) {
         if ($request && $request->is('json')) {
@@ -69,6 +69,9 @@ class JsonApiView extends JsonView
             return array_filter(compact('links', 'meta'));
         }
 
+        if (is_array($serialize)) {
+            $serialize = array_diff($serialize, ['_links', '_meta']);
+        }
         $data = parent::_dataToSerialize($serialize) ?: [];
         $options = $this->get('_jsonApiOptions', 0);
         if ($data) {

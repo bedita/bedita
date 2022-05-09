@@ -19,6 +19,7 @@ use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * {@see \BEdita\Core\Model\Table\StaticPropertiesTable} Test Case
@@ -27,6 +28,8 @@ use Cake\TestSuite\TestCase;
  */
 class StaticPropertiesTableTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Test subject
      *

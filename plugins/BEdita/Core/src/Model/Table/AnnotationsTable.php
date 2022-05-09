@@ -14,9 +14,9 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -119,7 +119,7 @@ class AnnotationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('params', 'json');
 
@@ -131,12 +131,12 @@ class AnnotationsTable extends Table
      *  - `user_id` must match LoggedUser::id() on entity update
      *  - `object_id` cannot be modified
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(
@@ -162,12 +162,12 @@ class AnnotationsTable extends Table
     /**
      * Before delete checks: `user_id` must match LoggedUser::id()
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(

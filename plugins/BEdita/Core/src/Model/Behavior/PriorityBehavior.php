@@ -13,7 +13,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\Utility\Hash;
 
@@ -58,11 +58,11 @@ class PriorityBehavior extends Behavior
      * Use current max value + 1 if not set.
      * New values will start at 1.
      *
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         $fields = $this->getConfig('fields');
 
@@ -88,12 +88,12 @@ class PriorityBehavior extends Behavior
     {
         $conditions = [];
         foreach ($scope as $item) {
-            $keyField = sprintf('%s IS', $this->getTable()->aliasField($item));
+            $keyField = sprintf('%s IS', $this->table()->aliasField($item));
             $conditions[$keyField] = $entity->get($item);
         }
-        $query = $this->getTable()->find()->where($conditions);
+        $query = $this->table()->find()->where($conditions);
         $query->select([
-            'max_value' => $query->func()->max($this->getTable()->aliasField($field)),
+            'max_value' => $query->func()->max($this->table()->aliasField($field)),
         ]);
 
         return (int)Hash::get($query->toArray(), '0.max_value');
@@ -103,12 +103,12 @@ class PriorityBehavior extends Behavior
      * Compact other priorities before the entity is deleted.
      *
      * @todo Implement this method.
-     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         return;
     }

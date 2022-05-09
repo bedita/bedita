@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -88,7 +88,7 @@ class HistoryTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('changed', 'json');
 

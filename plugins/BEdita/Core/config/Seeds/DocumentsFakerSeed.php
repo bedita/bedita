@@ -1,6 +1,7 @@
 <?php
+
 use BEdita\Core\Utility\ObjectsHandler;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Faker\Factory;
 use Migrations\AbstractSeed;
 
@@ -17,7 +18,7 @@ class DocumentsFakerSeed extends AbstractSeed
             'status' => $faker->randomElement(['on', 'draft']),
             'description' => $faker->optional()->paragraph,
             'body' => $faker->optional()->text,
-            'publish_start' => Time::now(),
+            'publish_start' => FrozenTime::now(),
         ];
         ObjectsHandler::save('documents', $data);
     }

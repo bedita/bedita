@@ -115,26 +115,16 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function write($key, $value): bool
-    {
-        $this->memory->write($key, $value);
-
-        return $this->persistent->write($key, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function read($key)
     {
-        $value = $this->memory->read($key);
+        $value = $this->memory->get($key);
 
-        if ($value !== false) {
+        if ($value !== null) {
             return $value;
         }
 
-        $value = $this->persistent->read($key);
-        $this->memory->write($key, $value);
+        $value = $this->persistent->get($key);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -145,7 +135,7 @@ class LayeredEngine extends CacheEngine
     public function increment($key, $offset = 1)
     {
         $value = $this->persistent->increment($key, $offset);
-        $this->memory->write($key, $value);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -156,7 +146,7 @@ class LayeredEngine extends CacheEngine
     public function decrement($key, $offset = 1)
     {
         $value = $this->persistent->decrement($key, $offset);
-        $this->memory->write($key, $value);
+        $this->memory->set($key, $value);
 
         return $value;
     }
@@ -174,10 +164,43 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function clear($check): bool
+    public function clear(): bool
     {
-        $this->memory->clear($check);
+        $this->memory->clear();
 
-        return $this->persistent->clear($check);
+        return $this->persistent->clear();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        $this->memory->set($key, $value, $ttl);
+
+        return $this->persistent->set($key, $value, $ttl);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get($key, $default = null)
+    {
+        $value = $this->read($key);
+        if ($value !== null) {
+            return $value;
+        }
+
+        return $default;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function clearGroup(string $group): bool
+    {
+        $this->memory->clearGroup($group);
+
+        return $this->persistent->clearGroup($group);
     }
 }

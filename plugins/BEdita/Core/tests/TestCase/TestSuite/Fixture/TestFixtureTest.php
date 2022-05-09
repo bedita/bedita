@@ -12,9 +12,10 @@
  */
 namespace BEdita\Core\Test\TestCase\TestSuite\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
 use BEdita\Core\Test\Fixture\ObjectsFixture;
 use BEdita\Core\Test\Fixture\RolesFixture;
+use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\Core\Exception\CakeException;
 use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\TestCase;
 
@@ -86,11 +87,11 @@ class TestFixtureTest extends TestCase
      */
     public function fieldsFromConfigProvider()
     {
-        $schemaErrorMsg = 'Cannot describe schema for table `%s` for fixture `%s` : the table does not exist.';
+        $schemaErrorMsg = 'Cannot describe schema for table `%s` for fixture `%s`. The table does not exist.';
 
         return [
             'missingSchemaFile' => [
-                new \Cake\Core\Exception\Exception(
+                new CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_files',
@@ -100,7 +101,7 @@ class TestFixtureTest extends TestCase
                 TestMissingSchemaFileFixture::class,
             ],
             'missingSchemaPlugin' => [
-                new \Cake\Core\Exception\Exception(
+                new CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_schema_plugins',
@@ -110,7 +111,7 @@ class TestFixtureTest extends TestCase
                 TestMissingSchemaPluginFixture::class,
             ],
             'missingTableFromSchema' => [
-                new \Cake\Core\Exception\Exception(
+                new CakeException(
                     sprintf(
                         $schemaErrorMsg,
                         'test_missing_table_from_schemas',
@@ -174,7 +175,6 @@ class TestFixtureTest extends TestCase
                         'null' => null,
                         'default' => null,
                         'comment' => null,
-                        'fixed' => null,
                     ],
                     '_constraints' => [
                         'primary' => [
@@ -256,7 +256,7 @@ class TestFixtureTest extends TestCase
 
         $fixtureMock = $this->getMockBuilder(RolesFixture::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getTableSchemaFromConf'])
+            ->onlyMethods(['getTableSchemaFromConf'])
             ->getMock();
 
         $fixtureMock->method('getTableSchemaFromConf')

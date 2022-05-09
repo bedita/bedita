@@ -15,7 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -89,12 +89,12 @@ class RolesUsersTable extends Table
     /**
      * Before delete checks: if record is not deletable, raise a ImmutableResourceException
      *
-     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException; if entity is not deletable
      */
-    public function beforeDelete(Event $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));

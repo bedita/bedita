@@ -95,7 +95,7 @@ class SearchableBehavior extends Behavior
         $wildCard = $this->getConfig('fields.*');
 
         $fields = (array)$this->getConfig('fields');
-        $allFields = $this->getAllFields($this->getTable());
+        $allFields = $this->getAllFields($this->table());
 
         $fields = array_intersect_key($fields, array_flip($allFields));
         if ($wildCard !== null) {

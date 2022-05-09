@@ -26,7 +26,7 @@ use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
@@ -122,7 +122,7 @@ class ObjectsController extends ResourcesController
      */
     protected function initObjectModel()
     {
-        $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
+        $type = $this->request->getParam('object_type', Inflector::underscore((string)$this->request->getParam('controller')));
         try {
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
@@ -151,7 +151,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(EventInterface $event)
     {
         if (
             $this->request->getParam('action') === 'relationships'
@@ -439,7 +439,7 @@ class ObjectsController extends ResourcesController
         ];
         if (count(array_diff($types, ['objects'])) > 0) {
             natsort($types);
-            $url['filter'] = ['type' => array_values($types)];
+            $url['?']['filter'] = ['type' => array_values($types)];
         }
 
         return Router::url($url, true);

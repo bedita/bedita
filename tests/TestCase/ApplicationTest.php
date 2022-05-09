@@ -37,9 +37,11 @@ class ApplicationTest extends TestCase
         $app = new Application(CONFIG);
         $middleware = new MiddlewareQueue();
         $middleware = $app->middleware($middleware);
+        $middleware->rewind();
 
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
-        static::assertInstanceOf(RoutingMiddleware::class, $middleware->get(1));
+        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->current());
+        $middleware->next();
+        static::assertInstanceOf(RoutingMiddleware::class, $middleware->current());
     }
 
     /**

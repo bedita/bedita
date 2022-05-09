@@ -57,7 +57,7 @@ class ServiceRegistry
         $className = $plugin . Inflector::camelize($name);
         $fullClassName = App::className($className, 'Job/Service', 'Service');
 
-        if ($fullClassName === false) {
+        if ($fullClassName === null) {
             throw new \LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
         }
 

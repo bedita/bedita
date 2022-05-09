@@ -15,7 +15,7 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\JsonSchema;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -40,7 +40,7 @@ class SchemaController extends JsonBaseController
      *
      * @codeCoverageIgnore
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(EventInterface $event)
     {
     }
 

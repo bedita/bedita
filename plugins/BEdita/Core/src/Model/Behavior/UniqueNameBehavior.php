@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
@@ -188,11 +188,11 @@ class UniqueNameBehavior extends Behavior
      * Setup unique name for a BEdita object represented by $entity
      * through `uniqueName()` method
      *
-     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Event\EventInterface $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeRules(Event $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity)
     {
         $this->uniqueName($entity);
     }

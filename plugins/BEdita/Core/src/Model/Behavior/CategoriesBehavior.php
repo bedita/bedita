@@ -15,7 +15,7 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\Tag;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -31,11 +31,11 @@ class CategoriesBehavior extends Behavior
     /**
      * Set categories or tags `id` in save data or
      *
-     * @param \Cake\Event\Event $event Fired event.
+     * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if ($entity->get('tags')) {
             $this->prepareData('tags', $entity);
@@ -60,7 +60,7 @@ class CategoriesBehavior extends Behavior
             return;
         }
         // Check if `Tags` or `Categories` associations are enabled
-        $objectType = $this->getTable()
+        $objectType = $this->table()
             ->getAssociation('ObjectTypes')
             ->get($entity->get('type'));
         if (!in_array(Inflector::humanize($item), (array)$objectType->get('associations'))) {

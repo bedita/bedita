@@ -13,7 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\DateTimeType;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use DateTime;
 
@@ -91,7 +91,6 @@ class DateTimeTypeTest extends TestCase
             'success immutable' => [
                 '2017-03-01 12:12:12',
                 '2017-03-01 12:12:12',
-                true,
             ],
         ];
     }
@@ -106,17 +105,14 @@ class DateTimeTypeTest extends TestCase
      * @dataProvider marshalSuccessProvider
      * @covers ::marshalDateTime
      */
-    public function testMarshalSuccess($expected, $input, $useImmutable = false)
+    public function testMarshalSuccess($expected, $input)
     {
         $dateTimeType = new DateTimeType();
-        if ($useImmutable) {
-            $dateTimeType->useImmutable();
-        }
 
         $result = $dateTimeType->marshal($input);
         if (is_string($expected)) {
             static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
-            $expected = Time::parse($expected);
+            $expected = FrozenTime::parse($expected);
         }
         static::assertSame($expected->getTimestamp(), $result->getTimestamp());
     }
@@ -138,9 +134,6 @@ class DateTimeTypeTest extends TestCase
             [
                 [1, 2, 3],
             ],
-            [
-                new \stdClass(),
-            ],
         ];
     }
 
@@ -157,7 +150,7 @@ class DateTimeTypeTest extends TestCase
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
 
-        static::assertSame($input, $result);
+        static::assertNull($result);
     }
 
     /**

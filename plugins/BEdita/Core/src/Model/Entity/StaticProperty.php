@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use Cake\Database\Type;
+use Cake\Database\TypeFactory;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -39,7 +39,7 @@ class StaticProperty extends Property
     public static function fromProperty(Property $property): self
     {
         return new self(
-            $property->_properties,
+            $property->_fields,
             [
                 'markNew' => $property->isNew(),
                 'markClean' => true,
@@ -86,9 +86,9 @@ class StaticProperty extends Property
      */
     protected function _getTable()
     {
-        if (isset($this->_properties['table'])) {
+        if (isset($this->_fields['table'])) {
             // Explicitly set.
-            return TableRegistry::getTableLocator()->get($this->_properties['table']);
+            return TableRegistry::getTableLocator()->get($this->_fields['table']);
         }
 
         if ($this->object_type_id) {
@@ -149,9 +149,9 @@ class StaticProperty extends Property
      */
     protected function _getDefault()
     {
-        if (array_key_exists('default', $this->_properties)) {
+        if (array_key_exists('default', $this->_fields)) {
             // Previously cached value.
-            return $this->_properties['default'];
+            return $this->_fields['default'];
         }
 
         $schema = static::getSchemaColumnDefinition($this->name, $this->table);
@@ -163,19 +163,20 @@ class StaticProperty extends Property
         $default = Hash::get($schema, 'default', null);
         if (is_string($default) && substr($default, 0, strlen('NULL::')) === 'NULL::') {
             // Postgres has a funny notion of `null`.
-            return $this->_properties['default'] = null;
+            return $this->_fields['default'] = null;
         }
 
         $typeName = $this->table->getSchema()->getColumnType($this->name);
-        if (in_array($default, ['CURRENT_TIMESTAMP', 'now()', 'current_timestamp()']) && in_array($typeName, ['date', 'datetime', 'time', 'timestamp'])) {
+        $dateTimeTypes = ['date', 'datetime', 'time', 'timestamp', 'timestampfractional'];
+        if (in_array($default, ['CURRENT_TIMESTAMP', 'now()', 'current_timestamp()']) && in_array($typeName, $dateTimeTypes)) {
             // Default value is not meaningful in this case.
-            return $this->_properties['default'] = null;
+            return $this->_fields['default'] = null;
         }
 
-        $type = Type::build($typeName);
+        $type = TypeFactory::build($typeName);
         $driver = $this->table->getConnection()->getDriver();
 
-        return $this->_properties['default'] = $type->toPHP($default, $driver);
+        return $this->_fields['default'] = $type->toPHP($default, $driver);
     }
 
     /**

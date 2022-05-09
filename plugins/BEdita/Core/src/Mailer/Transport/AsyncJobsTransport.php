@@ -13,9 +13,8 @@
 
 namespace BEdita\Core\Mailer\Transport;
 
-use BEdita\Core\Mailer\Email as BeditaEmail;
 use Cake\Mailer\AbstractTransport;
-use Cake\Mailer\Email;
+use Cake\Mailer\Message;
 use Cake\Mailer\Transport\DebugTransport;
 use Cake\ORM\TableRegistry;
 
@@ -39,25 +38,25 @@ class AsyncJobsTransport extends AbstractTransport
     /**
      * @inheritDoc
      */
-    public function send(Email $email)
+    public function send(Message $message): array
     {
         /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
-        $asyncJob = $table->newEntity();
+        $asyncJob = $table->newEntity([]);
         $asyncJob->service = $this->getConfig('service');
         $asyncJob->max_attempts = $this->getConfig('max_attempts');
         if ($this->getConfig('priority') !== null) {
             $asyncJob->priority = $this->getConfig('priority');
         }
 
-        $payload = $email->jsonSerialize();
-        $payload += [
-            '_boundary' => BeditaEmail::getBoundary($email),
-            '_message' => $email->message(),
-            '_htmlMessage' => $email->message(Email::MESSAGE_HTML),
-            '_textMessage' => $email->message(Email::MESSAGE_TEXT),
-        ];
+        $payload = $message->jsonSerialize();
+        // $payload += [
+        //     // '_boundary' => BeditaEmail::getBoundary($email),
+        //     '_message' => $message->getBodyString(),
+        //     '_htmlMessage' => $message->getBodyHtml(),
+        //     '_textMessage' => $message->getBodyText(),
+        // ];
         // Remove unnecessary attributes from payload since templates have already been rendered
         // `viewVars` may contain objects that are "heavy" to serialize (like some entities)
         unset($payload['viewVars'], $payload['viewConfig']);
@@ -65,6 +64,6 @@ class AsyncJobsTransport extends AbstractTransport
 
         $table->saveOrFail($asyncJob);
 
-        return (new DebugTransport())->send($email);
+        return (new DebugTransport())->send($message);
     }
 }

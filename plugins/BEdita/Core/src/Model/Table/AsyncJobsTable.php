@@ -3,9 +3,9 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -114,7 +114,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchema $schema)
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('payload', 'json');
 
@@ -133,7 +133,7 @@ class AsyncJobsTable extends Table
         return $this->getConnection()->transactional(function () use ($uuid, $duration) {
             $entity = $this->get($uuid, ['finder' => 'pending']);
             $entity->max_attempts -= 1;
-            $entity->locked_until = new Time($duration);
+            $entity->locked_until = new FrozenTime($duration);
 
             $expires = $entity->locked_until->timestamp;
             $this->dispatchEvent('AsyncJob.lock', compact('entity', 'expires'));
