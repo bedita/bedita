@@ -243,7 +243,7 @@ class AssociationCollectionTest extends TestCase
      * Test cascading deletes to all associations with proper handling of callbacks.
      *
      * @return void
-     * @covers ::_getNoCascadeItems()
+     * @covers ::cascadeDelete()
      */
     public function testCascadeDelete()
     {

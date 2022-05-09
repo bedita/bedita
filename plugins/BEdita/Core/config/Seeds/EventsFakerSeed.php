@@ -1,7 +1,7 @@
 <?php
+
 use BEdita\Core\Utility\ObjectsHandler;
 use Cake\I18n\FrozenTime;
-use Cake\I18n\Time;
 use Faker\Factory;
 use Migrations\AbstractSeed;
 
