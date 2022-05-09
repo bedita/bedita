@@ -540,7 +540,7 @@ class ObjectsTableTest extends TestCase
         $objects = $this->Objects->find('ancestor', [11])->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
-        static::assertEquals([2, 4, 12], $ids);
+        static::assertEquals([12, 2, 4], $ids);
     }
 
     /**
