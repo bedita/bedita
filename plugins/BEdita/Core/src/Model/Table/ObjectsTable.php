@@ -420,15 +420,18 @@ class ObjectsTable extends Table
             ])
             ->firstOrFail();
 
-        return $query
-            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentNode) {
-                return $query->where(function (QueryExpression $exp) use ($parentNode) {
-                    return $exp
-                        ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
-                        ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                });
-            })
-            ->order($this->TreeNodes->aliasField('tree_left'));
+        return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
+            return $exp->in(
+                $this->aliasField('id'),
+                $this->TreeNodes->find()
+                    ->select(['object_id'])
+                    ->where(function (QueryExpression $exp) use ($parentNode) {
+                        return $exp
+                            ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                            ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+                    }),
+            );
+        });
     }
 
     /**
