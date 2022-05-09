@@ -429,7 +429,7 @@ class ObjectsTable extends Table
                         return $exp
                             ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
                             ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                    }),
+                    })
             );
         });
     }
