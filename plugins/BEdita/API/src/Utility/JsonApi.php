@@ -46,7 +46,9 @@ class JsonApi
      */
     public static function formatData($items, $options = 0, array $fields = [], array &$included = [])
     {
-        if ($items instanceof Query || $items instanceof CollectionInterface) {
+        if ($items instanceof Query) {
+            $items = $items->all()->toList();
+        } elseif ($items instanceof CollectionInterface) {
             $items = $items->toList();
         }
 

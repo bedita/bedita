@@ -17,7 +17,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -127,7 +127,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -150,7 +150,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -173,7 +173,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 'fake_articles=1',
@@ -184,7 +184,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 ['fake_articles' => [1, 2] ],
@@ -195,7 +195,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                         'subclass' => 'Eutheria',
                     ],
                 ],
@@ -284,7 +284,7 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
-                'updated_at' => new Time('2018-02-20 09:50:00'),
+                'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                 'fake_articles' => [
                     [
                         'id' => 1,

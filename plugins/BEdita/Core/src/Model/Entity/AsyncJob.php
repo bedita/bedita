@@ -3,7 +3,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
 /**
@@ -58,7 +58,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
             return 'completed';
         }
 
-        $now = new Time();
+        $now = new FrozenTime();
         if ($this->locked_until !== null && $this->locked_until->gte($now)) {
             return 'locked';
         }

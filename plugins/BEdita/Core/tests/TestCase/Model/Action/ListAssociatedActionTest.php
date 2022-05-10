@@ -203,6 +203,12 @@ class ListAssociatedActionTest extends TestCase
         $result = $action(['primaryKey' => $id] + $options);
         $result = json_decode(json_encode($result->toArray()), true);
 
+        // execute again to ensure that temporaly associations are removed
+        $action = new ListAssociatedAction(compact('association'));
+
+        $result = $action(['primaryKey' => $id] + $options);
+        $result = json_decode(json_encode($result->toArray()), true);
+
         static::assertEquals($expected, $result);
     }
 

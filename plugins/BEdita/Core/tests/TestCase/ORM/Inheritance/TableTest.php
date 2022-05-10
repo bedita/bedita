@@ -17,7 +17,7 @@ use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -181,7 +181,7 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
-        $updatedAt = new Time('2018-02-20 09:50:00');
+        $updatedAt = new FrozenTime('2018-02-20 09:50:00');
 
         $feline = $felines->first();
         $expected = [
@@ -267,7 +267,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'updated_at' => new Time('2018-02-20 09:50:00'),
+            'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [

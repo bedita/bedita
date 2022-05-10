@@ -524,7 +524,7 @@ class ObjectTypesTableTest extends TestCase
             ->all()
             ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+            static::assertEquals($expected, $result, '', 0, 10, true);
     }
 
     /**

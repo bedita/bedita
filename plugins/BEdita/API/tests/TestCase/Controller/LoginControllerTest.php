@@ -20,7 +20,7 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -77,7 +77,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(Time::now()->timestamp, $lastLogin->timestamp, '', 1);
+        static::assertEquals(FrozenTime::now()->timestamp, $lastLogin->timestamp, '', 1);
 
         return $result['meta'];
     }
@@ -252,7 +252,7 @@ class LoginControllerTest extends IntegrationTestCase
     public function testClientCredentials(): void
     {
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-        $this->post('/auth', ['client_id' => API_KEY, 'grant_type' => 'client_credentials']);
+        $this->post('/auth', json_encode(['client_id' => API_KEY, 'grant_type' => 'client_credentials']));
 
         $this->assertResponseCode(200);
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -327,8 +327,11 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST');
 
         $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(400);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals('Invalid JSON input', $result['error']['title']);
     }
 
     /**
@@ -566,7 +569,7 @@ class LoginControllerTest extends IntegrationTestCase
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
             ],
         ]);

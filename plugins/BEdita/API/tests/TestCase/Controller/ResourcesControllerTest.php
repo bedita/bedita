@@ -470,7 +470,7 @@ class ResourcesControllerTest extends IntegrationTestCase
     public function testUpdateAssociationsMissingId()
     {
         $expected = [
-            'status' => '400',
+            'status' => '404',
             'title' => 'Record not found in table "users"',
         ];
 
@@ -485,7 +485,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         $this->assertArrayHasKey('error', $result);
         $this->assertArraySubset($expected, $result['error']);

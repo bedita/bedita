@@ -211,6 +211,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
 
@@ -348,6 +350,9 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
+
         static::assertCount($count, $result);
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
@@ -399,6 +404,8 @@ class PropertiesTableTest extends TestCase
             ->extract('name')
             ->toList();
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
 
@@ -417,6 +424,7 @@ class PropertiesTableTest extends TestCase
 
         $result = $this->Properties->find('objectType', ['media'])
             ->find('type', ['dynamic'])
+            ->all()
             ->extract('name')
             ->toList();
 

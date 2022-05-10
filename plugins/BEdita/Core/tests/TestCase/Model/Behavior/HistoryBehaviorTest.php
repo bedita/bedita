@@ -256,6 +256,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);

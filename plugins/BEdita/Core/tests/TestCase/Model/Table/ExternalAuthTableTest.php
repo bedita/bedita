@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -257,8 +257,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 'example',
@@ -271,8 +271,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 [
@@ -287,8 +287,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 1,
@@ -346,8 +346,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -355,8 +355,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => null,
                             'enabled' => true,
-                            'created' => new Time('2018-04-07 12:51:27'),
-                            'modified' => new Time('2018-04-07 12:51:27'),
+                            'created' => new FrozenTime('2018-04-07 12:51:27'),
+                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -370,8 +370,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -379,8 +379,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => null,
                             'enabled' => true,
-                            'created' => new Time('2018-04-07 12:51:27'),
-                            'modified' => new Time('2018-04-07 12:51:27'),
+                            'created' => new FrozenTime('2018-04-07 12:51:27'),
+                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],

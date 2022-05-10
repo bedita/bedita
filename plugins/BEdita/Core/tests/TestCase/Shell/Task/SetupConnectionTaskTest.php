@@ -147,7 +147,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
 
         $driver = substr($config['driver'], strrpos($config['driver'], '\\') + 1);
-        $defaultPort = $driver === 'Mysql' ? 3306 : 5432;
+        $defaultPort = $driver === 'Mysql' ? '3306' : '5432';
 
         // Mock input values.
         $returnValues = [

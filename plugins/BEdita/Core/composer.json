@@ -23,10 +23,10 @@
     "require": {
         "php": ">=7.2.0",
         "cakephp/cakephp": "~3.10.0",
-        "cakephp/migrations": "^2.2.0",
+        "cakephp/migrations": "^2.4.0",
         "league/flysystem": "^1.0.53",
         "league/glide": "^1.5",
-        "robmorgan/phinx": "^0.11.1",
+        "robmorgan/phinx": "^0.11.7",
         "swaggest/json-schema": "~0.12"
     },
     "require-dev": {
