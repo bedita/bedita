@@ -18,13 +18,15 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Log\Log;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Middleware to trace analytics data
  *
  * @since 4.0.0
  */
-class AnalyticsMiddleware
+class AnalyticsMiddleware implements MiddlewareInterface
 {
     use EventDispatcherTrait;
 
@@ -121,16 +123,12 @@ class AnalyticsMiddleware
     }
 
     /**
-     * The middleware action.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next The next middleware to call.
-     * @return \Psr\Http\Message\ResponseInterface A response.
+     * @inheritDoc
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $next($request, $response);
+        /** @var \Cake\Http\ServerRequest $request */
+        $response = $handler->handle($request);
 
         $this->data = [
             'r' => $request->getEnv('REQUEST_TIME'),

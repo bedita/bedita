@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\AnalyticsMiddleware;
+use BEdita\Core\Test\Utility\TestRequestHandler;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
@@ -29,10 +30,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class AnalyticsMiddlewareTest extends TestCase
 {
     /**
-     * Test __invoke method response
+     * Test `process` method response
      *
      * @return void
-     * @covers ::__invoke()
+     * @covers ::process()
      * @covers ::__construct()
      */
     public function testAnalytics()
@@ -45,13 +46,9 @@ class AnalyticsMiddlewareTest extends TestCase
         ];
 
         $request = ServerRequestFactory::fromGlobals($server);
-        $response = new Response();
-        $next = function ($req, $res) {
-            return $res;
-        };
         Log::drop('analytics');
         $middleware = new AnalyticsMiddleware();
-        $middleware($request, $response, $next);
+        $middleware->process($request, new TestRequestHandler());
 
         static::assertNotEmpty($middleware->getData());
     }
@@ -91,12 +88,8 @@ class AnalyticsMiddlewareTest extends TestCase
         EventManager::instance()->on('Analytics.custom', $callback);
 
         $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
-        $next = function ($req, $res) {
-            return $res;
-        };
         $middleware = new AnalyticsMiddleware();
-        $middleware($request, $response, $next);
+        $middleware->process($request, new TestRequestHandler());
 
         $data = $middleware->getData();
         static::assertNotEmpty($data);
@@ -142,14 +135,13 @@ class AnalyticsMiddlewareTest extends TestCase
     public function testAppErrorCode($body, $status, $expected)
     {
         $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
-        $response = $response->withStatus($status)->withStringBody($body);
-        $next = function ($req, $res) {
-            return $res;
-        };
+        $handler = new TestRequestHandler(function ($req) use ($status, $body){
+            $response = new Response();
 
+            return $response->withStatus($status)->withStringBody($body);
+        });
         $middleware = new AnalyticsMiddleware();
-        $middleware($request, $response, $next);
+        $middleware->process($request, $handler);
 
         $data = $middleware->getData();
         static::assertNotEmpty($data);
