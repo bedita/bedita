@@ -537,10 +537,12 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindAncestor()
     {
-        $objects = $this->Objects->find('ancestor', [11])->toArray();
+        $objects = $this->Objects->find('ancestor', [11])
+            ->sortAsc($this->Objects->aliasField('id'))
+            ->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
-        static::assertEquals([12, 2, 4], $ids);
+        static::assertEquals([2, 4, 12], $ids);
     }
 
     /**
