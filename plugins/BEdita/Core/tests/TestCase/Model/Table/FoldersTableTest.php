@@ -311,6 +311,7 @@ class FoldersTableTest extends TestCase
         $root = $this->Folders->get(13);
         $startDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
+            ->order([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'deleted',
@@ -320,7 +321,9 @@ class FoldersTableTest extends TestCase
         $root->deleted = true;
         $this->Folders->save($root);
 
-        $children = $this->Folders->find('ancestor', [$root->id]);
+        $children = $this->Folders
+            ->find('ancestor', [$root->id])
+            ->order([$this->Folders->aliasField('id') => 'ASC']);
         foreach ($children as $child) {
             if ($child->type === 'folders') {
                 // folders should have deleted field set to true
@@ -337,6 +340,7 @@ class FoldersTableTest extends TestCase
 
         $restoredDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
+            ->order([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'deleted',
@@ -372,6 +376,7 @@ class FoldersTableTest extends TestCase
         // get descendants not folders
         $notFoldersIds = $this->Folders
             ->find('ancestor', [$parentFolder->id])
+            ->order([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'id',
@@ -467,6 +472,7 @@ class FoldersTableTest extends TestCase
 
         $children = $this->Folders
             ->find('ancestor', [11])
+            ->order([$this->Folders->aliasField('id') => 'ASC'])
             ->where(['object_type_id' => $this->Folders->objectType()->id])
             ->toArray();
 
