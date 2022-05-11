@@ -135,7 +135,7 @@ class AnalyticsMiddlewareTest extends TestCase
     public function testAppErrorCode($body, $status, $expected)
     {
         $request = ServerRequestFactory::fromGlobals();
-        $handler = new TestRequestHandler(function ($req) use ($status, $body){
+        $handler = new TestRequestHandler(function ($req) use ($status, $body) {
             $response = new Response();
 
             return $response->withStatus($status)->withStringBody($body);
