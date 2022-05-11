@@ -256,7 +256,7 @@ class StaticPropertiesTableTest extends TestCase
      * @covers ::listOwnTables()
      * @covers ::prepareTableFields()
      */
-    public function testAddSchemaDetails(?array $expected = null, array $conditions)
+    public function testAddSchemaDetails(?array $expected, array $conditions)
     {
         $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()
             ->where($conditions)
