@@ -30,8 +30,8 @@ VERSION_CONTENT="[BEdita] \nversion = "
 VERSION_FILE="plugins/BEdita/Core/config/bedita.ini"
 VERSION_TAG=v$(VERSION)
 
-# Main branch for BEdita 4
-MAIN_BRANCH:=4-cactus
+# Main branch for BEdita 5
+MAIN_BRANCH:=5-salix
 
 
 ALL: help
