@@ -1,5 +1,9 @@
 # ChangeLog
 
+## Version 5.0.0.alpha - Salix
+
+First public release - changelog will be updated from next release onwards
+
 ## Version 4.7.0 - Cactus
 
 ### API changes (4.7.0)
