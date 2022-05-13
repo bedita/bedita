@@ -23,7 +23,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "cakephp/cakephp": "~4.3.8",
-        "guzzlehttp/psr7": "1.8.2",
+        "guzzlehttp/psr7": "^2.2.1",
         "wikimedia/composer-merge-plugin": "^2.0.1"
     },
     "require-dev": {
