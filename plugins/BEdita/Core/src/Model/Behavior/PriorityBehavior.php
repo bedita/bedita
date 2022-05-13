@@ -79,7 +79,7 @@ class PriorityBehavior extends Behavior
                     $previousValue = $entity->getOriginal($field);
 
                     if ($previousValue < $actualValue) {
-                        $this->compact($field, $actualValue, $previousValue, $conditions);
+                        $this->compact($field, $previousValue, $actualValue, $conditions);
                     } elseif ($previousValue > $actualValue) {
                         $this->expand($field, $actualValue, $previousValue, $conditions);
                     }

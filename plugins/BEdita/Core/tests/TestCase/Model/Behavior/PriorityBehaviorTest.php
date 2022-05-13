@@ -128,4 +128,135 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(5, $entity->get('priority'));
         static::assertSame(1, $entity->get('inv_priority'));
     }
+
+    /**
+     * Test priorities sorting before entity is saved using `ObjectRelations` table
+     *
+     * @return void
+     * @covers ::beforeSaving()
+     * @covers ::espand()
+     */
+    public function testEspand()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(3, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(7, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+
+        $entities[2]->set(['priority' => 1]);
+        $table->save($entities[2]);
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(7, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(4, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(3, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+    }
+
+    /**
+     * Test priorities sorting before entity is saved using `ObjectRelations` table
+     *
+     * @return void
+     * @covers ::beforeSaving()
+     * @covers ::compact()
+     */
+    public function testCompact()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(3, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(7, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+
+        $entities[0]->set(['priority' => 3]);
+        $table->save($entities[0]);
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(3, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(7, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(4, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+    }
+
+    /**
+     * Test priorities compaction before entity is deleted using `ObjectRelations` table
+     *
+     * @return void
+     * @covers ::beforeDelete()
+     */
+    public function testBeforeDelete()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(3, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(7, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+
+        $table->delete($entities[1]);
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->toList();
+
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(7, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+    }
 }
