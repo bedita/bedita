@@ -73,7 +73,7 @@ class PriorityBehavior extends Behavior
             }
 
             $conditions = $this->_getConditions($entity, $config['scope']);
-            if ($entity->isDirty($field)) {
+            if (!empty($entity->get($field))) {
                 if ($entity instanceof Entity) {
                     $actualValue = $entity->get($field);
                     $previousValue = $entity->getOriginal($field);
@@ -84,9 +84,6 @@ class PriorityBehavior extends Behavior
                         $this->expand($field, $actualValue, $previousValue, $conditions);
                     }
                 }
-                continue;
-            }
-            if (!empty($entity->get($field))) {
                 continue;
             }
 
