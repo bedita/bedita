@@ -66,13 +66,13 @@ class PriorityBehavior extends Behavior
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
-        if (empty($config['scope'])) {
-            return;
-        }
-
-        $conditions = $this->_getConditions($entity, $config['scope']);
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
+            if (empty($config['scope'])) {
+                continue;
+            }
+
+            $conditions = $this->_getConditions($entity, $config['scope']);
             if ($entity->isDirty($field)) {
                 if ($entity instanceof Entity) {
                     $actualValue = $entity->get($field);
@@ -104,17 +104,13 @@ class PriorityBehavior extends Behavior
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (empty($config['scope'])) {
-            return;
-        }
-
-        $conditions = $this->_getConditions($entity, $config['scope']);
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
-            if (empty($entity->get($field))) {
+            if (empty($entity->get($field)) || empty($config['scope'])) {
                 continue;
             }
 
+            $conditions = $this->_getConditions($entity, $config['scope']);
             $this->compact($field, $entity->get($field), null, $conditions);
         }
     }
