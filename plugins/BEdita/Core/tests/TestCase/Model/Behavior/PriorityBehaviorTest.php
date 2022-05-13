@@ -133,10 +133,10 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
-     * @covers ::beforeSaving()
-     * @covers ::espand()
+     * @covers ::beforeSave()
+     * @covers ::expand()
      */
-    public function testEspand()
+    public function testExpand()
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
@@ -178,7 +178,7 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
-     * @covers ::beforeSaving()
+     * @covers ::beforeSave()
      * @covers ::compact()
      */
     public function testCompact()
