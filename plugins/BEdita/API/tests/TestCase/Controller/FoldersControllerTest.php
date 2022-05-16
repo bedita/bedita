@@ -948,6 +948,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $getDescendants = function () use ($folderId, $foldersTable) {
             return $foldersTable
                 ->find('ancestor', [$folderId])
+                ->order([$foldersTable->aliasField('id') => 'ASC'])
                 ->find('list')
                 ->toArray();
         };
