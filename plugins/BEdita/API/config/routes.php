@@ -36,6 +36,7 @@ Router::plugin(
             'async_jobs',
             'config',
             'endpoints',
+            'endpoint_permissions',
         ];
         $modelingControllers = [
             'object_types',

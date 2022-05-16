@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
@@ -36,8 +37,10 @@ use Cake\ORM\TableRegistry;
  * @property \BEdita\Core\Model\Entity\Role|null $role
  * @since 4.0.0
  */
-class EndpointPermission extends Entity
+class EndpointPermission extends Entity implements JsonApiSerializable
 {
+    use JsonApiAdminTrait;
+
     /**
      * Bits to shift for read permissions.
      *
