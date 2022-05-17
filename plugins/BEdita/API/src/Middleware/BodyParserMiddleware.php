@@ -12,7 +12,7 @@ declare(strict_types=1);
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Middleware;
+namespace BEdita\API\Middleware;
 
 use Cake\Http\Middleware\BodyParserMiddleware as CakeBodyParserMiddleware;
 use Closure;
