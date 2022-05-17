@@ -35,7 +35,8 @@ class BaseApplicationTest extends TestCase
      */
     public function testMiddleware(): void
     {
-        $app = new class(CONFIG) extends BaseApplication {};
+        $app = new class (CONFIG) extends BaseApplication {
+        };
         $middleware = new MiddlewareQueue();
         $middleware = $app->middleware($middleware);
         $middleware->rewind();
@@ -57,7 +58,8 @@ class BaseApplicationTest extends TestCase
     public function testBootstrap()
     {
         Configure::write('Plugins', []);
-        $app = new class(CONFIG) extends BaseApplication {};
+        $app = new class (CONFIG) extends BaseApplication {
+        };
         $app->bootstrap();
 
         static::assertTrue($app->getPlugins()->has('Migrations'));
@@ -120,7 +122,8 @@ class BaseApplicationTest extends TestCase
         Configure::write('Plugins', $config);
         Configure::write('debug', $debug);
 
-        $app = new class(CONFIG) extends BaseApplication {};
+        $app = new class (CONFIG) extends BaseApplication {
+        };
         $app->getPlugins()->remove('Bake');
 
         $app->addConfigPlugins();
