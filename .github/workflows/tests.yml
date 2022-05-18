@@ -5,10 +5,12 @@ on:
     paths:
       - '**/*.php'
       - '.github/workflows/*'
+      - '**/composer.json'
   push:
     paths:
       - '**/*.php'
       - '.github/workflows/*'
+      - '**/composer.json'
 
 jobs:
   cs:
