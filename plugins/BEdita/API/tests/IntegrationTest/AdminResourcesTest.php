@@ -186,9 +186,8 @@ class AdminResourcesTest extends IntegrationTestCase
                     'write' => 'block',
                 ],
                 'links' => [
-                    'self' => 'http://api.example.com/admin/endpoint_permissions/3'
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/3',
                 ],
-
             ],
             [
                 'id' => '4',
