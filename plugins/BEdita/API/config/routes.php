@@ -30,6 +30,7 @@ return function (RouteBuilder $routes) {
             'async_jobs',
             'config',
             'endpoints',
+            'endpoint_permissions',
         ];
         $modelingControllers = [
             'object_types',
