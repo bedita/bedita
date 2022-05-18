@@ -132,4 +132,94 @@ class AdminResourcesTest extends IntegrationTestCase
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
     }
+
+    /**
+     * Test `GET /admin/endpoint_permission`
+     *
+     * @return void
+     */
+    public function testEndpointPermissions(): void
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/admin/endpoint_permissions');
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $body = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            [
+                'id' => '1',
+                'type' => 'endpoint_permissions',
+                'attributes' => [
+                    'endpoint_id' => null,
+                    'application_id' => null,
+                    'role_id' => null,
+                    'read' => false,
+                    'write' => false,
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/1',
+                ],
+            ],
+            [
+                'id' => '2',
+                'type' => 'endpoint_permissions',
+                'attributes' => [
+                    'endpoint_id' => null,
+                    'application_id' => 1,
+                    'role_id' => null,
+                    'read' => true,
+                    'write' => true,
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/2',
+                ],
+            ],
+            [
+                'id' => '3',
+                'type' => 'endpoint_permissions',
+                'attributes' => [
+                    'endpoint_id' => 2,
+                    'application_id' => 2,
+                    'role_id' => 1,
+                    'read' => 'mine',
+                    'write' => 'block',
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/3'
+                ],
+
+            ],
+            [
+                'id' => '4',
+                'type' => 'endpoint_permissions',
+                'attributes' => [
+                    'endpoint_id' => 2,
+                    'application_id' => 2,
+                    'role_id' => 2,
+                    'read' => false,
+                    'write' => false,
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/4',
+                ],
+            ],
+            [
+                'id' => '5',
+                'type' => 'endpoint_permissions',
+                'attributes' => [
+                    'endpoint_id' => 1,
+                    'application_id' => 2,
+                    'role_id' => 2,
+                    'read' => 'mine',
+                    'write' => false,
+                ],
+                'links' => [
+                    'self' => 'http://api.example.com/admin/endpoint_permissions/5',
+                ],
+            ],
+        ];
+        static::assertArrayHasKey('data', $body);
+        static::assertEquals($expected, $body['data']);
+    }
 }
