@@ -30,6 +30,7 @@ class TreesControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::initialize()
+     * @covers ::addTreeProperties()
      * @covers ::loadObject()
      * @covers ::getContain()
      */
@@ -326,5 +327,49 @@ class TreesControllerTest extends IntegrationTestCase
             'title' => 'Invalid path',
         ];
         static::assertEquals(compact('error'), $response);
+    }
+
+    /**
+     * Test `index` without argument, load roots.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     * @covers ::loadRoots()
+     */
+    public function testRoots(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/trees?fields=id');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            'data' => [
+                [
+                    'id' => '11',
+                    'type' => 'folders',
+                    'links' => [
+                        'self' => 'http://api.example.com/folders/11',
+                    ],
+                ],
+                [
+                    'id' => '13',
+                    'type' => 'folders',
+                    'links' => [
+                        'self' => 'http://api.example.com/folders/13',
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/trees?fields=id',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $response = Hash::remove($response, 'data.{n}.relationships');
+        static::assertEquals($expected, $response);
     }
 }
