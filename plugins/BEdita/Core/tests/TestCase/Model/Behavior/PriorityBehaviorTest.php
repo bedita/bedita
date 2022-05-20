@@ -133,6 +133,7 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
+     * @covers ::_getConditions()
      * @covers ::beforeSave()
      * @covers ::expand()
      */
@@ -178,6 +179,7 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
+     * @covers ::_getConditions()
      * @covers ::beforeSave()
      * @covers ::compact()
      */
@@ -223,6 +225,7 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities compaction before entity is deleted using `ObjectRelations` table
      *
      * @return void
+     * @covers ::_getConditions()
      * @covers ::beforeDelete()
      */
     public function testBeforeDelete()
