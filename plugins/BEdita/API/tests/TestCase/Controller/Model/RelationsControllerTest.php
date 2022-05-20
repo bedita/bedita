@@ -534,4 +534,47 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Test POST /model/relations/:id/relationships/left_object_types and POST /model/relations/:id/relationships/right_object_types
+     *
+     * @return void
+     */
+    public function testPostLeftRightObjectTypes(): void
+    {
+        $payload = json_encode([
+            'data' => [
+                [
+                    'type' => 'object_types',
+                    'id' => 6,
+                ], // locations
+            ],
+        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/relations/1/relationships/left_object_types', $payload);
+        // $result = json_decode((string)$this->_response->getBody(), true);
+        // $result contains aerror 400 Invalid data / [side._required]: This field is required]
+        // the following fails
+        $this->assertResponseCode(200);
+
+        $payload = json_encode([
+            'data' => [
+                ['type' => 'object_types', 'id' => 4], // users
+            ],
+        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/relations/1/relationships/right_object_types', $payload);
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/model/relations/1/left_object_types');
+        $this->assertResponseCode(200);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $left = Hash::extract($result, 'data.{n}.relationships.left_relations.data');
+        $right = Hash::extract($result, 'data.{n}.relationships.right_relations.data');
+
+        static::assertTrue(in_array(6, $left));
+        static::assertTrue(in_array(4, $right));
+    }
 }
