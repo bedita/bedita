@@ -553,7 +553,7 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/model/relations/1/relationships/left_object_types', $payload);
         // $result = json_decode((string)$this->_response->getBody(), true);
-        // $result contains aerror 400 Invalid data / [side._required]: This field is required]
+        // $result contains error 400 Invalid data / [side._required]: This field is required]
         // the following fails
         $this->assertResponseCode(200);
 
