@@ -544,10 +544,7 @@ class RelationsControllerTest extends IntegrationTestCase
     {
         $payload = json_encode([
             'data' => [
-                [
-                    'type' => 'object_types',
-                    'id' => 6,
-                ], // locations
+                ['type' => 'object_types', 'id' => 6], // locations
             ],
         ]);
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
