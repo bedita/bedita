@@ -1,4 +1,11 @@
 <?php
+
+use BEdita\API\Error\ExceptionRenderer;
+use Cake\Cache\Engine\FileEngine;
+use Cake\Database\Connection;
+use Cake\Database\Driver\Mysql;
+use Cake\Log\Engine\FileLog;
+
 return [
     /**
      * Debug Level:
@@ -9,7 +16,8 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
+    // 'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
+    'debug' => false,
 
     /**
      * Configure basic information about the application.
@@ -51,8 +59,8 @@ return [
         'jsBaseUrl' => 'js/',
         'paths' => [
             'plugins' => [ROOT . DS . 'plugins' . DS],
-            'templates' => [APP . 'Template' . DS],
-            'locales' => [APP . 'Locale' . DS],
+            'templates' => [ROOT . DS . 'templates' . DS],
+            'locales' => [RESOURCES . 'locales' . DS],
         ],
     ],
 
@@ -68,12 +76,12 @@ return [
      * - blockAnonymousUsers - Are unauthenticated users requests blocked by default?
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        'salt' => env('SECURITY_SALT'),
         // 'jwt' => [
         //     'duration' => '+20 minutes',
         //     'algorithm' => 'HS256',
         // ],
-        // 'blockAnonymousApps' => true,
+        'blockAnonymousApps' => true,
         'blockAnonymousUsers' => false,
     ],
 
@@ -94,9 +102,53 @@ return [
      */
     'Cache' => [
         'default' => [
-            'className' => 'File',
+            'className' => FileEngine::class,
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
+        ],
+
+        /*
+         * Configure the cache used for general framework caching.
+         * Translation cache files are stored with this configuration.
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * If you set 'className' => 'Null' core cache will be disabled.
+         */
+        '_cake_core_' => [
+            'className' => FileEngine::class,
+            'prefix' => 'myapp_cake_core_',
+            'path' => CACHE . 'persistent' . DS,
+            'serialize' => true,
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKECORE_URL', null),
+        ],
+
+        /*
+         * Configure the cache for model and datasource caches. This cache
+         * configuration is used to store schema descriptions, and table listings
+         * in connections.
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         */
+        '_cake_model_' => [
+            'className' => FileEngine::class,
+            'prefix' => 'myapp_cake_model_',
+            'path' => CACHE . 'models' . DS,
+            'serialize' => true,
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKEMODEL_URL', null),
+        ],
+
+        /*
+         * Configure the cache for routes. The cached routes collection is built the
+         * first time the routes are processed through `config/routes.php`.
+         * Duration will be set to '+2 seconds' in bootstrap.php when debug = true
+         */
+        '_cake_routes_' => [
+            'className' => FileEngine::class,
+            'prefix' => 'myapp_cake_routes_',
+            'path' => CACHE,
+            'serialize' => true,
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKEROUTES_URL', null),
         ],
 
         /**
@@ -104,7 +156,7 @@ return [
          * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
          */
         '_bedita_core_' => [
-            'className' => 'File',
+            'className' => FileEngine::class,
             'prefix' => 'bedita_core_',
             'path' => CACHE . 'bedita_core/',
             'serialize' => true,
@@ -117,42 +169,12 @@ return [
          * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
          */
         '_bedita_object_types_' => [
-            'className' => 'File',
+            'className' => FileEngine::class,
             'prefix' => 'bedita_object_types_',
             'path' => CACHE . 'object_types/',
             'serialize' => true,
             'duration' => '+1 year',
             'url' => env('CACHE_BEDITAOBJECTTYPES_URL', null),
-        ],
-
-        /**
-         * Configure the cache used for general framework caching.
-         * Translation cache files are stored with this configuration.
-         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
-         * If you set 'className' => 'Null' core cache will be disabled.
-         */
-        '_cake_core_' => [
-            'className' => 'File',
-            'prefix' => 'myapp_cake_core_',
-            'path' => CACHE . 'persistent/',
-            'serialize' => true,
-            'duration' => '+1 years',
-            'url' => env('CACHE_CAKECORE_URL', null),
-        ],
-
-        /**
-         * Configure the cache for model and datasource caches. This cache
-         * configuration is used to store schema descriptions, and table listings
-         * in connections.
-         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
-         */
-        '_cake_model_' => [
-            'className' => 'File',
-            'prefix' => 'myapp_cake_model_',
-            'path' => CACHE . 'models/',
-            'serialize' => true,
-            'duration' => '+1 years',
-            'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
     ],
 
@@ -184,13 +206,17 @@ return [
      * - `extraFatalErrorMemory` - int - The number of megabytes to increase
      *   the memory limit by when a fatal error is encountered. This allows
      *   breathing room to complete logging or error handling.
+     * - `ignoredDeprecationPaths` - array - A list of glob compatible file paths that deprecations
+     *   should be ignored in. Use this to ignore deprecations for plugins or parts of
+     *   your application that still emit deprecations.
      */
     'Error' => [
         'errorLevel' => E_ALL,
-        'exceptionRenderer' => 'BEdita\API\Error\ExceptionRenderer',
+        'exceptionRenderer' => ExceptionRenderer::class,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
+        'ignoredDeprecationPaths' => [],
     ],
 
     /**
@@ -214,15 +240,6 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => 'Mail',
-            // The following keys are used in SMTP transports
-            'host' => 'localhost',
-            'port' => 25,
-            'timeout' => 30,
-            'username' => null,
-            'password' => null,
-            'client' => null,
-            'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
@@ -248,34 +265,42 @@ return [
     /**
      * Connection information used by the ORM to connect
      * to your application's datastores.
-     * Do not use periods in database name - it may lead to error.
-     * See https://github.com/cakephp/cakephp/issues/6471 for details.
-     * Drivers include Mysql Postgres Sqlite Sqlserver
-     * See vendor\cakephp\cakephp\src\Database\Driver for complete list
+     *
+     * ### Notes
+     * - Drivers include Mysql Postgres Sqlite Sqlserver
+     *   See vendor\cakephp\cakephp\src\Database\Driver for complete list
+     * - Do not use periods in database name - it may lead to error.
+     *   See https://github.com/cakephp/cakephp/issues/6471 for details.
+     * - 'encoding' is recommended to be set to full UTF-8 4-Byte support.
+     *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
+     *   other RDBMS.
      */
     'Datasources' => [
+        /*
+         * These configurations should contain permanent settings used
+         * by all environments.
+         *
+         * The values in app_local.php will override any values set here
+         * and should be used for local and per-environment configurations.
+         *
+         * Environment variable based configurations can be loaded here or
+         * in app_local.php depending on the applications needs.
+         */
         'default' => [
-            'className' => 'Cake\Database\Connection',
-
-            /**
-             * Possible values for 'driver' are: Mysql, Postgres, Sqlite
-             * Simply replace Mysql with Posgres or Sqlite in 'driver' value
-             */
-            'driver' => 'Cake\Database\Driver\Mysql',
-            'host' => '__BE4_DB_HOST__',
-
-            /**
-             * CakePHP will use the default DB port based on the driver selected
-             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
-             * the following line and set the port accordingly
-             */
-            'port' => '__BE4_DB_PORT__',
-            'username' => '__BE4_DB_USERNAME__',
-            'password' => '__BE4_DB_PASSWORD__',
-            'database' => '__BE4_DB_DATABASE__',
-            'encoding' => 'utf8',
-            'timezone' => env('BEDITA_DEFAULT_TIMEZONE', 'UTC'),
+            'className' => Connection::class,
+            'driver' => Mysql::class,
             'persistent' => false,
+            'timezone' => env('BEDITA_DEFAULT_TIMEZONE', 'UTC'),
+            /*
+             * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support, in CakePHP 3.6
+             */
+            //'encoding' => 'utf8mb4',
+
+            /*
+             * If your MySQL server is configured with `skip-character-set-client-handshake`
+             * then you MUST use the `flags` config to set your charset encoding.
+             * For e.g. `'flags' => [\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4']`
+             */
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
@@ -298,7 +323,6 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-
             'url' => env('DATABASE_URL', null),
         ],
 
@@ -306,16 +330,12 @@ return [
          * The test connection is used during the test suite.
          */
         'test' => [
-            'className' => 'Cake\Database\Connection',
-            'driver' => 'Cake\Database\Driver\Mysql',
+            'className' => Connection::class,
+            'driver' => Mysql::class,
             'persistent' => false,
-            'host' => 'localhost',
-            //'port' => 'non_standard_port_number',
-            'username' => 'bedita',
-            'password' => 'bedita',
-            'database' => 'bedita_test',
-            'encoding' => 'utf8',
-            'timezone' => env('BEDITA_DEFAULT_TIMEZONE', 'UTC'),
+            'timezone' => 'UTC',
+            //'encoding' => 'utf8mb4',
+            'flags' => [],
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
             'log' => false,
@@ -329,7 +349,7 @@ return [
      */
     'Log' => [
         'debug' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'debug',
             'url' => env('LOG_DEBUG_URL', null),
@@ -337,7 +357,7 @@ return [
             'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'error',
             'url' => env('LOG_ERROR_URL', null),
@@ -346,7 +366,7 @@ return [
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
         'queries' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'queries',
             'url' => env('LOG_QUERIES_URL', null),
@@ -398,74 +418,12 @@ return [
     ],
 
     /**
-     * Additional plugins to load with this format: 'PluginName' => load options array
-     * Where options array may contain
-     *
-     * - `debugOnly` - boolean - (default: false) Whether or not you want to load the plugin when in 'debug' mode only
-     * - `bootstrap` - boolean - (default: false) Whether or not you want the $plugin/config/bootstrap.php file loaded.
-     * - `routes` - boolean - (default: false) Whether or not you want to load the $plugin/config/routes.php file.
-     * - `ignoreMissing` - boolean - (default: false) Set to true to ignore missing bootstrap/routes files.
-     * - `autoload` - boolean - (default: false) Whether or not you want an autoloader registered
-     */
-    'Plugins' => [
-        // 'BEdita/DevTools' => ['debugOnly' => true, 'bootstrap' => true],
-//      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
-    ],
-
-    /**
-     * Default pagination settings. Uncomment to change.
-     *
-     * - `limit` - Default number of items per page (page_size). Defaults to 20.
-     * - `maxLimit` - The maximum numer of items retrievable using a `page_size` request per call. Defaults to 100.
-     *   This value cannot exceed a superlimit (@see \BEdita\API\Datasource\JsonApiPaginator::MAX_LIMIT))
-     */
-    // 'Pagination' => [
-    //     'limit' => 20,
-    //     'maxLimit' => 100,
-    // ],
-
-    /**
      * Project information.
      *
      * - `name` public name of the project, short expression recommended like `MyProject`, `Nope v1`
      */
     'Project' => [
         'name' => env('PROJECT_NAME', 'BEdita 4'),
-    ],
-
-    /**
-     * Signup settings.
-     *
-     * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
-     *      before being "activated"? If true upon creation user will have a `draft` status, otherwise `on`
-     * - 'roles' - allowed role names on user signup (this config should be set normally at application level),
-     *      requested user roles MUST be included in this array.
-     *      Leave empty to allow signup only for users without roles.
-     * - 'requireEmail' - require email upon signup (default: true)
-     * - 'activationUrl' => default activation URL to use if not set by application
-     * - 'requirePassword' - require password upon signup (default: true), can be false in some AUTH schemas like One Time Password
-     * - 'defaultRoles` - roles to add upon signup as default if no roles are passed; they MUST be in allowed `roles` in order to be set
-     */
-    'Signup' => [
-        // 'requireActivation' => true,
-        // 'roles' => [],
-        // 'requireEmail' => true,
-        // 'requirePassword' => true,
-        // 'activationUrl' => 'https://myapp.com/verify',
-        // 'defaultRoles' => [],
-    ],
-
-    /**
-     * Auth default settings.
-     *
-     * - 'passwordPolicy.rule' - Regexp, callback or validation class to use as validation rule (only regexp supported for now)
-     * - 'passwordPolicy.message' -  Error message for password validation failure
-     */
-    'Auth' => [
-        'passwordPolicy' => [
-            'rule' => '',
-            'message' => '',
-        ],
     ],
 
     /**
@@ -522,48 +480,4 @@ return [
             ],
         ],
     ],
-
-    /**
-     * I18n settings.
-     * Language tags follow IETF RFC5646 https://tools.ietf.org/html/rfc5646
-     * See also https://en.wikipedia.org/wiki/IETF_language_tag
-     *
-     * - 'languages' - array of language tags as keys with names as values; if empty any language tag may be used,
-     *      if not only these language tags are valid
-     * - 'default' - value assumed on empty lang attribute upon creation, can be null (default)
-     */
-    'I18n' => [
-        // list of allowed project language tags
-        'languages' => [
-        //   'en' => 'English',
-        //   'de' => 'German',
-        ],
-
-        // default lang tag - may be null
-        'default' => null,
-    ],
-
-    /**
-     * Uncomment to define custom actions to load
-     * This way some action beahavior can be overridden
-     */
-    // 'Actions' => [
-    //     'ChangeCredentialsAction' => '\MyPlugin\Model\Action\ChangeCredentialsAction',
-    //     'ChangeCredentialsRequestAction' => '\MyPlugin\Model\Action\ChangeCredentialsRequestAction',
-    //     'SignupUserAction' => '\MyPlugin\Model\Action\SignupUserAction',
-    //     'SignupUserActivationAction' => '\MyPlugin\Model\Action\SignupUserActivationAction',
-    // ],
-
-    /**
-     * Default values per object type
-     * object type names as keys (lower case), default property names and values as value
-     */
-    // 'DefaultValues' => [
-    //     'cats' => [
-    //         'status' => 'off',
-    //     ],
-    //     'dogs' => [
-    //         'status' => 'on', // GO dogs!
-    //     ],
-    // ],
 ];

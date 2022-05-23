@@ -44,7 +44,7 @@ class SetupConnectionTask extends Shell
             ->addOption('config-file', [
                 'help' => 'Configuration file where updated connection config will be saved.',
                 'required' => false,
-                'default' => CONFIG . 'app.php',
+                'default' => CONFIG . 'app_local.php',
             ])
             ->addOption('connection', [
                 'help' => 'Connection name to use.',
