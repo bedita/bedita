@@ -38,8 +38,8 @@ return [
     'Datasources' => [
         'default' => [
 
-            'className' => 'Cake\\Database\\Connection',
-            'driver' => 'Cake\\Database\\Driver\\Mysql',
+            'className' => 'Cake\Database\Connection',
+            'driver' => 'Cake\Database\Driver\Mysql',
 
             'host' => '__BE4_DB_HOST__',
             'port' => '__BE4_DB_PORT__',
@@ -81,22 +81,7 @@ return [
          * The test connection is used during the test suite.
          */
         'test' => [
-            'className' => 'Cake\\Database\\Connection',
-            'driver' => 'Cake\\Database\\Driver\\Mysql',
-
-            'host' => 'localhost',
-            //'port' => 'non_standard_port_number',
-            'username' => 'bedita',
-            'password' => 'bedita',
-            'database' => 'bedita_test',
-            // For MariaDB/MySQL use `utf8mb4`
-            'encoding' => 'utf8mb4',
-            'timezone' => env('BEDITA_DEFAULT_TIMEZONE', 'UTC'),
-            'cacheMetadata' => true,
-            'quoteIdentifiers' => false,
-            'log' => false,
-            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-            'url' => env('DATABASE_TEST_URL', 'sqlite://tmp/be5_tests.sqlite'),
+            'url' => env('DATABASE_TEST_URL', 'sqlite:///tmp/be5_tests.sqlite'),
         ],
     ],
 
