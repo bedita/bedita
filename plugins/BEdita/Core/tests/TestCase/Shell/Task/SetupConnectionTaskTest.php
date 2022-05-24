@@ -433,7 +433,7 @@ class SetupConnectionTaskTest extends TestCase
     public function testExecuteSyntaxError()
     {
         // Setup configuration file.
-        $fileContents = file_get_contents(CONFIG . 'app_local.php') . '?><?php }}{{$YNTAX]][[ERROR))((;;!:?';
+        $fileContents = file_get_contents(CONFIG . 'app_local.example.php') . '?><?php }}{{$YNTAX]][[ERROR))((;;!:?';
         file_put_contents(
             static::TEMP_FILE,
             $fileContents,
