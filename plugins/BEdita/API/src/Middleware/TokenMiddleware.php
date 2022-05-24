@@ -24,13 +24,15 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Middleware to parse JWT token or API KEY and retrieve current `application`
  *
  * @since 4.6.0
  */
-class TokenMiddleware
+class TokenMiddleware implements MiddlewareInterface
 {
     use InstanceConfigTrait;
 
@@ -71,19 +73,14 @@ class TokenMiddleware
     public const PAYLOAD_REQUEST_ATTRIBUTE = 'jwt';
 
     /**
-     * Invoke method.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next Callback to invoke the next middleware.
-     * @return \Psr\Http\Message\ResponseInterface A response
+     * @inheritDoc
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Skip credentials checks on 'OPTIONS' request
         // See https://fetch.spec.whatwg.org/#cors-protocol-and-credentials
         if ($request->getMethod() === 'OPTIONS') {
-            return $next($request, $response);
+            return $handler->handle($request);
         }
 
         $payload = (array)$request->getAttribute(static::PAYLOAD_REQUEST_ATTRIBUTE);
@@ -96,7 +93,7 @@ class TokenMiddleware
         }
         $this->readApplication($payload, $request);
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 
     /**

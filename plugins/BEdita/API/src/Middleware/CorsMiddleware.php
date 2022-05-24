@@ -16,6 +16,8 @@ use Cake\Http\CorsBuilder;
 use Cake\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Handle cross-origin HTTP requests setting the proper headers.
@@ -25,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @since 4.0.0
  */
-class CorsMiddleware
+class CorsMiddleware implements MiddlewareInterface
 {
     /**
      * CORS configuration
@@ -76,24 +78,15 @@ class CorsMiddleware
     }
 
     /**
+     * {@inheritDoc}
+     *
      * If no CORS configuration is present delegate to server
      * If the request is a preflight send the response applying CORS rules.
      * If it is a simple request it applies CORS rules to the response and call next middleware
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next The next middleware to call.
-     * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($request->getMethod() == 'OPTIONS') {
-            return $this->buildCors($request, $response);
-        }
-
-        $response = $next($request, $response);
-
-        return $this->buildCors($request, $response);
+        return $this->buildCors($request, $handler->handle($request));
     }
 
     /**
@@ -115,7 +108,7 @@ class CorsMiddleware
      * @return \Psr\Http\Message\ResponseInterface A response.
      * @throws \Cake\Http\Exception\ForbiddenException When origin
      */
-    protected function buildCors(ServerRequestInterface $request, ResponseInterface $response)
+    protected function buildCors(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         if (!$this->isConfigured() || !($response instanceof Response)) {
             return $response;
