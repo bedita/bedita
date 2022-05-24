@@ -15,10 +15,10 @@ namespace BEdita\API\Test\TestCase\Middleware;
 use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\Test\Utility\TestRequestHandler;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
@@ -52,11 +52,11 @@ class TokenMiddlewareTest extends TestCase
     }
 
     /**
-     * Data provider for testInvoke() method.
+     * Data provider for testProcess() method.
      *
      * @return array
      */
-    public function invokeProvider(): array
+    public function processProvider(): array
     {
         return [
             'old style' => [
@@ -134,8 +134,8 @@ class TokenMiddlewareTest extends TestCase
      * @param array|null $query Request query data.
      * @param bool $blockAnonymous Block anonymous apps flag.
      * @return void
-     * @dataProvider invokeProvider
-     * @covers ::__invoke()
+     * @dataProvider processProvider
+     * @covers ::process()
      * @covers ::readApplication()
      * @covers ::getToken()
      * @covers ::decodeToken()
@@ -143,7 +143,7 @@ class TokenMiddlewareTest extends TestCase
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
      */
-    public function testInvoke($expected, array $server, ?array $query = null, bool $blockAnonymous = false): void
+    public function testProcess($expected, array $server, ?array $query = null, bool $blockAnonymous = false): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -152,13 +152,9 @@ class TokenMiddlewareTest extends TestCase
         Configure::write('Security.blockAnonymousApps', $blockAnonymous);
 
         $request = ServerRequestFactory::fromGlobals($server, $query);
-        $response = new Response();
-        $next = function ($req, $res) {
-            return $req;
-        };
         $middleware = new TokenMiddleware();
-        /** @var \Zend\Diactoros\ServerRequest $result */
-        $result = $middleware($request, $response, $next);
+        $handler = new TestRequestHandler();
+        $middleware->process($request, $handler);
 
         $app = CurrentApplication::getApplication();
         if (empty($expected['app'])) {
@@ -168,7 +164,7 @@ class TokenMiddlewareTest extends TestCase
             static::assertEquals($app->id, $id);
         }
 
-        $payload = $result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, null);
+        $payload = $handler->request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE, null);
         $expectedPayload = Hash::get($expected, 'payload');
         static::assertEquals($expectedPayload, $payload);
     }
@@ -188,11 +184,7 @@ class TokenMiddlewareTest extends TestCase
         Configure::delete('Security.blockAnonymousApps');
 
         $middleware = new TokenMiddleware();
-        $middleware(
-            ServerRequestFactory::fromGlobals(),
-            new Response(),
-            null
-        );
+        $middleware->process(ServerRequestFactory::fromGlobals(), new TestRequestHandler());
     }
 
     /**
@@ -219,24 +211,18 @@ class TokenMiddlewareTest extends TestCase
             ],
         ]);
         $middleware = new TokenMiddleware();
-        /** @var \Zend\Diactoros\ServerRequest $result */
-        $result = $middleware(
-            $request,
-            new Response(),
-            function ($req, $res) {
-                return $req;
-            }
-        );
+        $handler = new TestRequestHandler();
+        $middleware->process($request, $handler);
 
         static::assertNull(CurrentApplication::getApplication());
-        static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
+        static::assertNull($handler->request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
     }
 
     /**
      * Test behavior on OPTIONS request
      *
      * @return void
-     * @covers ::__invoke()
+     * @covers ::process()
      */
     public function testOptionsRequest()
     {
@@ -248,17 +234,11 @@ class TokenMiddlewareTest extends TestCase
             ],
         ]);
         $middleware = new TokenMiddleware();
-        /** @var \Zend\Diactoros\ServerRequest $result */
-        $result = $middleware(
-            $request,
-            new Response(),
-            function ($req, $res) {
-                return $req;
-            }
-        );
+        $handler = new TestRequestHandler();
+        $middleware->process($request, $handler);
 
         static::assertNull(CurrentApplication::getApplication());
-        static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
+        static::assertNull($handler->request->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
     }
 
     /**
@@ -282,11 +262,7 @@ class TokenMiddlewareTest extends TestCase
         ]);
 
         $middleware = new TokenMiddleware();
-        $middleware(
-            $request,
-            new Response(),
-            null
-        );
+        $middleware->process($request, new TestRequestHandler());
     }
 
     /**
@@ -309,10 +285,6 @@ class TokenMiddlewareTest extends TestCase
         ]);
 
         $middleware = new TokenMiddleware();
-        $middleware(
-            $request,
-            new Response(),
-            null
-        );
+        $middleware->process($request, new TestRequestHandler());
     }
 }

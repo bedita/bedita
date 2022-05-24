@@ -13,11 +13,13 @@
 namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
+use BEdita\API\Middleware\AnalyticsMiddleware;
+use BEdita\API\Middleware\CorsMiddleware;
+use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Middleware\DoublePassDecoratorMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\TestSuite\TestCase;
 
@@ -70,15 +72,15 @@ class CommonEventHandlerTest extends TestCase
         $middleware->rewind();
 
         // AnalyticsMiddleware
-        static::assertInstanceOf(DoublePassDecoratorMiddleware::class, $middleware->current());
+        static::assertInstanceOf(AnalyticsMiddleware::class, $middleware->current());
         $middleware->next();
         // CorsMiddleware
-        static::assertInstanceOf(DoublePassDecoratorMiddleware::class, $middleware->current());
+        static::assertInstanceOf(CorsMiddleware::class, $middleware->current());
         $middleware->next();
         static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->current());
         $middleware->next();
         // TokenMiddleware
-        static::assertInstanceOf(DoublePassDecoratorMiddleware::class, $middleware->current());
+        static::assertInstanceOf(TokenMiddleware::class, $middleware->current());
     }
 
     /**

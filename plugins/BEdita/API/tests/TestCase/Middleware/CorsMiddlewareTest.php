@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\CorsMiddleware;
-use Cake\Http\Response;
+use BEdita\Core\Test\Utility\TestRequestHandler;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 
@@ -319,12 +319,8 @@ class CorsMiddlewareTest extends TestCase
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)
     {
         $request = ServerRequestFactory::fromGlobals($server);
-        $response = new Response();
-        $next = function ($req, $res) {
-            return $res;
-        };
         $middleware = new CorsMiddleware($corsConfig);
-        $response = $middleware($request, $response, $next);
+        $response = $middleware->process($request, new TestRequestHandler());
 
         $this->assertEquals($expectedStatus, $response->getStatusCode());
 

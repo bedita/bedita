@@ -22,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class TestRequestHandler implements RequestHandlerInterface
 {
     public $callable;
+    public $request;
 
     public function __construct(?callable $callable = null)
     {
@@ -32,6 +33,8 @@ class TestRequestHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->request = $request;
+
         return ($this->callable)($request);
     }
 }
