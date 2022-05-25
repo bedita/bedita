@@ -17,6 +17,7 @@ use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
+use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToMountFilesystem;
 use League\Flysystem\UnableToResolveFilesystemMount;
@@ -200,9 +201,9 @@ class FilesystemRegistryTest extends TestCase
         $manager = FilesystemRegistry::getMountManager();
 
         static::assertInstanceOf(MountManager::class, $manager);
-        // static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('default'));
-        // static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('alternative'));
-        // static::assertAttributeSame($manager, 'mountManager', FilesystemRegistry::getInstance());
+        static::assertInstanceOf(DirectoryListing::class, $manager->listContents('default://'));
+        static::assertInstanceOf(DirectoryListing::class, $manager->listContents('alternative://'));
+        static::assertAttributeSame($manager, 'mountManager', FilesystemRegistry::getInstance());
 
         $second = FilesystemRegistry::getMountManager();
         static::assertSame($manager, $second);
