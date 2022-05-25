@@ -45,19 +45,21 @@ class UploadableBehavior extends Behavior
      * @param \League\Flysystem\MountManager $manager Mount manager.
      * @param string $path File path.
      * @param mixed $contents File contents.
-     * @return bool
+     * @return void
      */
-    protected function write(MountManager $manager, $path, $contents)
+    protected function write(MountManager $manager, $path, $contents): void
     {
         if ($contents instanceof StreamInterface) {
             $contents = $contents->detach();
         }
 
         if (is_resource($contents)) {
-            return $manager->writeStream($path, $contents);
+            $manager->writeStream($path, $contents);
+
+            return;
         }
 
-        return $manager->write($path, $contents);
+        $manager->write($path, $contents);
     }
 
     /**
@@ -120,7 +122,7 @@ class UploadableBehavior extends Behavior
      * @param string $pathField Name of field in which path is stored.
      * @return bool
      */
-    protected function processDelete(Entity $entity, $pathField)
+    protected function processDelete(Entity $entity, $pathField): bool
     {
         $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);
