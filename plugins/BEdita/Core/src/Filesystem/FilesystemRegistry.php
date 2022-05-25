@@ -19,8 +19,8 @@ use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
 use Cake\Core\StaticConfigTrait;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemNotFoundException;
 use League\Flysystem\MountManager;
+use League\Flysystem\UnableToMountFilesystem;
 
 /**
  * Registry for filesystem adapters.
@@ -161,7 +161,7 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @param string $path Original path.
      * @return string
-     * @throws \League\Flysystem\FilesystemNotFoundException Throws an exception if a filesystem with such prefix
+     * @throws \League\Flysystem\UnableToMountFilesystem Throws an exception if a filesystem with such prefix
      *      could not be found.
      */
     public static function getPublicUrl($path)
@@ -170,7 +170,7 @@ class FilesystemRegistry extends ObjectRegistry
 
         $adapter = static::getInstance()->get($prefix);
         if ($adapter === null) {
-            throw new FilesystemNotFoundException(sprintf('No filesystem mounted with prefix %s', $prefix));
+            throw new UnableToMountFilesystem(sprintf('No filesystem mounted with prefix %s', $prefix));
         }
 
         return $adapter->getPublicUrl($path);

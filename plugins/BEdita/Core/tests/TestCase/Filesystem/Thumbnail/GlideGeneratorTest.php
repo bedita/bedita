@@ -21,6 +21,7 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use League\Flysystem\StorageAttributes;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail\GlideGenerator
@@ -290,10 +291,20 @@ class GlideGeneratorTest extends TestCase
 
         $stream = $this->Streams->get($uuid);
 
-        static::assertContains($path, Hash::extract(FilesystemRegistry::getMountManager()->listContents('thumbnails://'), '{*}.path'));
+        static::assertContains($path, $this->thumbnailPaths());
 
         $this->generator->delete($stream);
 
-        static::assertNotContains($path, Hash::extract(FilesystemRegistry::getMountManager()->listContents('thumbnails://'), '{*}.path'));
+        static::assertNotContains($path, $this->thumbnailPaths());
+    }
+
+    protected function thumbnailPaths(): array
+    {
+        return array_map(
+            function (StorageAttributes $object) {
+                return str_replace('thumbnails://', '', $object->path());
+            },
+            FilesystemRegistry::getMountManager()->listContents('thumbnails://')->toArray()
+        );
     }
 }

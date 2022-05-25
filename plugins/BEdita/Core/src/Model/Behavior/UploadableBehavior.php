@@ -54,10 +54,10 @@ class UploadableBehavior extends Behavior
         }
 
         if (is_resource($contents)) {
-            return $manager->putStream($path, $contents);
+            return $manager->writeStream($path, $contents);
         }
 
-        return $manager->put($path, $contents);
+        return $manager->write($path, $contents);
     }
 
     /**
@@ -121,7 +121,7 @@ class UploadableBehavior extends Behavior
         $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);
 
-        return !$manager->has($path) || $manager->delete($path);
+        return !$manager->fileExists($path) || $manager->delete($path);
     }
 
     /**

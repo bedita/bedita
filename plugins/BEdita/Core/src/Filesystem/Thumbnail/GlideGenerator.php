@@ -135,7 +135,7 @@ class GlideGenerator extends ThumbnailGenerator
         try {
             $thumbnail = $this->makeThumbnail($stream, $options);
 
-            FilesystemRegistry::getMountManager()->put($path, $thumbnail);
+            FilesystemRegistry::getMountManager()->write($path, $thumbnail);
         } catch (NotReadableException $e) {
             throw new InvalidStreamException(__d('bedita', 'Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
         }
@@ -150,7 +150,7 @@ class GlideGenerator extends ThumbnailGenerator
     {
         $path = $this->getFilename($stream, $options);
 
-        return FilesystemRegistry::getMountManager()->has($path);
+        return FilesystemRegistry::getMountManager()->fileExists($path);
     }
 
     /**
@@ -161,6 +161,6 @@ class GlideGenerator extends ThumbnailGenerator
         $filesystem = $this->getConfig('cache', 'thumbnails');
         $base = $stream->filesystemPath($filesystem);
 
-        FilesystemRegistry::getMountManager()->deleteDir($base);
+        FilesystemRegistry::getMountManager()->deleteDirectory($base);
     }
 }

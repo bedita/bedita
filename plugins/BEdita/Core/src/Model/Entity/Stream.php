@@ -20,7 +20,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
-use League\Flysystem\FileNotFoundException;
+use League\Flysystem\UnableToReadFile;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -152,7 +152,7 @@ class Stream extends Entity implements JsonApiSerializable
 
         try {
             $readStream = FilesystemRegistry::getMountManager()->readStream($this->uri);
-        } catch (FileNotFoundException $e) {
+        } catch (UnableToReadFile $e) {
             // Unable to read from filesystem. Better log a warning...
             $this->log(sprintf('Unable to read file contents: %s', $this->uri), 'warning');
 

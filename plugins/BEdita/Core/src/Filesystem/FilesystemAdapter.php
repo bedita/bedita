@@ -14,7 +14,7 @@
 namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
 
 /**
  * Filesystem adapter.
@@ -44,7 +44,7 @@ abstract class FilesystemAdapter
     /**
      * Inner adapter instance.
      *
-     * @var \League\Flysystem\AdapterInterface
+     * @var \League\Flysystem\FilesystemAdapter
      */
     protected $adapter;
 
@@ -64,7 +64,7 @@ abstract class FilesystemAdapter
     /**
      * Get the inner adapter class.
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
     public function getInnerAdapter()
     {
@@ -73,7 +73,7 @@ abstract class FilesystemAdapter
         }
 
         $adapter = $this->buildAdapter($this->getConfig());
-        if (!($adapter instanceof AdapterInterface)) {
+        if (!($adapter instanceof LeagueFilesystemAdapter)) {
             throw new \RuntimeException(
                 sprintf('Filesystem adapters must use %s as a base class.', AdapterInterface::class)
             );
@@ -86,7 +86,7 @@ abstract class FilesystemAdapter
      * Build the inner adapter from configuration.
      *
      * @param array $config Adapter configuration.
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
     abstract protected function buildAdapter(array $config);
 

@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\Utility;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Collection\CollectionInterface;
 use Cake\Core\Configure;
+use League\Flysystem\StorageAttributes;
 
 /**
  * Trait with methods to setup and cleanup filesystem in test cases
@@ -74,12 +75,12 @@ trait TestFilesystemTrait
         $mountManager = FilesystemRegistry::getMountManager();
         $recursive = $this->recursive[$directory];
 
-        return collection($mountManager->listContents($directory, $recursive))
-                ->reject(function (array $object) {
-                    return $object['type'] === 'dir';
+        return collection($mountManager->listContents($directory, $recursive)->toArray())
+                ->reject(function (StorageAttributes $object) {
+                    return $object->isDir();
                 })
-                ->map(function (array $object) use ($mountManager) {
-                    $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
+                ->map(function (StorageAttributes $object) use ($mountManager) {
+                    $path = $object->path();
                     $contents = fopen('php://memory', 'wb+');
                     fwrite($contents, $mountManager->read($path));
                     fseek($contents, 0);
@@ -120,7 +121,7 @@ trait TestFilesystemTrait
 
         return $this->keep[$directory]
             ->each(function (array $object) use ($mountManager) {
-                $mountManager->putStream($object['path'], $object['contents']);
+                $mountManager->writeStream($object['path'], $object['contents']);
             })
             ->map(function (array $object) {
                 return $object['path'];
@@ -140,13 +141,16 @@ trait TestFilesystemTrait
         $mountManager = FilesystemRegistry::getMountManager();
         $recursive = $this->recursive[$directory];
 
-        collection($mountManager->listContents($directory, $recursive))
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
+        collection($mountManager->listContents($directory, $recursive)->toArray())
+            ->reject(function (StorageAttributes $object) use ($keep) {
+                return in_array($object->path(), $keep);
             })
-            ->reject(function ($uri) use ($keep) {
-                return in_array($uri, $keep);
-            })
-            ->each([$mountManager, 'delete']);
+            ->each(function (StorageAttributes $object) use ($mountManager) {
+                if ($object->isDir()) {
+                    $mountManager->deleteDirectory($object->path());
+                } else {
+                    $mountManager->delete($object->path());
+                }
+            });
     }
 }

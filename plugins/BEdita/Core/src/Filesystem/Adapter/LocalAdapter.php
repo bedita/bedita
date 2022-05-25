@@ -15,7 +15,8 @@ namespace BEdita\Core\Filesystem\Adapter;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use Cake\Routing\Router;
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 
 /**
  * Adapter to store files on local filesystem.
@@ -31,7 +32,7 @@ class LocalAdapter extends FilesystemAdapter
         'baseUrl' => null,
         'path' => WWW_ROOT . '_files',
         'writeFlags' => LOCK_EX,
-        'linkHandling' => Local::DISALLOW_LINKS,
+        'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
         'permissions' => [],
         'visibility' => 'public',
     ];
@@ -55,15 +56,15 @@ class LocalAdapter extends FilesystemAdapter
     /**
      * {@inheritDoc}
      *
-     * @return \League\Flysystem\Adapter\Local
+     * @return \League\Flysystem\Local\LocalFilesystemAdapter
      */
     protected function buildAdapter(array $config)
     {
-        return new Local(
+        return new LocalFilesystemAdapter(
             $this->getConfig('path'),
+            PortableVisibilityConverter::fromArray((array)$this->getConfig('permissions')),
             $this->getConfig('writeFlags'),
             $this->getConfig('linkHandling'),
-            (array)$this->getConfig('permissions')
         );
     }
 }
