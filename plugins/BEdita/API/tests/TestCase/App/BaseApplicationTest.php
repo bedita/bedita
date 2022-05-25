@@ -31,7 +31,7 @@ class BaseApplicationTest extends TestCase
      * Test `middleware` method
      *
      * @return void
-     * @covers ::middleware
+     * @covers ::middleware()
      */
     public function testMiddleware(): void
     {
