@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\AnalyticsMiddleware;
-use BEdita\Core\Test\Utility\TestRequestHandler;
+use BEdita\API\Test\Utility\TestRequestHandler;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
