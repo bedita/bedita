@@ -146,9 +146,7 @@ trait TestFilesystemTrait
                 return in_array($object->path(), $keep);
             })
             ->each(function (StorageAttributes $object) use ($mountManager) {
-                if ($object->isDir()) {
-                    $mountManager->deleteDirectory($object->path());
-                } else {
+                if ($object->isFile()) {
                     $mountManager->delete($object->path());
                 }
             });
