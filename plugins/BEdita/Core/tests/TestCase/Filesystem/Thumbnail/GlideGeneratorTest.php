@@ -298,6 +298,11 @@ class GlideGeneratorTest extends TestCase
         static::assertNotContains($path, $this->thumbnailPaths());
     }
 
+    /**
+     * Retrieve `thumbnail://` paths
+     *
+     * @return array
+     */
     protected function thumbnailPaths(): array
     {
         return array_map(
