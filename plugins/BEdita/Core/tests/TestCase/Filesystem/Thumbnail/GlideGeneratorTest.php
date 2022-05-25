@@ -20,7 +20,6 @@ use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 use League\Flysystem\StorageAttributes;
 
 /**

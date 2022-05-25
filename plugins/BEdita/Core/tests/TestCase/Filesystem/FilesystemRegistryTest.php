@@ -17,7 +17,6 @@ use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
-use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToMountFilesystem;
 
