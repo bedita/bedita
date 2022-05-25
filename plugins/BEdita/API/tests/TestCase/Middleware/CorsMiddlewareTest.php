@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\Core\Test\Utility\TestRequestHandler;
+use BEdita\API\Test\Utility\TestRequestHandler;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 

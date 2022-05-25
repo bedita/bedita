@@ -11,18 +11,18 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\TestCase\Middleware;
+namespace BEdita\API\Test\TestCase\Middleware;
 
-use BEdita\Core\Middleware\BodyParserMiddleware;
-use BEdita\Core\Test\Utility\TestRequestHandler;
+use BEdita\API\Middleware\BodyParserMiddleware;
+use BEdita\API\Test\Utility\TestRequestHandler;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Middleware\BodyParserMiddleware} Test Case.
+ * {@see \BEdita\API\Middleware\BodyParserMiddleware} Test Case.
  *
- * @coversDefaultClass \BEdita\Core\Middleware\BodyParserMiddleware
+ * @coversDefaultClass \BEdita\API\Middleware\BodyParserMiddleware
  */
 class BodyParserMiddlewareTest extends TestCase
 {

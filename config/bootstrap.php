@@ -43,13 +43,27 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Utility\Security;
 
-/**
- * In `config/environment.php` you may set some environment variables
- * used in configuration
- */
-if (file_exists(CONFIG . 'environment.php')) {
-    include CONFIG . 'environment.php';
-}
+/*
+ * See https://github.com/josegonzalez/php-dotenv for API details.
+ *
+ * Uncomment block of code below if you want to use `.env` file during development.
+ * You should copy `config/.env.example` to `config/.env` and set/modify the
+ * variables as required.
+ *
+ * The purpose of the .env file is to emulate the presence of the environment
+ * variables like they would be present in production.
+ *
+ * If you use .env files, be careful to not commit them to source control to avoid
+ * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
+ * for more information for recommended practices.
+*/
+// if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
+//     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
+//     $dotenv->parse()
+//         ->putenv()
+//         ->toEnv()
+//         ->toServer();
+// }
 
 /*
  * Read configuration file and inject configuration into various
@@ -74,11 +88,12 @@ try {
 }
 
 /*
- * Load an environment local configuration file.
- * You can use a file like app_local.php to provide local overrides to your
- * shared configuration.
+ * Load an environment local configuration file to provide overrides to your configuration.
+ * Notice: For security reasons app_local.php **should not** be included in your git repo.
  */
-//Configure::load('app_local', 'default');
+if (file_exists(CONFIG . 'app_local.php')) {
+    Configure::load('app_local', 'default');
+}
 
 // Load default values for object types cache, if missing.
 if (!Configure::check('Cache._bedita_object_types_')) {
