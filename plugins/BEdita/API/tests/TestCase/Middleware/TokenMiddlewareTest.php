@@ -14,8 +14,8 @@ namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Middleware\TokenMiddleware;
-use BEdita\Core\State\CurrentApplication;
 use BEdita\API\Test\Utility\TestRequestHandler;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
