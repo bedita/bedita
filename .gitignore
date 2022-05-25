@@ -3,7 +3,7 @@
 /.vagrant/*
 /composer.lock
 /composer.local.json
-/config/app.php
+/config/app_local.php
 /config/app.json
 /config/.env
 /config/environment.php

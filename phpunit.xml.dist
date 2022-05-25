@@ -44,6 +44,9 @@
             <directory suffix=".php">./src/</directory>
             <directory suffix=".php">./plugins/*/src/</directory>
             <directory suffix=".php">./plugins/*/*/src/</directory>
+            <exclude>
+                <file>src/Console/Installer.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

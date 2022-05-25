@@ -99,7 +99,7 @@ class BeditaShellTest extends TestCase
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
-            file_get_contents(CONFIG . 'app.default.php'),
+            file_get_contents(CONFIG . 'app_local.example.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
 
@@ -162,7 +162,7 @@ class BeditaShellTest extends TestCase
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
-            file_get_contents(CONFIG . 'app.default.php'),
+            file_get_contents(CONFIG . 'app_local.example.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
 

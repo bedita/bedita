@@ -18,7 +18,8 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
@@ -26,8 +27,9 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupConnectionTask
  */
-class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
+class SetupConnectionTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
     use ArraySubsetAsserts;
 
     /**
@@ -244,7 +246,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
-            file_get_contents(CONFIG . 'app.default.php'),
+            file_get_contents(CONFIG . 'app_local.example.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
 
@@ -322,7 +324,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
-            file_get_contents(CONFIG . 'app.default.php'),
+            file_get_contents(CONFIG . 'app_local.example.php'),
             EXTR_OVERWRITE | LOCK_EX
         );
 
@@ -431,7 +433,7 @@ class SetupConnectionTaskTest extends ConsoleIntegrationTestCase
     public function testExecuteSyntaxError()
     {
         // Setup configuration file.
-        $fileContents = file_get_contents(CONFIG . 'app.default.php') . '?><?php }}{{$YNTAX]][[ERROR))((;;!:?';
+        $fileContents = file_get_contents(CONFIG . 'app_local.example.php') . '?><?php }}{{$YNTAX]][[ERROR))((;;!:?';
         file_put_contents(
             static::TEMP_FILE,
             $fileContents,
