@@ -122,7 +122,7 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @return void
      */
-    public static function dropAll()
+    public static function dropAll(): void
     {
         foreach (static::configured() as $config) {
             static::drop($config);
@@ -138,7 +138,7 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @return \League\Flysystem\MountManager
      */
-    public static function getMountManager()
+    public static function getMountManager(): MountManager
     {
         $instance = static::getInstance();
         if (!empty($instance->mountManager)) {
@@ -164,7 +164,7 @@ class FilesystemRegistry extends ObjectRegistry
      * @throws \League\Flysystem\UnableToMountFilesystem Throws an exception if a filesystem with such prefix
      *      could not be found.
      */
-    public static function getPublicUrl($path)
+    public static function getPublicUrl($path): string
     {
         [$prefix, $path] = static::getPrefixAndPath($path);
 
@@ -184,7 +184,7 @@ class FilesystemRegistry extends ObjectRegistry
      * @return string[]
      * @throws \InvalidArgumentException Throws an exception if path could not be parsed.
      */
-    protected static function getPrefixAndPath($path)
+    protected static function getPrefixAndPath($path): array
     {
         if (!is_string($path) || strpos($path, '://') < 1) {
             throw new \InvalidArgumentException(sprintf('No prefix detected in path: %s', $path));

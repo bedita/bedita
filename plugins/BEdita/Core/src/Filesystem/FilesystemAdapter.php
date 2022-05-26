@@ -54,7 +54,7 @@ abstract class FilesystemAdapter
      * @param array $config Configuration.
      * @return bool
      */
-    public function initialize(array $config)
+    public function initialize(array $config): bool
     {
         $this->setConfig($config);
 
@@ -96,7 +96,7 @@ abstract class FilesystemAdapter
      * @param string $path Resource path.
      * @return string
      */
-    public function getPublicUrl($path)
+    public function getPublicUrl($path): string
     {
         return sprintf(
             '%s/%s',
@@ -110,7 +110,7 @@ abstract class FilesystemAdapter
      *
      * @return string|null
      */
-    public function getVisibility()
+    public function getVisibility(): ?string
     {
         return $this->getConfig('visibility');
     }

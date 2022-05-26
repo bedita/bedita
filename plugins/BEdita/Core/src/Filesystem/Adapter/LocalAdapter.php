@@ -40,7 +40,7 @@ class LocalAdapter extends FilesystemAdapter
     /**
      * @inheritDoc
      */
-    public function initialize(array $config)
+    public function initialize(array $config): bool
     {
         $success = parent::initialize($config);
 

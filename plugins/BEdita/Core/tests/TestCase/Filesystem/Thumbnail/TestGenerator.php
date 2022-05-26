@@ -31,7 +31,7 @@ class TestGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function getUrl(Stream $stream, array $options = [])
+    public function getUrl(Stream $stream, array $options = []): string
     {
         return static::THUMBNAIL_URL;
     }
@@ -39,7 +39,7 @@ class TestGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function generate(Stream $stream, array $options = [])
+    public function generate(Stream $stream, array $options = []): bool
     {
         return false;
     }
@@ -47,7 +47,7 @@ class TestGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function exists(Stream $stream, array $options = [])
+    public function exists(Stream $stream, array $options = []): bool
     {
         return false;
     }
@@ -55,8 +55,7 @@ class TestGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function delete(Stream $stream)
+    public function delete(Stream $stream): void
     {
-        return;
     }
 }
