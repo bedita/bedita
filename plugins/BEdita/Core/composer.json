@@ -26,7 +26,6 @@
         "cakephp/migrations": "^3.5.2",
         "league/flysystem": "^2.4.5",
         "league/glide": "^2.2.2",
-        "intervention/image": "^2.7.2",
         "robmorgan/phinx": "^0.12.10",
         "symfony/yaml": "^5.4.3",
         "swaggest/json-schema": "~0.12.39"
