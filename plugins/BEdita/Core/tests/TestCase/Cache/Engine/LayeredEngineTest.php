@@ -179,7 +179,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache write and read.
      *
-     * @covers ::write()
+     * @covers ::set()
      * @covers ::read()
      */
     public function testWriteAndRead()
