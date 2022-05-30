@@ -22,9 +22,8 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "cakephp/cakephp": "~4.3.8",
-        "symfony/yaml": "~5.0",
-        "firebase/php-jwt": "~5.0"
+        "cakephp/cakephp": "~4.3.9",
+        "firebase/php-jwt": "^5.5.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

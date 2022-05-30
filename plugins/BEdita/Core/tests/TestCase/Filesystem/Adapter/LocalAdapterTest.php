@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Adapter;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\Adapter\LocalAdapter
@@ -83,6 +83,6 @@ class LocalAdapterTest extends TestCase
 
         $innerAdapter = $adapter->getInnerAdapter();
 
-        static::assertInstanceOf(Local::class, $innerAdapter);
+        static::assertInstanceOf(LocalFilesystemAdapter::class, $innerAdapter);
     }
 }

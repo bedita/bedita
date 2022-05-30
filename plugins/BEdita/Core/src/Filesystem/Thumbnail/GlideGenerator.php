@@ -58,7 +58,7 @@ class GlideGenerator extends ThumbnailGenerator
      * @return string
      * @throws \BEdita\Core\Exception\InvalidDataException
      */
-    protected function getFilename(Stream $stream, array $options = [])
+    protected function getFilename(Stream $stream, array $options = []): string
     {
         $ext = Hash::get($options, 'fm', 'jpg'); // jpg default
         if (!in_array($ext, ['jpg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
@@ -105,7 +105,7 @@ class GlideGenerator extends ThumbnailGenerator
      * @param array $options Thumbnail options.
      * @return string
      */
-    protected function makeThumbnail(Stream $stream, array $options = [])
+    protected function makeThumbnail(Stream $stream, array $options = []): string
     {
         $source = (string)$stream->contents;
 
@@ -118,7 +118,7 @@ class GlideGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function getUrl(Stream $stream, array $options = [])
+    public function getUrl(Stream $stream, array $options = []): string
     {
         $path = $this->getFilename($stream, $options);
 
@@ -128,14 +128,14 @@ class GlideGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function generate(Stream $stream, array $options = [])
+    public function generate(Stream $stream, array $options = []): bool
     {
         $path = $this->getFilename($stream, $options);
 
         try {
             $thumbnail = $this->makeThumbnail($stream, $options);
 
-            FilesystemRegistry::getMountManager()->put($path, $thumbnail);
+            FilesystemRegistry::getMountManager()->write($path, $thumbnail);
         } catch (NotReadableException $e) {
             throw new InvalidStreamException(__d('bedita', 'Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
         }
@@ -146,21 +146,21 @@ class GlideGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function exists(Stream $stream, array $options = [])
+    public function exists(Stream $stream, array $options = []): bool
     {
         $path = $this->getFilename($stream, $options);
 
-        return FilesystemRegistry::getMountManager()->has($path);
+        return FilesystemRegistry::getMountManager()->fileExists($path);
     }
 
     /**
      * @inheritDoc
      */
-    public function delete(Stream $stream)
+    public function delete(Stream $stream): void
     {
         $filesystem = $this->getConfig('cache', 'thumbnails');
         $base = $stream->filesystemPath($filesystem);
 
-        FilesystemRegistry::getMountManager()->deleteDir($base);
+        FilesystemRegistry::getMountManager()->deleteDirectory($base);
     }
 }

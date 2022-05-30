@@ -20,6 +20,7 @@ use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use League\Flysystem\StorageAttributes;
 
 /**
  * @coversDefaultClass \BEdita\Api\Controller\MediaController
@@ -71,12 +72,12 @@ class MediaControllerTest extends IntegrationTestCase
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
 
         $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('thumbnails://', true))
-            ->reject(function (array $object) {
-                return $object['type'] === 'dir';
+        $this->keep = collection($mountManager->listContents('thumbnails://', true)->toArray())
+            ->reject(function (StorageAttributes $object) {
+                return $object->isDir();
             })
-            ->map(function (array $object) use ($mountManager) {
-                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
+            ->map(function (StorageAttributes $object) use ($mountManager) {
+                $path = $object->path();
                 $contents = fopen('php://memory', 'wb+');
                 fwrite($contents, $mountManager->read($path));
                 fseek($contents, 0);
@@ -111,18 +112,18 @@ class MediaControllerTest extends IntegrationTestCase
         $mountManager = FilesystemRegistry::getMountManager();
         $keep = $this->keep
             ->each(function (array $object) use ($mountManager) {
-                $mountManager->putStream($object['path'], $object['contents']);
+                $mountManager->writeStream($object['path'], $object['contents']);
             })
             ->map(function (array $object) {
                 return $object['path'];
             })
             ->toList();
-        collection($mountManager->listContents('thumbnails://', true))
-            ->reject(function (array $object) {
-                return $object['type'] === 'dir';
+        collection($mountManager->listContents('thumbnails://', true)->toArray())
+            ->reject(function (StorageAttributes $object) {
+                return $object->isDir();
             })
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
+            ->map(function (StorageAttributes $object) {
+                return $object->path();
             })
             ->reject(function ($uri) use ($keep) {
                 return in_array($uri, $keep);

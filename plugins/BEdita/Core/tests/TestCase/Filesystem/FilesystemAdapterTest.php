@@ -15,7 +15,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use Cake\TestSuite\TestCase;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemAdapter
@@ -55,14 +55,14 @@ class FilesystemAdapterTest extends TestCase
         return [
             'ok' => [
                 true,
-                $this->getMockBuilder(AdapterInterface::class)->getMock(),
+                $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock(),
             ],
             'wrong class' => [
-                new \RuntimeException('Filesystem adapters must use League\Flysystem\AdapterInterface as a base class.'),
+                new \RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
                 new \stdClass(),
             ],
             'definitely not an object' => [
-                new \RuntimeException('Filesystem adapters must use League\Flysystem\AdapterInterface as a base class.'),
+                new \RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
                 [null, 'gustavo supporto'],
             ],
         ];

@@ -151,11 +151,11 @@ class UploadableBehaviorTest extends TestCase
 
         foreach ($expected as $path => $contents) {
             if ($contents === false) {
-                static::assertFalse($manager->has($path));
+                static::assertFalse($manager->fileExists($path));
             } else {
-                static::assertTrue($manager->has($path));
+                static::assertTrue($manager->fileExists($path));
                 static::assertSame($contents, $manager->read($path));
-                static::assertEquals($visibility, $manager->getVisibility($path));
+                static::assertEquals($visibility, $manager->visibility($path));
             }
         }
     }
@@ -176,6 +176,6 @@ class UploadableBehaviorTest extends TestCase
 
         $this->Streams->deleteOrFail($stream);
 
-        static::assertFalse($manager->has($path));
+        static::assertFalse($manager->fileExists($path));
     }
 }

@@ -54,7 +54,7 @@ class Thumbnail
      * @param \BEdita\Core\Filesystem\ThumbnailRegistry|null $registry Thumbnail generator registry.
      * @return void
      */
-    public static function setRegistry(?ThumbnailRegistry $registry = null)
+    public static function setRegistry(?ThumbnailRegistry $registry = null): void
     {
         static::$_registry = $registry;
     }
@@ -64,7 +64,7 @@ class Thumbnail
      *
      * @return \BEdita\Core\Filesystem\ThumbnailRegistry
      */
-    public static function getRegistry()
+    public static function getRegistry(): ThumbnailRegistry
     {
         if (!isset(static::$_registry)) {
             static::$_registry = new ThumbnailRegistry();
@@ -79,7 +79,7 @@ class Thumbnail
      * @param string $name Name of generator to get.
      * @return \BEdita\Core\Filesystem\GeneratorInterface
      */
-    public static function getGenerator($name)
+    public static function getGenerator($name): GeneratorInterface
     {
         $registry = static::getRegistry();
 
@@ -97,7 +97,7 @@ class Thumbnail
      * @param string|array $options Preset name, or array of thumbnail options.
      * @return array Generated thumbnail URL and ready status.
      */
-    public static function get(Stream $stream, $options = 'default')
+    public static function get(Stream $stream, $options = 'default'): array
     {
         if ($stream->get('private_url')) {
             return [
@@ -136,7 +136,7 @@ class Thumbnail
      * @param string|array $options Preset name, or array of options.
      * @return array
      */
-    protected static function getOptions($options)
+    protected static function getOptions($options): array
     {
         if (is_string($options)) {
             $key = sprintf('Thumbnails.presets.%s', $options);
@@ -157,7 +157,7 @@ class Thumbnail
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream to delete thumbnails for.
      * @return void
      */
-    public static function delete(Stream $stream)
+    public static function delete(Stream $stream): void
     {
         $generators = static::configured();
         foreach ($generators as $generator) {

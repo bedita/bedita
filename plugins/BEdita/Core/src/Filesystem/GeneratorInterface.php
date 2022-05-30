@@ -39,7 +39,7 @@ interface GeneratorInterface
      * @param array $options Thumbnail options.
      * @return string
      */
-    public function getUrl(Stream $stream, array $options = []);
+    public function getUrl(Stream $stream, array $options = []): string;
 
     /**
      * Generate a thumbnail for a Stream entity using the provided options, and return the URL.
@@ -51,7 +51,7 @@ interface GeneratorInterface
      * @param array $options Thumbnail options.
      * @return bool Is the thumbnail ready? Synchronous generators should return `true`, asynchronous generators should return `false`.
      */
-    public function generate(Stream $stream, array $options = []);
+    public function generate(Stream $stream, array $options = []): bool;
 
     /**
      * Check if a thumbnail for a Stream entity using the provided options already exists.
@@ -60,7 +60,7 @@ interface GeneratorInterface
      * @param array $options Thumbnail options.
      * @return bool Is the thumbnail ready?
      */
-    public function exists(Stream $stream, array $options = []);
+    public function exists(Stream $stream, array $options = []): bool;
 
     /**
      * Delete all created thumbnails for a stream.
@@ -68,5 +68,5 @@ interface GeneratorInterface
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
      * @return void
      */
-    public function delete(Stream $stream);
+    public function delete(Stream $stream): void;
 }

@@ -17,9 +17,10 @@ use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
-use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemNotFoundException;
+use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
+use League\Flysystem\UnableToMountFilesystem;
+use League\Flysystem\UnableToResolveFilesystemMount;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemRegistry
@@ -200,8 +201,8 @@ class FilesystemRegistryTest extends TestCase
         $manager = FilesystemRegistry::getMountManager();
 
         static::assertInstanceOf(MountManager::class, $manager);
-        static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('default'));
-        static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('alternative'));
+        static::assertInstanceOf(DirectoryListing::class, $manager->listContents('default://'));
+        static::assertInstanceOf(DirectoryListing::class, $manager->listContents('alternative://'));
 
         $second = FilesystemRegistry::getMountManager();
         static::assertSame($manager, $second);
@@ -215,8 +216,8 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testDropAll()
     {
-        $this->expectException(\League\Flysystem\FilesystemNotFoundException::class);
-        $this->expectExceptionMessage('No filesystem mounted with prefix default');
+        $this->expectException(UnableToResolveFilesystemMount::class);
+        $this->expectExceptionMessage('Unable to resolve the filesystem mount because the mount (default) was not registered.');
         FilesystemRegistry::setConfig('default', [
             'className' => LocalAdapter::class,
         ]);
@@ -229,7 +230,7 @@ class FilesystemRegistryTest extends TestCase
         $newManager = FilesystemRegistry::getMountManager();
         static::assertNotSame($manager, $newManager);
 
-        $newManager->getFilesystem('default');
+        $newManager->listContents('default://');
     }
 
     /**
@@ -253,7 +254,7 @@ class FilesystemRegistryTest extends TestCase
                 [],
             ],
             'filesystem not found' => [
-                new FilesystemNotFoundException('No filesystem mounted with prefix missing'),
+                new UnableToMountFilesystem('No filesystem mounted with prefix missing'),
                 'missing://path/image.png',
                 [],
             ],

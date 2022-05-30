@@ -47,7 +47,7 @@ class AsyncGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function getUrl(Stream $stream, array $options = [])
+    public function getUrl(Stream $stream, array $options = []): string
     {
         return $this->getBaseGenerator()->getUrl($stream, $options);
     }
@@ -55,7 +55,7 @@ class AsyncGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function generate(Stream $stream, array $options = [])
+    public function generate(Stream $stream, array $options = []): bool
     {
         /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -81,7 +81,7 @@ class AsyncGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    public function exists(Stream $stream, array $options = [])
+    public function exists(Stream $stream, array $options = []): bool
     {
         return $this->getBaseGenerator()->exists($stream, $options);
     }
@@ -95,7 +95,7 @@ class AsyncGenerator extends ThumbnailGenerator
      * @see \BEdita\Core\Job\Service\ThumbnailService::run()
      * @codeCoverageIgnore
      */
-    public function delete(Stream $stream)
+    public function delete(Stream $stream): void
     {
         // Nothing to see here. Go away!
     }
