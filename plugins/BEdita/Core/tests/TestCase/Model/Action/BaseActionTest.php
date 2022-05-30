@@ -38,7 +38,7 @@ class BaseActionTest extends TestCase
 
         $baseAction = $this->getMockForAbstractClass(BaseAction::class, [$config]);
 
-        static::assertAttributeEquals($config, '_config', $baseAction);
+        static::assertEquals($config, $baseAction->getConfig());
     }
 
     /**

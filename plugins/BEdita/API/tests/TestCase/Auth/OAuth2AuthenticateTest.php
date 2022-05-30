@@ -142,7 +142,7 @@ class OAuth2AuthenticateTest extends TestCase
 
         $auth = $this->getMockBuilder(OAuth2Authenticate::class)
             ->setConstructorArgs([new ComponentRegistry(), $authConfig['BEdita/API.OAuth2']])
-            ->setMethods(['getOAuth2Response'])
+            ->onlyMethods(['getOAuth2Response'])
             ->getMock();
 
         $auth

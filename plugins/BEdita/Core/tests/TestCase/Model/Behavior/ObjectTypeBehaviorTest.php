@@ -83,10 +83,8 @@ class ObjectTypeBehaviorTest extends TestCase
 
         if ($expected === null) {
             static::assertNull($objectType);
-            static::assertAttributeSame(null, 'objectType', $behavior);
         } else {
             static::assertInstanceOf(ObjectType::class, $objectType);
-            static::assertAttributeInstanceOf(ObjectType::class, 'objectType', $behavior);
             static::assertSame($expected, $objectType->name);
         }
     }

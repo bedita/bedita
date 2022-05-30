@@ -487,7 +487,7 @@ class CountRelatedObjectsActionTest extends TestCase
         ];
 
         $mock = $this->getMockBuilder(CountRelatedObjectsAction::class)
-            ->setMethods(['groupResultCountById'])
+            ->onlyMethods(['groupResultCountById'])
             ->getMock();
 
         $mock->method('groupResultCountById')
@@ -522,7 +522,7 @@ class CountRelatedObjectsActionTest extends TestCase
         ];
 
         $mock = $this->getMockBuilder(CountRelatedObjectsAction::class)
-            ->setMethods(['groupResultCountById'])
+            ->onlyMethods(['groupResultCountById'])
             ->getMock();
 
         $mock->method('groupResultCountById')

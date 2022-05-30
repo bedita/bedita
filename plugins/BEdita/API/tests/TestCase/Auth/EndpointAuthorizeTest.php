@@ -81,7 +81,7 @@ class EndpointAuthorizeTest extends TestCase
                 'POST',
             ],
             'GET /home (role_id = 1)' => [
-                'mine',
+                true,
                 new Uri('/home'),
                 [
                     'roles' => [
@@ -142,6 +142,7 @@ class EndpointAuthorizeTest extends TestCase
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
      * @covers ::isAnonymous()
+     * @covers ::isAuthorized()
      * @covers ::checkPermissions()
      */
     public function testAuthorize($expected, UriInterface $uri, array $user, $requestMethod = 'GET', $whiteListed = false)
@@ -174,7 +175,7 @@ class EndpointAuthorizeTest extends TestCase
         $result = $authorize->authorize($user, $request);
 
         static::assertSame(!empty($expected), $result);
-        static::assertAttributeSame($expected, 'authorized', $authorize);
+        static::assertSame($expected, $authorize->isAuthorized());
     }
 
     /**
@@ -183,6 +184,7 @@ class EndpointAuthorizeTest extends TestCase
      * @return void
      * @covers ::authorize()
      * @covers ::isAnonymous()
+     * @covers ::isAuthorized()
      * @covers ::checkPermissions()
      */
     public function testAllowByDefault()
@@ -216,7 +218,7 @@ class EndpointAuthorizeTest extends TestCase
         );
 
         static::assertTrue($result);
-        static::assertAttributeSame(true, 'authorized', $authorize);
+        static::assertTrue($authorize->isAuthorized());
     }
 
     /**
@@ -258,7 +260,7 @@ class EndpointAuthorizeTest extends TestCase
         );
 
         static::assertTrue($result);
-        static::assertAttributeSame(true, 'authorized', $authorize);
+        static::assertTrue($authorize->isAuthorized());
     }
 
     /**

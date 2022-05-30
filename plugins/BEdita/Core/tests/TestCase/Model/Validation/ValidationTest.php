@@ -27,6 +27,23 @@ use DateTime;
 class ValidationTest extends TestCase
 {
     /**
+     * Test runtime cache.
+     *
+     * @return void
+     * @covers ::reservedWords()
+     */
+    public function testreserveWords()
+    {
+        $file = Plugin::configPath('BEdita/Core') . 'reserved.php';
+        $expected = include $file;
+
+        $allowed = Validation::notReserved('gustavo');
+
+        static::assertTrue($allowed);
+        static::assertSame($expected, Validation::reservedWords());
+    }
+
+    /**
      * Data provider for `testReserved` test case.
      *
      * @return array
@@ -59,28 +76,6 @@ class ValidationTest extends TestCase
         $result = Validation::notReserved($value);
 
         static::assertSame($expected, $result);
-    }
-
-    /**
-     * Test clear and load runtime cache.
-     *
-     * @return void
-     * @covers ::clear()
-     * @covers ::reservedWords()
-     */
-    public function testClear()
-    {
-        Validation::clear();
-
-        static::assertAttributeSame(null, 'reserved', Validation::class);
-
-        $file = Plugin::configPath('BEdita/Core') . 'reserved.php';
-        $expected = include $file;
-
-        $allowed = Validation::notReserved('gustavo');
-
-        static::assertTrue($allowed);
-        static::assertAttributeSame($expected, 'reserved', Validation::class);
     }
 
     /**

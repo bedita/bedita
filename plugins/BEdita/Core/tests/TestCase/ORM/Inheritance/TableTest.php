@@ -75,7 +75,7 @@ class TableTest extends TestCase
     {
         $this->fakeFelines->extensionOf('FakeAnimals');
 
-        static::assertAttributeSame($this->fakeAnimals, 'inheritedTable', $this->fakeFelines);
+        static::assertSame($this->fakeAnimals, $this->fakeFelines->inheritedTable());
         static::assertInstanceOf(AssociationCollection::class, $this->fakeFelines->associations());
     }
 

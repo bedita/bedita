@@ -202,7 +202,6 @@ class FilesystemRegistryTest extends TestCase
         static::assertInstanceOf(MountManager::class, $manager);
         static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('default'));
         static::assertInstanceOf(Filesystem::class, $manager->getFilesystem('alternative'));
-        static::assertAttributeSame($manager, 'mountManager', FilesystemRegistry::getInstance());
 
         $second = FilesystemRegistry::getMountManager();
         static::assertSame($manager, $second);
@@ -224,12 +223,10 @@ class FilesystemRegistryTest extends TestCase
         $manager = FilesystemRegistry::getMountManager();
         FilesystemRegistry::dropAll();
 
-        static::assertAttributeEmpty('_config', FilesystemRegistry::class);
-        static::assertAttributeEmpty('_loaded', FilesystemRegistry::getInstance());
-        static::assertAttributeEmpty('mountManager', FilesystemRegistry::getInstance());
+        static::assertEquals([], FilesystemRegistry::getInstance()->loaded());
+        static::assertEquals([], FilesystemRegistry::configured());
 
         $newManager = FilesystemRegistry::getMountManager();
-
         static::assertNotSame($manager, $newManager);
 
         $newManager->getFilesystem('default');

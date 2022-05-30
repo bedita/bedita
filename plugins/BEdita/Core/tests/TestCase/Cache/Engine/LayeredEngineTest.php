@@ -88,8 +88,9 @@ class LayeredEngineTest extends TestCase
         Cache::clear('test-layered');
 
         $instance = Cache::getRegistry()->get('test-layered');
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'memory', $instance);
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'persistent', $instance);
+        static::assertNotNull($instance);
+        static::assertEquals($this->defaultConfig['prefix'], $instance->getConfig('prefix'));
+        static::assertEquals($this->defaultConfig['persistent'], $instance->getConfig('persistent'));
     }
 
     /**

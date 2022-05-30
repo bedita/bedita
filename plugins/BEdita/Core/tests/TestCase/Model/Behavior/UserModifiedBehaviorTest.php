@@ -105,14 +105,10 @@ class UserModifiedBehaviorTest extends TestCase
     public function testUserId()
     {
         $behavior = $this->Objects->behaviors()->get('UserModified');
-
-        static::assertAttributeSame(null, 'userId', $behavior);
-        static::assertSame(LoggedUser::id(), $this->Objects->userId());
-        static::assertAttributeSame(LoggedUser::id(), 'userId', $behavior);
+        static::assertSame(1, $this->Objects->userId());
 
         static::assertSame(99, $this->Objects->userId(99));
         static::assertSame(99, $this->Objects->userId());
-        static::assertAttributeSame(99, 'userId', $behavior);
     }
 
     /**
