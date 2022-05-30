@@ -17,6 +17,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
 use Cake\Validation\Validation;
+use League\Flysystem\StorageAttributes;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\StreamsController
@@ -47,9 +48,9 @@ class StreamsControllerTest extends IntegrationTestCase
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
 
         $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('default://'))
-            ->map(function (array $object) use ($mountManager) {
-                $path = sprintf('%s://%s', $object['filesystem'], $object['path']);
+        $this->keep = collection($mountManager->listContents('default://')->toArray())
+            ->map(function (StorageAttributes $object) use ($mountManager) {
+                $path = $object->path();
                 $contents = fopen('php://memory', 'wb+');
                 fwrite($contents, $mountManager->read($path));
                 fseek($contents, 0);
@@ -68,15 +69,15 @@ class StreamsControllerTest extends IntegrationTestCase
         $mountManager = FilesystemRegistry::getMountManager();
         $keep = $this->keep
             ->each(function (array $object) use ($mountManager) {
-                $mountManager->putStream($object['path'], $object['contents']);
+                $mountManager->writeStream($object['path'], $object['contents']);
             })
             ->map(function (array $object) {
                 return $object['path'];
             })
             ->toList();
-        collection($mountManager->listContents('default://'))
-            ->map(function (array $object) {
-                return sprintf('%s://%s', $object['filesystem'], $object['path']);
+        collection($mountManager->listContents('default://')->toArray())
+            ->map(function (StorageAttributes $object) {
+                return $object->path();
             })
             ->reject(function ($uri) use ($keep) {
                 return in_array($uri, $keep);

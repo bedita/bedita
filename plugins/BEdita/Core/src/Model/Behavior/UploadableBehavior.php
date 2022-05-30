@@ -45,19 +45,21 @@ class UploadableBehavior extends Behavior
      * @param \League\Flysystem\MountManager $manager Mount manager.
      * @param string $path File path.
      * @param mixed $contents File contents.
-     * @return bool
+     * @return void
      */
-    protected function write(MountManager $manager, $path, $contents)
+    protected function write(MountManager $manager, $path, $contents): void
     {
         if ($contents instanceof StreamInterface) {
             $contents = $contents->detach();
         }
 
         if (is_resource($contents)) {
-            return $manager->putStream($path, $contents);
+            $manager->writeStream($path, $contents);
+
+            return;
         }
 
-        return $manager->put($path, $contents);
+        $manager->write($path, $contents);
     }
 
     /**
@@ -66,13 +68,13 @@ class UploadableBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity Entity.
      * @param string $pathField Name of field in which path is stored.
      * @param string $contentsField Name of field in which contents are stored.
-     * @return bool
+     * @return void
      */
-    protected function processUpload(Entity $entity, $pathField, $contentsField)
+    protected function processUpload(Entity $entity, $pathField, $contentsField): void
     {
         if (!$entity->isDirty($pathField) && !$entity->isDirty($contentsField)) {
             // Nothing to do.
-            return true;
+            return;
         }
 
         $manager = FilesystemRegistry::getMountManager();
@@ -81,15 +83,19 @@ class UploadableBehavior extends Behavior
         if ($entity->isDirty($pathField) && $originalPath !== $path) {
             if ($entity->isDirty($contentsField)) {
                 // Delete and re-upload.
-                return $manager->delete($originalPath) && $this->write($manager, $path, $entity->get($contentsField));
-            }
+                $manager->delete($originalPath);
+                $this->write($manager, $path, $entity->get($contentsField));
 
+                return;
+            }
             // Move to new location.
-            return $manager->move($originalPath, $path);
+            $manager->move($originalPath, $path);
+
+            return;
         }
 
         // Updated contents.
-        return $this->write($manager, $path, $entity->get($contentsField));
+        $this->write($manager, $path, $entity->get($contentsField));
     }
 
     /**
@@ -116,12 +122,12 @@ class UploadableBehavior extends Behavior
      * @param string $pathField Name of field in which path is stored.
      * @return bool
      */
-    protected function processDelete(Entity $entity, $pathField)
+    protected function processDelete(Entity $entity, $pathField): bool
     {
         $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);
 
-        return !$manager->has($path) || $manager->delete($path);
+        return !$manager->fileExists($path) || $manager->delete($path);
     }
 
     /**

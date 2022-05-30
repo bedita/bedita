@@ -37,7 +37,7 @@ abstract class ThumbnailGenerator implements GeneratorInterface
      * @param array $config Configuration.
      * @return bool
      */
-    public function initialize(array $config)
+    public function initialize(array $config): bool
     {
         $this->setConfig($config);
 
