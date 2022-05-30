@@ -27,7 +27,7 @@
         "firebase/php-jwt": "~5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.5",
         "cakephp/cakephp-codesniffer": "~4.5.1"
     },
     "autoload": {
