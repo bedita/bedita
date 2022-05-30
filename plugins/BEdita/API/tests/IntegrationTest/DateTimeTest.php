@@ -17,6 +17,8 @@ use Cake\Utility\Hash;
 
 /**
  * Test date & datetime input/output
+ *
+ * @coversNothing
  */
 class DateTimeTest extends IntegrationTestCase
 {

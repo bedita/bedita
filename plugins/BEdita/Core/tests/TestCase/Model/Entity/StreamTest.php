@@ -207,7 +207,7 @@ class StreamTest extends TestCase
         fseek($resource, 0);
 
         $serializable = $this->getMockBuilder(\stdClass::class)
-            ->onlyMethods(['__toString'])
+            ->addMethods(['__toString'])
             ->getMock();
         $serializable
             ->method('__toString')

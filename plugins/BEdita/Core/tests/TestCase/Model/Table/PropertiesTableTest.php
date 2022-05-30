@@ -110,6 +110,7 @@ class PropertiesTableTest extends TestCase
      * @param array $data Data to be validated.
      * @return void
      * @dataProvider validationProvider
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
