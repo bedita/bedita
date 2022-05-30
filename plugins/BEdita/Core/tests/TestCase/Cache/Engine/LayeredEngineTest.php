@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Cache\Engine;
 
 use Cake\Cache\Cache;
-use Cake\Cache\Engine\ArrayEngine;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
