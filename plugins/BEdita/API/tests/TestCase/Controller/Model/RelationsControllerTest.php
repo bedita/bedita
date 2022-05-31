@@ -16,12 +16,15 @@ namespace BEdita\API\Test\TestCase\Controller\Model;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Model\RelationsController
  */
 class RelationsControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Test index method.
      *

@@ -14,12 +14,15 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ResourcesController
  */
 class ResourcesControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Test relationships method to list existing relationships.
      *

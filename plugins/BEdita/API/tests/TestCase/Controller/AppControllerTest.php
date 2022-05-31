@@ -19,12 +19,15 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
  */
 class AppControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Test API meta info header.
      *
