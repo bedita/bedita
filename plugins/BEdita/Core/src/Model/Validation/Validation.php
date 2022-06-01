@@ -36,21 +36,11 @@ class Validation
     protected static $reserved = null;
 
     /**
-     * Clear reserved names list
-     *
-     * @return void
-     */
-    public static function clear()
-    {
-        static::$reserved = null;
-    }
-
-    /**
      * Load list of reserved names in `$reserved`
      *
      * @return string[]
      */
-    protected static function reservedWords()
+    public static function reservedWords()
     {
         if (static::$reserved === null) {
             static::$reserved = (new PhpConfig())->read('BEdita/Core.reserved');

@@ -268,7 +268,7 @@ class DatabaseTest extends TestCase
         $mockConnection = $this->getMockBuilder('\Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->disableOriginalClone()
-            ->setMethods(['prepare', 'begin', 'commit', 'rollback', '__debugInfo'])
+            ->onlyMethods(['prepare', 'begin', 'commit', 'rollback', '__debugInfo'])
             ->getMock();
 
         $mockConnection->method('prepare')

@@ -17,6 +17,8 @@ use Cake\Utility\Hash;
 
 /**
  * Test Query String `count`.
+ *
+ * @coversNothing
  */
 class CountQueryStringTest extends IntegrationTestCase
 {

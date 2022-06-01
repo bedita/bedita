@@ -49,6 +49,7 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
@@ -269,6 +270,7 @@ class ProfilesTableTest extends TestCase
      * Test delete.
      *
      * @return void
+     * @covers ::delete()
      */
     public function testDelete()
     {

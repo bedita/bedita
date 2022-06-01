@@ -18,12 +18,15 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Collection\Collection;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\FoldersController
  */
 class FoldersControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Folders table.
      *

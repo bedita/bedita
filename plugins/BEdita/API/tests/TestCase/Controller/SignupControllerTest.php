@@ -18,12 +18,15 @@ use Cake\I18n\FrozenTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\SignupController
  */
 class SignupControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * Fixtures
      *
@@ -226,7 +229,7 @@ class SignupControllerTest extends IntegrationTestCase
             static::assertArrayHasKey('links', $result);
             static::assertArrayHasKey('data', $result);
             static::assertEquals($expected['links'], $result['links']);
-            static::assertArraySubset($expected['data'], $result['data']);
+            static::assertArraySubset($expected['data']['attributes'], $result['data']['attributes']);
         } else {
             static::assertArrayNotHasKey('data', $result);
             static::assertArrayHasKey('links', $result);

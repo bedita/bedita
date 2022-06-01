@@ -96,7 +96,7 @@ class ThumbnailTest extends TestCase
 
         Thumbnail::setRegistry($registry);
 
-        static::assertAttributeSame($registry, '_registry', Thumbnail::class);
+        static::assertSame($registry, Thumbnail::getRegistry());
     }
 
     /**
@@ -107,12 +107,8 @@ class ThumbnailTest extends TestCase
      */
     public function testGetRegistry()
     {
-        static::assertAttributeSame(null, '_registry', Thumbnail::class);
-
         $registry = Thumbnail::getRegistry();
-
         static::assertInstanceOf(ThumbnailRegistry::class, $registry);
-        static::assertAttributeSame($registry, '_registry', Thumbnail::class);
 
         $nextCall = Thumbnail::getRegistry();
 
@@ -231,7 +227,7 @@ class ThumbnailTest extends TestCase
         $stream = new Stream(['uuid' => Text::uuid()]);
 
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->setMethods(['getUrl', 'exists', 'generate'])
+            ->onlyMethods(['getUrl', 'exists', 'generate'])
             ->getMockForAbstractClass();
         $mock->expects(static::once())
             ->method('getUrl')
@@ -302,7 +298,7 @@ class ThumbnailTest extends TestCase
         $stream = new Stream(['uuid' => Text::uuid()]);
 
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->setMethods(['delete'])
+            ->onlyMethods(['delete'])
             ->getMockForAbstractClass();
         $mock->expects(static::once())
             ->method('delete')

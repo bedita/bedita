@@ -98,7 +98,7 @@ class ServiceRegistryTest extends TestCase
         $service = $this->getMockService();
 
         ServiceRegistry::set('example', $service);
-        static::assertAttributeContains($service, 'instances', ServiceRegistry::class);
+        static::assertEquals(['example'], ServiceRegistry::keys());
 
         $result = ServiceRegistry::get('example');
 
@@ -111,13 +111,14 @@ class ServiceRegistryTest extends TestCase
      *
      * @return void
      * @covers ::reset()
+     * @covers ::keys()
      */
     public function testReset()
     {
         ServiceRegistry::set('example', $this->getMockService());
-        static::assertAttributeNotEmpty('instances', ServiceRegistry::class);
+        static::assertNotEmpty(ServiceRegistry::keys());
 
         ServiceRegistry::reset();
-        static::assertAttributeSame([], 'instances', ServiceRegistry::class);
+        static::assertEquals([], ServiceRegistry::keys());
     }
 }

@@ -86,7 +86,7 @@ class StaticPropertiesTableTest extends TestCase
         $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
 
         static::assertSame(StaticProperty::class, $this->StaticProperties->getEntityClass());
-        static::assertRegExp('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
+        static::assertMatchesRegularExpression('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
         $otherInstance = TableRegistry::getTableLocator()->get('BEdita/Core.StaticProperties');
 

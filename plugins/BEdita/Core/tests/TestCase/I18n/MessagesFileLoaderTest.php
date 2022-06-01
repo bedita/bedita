@@ -27,14 +27,17 @@ class MessagesFileLoaderTest extends TestCase
      *
      * @return void
      * @covers ::__construct()
+     * @covers ::plugins()
      */
     public function testConstruct()
     {
         $plugins = ['BEdita/Core'];
 
-        $loader = new MessagesFileLoader('bedita', 'it_IT', 'po', $plugins);
+        $loader = new MessagesFileLoader('bedita', 'en_US', 'po');
+        static::assertSame([], $loader->plugins());
 
-        static::assertAttributeSame($plugins, 'plugins', $loader);
+        $loader = new MessagesFileLoader('bedita', 'it_IT', 'po', $plugins);
+        static::assertSame($plugins, $loader->plugins());
     }
 
     /**

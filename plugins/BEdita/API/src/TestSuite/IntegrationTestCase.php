@@ -24,7 +24,6 @@ use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
 use Cake\TestSuite\MiddlewareDispatcher;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * Base class for API integration tests.
@@ -33,8 +32,6 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  */
 abstract class IntegrationTestCase extends CakeIntegrationTestCase
 {
-    use ArraySubsetAsserts;
-
     /**
      * Fixtures
      *

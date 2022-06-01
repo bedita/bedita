@@ -42,7 +42,7 @@ class ServiceRegistry
      * @return \BEdita\Core\Job\JobService Service instance found
      * @throws \LogicException Throws an exception if no suitable class for that service could be found.
      */
-    public static function get($name)
+    public static function get(string $name): JobService
     {
         if (!empty(static::$instances[$name])) {
             return static::$instances[$name];
@@ -78,9 +78,19 @@ class ServiceRegistry
      * @param \BEdita\Core\Job\JobService $instance The instance object to be registered.
      * @return void
      */
-    public static function set($name, JobService $instance)
+    public static function set(string $name, JobService $instance): void
     {
         static::$instances[$name] = $instance;
+    }
+
+    /**
+     * Registered service names
+     *
+     * @return string[]
+     */
+    public static function keys(): array
+    {
+        return array_keys(static::$instances);
     }
 
     /**
@@ -88,7 +98,7 @@ class ServiceRegistry
      *
      * @return void
      */
-    public static function reset()
+    public static function reset(): void
     {
         static::$instances = [];
     }

@@ -43,7 +43,6 @@ class FilesystemAdapterTest extends TestCase
 
         static::assertTrue($result);
         static::assertSame($config, $adapter->getConfig());
-        static::assertAttributeSame($config, '_config', $adapter);
     }
 
     /**

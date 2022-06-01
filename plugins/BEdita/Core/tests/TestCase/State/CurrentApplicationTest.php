@@ -113,7 +113,7 @@ class CurrentApplicationTest extends TestCase
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
 
-        static::assertAttributeSame($application, 'application', CurrentApplication::getInstance());
+        static::assertSame($application, CurrentApplication::getApplication());
     }
 
     /**

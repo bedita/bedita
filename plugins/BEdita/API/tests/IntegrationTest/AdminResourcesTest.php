@@ -16,6 +16,8 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * Test CRUD operations on /admin resources
+ *
+ * @coversNothing
  */
 class AdminResourcesTest extends IntegrationTestCase
 {

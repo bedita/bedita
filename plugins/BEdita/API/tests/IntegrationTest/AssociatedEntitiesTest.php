@@ -22,6 +22,8 @@ use Cake\Utility\Hash;
 
 /**
  * Test CRUD operations on objects with associated entities
+ *
+ * @coversNothing
  */
 class AssociatedEntitiesTest extends IntegrationTestCase
 {

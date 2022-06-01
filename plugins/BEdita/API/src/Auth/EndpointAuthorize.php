@@ -105,6 +105,16 @@ class EndpointAuthorize extends BaseAuthorize
             $this->unauthenticated();
         }
 
+        return $this->isAuthorized();
+    }
+
+    /**
+     * Is endpoint authorized?
+     *
+     * @return bool
+     */
+    public function isAuthorized(): bool
+    {
         // Authorization is granted for both `true` and `'mine'` values.
         return !empty($this->authorized);
     }

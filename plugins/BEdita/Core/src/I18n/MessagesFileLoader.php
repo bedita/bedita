@@ -33,11 +33,21 @@ class MessagesFileLoader extends BaseLoader
     protected $plugins = [];
 
     /**
+     * Return plugins list
+     *
+     * @return array
+     */
+    public function plugins(): array
+    {
+        return $this->plugins;
+    }
+
+    /**
      * {@inheritDoc}
      *
-     * @param string[] $name Additional plugins to look up in for translations.
+     * @param string[] $plugins Additional plugins to look up in for translations.
      */
-    public function __construct($name, $locale, $extension = 'po', array $plugins = [])
+    public function __construct(string $name, string $locale, string $extension = 'po', array $plugins = [])
     {
         parent::__construct($name, $locale, $extension);
 

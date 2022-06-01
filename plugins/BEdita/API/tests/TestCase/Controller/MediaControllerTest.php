@@ -272,7 +272,7 @@ class MediaControllerTest extends IntegrationTestCase
 
         $body = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(400);
-        static::assertRegExp('/^Cannot generate thumbnails for more than \d+ media at once$/', Hash::get($body, 'error.title'));
+        static::assertMatchesRegularExpression('/^Cannot generate thumbnails for more than \d+ media at once$/', Hash::get($body, 'error.title'));
     }
 
     /**

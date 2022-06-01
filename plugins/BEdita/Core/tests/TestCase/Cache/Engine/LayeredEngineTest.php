@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Cache\Engine;
 
 use Cake\Cache\Cache;
-use Cake\Cache\Engine\ArrayEngine;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -88,8 +87,9 @@ class LayeredEngineTest extends TestCase
         Cache::clear('test-layered');
 
         $instance = Cache::getRegistry()->get('test-layered');
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'memory', $instance);
-        static::assertAttributeInstanceOf(ArrayEngine::class, 'persistent', $instance);
+        static::assertNotNull($instance);
+        static::assertEquals($this->defaultConfig['prefix'], $instance->getConfig('prefix'));
+        static::assertEquals($this->defaultConfig['persistent'], $instance->getConfig('persistent'));
     }
 
     /**
@@ -179,7 +179,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache write and read.
      *
-     * @covers ::write()
+     * @covers ::set()
      * @covers ::read()
      */
     public function testWriteAndRead()

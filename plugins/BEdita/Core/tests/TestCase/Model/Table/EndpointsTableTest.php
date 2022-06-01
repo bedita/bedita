@@ -71,6 +71,7 @@ class EndpointsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
+     * @covers ::initialize()
      */
     public function testInitialize()
     {

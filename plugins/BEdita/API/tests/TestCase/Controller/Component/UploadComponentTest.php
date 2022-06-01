@@ -17,12 +17,14 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Utility\Hash;
 use Cake\Validation\Validation;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Component\UploadComponent
  */
 class UploadComponentTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
     use TestFilesystemTrait;
 
     /**

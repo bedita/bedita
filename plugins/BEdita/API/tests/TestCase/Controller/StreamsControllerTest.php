@@ -17,6 +17,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Core\Configure;
 use Cake\Validation\Validation;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use League\Flysystem\StorageAttributes;
 
 /**
@@ -24,6 +25,8 @@ use League\Flysystem\StorageAttributes;
  */
 class StreamsControllerTest extends IntegrationTestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @inheritDoc
      */

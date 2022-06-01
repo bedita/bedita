@@ -5,13 +5,14 @@
     stopOnFailure="false"
     bootstrap="./tests/bootstrap.php"
     forceCoversAnnotation="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
     >
     <php>
         <ini name="memory_limit" value="-1"/>
         <ini name="apc.enable_cli" value="1"/>
         <const name="UNIT_TEST_RUN" value="1"/>
     </php>
-
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
         <testsuite name="BEdita 4 App Test Suite">
@@ -30,23 +31,23 @@
     <!-- Setup a listener for fixtures -->
     <listeners>
         <listener
-        class="\Cake\TestSuite\Fixture\FixtureInjector"
-        file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
+            class="\Cake\TestSuite\Fixture\FixtureInjector"
+            file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
             <arguments>
-                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
+                <object class="\Cake\TestSuite\Fixture\FixtureManager"/>
             </arguments>
         </listener>
     </listeners>
 
     <!-- Ignore vendor tests in code coverage reports -->
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">./src/</directory>
             <directory suffix=".php">./plugins/*/src/</directory>
             <directory suffix=".php">./plugins/*/*/src/</directory>
-            <exclude>
-                <file>src/Console/Installer.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+        <exclude>
+            <file>src/Console/Installer.php</file>
+        </exclude>
+    </coverage>
 </phpunit>
