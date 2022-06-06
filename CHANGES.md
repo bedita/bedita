@@ -1,5 +1,22 @@
 # ChangeLog
 
+## Version 5.0.0-beta - Salix
+
+### API changes (5.0.0-beta)
+
+* [#1910](https://github.com/bedita/bedita/pull/1910) Refactor: use standard Cake4 configuration layout, new BaseApplication class + other minor changes
+* [#1909](https://github.com/bedita/bedita/pull/1909) API endpoint to admin endpoint permissions
+
+### Core changes (5.0.0-beta)
+
+* [#1904](https://github.com/bedita/bedita/pull/1904) Use new MiddlewareInterface
+* [#1906](https://github.com/bedita/bedita/pull/1906) Avoid duplicate results with `?filter[ancestors]`
+
+### Integration changes (5.0.0-beta)
+
+* [#1914](https://github.com/bedita/bedita/pull/1914) Migrate to PHPUnit 9.5
+* [#1913](https://github.com/bedita/bedita/pull/1913) Update composer dependencies
+
 ## Version 5.0.0.alpha - Salix
 
 First public release - changelog will be updated from next release onwards
