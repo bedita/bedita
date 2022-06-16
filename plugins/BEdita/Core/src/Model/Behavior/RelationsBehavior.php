@@ -116,7 +116,7 @@ class RelationsBehavior extends Behavior
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import($relation->has('params') ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->right_object_types);
 
@@ -148,7 +148,7 @@ class RelationsBehavior extends Behavior
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import($relation->has('params') ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->left_object_types);
 

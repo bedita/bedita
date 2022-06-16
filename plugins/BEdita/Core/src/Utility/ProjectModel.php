@@ -14,6 +14,7 @@
 
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\Model\Entity\Relation;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -113,7 +114,7 @@ class ProjectModel
      */
     protected static function relations(): array
     {
-        return TableRegistry::getTableLocator()
+        $relations = TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
             ->all()
@@ -122,11 +123,23 @@ class ProjectModel
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
                 sort($right);
-                unset($row['id']);
-                $row->set('left_object_types', $left);
-                $row->set('right_object_types', $right);
+                $row->unset(['id', 'left_object_types', 'right_object_types']);
+                $row->setAccess(['left', 'right'], true);
+                $row->set(compact('left', 'right'));
             })
             ->toArray();
+
+        // remove `definitions` and `$schema` from `params` to avoid issues in JSON-Schema validation
+        return array_map(
+            function (Relation $relation) {
+                $r = $relation->jsonSerialize();
+                $r['params'] = Hash::remove((array)$r['params'], 'definitions');
+                $r['params'] = Hash::remove($r['params'], '$schema');
+
+                return array_filter($r);
+            },
+            (array)$relations
+        );
     }
 
     /**
@@ -140,11 +153,19 @@ class ProjectModel
             ->find('type', ['dynamic'])
             ->all()
             ->each(function (EntityInterface $row) {
-                unset($row['id']);
-                unset($row['created']);
-                unset($row['modified']);
-                unset($row['label']);
-                unset($row['is_static']);
+                $hidden = [
+                    'id',
+                    'created',
+                    'modified',
+                    'label',
+                    'is_static',
+                    'object_type_name',
+                    'property_type_name',
+                ];
+                $row->setAccess(['object', 'property'], true);
+                $row->set('object', $row->get('object_type_name'));
+                $row->set('property', $row->get('property_type_name'));
+                $row->setHidden($hidden, true);
             })
             ->toArray();
     }
