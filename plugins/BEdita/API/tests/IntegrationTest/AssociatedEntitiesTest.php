@@ -38,8 +38,10 @@ class AssociatedEntitiesTest extends IntegrationTestCase
 
     /**
      * Data provider for `testEventAssoc`
+     *
+     * @return array
      */
-    public function eventAssocProvider()
+    public function eventAssocProvider(): array
     {
         return [
             'moreDates' => [
@@ -94,10 +96,11 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @param $attributes array Event data to insert
      * @param $modified array Attributes to modify
+     * @return void
      * @dataProvider eventAssocProvider
      * @coversNothing
      */
-    public function testEventAssoc($attributes, $modified)
+    public function testEventAssoc(array $attributes, array $modified): void
     {
         $type = 'events';
         $lastId = $this->lastObjectId();
@@ -166,7 +169,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testRelatedDeleted()
+    public function testRelatedDeleted(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
         $entity = $table->get(3);
@@ -184,7 +187,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testIncludedDeleted()
+    public function testIncludedDeleted(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
         $entity = $table->get(3);
@@ -202,7 +205,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testIncludedRelated()
+    public function testIncludedRelated(): void
     {
         // Create temporary relation between documents and locations, link location #8 to document #2.
         Relations::create([
@@ -253,7 +256,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testIncludedMedia()
+    public function testIncludedMedia(): void
     {
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
         $data = [

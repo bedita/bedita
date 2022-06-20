@@ -156,7 +156,7 @@ class Properties extends ResourcesBase
         $diff = array_diff_key(array_flip($required), array_filter($data));
         if (!empty($diff)) {
             throw new BadRequestException(
-                __d('bedita', 'Missing mandatory property data "{0}"', implode(array_keys($diff)))
+                __d('bedita', 'Missing mandatory property data "{0}"', implode(', ', array_keys($diff)))
             );
         }
     }
