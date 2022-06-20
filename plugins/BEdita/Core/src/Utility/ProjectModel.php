@@ -124,8 +124,8 @@ class ProjectModel
                 sort($left);
                 sort($right);
                 $row->unset(['id', 'left_object_types', 'right_object_types']);
-                $row->setAccess(['left', 'right'], true);
-                $row->set(compact('left', 'right'));
+                $row->set('left', $left);
+                $row->set('right', $right);
             })
             ->toArray();
 
@@ -162,7 +162,6 @@ class ProjectModel
                     'object_type_name',
                     'property_type_name',
                 ];
-                $row->setAccess(['object', 'property'], true);
                 $row->set('object', $row->get('object_type_name'));
                 $row->set('property', $row->get('property_type_name'));
                 $row->setHidden($hidden, true);
