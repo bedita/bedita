@@ -38,6 +38,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
 
     /**
      * Data provider for `testEventAssoc`
+     *
+     * @return array
      */
     public function eventAssocProvider(): array
     {
