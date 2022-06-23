@@ -92,6 +92,7 @@ class Query extends CakeQuery
      */
     public function getInheritanceSubQuery()
     {
+        // phpcs:ignore
         $subQuery = new parent($this->getConnection(), $this->_repository);
 
         // Current table.
