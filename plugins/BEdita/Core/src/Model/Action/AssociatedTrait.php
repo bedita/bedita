@@ -200,7 +200,9 @@ trait AssociatedTrait
             $joinData->setNew(true);
         }
 
-        $this->Association->junction()->patchEntity($joinData, $data ?: []);
+        if (!empty($data)) {
+            $this->Association->junction()->patchEntity($joinData, $data);
+        }
         $errors = $joinData->getErrors();
         if (!empty($errors)) {
             throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
