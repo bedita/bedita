@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM;
 
 use BEdita\Core\ORM\Locator\TableLocator;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -41,13 +42,31 @@ class TableLocatorTest extends TestCase
     protected $TableLocator;
 
     /**
-     * {@inheritDoc}
+     * Previously configured Table locator.
+     *
+     * @var \Cake\ORM\Locator\LocatorInterface
      */
-    public function setUp()
+    protected $prevTableLocator;
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
     {
         parent::setUp();
 
+        $this->prevTableLocator = TableRegistry::getTableLocator();
         $this->TableLocator = new TableLocator();
+        TableRegistry::setTableLocator($this->TableLocator); // ensure to use the same TableLocator instance even internally.
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->TableLocator->clear();
+        $this->TableLocator = null;
+        TableRegistry::setTableLocator($this->prevTableLocator);
     }
 
     /**
@@ -76,7 +95,7 @@ class TableLocatorTest extends TestCase
             ],
             'fallbackObjectType' => [
                 'BEdita\Core\Model\Table\ObjectsTable',
-                'Documents'
+                'Documents',
             ],
         ];
     }
@@ -88,7 +107,6 @@ class TableLocatorTest extends TestCase
      * @param string $alias Table alias.
      * @param array $options Table options.
      * @return void
-     *
      * @dataProvider getClassNameProvider()
      * @covers ::_getClassName()
      */

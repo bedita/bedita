@@ -44,7 +44,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * If `self::$fields` is empty trying to use table schema loaded in configuration
      */
-    public function init()
+    public function init(): void
     {
         $this->getEventManager()->on($this);
 
@@ -144,7 +144,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $eventMap = ['TestFixture.beforeBuildSchema' => 'beforeBuildSchema'];
         $events = [];

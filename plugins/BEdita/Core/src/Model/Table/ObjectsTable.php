@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -23,7 +24,6 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -39,7 +39,6 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\FoldersTable|\Cake\ORM\Association\BelongsToMany $Parents
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
- *
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
@@ -47,18 +46,16 @@ use Cake\Utility\Hash;
  * @method \BEdita\Core\Model\Entity\ObjectEntity patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
- *
  * @since 4.0.0
  */
 class ObjectsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = ObjectsValidator::class;
 
@@ -68,7 +65,7 @@ class ObjectsTable extends Table
      *
      * @var array
      */
-    const DATERANGES_SORT_FIELDS = [
+    public const DATERANGES_SORT_FIELDS = [
         'date_ranges_min_start_date',
         'date_ranges_max_start_date',
         'date_ranges_min_end_date',
@@ -80,7 +77,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -95,7 +92,7 @@ class ObjectsTable extends Table
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes'
+            'className' => 'BEdita/Core.ObjectTypes',
         ]);
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
@@ -105,11 +102,11 @@ class ObjectsTable extends Table
         ]);
         $this->belongsTo('CreatedByUsers', [
             'foreignKey' => 'created_by',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('ModifiedByUsers', [
             'foreignKey' => 'modified_by',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsToMany('Parents', [
             'className' => 'BEdita/Core.Folders',
@@ -132,7 +129,7 @@ class ObjectsTable extends Table
             'className' => 'BEdita/Core.Tags',
             'through' => 'BEdita/Core.ObjectTags',
             'foreignKey' => 'object_id',
-            'targetForeignKey' => 'category_id',
+            'targetForeignKey' => 'tag_id',
             'sort' => ['name' => 'ASC'],
             'finder' => 'enabled',
             'cascadeCallbacks' => true,
@@ -152,7 +149,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
@@ -188,7 +185,6 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Http\Exception\BadRequestException If a wrong lang tag is specified
      */
     protected function checkLangTag(EntityInterface $entity)
     {
@@ -203,7 +199,7 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
-     * @throws \Cake\Http\Exception\ForbiddenException
+     * @throws \BEdita\Core\Exception\LockedResourceException
      */
     protected function checkLocked(EntityInterface $entity): void
     {
@@ -211,7 +207,7 @@ class ObjectsTable extends Table
             return;
         }
         if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
-            throw new ForbiddenException(__('Operation not allowed on "locked" objects'));
+            throw new LockedResourceException(__('Operation not allowed on "locked" objects'));
         }
     }
 
@@ -285,6 +281,7 @@ class ObjectsTable extends Table
                         $this->ObjectTypes
                             ->find('children', ['for' => $value->id])
                             ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->all()
                             ->toList()
                     );
                 }
@@ -330,9 +327,9 @@ class ObjectsTable extends Table
     /**
      * Create a date ranges subquery join if a special sort field is set.
      *
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
-     * @return Query|null
+     * @return \Cake\ORM\Query|null
      */
     protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
     {
@@ -410,7 +407,7 @@ class ObjectsTable extends Table
     /**
      * Finder for objects having a certain `ancestor` on the tree.
      *
-     * @param Query $query  Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Id or unique name of ancestor
      * @return \Cake\ORM\Query
      */
@@ -423,21 +420,24 @@ class ObjectsTable extends Table
             ])
             ->firstOrFail();
 
-        return $query
-            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentNode) {
-                return $query->where(function (QueryExpression $exp) use ($parentNode) {
-                    return $exp
-                        ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
-                        ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                });
-            })
-            ->order($this->TreeNodes->aliasField('tree_left'));
+        return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
+            return $exp->in(
+                $this->aliasField('id'),
+                $this->TreeNodes->find()
+                    ->select(['object_id'])
+                    ->where(function (QueryExpression $exp) use ($parentNode) {
+                        return $exp
+                            ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
+                            ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
+                    })
+            );
+        });
     }
 
     /**
      * Finder for objects having a certain `parent` on the tree.
      *
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Id or unique name of ancestor
      * @return \Cake\ORM\Query
      */
@@ -549,15 +549,15 @@ class ObjectsTable extends Table
         $now = $query->func()->now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and_([
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+            return $exp->and([
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_start');
 
                     return $exp
                         ->isNull($field)
                         ->lte($field, $now);
                 }),
-                $exp->or_(function (QueryExpression $exp) use ($now) {
+                $exp->or(function (QueryExpression $exp) use ($now) {
                     $field = $this->aliasField('publish_end');
 
                     return $exp
@@ -614,9 +614,9 @@ class ObjectsTable extends Table
      * $options array MUST contain a list of category/tag names or a single element with a comma separated list.
      *
      * @param string $assoc Association name, 'Tags' or 'Categories'
-     * @param Query $query Query object instance.
+     * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Tag or category names.
-     * @return Query
+     * @return \Cake\ORM\Query
      */
     protected function categoriesQuery(string $assoc, Query $query, array $options)
     {

@@ -12,9 +12,8 @@
  */
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Shell\Task\CheckSchemaTask;
-use BEdita\Core\Shell\Task\InitSchemaTask;
 use Cake\Cache\Cache;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
 
@@ -25,14 +24,13 @@ use Cake\Datasource\ConnectionManager;
  *  - create schema files
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  */
 class DbAdminShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $tasks = [
         'Init' => ['class' => 'BEdita/Core.InitSchema', 'config' => []],
@@ -44,7 +42,7 @@ class DbAdminShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function startup()
+    public function startup(): void
     {
         Cache::disable();
 
@@ -56,7 +54,7 @@ class DbAdminShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    protected function _welcome()
+    protected function _welcome(): void
     {
         parent::_welcome();
 
@@ -79,7 +77,7 @@ class DbAdminShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser

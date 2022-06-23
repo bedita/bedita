@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -58,9 +58,9 @@ class ExternalAuthTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -68,9 +68,9 @@ class ExternalAuthTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ExternalAuth);
         LoggedUser::resetUser();
@@ -142,14 +142,13 @@ class ExternalAuthTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
-        $externalAuth = $this->ExternalAuth->newEntity();
+        $externalAuth = $this->ExternalAuth->newEntity([]);
         $this->ExternalAuth->patchEntity($externalAuth, $data);
 
         $success = $this->ExternalAuth->save($externalAuth);
@@ -160,7 +159,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback when everything is already ok.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveNothingToDo()
@@ -183,7 +181,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUser()
@@ -214,7 +211,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user and sets `created_by` to its own ID.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUserCreatedByThemselves()
@@ -261,8 +257,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 'example',
@@ -275,8 +271,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 [
@@ -291,8 +287,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 1,
@@ -306,7 +302,6 @@ class ExternalAuthTableTest extends TestCase
      * @param mixed $expected Expected result.
      * @param $authProvider
      * @return void
-     *
      * @covers ::findAuthProvider()
      * @dataProvider findAuthProviderProvider()
      */
@@ -351,8 +346,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -360,8 +355,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => null,
                             'enabled' => true,
-                            'created' => new Time('2018-04-07 12:51:27'),
-                            'modified' => new Time('2018-04-07 12:51:27'),
+                            'created' => new FrozenTime('2018-04-07 12:51:27'),
+                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -375,8 +370,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new Time('2018-04-07 12:51:27'),
-                        'modified' => new Time('2018-04-07 12:51:27'),
+                        'created' => new FrozenTime('2018-04-07 12:51:27'),
+                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -384,8 +379,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => null,
                             'enabled' => true,
-                            'created' => new Time('2018-04-07 12:51:27'),
-                            'modified' => new Time('2018-04-07 12:51:27'),
+                            'created' => new FrozenTime('2018-04-07 12:51:27'),
+                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -400,7 +395,6 @@ class ExternalAuthTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param mixed $user The finder option
      * @return void
-     *
      * @covers ::findUser()
      * @dataProvider findByUserProvider()
      */

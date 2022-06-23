@@ -14,6 +14,7 @@
 namespace BEdita\Core\Shell\Task;
 
 use BEdita\Core\Model\Validation\SqlConventionsValidator;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\MissingTaskException;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
@@ -50,7 +51,7 @@ class CheckSchemaTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser
@@ -144,7 +145,7 @@ class CheckSchemaTask extends Shell
     protected function filterPhinxlogTables(array $tables)
     {
         return array_filter($tables, function ($table) {
-            return ($table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog');
+            return $table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog';
         });
     }
 

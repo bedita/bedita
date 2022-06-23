@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $Roles
- *
  * @method \BEdita\Core\Model\Entity\ObjectPermission get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission[] newEntities(array $data, array $options = [])
@@ -26,7 +25,7 @@ class ObjectPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -37,12 +36,12 @@ class ObjectPermissionsTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Roles'
+            'className' => 'BEdita/Core.Roles',
         ]);
     }
 
@@ -51,7 +50,7 @@ class ObjectPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -68,7 +67,7 @@ class ObjectPermissionsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));

@@ -56,7 +56,7 @@ class Stream extends Entity implements JsonApiSerializable
     use LogTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -66,7 +66,7 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'object_id',
@@ -74,7 +74,7 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'url',

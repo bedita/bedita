@@ -17,7 +17,7 @@ use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -36,7 +36,7 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -47,7 +47,6 @@ class TableTest extends TestCase
      * Test marshaller
      *
      * @return void
-     *
      * @covers ::marshaller()
      */
     public function testMarshaller()
@@ -59,7 +58,6 @@ class TableTest extends TestCase
      * Test query
      *
      * @return void
-     *
      * @covers ::query()
      */
     public function testQuery()
@@ -71,7 +69,6 @@ class TableTest extends TestCase
      * Test inheritance setup.
      *
      * @return void
-     *
      * @covers ::extensionOf()
      */
     public function testExtensionOf()
@@ -86,7 +83,6 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
-     *
      * @covers ::inheritedTable()
      * @covers ::inheritedTables()
      */
@@ -114,7 +110,6 @@ class TableTest extends TestCase
      * Test method to find common inheritance tables.
      *
      * @return void
-     *
      * @covers ::commonInheritance()
      */
     public function testCommonInheritance()
@@ -164,7 +159,7 @@ class TableTest extends TestCase
         $feline = $felines->first();
         $expected = [
             'id' => 1,
-            'family' => 'purring cats'
+            'family' => 'purring cats',
         ];
         $result = $feline->extract($felines->first()->getVisible());
         ksort($expected);
@@ -186,7 +181,7 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
-        $updatedAt = new Time('2018-02-20 09:50:00');
+        $updatedAt = new FrozenTime('2018-02-20 09:50:00');
 
         $feline = $felines->first();
         $expected = [
@@ -195,7 +190,7 @@ class TableTest extends TestCase
             'legs' => 4,
             'updated_at' => $updatedAt,
             'subclass' => 'Eutheria',
-            'family' => 'purring cats'
+            'family' => 'purring cats',
         ];
         $result = $feline->extract($felines->first()->getVisible());
         ksort($expected);
@@ -223,15 +218,15 @@ class TableTest extends TestCase
                 'name' => 'cat',
                 'legs' => 4,
                 'updated_at' => $updatedAt,
-                'subclass' => 'Eutheria'
+                'subclass' => 'Eutheria',
             ],
             [
                 'id' => 2,
                 'name' => 'koala',
                 'legs' => 4,
                 'updated_at' => null,
-                'subclass' => 'Marsupial'
-            ]
+                'subclass' => 'Marsupial',
+            ],
         ];
         $expected = array_map(function ($a) {
             ksort($a);
@@ -272,7 +267,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'updated_at' => new Time('2018-02-20 09:50:00'),
+            'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [
@@ -280,15 +275,15 @@ class TableTest extends TestCase
                     'id' => 1,
                     'title' => 'The cat',
                     'body' => 'article body',
-                    'fake_animal_id' => 1
+                    'fake_animal_id' => 1,
                 ],
                 [
                     'id' => 2,
                     'title' => 'Puss in boots',
                     'body' => 'text',
-                    'fake_animal_id' => 1
-                ]
-            ]
+                    'fake_animal_id' => 1,
+                ],
+            ],
         ];
         ksort($expected);
 
@@ -308,15 +303,15 @@ class TableTest extends TestCase
         return [
             'fieldsFromAllInherited' => [
                 ['family', 'subclass', 'name'],
-                ['family', 'subclass', 'name']
+                ['family', 'subclass', 'name'],
             ],
             'fieldsFromAncestor' => [
                 ['name'],
-                ['name']
+                ['name'],
             ],
             'fieldsFromParent' => [
                 ['subclass'],
-                ['subclass']
+                ['subclass'],
             ],
         ];
     }
@@ -327,7 +322,6 @@ class TableTest extends TestCase
      * @param array $expected Expected result.
      * @param array $select Select clause.
      * @return void
-     *
      * @dataProvider selectProvider
      * @coversNothing
      */
@@ -378,7 +372,7 @@ class TableTest extends TestCase
         $data = [
             'legs' => 4,
             'subclass' => 'Another Sublcass',
-            'family' => 'big cats'
+            'family' => 'big cats',
         ];
 
         foreach (['tiger', 'lion', 'leopard'] as $animal) {
@@ -418,9 +412,9 @@ class TableTest extends TestCase
                 ],
                 [
                     'keyField' => 'id',
-                    'valueField' => 'family'
+                    'valueField' => 'family',
                 ],
-                ['id' => 'asc']
+                ['id' => 'asc'],
             ],
             'fieldsOnMainAndParent' => [
                 [
@@ -431,9 +425,9 @@ class TableTest extends TestCase
                 ],
                 [
                     'keyField' => 'id',
-                    'valueField' => 'subclass'
+                    'valueField' => 'subclass',
                 ],
-                ['id' => 'asc']
+                ['id' => 'asc'],
             ],
             'fieldsOnParentAndAncestor' => [
                 [
@@ -444,9 +438,9 @@ class TableTest extends TestCase
                 ],
                 [
                     'keyField' => 'name',
-                    'valueField' => 'subclass'
+                    'valueField' => 'subclass',
                 ],
-                ['name' => 'asc']
+                ['name' => 'asc'],
             ],
             'fieldsOnAncestor' => [
                 [
@@ -457,10 +451,10 @@ class TableTest extends TestCase
                 ],
                 [
                     'keyField' => 'name',
-                    'valueField' => 'legs'
+                    'valueField' => 'legs',
                 ],
-                ['name' => 'asc']
-            ]
+                ['name' => 'asc'],
+            ],
         ];
     }
 
@@ -471,7 +465,6 @@ class TableTest extends TestCase
      * @param array $listParams Options for `find('list')`.
      * @param array $order Order clause.
      * @return void
-     *
      * @dataProvider findListProvider
      * @coversNothing
      */
@@ -483,7 +476,7 @@ class TableTest extends TestCase
         $data = [
             'legs' => 4,
             'subclass' => 'Another Sublcass',
-            'family' => 'big cats'
+            'family' => 'big cats',
         ];
 
         foreach (['tiger', 'lion', 'leopard'] as $animal) {
@@ -503,7 +496,6 @@ class TableTest extends TestCase
      * Test `hasFinder` method.
      *
      * @return void
-     *
      * @covers ::hasFinder()
      */
     public function testHasFinder()
@@ -525,7 +517,6 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     *
      * @covers ::callFinder()
      */
     public function testCallFinder()
@@ -558,13 +549,12 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     *
      * @covers ::callFinder()
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Unknown finder method "gustavo"
      */
     public function testCallMissingFinder()
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('Unknown finder method "gustavo"');
         $this->fakeMammals->find('gustavo');
     }
 
@@ -572,7 +562,6 @@ class TableTest extends TestCase
      * Test `hasField` method.
      *
      * @return void
-     *
      * @covers ::hasField()
      */
     public function testHasField()
@@ -588,7 +577,6 @@ class TableTest extends TestCase
      * Test cloning of a table.
      *
      * @return void
-     *
      * @covers ::__clone()
      */
     public function testClone()

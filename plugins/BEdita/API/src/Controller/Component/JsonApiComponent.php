@@ -25,7 +25,6 @@ use Cake\Utility\Hash;
  * Handles JSON API data format in input and in output
  *
  * @since 4.0.0
- *
  * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  */
 class JsonApiComponent extends Component
@@ -35,15 +34,15 @@ class JsonApiComponent extends Component
      *
      * @var string
      */
-    const CONTENT_TYPE = 'application/vnd.api+json';
+    public const CONTENT_TYPE = 'application/vnd.api+json';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $components = ['RequestHandler'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'contentType' => null,
@@ -53,15 +52,15 @@ class JsonApiComponent extends Component
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $contentType = self::CONTENT_TYPE;
         if (!empty($config['contentType'])) {
-            $contentType = $this->getController()->response->getMimeType($config['contentType']) ?: $config['contentType'];
+            $contentType = $this->getController()->getResponse()->getMimeType($config['contentType']) ?: $config['contentType'];
         }
-        $this->getController()->response = $this->getController()->response->withType($contentType);
+        $this->getController()->setResponse($this->getController()->getResponse()->withType($contentType));
 
         $this->RequestHandler->setConfig('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
         $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
@@ -87,10 +86,11 @@ class JsonApiComponent extends Component
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Bad JSON input'),
-                'detail' => $e->getMessage(),
-            ]);
+            throw new BadRequestException(
+                __d('bedita', 'Bad JSON input'),
+                400,
+                $e
+            );
         }
     }
 
@@ -104,7 +104,7 @@ class JsonApiComponent extends Component
      * @param array|null $meta Additional metadata about error.
      * @return void
      */
-    public function error($status, $title, $detail = null, $code = null, array $meta = null)
+    public function error($status, $title, $detail = null, $code = null, ?array $meta = null)
     {
         $controller = $this->getController();
 
@@ -124,7 +124,7 @@ class JsonApiComponent extends Component
      */
     public function getLinks()
     {
-        $request = $this->getController()->request->withParam('pass', []);
+        $request = $this->getController()->getRequest()->withParam('pass', []);
         $links = [
             'self' => Router::reverse($request, true),
             'home' => Router::url(['_name' => 'api:home'], true),
@@ -138,12 +138,12 @@ class JsonApiComponent extends Component
             $query['page'] = null;
             $links['first'] = Router::reverse($request->withQueryParams($query), true);
 
-            $query['page'] = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
+            $query['page'] = $paging['pageCount'] > 1 ? $paging['pageCount'] : null;
             $links['last'] = Router::reverse($request->withQueryParams($query), true);
 
             $links['prev'] = null;
             if ($paging['prevPage']) {
-                $query['page'] = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
+                $query['page'] = $paging['page'] > 2 ? $paging['page'] - 1 : null;
                 $links['prev'] = Router::reverse($request->withQueryParams($query), true);
             }
 
@@ -166,7 +166,7 @@ class JsonApiComponent extends Component
     {
         $meta = [];
 
-        $paging = $this->getController()->request->getParam('paging');
+        $paging = $this->getController()->getRequest()->getParam('paging');
         if (!empty($paging) && is_array($paging)) {
             $paging = reset($paging);
             $paging += [
@@ -197,9 +197,9 @@ class JsonApiComponent extends Component
      * @return void
      * @throws \Cake\Http\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
      */
-    protected function allowedResourceTypes($types, array $data = null)
+    protected function allowedResourceTypes($types, ?array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->request->getData() : $data;
+        $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || !$types) {
             return;
         }
@@ -232,9 +232,9 @@ class JsonApiComponent extends Component
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
      */
-    protected function allowClientGeneratedIds($allow = true, array $data = null)
+    protected function allowClientGeneratedIds($allow = true, ?array $data = null)
     {
-        $data = ($data === null) ? $this->getController()->request->getData() : $data;
+        $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || $allow) {
             return;
         }
@@ -272,22 +272,22 @@ class JsonApiComponent extends Component
     {
         $controller = $this->getController();
 
-        if ($controller->request->is('jsonapi')) {
+        if ($controller->getRequest()->is('jsonapi')) {
             $this->RequestHandler->renderAs($controller, 'jsonapi');
         }
 
-        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
+        if ($this->getConfig('checkMediaType') && trim($controller->getRequest()->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
             throw new UnsupportedMediaTypeException(
-                __d('bedita', 'Bad request content type "{0}"', $controller->request->getHeaderLine('Accept'))
+                __d('bedita', 'Bad request content type "{0}"', $controller->getRequest()->getHeaderLine('Accept'))
             );
         }
 
-        if ($controller->request->is(['post', 'patch'])) {
+        if ($controller->getRequest()->is(['post', 'patch'])) {
             $this->allowedResourceTypes($this->getConfig('resourceTypes'));
         }
 
-        if ($controller->request->is('post') && !$this->getConfig('clientGeneratedIds')) {
+        if ($controller->getRequest()->is('post') && !$this->getConfig('clientGeneratedIds')) {
             $this->allowClientGeneratedIds(false);
         }
     }

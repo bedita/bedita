@@ -49,9 +49,9 @@ class UserModifiedBehaviorTest extends TestCase
     protected $Objects;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,9 +60,9 @@ class UserModifiedBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -73,7 +73,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test behavior initialization process.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -98,7 +97,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test setting a custom user ID.
      *
      * @return void
-     *
      * @covers ::userId()
      */
     public function testUserId()
@@ -118,7 +116,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test implemented events.
      *
      * @return void
-     *
      * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
@@ -136,13 +133,12 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return \BEdita\Core\Model\Entity\ObjectEntity
-     *
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
     public function testHandleEvent()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
@@ -156,21 +152,20 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return void
-     *
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid
      * @covers ::handleEvent()
      * @covers ::updateField()
      */
     public function testHandleEventFailure()
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [
                 'modified_by' => 'sometimes',
             ],
         ], false);
 
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $this->Objects->save($object);
     }
@@ -180,7 +175,6 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()
@@ -198,7 +192,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity with an unknown event.
      *
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()
@@ -218,14 +211,13 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity when one of the fields is dirty already.
      *
      * @return void
-     *
      * @depends testHandleEvent
      * @covers ::touchUser()
      * @covers ::updateField()
      */
     public function testTouchUserDirtyField()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'documents';
         $object->created_by = 5;
         $this->Objects->saveOrFail($object);

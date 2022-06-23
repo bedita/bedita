@@ -26,25 +26,25 @@ class UploadComponentTest extends IntegrationTestCase
     use TestFilesystemTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup();
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         parent::tearDown();
@@ -87,7 +87,6 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @param array $data The file data.
      * @return void
-     *
      * @dataProvider uploadProvider
      * @covers ::upload()
      * @covers ::beforeFilter()
@@ -140,7 +139,6 @@ class UploadComponentTest extends IntegrationTestCase
      * Test upload method.
      *
      * @return void
-     *
      * @covers ::upload()
      * @covers ::beforeFilter()
      */
@@ -192,7 +190,6 @@ class UploadComponentTest extends IntegrationTestCase
      * Test upload method with `private_url` query.
      *
      * @return void
-     *
      * @covers ::upload()
      */
     public function testUploadPrivateUrl(): void

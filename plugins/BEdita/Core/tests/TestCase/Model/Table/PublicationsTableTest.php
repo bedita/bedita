@@ -71,16 +71,14 @@ class PublicationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
-     *
      * @covers ::initialize()
      * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
         $this->Publications = TableRegistry::getTableLocator()->get('Publications');
-        $entity = $this->Publications->newEntity();
+        $entity = $this->Publications->newEntity([]);
         $entity = $this->Publications->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

@@ -25,7 +25,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Users
- *
  * @method \BEdita\Core\Model\Entity\RolesUser get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser[] newEntities(array $data, array $options = [])
@@ -41,7 +40,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -52,12 +51,10 @@ class RolesUsersTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Roles'
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users'
         ]);
     }
 
@@ -66,7 +63,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -80,7 +77,7 @@ class RolesUsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['role_id', 'user_id']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));

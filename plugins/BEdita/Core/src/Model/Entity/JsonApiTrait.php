@@ -26,7 +26,6 @@ use Cake\Utility\Inflector;
  * Trait for exposing useful properties required for JSON API response formatting at the entity level.
  *
  * @since 4.0.0
- *
  * @property string $type
  * @property string[] $relationships
  * @property string[] $meta
@@ -85,7 +84,7 @@ trait JsonApiTrait
      * @param string $property Property name to check
      * @return bool
      */
-    abstract public function isAccessible($property);
+    abstract public function isAccessible(string $property);
 
     /**
      * Extract properties from an entity.
@@ -394,7 +393,7 @@ trait JsonApiTrait
 
         $relationships = [];
         foreach ($associations as $association) {
-            list(, $associationType) = namespaceSplit(get_class($association));
+            [, $associationType] = namespaceSplit(get_class($association));
             $name = $association->getProperty();
             if (
                 !($association instanceof Association) ||
@@ -438,7 +437,7 @@ trait JsonApiTrait
             $links = $this->getLinks();
         }
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS) === 0) {
-            list($relationships, $included) = $this->getRelationships();
+            [$relationships, $included] = $this->getRelationships();
         }
 
         return array_filter(compact('id', 'type', 'attributes', 'meta', 'links', 'relationships', 'included'));

@@ -24,7 +24,6 @@ use Cake\Utility\Hash;
  * Provide authorization on a per-endpoint basis.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\EndpointsTable $Endpoints
  * @property \BEdita\Core\Model\Table\EndpointPermissionsTable $EndpointPermissions
  */
@@ -58,9 +57,9 @@ class EndpointAuthorize extends BaseAuthorize
     protected $authorized;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function authorize($user, ServerRequest $request)
+    public function authorize($user, ServerRequest $request): bool
     {
         // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
         if (
@@ -121,7 +120,7 @@ class EndpointAuthorize extends BaseAuthorize
         $controller = $this->_registry->getController();
         $controller
             ->Auth->getAuthenticate('BEdita/API.Jwt')
-            ->unauthenticated($controller->request, $controller->response);
+            ->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 
     /**

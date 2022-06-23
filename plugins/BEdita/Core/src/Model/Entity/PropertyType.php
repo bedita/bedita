@@ -21,7 +21,6 @@ use Cake\ORM\Entity;
  *
  * @property string $name
  * @property mixed $params
- *
  * @since 4.0.0
  */
 class PropertyType extends Entity implements JsonApiSerializable
@@ -29,7 +28,7 @@ class PropertyType extends Entity implements JsonApiSerializable
     use JsonApiModelTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,

@@ -43,21 +43,23 @@ class HistoryBehaviorTest extends TestCase
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         LoggedUser::setUser(['id' => 1]);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         LoggedUser::resetUser();
@@ -128,6 +130,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '5', 'resource_type' => 'objects'])
+                ->all()
                 ->last();
         static::assertNotEmpty($history);
         unset($data['username']);
@@ -149,7 +152,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents = TableRegistry::getTableLocator()->get('Documents');
         $doc = $Documents->get(3);
         $data = [
-            'description' => 'new history desc'
+            'description' => 'new history desc',
         ];
         $entity = $Documents->patchEntity($doc, $data);
         $Documents->save($entity);
@@ -160,6 +163,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
@@ -195,6 +199,7 @@ class HistoryBehaviorTest extends TestCase
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last();
         static::assertEquals('trash', $history->get('user_action'));
 
@@ -203,6 +208,7 @@ class HistoryBehaviorTest extends TestCase
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last();
         static::assertNotEmpty($history);
         static::assertEquals('restore', $history->get('user_action'));
@@ -216,7 +222,7 @@ class HistoryBehaviorTest extends TestCase
     public function testCreate()
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $entity = $Users->newEntity();
+        $entity = $Users->newEntity([]);
         $data = [
             'username' => 'aurelio',
             'name' => 'Aurelio',
@@ -250,6 +256,7 @@ class HistoryBehaviorTest extends TestCase
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
                 ->order(['id' => 'ASC'])
+                ->all()
                 ->last()
                 ->toArray();
         static::assertNotEmpty($history);
@@ -317,11 +324,11 @@ class HistoryBehaviorTest extends TestCase
         return [
             'logged' => [
                 [2],
-                []
+                [],
             ],
             'options' => [
                 [2],
-                [5]
+                [5],
             ],
         ];
     }
@@ -331,9 +338,7 @@ class HistoryBehaviorTest extends TestCase
      *
      * @param array $expected Expected result
      * @param array $options Filter options
-     *
      * @return void
-     *
      * @dataProvider findHistoryEditorProvider
      * @covers ::findHistoryEditor()
      */

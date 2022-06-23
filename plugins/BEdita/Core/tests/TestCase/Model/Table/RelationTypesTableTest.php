@@ -46,7 +46,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -61,7 +61,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->RelationTypes);
 
@@ -113,13 +113,12 @@ class RelationTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     *
      * @dataProvider validationProvider
      * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RelationTypes->newEntity();
+        $objectType = $this->RelationTypes->newEntity([]);
         $this->RelationTypes->patchEntity($objectType, $data);
 
         $success = $this->RelationTypes->save($objectType);
@@ -130,7 +129,6 @@ class RelationTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -160,7 +158,6 @@ class RelationTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()

@@ -2,14 +2,14 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -49,13 +49,15 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.Translations',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -64,9 +66,9 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Objects);
         LoggedUser::resetUser();
@@ -179,7 +181,6 @@ class ObjectsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -279,7 +280,6 @@ class ObjectsTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $types Array of object types to filter for.
      * @return void
-     *
      * @dataProvider findTypeProvider
      * @covers ::findType()
      */
@@ -333,7 +333,6 @@ class ObjectsTableTest extends TestCase
      * @param array $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findDateRangesProvider
      * @covers ::findDateRanges()
      * @covers ::dateRangesSubQueryJoin()
@@ -348,12 +347,11 @@ class ObjectsTableTest extends TestCase
      * Test save of date ranges using 'replace' save strategy ({@see https://github.com/bedita/bedita/issues/1152}).
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSaveDateRanges()
     {
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = 'events';
 
         $data = [
@@ -393,7 +391,6 @@ class ObjectsTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     *
      * @covers ::findMine()
      */
     public function testFindMine()
@@ -419,10 +416,10 @@ class ObjectsTableTest extends TestCase
     public function testEmoji()
     {
         $object = $this->Objects->get(1);
-        $expected = "🙈 😂 😱";
+        $expected = '🙈 😂 😱';
         $info = Database::basicInfo();
         if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
-            $expected = "";
+            $expected = '';
         }
         $object['description'] = $expected;
         $this->Objects->save($object);
@@ -468,7 +465,6 @@ class ObjectsTableTest extends TestCase
      * @param bool $enabled Is the type enabled?
      * @param string $type Type being saved.
      * @return void
-     *
      * @covers ::beforeSave()
      * @dataProvider saveAbstractDisabledTypes()
      */
@@ -478,7 +474,7 @@ class ObjectsTableTest extends TestCase
             $this->expectException(PersistenceFailedException::class);
         }
 
-        $object = $this->Objects->newEntity();
+        $object = $this->Objects->newEntity([]);
         $object->type = $type;
 
         $result = $this->Objects->saveOrFail($object);
@@ -518,7 +514,6 @@ class ObjectsTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param int|string $uname The unique object identifier.
      * @return void
-     *
      * @dataProvider getIdProvider
      * @covers ::getId()
      */
@@ -538,22 +533,22 @@ class ObjectsTableTest extends TestCase
      * Test `findAncestor()`
      *
      * @return void
-     *
      * @covers ::findAncestor()
      */
     public function testFindAncestor()
     {
-        $objects = $this->Objects->find('ancestor', [11])->toArray();
+        $objects = $this->Objects->find('ancestor', [11])
+            ->order([$this->Objects->aliasField('id') => 'ASC'])
+            ->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
-        static::assertEquals([12, 4, 2], $ids);
+        static::assertEquals([2, 4, 12], $ids);
     }
 
     /**
      * Test `findParent()`
      *
      * @return void
-     *
      * @covers ::findParent()
      */
     public function testFindParent()
@@ -609,7 +604,6 @@ class ObjectsTableTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findStatusLevelProvider()
      * @covers ::findStatusLevel()
      */
@@ -670,7 +664,6 @@ class ObjectsTableTest extends TestCase
      * @param array $config I18n config.
      * @param array $data Save input data.
      * @return void
-     *
      * @dataProvider checkLangTagProvider()
      * @covers ::checkLangTag()
      */
@@ -724,7 +717,6 @@ class ObjectsTableTest extends TestCase
      * @param string $config Status level config.
      * @param array $data Save input data.
      * @return void
-     *
      * @dataProvider checkStatusProvider()
      * @covers ::checkStatus()
      */
@@ -762,7 +754,7 @@ class ObjectsTableTest extends TestCase
                 ],
             ],
             'forbidden' => [
-                new ForbiddenException('Operation not allowed on "locked" objects'),
+                new LockedResourceException('Operation not allowed on "locked" objects'),
                 [
                     'id' => 2,
                     'status' => 'off',
@@ -793,7 +785,6 @@ class ObjectsTableTest extends TestCase
      * @param string|\Exception $expected result or Exception.
      * @param array $data Save input data.
      * @return void
-     *
      * @dataProvider checkLockedProvider()
      * @covers ::checkLocked()
      */
@@ -815,7 +806,6 @@ class ObjectsTableTest extends TestCase
      * Test `findTranslations()`.
      *
      * @return void
-     *
      * @covers ::findTranslations()
      */
     public function testFindTranslations()
@@ -839,7 +829,7 @@ class ObjectsTableTest extends TestCase
         return [
             'no status' => [
                 12,
-                ['id > 0']
+                ['id > 0'],
             ],
             'status on' => [
                 7,
@@ -856,11 +846,10 @@ class ObjectsTableTest extends TestCase
      * @param array $condition Search condition.
      * @param string $statusLevel Configuration to write.
      * @return void
-     *
      * @dataProvider findAvailableProvider()
      * @covers ::findAvailable()
      */
-    public function testFindAvailable(int $expected, array $condition, string $statusLevel = null): void
+    public function testFindAvailable(int $expected, array $condition, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {
             Configure::write('Status.level', $statusLevel);
@@ -900,11 +889,10 @@ class ObjectsTableTest extends TestCase
      * @param int $expected Expected results.
      * @param string $config Configuration to write.
      * @return void
-     *
      * @dataProvider findPublishableProvider()
      * @covers ::findPublishable()
      */
-    public function testFindPublishable(int $expected, array $config = null): void
+    public function testFindPublishable(int $expected, ?array $config = null): void
     {
         if (!empty($config)) {
             Configure::write($config);
@@ -918,7 +906,6 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishDateAllowed()`.
      *
      * @return void
-     *
      * @covers ::findPublishDateAllowed()
      */
     public function testFindPublishDateAllowed(): void
@@ -931,7 +918,6 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishDateAllowed()` on a single object changing `publish_end`.
      *
      * @return void
-     *
      * @covers ::findPublishDateAllowed()
      */
     public function testFindPublishDateAllowedSingle(): void
@@ -940,7 +926,7 @@ class ObjectsTableTest extends TestCase
         static::assertNull($result);
 
         $object = $this->Objects->get(2);
-        $object->publish_end = Time::parse(time() + DAY);
+        $object->publish_end = FrozenTime::parse(time() + DAY);
         $this->Objects->saveOrFail($object);
 
         $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
@@ -951,7 +937,6 @@ class ObjectsTableTest extends TestCase
      * Test `findCategories` method.
      *
      * @return void
-     *
      * @covers ::findCategories()
      * @covers ::categoriesQuery()
      */
@@ -968,7 +953,6 @@ class ObjectsTableTest extends TestCase
      * Test `findTags` method.
      *
      * @return void
-     *
      * @covers ::findTags()
      * @covers ::categoriesQuery()
      */
@@ -985,7 +969,6 @@ class ObjectsTableTest extends TestCase
      * Test `findUnameId` method.
      *
      * @return void
-     *
      * @covers ::findUnameId()
      */
     public function testFindUnameID()
@@ -1007,7 +990,6 @@ class ObjectsTableTest extends TestCase
      * Test that only available children are returned.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testParentsAvailable(): void

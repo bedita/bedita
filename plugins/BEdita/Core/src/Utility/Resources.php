@@ -68,7 +68,7 @@ class Resources extends ResourcesBase
         ],
         'property_types' => [
             'core_type' => 0,
-        ]
+        ],
     ];
 
     /**
@@ -112,7 +112,7 @@ class Resources extends ResourcesBase
         $result = [];
 
         foreach ($data as $item) {
-            $resource = $Table->newEntity();
+            $resource = $Table->newEntity([]);
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
             foreach ($item as $k => $v) {
@@ -170,8 +170,8 @@ class Resources extends ResourcesBase
      * Load single resource entity using `name` or `id` fields condition or `resource` finder if set
      *
      * @param array $item Single resource data
-     * @param Table $Table Resource table class
-     * @return EntityInterface
+     * @param \Cake\ORM\Table $Table Resource table class
+     * @return \Cake\Datasource\EntityInterface
      */
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
@@ -277,7 +277,7 @@ class Resources extends ResourcesBase
      *
      * @param array $item Single resource data
      * @return array
-     * @throws BadRequestException
+     * @throws \Cake\Http\Exception\BadRequestException
      */
     protected static function findCondition(array $item): array
     {

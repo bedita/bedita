@@ -33,6 +33,7 @@ class MediaTableTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
@@ -40,7 +41,7 @@ class MediaTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +54,7 @@ class MediaTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Media);
         LoggedUser::resetUser();

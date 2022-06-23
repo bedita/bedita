@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Shell;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
 
@@ -19,13 +20,12 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  * Shell class to run pending jobs
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
 class JobsShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'AsyncJobs';
 
@@ -34,7 +34,7 @@ class JobsShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $options = [
             'exit-on-error' => [
@@ -152,13 +152,13 @@ class JobsShell extends Shell
             $query = $query->limit($this->param('limit'));
         }
 
-        if ($query->isEmpty()) {
+        if ($query->all()->isEmpty()) {
             $this->out('=====> <info>Nothing to do</info>');
 
             return;
         }
 
-        $query->each([$this, 'run']);
+        $query->all()->each([$this, 'run']);
 
         $this->out('=====> <success>Operation complete</success>');
     }

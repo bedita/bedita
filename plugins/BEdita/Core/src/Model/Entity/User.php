@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -31,7 +31,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_modified
- *
+ * @property array $user_preferences
  * @since 4.0.0
  */
 class User extends Profile
@@ -39,7 +39,7 @@ class User extends Profile
     use LocatorAwareTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $properties = [], array $options = [])
     {
@@ -93,6 +93,7 @@ class User extends Profile
         return $this->getTableLocator()
             ->get('ExternalAuth')
             ->find('user', ['user' => $this->id])
+            ->all()
             ->map(function (ExternalAuth $item) {
                 return [
                     'provider' => $item->auth_provider->name,
@@ -105,10 +106,10 @@ class User extends Profile
     /**
      * Password setter. This is an alias for `password_hash`.
      *
-     * @param string $password Password to be hashed.
+     * @param string|null $password Password to be hashed.
      * @return null
      */
-    protected function _setPassword($password)
+    protected function _setPassword(?string $password)
     {
         $this->password_hash = $password;
 
@@ -118,13 +119,13 @@ class User extends Profile
     /**
      * Password setter.
      *
-     * @param string $password Password to be hashed.
-     * @return string
+     * @param string|null $password Password to be hashed.
+     * @return string|null
      */
-    protected function _setPasswordHash($password)
+    protected function _setPasswordHash(?string $password): ?string
     {
-        $this->password_modified = Time::now();
+        $this->password_modified = FrozenTime::now();
 
-        return (new DefaultPasswordHasher())->hash($password);
+        return $password !== null ? (new DefaultPasswordHasher())->hash($password) : null;
     }
 }

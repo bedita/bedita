@@ -23,7 +23,6 @@ use Cake\TestSuite\TestCase;
  * BEdita\Core\Model\Table\EndpointPermissionsTable Test Case
  *
  * @coversDefaultClass \BEdita\Core\Model\Table\EndpointPermissionsTable
- *
  * @since 4.0.0
  */
 class EndpointPermissionsTableTest extends TestCase
@@ -55,7 +54,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
@@ -67,7 +66,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->EndpointPermissions);
 
@@ -108,7 +107,7 @@ class EndpointPermissionsTableTest extends TestCase
                     'endpoint_id' => 2,
                     'application_id' => 1,
                     'role_id' => 1,
-                    'permission' => 1
+                    'permission' => 1,
                 ],
             ],
             'valid2' => [
@@ -131,7 +130,6 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -187,7 +185,6 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider buildRulesProvider
      * @coversNothing
@@ -243,7 +240,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|int $endpointIds Endpoint id(s).
      * @param bool $strict Is strict mode enabled?
      * @return void
-     *
      * @covers ::findByEndpoint()
      * @dataProvider findByEndpointProvider()
      */
@@ -294,7 +290,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param int $applicationId Application id.
      * @param bool $strict Is strict mode enabled?
      * @return void
-     *
      * @covers ::findByApplication()
      * @dataProvider findByApplicationProvider()
      */
@@ -349,7 +344,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|int $roleIds Role id(s).
      * @param bool $strict Is strict mode enabled?
      * @return void
-     *
      * @covers ::findByRole()
      * @dataProvider findByRoleProvider()
      */
@@ -401,7 +395,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param int $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     *
      * @covers ::findResource()
      * @dataProvider findResourceProvider()
      */
@@ -437,7 +430,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param int $expected Expected result.
      * @param int|null $endpointId Endpoint ID.
      * @return void
-     *
      * @dataProvider fetchCountProvider()
      * @covers ::fetchCount()
      */
@@ -481,7 +473,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
      * @param bool $strict Strict check.
      * @return void
-     *
      * @dataProvider fetchPermissionsProvider()
      * @covers ::fetchPermissions()
      */

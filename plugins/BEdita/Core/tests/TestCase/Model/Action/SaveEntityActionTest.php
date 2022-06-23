@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -39,7 +40,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::execute()
      */
@@ -48,7 +48,7 @@ class SaveEntityActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new SaveEntityAction(compact('table'));
 
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $data = [
             'name' => 'monkey',
             'legs' => 2,
@@ -64,13 +64,12 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with validation errors.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\BadRequestException
      * @covers ::initialize()
      * @covers ::execute()
      */
     public function testExecuteValitationErrors()
     {
+        $this->expectException(InvalidDataException::class);
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $table->setValidator(
             $table::DEFAULT_VALIDATOR,
@@ -92,13 +91,12 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with save error.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\InternalErrorException
      * @covers ::initialize()
      * @covers ::execute()
      */
     public function testExecuteSaveErrors()
     {
+        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
         $table = $this->getMockBuilder(Table::class)

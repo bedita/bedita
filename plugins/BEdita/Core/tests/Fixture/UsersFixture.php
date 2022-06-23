@@ -23,9 +23,9 @@ use Cake\Auth\WeakPasswordHasher;
 class UsersFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function init()
+    public function init(): void
     {
         $this->records = [
             [

@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
-use Cake\I18n\Time;
 
 /**
  * Fixture for `translations` table.
@@ -22,17 +21,17 @@ use Cake\I18n\Time;
 class TranslationsFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function init()
+    public function init(): void
     {
         $this->records = [
             [
                 'object_id' => 2,
                 'lang' => 'it-IT',
                 'status' => 'on',
-                'created' => Time::now(),
-                'modified' => Time::now(),
+                'created' => '2018-01-01 00:00:00',
+                'modified' => '2018-01-01 00:00:00',
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => json_encode([
@@ -49,8 +48,8 @@ class TranslationsFixture extends TestFixture
                 'object_id' => 2,
                 'lang' => 'fr',
                 'status' => 'on',
-                'created' => Time::now(),
-                'modified' => Time::now(),
+                'created' => '2018-01-01 00:00:00',
+                'modified' => '2018-01-01 00:00:00',
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => json_encode([

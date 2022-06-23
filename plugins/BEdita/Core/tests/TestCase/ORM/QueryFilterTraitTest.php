@@ -44,9 +44,9 @@ class QueryFilterTraitTest extends TestCase
     public $fakeAnimals;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -175,7 +175,6 @@ class QueryFilterTraitTest extends TestCase
      * @param array $options Options.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider fieldsFilterProvider
      * @covers ::fieldsFilter()
      * @covers ::operatorExpression()

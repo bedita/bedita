@@ -49,7 +49,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
@@ -60,7 +60,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Endpoints);
 
@@ -118,7 +118,6 @@ class EndpointsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -146,15 +145,15 @@ class EndpointsTableTest extends TestCase
                 false,
                 [
                     'name' => 'custom_endpoint',
-                    'object_type_id' => 1234
-                ]
+                    'object_type_id' => 1234,
+                ],
             ],
             'notUnique' => [
                 false,
                 [
-                    'name' => 'home'
-                ]
-            ]
+                    'name' => 'home',
+                ],
+            ],
         ];
     }
 
@@ -163,7 +162,6 @@ class EndpointsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider buildRulesProvider
      * @coversNothing
@@ -202,7 +200,7 @@ class EndpointsTableTest extends TestCase
             '/disabled/endpoint' => [
                 new NotFoundException('Resource not found.'),
                 '/disabled/endpoint',
-            ]
+            ],
         ];
     }
 
@@ -212,7 +210,6 @@ class EndpointsTableTest extends TestCase
      * @param mixed $expected Expected endpoint ID, null, or exception.
      * @param string $path Request path.
      * @return void
-     *
      * @dataProvider fetchIdProvider()
      * @covers ::fetchId()
      */

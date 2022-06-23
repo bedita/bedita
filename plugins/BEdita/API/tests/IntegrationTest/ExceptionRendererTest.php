@@ -26,9 +26,9 @@ use Cake\Http\Exception\HttpException;
 class ExceptionRendererTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         ConnectionManager::alias('test', 'default');
         ConnectionManager::drop('__fail_db_connection');
@@ -70,10 +70,9 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param string $accept Request's "Accept" header.
      * @param array|null $config Configuration to be written.
      * @return void
-     *
      * @dataProvider contentTypeProvider
      */
-    public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
+    public function testContentType($expectedCode, $expectedContentType, $accept, ?array $config = null)
     {
         Configure::write($config);
 
@@ -141,7 +140,6 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param \Exception $error Error to be injected.
      * @param string $event Event name.
      * @return void
-     *
      * @dataProvider contentTypeErrorProvider
      */
     public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, $event)

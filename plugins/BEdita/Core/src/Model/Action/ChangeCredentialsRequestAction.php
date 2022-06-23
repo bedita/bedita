@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\Validation;
@@ -20,8 +21,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\Exception\BadRequestException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -57,7 +57,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     protected $AsyncJobs;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -68,16 +68,13 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
-            throw new BadRequestException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => $errors,
-            ]);
+            throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
         // operations are not in transaction: every failure stops following operations
@@ -141,7 +138,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * Create the credentials change async job
      *
-     * @param User $user The user requesting change
+     * @param \BEdita\Core\Model\Entity\User $user The user requesting change
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
     protected function createJob(User $user)
@@ -150,15 +147,15 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
         $action = new SaveEntityAction(['table' => $asyncJobsTable]);
 
         return $action([
-            'entity' => $asyncJobsTable->newEntity(),
+            'entity' => $asyncJobsTable->newEntity([]),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
@@ -188,15 +185,15 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      */
     protected function getChangeUrl($uuid, $changeUrl)
     {
-        $changeUrl .= (strpos($changeUrl, '?') === false) ? '?' : '&';
+        $changeUrl .= strpos($changeUrl, '?') === false ? '?' : '&';
 
         return sprintf('%suuid=%s', $changeUrl, $uuid);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.credentialsChangeRequest' => 'sendMail',

@@ -15,9 +15,9 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Table\ApplicationsTable;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -47,7 +47,7 @@ class ResourcesShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 
@@ -64,7 +64,7 @@ class ResourcesShell extends Shell
         $arguments = [
             'name|id' => [
                 'help' => 'Resource\'s name or id',
-                'required' => true
+                'required' => true,
             ],
         ];
 
@@ -72,43 +72,43 @@ class ResourcesShell extends Shell
             'help' => 'create a new entity',
             'parser' => [
                 'description' => [
-                    'Create a new resource.'
+                    'Create a new resource.',
                 ],
                 'options' => $options,
-            ]
+            ],
         ]);
         $parser->addSubcommand('ls', [
             'help' => 'list entities',
             'parser' => [
                 'description' => [
                     'List entities.',
-                    'Option --filter (optional) provides listing filtered by comma separated key=value pairs.'
+                    'Option --filter (optional) provides listing filtered by comma separated key=value pairs.',
                 ],
                 'options' => $options + [
                     'filter' => [
                         'help' => 'List entities filtered by comma separated key=value pairs',
-                        'required' => false
+                        'required' => false,
                     ],
                 ],
-            ]
+            ],
         ]);
         $parser->addSubcommand('rm', [
             'help' => 'remove an entity',
             'parser' => [
                 'description' => [
                     'Remove an entity.',
-                    'First argument (required) indicates entity\'s id|name.'
+                    'First argument (required) indicates entity\'s id|name.',
                 ],
                 'arguments' => $arguments,
                 'options' => $options,
-            ]
+            ],
         ]);
         $parser->addSubcommand('edit', [
             'help' => 'modify an entity field',
             'parser' => [
                 'description' => [
                     'Modify a field on a single resource.',
-                    'Required entity\'s id|name and field'
+                    'Required entity\'s id|name and field',
                 ],
                 'arguments' => $arguments,
                 'options' => $options + [
@@ -119,7 +119,7 @@ class ResourcesShell extends Shell
                         'choices' => static::$editableFields,
                     ],
                 ],
-            ]
+            ],
         ]);
 
         return $parser;
@@ -164,7 +164,7 @@ class ResourcesShell extends Shell
     public function add()
     {
         $table = $this->getTable();
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         if ($this->param('type') === 'endpoint_permissions') {
             $this->setupEndpointPermissionEntity($entity);
         } else {

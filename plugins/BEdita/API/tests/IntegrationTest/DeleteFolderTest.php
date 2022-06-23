@@ -25,7 +25,6 @@ class DeleteFolderTest extends IntegrationTestCase
      * Test that restoring a folder is allowed only if no ancestors are deleted.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testRestoreFolder()
@@ -60,7 +59,7 @@ class DeleteFolderTest extends IntegrationTestCase
 
                 $data = [
                     'id' => "$id",
-                    'type' => 'folders'
+                    'type' => 'folders',
                 ];
 
                 // PATCH to restore subfolder of deleted folder => 400
@@ -80,7 +79,7 @@ class DeleteFolderTest extends IntegrationTestCase
         // PATCH restore parent folder => ok
         $data = [
             'id' => "$folderId",
-            'type' => 'folders'
+            'type' => 'folders',
         ];
         $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch(sprintf('/trash/%s', $folderId), json_encode(compact('data')));
@@ -92,6 +91,7 @@ class DeleteFolderTest extends IntegrationTestCase
         // check that all children are restored
         $this->configRequestHeaders();
         $this->get(sprintf('/folders/%s/children', $folderId));
+        $this->assertResponseCode(200);
         $actualResult = json_decode((string)$this->_response->getBody(), true);
         static::assertNotEmpty($actualResult['data']);
         static::assertEquals(Hash::extract($expectedChildren, 'data.{n}.id'), Hash::extract($actualResult, 'data.{n}.id'));

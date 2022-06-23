@@ -15,7 +15,6 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -58,9 +57,9 @@ class ObjectTypesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -71,9 +70,9 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->ObjectTypes);
 
@@ -217,14 +216,13 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -374,7 +372,6 @@ class ObjectTypesTableTest extends TestCase
      * @param array|false $expected Expected result.
      * @param string|int $primaryKey Primary key.
      * @return void
-     *
      * @dataProvider getProvider
      * @covers ::get()
      */
@@ -410,7 +407,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -439,7 +435,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
@@ -513,7 +508,6 @@ class ObjectTypesTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @covers ::findByRelation()
      * @dataProvider findByRelationProvider()
      */
@@ -527,16 +521,16 @@ class ObjectTypesTableTest extends TestCase
         $result = $this->ObjectTypes
             ->find('byRelation', $options)
             ->find('list')
-            ->toArray();
+            ->all()
+            ->toList();
 
-        static::assertEquals($expected, $result, '', 0, 10, true);
+            static::assertEquals($expected, $result, '', 0, 10, true);
     }
 
     /**
      * Test default finder.
      *
      * @return void
-     *
      * @covers ::findAll()
      */
     public function testFindAll()
@@ -560,7 +554,7 @@ class ObjectTypesTableTest extends TestCase
                 [
                     'singular' => 'foo',
                     'name' => 'foos',
-                ]
+                ],
             ],
             'cats' => [
                 [
@@ -569,7 +563,7 @@ class ObjectTypesTableTest extends TestCase
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'parent_name' => 'objects',
-                ]
+                ],
             ],
         ];
     }
@@ -579,13 +573,12 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param array $data Entity data.
      * @return void
-     *
      * @dataProvider modelRulesProvider
      * @covers ::beforeRules()
      */
     public function testDefaultModelRules(array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -658,7 +651,7 @@ class ObjectTypesTableTest extends TestCase
             'singular' => 'foo',
             'name' => 'foos',
         ];
-        $entity = $this->ObjectTypes->newEntity();
+        $entity = $this->ObjectTypes->newEntity([]);
         $entity = $this->ObjectTypes->patchEntity($entity, $data);
         $this->ObjectTypes->save($entity);
 
@@ -666,7 +659,7 @@ class ObjectTypesTableTest extends TestCase
             'title' => 'Foo',
         ];
         $table = TableRegistry::getTableLocator()->get('Foos');
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
@@ -682,12 +675,11 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return void
      * @covers ::beforeRules()
-     *
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionMessage Parent type change forbidden: objects of this type exist
      */
     public function testChangeParent()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionMessage('Parent type change forbidden: objects of this type exist');
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
         $this->ObjectTypes->save($objectType);
@@ -763,7 +755,7 @@ class ObjectTypesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $objectType = $this->ObjectTypes->newEntity();
+        $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -805,7 +797,6 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param array $options The option passed to finder.
      * @return void
-     *
      * @covers ::findObjectId
      * @dataProvider findObjectIdProvider
      */
@@ -849,7 +840,6 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param array $options The option passed to finder.
      * @return void
-     *
      * @covers ::findParent()
      * @dataProvider findParentProvider
      */

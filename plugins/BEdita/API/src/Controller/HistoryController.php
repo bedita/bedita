@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
  * Controller for `/history` endpoint.
  *
  * @since 4.1.0
- *
  */
 class HistoryController extends AppController
 {
@@ -33,9 +32,9 @@ class HistoryController extends AppController
     protected $HistoryTable;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -48,7 +47,7 @@ class HistoryController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $this->request->allowMethod('get');
 
@@ -59,10 +58,7 @@ class HistoryController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->set([
-            '_serialize' => ['data'],
-            '_jsonApiOptions' => JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS |
-                JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS
-        ]);
+        $this->setSerialize(['data']);
+        $this->set('_jsonApiOptions', JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS);
     }
 }

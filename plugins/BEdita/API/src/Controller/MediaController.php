@@ -42,7 +42,7 @@ class MediaController extends ObjectsController
 
             $ids = [$id];
         } elseif (!is_array($ids)) {
-            $ids = explode(',', $ids);
+            $ids = explode(',', (string)$ids);
         }
 
         $validateOptions = [
@@ -108,6 +108,7 @@ class MediaController extends ObjectsController
             ->where(function (QueryExpression $exp) use ($ids) {
                 return $exp->in('object_id', $ids);
             })
+            ->all()
             ->map(function (Stream $stream) use ($options, $preset) {
                 $id = $stream->object_id;
                 $uuid = $stream->uuid;
@@ -121,7 +122,7 @@ class MediaController extends ObjectsController
         $this->fetchProviderThumbs($ids, $thumbnails);
 
         $this->set('_meta', compact('thumbnails'));
-        $this->set('_serialize', []);
+        $this->setSerialize([]);
     }
 
     /**

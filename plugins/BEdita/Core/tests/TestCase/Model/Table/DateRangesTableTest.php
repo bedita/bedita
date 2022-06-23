@@ -43,18 +43,18 @@ class DateRangesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DateRanges = TableRegistry::getTableLocator()->get('DateRanges');
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->DateRanges);
 
@@ -65,7 +65,6 @@ class DateRangesTableTest extends TestCase
      * Test marshalling of new entities.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testMarshal()
@@ -153,7 +152,6 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider findDateProvider
      * @covers ::findDateRanges()
      * @covers ::fromToDateFilter()
@@ -234,7 +232,6 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     *
      * @dataProvider fromToDateFilterProvider
      * @covers ::fromToDateFilter()
      * @covers ::getTime()

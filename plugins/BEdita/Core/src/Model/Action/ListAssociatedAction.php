@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use BEdita\Core\Model\Entity\ObjectRelation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -42,7 +41,7 @@ class ListAssociatedAction extends BaseAction
      *
      * @var string
      */
-    const INVERSE_ASSOCIATION_NAME = '_InverseAssociation';
+    public const INVERSE_ASSOCIATION_NAME = '_InverseAssociation';
 
     /**
      * Association.
@@ -59,7 +58,7 @@ class ListAssociatedAction extends BaseAction
     protected $ListAction;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -224,7 +223,7 @@ class ListAssociatedAction extends BaseAction
                     }
 
                     $joinData = Hash::get($entity, '_matchingData.' . $this->Association->junction()->getAlias());
-                    $entity->unsetProperty('_matchingData');
+                    unset($entity['_matchingData']);
                     $entity->setHidden([$inverseAssociation->getProperty()], true);
 
                     if (!empty($joinData)) {
@@ -263,7 +262,7 @@ class ListAssociatedAction extends BaseAction
         $query = $this->buildQuery($primaryKey, $data, $inverseAssociation);
 
         // remove temporary alias of inverse association from TableRegistry
-        TableRegistry::remove(static::INVERSE_ASSOCIATION_NAME);
+        TableRegistry::getTableLocator()->remove(static::INVERSE_ASSOCIATION_NAME);
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();

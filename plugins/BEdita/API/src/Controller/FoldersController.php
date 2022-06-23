@@ -29,12 +29,12 @@ use Cake\Utility\Hash;
 class FoldersController extends ObjectsController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Folders';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -64,7 +64,7 @@ class FoldersController extends ObjectsController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function getAvailableTypes($relationship)
     {
@@ -104,7 +104,7 @@ class FoldersController extends ObjectsController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function relationships()
     {

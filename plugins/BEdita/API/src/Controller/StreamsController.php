@@ -15,7 +15,6 @@ namespace BEdita\API\Controller;
 
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -25,14 +24,13 @@ use Cake\Utility\Hash;
  * Controller for `/streams` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\StreamsTable $Table
  * @property \BEdita\API\Controller\Component\UploadComponent $Upload
  */
 class StreamsController extends ResourcesController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -41,27 +39,28 @@ class StreamsController extends ResourcesController
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Streams';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize()
+    public function initialize(): void
     {
         /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
+            ->all()
             ->toList();
         $this->setConfig('allowedAssociations.object', $allowed);
+
+        parent::initialize();
 
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
         }
-
-        parent::initialize();
     }
 
     /**
@@ -89,7 +88,7 @@ class StreamsController extends ResourcesController
         $data = $this->Upload->upload($fileName);
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
 
         $this->response = $this->response
             ->withStatus(201)

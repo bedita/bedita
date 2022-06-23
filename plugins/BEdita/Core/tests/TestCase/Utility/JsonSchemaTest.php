@@ -49,9 +49,9 @@ class JsonSchemaTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -117,6 +117,7 @@ class JsonSchemaTest extends TestCase
                         'surname',
                         'title',
                         'uname',
+                        'user_preferences',
                         'username',
                         'vat_number',
                         'verified',
@@ -212,7 +213,6 @@ class JsonSchemaTest extends TestCase
      * @param array|bool|\Exception $expected Expected result.
      * @param string $name Type name.
      * @return void
-     *
      * @dataProvider generateProvider()
      * @covers ::generate()
      * @covers ::typeSchema()
@@ -264,7 +264,7 @@ class JsonSchemaTest extends TestCase
             'property_type_name' => 'string',
             'object_type_name' => 'documents',
         ];
-        $entity = $properties->newEntity();
+        $entity = $properties->newEntity([]);
         $entity = $properties->patchEntity($entity, $data);
         $entity = $properties->save($entity);
         $result = JsonSchema::generate($type, $url);

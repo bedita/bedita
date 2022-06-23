@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Shell\Task;
 
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Database\Exception\MissingConnectionException;
@@ -33,7 +34,7 @@ class SetupConnectionTask extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser
@@ -119,7 +120,7 @@ class SetupConnectionTask extends Shell
         $this->verbose('=====> Replacing old connection and flushing models');
         ConnectionManager::drop($connectionName);
         ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
 
         $this->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');
     }
@@ -206,7 +207,7 @@ class SetupConnectionTask extends Shell
 
         // Database port.
         if (!$this->param('connection-port')) {
-            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? 3306 : 5432);
+            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
         }
         $config['port'] = $this->param('connection-port');
 

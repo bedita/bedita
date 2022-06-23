@@ -14,8 +14,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Utility\JWTHandler;
-use BEdita\Core\Model\Action\ChangeCredentialsAction;
-use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
+use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\User;
@@ -37,18 +36,19 @@ use Cake\Utility\Inflector;
  * Controller for `/auth` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  * @property \BEdita\Core\Model\Table\AuthProvidersTable $AuthProviders
  */
 class LoginController extends AppController
 {
+    use ActionTrait;
+
     /**
      * Default password hasher settings.
      *
      * @var array
      */
-    const PASSWORD_HASHER = [
+    public const PASSWORD_HASHER = [
         'className' => 'Fallback',
         'hashers' => [
             'Default',
@@ -57,9 +57,9 @@ class LoginController extends AppController
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -110,7 +110,7 @@ class LoginController extends AppController
      */
     public function login(): void
     {
-        $this->set('_serialize', []);
+        $this->setSerialize([]);
 
         $this->setGrantType();
         $this->checkClientCredentials();
@@ -165,7 +165,7 @@ class LoginController extends AppController
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
             $meta = ['authorization_code' => $result['authorization_code']];
-            $this->set('_serialize', []);
+            $this->setSerialize([]);
             $this->set('_meta', $meta);
 
             return null;
@@ -253,7 +253,7 @@ class LoginController extends AppController
         if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
             return;
         }
-        /** @var \BEdita\Core\Model\Entity\Application $application */
+        /** @var \BEdita\Core\Model\Entity\Application|null $application */
         $application = TableRegistry::getTableLocator()->get('Applications')
             ->find('credentials', [
                 'client_id' => $this->request->getData('client_id'),
@@ -313,7 +313,7 @@ class LoginController extends AppController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->setSerialize(['user']);
     }
 
     /**
@@ -341,7 +341,7 @@ class LoginController extends AppController
         // reload entity to cancel previous `setAccess` (otherwise `username` and `email` will appear in `meta`)
         $entity = $this->userEntity();
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
     }
 
     /**
@@ -385,7 +385,7 @@ class LoginController extends AppController
         $contain = array_unique(array_merge($contain, ['Roles']));
         $conditions = ['id' => $userId];
 
-        /** @var \BEdita\Core\Model\Entity\User $user */
+        /** @var \BEdita\Core\Model\Entity\User|null $user */
         $user = $this->Users
             ->find('login', compact('conditions', 'contain'))
             ->first();
@@ -397,9 +397,9 @@ class LoginController extends AppController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    protected function findAssociation(string $relationship, Table $table = null): Association
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
     {
         $relationship = Inflector::underscore($relationship);
         $association = $this->Users->associations()->getByProperty($relationship);
@@ -422,14 +422,14 @@ class LoginController extends AppController
         $this->request->allowMethod(['patch', 'post']);
 
         if ($this->request->is('post')) {
-            $action = new ChangeCredentialsRequestAction();
+            $action = $this->createAction('ChangeCredentialsRequestAction');
             $action($this->request->getData());
 
             return $this->response
                 ->withStatus(204);
         }
 
-        $action = new ChangeCredentialsAction();
+        $action = $this->createAction('ChangeCredentialsAction');
         $user = $action($this->request->getData());
 
         $meta = [];
@@ -439,7 +439,7 @@ class LoginController extends AppController
         }
 
         $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->setSerialize(['user']);
         $this->set('_meta', $meta);
 
         return null;

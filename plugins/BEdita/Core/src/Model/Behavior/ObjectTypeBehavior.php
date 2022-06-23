@@ -25,7 +25,7 @@ use Cake\ORM\TableRegistry;
 class ObjectTypeBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'table' => 'ObjectTypes',

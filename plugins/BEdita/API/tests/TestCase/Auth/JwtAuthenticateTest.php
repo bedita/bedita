@@ -48,9 +48,9 @@ class JwtAuthenticateTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -62,7 +62,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `authenticate()` method
      *
      * @return void
-     *
      * @covers ::authenticate()
      */
     public function testAuthenticate(): void
@@ -80,7 +79,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getPayload()` method
      *
      * @return void
-     *
      * @covers ::getPayload()
      */
     public function testGetPayload(): void
@@ -103,7 +101,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getUser()` method
      *
      * @return void
-     *
      * @covers ::getUser()
      */
     public function testGetUser(): void
@@ -120,7 +117,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `getUser()` method
      *
      * @return void
-     *
      * @covers ::getUser()
      */
     public function testGetUserFalse(): void
@@ -134,7 +130,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `handleRefreshToken()` method
      *
      * @return void
-     *
      * @covers ::handleRefreshToken()
      * @covers ::getUser()
      */
@@ -164,7 +159,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `handleRefreshToken()` method on renew client credentials case
      *
      * @return void
-     *
      * @covers ::handleRefreshToken()
      */
     public function testRenewClientCredentials(): void
@@ -222,7 +216,6 @@ class JwtAuthenticateTest extends TestCase
      * Test `checkAudience()` method
      *
      * @return void
-     *
      * @dataProvider checkAudienceProvider
      * @covers ::checkAudience()
      */
@@ -259,13 +252,12 @@ class JwtAuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('MyExceptionMessage');
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authError' => 'MyExceptionMessage',
@@ -273,20 +265,19 @@ class JwtAuthenticateTest extends TestCase
 
         $auth = new JwtAuthenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 
     /**
      * Test `unauthenticated` method.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Invalid audience
      * @covers ::unauthenticated()
      */
     public function testUnauthenticatedWithInternalErrorMessage()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Invalid audience');
         $request = new ServerRequest([
             'params' => [
                 'plugin' => 'BEdita/API',
@@ -309,10 +300,10 @@ class JwtAuthenticateTest extends TestCase
 
         $auth = new JwtAuthenticate($controller->components(), []);
 
-        $result = $auth->authenticate($controller->request, $controller->response);
+        $result = $auth->authenticate($controller->getRequest(), $controller->getResponse());
 
         static::assertFalse($result);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

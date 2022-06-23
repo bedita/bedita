@@ -23,7 +23,7 @@ use Cake\Utility\Hash;
 class RelationshipsPriorityTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Media',
@@ -31,18 +31,18 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         FilesystemRegistry::dropAll();
         parent::tearDown();
@@ -87,8 +87,8 @@ class RelationshipsPriorityTest extends IntegrationTestCase
                         'meta' => [
                             'relation' => [
                                 'priority' => 3,
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 '/documents/3/inverse_test',
@@ -100,7 +100,6 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      * Test relationships priority set via API.
      *
      * @return void
-     *
      * @dataProvider priorityProvider
      * @coversNothing
      */

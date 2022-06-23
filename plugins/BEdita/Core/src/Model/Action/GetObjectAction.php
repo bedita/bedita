@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Core\Configure;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Utility\Hash;
 
@@ -39,7 +38,7 @@ class GetObjectAction extends BaseAction
     protected $objectType;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function initialize(array $data)
     {
@@ -48,7 +47,7 @@ class GetObjectAction extends BaseAction
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(array $data = [])
     {

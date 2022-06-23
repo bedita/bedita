@@ -20,17 +20,20 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * @covers \BEdita\Core\Shell\Task\InitSchemaTask
  */
-class InitSchemaTaskTest extends ConsoleIntegrationTestCase
+class InitSchemaTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -38,9 +41,9 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
@@ -139,7 +142,6 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
      * Test successful initialization on empty database and `--seed` argument passed.
      *
      * @return void
-     *
      * @depends testDatabaseEmpty
      */
     public function testDatabaseSeed()
@@ -163,7 +165,6 @@ class InitSchemaTaskTest extends ConsoleIntegrationTestCase
      *
      * @param int $notSeededCount Count of object types in a not-seeded database.
      * @return void
-     *
      * @depends testDatabaseEmpty
      */
     public function testInteractive($notSeededCount)

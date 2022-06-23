@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
-use BEdita\Core\Model\Entity\Media;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -53,9 +52,9 @@ class MediaTest extends TestCase
     protected $Files;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
@@ -63,9 +62,9 @@ class MediaTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         FilesystemRegistry::dropAll();
         parent::tearDown();

@@ -27,7 +27,7 @@ use Cake\Utility\Hash;
 class MediaControllerTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
@@ -62,9 +62,9 @@ class MediaControllerTest extends IntegrationTestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -101,9 +101,9 @@ class MediaControllerTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -154,7 +154,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'id' => 14,
                         'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                         'ready' => false,
-                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.gif',
+                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.jpg',
                     ],
                 ],
                 14,
@@ -165,14 +165,14 @@ class MediaControllerTest extends IntegrationTestCase
                         'id' => 14,
                         'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                         'ready' => true,
-                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/7712de3f48d7ecb9b473cc12feb34af1af79309e.gif',
+                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/7712de3f48d7ecb9b473cc12feb34af1af79309e.png',
                     ],
                     [
                         'id' => 10,
                         'uuid' => '9e58fa47-db64-4479-a0ab-88a706180d59',
                         'ready' => false,
                         'acceptable' => false,
-                        'url' => 'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/7712de3f48d7ecb9b473cc12feb34af1af79309e.txt',
+                        'url' => 'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/7712de3f48d7ecb9b473cc12feb34af1af79309e.png',
                     ],
                 ],
                 [10, 14],
@@ -186,14 +186,14 @@ class MediaControllerTest extends IntegrationTestCase
                         'id' => 14,
                         'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                         'ready' => true,
-                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/7712de3f48d7ecb9b473cc12feb34af1af79309e.gif',
+                        'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/7712de3f48d7ecb9b473cc12feb34af1af79309e.png',
                     ],
                     [
                         'id' => 10,
                         'uuid' => '9e58fa47-db64-4479-a0ab-88a706180d59',
                         'ready' => false,
                         'acceptable' => false,
-                        'url' => 'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/7712de3f48d7ecb9b473cc12feb34af1af79309e.txt',
+                        'url' => 'https://static.example.org/thumbs/9e58fa47-db64-4479-a0ab-88a706180d59-sample.txt/7712de3f48d7ecb9b473cc12feb34af1af79309e.png',
                     ],
                 ],
                 '10,14',
@@ -211,7 +211,6 @@ class MediaControllerTest extends IntegrationTestCase
      * @param int|int[] $id List of IDs.
      * @param array $query Query options.
      * @return void
-     *
      * @dataProvider thumbsProvider()
      * @covers ::thumbs()
      * @covers ::getIds()
@@ -245,7 +244,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when media IDs are passed both as query string and in path.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      */
@@ -263,7 +261,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test thumbnails generation when number of IDs exceeds pagination limits.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      */
@@ -281,7 +278,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when no media IDs are passed.
      *
      * @return void
-     *
      * @covers ::thumbs()
      * @covers ::getIds()
      * @covers ::getAvailableIds()
@@ -300,7 +296,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test available IDs.
      *
      * @return void
-     *
      * @covers ::getAvailableIds()
      */
     public function testAvailableIds()
@@ -329,7 +324,7 @@ class MediaControllerTest extends IntegrationTestCase
                 'id' => 14,
                 'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 'ready' => false,
-                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.gif',
+                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.jpg',
             ],
         ];
         static::assertEquals($expected, $thumbnails);
@@ -339,7 +334,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method with provider thumbnails.
      *
      * @return void
-     *
      * @covers ::fetchProviderThumbs()
      */
     public function testProviderThumbs()
@@ -361,7 +355,7 @@ class MediaControllerTest extends IntegrationTestCase
                 'id' => 14,
                 'uuid' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 'ready' => false,
-                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.gif',
+                'url' => 'https://static.example.org/thumbs/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif/ef5b382f91ad45aff0e33b89e6677df31fcf6034.jpg',
             ],
             [
                 'id' => $newId,
@@ -383,7 +377,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testIndex()
@@ -410,7 +403,7 @@ class MediaControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
                     ],
-                ]
+                ],
             ],
             'data' => [
                 [
@@ -456,7 +449,7 @@ class MediaControllerTest extends IntegrationTestCase
                                [
                                     'id' => '9e58fa47-db64-4479-a0ab-88a706180d59',
                                     'type' => 'streams',
-                               ]
+                               ],
                             ],
                         ],
                         'parents' => [
@@ -522,8 +515,8 @@ class MediaControllerTest extends IntegrationTestCase
                                 [
                                     'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                                     'type' => 'streams',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'parents' => [
                             'links' => [
@@ -629,7 +622,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test single view method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSingleView()
@@ -645,7 +637,7 @@ class MediaControllerTest extends IntegrationTestCase
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
                     ],
-                ]
+                ],
             ],
             'data' => [
                 'id' => '14',
@@ -688,8 +680,8 @@ class MediaControllerTest extends IntegrationTestCase
                             [
                                 'id' => '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                                 'type' => 'streams',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'parents' => [
                         'links' => [

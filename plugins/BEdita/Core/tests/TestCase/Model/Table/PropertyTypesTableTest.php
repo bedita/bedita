@@ -55,9 +55,9 @@ class PropertyTypesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -68,9 +68,9 @@ class PropertyTypesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->PropertyTypes);
 
@@ -129,7 +129,6 @@ class PropertyTypesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -151,7 +150,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
@@ -171,7 +169,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
@@ -190,14 +187,13 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to delete a property type in use.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
-     * @expectedException \Cake\Http\Exception\ForbiddenException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Property type with existing properties
      */
     public function testBeforeDeleteInUse()
     {
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Property type with existing properties');
         $propertyType = $this->PropertyTypes->get(1);
 
         $this->PropertyTypes->delete($propertyType);
@@ -207,7 +203,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to delete a property type not in use.
      *
      * @return void
-     *
      * @covers ::beforeDelete()
      */
     public function testBeforeDeleteOk()
@@ -286,7 +281,6 @@ class PropertyTypesTableTest extends TestCase
      * @param string $table Table name.
      * @param string $overrideType Column type to override.
      * @return void
-     *
      * @dataProvider detectProvider()
      * @covers ::detect()
      */
@@ -309,14 +303,13 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to change a core property type.
      *
      * @return void
-     *
      * @covers ::beforeSave()
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not modify core property
      */
     public function testBeforeSaveForbidden()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not modify core property');
         $propertyType = $this->PropertyTypes->get(1);
         $propertyType->set('name', 'gustavo');
         $this->PropertyTypes->save($propertyType);
@@ -326,7 +319,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to change a non core property type.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveOk()

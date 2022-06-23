@@ -27,7 +27,7 @@ class OAuth2
     use InstanceConfigTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         // HTTP client configuration

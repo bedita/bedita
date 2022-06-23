@@ -29,7 +29,7 @@ use Cake\ORM\Table;
 class SearchableBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'minLength' => 3,
@@ -52,7 +52,7 @@ class SearchableBehavior extends Behavior
      * If fields or column types are specified - do *not* merge them with existing config,
      * overwrite the fields to search on.
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         foreach (['columnTypes', 'fields'] as $key) {
             if (isset($config[$key])) {
@@ -118,7 +118,13 @@ class SearchableBehavior extends Behavior
      */
     public function findQuery(Query $query, array $options)
     {
-        if (!isset($options[0]) || !is_string($options[0])) {
+        $options += [
+            'exact' => false,
+        ];
+        if (isset($options[0]) && !isset($options['string'])) {
+            $options['string'] = $options[0];
+        }
+        if (!isset($options['string']) || !is_string($options['string'])) {
             // Bad filter options.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -128,6 +134,10 @@ class SearchableBehavior extends Behavior
 
         $minLength = $this->getConfig('minLength');
         $maxWords = $this->getConfig('maxWords');
+        $words = [$options['string']];
+        if (filter_var($options['exact'], FILTER_VALIDATE_BOOLEAN) !== true) {
+            $words = preg_split('/\W+/', $options['string']); // Split words.
+        }
         $words = array_unique(array_map( // Escape `%` and `\` characters in words.
             function ($word) {
                 return str_replace(
@@ -137,7 +147,7 @@ class SearchableBehavior extends Behavior
                 );
             },
             array_filter( // Filter out words that are too short.
-                preg_split('/\W+/', $options[0]), // Split words.
+                $words,
                 function ($word) use ($minLength) {
                     return mb_strlen($word) >= $minLength;
                 }
@@ -147,7 +157,7 @@ class SearchableBehavior extends Behavior
             // Query contained only short words.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength)
+                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength),
             ]);
         }
         if ($maxWords > 0 && count($words) > $maxWords) {
@@ -160,7 +170,7 @@ class SearchableBehavior extends Behavior
 
         // Concat all fields into a single, lower-cased string.
         $fields = [];
-        /* @var \Cake\ORM\Table $table */
+        /** @var \Cake\ORM\Table $table */
         $table = $query->getRepository();
         foreach (array_keys($this->getFields()) as $field) {
             $fields[] = $query->func()->coalesce([

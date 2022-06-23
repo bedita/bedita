@@ -26,13 +26,12 @@ use BEdita\Core\Model\Validation\LocationsValidator;
  * @method \BEdita\Core\Model\Entity\Location patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Location[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Location findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
  */
 class LocationsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = LocationsValidator::class;
 
@@ -41,7 +40,7 @@ class LocationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 

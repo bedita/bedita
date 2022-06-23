@@ -91,6 +91,16 @@ class MediaValidatorTest extends TestCase
                     'provider_thumbnail' => 'gustavo.supporto@example.org',
                 ],
             ],
+            'URLs without protocol' => [
+                [
+                    'provider_url.url',
+                    'provider_thumbnail.url',
+                ],
+                [
+                    'provider_url' => 'www.example.com/without/protocol.txt?shouldBeValid=no',
+                    'provider_thumbnail' => 'www.example.com/without/protocol.png?shouldBeValid=no',
+                ],
+            ],
         ];
     }
 
@@ -101,7 +111,6 @@ class MediaValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     *
      * @dataProvider validationProvider()
      */
     public function testValidation(array $expected, array $data, $newRecord = true)

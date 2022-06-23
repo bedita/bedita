@@ -55,9 +55,9 @@ class StaticPropertyTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -65,9 +65,9 @@ class StaticPropertyTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Properties);
 
@@ -78,7 +78,6 @@ class StaticPropertyTest extends TestCase
      * Test conversion from a property to a static property.
      *
      * @return void
-     *
      * @covers ::fromProperty()
      */
     public function testFromProperty()
@@ -144,7 +143,6 @@ class StaticPropertyTest extends TestCase
      * @param string $name Column name.
      * @param string $table Table name.
      * @return void
-     *
      * @dataProvider inferFromSchemaProvider()
      * @covers ::_setName()
      * @covers ::_setTable()
@@ -197,7 +195,6 @@ class StaticPropertyTest extends TestCase
      * @param string|null $expected Expected result
      * @param array $data Entity data.
      * @return void
-     *
      * @dataProvider getTableProvider()
      * @covers ::_getTable()
      */
@@ -256,7 +253,6 @@ class StaticPropertyTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $data Entity data.
      * @return void
-     *
      * @dataProvider getDefaultProvider()
      * @covers ::_getDefault()
      */
@@ -327,7 +323,6 @@ class StaticPropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Entity data.
      * @return void
-     *
      * @dataProvider getRequiredProvider()
      * @covers ::_getRequired()
      */
@@ -404,7 +399,6 @@ class StaticPropertyTest extends TestCase
      * @param string $table Table name.
      * @param string|null $mode Property access mode.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::getSchema()
      */

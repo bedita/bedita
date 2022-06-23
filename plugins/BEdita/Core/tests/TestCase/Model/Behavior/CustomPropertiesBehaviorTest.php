@@ -50,9 +50,9 @@ class CustomPropertiesBehaviorTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,9 +60,9 @@ class CustomPropertiesBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         FilesystemRegistry::dropAll();
         parent::tearDown();
@@ -72,7 +72,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -135,7 +134,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $tableName Table name.
      * @return void
-     *
      * @covers ::getAvailable()
      * @covers ::objectType()
      * @dataProvider getAvailableProvider
@@ -161,7 +159,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties for related object.
      *
      * @return void
-     *
      * @covers ::getAvailable()
      * @covers ::objectType()
      */
@@ -186,7 +183,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available when no object type is found
      *
      * @return void
-     *
      * @covers ::getAvailable()
      */
     public function testGetAvailableTypeNotFound()
@@ -203,7 +199,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test empty custom properties
      *
      * @return void
-     *
      * @covers ::getAvailable()
      */
     public function testEmpty()
@@ -217,7 +212,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties
      *
      * @return void
-     *
      * @covers ::getDefaultValues()
      */
     public function testDefaultValues()
@@ -266,7 +260,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $table Table.
      * @param bool $hydrate Should hydration be enabled?
      * @return void
-     *
      * @dataProvider beforeFindProvider()
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
@@ -293,7 +286,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that formatter is prepended to other formatters that may be attached to the Query object.
      *
      * @return void
-     *
      * @covers ::beforeFind()
      */
     public function testBeforeFindFormatterPrepended()
@@ -322,7 +314,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that no errors are triggered if results aren't neither entities nor arrays.
      *
      * @return void
-     *
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
      * @covers ::isFieldSet()
@@ -369,7 +360,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'empty' => [
                 [
-                    'media_property' => ['Boolean expected, null received']
+                    'media_property' => ['Boolean expected, null received'],
                 ],
                 [
                     'media_property' => null,
@@ -393,11 +384,11 @@ class CustomPropertiesBehaviorTest extends TestCase
             'email' => [
                 [
                     'another_email' => null,
-                    'another_username' => 'another'
+                    'another_username' => 'another',
                 ],
                 [
                     'another_email' => '',
-                    'another_username' => 'another'
+                    'another_username' => 'another',
                 ],
                 5,
                 'Users',
@@ -413,7 +404,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param int $id Entity ID.
      * @param string $table Table.
      * @return void
-     *
      * @dataProvider beforeSaveProvider()
      * @covers ::beforeSave()
      * @covers ::demoteProperties()
@@ -444,7 +434,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on custom properties.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      * @covers ::demoteProperties()
      */
@@ -464,7 +453,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on not nullable property.
      *
      * @return void
-     *
      * @covers ::demoteProperties()
      */
     public function testValidationNewFail(): void
@@ -485,7 +473,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that custom properties are not dirty getting object.
      *
      * @return void
-     *
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
      * @covers ::isFieldSet()
@@ -565,7 +552,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $tableName The table name
      * @param array $options Options for finder
      * @return void
-     *
      * @covers ::findCustomProp()
      * @dataProvider findCustomPropProvider
      */
@@ -596,7 +582,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test custom prop finder for integer property.
      *
      * @return void
-     *
      * @covers ::findCustomProp()
      */
     public function testFindCustomPropInteger(): void

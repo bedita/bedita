@@ -13,7 +13,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $LeftObjects
  * @property \Cake\ORM\Association\BelongsTo $Relations
  * @property \Cake\ORM\Association\BelongsTo $RightObjects
- *
  * @method \BEdita\Core\Model\Entity\ObjectRelation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectRelation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectRelation[] newEntities(array $data, array $options = [])
@@ -29,7 +28,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -40,17 +39,17 @@ class ObjectRelationsTable extends Table
         $this->belongsTo('LeftObjects', [
             'foreignKey' => 'left_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Relations'
+            'className' => 'BEdita/Core.Relations',
         ]);
         $this->belongsTo('RightObjects', [
             'foreignKey' => 'right_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
 
         $this->addBehavior('BEdita/Core.Priority', [
@@ -70,7 +69,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->nonNegativeInteger('priority');
@@ -120,7 +119,7 @@ class ObjectRelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['left_id'], 'LeftObjects'));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));

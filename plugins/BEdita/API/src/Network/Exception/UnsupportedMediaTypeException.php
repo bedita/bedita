@@ -16,7 +16,6 @@ use Cake\Http\Exception\HttpException;
 
 /**
  * Represents an HTTP 415 error 'Unsupported Media Type'
- *
  */
 class UnsupportedMediaTypeException extends HttpException
 {

@@ -21,15 +21,14 @@ use Cake\Utility\Inflector;
  * Controller to create objects via file upload.
  *
  * @since 4.2.0
- *
  * @property \BEdita\API\Controller\Component\UploadComponent $Upload
  */
 class UploadController extends ObjectsController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->loadComponent('BEdita/API.Upload');
         parent::initialize();
@@ -50,7 +49,7 @@ class UploadController extends ObjectsController
                 'You are not allowed to upload streams on "{0}"',
                 $this->objectType->get('name')
             ));
-        };
+        }
 
         $this->Table->getConnection()->transactional(function () use ($fileName) {
             $this->request = $this->request

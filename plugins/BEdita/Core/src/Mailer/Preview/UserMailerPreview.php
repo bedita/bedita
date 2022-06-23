@@ -20,7 +20,6 @@ use DebugKit\Mailer\MailPreview;
  * Mail preview for user mailer.
  *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
- *
  * @since 4.0.0
  * @codeCoverageIgnore
  */
@@ -38,7 +37,7 @@ class UserMailerPreview extends MailPreview
             'params' => compact('user'),
         ];
 
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
+        /** @var \BEdita\Core\Mailer\UserMailer $mailer */
         $mailer = $this->getMailer('BEdita/Core.User');
 
         return $mailer->welcome($options);
@@ -58,7 +57,7 @@ class UserMailerPreview extends MailPreview
             ],
         ];
 
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
+        /** @var \BEdita\Core\Mailer\UserMailer $mailer */
         $mailer = $this->getMailer('BEdita/Core.User');
 
         return $mailer->signup($options);
@@ -78,7 +77,7 @@ class UserMailerPreview extends MailPreview
             ],
         ];
 
-        /* @var \BEdita\Core\Mailer\UserMailer $mailer */
+        /** @var \BEdita\Core\Mailer\UserMailer $mailer */
         $mailer = $this->getMailer('BEdita/Core.User');
 
         return $mailer->changeRequest($options);

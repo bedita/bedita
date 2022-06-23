@@ -12,10 +12,12 @@
  */
 namespace BEdita\API\Test\TestCase\Middleware;
 
+use BEdita\API\Exception\ExpiredTokenException;
 use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
@@ -42,9 +44,9 @@ class TokenMiddlewareTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         CurrentApplication::setApplication(null);
     }
@@ -130,14 +132,13 @@ class TokenMiddlewareTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $server Request $_SERVER data.
      * @param array|null $query Request query data.
-     * @param boolean $blockAnonymous Block anonymous apps flag.
+     * @param bool $blockAnonymous Block anonymous apps flag.
      * @return void
-     *
      * @dataProvider invokeProvider
-     *
      * @covers ::__invoke()
      * @covers ::readApplication()
      * @covers ::getToken()
+     * @covers ::decodeToken()
      * @covers ::applicationFromApiKey()
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
@@ -176,7 +177,6 @@ class TokenMiddlewareTest extends TestCase
      * Test default behavior on missing 'Security.blockAnonymousApps' key
      *
      * @return void
-     *
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
      */
@@ -199,7 +199,6 @@ class TokenMiddlewareTest extends TestCase
      * Test default behavior on `client_credentials` request
      *
      * @return void
-     *
      * @covers ::fetchApiKey()
      * @covers ::verifyClientCredentials()
      */
@@ -231,5 +230,89 @@ class TokenMiddlewareTest extends TestCase
 
         static::assertNull(CurrentApplication::getApplication());
         static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
+    }
+
+    /**
+     * Test behavior on OPTIONS request
+     *
+     * @return void
+     * @covers ::__invoke()
+     */
+    public function testOptionsRequest()
+    {
+        CurrentApplication::setApplication(null);
+
+        $request = new ServerRequest([
+            'environment' => [
+                'REQUEST_METHOD' => 'OPTIONS',
+            ],
+        ]);
+        $middleware = new TokenMiddleware();
+        /** @var \Zend\Diactoros\ServerRequest $result */
+        $result = $middleware(
+            $request,
+            new Response(),
+            function ($req, $res) {
+                return $req;
+            }
+        );
+
+        static::assertNull(CurrentApplication::getApplication());
+        static::assertNull($result->getAttribute(TokenMiddleware::PAYLOAD_REQUEST_ATTRIBUTE));
+    }
+
+    /**
+     * Test expired token
+     *
+     * @return void
+     * @covers ::decodeToken()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
+     */
+    public function testExpiredToken(): void
+    {
+        $this->expectException(ExpiredTokenException::class);
+        $this->expectExceptionCode(401);
+
+        $expiredToken = JWT::encode(['exp' => time() - 10], Security::getSalt());
+        $request = new ServerRequest([
+            'environment' => [
+                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $expiredToken),
+                'HTTP_X_API_KEY' => API_KEY,
+            ],
+        ]);
+
+        $middleware = new TokenMiddleware();
+        $middleware(
+            $request,
+            new Response(),
+            null
+        );
+    }
+
+    /**
+     * Test malformed token
+     *
+     * @return void
+     * @covers ::decodeToken()
+     */
+    public function testMalformedToken(): void
+    {
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Wrong number of segments');
+        $this->expectExceptionCode(401);
+
+        $request = new ServerRequest([
+            'environment' => [
+                'HTTP_AUTHORIZATION' => 'Bearer gustavo',
+                'HTTP_X_API_KEY' => API_KEY,
+            ],
+        ]);
+
+        $middleware = new TokenMiddleware();
+        $middleware(
+            $request,
+            new Response(),
+            null
+        );
     }
 }

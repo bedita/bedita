@@ -37,9 +37,9 @@ class InheritanceEventHandler implements EventListenerInterface
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Model.beforeSave' => [
@@ -91,8 +91,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
         $inheritedTable->checkRules($parentEntity, $operation, $options);
@@ -111,7 +111,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
@@ -119,8 +119,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew($entity->isNew());
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
             $parentEntity->setDirty($inheritedTable->getDisplayField(), true);
@@ -148,8 +148,8 @@ class InheritanceEventHandler implements EventListenerInterface
     /**
      * Update entities with previously kept back properties with `__` prefix
      *
-     * @param Event $event Dispatched event.
-     * @param EntityInterface $entity Entity.
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
     public function afterSave(Event $event, EntityInterface $entity)
@@ -157,7 +157,7 @@ class InheritanceEventHandler implements EventListenerInterface
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
                 $entity->set($item, $entity->get('__' . $item));
-                $entity->unsetProperty('__' . $item);
+                unset($entity['__' . $item]);
             }
         }
     }
@@ -174,7 +174,7 @@ class InheritanceEventHandler implements EventListenerInterface
      */
     public function afterDelete(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        /* @var \BEdita\Core\ORM\Inheritance\Table $table */
+        /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
@@ -182,8 +182,8 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity();
-        $parentEntity->isNew(false);
+        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity->setNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 
         // Delete parent entity.
@@ -235,7 +235,13 @@ class InheritanceEventHandler implements EventListenerInterface
     protected function toDescendant(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
     {
         $properties = array_merge(array_keys($parent->toArray()), $parent->getHidden()); // All properties.
-        $entity->set(array_filter($parent->extract($properties)), ['guard' => false]); // Copy properties.
+        // Copy properties.
+        foreach (array_filter($parent->extract($properties)) as $prop => $val) {
+            if ($entity->get($prop) !== $val) {
+                $entity->set($prop, $val);
+            }
+        }
+
         if ($entity->isNew()) {
             $entity->set(
                 array_combine(
@@ -251,7 +257,7 @@ class InheritanceEventHandler implements EventListenerInterface
             if ($entity->has($item)) {
                 $entity->set('__' . $item, $parent->get($item));
             }
-            $entity->unsetProperty($item);
+            unset($entity[$item]);
         }
 
         return $entity;

@@ -13,24 +13,25 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Entity\ObjectCategory;
+use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
 
 /**
  * ObjectTags Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\TagsTable&\Cake\ORM\Association\BelongsTo $Tags
- *
- * @method \BEdita\Core\Model\Entity\ObjectCategory get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectCategory findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag findOrCreate($search, callable $callback = null, $options = [])
  */
-class ObjectTagsTable extends ObjectCategoriesTable
+class ObjectTagsTable extends Table
 {
     /**
      * Initialize method
@@ -39,16 +40,60 @@ class ObjectTagsTable extends ObjectCategoriesTable
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
-        $this->setEntityClass(ObjectCategory::class);
 
-        $this->belongsTo('Tags', [
-            'foreignKey' => 'category_id',
+        $this->setTable('object_tags');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
+
+        $this->belongsTo('Objects', [
+            'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Tags'
+            'className' => 'BEdita/Core.Objects',
         ]);
-        $this->associations()->remove('Categories');
+        $this->belongsTo('Tags', [
+            'foreignKey' => 'tag_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.Tags',
+        ]);
+    }
+
+    /**
+     * Default validation rules.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
+     */
+    public function validationDefault(Validator $validator): Validator
+    {
+        return $validator
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create')
+
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmptyString('object_id')
+
+            ->integer('tag_id')
+            ->requirePresence('tag_id', 'create')
+            ->notEmptyString('tag_id');
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
+     */
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
+        return $rules
+            ->add($rules->existsIn(['object_id'], 'Objects'), null, ['errorField' => 'object_id'])
+            ->add($rules->existsIn(['tag_id'], 'Tags'), null, ['errorField' => 'tag_id']);
     }
 }

@@ -5,7 +5,6 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * AnnotationsFixture
- *
  */
 class AnnotationsFixture extends TestFixture
 {
@@ -21,7 +20,7 @@ class AnnotationsFixture extends TestFixture
             'user_id' => 1,
             'created' => '2018-02-17 10:23:15',
             'modified' => '2018-02-17 10:23:15',
-            'params' => '"something"'
+            'params' => '"something"',
         ],
         [
             'object_id' => 3,
@@ -29,7 +28,7 @@ class AnnotationsFixture extends TestFixture
             'user_id' => 5,
             'created' => '2018-06-17 13:34:25',
             'modified' => '2018-06-17 13:34:25',
-            'params' => '1'
+            'params' => '1',
         ],
     ];
 }

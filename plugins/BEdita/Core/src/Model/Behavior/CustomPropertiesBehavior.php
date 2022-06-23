@@ -22,7 +22,6 @@ use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -36,7 +35,7 @@ use Cake\Utility\Hash;
 class CustomPropertiesBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'field' => 'custom_props',
@@ -63,9 +62,9 @@ class CustomPropertiesBehavior extends Behavior
     protected $available = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -106,6 +105,7 @@ class CustomPropertiesBehavior extends Behavior
             ->find('type', ['dynamic'])
             ->find('objectType', [$objectType->id])
             ->where(['enabled' => true, 'is_static' => false])
+            ->all()
             ->indexBy('name')
             ->toArray();
 
@@ -314,7 +314,7 @@ class CustomPropertiesBehavior extends Behavior
         return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
             $field = $this->getTable()->aliasField($this->getConfig('field'));
 
-            return $exp->and_(array_map(
+            return $exp->and(array_map(
                 function ($key, $value) use ($field, $query) {
                     return $query->newExpr()->eq(
                         new FunctionExpression(

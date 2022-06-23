@@ -45,9 +45,9 @@ class EndpointAuthorizeTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Cache::clear(false, '_bedita_core_');
@@ -65,7 +65,7 @@ class EndpointAuthorizeTest extends TestCase
                 new UnauthorizedException('Unauthorized'),
                 new Uri('/home'),
                 [
-                    '_anonymous' => true
+                    '_anonymous' => true,
                 ],
             ],
             'POST /home (role_id = 1)' => [
@@ -102,10 +102,10 @@ class EndpointAuthorizeTest extends TestCase
                 new NotFoundException('Resource not found.'),
                 new Uri('/disabled'),
                 [
-                    '_anonymous' => true
+                    '_anonymous' => true,
                 ],
                 'GET',
-                true
+                true,
             ],
             'GET /disabled (role_id = 1)' => [
                 new NotFoundException('Resource not found.'),
@@ -122,10 +122,10 @@ class EndpointAuthorizeTest extends TestCase
                 true,
                 new Uri('/signup'),
                 [
-                    '_anonymous' => true
+                    '_anonymous' => true,
                 ],
                 'POST',
-                true
+                true,
             ],
         ];
     }
@@ -139,7 +139,6 @@ class EndpointAuthorizeTest extends TestCase
      * @param string $requestMethod Request method.
      * @param bool $whiteListed Is the endpoint whitelisted?
      * @return void
-     *
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
      * @covers ::isAnonymous()
@@ -182,7 +181,6 @@ class EndpointAuthorizeTest extends TestCase
      * Test default permissive behavior.
      *
      * @return void
-     *
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::checkPermissions()
@@ -225,7 +223,6 @@ class EndpointAuthorizeTest extends TestCase
      * Test default permissive behavior on an unknown endpoint.
      *
      * @return void
-     *
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::checkPermissions()
@@ -268,16 +265,15 @@ class EndpointAuthorizeTest extends TestCase
      * Test default block of anonymous writes on an endpoint unless explicitly allowed.
      *
      * @return void
-     *
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::checkPermissions()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Unauthorized
      */
     public function testBlockAnonymousWritesByDefault()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 
@@ -310,15 +306,14 @@ class EndpointAuthorizeTest extends TestCase
      * Test default block of anonymous actions.
      *
      * @return void
-     *
      * @covers ::authorize()
      * @covers ::isAnonymous()
      * @covers ::unauthenticated()
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage Unauthorized
      */
     public function testBlockUnloggedByDefault()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
 

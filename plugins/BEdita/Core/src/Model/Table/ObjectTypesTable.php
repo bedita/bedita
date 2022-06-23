@@ -39,16 +39,13 @@ use Cake\Utility\Inflector;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
- *
  * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TreeBehavior
- *
  * @since 4.0.0
  */
 class ObjectTypesTable extends Table
@@ -58,31 +55,31 @@ class ObjectTypesTable extends Table
      *
      * @var string
      */
-    const CACHE_CONFIG = '_bedita_object_types_';
+    public const CACHE_CONFIG = '_bedita_object_types_';
 
     /**
      * Default parent id 1 for `objects`.
      *
      * @var int
      */
-    const DEFAULT_PARENT_ID = 1;
+    public const DEFAULT_PARENT_ID = 1;
 
     /**
      * Default `plugin` if not specified.
      *
      * @var string
      */
-    const DEFAULT_PLUGIN = 'BEdita/Core';
+    public const DEFAULT_PLUGIN = 'BEdita/Core';
 
     /**
      * Default `model` if not specified.
      *
      * @var string
      */
-    const DEFAULT_MODEL = 'Objects';
+    public const DEFAULT_MODEL = 'Objects';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = ObjectTypesValidator::class;
 
@@ -91,7 +88,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -155,7 +152,7 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
             ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
@@ -188,7 +185,7 @@ class ObjectTypesTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, $options = [])
+    public function get($primaryKey, $options = []): EntityInterface
     {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
@@ -342,9 +339,9 @@ class ObjectTypesTable extends Table
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function findAll(Query $query, array $options)
+    public function findAll(Query $query, array $options): Query
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -438,7 +435,7 @@ class ObjectTypesTable extends Table
         // This could be achieved more efficiently using two left joins, but if we need to find also
         // descendants it's simpler done this way.
         $conditionsBuilder = function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
-            return $exp->or_(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
+            return $exp->or(function (QueryExpression $exp) use ($leftSubQuery, $rightSubQuery) {
                 return $exp
                     ->in($this->aliasField('id'), $leftSubQuery->select(['id']))
                     ->in($this->aliasField('id'), $rightSubQuery->select(['id']));
@@ -466,10 +463,10 @@ class ObjectTypesTable extends Table
                 // Find descendants for all found nodes using NSM rules.
                 // If the nodes found are [l = 3, r = 8] and [l = 9, r = 10], the conditions will be built as follows:
                 // ... WHERE (tree_left >= 3 AND tree_right <= 8) OR (tree_left >= 9 AND tree_right <= 10)
-                return $exp->or_(
+                return $exp->or(
                     $nsmCounters
                         ->map(function (array $row) use ($exp) {
-                            return $exp->and_(function (QueryExpression $exp) use ($row) {
+                            return $exp->and(function (QueryExpression $exp) use ($row) {
                                 return $exp
                                     ->gte($this->aliasField('tree_left'), $row['tree_left'])
                                     ->lte($this->aliasField('tree_right'), $row['tree_right']);

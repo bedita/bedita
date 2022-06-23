@@ -31,7 +31,7 @@ class LocationTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Locations'
+        'plugin.BEdita/Core.Locations',
     ];
 
     /**
@@ -42,9 +42,9 @@ class LocationTest extends TestCase
     protected $Locations;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -55,12 +55,11 @@ class LocationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testGetMeta()
     {
-        $location = $this->Locations->newEntity();
+        $location = $this->Locations->newEntity([]);
 
         static::assertFalse($location->isAccessible('distance'));
     }

@@ -25,25 +25,25 @@ class UploadControllerTest extends IntegrationTestCase
     use TestFilesystemTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup();
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         parent::tearDown();
@@ -53,7 +53,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     *
      * @covers ::upload()
      * @covers ::initialize()
      */
@@ -90,7 +89,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` failure.
      *
      * @return void
-     *
      * @covers ::upload()
      */
     public function testUploadFail()

@@ -60,9 +60,11 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.UserTokens',
                     'plugin.BEdita/Core.Categories',
                     'plugin.BEdita/Core.ObjectCategories',
+                    'plugin.BEdita/Core.Tags',
+                    'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
                 ],
-                []
+                [],
             ],
             'fixturesPresent' => [
                 [
@@ -91,12 +93,14 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.UserTokens',
                     'plugin.BEdita/Core.Categories',
                     'plugin.BEdita/Core.ObjectCategories',
+                    'plugin.BEdita/Core.Tags',
+                    'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
                 ],
                 [
                     'plugin.BEdita/Core.Users',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -106,7 +110,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * @param array $expected Expected results.
      * @param array $fixtures Class fixtures.
      * @return void
-     *
      * @dataProvider authFixturesProvider
      * @covers ::__construct()
      * @covers ::addAuthFixtures()
@@ -143,7 +146,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
 
         $expected = [
             'id' => 9999,
-            'username' => 'gustavo'
+            'username' => 'gustavo',
         ];
         $event = new Event('Auth.afterIdentify', null, [$expected]);
         EventManager::instance()->dispatch($event);
@@ -160,7 +163,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $user = [
             'id' => 9999,
-            'username' => 'gustavo'
+            'username' => 'gustavo',
         ];
         $event = new Event('Auth.afterIdentify', null, [$user]);
         EventManager::instance()->dispatch($event);
@@ -236,7 +239,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                 'GET',
                 [
                     'Accept' => 'application/json',
-                ]
+                ],
             ],
             'overrideOptions2' => [
                 [
@@ -249,8 +252,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                 [
                     'Host' => 'myapi.example.com',
                     'Content-Type' => 'application/json',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

@@ -24,10 +24,10 @@ use Cake\Database\Type\JsonType;
 class JsonObjectType extends JsonType
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function toPHP($value, Driver $driver)
     {
-        return json_decode($value, false);
+        return json_decode((string)$value, false);
     }
 }

@@ -53,9 +53,9 @@ class StaticPropertiesTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -63,9 +63,9 @@ class StaticPropertiesTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->StaticProperties);
 
@@ -76,7 +76,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test table initialization.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -95,7 +94,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test creation of temporary table.
      *
      * @return void
-     *
      * @covers ::createTable()
      */
     public function testCreateTable()
@@ -112,7 +110,7 @@ class StaticPropertiesTableTest extends TestCase
 
         $tableName = $this->StaticProperties->getTable();
         if (strpos($tableName, '.')) {
-            list(, $tableName) = explode('.', $tableName);
+            [, $tableName] = explode('.', $tableName);
         }
         $prefix = sprintf('%s_', str_replace('_', '', $tableName));
 
@@ -250,13 +248,12 @@ class StaticPropertiesTableTest extends TestCase
      * @param array|null $expected Expected result.
      * @param array $conditions Conditions
      * @return void
-     *
      * @dataProvider addSchemaDetailsProvider()
      * @covers ::addSchemaDetails()
      * @covers ::listOwnTables()
      * @covers ::prepareTableFields()
      */
-    public function testAddSchemaDetails(array $expected = null, array $conditions)
+    public function testAddSchemaDetails(?array $expected = null, array $conditions)
     {
         $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()
             ->where($conditions)

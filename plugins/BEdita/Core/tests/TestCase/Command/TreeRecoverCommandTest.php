@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 Atlas Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,26 +11,26 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\TestCase\Shell\Task;
+namespace BEdita\Core\Test\TestCase\Command;
 
-use BEdita\Core\Shell\Task\RecoverTreeTask;
-use Cake\Console\Shell;
+use BEdita\Core\Command\TreeRecoverCommand;
+use Cake\Console\Command;
 use Cake\Database\Expression\Comparison;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Datasource\ModelAwareTrait;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Shell\Task\RecoverTreeTask
+ * {@see \BEdita\Core\Command\TreeRecoverCommand} Test Case
+ *
+ * @property \BEdita\Core\Model\Table\TreesTable $Trees
+ * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
-class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
+class TreeRecoverCommandTest extends TestCase
 {
-    /**
-     * Trees table.
-     *
-     * @var \BEdita\Core\Model\Table\TreesTable
-     */
-    public $Trees;
+    use ConsoleIntegrationTestTrait;
+    use ModelAwareTrait;
 
     /**
      * Fixtures
@@ -52,19 +52,8 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
-        $this->Trees = TableRegistry::getTableLocator()->get('Trees');
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->Trees);
-
-        parent::tearDown();
+        $this->useCommandRunner();
+        $this->loadModel('Trees');
     }
 
     /**
@@ -81,6 +70,7 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
          */
         $getTreeState = function () {
             return $this->Trees->find()
+                ->all()
                 ->combine('id', function (EntityInterface $node) {
                     return sprintf('%d / %d', $node['tree_left'], $node['tree_right']);
                 })
@@ -104,9 +94,9 @@ class RecoverTreeTaskTest extends ConsoleIntegrationTestCase
         static::assertNotEquals($expected, $corrupt, 'Tree hasn\'t been corrupted prior to testing');
 
         // Recover.
-        $this->exec(RecoverTreeTask::class);
+        $this->exec(TreeRecoverCommand::defaultName());
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Tree recovery completed');
 
         // Assert that tree returned to a valid state.

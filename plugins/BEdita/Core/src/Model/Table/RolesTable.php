@@ -27,7 +27,6 @@ use Cake\Validation\Validator;
  * Roles Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Users
- *
  * @method \BEdita\Core\Model\Entity\Role get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Role newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] newEntities(array $data, array $options = [])
@@ -35,7 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Role patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class RolesTable extends Table
@@ -45,14 +43,14 @@ class RolesTable extends Table
      *
      * @var int
      */
-    const ADMIN_ROLE = 1;
+    public const ADMIN_ROLE = 1;
 
     /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -79,7 +77,7 @@ class RolesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->naturalNumber('id')
@@ -105,7 +103,7 @@ class RolesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
 
@@ -143,7 +141,7 @@ class RolesTable extends Table
      */
     public function beforeDelete(Event $event, EntityInterface $entity)
     {
-        if (static::ADMIN_ROLE === $entity->id) {
+        if ($entity->id === static::ADMIN_ROLE) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));
         }
     }

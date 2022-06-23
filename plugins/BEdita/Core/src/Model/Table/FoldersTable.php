@@ -26,7 +26,6 @@ use Cake\ORM\Rule\ValidCount;
  *
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasOne $TreeParentNodes
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsToMany $Children
- *
  * @method \BEdita\Core\Model\Entity\Folder get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Folder newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder[] newEntities(array $data, array $options = [])
@@ -34,9 +33,7 @@ use Cake\ORM\Rule\ValidCount;
  * @method \BEdita\Core\Model\Entity\Folder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
- *
  */
 class FoldersTable extends ObjectsTable
 {
@@ -45,7 +42,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -74,7 +71,7 @@ class FoldersTable extends ObjectsTable
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules = parent::buildRules($rules);
 

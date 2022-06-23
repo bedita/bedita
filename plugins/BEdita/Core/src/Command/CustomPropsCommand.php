@@ -39,7 +39,7 @@ class CustomPropsCommand extends Command
     protected $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -55,13 +55,14 @@ class CustomPropsCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         $types = TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find('list', ['valueField' => 'name'])
             ->where(['is_abstract' => false])
+            ->all()
             ->toList();
         if ($args->getOption('type')) {
             $types = [(string)$args->getOption('type')];
@@ -86,7 +87,7 @@ class CustomPropsCommand extends Command
      *
      * @param string $type Object type
      * @param int|null $id Object ID
-     * @param ConsoleIo $io Console IO
+     * @param \Cake\Console\ConsoleIo $io Console IO
      * @return int Number of errors found
      */
     protected function customPropsByType(string $type, ?int $id, ConsoleIo $io): int

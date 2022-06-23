@@ -21,7 +21,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 class FakeCategoriesFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
@@ -56,7 +56,7 @@ class FakeCategoriesFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8_general_ci',
         ],
     ];
 
@@ -128,7 +128,7 @@ class FakeCategoriesFixture extends TestFixture
             'name' => 'History of Art',
             'parent_id' => null,
             'left_idx' => 17,
-            'right_idx' => 18
+            'right_idx' => 18,
         ],
     ];
 }

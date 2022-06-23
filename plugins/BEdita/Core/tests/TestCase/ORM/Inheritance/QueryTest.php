@@ -32,7 +32,7 @@ class QueryTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,6 @@ class QueryTest extends TestCase
      * Test adding default types of inherited columns to type map.
      *
      * @return void
-     *
      * @covers ::addDefaultTypes()
      */
     public function testAddDefaultTypes()
@@ -77,7 +76,7 @@ class QueryTest extends TestCase
                     'FakeFelines.legs',
                     'FakeFelines.updated_at',
                     'FakeFelines.subclass',
-                    'FakeFelines.family'
+                    'FakeFelines.family',
                 ],
                 [],
                 true,
@@ -97,7 +96,6 @@ class QueryTest extends TestCase
      * @param string[] $select Fields to explicitly select.
      * @param bool $autoFields Is auto-fields enabled?
      * @return void
-     *
      * @covers ::_addDefaultFields()
      * @dataProvider addDefaultFieldsProvider()
      */
@@ -142,7 +140,7 @@ class QueryTest extends TestCase
         static::assertArrayHasKey('FakeFelines', $from);
         static::assertInstanceOf(CakeQuery::class, $from['FakeFelines']);
 
-        /* @var \Cake\ORM\Query $subQuery */
+        /** @var \Cake\ORM\Query $subQuery */
         $subQuery = $from['FakeFelines'];
         static::assertEquals($expectedFields, $subQuery->clause('select'));
 
@@ -154,7 +152,7 @@ class QueryTest extends TestCase
             static::assertSame($table, $joins[$alias]['table']);
             static::assertSame($alias, $joins[$alias]['alias']);
 
-            /* @var \Cake\Database\Expression\QueryExpression $exp */
+            /** @var \Cake\Database\Expression\QueryExpression $exp */
             $exp = $joins[$alias]['conditions'];
             static::assertSame(
                 $alias . '.id = (fake_felines.id)',

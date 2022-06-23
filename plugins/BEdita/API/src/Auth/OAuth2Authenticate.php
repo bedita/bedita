@@ -58,7 +58,7 @@ class OAuth2Authenticate extends BaseAuthenticate
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
@@ -86,15 +86,15 @@ class OAuth2Authenticate extends BaseAuthenticate
 
         $this->setConfig('finder', [
             'externalAuth' => [
-                'auth_provider' => $authProvider
-            ]
+                'auth_provider' => $authProvider,
+            ],
         ]);
 
         return $this->_findUser($data['provider_username']);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUser(ServerRequest $request)
     {
@@ -116,7 +116,7 @@ class OAuth2Authenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function unauthenticated(ServerRequest $request, Response $response)
     {

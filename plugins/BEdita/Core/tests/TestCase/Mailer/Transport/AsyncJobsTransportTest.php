@@ -41,9 +41,9 @@ class AsyncJobsTransportTest extends TestCase
     protected $AsyncJobs;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         TransportFactory::drop('test');
         TransportFactory::setConfig('test', [
@@ -67,9 +67,9 @@ class AsyncJobsTransportTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -82,7 +82,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     *
      * @covers ::send()
      */
     public function testSend()
@@ -112,7 +111,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     *
      * @covers ::send()
      */
     public function testSendPriority()
@@ -130,7 +128,7 @@ class AsyncJobsTransportTest extends TestCase
             'test'
         );
 
-        /* @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
+        /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()->where(['service' => 'mail'])->first();
 
         static::assertInstanceOf($this->AsyncJobs->getEntityClass(), $asyncJob);
@@ -141,7 +139,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs and later real email sending.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAsyncSend()
@@ -167,7 +164,7 @@ class AsyncJobsTransportTest extends TestCase
             'test'
         );
 
-        /* @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
+        /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()->where(['service' => 'mail'])->first();
 
         static::assertInstanceOf($this->AsyncJobs->getEntityClass(), $asyncJob);

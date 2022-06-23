@@ -16,6 +16,7 @@ namespace BEdita\Core\ORM\Inheritance;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\ORM\Association;
 use Cake\ORM\AssociationCollection as CakeAssociationCollection;
+use Traversable;
 
 /**
  * Class to proxy all association operations to inherited tables.
@@ -94,7 +95,7 @@ class AssociationCollection extends CakeAssociationCollection
      * @param \Cake\ORM\Association|null $association Association being inherited.
      * @return \Cake\ORM\Association
      */
-    protected function inheritAssociation(Association $association = null)
+    protected function inheritAssociation(?Association $association = null)
     {
         if ($association === null) {
             return $association;
@@ -110,9 +111,9 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function get($alias)
+    public function get($alias): ?Association
     {
         $association = parent::get($alias);
         if ($association === null) {
@@ -123,9 +124,9 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function getByProperty($prop)
+    public function getByProperty($prop): ?Association
     {
         $association = parent::getByProperty($prop);
         if ($association === null) {
@@ -136,25 +137,25 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function has($alias)
+    public function has($alias): bool
     {
         return parent::has($alias) || $this->inheritedAssociations()->has($alias);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function keys()
+    public function keys(): array
     {
         return array_merge(parent::keys(), $this->inheritedAssociations()->keys());
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function getByType($class)
+    public function getByType($class): array
     {
         return array_merge(parent::getByType($class), $this->inheritedAssociations()->getByType($class));
     }
@@ -162,9 +163,9 @@ class AssociationCollection extends CakeAssociationCollection
     /**
      * {@inheritDoc}
      *
-     * @param bool $cascade Should removal be cascaded to parent table's associations?
+     * @param bool $alias Should removal be cascaded to parent table's associations?
      */
-    public function remove($alias, $cascade = true)
+    public function remove($alias, $cascade = true): void
     {
         parent::remove($alias);
         if ($cascade) {
@@ -173,16 +174,16 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function removeAll()
+    public function removeAll(): void
     {
         parent::removeAll();
         $this->innerCollection->removeAll();
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _getNoCascadeItems($entity, $options)
     {
@@ -193,9 +194,9 @@ class AssociationCollection extends CakeAssociationCollection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         $iterator = new \AppendIterator();
         $iterator->append(new \ArrayIterator($this->_items));

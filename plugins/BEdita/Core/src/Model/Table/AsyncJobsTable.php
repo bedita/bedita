@@ -5,7 +5,7 @@ use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -20,17 +20,15 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\AsyncJob patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class AsyncJobsTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public static function defaultConnectionName()
+    public static function defaultConnectionName(): string
     {
         if (in_array('async_jobs', ConnectionManager::configured())) {
             return 'async_jobs';
@@ -44,7 +42,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -71,7 +69,7 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->uuid('uuid')
@@ -135,7 +133,7 @@ class AsyncJobsTable extends Table
         return $this->getConnection()->transactional(function () use ($uuid, $duration) {
             $entity = $this->get($uuid, ['finder' => 'pending']);
             $entity->max_attempts -= 1;
-            $entity->locked_until = new Time($duration);
+            $entity->locked_until = new FrozenTime($duration);
 
             $expires = $entity->locked_until->timestamp;
             $this->dispatchEvent('AsyncJob.lock', compact('entity', 'expires'));
@@ -182,22 +180,22 @@ class AsyncJobsTable extends Table
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
-                return $exp->and_([
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                return $exp->and([
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('scheduled_from');
 
                         return $exp
                             ->isNull($field)
                             ->lte($field, $now);
                     }),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('expires');
 
                         return $exp
                             ->isNull($field)
                             ->gte($field, $now);
                     }),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('locked_until');
 
                         return $exp
@@ -227,19 +225,19 @@ class AsyncJobsTable extends Table
         $now = $query->func()->now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and_([
+            return $exp->and([
                 function (QueryExpression $exp) {
                     return $exp->isNull($this->aliasField('completed'));
                 },
-                $exp->or_([
+                $exp->or([
                     function (QueryExpression $exp) use ($now) {
                         return $exp->lt($this->aliasField('expires'), $now);
                     },
-                    $exp->and_([
+                    $exp->and([
                         function (QueryExpression $exp) {
                             return $exp->eq($this->aliasField('max_attempts'), 0);
                         },
-                        $exp->or_(function (QueryExpression $exp) use ($now) {
+                        $exp->or(function (QueryExpression $exp) use ($now) {
                             $field = $this->aliasField('locked_until');
 
                             return $exp

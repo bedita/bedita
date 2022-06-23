@@ -25,7 +25,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -120,7 +119,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -163,7 +161,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -218,7 +215,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -253,7 +249,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -282,7 +277,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -309,7 +303,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -335,7 +328,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -362,7 +354,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method with invalid data.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -388,7 +379,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -413,7 +403,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test related method to list related objects.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()
@@ -483,6 +472,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'another_username' => null, // custom property
                         'another_email' => null, // custom property
                         'pseudonym' => null,
+                        'user_preferences' => null,
                     ],
                     'meta' => [
                         'locked' => true,
@@ -500,7 +490,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'external_auth' => [
                             [
                                 'provider' => 'example',
-                                'username' => 'first_user'
+                                'username' => 'first_user',
                             ],
                         ],
                     ],

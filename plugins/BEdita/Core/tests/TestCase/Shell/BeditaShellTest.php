@@ -17,35 +17,36 @@ use BEdita\Core\Shell\Task\InitSchemaTask;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends ConsoleIntegrationTestCase
+class BeditaShellTest extends TestCase
 {
-    /**
-     * Name for temporary configuration file.
-     *
-     * @var string
-     */
-    const TEMP_CONNECTION = 'temporary_connection';
+    use ConsoleIntegrationTestTrait;
 
     /**
      * Name for temporary configuration file.
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'app.temp.php';
+    public const TEMP_CONNECTION = 'temporary_connection';
 
     /**
-     * {@inheritDoc}
+     * Name for temporary configuration file.
+     *
+     * @var string
      */
-    public function setUp()
+    public const TEMP_FILE = TMP . 'app.temp.php';
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
     {
-        parent::setUp();
-
         $this->fixtureManager->shutDown();
 
         // Try to avoid "database schema has changed" error on SQLite.
@@ -57,9 +58,9 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
         ConnectionManager::get('default')->getDriver()->disconnect();
@@ -86,8 +87,6 @@ class BeditaShellTest extends ConsoleIntegrationTestCase
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);
         }
-
-        parent::tearDown();
     }
 
     /**

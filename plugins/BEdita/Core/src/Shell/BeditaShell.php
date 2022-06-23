@@ -13,12 +13,7 @@
 
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Shell\Task\CheckApiKeyTask;
-use BEdita\Core\Shell\Task\CheckFilesystemTask;
-use BEdita\Core\Shell\Task\CheckSchemaTask;
-use BEdita\Core\Shell\Task\InitSchemaTask;
-use BEdita\Core\Shell\Task\SetupAdminUserTask;
-use BEdita\Core\Shell\Task\SetupConnectionTask;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
 
@@ -30,7 +25,6 @@ use Cake\Datasource\ConnectionManager;
  *  - check instance
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Shell\Task\CheckApiKeyTask $CheckApiKey
  * @property \BEdita\Core\Shell\Task\CheckFilesystemTask $CheckFilesystem
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
@@ -41,7 +35,7 @@ use Cake\Datasource\ConnectionManager;
 class BeditaShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $tasks = [
         'CheckApiKey' => ['class' => 'BEdita/Core.CheckApiKey', 'config' => []],
@@ -57,7 +51,7 @@ class BeditaShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 

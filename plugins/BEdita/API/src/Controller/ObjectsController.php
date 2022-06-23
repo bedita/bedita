@@ -48,7 +48,7 @@ class ObjectsController extends ResourcesController
     use ActionTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Objects';
 
@@ -60,7 +60,7 @@ class ObjectsController extends ResourcesController
     protected $objectType = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
@@ -76,9 +76,9 @@ class ObjectsController extends ResourcesController
     protected const ADMIN_META_ACCESSIBLE = ['locked'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize()
+    public function initialize(): void
     {
         if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
             $name = $this->request->getParam('relationship');
@@ -122,7 +122,7 @@ class ObjectsController extends ResourcesController
      */
     protected function initObjectModel()
     {
-        $type = $this->request->getParam('object_type', Inflector::underscore($this->request->getParam('controller')));
+        $type = $this->request->getParam('object_type', Inflector::underscore((string)$this->request->getParam('controller')));
         try {
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
@@ -149,7 +149,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function beforeFilter(Event $event)
     {
@@ -168,7 +168,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function index()
     {
@@ -181,7 +181,7 @@ class ObjectsController extends ResourcesController
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
             }
 
-            $entity = $this->Table->newEntity();
+            $entity = $this->Table->newEntity([]);
             $entity->set('type', $this->request->getData('type'));
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
@@ -212,11 +212,11 @@ class ObjectsController extends ResourcesController
         }
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function resourceUrl(EntityInterface $entity, $primaryKey)
     {
@@ -231,7 +231,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function resource($id)
     {
@@ -276,7 +276,7 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('entity'));
-        $this->set('_serialize', ['entity']);
+        $this->setSerialize(['entity']);
 
         return null;
     }
@@ -312,7 +312,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function related()
     {
@@ -336,14 +336,14 @@ class ObjectsController extends ResourcesController
 
         $this->set('_fields', $this->request->getQuery('fields', []));
         $this->set(compact('objects'));
-        $this->set('_serialize', ['objects']);
+        $this->setSerialize(['objects']);
 
         $available = $this->getAvailableUrl($relationship);
         $this->set('_links', compact('available'));
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function relationships()
     {
@@ -378,9 +378,7 @@ class ObjectsController extends ResourcesController
                 }
 
                 $this->set(compact('data'));
-                $this->set([
-                    '_serialize' => ['data'],
-                ]);
+                $this->setSerialize(['data']);
 
                 $available = $this->getAvailableUrl($relationship);
                 $this->set('_links', compact('available'));
@@ -412,7 +410,7 @@ class ObjectsController extends ResourcesController
             $this->set(compact('data'));
             $serialize = ['data'];
         }
-        $this->set(['_serialize' => $serialize]);
+        $this->setSerialize($serialize);
 
         return null;
     }
@@ -437,11 +435,11 @@ class ObjectsController extends ResourcesController
 
         $url = [
             '_name' => 'api:objects:index',
-            'object_type' => 'objects'
+            'object_type' => 'objects',
         ];
         if (count(array_diff($types, ['objects'])) > 0) {
             natsort($types);
-            $url['filter'] = ['type' => array_values($types)];
+            $url['?']['filter'] = ['type' => array_values($types)];
         }
 
         return Router::url($url, true);

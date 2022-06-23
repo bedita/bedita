@@ -14,7 +14,7 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\ProjectModelCommand;
 use BEdita\Core\Test\TestCase\Utility\ProjectModelTest;
-use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -48,7 +48,7 @@ class ProjectModelCommandTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->useCommandRunner();
@@ -58,7 +58,6 @@ class ProjectModelCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     *
      * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
@@ -72,7 +71,6 @@ class ProjectModelCommandTest extends TestCase
      * Test execute method
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
@@ -91,7 +89,6 @@ class ProjectModelCommandTest extends TestCase
      * Test file load failure
      *
      * @return void
-     *
      * @covers ::modelFilePath()
      * @covers ::execute()
      */
@@ -106,7 +103,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
@@ -121,14 +117,13 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::modelFilePath()
      */
     public function testPluginFailure2(): void
     {
         $this->exec('project_model -p Test');
-        $expected = current(App::path('Plugin')) . 'Test' . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
+        $expected = current(Configure::read('App.paths.plugins')) . 'Test' . DS . 'config' . DS . ProjectModelCommand::PROJECT_MODEL_FILE;
         $this->assertErrorContains('File not found ' . $expected);
         $this->assertExitError();
     }
@@ -137,7 +132,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testContentFailure(): void
@@ -154,7 +148,6 @@ class ProjectModelCommandTest extends TestCase
      * Test remove from model
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testRemove(): void
@@ -173,7 +166,6 @@ class ProjectModelCommandTest extends TestCase
      * Test update model items
      *
      * @return void
-     *
      * @covers ::execute()
      */
     public function testUpdate(): void

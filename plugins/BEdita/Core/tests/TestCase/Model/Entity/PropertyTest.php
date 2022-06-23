@@ -51,9 +51,9 @@ class PropertyTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -61,9 +61,9 @@ class PropertyTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Properties);
 
@@ -89,7 +89,7 @@ class PropertyTest extends TestCase
             'created' => '2016-01-01 12:00:00',
             'modified' => '2016-01-01 12:00:00',
             'published' => '2016-01-01 12:00:00',
-            'description' => 'another description'
+            'description' => 'another description',
         ];
         $property = $this->Properties->patchEntity($property, $data);
         if (!($property instanceof Property)) {
@@ -132,7 +132,6 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type name.
      * @param mixed $propertyTypeId Property type ID.
      * @return void
-     *
      * @covers ::_getPropertyType()
      * @dataProvider getPropertyTypeNameProvider()
      */
@@ -161,7 +160,6 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type name.
      * @param mixed $propertyTypeId Property type ID.
      * @return void
-     *
      * @covers ::_getPropertyTypeName()
      * @dataProvider getPropertyTypeNameProvider()
      */
@@ -200,7 +198,6 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type ID.
      * @param mixed $propertyTypeName Property type name.
      * @return void
-     *
      * @covers ::_setPropertyTypeName()
      * @dataProvider setPropertyTypeNameProvider()
      */
@@ -239,7 +236,6 @@ class PropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param bool $isNullable Is property nullable?
      * @return void
-     *
      * @dataProvider getRequiredProvider()
      * @covers ::_getRequired()
      */
@@ -317,7 +313,6 @@ class PropertyTest extends TestCase
      * @param bool $isNullable Is the property nullable?
      * @param string|null $mode Property access mode.
      * @return void
-     *
      * @dataProvider getSchemaProvider()
      * @covers ::getSchema()
      */

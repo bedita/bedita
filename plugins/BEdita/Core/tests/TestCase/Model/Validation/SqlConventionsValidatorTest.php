@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Validation;
 
+use ArrayObject;
 use BEdita\Core\Model\Validation\SqlConventionsValidator;
 use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\TestCase;
@@ -109,9 +110,9 @@ class SqlConventionsValidatorTest extends TestCase
                 'my_column_name',
                 [
                     'table' => 'my_table',
-                    'allColumns' => [
+                    'allColumns' => new ArrayObject([
                         'my_column_name' => 'my_other_table',
-                    ],
+                    ]),
                 ],
             ],
             'allowed duplicates' => [
@@ -119,9 +120,9 @@ class SqlConventionsValidatorTest extends TestCase
                 'created',
                 [
                     'table' => 'my_table',
-                    'allColumns' => [
+                    'allColumns' => new ArrayObject([
                         'created' => 'my_other_table',
-                    ],
+                    ]),
                 ],
             ],
             'unique column' => [
@@ -129,9 +130,9 @@ class SqlConventionsValidatorTest extends TestCase
                 'my_unique_column',
                 [
                     'table' => 'my_table',
-                    'allColumns' => [
+                    'allColumns' => new ArrayObject([
                         'my_column_name' => 'my_other_table',
-                    ],
+                    ]),
                 ],
             ],
             'primary (custom name)' => [
@@ -152,10 +153,9 @@ class SqlConventionsValidatorTest extends TestCase
      * @param mixed $symbol Symbol being validated.
      * @param array $context Additional validation context.
      * @return void
-     *
      * @dataProvider validationProvider()
      */
-    public function testValidation(array $expected, $symbol, array $context = [])
+    public function testValidation(array $expected, $symbol, array $context = []): void
     {
         $validator = new SqlConventionsValidator();
         foreach ($context as $key => $value) {

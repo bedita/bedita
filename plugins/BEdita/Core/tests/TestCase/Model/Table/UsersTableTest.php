@@ -18,7 +18,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -62,9 +62,9 @@ class UsersTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -73,9 +73,9 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Users);
         LoggedUser::resetUser();
@@ -190,14 +190,13 @@ class UsersTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $this->Users->patchEntity($user, $data);
         $user->type = 'users';
 
@@ -214,13 +213,12 @@ class UsersTableTest extends TestCase
      * Test handling of login event.
      *
      * @return void
-     *
      * @covers ::login()
      */
     public function testLogin()
     {
         $data = $this->Users->get(1)->toArray();
-        $expected = new Time();
+        $expected = new FrozenTime();
         $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
 
         $lastLogin = $this->Users->get(1)->last_login;
@@ -232,7 +230,6 @@ class UsersTableTest extends TestCase
      * Test login with no data.
      *
      * @return void
-     *
      * @covers ::login()
      */
     public function testLoginNoData()
@@ -246,7 +243,6 @@ class UsersTableTest extends TestCase
      * Test `login` finder.
      *
      * @return void
-     *
      * @covers ::findLogin()
      */
     public function testFindLogin()
@@ -260,7 +256,6 @@ class UsersTableTest extends TestCase
      * Test `loginRoles` finder.
      *
      * @return void
-     *
      * @covers ::findLoginRoles()
      */
     public function testFindLoginRoles()
@@ -277,7 +272,6 @@ class UsersTableTest extends TestCase
      * Test `login` finder fail.
      *
      * @return void
-     *
      * @covers ::findLogin()
      */
     public function testFailFindLogin()
@@ -294,7 +288,6 @@ class UsersTableTest extends TestCase
      * Test handling of external auth login event.
      *
      * @return void
-     *
      * @covers ::externalAuthLogin()
      */
     public function testExternalAuthLogin()
@@ -307,8 +300,8 @@ class UsersTableTest extends TestCase
 
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
-        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
@@ -322,8 +315,8 @@ class UsersTableTest extends TestCase
 
         $event = $this->Users->dispatchEvent('Auth.externalAuth', compact('authProvider', 'providerUsername', 'userId', 'params'));
 
-        /* @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
-        $externalAuth = $event->result;
+        /** @var \BEdita\Core\Model\Entity\ExternalAuth $externalAuth */
+        $externalAuth = $event->getResult();
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
@@ -334,7 +327,6 @@ class UsersTableTest extends TestCase
      * Test deleted field on user deleted.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeleted()
@@ -351,14 +343,13 @@ class UsersTableTest extends TestCase
      * Test soft delete admin user
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "User" 1
      * @covers ::beforeSave
      */
     public function testSoftDeleteAdminUser()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         $user->deleted = true;
         $this->Users->save($user);
@@ -368,14 +359,13 @@ class UsersTableTest extends TestCase
      * Test soft delete logged user
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\BadRequestException
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Logged users cannot delete their own account
      * @covers ::beforeSave
      */
     public function testSoftDeleteLoggedUser()
     {
+        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectExceptionCode('400');
+        $this->expectExceptionMessage('Logged users cannot delete their own account');
         LoggedUser::setUser(['id' => 5]);
         $user = $this->Users->get(5);
         $user->deleted = true;
@@ -386,7 +376,6 @@ class UsersTableTest extends TestCase
      * Test soft delete second user
      *
      * @return void
-     *
      * @covers ::beforeSave
      */
     public function testSoftDeleteSecondUser()
@@ -400,14 +389,13 @@ class UsersTableTest extends TestCase
      * Test delete admin user
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "User" 1
      * @covers ::beforeDelete
      */
     public function testHardDeleteAdminUser()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
         $this->Users->delete($user);
     }
@@ -416,7 +404,6 @@ class UsersTableTest extends TestCase
      * Test hard delete second user
      *
      * @return void
-     *
      * @covers ::beforeDelete
      */
     public function testHardDeleteSecondUser()
@@ -466,7 +453,6 @@ class UsersTableTest extends TestCase
      * @param array $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     *
      * @covers ::findExternalAuth()
      * @dataProvider findExternalAuthProvider()
      */
@@ -530,7 +516,6 @@ class UsersTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @param array $config Signup configuration.
-     *
      * @return void
      * @covers ::validationSignup()
      * @dataProvider validationSignupProvider
@@ -539,7 +524,7 @@ class UsersTableTest extends TestCase
     {
         Configure::write('Signup', $config);
 
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';
 
@@ -565,7 +550,7 @@ class UsersTableTest extends TestCase
             'email' => 'test@email.com',
         ];
 
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $this->Users->patchEntity($user, $data, ['validate' => 'signupExternal']);
 
         $error = (bool)$user->getErrors();
@@ -576,7 +561,6 @@ class UsersTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     *
      * @covers ::findMine()
      */
     public function testFindMine()
@@ -596,7 +580,6 @@ class UsersTableTest extends TestCase
      * Test `findRoles` method.
      *
      * @return void
-     *
      * @covers ::findRoles()
      * @covers ::rolesNamesIds()
      */
@@ -618,13 +601,12 @@ class UsersTableTest extends TestCase
      * Test `findRoles` failure method.
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\BadFilterException
-     * @expectedExceptionMessage Missing required parameter "roles"
      * @covers ::findRoles()
      */
     public function testFindRolesFail()
     {
+        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectExceptionMessage('Missing required parameter "roles"');
         $this->Users->find('roles', [])
             ->toArray();
     }
@@ -665,7 +647,6 @@ class UsersTableTest extends TestCase
      * @param string $passwdRule Password regexp rule
      * @param string $passwdMessage Password validation error message
      * @param bool|Exception $expected Save result or exception
-     *
      * @return void
      * @dataProvider beforeMarshalProvider
      * @covers ::beforeMarshal()
@@ -679,7 +660,7 @@ class UsersTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $user = $this->Users->patchEntity($user, $data);
         $success = $this->Users->save($user);
 
@@ -712,7 +693,7 @@ class UsersTableTest extends TestCase
                     'another_email' => 'supporto@gusta.vo',
                     'another_surname' => 'helpus',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -720,14 +701,13 @@ class UsersTableTest extends TestCase
      * Test create new user with custom properties
      *
      * @param array $data User data
-     *
      * @return void
      * @dataProvider customPropsCreateProvider
      * @coversNothing
      */
     public function testCustomPropsCreate(array $data)
     {
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $user = $this->Users->patchEntity($user, $data);
         $user->type = 'users';
         $success = $this->Users->save($user);
@@ -873,7 +853,6 @@ class UsersTableTest extends TestCase
      *
      * @param bool|\Exception $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider prefixProvider
      * @covers ::beforeSave()
@@ -886,7 +865,7 @@ class UsersTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity();
+        $user = $this->Users->newEntity([]);
         $this->Users->patchEntity($user, $data);
 
         $success = $this->Users->save($user);

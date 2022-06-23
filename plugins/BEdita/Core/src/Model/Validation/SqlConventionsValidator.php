@@ -42,7 +42,7 @@ use Cake\Validation\Validator;
  * ```php
  * $validator = new SqlConventionsValidator();
  * $validator->setProvider('table', 'my_table_name');
- * $validator->setProvider('allColumns', ['my_column' => 'table_one', 'my_other_column' => 'table_two']);
+ * $validator->setProvider('allColumns', new ArrayObject(['my_column' => 'table_one', 'my_other_column' => 'table_two']));
  *
  * $symbol = 'my_column_name';
  * $errors = $validator->validate(compact('symbol'));
@@ -57,14 +57,14 @@ class SqlConventionsValidator extends Validator
      *
      * @var string
      */
-    const ALLOWED_RESERVED_WORDS = 'NAME,STATUS';
+    public const ALLOWED_RESERVED_WORDS = 'NAME,STATUS';
 
     /**
      * Comma-separated list of columns that can be duplicated across several tables.
      *
      * @var string
      */
-    const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by,url';
+    public const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by,url';
 
     /**
      * List of reserved words.
@@ -277,7 +277,7 @@ class SqlConventionsValidator extends Validator
         $prefix = static::getPrefix($context);
         $suffix = static::getSuffix($context);
 
-        return ($symbol !== $prefix . substr($suffix, 1));
+        return $symbol !== $prefix . substr($suffix, 1);
     }
 
     /**
@@ -295,7 +295,7 @@ class SqlConventionsValidator extends Validator
             return true;
         }
 
-        $allColumns = Hash::get($context, 'providers.allColumns', []);
+        $allColumns = (array)Hash::get($context, 'providers.allColumns');
 
         if (!array_key_exists($symbol, $allColumns)) {
             // Not found.
@@ -306,7 +306,7 @@ class SqlConventionsValidator extends Validator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct()
     {

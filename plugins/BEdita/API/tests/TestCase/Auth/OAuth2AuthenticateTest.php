@@ -14,7 +14,6 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\OAuth2Authenticate;
-use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\Response;
@@ -71,7 +70,7 @@ class OAuth2AuthenticateTest extends TestCase
                 [
                     'owner_id' => 'first_user',
                     'other' => 'lot of stolen data',
-                ]
+                ],
             ],
             'not found' => [
                 false,
@@ -85,7 +84,7 @@ class OAuth2AuthenticateTest extends TestCase
                 [
                     'owner_id' => 'another_user',
                     'other' => 'lot of useless data',
-                ]
+                ],
             ],
             'no provider' => [
                 false,
@@ -109,7 +108,7 @@ class OAuth2AuthenticateTest extends TestCase
                 [
                     'owner_id' => 'first_user',
                     'other' => 'lot of useless data',
-                ]
+                ],
             ],
             'missing' => [
                 false,
@@ -129,7 +128,6 @@ class OAuth2AuthenticateTest extends TestCase
      * @param \Cake\Http\ServerRequest $request Request.
      * @param array $oauthResponse OAuth2 server response.
      * @return void
-     *
      * @dataProvider authenticateProvider
      * @covers ::authenticate()
      */
@@ -161,7 +159,6 @@ class OAuth2AuthenticateTest extends TestCase
      * Test `getUser` method.
      *
      * @return void
-     *
      * @covers ::getUser()
      */
     public function testGetUser()
@@ -175,13 +172,12 @@ class OAuth2AuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('MyExceptionMessage');
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authError' => 'MyExceptionMessage',
@@ -189,6 +185,6 @@ class OAuth2AuthenticateTest extends TestCase
 
         $auth = new OAuth2Authenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

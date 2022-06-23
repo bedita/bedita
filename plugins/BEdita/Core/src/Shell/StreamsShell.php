@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Model\Entity\Stream;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
@@ -21,13 +21,12 @@ use Cake\ORM\Query;
  * Stream shell commands: removeOrphans
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
 class StreamsShell extends Shell
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Streams';
 
@@ -36,14 +35,14 @@ class StreamsShell extends Shell
      *
      * @codeCoverageIgnore
      */
-    public function getOptionParser()
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('removeOrphans', [
             'help' => 'remove obsolete/orphans streams and related files',
             'parser' => [
                 'description' => [
-                    'Remove orphans streams.'
+                    'Remove orphans streams.',
                 ],
                 'options' => [
                     'days' => [
@@ -52,7 +51,7 @@ class StreamsShell extends Shell
                         'default' => 1,
                     ],
                 ],
-            ]
+            ],
         ]);
         $parser->addSubcommand('refreshMetadata', [
             'help' => 'read streams metadata from file and update database information',
@@ -85,7 +84,7 @@ class StreamsShell extends Shell
         $query = $this->Streams->find()
             ->where([
                 'object_id IS NULL',
-                'created <' => \Cake\I18n\Time::now()->subDays($days),
+                'created <' => \Cake\I18n\FrozenTime::now()->subDays($days),
             ]);
         $count = 0;
         foreach ($query as $stream) {

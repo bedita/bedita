@@ -28,7 +28,7 @@ use Cake\ORM\Entity;
 class RelationType extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,

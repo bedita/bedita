@@ -93,15 +93,14 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
+            ->all()
             ->each(function (EntityInterface $row) {
-                $row->unsetProperty([
-                    'id',
-                    'left_relations',
-                    'right_relations',
-                    'created',
-                    'modified',
-                    'core_type',
-                ]);
+                unset($row['id']);
+                unset($row['left_relations']);
+                unset($row['right_relations']);
+                unset($row['created']);
+                unset($row['modified']);
+                unset($row['core_type']);
                 $row->setHidden(['relations', 'alias'], true);
             })
             ->toArray();
@@ -117,12 +116,13 @@ class ProjectModel
         return TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
+            ->all()
             ->each(function (EntityInterface $row) {
                 $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
                 sort($right);
-                $row->unsetProperty('id');
+                unset($row['id']);
                 $row->set('left_object_types', $left);
                 $row->set('right_object_types', $right);
             })
@@ -138,14 +138,13 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Properties')
             ->find('type', ['dynamic'])
+            ->all()
             ->each(function (EntityInterface $row) {
-                $row->unsetProperty([
-                    'id',
-                    'created',
-                    'modified',
-                    'label',
-                    'is_static',
-                ]);
+                unset($row['id']);
+                unset($row['created']);
+                unset($row['modified']);
+                unset($row['label']);
+                unset($row['is_static']);
             })
             ->toArray();
     }

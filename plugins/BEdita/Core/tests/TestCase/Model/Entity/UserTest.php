@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -56,9 +56,9 @@ class UserTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,9 +66,9 @@ class UserTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Users);
 
@@ -79,7 +79,6 @@ class UserTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testAccessible()
@@ -105,7 +104,6 @@ class UserTest extends TestCase
      * Test hidden properties.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testHidden()
@@ -151,7 +149,7 @@ class UserTest extends TestCase
     public function testSetPasswordHash()
     {
         $user = $this->Users->get(1);
-        $now = Time::now();
+        $now = FrozenTime::now();
 
         $data = [
             'password_hash' => 'myPassword',
@@ -171,7 +169,6 @@ class UserTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::getExternalAuthMeta()
      */
@@ -191,7 +188,6 @@ class UserTest extends TestCase
      * Test that external_auth is null for entity withoud id.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::getExternalAuthMeta()
      */

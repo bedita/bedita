@@ -24,7 +24,7 @@ use Cake\Validation\Validation;
 class StreamsControllerTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
@@ -38,9 +38,9 @@ class StreamsControllerTest extends IntegrationTestCase
     private $keep = [];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,9 +60,9 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         // Cleanup test filesystem.
         $mountManager = FilesystemRegistry::getMountManager();
@@ -93,7 +93,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `GET` requests work.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::beforeFilter()
      */
@@ -112,7 +111,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `PATCH` requests are actually forbidden.
      *
      * @return void
-     *
      * @covers ::resource()
      */
     public function testPatch()
@@ -142,7 +140,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     *
      * @covers ::upload()
      * @covers ::initialize()
      */
@@ -215,7 +212,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * @param string $type Type of object to be linked.
      * @param int $id ID of object to be linked.
      * @return void
-     *
      * @dataProvider linkStreamProvider()
      * @covers ::initialize()
      */
@@ -232,7 +228,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `download` method.
      *
      * @return void
-     *
      * @covers ::download()
      * @covers ::beforeFilter()
      */

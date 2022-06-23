@@ -61,9 +61,9 @@ class UserModifiedBehavior extends Behavior
     protected $userId = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         if (isset($config['events'])) {
             $this->setConfig('events', $config['events'], false);
@@ -105,9 +105,9 @@ class UserModifiedBehavior extends Behavior
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return array_fill_keys(array_keys($this->_config['events']), 'handleEvent');
     }

@@ -26,7 +26,7 @@ TableRegistry::setTableLocator(new TableLocator());
  * Load 'core' configuration parameters
  */
 Configure::config('database', new DatabaseConfig());
-if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
+if (!defined('UNIT_TEST_RUN') && !in_array(PHP_SAPI, ['cli', 'phpdbg'])) {
     Configure::load('core', 'database');
 }
 
@@ -90,12 +90,10 @@ I18n::translators()->registerLoader('bedita', function ($name, $locale) {
         new MessagesFileLoader($name, $locale, 'po', ['BEdita/Core', 'BEdita/API']),
     ]);
 
-    return function () use ($chain) {
-        $package = $chain();
-        $package->setFormatter('default');
+    $package = $chain();
+    $package->setFormatter('default');
 
-        return $package;
-    };
+    return $package;
 });
 
 Configure::load('BEdita/Core.bedita', 'ini');

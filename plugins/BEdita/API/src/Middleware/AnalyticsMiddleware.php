@@ -44,7 +44,6 @@ class AnalyticsMiddleware
 
     /**
      * Configure analytics logger if not configured yet
-     *
      */
     public function __construct()
     {
@@ -95,11 +94,11 @@ class AnalyticsMiddleware
     protected function readCustomData(ServerRequestInterface $request, ResponseInterface $response)
     {
         $event = $this->dispatchEvent('Analytics.custom', [$request, $response]);
-        if (empty($event->result)) {
+        if (empty($event->getResult())) {
             return [];
         }
 
-        return (array)$event->result;
+        return (array)$event->getResult();
     }
 
     /**

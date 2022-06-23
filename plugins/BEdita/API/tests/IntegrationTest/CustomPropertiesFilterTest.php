@@ -25,14 +25,14 @@ use Cake\Utility\Hash;
 class CustomPropertiesFilterTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -43,9 +43,9 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -93,7 +93,6 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      * @param array $expected The expected result
      * @param string $url Url
      * @return void
-     *
      * @dataProvider filterProvider
      * @coversNothing
      */

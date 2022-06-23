@@ -30,12 +30,9 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate($search, callable $callback = null, $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Association\HasMany $EndpointPermissions
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class EndpointsTable extends Table
@@ -45,7 +42,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -65,7 +62,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -88,7 +85,7 @@ class EndpointsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));

@@ -42,7 +42,7 @@ class LayeredEngineTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         Cache::enable();
@@ -52,7 +52,7 @@ class LayeredEngineTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

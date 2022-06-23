@@ -12,9 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use Cake\Database\Schema\TableSchema;
-use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -23,7 +21,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- *
  * @method \BEdita\Core\Model\Entity\History get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\History newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\History[] newEntities(array $data, array $options = [])
@@ -32,7 +29,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\History patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\History[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\History findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class HistoryTable extends Table
@@ -44,7 +40,7 @@ class HistoryTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -55,12 +51,12 @@ class HistoryTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('Applications', [
             'foreignKey' => 'application_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Applications'
+            'className' => 'BEdita/Core.Applications',
         ]);
     }
 
@@ -70,7 +66,7 @@ class HistoryTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->nonNegativeInteger('id')

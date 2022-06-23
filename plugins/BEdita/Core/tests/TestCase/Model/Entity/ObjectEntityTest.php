@@ -56,9 +56,9 @@ class ObjectEntityTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -68,9 +68,9 @@ class ObjectEntityTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Objects);
 
@@ -98,7 +98,7 @@ class ObjectEntityTest extends TestCase
             'modified' => '2016-01-01 12:00:00',
             'published' => '2016-01-01 12:00:00',
             'created_by' => 2,
-            'modified_by' => 2
+            'modified_by' => 2,
         ];
         $object = $this->Objects->patchEntity($object, $data);
         if (!($object instanceof ObjectEntity)) {
@@ -154,7 +154,6 @@ class ObjectEntityTest extends TestCase
      * @param mixed $objectTypeId Object type ID.
      * @param array $options Configuration options for entity.
      * @return void
-     *
      * @covers ::_getType()
      * @covers ::loadObjectType()
      * @dataProvider getTypeProvider()
@@ -180,7 +179,7 @@ class ObjectEntityTest extends TestCase
             'document' => [
                 [
                     'title',
-                    'description'
+                    'description',
                 ],
                 [
                     'title',
@@ -200,7 +199,7 @@ class ObjectEntityTest extends TestCase
             'news' => [
                 [
                     'body',
-                    'description'
+                    'description',
                 ],
                 [
                     'description',
@@ -218,7 +217,6 @@ class ObjectEntityTest extends TestCase
      * @param array $expectedVisible Expected result.
      * @param int $objectTypeId Object type ID.
      * @return void
-     *
      * @covers ::getVisible()
      * @covers ::loadObjectType()
      * @dataProvider visiblePropertiesProvider()
@@ -261,7 +259,6 @@ class ObjectEntityTest extends TestCase
      * @param string|null $expected Expected object type ID.
      * @param mixed $type Type.
      * @return void
-     *
      * @covers ::_setType()
      * @dataProvider setTypeProvider()
      */
@@ -279,7 +276,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for table.
      *
      * @return void
-     *
      * @covers ::getTable()
      */
     public function testGetTable()
@@ -297,7 +293,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for JSON API type.
      *
      * @return void
-     *
      * @covers ::getType()
      */
     public function testGetTypeJsonApi()
@@ -315,7 +310,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMeta()
@@ -334,7 +328,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API links.
      *
      * @return void
-     *
      * @covers ::getLinks()
      */
     public function testGetLinks()
@@ -357,7 +350,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API links.
      *
      * @return void
-     *
      * @covers ::getLinks()
      */
     public function testGetLinksDeleted()
@@ -381,7 +373,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     *
      * @covers ::listAssociations()
      * @covers ::getRelationships()
      */
@@ -394,7 +385,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity = $entity->jsonApiSerialize();
 
@@ -408,7 +399,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations for relation roles
      *
      * @return void
-     *
      * @covers ::listAssociations()
      * @covers ::getRelationships()
      */
@@ -441,7 +431,7 @@ class ObjectEntityTest extends TestCase
             ],
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Users')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Users')->newEntity([]);
         $entity->set('id', 1);
         $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
@@ -455,7 +445,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     *
      * @covers ::listAssociations()
      * @covers ::getRelationships()
      */
@@ -467,7 +456,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEntity([]);
         $entity->set('type', 'profile');
         $entity = $entity->jsonApiSerialize();
 
@@ -482,7 +471,6 @@ class ObjectEntityTest extends TestCase
      * the relationships returned will be those of specific type.
      *
      * @return void
-     *
      * @covers ::listAssociations()
      * @covers ::getRelationships()
      */
@@ -494,7 +482,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Objects')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Objects')->newEntity([]);
         $entity->set('type', 'folders');
         $entity = $entity->jsonApiSerialize();
 
@@ -508,13 +496,12 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     *
      * @covers ::listAssociations()
      * @covers ::getRelationships()
      */
     public function testGetRelationshipsDeleted()
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity->set('deleted', true);
         $entity = $entity->jsonApiSerialize();
@@ -526,7 +513,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      */
     public function testGetRelationshipsIncluded()
@@ -546,7 +532,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations with single entity `included`
      *
      * @return void
-     *
      * @covers ::getRelationships()
      */
     public function testGetRelationshipsSingleIncluded()
@@ -566,13 +551,12 @@ class ObjectEntityTest extends TestCase
      * Test relationship count.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      */
     public function testGetRelationshipsCount(): void
     {
         $count = ['test' => 12];
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
         $entity->set('type', 'documents');
         $entity->set('_countData', $count);
         $entity = $entity->jsonApiSerialize();
@@ -585,7 +569,7 @@ class ObjectEntityTest extends TestCase
      * Test `hasProperty` method
      *
      * @covers ::hasProperty()
-     * @return bool
+     * @return void
      */
     public function testHasProperty()
     {

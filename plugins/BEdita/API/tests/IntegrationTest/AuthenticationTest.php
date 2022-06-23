@@ -59,9 +59,7 @@ class AuthenticationTest extends IntegrationTestCase
      *
      * @param array $data Post data.
      * @param array $headers Additional headers.
-     *
      * @return void
-     *
      * @dataProvider authProvider
      * @coversNothing
      */
@@ -72,7 +70,7 @@ class AuthenticationTest extends IntegrationTestCase
             'Content-Type' => 'application/json',
             'Accept' => 'application/vnd.api+json',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode($data));
 
         $this->assertResponseCode(200);
@@ -102,6 +100,32 @@ class AuthenticationTest extends IntegrationTestCase
     }
 
     /**
+     * Test /auth response with wrong formatted token.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testBadToken(): void
+    {
+        $headers = [
+            'Host' => 'api.example.com',
+            'Accept' => 'application/vnd.api+json',
+            'Authorization' => 'Bearer gustavo',
+        ];
+        $this->configRequest(compact('headers'));
+        $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
+
+        $this->assertResponseCode(401);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
+        $body = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('error', $body);
+        static::assertEquals('401', $body['error']['status']);
+        static::assertEquals('Wrong number of segments', $body['error']['title']);
+    }
+
+    /**
      * Test OAuth2 flow with app credentials, user login and token renew.
      *
      * @return void
@@ -126,7 +150,7 @@ class AuthenticationTest extends IntegrationTestCase
             'client_secret' => 'topsecretstring',
             'grant_type' => 'client_credentials',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode($data));
 
         $this->assertResponseCode(200);

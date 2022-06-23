@@ -23,7 +23,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $Categories
- *
  * @method \BEdita\Core\Model\Entity\ObjectCategory get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectCategory[] newEntities(array $data, array $options = [])
@@ -42,7 +41,7 @@ class ObjectCategoriesTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -53,12 +52,12 @@ class ObjectCategoriesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
         $this->belongsTo('Categories', [
             'foreignKey' => 'category_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Categories'
+            'className' => 'BEdita/Core.Categories',
         ]);
     }
 
@@ -67,25 +66,22 @@ class ObjectCategoriesTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
-        $validator
+        return $validator
             ->nonNegativeInteger('id')
             ->allowEmptyString('id', null, 'create')
-            ->allowEmptyString('params');
+            ->allowEmptyString('params')
 
-        $validator
             ->integer('object_id')
             ->requirePresence('object_id', 'create')
-            ->notEmptyString('object_id');
+            ->notEmptyString('object_id')
 
-        $validator
             ->integer('category_id')
             ->requirePresence('category_id', 'create')
             ->notEmptyString('category_id');
-
-            return $validator;
     }
 
     /**
@@ -95,9 +91,8 @@ class ObjectCategoriesTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->setColumnType('params', 'json');
-
-        return $schema;
+        return $schema
+            ->setColumnType('params', 'json');
     }
 
     /**
@@ -106,16 +101,12 @@ class ObjectCategoriesTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        if ($this->associations()->has('Categories')) {
-            $rules->add($rules->existsIn(['category_id'], 'Categories'));
-        } else {
-            $rules->add($rules->existsIn(['category_id'], 'Tags'));
-        }
-
-        return $rules;
+        return $rules
+            ->add($rules->existsIn(['object_id'], 'Objects'), null, ['errorField' => 'object_id'])
+            ->add($rules->existsIn(['category_id'], 'Categories'), null, ['errorField' => 'category_id']);
     }
 }

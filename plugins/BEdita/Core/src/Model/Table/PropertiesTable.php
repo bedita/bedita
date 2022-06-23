@@ -33,7 +33,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- *
  * @method \BEdita\Core\Model\Entity\Property get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
@@ -41,7 +40,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class PropertiesTable extends Table
@@ -51,7 +49,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -62,7 +60,7 @@ class PropertiesTable extends Table
         $this->belongsTo('PropertyTypes', [
             'foreignKey' => 'property_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.PropertyTypes'
+            'className' => 'BEdita/Core.PropertyTypes',
         ]);
 
         $this->belongsTo('ObjectTypes', [
@@ -84,7 +82,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->naturalNumber('id')
@@ -109,7 +107,7 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name', 'object_type_id']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));

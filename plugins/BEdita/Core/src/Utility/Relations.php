@@ -237,7 +237,7 @@ class Relations extends ResourcesBase
                 static::addTypes($id, array_diff($newTypes, $currTypes), $side, $options);
             }
         }
-        $relation->unsetProperty(['left_object_types', 'right_object_types']);
+        unset($relation['left_object_types'], $relation['right_object_types']);
     }
 
     /**
@@ -245,7 +245,7 @@ class Relations extends ResourcesBase
      *
      * @param array $data Relations data
      * @return void
-     * @throws BadRequestException
+     * @throws \Cake\Http\Exception\BadRequestException
      */
     protected static function validate(array $data): void
     {

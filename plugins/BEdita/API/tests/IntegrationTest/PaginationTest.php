@@ -22,7 +22,7 @@ use Cake\Core\Configure;
 class PaginationTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $fixtures = [
         'plugin.BEdita/Core.Locations',
@@ -138,7 +138,6 @@ class PaginationTest extends IntegrationTestCase
      * @param array $expected Expected pagination.
      * @param array $options Pagination options.
      * @return void
-     *
      * @dataProvider optionsProvider
      * @coversNothing
      */

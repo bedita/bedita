@@ -25,7 +25,6 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable|\Cake\ORM\Association\BelongsTo $Applications
- *
  * @method \BEdita\Core\Model\Entity\UserToken get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken[] newEntities(array $data, array $options = [])
@@ -33,7 +32,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\UserToken patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UserTokensTable extends Table
@@ -43,7 +41,7 @@ class UserTokensTable extends Table
      *
      * @var array
      */
-    const DEFAULT_TOKEN_TYPES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
+    public const DEFAULT_TOKEN_TYPES = ['otp', 'refresh', 'recovery', '2fa', 'access'];
 
     /**
      * Initialize method
@@ -52,7 +50,7 @@ class UserTokensTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -65,11 +63,11 @@ class UserTokensTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Users'
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('Applications', [
             'foreignKey' => 'application_id',
-            'className' => 'BEdita/Core.Applications'
+            'className' => 'BEdita/Core.Applications',
         ]);
     }
 
@@ -79,7 +77,7 @@ class UserTokensTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -121,7 +119,7 @@ class UserTokensTable extends Table
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
@@ -153,9 +151,9 @@ class UserTokensTable extends Table
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
-                return $exp->and_([
+                return $exp->and([
                     $exp->isNull($this->aliasField('used')),
-                    $exp->or_(function (QueryExpression $exp) use ($now) {
+                    $exp->or(function (QueryExpression $exp) use ($now) {
                         $field = $this->aliasField('expires');
 
                         return $exp

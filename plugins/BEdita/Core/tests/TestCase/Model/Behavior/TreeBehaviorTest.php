@@ -27,13 +27,37 @@ class TreeBehaviorTest extends TestCase
     public $Table;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->Table = TableRegistry::getTableLocator()->get('FakeCategories');
+
+        $through = TableRegistry::getTableLocator()->get('FakeCategoriesJunction', [
+            'className' => 'FakeCategories',
+        ]);
+        $through->belongsTo('FakeCategories', [
+            'foreignKey' => 'parent_id',
+            'joinType' => 'INNER',
+        ]);
+        $through->belongsTo('ChildCategories', [
+            'className' => 'FakeCategories',
+            'foreignKey' => 'id',
+            'joinType' => 'INNER',
+        ]);
+        $through->addBehavior('BEdita/Core.Tree', [
+            'left' => 'left_idx',
+            'right' => 'right_idx',
+        ]);
+
+        $this->Table->belongsToMany('ChildCategories', [
+            'className' => 'FakeCategories',
+            'through' => $through,
+            'foreignKey' => 'parent_id',
+            'targetForeignKey' => 'id',
+        ]);
         $this->Table->addBehavior('BEdita/Core.Tree', [
             'left' => 'left_idx',
             'right' => 'right_idx',
@@ -41,9 +65,9 @@ class TreeBehaviorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Table);
 
@@ -55,7 +79,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getCurrentPositionProvider()
+    public function getCurrentPositionProvider(): array
     {
         return [
             '1st node, root' => [
@@ -87,11 +111,10 @@ class TreeBehaviorTest extends TestCase
      * @param int $expected Expected position.
      * @param string $name Name of node.
      * @return void
-     *
      * @dataProvider getCurrentPositionProvider()
      * @covers ::getCurrentPosition()
      */
-    public function testGetCurrentPosition($expected, $name)
+    public function testGetCurrentPosition(int $expected, string $name): void
     {
         $node = $this->Table->find()
             ->where(compact('name'))
@@ -107,7 +130,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function moveAtProvider()
+    public function moveAtProvider(): array
     {
         return [
             'first' => [
@@ -170,12 +193,11 @@ class TreeBehaviorTest extends TestCase
      * @param string $name Name of node.
      * @param int|string $position Position to move node at.
      * @return void
-     *
      * @dataProvider moveAtProvider()
      * @covers ::moveAt()
      * @covers ::validatePosition()
      */
-    public function testMoveAt($expected, $name, $position)
+    public function testMoveAt($expected, string $name, $position): void
     {
         $node = $this->Table->find()
             ->where(compact('name'))
@@ -221,7 +243,7 @@ class TreeBehaviorTest extends TestCase
      * @return void
      * @covers ::moveAt()
      */
-    public function testMoveAtUseActualNodePosition()
+    public function testMoveAtUseActualNodePosition(): void
     {
         $parentNode = $this->Table->find()
             ->where(['name' => 'Mathematics'])
@@ -247,5 +269,137 @@ class TreeBehaviorTest extends TestCase
             ->toList();
 
         static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with a sane tree.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegritySuccess(): void
+    {
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertEmpty($errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with a record where `left_idx >= right_idx`.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegritySwappedIndexes(): void
+    {
+        $this->Table->updateAll(['right_idx' => 17], ['id' => 9]);
+        $expected = [
+            'Found record where left_idx >= right_idx',
+        ];
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with a record where there's a gap between a parent's `left_idx`
+     * and its first child's `left_idx`.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegrityFirstChildGap(): void
+    {
+        $this->Table->updateAll(['left_idx = left_idx + 2'], ['left_idx >=' => 3]);
+        $this->Table->updateAll(['right_idx = right_idx + 2'], []);
+        $expected = [
+            'Found record where parent.left_idx + 1 != MIN(children.left_idx)',
+        ];
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with a record where there's a gap between a parent's `right_idx`
+     * and its last child's `right_idx`.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegrityLastChildGap(): void
+    {
+        $this->Table->updateAll(['right_idx = right_idx + 2'], ['right_idx >' => 8]);
+        $this->Table->updateAll(['left_idx = left_idx + 2'], ['left_idx >' => 7]);
+        $expected = [
+            'Found record where parent.right_idx - 1 != MAX(children.right_idx)',
+        ];
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with a record where there's a gap between two consecutive siblings.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegritySiblingsGap(): void
+    {
+        $this->Table->updateAll(['left_idx = left_idx + 2'], ['left_idx >= 5']);
+        $this->Table->updateAll(['right_idx = right_idx + 2'], ['right_idx >= 6']);
+        $expected = [
+            'Found record where left_idx - 1 != MAX(previousSiblings.right_idx)',
+        ];
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::checkIntegrity()} method with two siblings overlapping each other.
+     *
+     * @return void
+     * @covers ::checkIntegrity()
+     */
+    public function testCheckIntegritySiblingsOverlapping(): void
+    {
+        $this->Table->updateAll(['left_idx = left_idx - 1'], ['left_idx >= 5']);
+        $this->Table->updateAll(['right_idx = right_idx - 1'], ['right_idx >= 6']);
+        $expected = [
+            'Found record where left_idx - 1 != MAX(previousSiblings.right_idx)',
+        ];
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertSame($expected, $errors);
+    }
+
+    /**
+     * Test {@see TreeBehavior::beforeDelete()} method with two siblings nodes.
+     *
+     * @return void
+     * @covers ::beforeDelete()
+     */
+    public function testUnorderedDelete()
+    {
+        $parentNode = $this->Table->find()
+            ->where(['name' => 'Mathematics'])
+            ->contain(['ChildCategories'])
+            ->firstOrFail();
+
+        $this->Table->ChildCategories->unlink($parentNode, [
+            $parentNode->child_categories[0],
+            $parentNode->child_categories[2],
+        ]);
+
+        $errors = $this->Table->checkIntegrity();
+
+        static::assertEmpty($errors);
     }
 }

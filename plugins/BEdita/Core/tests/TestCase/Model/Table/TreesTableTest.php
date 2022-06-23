@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -60,7 +60,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Trees);
 
@@ -137,14 +137,13 @@ class TreesTableTest extends TestCase
      * @param int|null $parentId The parent id
      * @param int|null $objectId The object id
      * @return void
-     *
      * @dataProvider isParentValidProvider
      * @covers ::isParentValid()
      * @covers ::isFolder()
      */
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         if ($objectId !== null) {
             $entity->object_id = $objectId;
         }
@@ -190,7 +189,6 @@ class TreesTableTest extends TestCase
      * @param int|null $objectId Object ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     *
      * @dataProvider isPositionUniqueProvider
      * @covers ::isPositionUnique()
      * @covers ::isFolder()
@@ -200,7 +198,7 @@ class TreesTableTest extends TestCase
         $this->Trees->deleteAll(['object_id' => 13]);
         $this->Trees->recover();
 
-        $entity = $this->Trees->newEntity();
+        $entity = $this->Trees->newEntity([]);
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
@@ -232,7 +230,6 @@ class TreesTableTest extends TestCase
      * @param int $rootExpected Expected root ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     *
      * @dataProvider changeRootProvider
      * @covers ::afterSave()
      */
@@ -240,13 +237,13 @@ class TreesTableTest extends TestCase
     {
         $node = $this->Trees->get(2);
         static::assertEquals(11, $node->root_id);
-        $children = $this->Trees->find('children', ['for' => 2])->toList();
+        $children = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         $node->parent_id = $parentId;
         static::assertTrue((bool)$this->Trees->save($node));
 
         $node = $this->Trees->get(2);
-        $actualChildren = $this->Trees->find('children', ['for' => 2])->toList();
+        $actualChildren = $this->Trees->find('children', ['for' => 2])->all()->toList();
 
         static::assertEquals($rootExpected, $node->root_id);
         static::assertCount(count($children), $actualChildren);
@@ -259,7 +256,6 @@ class TreesTableTest extends TestCase
      * Test `afterSave` on new item
      *
      * @return void
-     *
      * @covers ::afterSave()
      */
     public function testAfterSaveNew()
@@ -280,10 +276,10 @@ class TreesTableTest extends TestCase
      *
      * @return void
      * @coversNothing
-     * @expectedException \RuntimeException
      */
     public function testMoveParentAsChild()
     {
+        $this->expectException(\RuntimeException::class);
         // create new Folder
         LoggedUser::setUser(['id' => 1]);
         $Folders = TableRegistry::getTableLocator()->get('Folders');
@@ -321,7 +317,7 @@ class TreesTableTest extends TestCase
                 false,
             ],
             'primary' => [
-                new ImmutableResourceException('This operation would leave an orphaned folder'),
+                new LockedResourceException('This operation would leave an orphaned folder'),
                 12,
                 true,
             ],
@@ -335,7 +331,6 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param bool $primary Is this a "primary" delete operation?
      * @return void
-     *
      * @dataProvider deleteOrphanedProvider()
      * @covers ::beforeDelete()
      * @covers ::isFolder()
@@ -390,7 +385,6 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param int|string $position Position.
      * @return void
-     *
      * @dataProvider setPositionProvider()
      * @covers ::afterSave()
      */
@@ -477,10 +471,8 @@ class TreesTableTest extends TestCase
      * @param array|\Exception $expected Expected array path or exception.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
-     *
      * @return void
      */
     public function testFindPathNodes($expected, array $options): void

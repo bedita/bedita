@@ -34,7 +34,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $ObjectRelations
  * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
  * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
- *
  * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
@@ -49,7 +48,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -95,7 +94,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->setProvider('bedita', Validation::class)
@@ -133,7 +132,7 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
             ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
@@ -165,7 +164,7 @@ class RelationsTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\Relation
      */
-    public function get($primaryKey, $options = [])
+    public function get($primaryKey, $options = []): EntityInterface
     {
         if (!is_numeric($primaryKey)) {
             $relation = $this->find('byName', ['name' => $primaryKey])
@@ -193,7 +192,7 @@ class RelationsTable extends Table
         $name = Inflector::underscore($options['name']);
 
         return $query->where(function (QueryExpression $exp) use ($name) {
-            return $exp->or_(function (QueryExpression $exp) use ($name) {
+            return $exp->or(function (QueryExpression $exp) use ($name) {
                 return $exp
                     ->eq($this->aliasField('name'), $name)
                     ->eq($this->aliasField('inverse_name'), $name);

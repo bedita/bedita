@@ -26,7 +26,7 @@ use Cake\ORM\TableRegistry;
 class AsyncGenerator extends ThumbnailGenerator
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'baseGenerator' => 'default',
@@ -45,7 +45,7 @@ class AsyncGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUrl(Stream $stream, array $options = [])
     {
@@ -53,14 +53,14 @@ class AsyncGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function generate(Stream $stream, array $options = [])
     {
-        /* @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
+        /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
-        $asyncJob = $table->newEntity();
+        $asyncJob = $table->newEntity([]);
         $asyncJob->service = $this->getConfig('service');
         $asyncJob->max_attempts = $this->getConfig('max_attempts');
         if ($this->getConfig('priority') !== null) {
@@ -79,7 +79,7 @@ class AsyncGenerator extends ThumbnailGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function exists(Stream $stream, array $options = [])
     {
@@ -93,7 +93,6 @@ class AsyncGenerator extends ThumbnailGenerator
      * as soon as it is attempted.
      *
      * @see \BEdita\Core\Job\Service\ThumbnailService::run()
-     *
      * @codeCoverageIgnore
      */
     public function delete(Stream $stream)

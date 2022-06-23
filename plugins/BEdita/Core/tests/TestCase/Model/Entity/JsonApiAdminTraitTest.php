@@ -40,9 +40,9 @@ class JsonApiAdminTraitTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -52,9 +52,9 @@ class JsonApiAdminTraitTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
 
@@ -65,7 +65,6 @@ class JsonApiAdminTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     *
      * @covers ::getLinks()
      */
     public function testGetLinks()

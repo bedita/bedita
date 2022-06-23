@@ -30,7 +30,6 @@ use DateTimeInterface;
  * DateRanges Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\DateRange get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange[] newEntities(array $data, array $options = [])
@@ -50,7 +49,7 @@ class DateRangesTable extends Table
      * @return void
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -61,7 +60,7 @@ class DateRangesTable extends Table
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 
@@ -72,7 +71,7 @@ class DateRangesTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -100,7 +99,7 @@ class DateRangesTable extends Table
      * @return \Cake\ORM\RulesChecker
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 

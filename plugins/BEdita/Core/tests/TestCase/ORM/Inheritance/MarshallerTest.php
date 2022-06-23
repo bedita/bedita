@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -26,9 +26,9 @@ class MarshallerTest extends TestCase
     use FakeAnimalsTrait;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -40,7 +40,6 @@ class MarshallerTest extends TestCase
      * Test marshall data using table without inheritance
      *
      * @return void
-     *
      * @covers ::_buildPropertyMap()
      * @covers ::buildTablePropertyMap()
      */
@@ -79,9 +78,9 @@ class MarshallerTest extends TestCase
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => new Time('2018-02-20 12:05:00'),
+                    'updated_at' => new FrozenTime('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
-                ]
+                ],
             ],
             'marshallInheritedEmptyDate' => [
                 [
@@ -97,7 +96,7 @@ class MarshallerTest extends TestCase
                     'legs' => 4,
                     'updated_at' => null,
                     'family' => 'The big tiger family',
-                ]
+                ],
             ],
         ];
     }
@@ -108,7 +107,6 @@ class MarshallerTest extends TestCase
      * @param array $data The data to be marshalled
      * @param array $expected The array of entity visible properties
      * @return void
-     *
      * @dataProvider buildPropertyMapProvider()
      * @covers ::_buildPropertyMap()
      * @covers ::buildTablePropertyMap()

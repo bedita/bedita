@@ -51,7 +51,6 @@ class OAuth2Test extends TestCase
      * Test `response` method
      *
      * @return void
-     *
      * @dataProvider responseProvider
      * @covers ::response()
      * @covers ::getQuery()

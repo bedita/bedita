@@ -50,7 +50,7 @@ class ServiceRegistry
 
         $plugin = 'BEdita/Core.';
         if (strpos($name, '.') !== false) {
-            list($plugin, $name) = explode('.', $name);
+            [$plugin, $name] = explode('.', $name);
             $plugin = Inflector::camelize($plugin) . '.';
         }
 

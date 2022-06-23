@@ -20,7 +20,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
@@ -67,7 +67,7 @@ class OTPAuthenticate extends BaseAuthenticate
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -80,7 +80,7 @@ class OTPAuthenticate extends BaseAuthenticate
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function authenticate(ServerRequest $request, Response $response)
     {
@@ -103,7 +103,7 @@ class OTPAuthenticate extends BaseAuthenticate
      * Retrieve access grant using authorization code and secret token.
      *
      * @param string $username User name
-     * @param ServerRequest $request Request object
+     * @param \Cake\Http\ServerRequest $request Request object
      * @return array|bool User data array on success, false on failure
      */
     protected function otpAccess($username, ServerRequest $request)
@@ -155,7 +155,7 @@ class OTPAuthenticate extends BaseAuthenticate
             'client_token' => $this->generateClientToken(),
             'secret_token' => $this->generateSecretToken(),
             'token_type' => 'otp',
-            'expires' => new Time($this->getConfig('expiry')),
+            'expires' => new FrozenTime($this->getConfig('expiry')),
         ];
 
         $UserTokens = TableRegistry::getTableLocator()->get('UserTokens');

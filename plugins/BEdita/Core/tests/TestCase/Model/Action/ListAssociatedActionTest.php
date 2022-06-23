@@ -40,9 +40,9 @@ class ListAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -185,10 +185,9 @@ class ListAssociatedActionTest extends TestCase
      * @param int $id Entity ID to list relations for.
      * @param array $options Additional options for action.
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $table, $association, $id, array $options = null)
+    public function testInvocation($expected, $table, $association, $id, ?array $options = null)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -204,6 +203,12 @@ class ListAssociatedActionTest extends TestCase
         $result = $action(['primaryKey' => $id] + $options);
         $result = json_decode(json_encode($result->toArray()), true);
 
+        // execute again to ensure that temporaly associations are removed
+        $action = new ListAssociatedAction(compact('association'));
+
+        $result = $action(['primaryKey' => $id] + $options);
+        $result = json_decode(json_encode($result->toArray()), true);
+
         static::assertEquals($expected, $result);
     }
 
@@ -211,12 +216,11 @@ class ListAssociatedActionTest extends TestCase
      * Test invocation of command with an unknown association type.
      *
      * @return void
-     *
-     * @expectedException \LogicException
-     * @expectedExceptionMessageRegExp /^Unknown association type "\w+"$/
      */
     public function testUnknownAssociationType()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessageRegExp('/^Unknown association type "\w+"$/');
         $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
         $association = static::getMockForAbstractClass(Association::class, [
             'TestAssociation',

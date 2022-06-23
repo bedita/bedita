@@ -48,9 +48,9 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -58,9 +58,9 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Users);
 
@@ -71,7 +71,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin user is missing.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteMissingUser()
@@ -88,7 +87,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin users has already been configured and is kept as is.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteExistingUsersNoOverwrite()
@@ -114,7 +112,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin users has already been configured and is kept as is with CLI options.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteExistingUsersNoOverwriteNonInteractive()
@@ -141,7 +138,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin users has already been configured and is overwritten.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteExistingUsersOverwrite()
@@ -171,7 +167,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin users has already been configured and is overwritten with CLI options.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteExistingUsersOverwriteNonInteractive()
@@ -202,7 +197,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when default admin users hasn't been configured yet.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecuteDefaultUser()
@@ -233,7 +227,6 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
      * Test execution when persistence of user credential fails.
      *
      * @return void
-     *
      * @covers ::main()
      */
     public function testExecutePersistenceFailed()

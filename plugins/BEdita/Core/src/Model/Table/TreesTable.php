@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\Event;
@@ -32,7 +32,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $RootObjects
  * @property \Cake\ORM\Association\BelongsTo $ParentNode
  * @property \Cake\ORM\Association\HasMany $ChildNodes
- *
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] newEntities(array $data, array $options = [])
@@ -40,7 +39,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  */
 class TreesTable extends Table
@@ -50,7 +48,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -66,22 +64,22 @@ class TreesTable extends Table
         $this->belongsTo('ParentObjects', [
             'foreignKey' => 'parent_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Folders'
+            'className' => 'BEdita/Core.Folders',
         ]);
         $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Folders'
+            'className' => 'BEdita/Core.Folders',
         ]);
 
         // associations with trees
         $this->belongsTo('ParentNode', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_node_id'
+            'foreignKey' => 'parent_node_id',
         ]);
         $this->hasMany('ChildNodes', [
             'className' => 'BEdita/Core.Trees',
-            'foreignKey' => 'parent_node_id'
+            'foreignKey' => 'parent_node_id',
         ]);
 
         $this->addBehavior('BEdita/Core.Tree', [
@@ -89,6 +87,7 @@ class TreesTable extends Table
             'right' => 'tree_right',
             'parent' => 'parent_node_id',
             'level' => 'depth_level',
+            'recoverOrder' => ['tree_left' => 'ASC', 'tree_right' => 'ASC', 'object_id' => 'ASC'],
         ]);
     }
 
@@ -97,7 +96,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -131,7 +130,7 @@ class TreesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['root_id'], 'RootObjects'));
@@ -247,7 +246,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity Tree entity being deleted.
      * @param \ArrayObject $options Options.
      * @return void
-     * @throws \BEdita\Core\Exception\ImmutableResourceException Throws an exception when the delete operation would
+     * @throws \BEdita\Core\Exception\LockedResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
     public function beforeDelete(Event $event, Tree $entity, \ArrayObject $options)
@@ -258,7 +257,7 @@ class TreesTable extends Table
 
         // Refuse to delete a row that points to a folder.
         if ($this->isFolder($entity->object_id)) {
-            throw new ImmutableResourceException(__d('bedita', 'This operation would leave an orphaned folder'));
+            throw new LockedResourceException(__d('bedita', 'This operation would leave an orphaned folder'));
         }
     }
 

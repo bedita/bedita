@@ -60,12 +60,14 @@ class JsonApiTraitTest extends TestCase
         'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -76,9 +78,9 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Roles);
         unset($this->ObjectTypes);
@@ -90,12 +92,11 @@ class JsonApiTraitTest extends TestCase
      * Tet getter for table.
      *
      * @return void
-     *
      * @covers ::getTable()
      */
     public function testGetTable()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $table = $role->getTable();
 
         static::assertInstanceOf(get_class($this->Roles), $table);
@@ -105,7 +106,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for ID.
      *
      * @return void
-     *
      * @covers ::getId()
      */
     public function testGetId()
@@ -121,12 +121,11 @@ class JsonApiTraitTest extends TestCase
      * Test getter for type.
      *
      * @return void
-     *
      * @covers ::getType()
      */
     public function testGetType()
     {
-        $role = $this->Roles->newEntity()->jsonApiSerialize();
+        $role = $this->Roles->newEntity([])->jsonApiSerialize();
 
         $type = $role['type'];
 
@@ -137,7 +136,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for attributes.
      *
      * @return void
-     *
      * @covers ::getAttributes()
      * @covers ::filterFields()
      */
@@ -162,7 +160,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     *
      * @covers ::getLinks()
      * @covers ::routeNamePrefix()
      */
@@ -183,7 +180,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::listAssociations()
      */
@@ -209,13 +205,12 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::listAssociations()
      */
     public function testGetRelationshipsHidden()
     {
-        $role = $this->Roles->newEntity();
+        $role = $this->Roles->newEntity([]);
         $role->setHidden(['users' => true], true);
         $role = $role->jsonApiSerialize();
 
@@ -228,7 +223,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -263,7 +257,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -320,7 +313,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
@@ -361,15 +353,14 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedNotSerializable()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead');
         $role = $this->Roles->get(2);
         $role->users = 'Gustavo';
         $role->jsonApiSerialize();
@@ -379,7 +370,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::filterFields()
      */
@@ -394,14 +384,14 @@ class JsonApiTraitTest extends TestCase
         $role = $this->Roles->get(1)->jsonApiSerialize();
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
 
         // test with `fields`
         $role = $this->Roles->get(1)->jsonApiSerialize(0, ['created', 'modified', 'unchangeable']);
 
         $meta = array_keys(Hash::get($role, 'meta', []));
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
     }
 
@@ -409,7 +399,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaNotAccessible()
@@ -427,16 +416,15 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaExtra()
     {
         $expected = [
             'created',
+            'extra',
             'modified',
             'unchangeable',
-            'extra',
         ];
         $expectedExtra = ['my_computed_field' => pi()];
 
@@ -446,7 +434,7 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($role, 'meta', []));
         $extra = Hash::get($role, 'meta.extra');
-
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
         static::assertSame($expectedExtra, $extra);
     }
@@ -455,7 +443,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      * @covers ::joinData()
      */
@@ -483,6 +470,8 @@ class JsonApiTraitTest extends TestCase
 
         $meta = array_keys(Hash::get($user, 'meta', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
     }
 
@@ -490,7 +479,6 @@ class JsonApiTraitTest extends TestCase
      * Test `tree` join data.
      *
      * @return void
-     *
      * @covers ::joinData()
      */
     public function testTreeJoinData(): void
@@ -510,7 +498,6 @@ class JsonApiTraitTest extends TestCase
      * Test missing join data.
      *
      * @return void
-     *
      * @covers ::joinData()
      */
     public function testMissingJoinData(): void
@@ -523,7 +510,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     *
      * @covers ::getMeta()
      */
     public function testGetMetaJoinData()
@@ -558,6 +544,8 @@ class JsonApiTraitTest extends TestCase
         $meta = array_keys(Hash::get($user, 'meta', []));
         $relation = array_keys(Hash::get($user, 'meta.relation', []));
 
+        sort($expected);
+        sort($meta);
         static::assertEquals($expected, $meta, '', 0, 10, true);
         static::assertEquals($expectedRelation, $relation, '', 0, 10, true);
     }
@@ -606,7 +594,6 @@ class JsonApiTraitTest extends TestCase
      * @param int $options JSON API serializer options.
      * @param array $fields Fields filter data.
      * @return void
-     *
      * @covers ::jsonApiSerialize()
      * @covers ::setFields()
      * @dataProvider jsonApiSerializeProvider()
@@ -618,7 +605,7 @@ class JsonApiTraitTest extends TestCase
             'type' => 'roles',
             'attributes' => [
                 'name' => 'first role',
-                'description' => 'this is the very first role'
+                'description' => 'this is the very first role',
             ],
             'meta' => [
                 'created' => '2016-04-15T09:57:38+00:00',
@@ -668,7 +655,6 @@ class JsonApiTraitTest extends TestCase
      * Test that `count` is present in meta of relationships
      *
      * @return void
-     *
      * @covers ::jsonApiSerialize()
      * @covers ::getRelationshipCount()
      * @dataProvider metaCountProvider()

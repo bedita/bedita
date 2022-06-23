@@ -17,7 +17,6 @@ use Cake\Utility\Hash;
 
 /**
  * Test Query String `count`.
- *
  */
 class CountQueryStringTest extends IntegrationTestCase
 {
@@ -69,7 +68,6 @@ class CountQueryStringTest extends IntegrationTestCase
      * @param array $expected The expected count
      * @param string $count The count query string
      * @return void
-     *
      * @dataProvider countSingleProvider()
      * @coversNothing
      */

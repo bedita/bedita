@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -44,23 +45,23 @@ class TagsTableTest extends TestCase
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
-        'plugin.BEdita/Core.Categories',
-        'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Tags = TableRegistry::getTableLocator()->get('Tags');
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Tags);
         parent::tearDown();
@@ -74,9 +75,9 @@ class TagsTableTest extends TestCase
      */
     public function testBeforeFindPrimary()
     {
-        $tag = $this->Tags->get(4)->toArray();
+        $tag = $this->Tags->get(1)->toArray();
         $expected = [
-            'id' => 4,
+            'id' => 1,
             'name' => 'first-tag',
             'label' => 'First tag',
             'enabled' => true,
@@ -100,7 +101,6 @@ class TagsTableTest extends TestCase
             [
                 'name' => 'first-tag',
                 'label' => 'First tag',
-                'params' => null,
             ],
         ];
         static::assertArrayHasKey('tags', $profile);
@@ -111,12 +111,12 @@ class TagsTableTest extends TestCase
      * Test `findEnabled` method
      *
      * @return void
-     * @coversNothing
+     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {
         $tags = $this->Tags->find('enabled')->toArray();
-        static::assertEquals([4], Hash::extract($tags, '{n}.id'));
+        static::assertEquals([1], Hash::extract($tags, '{n}.id'));
     }
 
     /**
@@ -129,6 +129,23 @@ class TagsTableTest extends TestCase
     {
         $tags = $this->Tags->find('ids', ['names' => ['first-tag']])->toArray();
         static::assertEquals(1, count($tags));
-        static::assertEquals(4, $tags[0]['id']);
+        static::assertEquals(1, $tags[0]['id']);
+
+        $tags = $this->Tags->find('ids', ['names' => ['tag-1', 'tag-2']])->toArray();
+        static::assertEmpty($tags);
+    }
+
+    /**
+     * Test `findIds` failure.
+     *
+     * @return void
+     * @covers ::findIds()
+     */
+    public function testFindTagsIdsFail()
+    {
+        $this->expectException(BadFilterException::class);
+        $this->expectExceptionMessage('Missing or wrong required parameter "names"');
+
+        $this->Tags->find('ids', ['names' => 42])->toArray();
     }
 }

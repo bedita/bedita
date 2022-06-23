@@ -60,9 +60,9 @@ class ThumbnailServiceTest extends TestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -82,9 +82,9 @@ class ThumbnailServiceTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (Thumbnail::configured() as $config) {
             Thumbnail::drop($config);
@@ -151,7 +151,6 @@ class ThumbnailServiceTest extends TestCase
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
-     *
      * @dataProvider runProvider()
      * @covers ::run()
      */

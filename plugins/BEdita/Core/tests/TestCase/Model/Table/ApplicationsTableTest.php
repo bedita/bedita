@@ -60,7 +60,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Applications = TableRegistry::getTableLocator()->get('Applications');
@@ -72,7 +72,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
         CurrentApplication::setApplication($this->currentApplication);
@@ -109,14 +109,14 @@ class ApplicationsTableTest extends TestCase
                 true,
                 [
                     'name' => 'Unique Application Name',
-                    'description' => 'app description'
+                    'description' => 'app description',
                 ],
             ],
             'notUniqueName' => [
                 false,
                 [
                     'name' => 'First app',
-                    'description' => 'app description'
+                    'description' => 'app description',
                 ],
             ],
             'missingName' => [
@@ -161,7 +161,6 @@ class ApplicationsTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -210,7 +209,6 @@ class ApplicationsTableTest extends TestCase
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
      * @return void
-     *
      * @covers ::beforeSave()
      * @covers ::beforeDelete()
      * @covers ::generateApiKey()
@@ -223,7 +221,7 @@ class ApplicationsTableTest extends TestCase
         } else {
             $application = $this->Applications->newEntity([
                 'name' => 'Second App',
-                'description' => 'app description'
+                'description' => 'app description',
             ]);
         }
 
@@ -288,7 +286,6 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param string $apiKey API key.
      * @return void
-     *
      * @covers ::findApiKey()
      * @dataProvider findApiKeyProvider()
      */
@@ -316,14 +313,14 @@ class ApplicationsTableTest extends TestCase
                 1,
                 [
                     'client_id' => API_KEY,
-                ]
+                ],
             ],
             'secret' => [
                 2,
                 [
                     'client_id' => 'abcdef12345',
                     'client_secret' => 'topsecretstring',
-                ]
+                ],
             ],
             'badMethodException' => [
                 new \BadMethodCallException('Required option "client_id" must be a not empty string'),
@@ -338,7 +335,6 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param array $options Finder options.
      * @return void
-     *
      * @dataProvider findCredentialsProvider()
      * @covers ::findCredentials()
      */
@@ -362,7 +358,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAfterDelete(): void
@@ -387,7 +382,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testAfterSave(): void
@@ -409,14 +403,13 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing default application
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "Application" 1
      * @covers ::beforeDelete()
      */
     public function testDeleteDefaultApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
         $this->Applications->delete($application);
     }
@@ -425,14 +418,13 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing current application
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not delete "Application" 2
      * @covers ::beforeDelete()
      */
     public function testDeleteCurrentApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not delete "Application" 2');
         $application = $this->Applications->get(2);
         CurrentApplication::setApplication($application);
         $this->Applications->delete($application);
@@ -442,14 +434,13 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling default application
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not disable "Application" 1
      * @covers ::beforeSave()
      */
     public function testDisableDefaultApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not disable "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
         $application->enabled = 0;
         $this->Applications->save($application);
@@ -459,14 +450,13 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling current application in use
      *
      * @return void
-     *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not disable "Application" 2
      * @covers ::beforeSave()
      */
     public function testDisableCurrentApplication()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not disable "Application" 2');
         $application = $this->Applications->get(2);
         $application->enabled = 1;
         $this->Applications->save($application);

@@ -49,9 +49,9 @@ class StreamsTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
@@ -59,9 +59,9 @@ class StreamsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);
@@ -72,7 +72,6 @@ class StreamsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testInitialization()
@@ -133,13 +132,12 @@ class StreamsTableTest extends TestCase
      * @param array $data Data to be validated.
      * @param string|bool $uuid UUID of stream to patch.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
     public function testValidation($expected, array $data, $uuid = false)
     {
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         if ($uuid !== false) {
             $stream = $this->Streams->get($uuid);
         }
@@ -154,7 +152,8 @@ class StreamsTableTest extends TestCase
             static::assertTrue((bool)$success);
         } else {
             $errors = array_keys(Hash::flatten($stream->getErrors()));
-
+            sort($errors);
+            sort($expected);
             static::assertEquals($expected, $errors, '', 0, 10, true);
         }
     }
@@ -163,7 +162,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSave()
@@ -175,7 +173,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream = $this->Streams->patchEntity($stream, $data);
 
         $this->Streams->saveOrFail($stream);
@@ -189,7 +187,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with a custom UUID.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveWithUuid()
@@ -205,7 +202,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEntity([]);
         $stream->uuid = $uuid;
         $stream = $this->Streams->patchEntity($stream, $data);
 
@@ -219,7 +216,6 @@ class StreamsTableTest extends TestCase
      * Test after save event.
      *
      * @return void
-     *
      * @covers ::afterDelete()
      */
     public function testAfterDelete()
@@ -234,7 +230,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with an already persisted entity.
      *
      * @return void
-     *
      * @covers ::beforeSave()
      */
     public function testBeforeSaveNotNew()

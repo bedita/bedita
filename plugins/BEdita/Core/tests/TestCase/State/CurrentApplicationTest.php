@@ -16,8 +16,6 @@ namespace BEdita\Core\Test\TestCase\State;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -46,9 +44,9 @@ class CurrentApplicationTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,9 +58,9 @@ class CurrentApplicationTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Applications);
 
@@ -73,7 +71,6 @@ class CurrentApplicationTest extends TestCase
      * Test `getApplication` method.
      *
      * @return void
-     *
      * @covers ::get()
      * @covers ::getApplication()
      */
@@ -91,7 +88,6 @@ class CurrentApplicationTest extends TestCase
      * Test `getApplicationId` method.
      *
      * @return void
-     *
      * @covers ::id()
      * @covers ::getApplicationId()
      */
@@ -109,7 +105,6 @@ class CurrentApplicationTest extends TestCase
      * Test `setApplication` method.
      *
      * @return void
-     *
      * @covers ::set()
      * @covers ::setApplication()
      */
@@ -125,7 +120,6 @@ class CurrentApplicationTest extends TestCase
      * Test `setFromApiKey` method.
      *
      * @return void
-     *
      * @covers ::setFromApiKey()
      */
     public function testSetFromApiKey()
@@ -142,7 +136,6 @@ class CurrentApplicationTest extends TestCase
      * Test `loadConfiguration` method.
      *
      * @return void
-     *
      * @covers ::loadConfiguration()
      */
     public function testLoadConfiguration()
@@ -161,7 +154,6 @@ class CurrentApplicationTest extends TestCase
      * Test `loadApplicationConfiguration` method.
      *
      * @return void
-     *
      * @covers ::loadApplicationConfiguration()
      */
     public function testLoadApplicationConfiguration()
@@ -180,12 +172,11 @@ class CurrentApplicationTest extends TestCase
      * Test `setFromApiKey` method with invalid API key.
      *
      * @return void
-     *
      * @covers ::setFromApiKey()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testSetFromApiKeyFailure()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         CurrentApplication::setFromApiKey('INVALID_API_KEY');
     }
 }

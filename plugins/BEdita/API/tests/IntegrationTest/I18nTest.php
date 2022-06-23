@@ -26,7 +26,6 @@ class I18nTest extends IntegrationTestCase
      * Test wrong lang tag.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testWrongLang()
@@ -36,7 +35,7 @@ class I18nTest extends IntegrationTestCase
             [
                 'languages' => [
                     'en' => 'English',
-                ]
+                ],
             ]
         );
 
@@ -96,7 +95,6 @@ class I18nTest extends IntegrationTestCase
      * @param string $url Url string.
      * @param array $expected Expected result.
      * @return void
-     *
      * @dataProvider langProvider
      * @coversNothing
      */

@@ -26,7 +26,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -166,7 +165,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -208,7 +206,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -260,7 +257,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
@@ -296,7 +292,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      * @covers ::resourceUrl()
@@ -312,8 +307,8 @@ class RelationsControllerTest extends IntegrationTestCase
                 'inverse_label' => 'Shared by',
                 'description' => 'Shared relation',
                 'params' => [
-                    'test' => 'ok'
-                ]
+                    'test' => 'ok',
+                ],
             ],
         ];
 
@@ -332,7 +327,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $expected = array_merge(['id' => $relation->id], $data['attributes'], [
             'params' => [
-                'definitions' => [],
+                'definitions' => new \stdClass(),
                 '$schema' => 'http://json-schema.org/draft-06/schema#',
                 'type' => 'object',
                 'test' => 'ok',
@@ -345,7 +340,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     *
      * @covers ::index()
      * @covers ::initialize()
      */
@@ -373,7 +367,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -402,7 +395,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -431,7 +423,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     *
      * @covers ::resource()
      * @covers ::initialize()
      */
@@ -449,7 +440,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test related method to list related object types.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::related()
      * @covers ::findAssociation()

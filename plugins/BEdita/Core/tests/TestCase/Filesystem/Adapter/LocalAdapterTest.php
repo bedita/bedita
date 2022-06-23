@@ -25,14 +25,15 @@ class LocalAdapterTest extends TestCase
 {
     /**
      * Temporary test files path, removed after test
+     *
      * @var string
      */
-    const FILES_PATH = WWW_ROOT . 'static-files' . DS . 'subdir';
+    public const FILES_PATH = WWW_ROOT . 'static-files' . DS . 'subdir';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(self::FILES_PATH)) {
             rmdir(self::FILES_PATH);
@@ -46,7 +47,6 @@ class LocalAdapterTest extends TestCase
      * Test adapter initialization.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testInitialize()
@@ -70,7 +70,6 @@ class LocalAdapterTest extends TestCase
      * Test builder of inner adapter.
      *
      * @return void
-     *
      * @covers ::buildAdapter()
      */
     public function testBuildAdapter()

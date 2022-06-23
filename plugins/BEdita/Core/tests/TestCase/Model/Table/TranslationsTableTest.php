@@ -44,9 +44,9 @@ class TranslationsTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -54,9 +54,9 @@ class TranslationsTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Translations);
 
@@ -67,7 +67,6 @@ class TranslationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testInitialize()
@@ -131,7 +130,6 @@ class TranslationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */

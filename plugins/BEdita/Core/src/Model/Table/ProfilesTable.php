@@ -29,13 +29,12 @@ use Cake\Utility\Hash;
  * @method \BEdita\Core\Model\Entity\Profile patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Profile[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Profile findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class ProfilesTable extends Table
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_validatorClass = ProfilesValidator::class;
 
@@ -44,7 +43,7 @@ class ProfilesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -56,7 +55,7 @@ class ProfilesTable extends Table
 
         $this->getBehavior('UniqueName')->setConfig([
             'sourceField' => 'title',
-            'prefix' => 'profile-'
+            'prefix' => 'profile-',
         ]);
 
         $this->getBehavior('Searchable')->setConfig([
@@ -105,7 +104,7 @@ class ProfilesTable extends Table
     /**
      * Create profile title from `name` and `surname` or `company_name`
      *
-     * @param EntityInterface $entity Saved entity
+     * @param \Cake\Datasource\EntityInterface $entity Saved entity
      * @return string
      */
     protected function titleValue(EntityInterface $entity): string

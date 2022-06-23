@@ -112,7 +112,6 @@ class UuidAuthenticateTest extends TestCase
      * @param array $config Configuration.
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
-     *
      * @dataProvider getTokenProvider
      * @covers ::getToken()
      */
@@ -177,7 +176,6 @@ class UuidAuthenticateTest extends TestCase
      * @param bool $newUser Should this request trigger a new user creation?
      * @param \Cake\Http\ServerRequest $request Request.
      * @return void
-     *
      * @dataProvider authenticateProvider
      * @covers ::authenticate()
      * @covers ::getUser()
@@ -218,13 +216,12 @@ class UuidAuthenticateTest extends TestCase
      * Test `unauthenticated` method.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\UnauthorizedException
-     * @expectedExceptionMessage MyExceptionMessage
      * @covers ::unauthenticated()
      */
     public function testUnauthenticated()
     {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('MyExceptionMessage');
         $controller = new Controller();
         $controller->loadComponent('Auth', [
             'authError' => 'MyExceptionMessage',
@@ -232,6 +229,6 @@ class UuidAuthenticateTest extends TestCase
 
         $auth = new UuidAuthenticate($controller->components(), []);
 
-        $auth->unauthenticated($controller->request, $controller->response);
+        $auth->unauthenticated($controller->getRequest(), $controller->getResponse());
     }
 }

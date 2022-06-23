@@ -26,7 +26,6 @@ class MessagesFileLoaderTest extends TestCase
      * Test constructor.
      *
      * @return void
-     *
      * @covers ::__construct()
      */
     public function testConstruct()
@@ -42,7 +41,6 @@ class MessagesFileLoaderTest extends TestCase
      * Test getter of search paths.
      *
      * @return void
-     *
      * @covers ::translationsFolders()
      */
     public function testTranslationsFolders()

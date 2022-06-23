@@ -1,5 +1,51 @@
 # ChangeLog
 
+## Version 4.7.1 - Cactus
+
+### API changes (4.7.1)
+
+* [#1908](https://github.com/bedita/bedita/pull/1908) Admin endpoint_permissions
+
+### Core changes (4.7.1)
+
+* [#1900](https://github.com/bedita/bedita/pull/1900) fix: avoid changing results cardinality when using `?filter[ancestors]`
+* [#1899](https://github.com/bedita/bedita/pull/1899) [Refactor] Cake4 compatibility changes
+* [#1898](https://github.com/bedita/bedita/pull/1898) Dirty props consistency in inheritance
+
+## Version 4.7.0 - Cactus
+
+### API changes (4.7.0)
+
+* [#1877](https://github.com/bedita/bedita/pull/1877) Add return type to initialize() methods
+* [#1865](https://github.com/bedita/bedita/pull/1865) New JSON base controller
+* [#1862](https://github.com/bedita/bedita/pull/1862) Use ActionTrait in LoginController
+* [#1861](https://github.com/bedita/bedita/pull/1861) Skip auth token checks on OPTIONS request
+* [#1859](https://github.com/bedita/bedita/pull/1859) Fix token decode error
+* [#1609](https://github.com/bedita/bedita/pull/1609) Require protocol when validating URLs
+
+### Core changes (4.7.0)
+
+* [#1893](https://github.com/bedita/bedita/pull/1893) Ensure left and right fields are update when removing a tree entity
+* [#1887](https://github.com/bedita/bedita/pull/1887) Add `user_preferences` field to users table
+* [#1886](https://github.com/bedita/bedita/pull/1886) Introduce `InvalidDataException`
+* [#1880](https://github.com/bedita/bedita/pull/1880) Fix thumb file extension and check allowed extensions
+* [#1878](https://github.com/bedita/bedita/pull/1878) Split tags into their own `tags` table
+* [#1882](https://github.com/bedita/bedita/pull/1882) Fix migration `CreateTagsTable`
+* [#1874](https://github.com/bedita/bedita/pull/1874) Dispatch `ObjectType.getSchema` event when building schema for an object type
+* [#1888](https://github.com/bedita/bedita/pull/1888) Tree integrity check
+* [#1850](https://github.com/bedita/bedita/pull/1850) Create writable `bedita_core` folder for cache
+* [#1873](https://github.com/bedita/bedita/pull/1873) Introduce `LockedResourceException`
+* [#1864](https://github.com/bedita/bedita/pull/1864) Related objects utility methods
+* [#1863](https://github.com/bedita/bedita/pull/1863) Mark join entity as new when it is a new association for source entity
+
+### Integration changes (4.7.0)
+
+* [#1890](https://github.com/bedita/bedita/pull/1890) Treat phpdbg SAPI as cli
+* [#1889](https://github.com/bedita/bedita/pull/1889) Update phpstan/phpstan to version 1.5
+* [#1872](https://github.com/bedita/bedita/pull/1872) Cake 4 Core compatibility changes
+* [#1871](https://github.com/bedita/bedita/pull/1871) Cake 4 API compatibility changes
+* [#1853](https://github.com/bedita/bedita/pull/1853) Update `bedita/dev-tools` to 1.5.*
+
 ## Version 4.6.1 - Cactus
 
 ### API changes (4.6.1)

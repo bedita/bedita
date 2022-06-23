@@ -13,36 +13,24 @@
 
 namespace BEdita\API\Controller\Model;
 
-use BEdita\API\Controller\AppController;
+use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Event\Event;
+use Cake\Http\Response;
 
 /**
  * Controller for `/model/schema/{type}` endpoint.
  *
  * @since 4.0.0
- *
  */
-class SchemaController extends AppController
+class SchemaController extends JsonBaseController
 {
     /**
      * JSON Schema content type.
      *
      * @var string
      */
-    const CONTENT_TYPE = 'application/schema+json';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function initialize()
-    {
-        parent::initialize();
-        if ($this->components()->has('JsonApi')) {
-            $this->components()->unload('JsonApi');
-        }
-        $this->viewBuilder()->setClassName('Json');
-    }
+    public const CONTENT_TYPE = 'application/schema+json';
 
     /**
      * {@inheritDoc}
@@ -62,7 +50,7 @@ class SchemaController extends AppController
      * @param string $typeName Name of an object type or of a resource type.
      * @return \Cake\Http\Response
      */
-    public function jsonSchema($typeName)
+    public function jsonSchema($typeName): Response
     {
         $this->request->allowMethod(['get']);
 
@@ -76,7 +64,7 @@ class SchemaController extends AppController
         $schema = JsonSchema::generate($typeName, $url);
 
         $this->set($schema);
-        $this->set('_serialize', true);
+        $this->setSerialize(array_keys((array)$schema));
 
         $response = $this->render()
             ->withType(static::CONTENT_TYPE);

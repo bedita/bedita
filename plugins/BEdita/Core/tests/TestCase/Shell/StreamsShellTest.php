@@ -9,6 +9,7 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
 /**
  * \BEdita\Core\Shell\StreamsShell Test Case
  *
+ * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  * @coversDefaultClass \BEdita\Core\Shell\StreamsShell
  */
 class StreamsShellTest extends ConsoleIntegrationTestCase
@@ -29,9 +30,9 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup(true, true);
@@ -39,9 +40,9 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);
@@ -69,7 +70,6 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      * @param int $expected Expected number of removed streams
      * @param int $days The days.
      * @return void
-     *
      * @dataProvider removeOrphansProvider()
      * @covers ::removeOrphans()
      */

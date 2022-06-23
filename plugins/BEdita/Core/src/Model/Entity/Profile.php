@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use Cake\Validation\Validation;
+
 /**
  * Profile Entity.
  *
@@ -37,9 +39,23 @@ namespace BEdita\Core\Model\Entity;
  * @property string $national_id_number
  * @property string $vat_number
  * @property string $pseudonym
- *
  * @since 4.0.0
  */
 class Profile extends ObjectEntity
 {
+    /**
+     * Ensure URL is standardized by prefixing `http://` to it if necessary.
+     *
+     * @param mixed $website Website URL.
+     * @return mixed
+     */
+    protected function _setWebsite($website)
+    {
+        if (is_string($website) && Validation::url($website, false) && !Validation::url($website, true)) {
+            return sprintf('http://%s', $website);
+        }
+
+        // By returning the original value instead of `null` when an invalid URL is encountered, we preserve validation errors.
+        return $website;
+    }
 }

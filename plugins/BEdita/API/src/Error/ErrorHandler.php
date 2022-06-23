@@ -19,9 +19,9 @@ use Cake\Utility\Hash;
 class ErrorHandler extends CakeErrorHandler
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    protected function _displayError($error, $debug)
+    protected function _displayError($error, $debug): void
     {
         if (!$debug) {
             return;

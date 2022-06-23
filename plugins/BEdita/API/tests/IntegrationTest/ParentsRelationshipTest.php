@@ -31,9 +31,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
     protected $Trees = null;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -41,9 +41,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -80,7 +80,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $folders = $foldersTable
             ->find('list', [
                 'keyField' => 'uname',
-                'valueField' => 'id'
+                'valueField' => 'id',
             ])
             ->where(['object_type_id' => $foldersTable->objectType()->id])
             ->order(['id' => 'ASC'])
@@ -125,7 +125,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         $this->configRequestHeaders();
         $this->get($relatedEndpoint);
+        $this->assertResponseCode(200);
         $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $body);
         static::assertCount(2, $body['data']);
         $parentIds = Hash::extract($body['data'], '{n}.id');
         sort($parentIds);
@@ -183,7 +185,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test deleted objects as `parent`
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testDeletedParent()
@@ -223,7 +224,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test setting an object's parent with position.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testSetParentPosition()
@@ -246,6 +246,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
 
         static::assertEquals([2, 4], $childrenIds);
@@ -280,7 +281,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * @param string $expected Expected error.
      * @param int|string $position Desired position.
      * @return void
-     *
      * @dataProvider setParentPositionInvalidProvider()
      * @coversNothing
      */
@@ -307,6 +307,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
             ->order(['tree_left' => 'ASC'])
+            ->all()
             ->toList();
 
         static::assertEquals([4], $childrenIds);
@@ -316,7 +317,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `parents` and GET `parent` response
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testParentsMeta()

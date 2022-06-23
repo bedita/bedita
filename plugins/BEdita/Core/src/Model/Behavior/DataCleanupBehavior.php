@@ -39,7 +39,7 @@ class DataCleanupBehavior extends Behavior
         'fields' => [
             'status' => 'draft',
             'deleted' => 0,
-        ]
+        ],
     ];
 
     /**

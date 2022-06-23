@@ -14,7 +14,7 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -22,7 +22,7 @@ use Cake\Utility\Hash;
  * Integration test for `Publish.checkDate` configuration
  * using `publish_start` and `publish_date` values.
  */
-class PublisStartEndTest extends IntegrationTestCase
+class PublishStartEndTest extends IntegrationTestCase
 {
     /**
      * Provider for testListObjects()
@@ -52,7 +52,6 @@ class PublisStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param string $url The test URL
      * @return void
-     *
      * @dataProvider listProvider
      * @coversNothing
      */
@@ -82,30 +81,30 @@ class PublisStartEndTest extends IntegrationTestCase
                 404,
                 true,
                 [
-                    'publish_start' => Time::parse(time() + DAY),
-                ]
+                    'publish_start' => FrozenTime::parse(time() + DAY),
+                ],
             ],
             'no conf' => [
                 200,
                 false,
                 [
-                    'publish_start' => Time::parse(time() + DAY),
-                ]
+                    'publish_start' => FrozenTime::parse(time() + DAY),
+                ],
             ],
             'ended' => [
                 404,
                 true,
                 [
-                    'publish_end' => Time::parse(time() - DAY),
-                ]
+                    'publish_end' => FrozenTime::parse(time() - DAY),
+                ],
             ],
             'started' => [
                 200,
                 true,
                 [
-                    'publish_start' => Time::parse(time() - DAY),
-                    'publish_end' => Time::parse(time() + DAY),
-                ]
+                    'publish_start' => FrozenTime::parse(time() - DAY),
+                    'publish_end' => FrozenTime::parse(time() + DAY),
+                ],
             ],
         ];
     }
@@ -117,7 +116,6 @@ class PublisStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param array $data The fields data
      * @return void
-     *
      * @dataProvider singleProvider
      * @coversNothing
      */

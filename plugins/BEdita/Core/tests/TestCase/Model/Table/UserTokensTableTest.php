@@ -10,6 +10,7 @@ use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
+ *
  * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
  */
 class UserTokensTableTest extends TestCase
@@ -39,7 +40,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->UserTokens = TableRegistry::getTableLocator()->get('UserTokens');
@@ -50,7 +51,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->UserTokens);
 
@@ -110,13 +111,12 @@ class UserTokensTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider
      * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->UserTokens->newEntity();
+        $entity = $this->UserTokens->newEntity([]);
         $entity = $this->UserTokens->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

@@ -48,7 +48,7 @@ class ObjectsHandler
      */
     protected static function isCli(): bool
     {
-        return (PHP_SAPI === 'cli');
+        return PHP_SAPI === 'cli';
     }
 
     /**
@@ -81,7 +81,7 @@ class ObjectsHandler
         if (!empty($data['id'])) {
             $entity = $table->get($data['id']);
         } else {
-            $entity = $table->newEntity();
+            $entity = $table->newEntity([]);
         }
         $options = ['accessibleFields' => ['locked' => true]];
         $entity = $table->patchEntity($entity, $data, $options);

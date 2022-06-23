@@ -21,7 +21,6 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\MiddlewareQueue;
-use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
  * CommonEventsHandler class.
@@ -33,9 +32,9 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 class CommonEventHandler implements EventListenerInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Server.buildMiddleware' => 'buildMiddlewareStack',

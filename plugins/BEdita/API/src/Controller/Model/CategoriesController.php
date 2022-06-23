@@ -17,18 +17,17 @@ namespace BEdita\API\Controller\Model;
  * Controller for `/model/categories` endpoint.
  *
  * @since 4.1.0
- *
  * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
  */
 class CategoriesController extends ModelController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Categories';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [

@@ -15,10 +15,11 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Generator;
 
@@ -52,8 +53,9 @@ use Generator;
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
  * @property mixed $schema
  */
-class ObjectType extends Entity implements JsonApiSerializable
+class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {
+    use EventDispatcherTrait;
     use JsonApiModelTrait {
         listAssociations as protected jsonApiListAssociations;
     }
@@ -68,13 +70,13 @@ class ObjectType extends Entity implements JsonApiSerializable
     public const NULLABLE_OBJECT_ARRAY = [
         'oneOf' => [
             [
-                'type' => 'null'
+                'type' => 'null',
             ],
             [
                 'type' => 'array',
                 'uniqueItems' => true,
                 'items' => [
-                    'type' => 'object'
+                    'type' => 'object',
                 ],
             ],
         ],
@@ -88,7 +90,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => false,
@@ -104,7 +106,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_virtual = [
         'alias',
@@ -114,7 +116,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'objects',
@@ -152,7 +154,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             return $this->_properties['singular'];
         }
 
-        return Inflector::singularize($this->name);
+        return Inflector::singularize((string)$this->name);
     }
 
     /**
@@ -203,7 +205,7 @@ class ObjectType extends Entity implements JsonApiSerializable
      */
     protected function _setTable(string $table): void
     {
-        list($plugin, $model) = pluginSplit($table);
+        [$plugin, $model] = pluginSplit($table);
 
         $this->plugin = $plugin;
         $this->model = $model;
@@ -287,7 +289,7 @@ class ObjectType extends Entity implements JsonApiSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected static function listAssociations(Table $Table, array $hidden = []): array
     {
@@ -354,7 +356,13 @@ class ObjectType extends Entity implements JsonApiSerializable
         $relations = static::objectTypeRelations($this->getRelations('right'), 'right') +
             static::objectTypeRelations($this->getRelations('left'), 'left');
 
-        return $this->objectTypeProperties() + compact('associations', 'relations');
+        $schema = $this->objectTypeProperties() + compact('associations', 'relations');
+        $event = $this->dispatchEvent('ObjectType.getSchema', ['schema' => $schema, 'objectType' => $this], $this);
+        if ($event->isStopped()) {
+            return false;
+        }
+
+        return $event->getResult() ?: $schema;
     }
 
     /**
@@ -389,7 +397,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             sort($types);
             $res[$relation->get($name)] = [
                 'label' => $relation->get($label),
-                'params' => $relation->params
+                'params' => $relation->params,
             ] + compact('types');
         }
 
@@ -410,7 +418,7 @@ class ObjectType extends Entity implements JsonApiSerializable
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
-        $entity = $this->getTableLocator()->get($this->name)->newEntity();
+        $entity = $this->getTableLocator()->get($this->name)->newEntity([]);
         $hiddenProperties = $entity->getHidden();
 
         $required = [];

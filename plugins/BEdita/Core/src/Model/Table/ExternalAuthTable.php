@@ -28,7 +28,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $AuthProviders
- *
  * @method \BEdita\Core\Model\Entity\ExternalAuth get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth[] newEntities(array $data, array $options = [])
@@ -36,7 +35,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\ExternalAuth patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class ExternalAuthTable extends Table
@@ -46,7 +44,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -71,7 +69,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->naturalNumber('id')
@@ -90,7 +88,7 @@ class ExternalAuthTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['auth_provider_id'], 'AuthProviders'));

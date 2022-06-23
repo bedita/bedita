@@ -19,7 +19,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 
@@ -48,7 +48,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     protected $AsyncJobs;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function initialize(array $config)
     {
@@ -81,7 +81,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
             throw new ConflictException(__d('bedita', 'User already active'));
         }
 
-        $now = new Time();
+        $now = new FrozenTime();
 
         // the user is the creator of himself
         $user->created_by = $user->id;
@@ -114,9 +114,9 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.signupActivation' => 'sendMail',

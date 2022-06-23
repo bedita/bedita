@@ -17,7 +17,7 @@ use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -49,9 +49,9 @@ class ListEntitiesActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -103,7 +103,6 @@ class ListEntitiesActionTest extends TestCase
      * @param array $expected Expected result.
      * @param string $filter Filter to be parsed
      * @return void
-     *
      * @dataProvider parseFilterProvider()
      * @covers ::parseFilter()
      */
@@ -128,7 +127,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -151,7 +150,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -174,7 +173,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 'fake_articles=1',
@@ -185,7 +184,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 ['fake_articles' => [1, 2] ],
@@ -196,7 +195,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'updated_at' => new Time('2018-02-20 09:50:00'),
+                        'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                         'subclass' => 'Eutheria',
                     ],
                 ],
@@ -231,7 +230,6 @@ class ListEntitiesActionTest extends TestCase
      * @param mixed $filter Filter.
      * @param string $table Table name.
      * @return void
-     *
      * @dataProvider executeProvider()
      * @covers ::initialize()
      * @covers ::buildFilter()
@@ -252,7 +250,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with custom prop filter.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::buildFilter()
      * @covers ::execute()
@@ -276,7 +273,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with contained entities.
      *
      * @return void
-     *
      * @covers ::initialize()
      * @covers ::buildFilter()
      * @covers ::execute()
@@ -288,7 +284,7 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
-                'updated_at' => new Time('2018-02-20 09:50:00'),
+                'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
                 'fake_articles' => [
                     [
                         'id' => 1,
@@ -334,7 +330,6 @@ class ListEntitiesActionTest extends TestCase
      * Test filter error.
      *
      * @return void
-     *
      * @covers ::buildFilter()
      * @covers ::execute()
      */

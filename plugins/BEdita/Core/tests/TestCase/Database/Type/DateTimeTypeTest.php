@@ -13,7 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\DateTimeType;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use DateTime;
 
@@ -103,7 +103,6 @@ class DateTimeTypeTest extends TestCase
      * @param mixed $input Input data to be marshaled.
      * @param bool $useImmutable Should immutable datetime objects be used?
      * @return void
-     *
      * @dataProvider marshalSuccessProvider
      * @covers ::marshalDateTime
      */
@@ -117,7 +116,7 @@ class DateTimeTypeTest extends TestCase
         $result = $dateTimeType->marshal($input);
         if (is_string($expected)) {
             static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
-            $expected = Time::parse($expected);
+            $expected = FrozenTime::parse($expected);
         }
         static::assertSame($expected->getTimestamp(), $result->getTimestamp());
     }
@@ -150,7 +149,6 @@ class DateTimeTypeTest extends TestCase
      *
      * @param mixed $input Input data to be marshaled.
      * @return void
-     *
      * @dataProvider marshalFailureProvider
      * @covers ::marshalDateTime
      */
@@ -166,7 +164,6 @@ class DateTimeTypeTest extends TestCase
      * Test empty string `marshal`
      *
      * @return void
-     *
      * @covers ::marshal
      * @covers ::marshalDateTime
      */

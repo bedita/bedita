@@ -17,13 +17,12 @@ namespace BEdita\API\Controller;
  * Controller for `/config` endpoint.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class ConfigController extends AppController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public $modelClass = 'Config';
 
@@ -32,7 +31,7 @@ class ConfigController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $query = $this->Config->find()
             ->find('mine')
@@ -40,6 +39,6 @@ class ConfigController extends AppController
         $data = $this->paginate($query);
 
         $this->set(compact('data'));
-        $this->set('_serialize', ['data']);
+        $this->setSerialize(['data']);
     }
 }

@@ -13,7 +13,6 @@
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
-use Cake\I18n\Time;
 
 /**
  * Fixture for `user_tokens` table.
@@ -21,9 +20,9 @@ use Cake\I18n\Time;
 class UserTokensFixture extends TestFixture
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function init()
+    public function init(): void
     {
         $this->records = [
             [

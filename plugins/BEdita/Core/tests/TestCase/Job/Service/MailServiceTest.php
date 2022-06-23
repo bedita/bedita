@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Job\Service;
 
 use BEdita\Core\Job\Service\MailService;
-use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 
@@ -26,9 +25,9 @@ use Cake\TestSuite\TestCase;
 class MailServiceTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         TransportFactory::drop('test');
         TransportFactory::setConfig('test', [
@@ -39,9 +38,9 @@ class MailServiceTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -95,7 +94,6 @@ class MailServiceTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $payload Payload data.
      * @return void
-     *
      * @covers ::run()
      * @dataProvider runProvider()
      */

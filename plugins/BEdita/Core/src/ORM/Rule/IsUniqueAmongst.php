@@ -49,9 +49,9 @@ class IsUniqueAmongst extends IsUnique
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function __invoke(EntityInterface $entity, array $options)
+    public function __invoke(EntityInterface $entity, array $options): bool
     {
         if (!$entity->extract(array_keys($this->_fields), true)) {
             return true;

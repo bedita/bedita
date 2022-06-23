@@ -30,7 +30,6 @@ use Cake\Datasource\ModelAwareTrait;
  * These values will be converted to their boolean equivalents or to null.
  *
  * @since 4.0.0
- *
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
 class DatabaseConfig implements ConfigEngineInterface
@@ -49,7 +48,7 @@ class DatabaseConfig implements ConfigEngineInterface
      *
      * @var array
      */
-    const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
+    public const RESERVED_KEYS = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
      * Setup application `id` if provided.
@@ -73,6 +72,7 @@ class DatabaseConfig implements ConfigEngineInterface
     public function read($key): array
     {
         return $this->Config->fetchConfig($this->applicationId, $key)
+            ->all()
             ->filter(function (array $item): bool {
                 return !in_array($item['name'], self::RESERVED_KEYS);
             })
@@ -96,7 +96,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param array $data The data to write.
      * @return bool Success.
      */
-    public function dump($key, array $data)
+    public function dump($key, array $data): bool
     {
         $context = $key;
         $entities = [];
@@ -124,7 +124,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected static function valueToString($value)
+    protected static function valueToString($value): string
     {
         if ($value === null) {
             return 'null';

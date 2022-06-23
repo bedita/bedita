@@ -25,7 +25,6 @@ use Cake\Validation\Validator;
  * Config Model - used to handle configuration data in DB
  *
  * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- *
  * @method \BEdita\Core\Model\Entity\Config get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Config newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] newEntities(array $data, array $options = [])
@@ -35,9 +34,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- *
  * @since 4.0.0
  */
 class ConfigTable extends Table
@@ -47,7 +44,7 @@ class ConfigTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -59,7 +56,7 @@ class ConfigTable extends Table
                 'Model.beforeSave' => [
                     'created' => 'new',
                     'modified' => 'always',
-                ]
+                ],
             ],
         ]);
         $this->addBehavior('BEdita/Core.QueryCache');
@@ -72,7 +69,7 @@ class ConfigTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['application_id'], 'Applications'));
 
@@ -84,7 +81,7 @@ class ConfigTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->requirePresence('name', 'create')
@@ -111,7 +108,7 @@ class ConfigTable extends Table
     protected function findMine(Query $query)
     {
         return $query->where(function (QueryExpression $exp) {
-            return $exp->or_(function (QueryExpression $exp) {
+            return $exp->or(function (QueryExpression $exp) {
                 $id = CurrentApplication::getApplicationId();
                 if ($id !== null) {
                     $exp->eq($this->aliasField('application_id'), $id);
@@ -190,7 +187,7 @@ class ConfigTable extends Table
 
         return $this->queryCache(
             $query,
-            sprintf('config_%s_%s', $applicationId ?: '*', $context ?: '*')
+            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any')
         );
     }
 }

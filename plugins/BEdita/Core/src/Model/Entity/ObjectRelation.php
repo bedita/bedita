@@ -19,17 +19,17 @@ use Cake\ORM\Entity;
 class ObjectRelation extends Entity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_accessible = [
         '*' => true,
         'left_id' => false,
         'relation_id' => false,
-        'right_id' => false
+        'right_id' => false,
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_hidden = [
         'left_id',

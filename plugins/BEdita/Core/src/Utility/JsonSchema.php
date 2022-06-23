@@ -35,7 +35,7 @@ class JsonSchema
      *
      * @var array
      */
-    const VALID_RESOURCES = [
+    public const VALID_RESOURCES = [
         'applications',
         'roles',
         'streams',
@@ -85,7 +85,7 @@ class JsonSchema
             return static::resourceSchema($type);
         }
 
-        /* @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
+        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         try {
             $objectType = $ObjectTypes->get($type);
@@ -111,7 +111,7 @@ class JsonSchema
         $schemaNoDesc = Hash::remove($schema, 'properties.{*}.description');
         // properties order also differs between Sqlite and Mysql
         ksort($schemaNoDesc['properties']);
-        $schema['revision'] = sprintf("%u", crc32(json_encode($schemaNoDesc)));
+        $schema['revision'] = sprintf('%u', crc32(json_encode($schemaNoDesc)));
 
         return $schema;
     }
@@ -148,7 +148,7 @@ class JsonSchema
     public static function resourceSchema($resource)
     {
         $table = TableRegistry::getTableLocator()->get((string)Inflector::camelize($resource));
-        $entity = $table->newEntity();
+        $entity = $table->newEntity([]);
         $schema = $table->getSchema();
         $hiddenProperties = $entity->getHidden();
 

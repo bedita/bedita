@@ -47,9 +47,9 @@ class RolesUsersTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -57,9 +57,9 @@ class RolesUsersTableTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->RolesUsers);
 
@@ -97,13 +97,12 @@ class RolesUsersTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     *
      * @dataProvider validationProvider()
      * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RolesUsers->newEntity();
+        $objectType = $this->RolesUsers->newEntity([]);
         $this->RolesUsers->patchEntity($objectType, $data);
 
         $success = $this->RolesUsers->save($objectType);
@@ -113,13 +112,13 @@ class RolesUsersTableTest extends TestCase
     /**
      * Test delete admin role association
      *
-     * @expectedException \BEdita\Core\Exception\ImmutableResourceException
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE
      * @covers ::beforeDelete
      */
     public function testDeleteAdminRole()
     {
+        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE');
         $entity = $this->RolesUsers->get(1);
         $this->RolesUsers->delete($entity);
     }

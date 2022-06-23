@@ -15,7 +15,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\Thumbnail\AsyncGenerator;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -73,9 +73,9 @@ class AsyncGeneratorTest extends TestCase
     protected $originalConfig;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -100,9 +100,9 @@ class AsyncGeneratorTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (Thumbnail::configured() as $config) {
             Thumbnail::drop($config);
@@ -120,7 +120,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `getUrl` method.
      *
      * @return void
-     *
      * @covers ::getUrl()
      * @covers ::getBaseGenerator()
      */
@@ -139,7 +138,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerate()
@@ -156,7 +154,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => Time::now(),
+                'created' => FrozenTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';
@@ -169,7 +167,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method when a custom priority is set.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerateWithPriority()
@@ -188,7 +185,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => Time::now(),
+                'created' => FrozenTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';
@@ -201,7 +198,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `exists` method.
      *
      * @return void
-     *
      * @covers ::exists()
      * @covers ::getBaseGenerator()
      */

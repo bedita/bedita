@@ -27,7 +27,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test load when everything goes just fine.
      *
      * @return void
-     *
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
@@ -51,14 +50,13 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator is not an instance of the expected class.
      *
      * @return void
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp /^Thumbnail generators must use .+ as a base class\.$/
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
     public function testLoadNotAGenerator()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/^Thumbnail generators must use .+ as a base class\.$/');
         $object = new \stdClass();
 
         $registry = new ThumbnailRegistry();
@@ -70,14 +68,13 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator initialization fails.
      *
      * @return void
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp /^Thumbnail generator .+ is not properly configured\.$/
      * @covers ::_create()
      * @covers ::_resolveClassName()
      */
     public function testLoadNotInitialized()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/^Thumbnail generator .+ is not properly configured\.$/');
         $config = [
             'my' => 'config',
         ];
@@ -98,13 +95,12 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_throwMissingClassError` method.
      *
      * @return void
-     *
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessageRegExp /^Thumbnail generator .+ is not available\.$/
      * @covers ::_throwMissingClassError()
      */
     public function testLoadMissingClass()
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessageRegExp('/^Thumbnail generator .+ is not available\.$/');
         $registry = new ThumbnailRegistry();
 
         $registry->load('\This\Class\Does\Not\Exist');

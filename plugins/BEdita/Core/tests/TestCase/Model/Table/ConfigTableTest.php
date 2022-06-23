@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
@@ -46,18 +45,18 @@ class ConfigTableTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Config = TableRegistry::getTableLocator()->get('Config');
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Config);
 
@@ -90,7 +89,7 @@ class ConfigTableTest extends TestCase
                 [
                     'name' => 'KeyName',
                     'context' => 'Group1',
-                    'content' => 'null'
+                    'content' => 'null',
                 ],
             ],
             'notValid' => [
@@ -105,7 +104,7 @@ class ConfigTableTest extends TestCase
                 [
                     'name' => 'bad.key',
                     'context' => 'somecontext',
-                    'content' => 'some content'
+                    'content' => 'some content',
                 ],
             ],
         ];
@@ -116,7 +115,6 @@ class ConfigTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -210,7 +208,6 @@ class ConfigTableTest extends TestCase
      *
      * @dataProvider findNameProvider
      * @covers ::findName()
-     *
      * @param int|\Exception $expected Result number or Exception.
      * @param array $data Find options.
      * @return void
@@ -262,7 +259,6 @@ class ConfigTableTest extends TestCase
      * @param int|null $appId Application ID.
      * @param string|null $context Context key.
      * @return void
-     *
      * @dataProvider fetchConfigProvider
      * @covers ::fetchConfig()
      */

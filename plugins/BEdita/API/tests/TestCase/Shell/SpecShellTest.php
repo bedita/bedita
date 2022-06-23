@@ -27,21 +27,21 @@ class SpecShellTest extends ConsoleIntegrationTestCase
      *
      * @var string
      */
-    const TEMP_FILE = TMP . 'spec.yaml';
+    public const TEMP_FILE = TMP . 'spec.yaml';
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadPlugins(['BEdita/API' => []]);
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists(static::TEMP_FILE)) {
             unlink(static::TEMP_FILE);
@@ -54,7 +54,6 @@ class SpecShellTest extends ConsoleIntegrationTestCase
      * Test generate method.
      *
      * @return void
-     *
      * @covers ::generate()
      */
     public function testGenerate()

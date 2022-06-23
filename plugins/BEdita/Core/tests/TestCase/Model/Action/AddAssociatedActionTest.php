@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\Core\Exception\Exception;
 use Cake\Event\Event;
@@ -41,9 +42,9 @@ class AddAssociatedActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -120,7 +121,6 @@ class AddAssociatedActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
@@ -199,12 +199,11 @@ class AddAssociatedActionTest extends TestCase
      * Test that an exception is raised with details about the validation error.
      *
      * @return void
-     *
-     * @expectedException \Cake\Http\Exception\BadRequestException
-     * @expectedExceptionCode 400
      */
     public function testInvocationWithLinkErrors()
     {
+        $this->expectException(InvalidDataException::class);
+        $this->expectExceptionCode('400');
         try {
             $table = TableRegistry::getTableLocator()->get('FakeArticles');
             /** @var \Cake\ORM\Association\BelongsToMany $association */
@@ -228,7 +227,6 @@ class AddAssociatedActionTest extends TestCase
             $action(compact('entity', 'relatedEntities'));
         } catch (Exception $e) {
             $expected = [
-                'title' => 'Error linking entities',
                 'detail' => [
                     'gustavo' => [
                         'sampleRule' => 'This is a sample error',
@@ -237,6 +235,7 @@ class AddAssociatedActionTest extends TestCase
             ];
 
             static::assertSame($expected, $e->getAttributes());
+            static::assertSame('Error linking entities', $e->getMessage());
 
             throw $e;
         }

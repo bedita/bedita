@@ -23,9 +23,9 @@ use Cake\TestSuite\TestCase;
 class LoggedUserTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         LoggedUser::resetUser();
     }

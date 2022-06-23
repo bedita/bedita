@@ -13,14 +13,14 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\I18n\Time;
-use Cake\Mailer\Email;
+use Cake\I18n\FrozenTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -52,15 +52,15 @@ class ChangeCredentialsActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
     }
 
@@ -74,15 +74,15 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity(),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new Time('1 day'),
+                'scheduled_from' => new FrozenTime('1 day'),
                 'priority' => 1,
-            ]
+            ],
         ]);
     }
 
@@ -90,7 +90,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test invocation of command.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
      */
@@ -125,13 +124,12 @@ class ChangeCredentialsActionTest extends TestCase
      * Test validate failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \Cake\Http\Exception\BadRequestException
      */
     public function testValidationFail()
     {
+        $this->expectException(InvalidDataException::class);
         $data = [
             'uuid' => 'whatatoken!',
         ];
@@ -148,13 +146,12 @@ class ChangeCredentialsActionTest extends TestCase
      * Test find job failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testExecuteFail()
     {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
         $data = [
             'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
@@ -172,13 +169,12 @@ class ChangeCredentialsActionTest extends TestCase
      * Test payload failure.
      *
      * @return void
-     *
      * @covers ::execute()
      * @covers ::validate()
-     * @expectedException \LogicException
      */
     public function testPayloadFail()
     {
+        $this->expectException(\LogicException::class);
         $data = [
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',

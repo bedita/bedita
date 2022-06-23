@@ -27,7 +27,7 @@ namespace BEdita\Core\Model\Entity;
 class Location extends ObjectEntity
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $properties = [], array $options = [])
     {

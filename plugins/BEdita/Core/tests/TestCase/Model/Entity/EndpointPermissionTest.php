@@ -25,7 +25,6 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Model\Entity\EndpointPermission} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Model\Entity\EndpointPermission
- *
  * @since 4.0.0
  */
 class EndpointPermissionTest extends TestCase
@@ -51,9 +50,9 @@ class EndpointPermissionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -61,9 +60,9 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->EndpointPermissions);
 
@@ -113,7 +112,6 @@ class EndpointPermissionTest extends TestCase
      * @param int $expected Encoded value.
      * @param string|bool $decoded Decoded value.
      * @return void
-     *
      * @covers ::encode()
      * @dataProvider encodeProvider()
      */
@@ -146,7 +144,6 @@ class EndpointPermissionTest extends TestCase
      * @param string|bool $expected Decoded value.
      * @param int $encoded Encoded value.
      * @return void
-     *
      * @covers ::decode()
      * @dataProvider decodeProvider()
      */
@@ -217,7 +214,6 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $permission Permission to set.
      * @param int $initial Initial value.
      * @return void
-     *
      * @covers ::_setPermission()
      * @dataProvider setPermissionProvider()
      */
@@ -269,7 +265,6 @@ class EndpointPermissionTest extends TestCase
      *
      * @param array $expected Expected decoded values.
      * @param int $permission Permission.
-     *
      * @covers ::_getRead()
      * @covers ::_getWrite()
      * @dataProvider getReadWriteProvider()
@@ -324,7 +319,6 @@ class EndpointPermissionTest extends TestCase
      * @param int $permission Initial permission value.
      * @param string|bool|null $expected Expected read permission value (if `null`, same as `$read`).
      * @return void
-     *
      * @covers ::_setRead()
      * @dataProvider setReadWriteProvider()
      */
@@ -349,7 +343,6 @@ class EndpointPermissionTest extends TestCase
      * @param int $permission Initial permission value.
      * @param string|bool|null $expected Expected write permission value (if `null`, same as `$write`).
      * @return void
-     *
      * @covers ::_setWrite()
      * @dataProvider setReadWriteProvider()
      */
@@ -396,7 +389,6 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The endpoint name
      * @return void
-     *
      * @covers ::_setEndpointName()
      * @dataProvider setEndpointNameProvider()
      */
@@ -451,7 +443,6 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The role name
      * @return void
-     *
      * @covers ::_setRoleName()
      * @dataProvider setRoleNameProvider()
      */
@@ -506,7 +497,6 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The application name
      * @return void
-     *
      * @covers ::_setApplicationName()
      * @dataProvider setApplicationNameProvider()
      */

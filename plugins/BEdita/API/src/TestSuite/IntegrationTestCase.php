@@ -23,6 +23,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
+use Cake\TestSuite\MiddlewareDispatcher;
 
 /**
  * Base class for API integration tests.
@@ -70,6 +71,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         'plugin.BEdita/Core.UserTokens',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.Tags',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
@@ -80,11 +83,11 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      */
     protected $defaultUser = [
         'username' => 'first user',
-        'password' => 'password1'
+        'password' => 'password1',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -93,9 +96,9 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -104,16 +107,16 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
         TransportFactory::drop('default');
         TransportFactory::setConfig('default', [
-            'className' => 'Debug'
+            'className' => 'Debug',
         ]);
 
         EventManager::instance()->on(new CommonEventHandler());
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -147,9 +150,10 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
-    protected function _makeDispatcher()
+    protected function _makeDispatcher(): MiddlewareDispatcher
     {
         Router::setRouteCollection(new RouteCollection());
 
@@ -177,14 +181,11 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
 
         $this->_request = [];
         $this->configRequestHeaders('POST', [
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content-Type' => 'application/json',
         ]);
         $username = $username ?: $this->defaultUser['username'];
         $password = $password ?: $this->defaultUser['password'];
-        $this->post('/auth', [
-            'username' => $username,
-            'password' => $password,
-        ]);
+        $this->post('/auth', json_encode(compact('username', 'password')));
 
         Router::fullBaseUrl($fullBaseUrl);
 

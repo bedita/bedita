@@ -58,7 +58,7 @@ class LinksTableTest extends TestCase
                     'title' => 'gustavo link',
                     'url' => 'https://www.gustavo.com',
                     'http_status' => '200 OK',
-                    'last_update' => '2020-04-29 16:15:00'
+                    'last_update' => '2020-04-29 16:15:00',
                 ],
             ],
         ];
@@ -70,16 +70,14 @@ class LinksTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     *
      * @dataProvider validationProvider()
-     *
      * @covers ::initialize()
      * @covers ::validationDefault()
      */
     public function testValidation(array $expected, array $data)
     {
         $this->Links = TableRegistry::getTableLocator()->get('Links');
-        $entity = $this->Links->newEntity();
+        $entity = $this->Links->newEntity([]);
         $entity = $this->Links->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

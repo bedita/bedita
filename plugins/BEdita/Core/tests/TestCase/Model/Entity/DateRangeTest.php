@@ -42,9 +42,9 @@ class DateRangeTest extends TestCase
     protected $DateRanges;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -179,7 +179,6 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     *
      * @covers ::isBefore()
      * @dataProvider isBeforeProvider()
      */
@@ -321,7 +320,6 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     *
      * @covers ::isAfter()
      * @dataProvider isAfterProvider()
      */
@@ -432,7 +430,6 @@ class DateRangeTest extends TestCase
      * @param array $expected Expected result.
      * @param array $dateRanges Date Ranges.
      * @return void
-     *
      * @covers ::normalize()
      * @dataProvider normalizeProvider()
      */
@@ -459,7 +456,6 @@ class DateRangeTest extends TestCase
      * Test case for union method.
      *
      * @return void
-     *
      * @covers ::union()
      */
     public function testUnion()
@@ -638,7 +634,6 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges1 Date Ranges.
      * @param array $dateRanges2 Date Ranges.
      * @return void
-     *
      * @covers ::diff()
      * @dataProvider diffProvider()
      */
@@ -716,7 +711,6 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges Date Ranges.
      * @param bool $marshal Should entities be marshalled first?
      * @return void
-     *
      * @covers ::checkWellFormed()
      * @dataProvider checkWellFormedProvider()
      */

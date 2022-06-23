@@ -24,7 +24,6 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $ModifiedByUsers
- *
  * @method \BEdita\Core\Model\Entity\Translation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Translation newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation[] newEntities(array $data, array $options = [])
@@ -32,7 +31,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Translation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
@@ -43,7 +41,7 @@ class TranslationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -85,7 +83,7 @@ class TranslationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -120,7 +118,7 @@ class TranslationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['object_id', 'lang']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));

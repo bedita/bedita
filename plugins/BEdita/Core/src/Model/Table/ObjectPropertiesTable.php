@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Properties
  * @property \Cake\ORM\Association\BelongsTo $Objects
- *
  * @method \BEdita\Core\Model\Entity\ObjectProperty get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectProperty newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectProperty[] newEntities(array $data, array $options = [])
@@ -26,7 +25,7 @@ class ObjectPropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -37,12 +36,12 @@ class ObjectPropertiesTable extends Table
         $this->belongsTo('Properties', [
             'foreignKey' => 'property_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Properties'
+            'className' => 'BEdita/Core.Properties',
         ]);
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 
@@ -51,7 +50,7 @@ class ObjectPropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -69,7 +68,7 @@ class ObjectPropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['property_id'], 'Properties'));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));

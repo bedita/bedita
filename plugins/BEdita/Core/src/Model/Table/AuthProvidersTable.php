@@ -13,9 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Collection\Collection;
 use Cake\Core\App;
-use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -29,7 +27,6 @@ use Cake\Validation\Validator;
  * AuthProviders Model
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
- *
  * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
@@ -37,7 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
- *
  * @since 4.0.0
  */
 class AuthProvidersTable extends Table
@@ -47,7 +43,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -68,7 +64,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->naturalNumber('id')
@@ -78,7 +74,10 @@ class AuthProvidersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
 
-            ->url('url')
+            // Use `add` instead of `urlWithProtocol` to preserve rule name.
+            ->add('url', 'url', [
+                'rule' => ['url', true],
+            ])
             ->allowEmptyString('url', null, 'create')
 
             ->allowEmptyArray('params');
@@ -91,7 +90,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
 
@@ -147,7 +146,7 @@ class AuthProvidersTable extends Table
                 ->groupBy('auth_class')
                 ->map(function (array $entities) {
                     return [
-                        'authProviders' => collection($entities)->indexBy('name')->toArray()
+                        'authProviders' => collection($entities)->indexBy('name')->toArray(),
                     ];
                 });
         });

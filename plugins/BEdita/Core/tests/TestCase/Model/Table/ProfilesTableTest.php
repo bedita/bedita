@@ -57,7 +57,7 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -70,7 +70,7 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Profiles);
         LoggedUser::resetUser();
@@ -184,7 +184,6 @@ class ProfilesTableTest extends TestCase
      *
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
-     *
      * @return void
      * @dataProvider validationProvider
      * @coversNothing
@@ -207,7 +206,6 @@ class ProfilesTableTest extends TestCase
      * Test find method.
      *
      * @return void
-     *
      * @coversNothing
      */
     public function testFind()

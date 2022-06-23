@@ -24,7 +24,6 @@ class AdminControllerTest extends IntegrationTestCase
      * Test unauthorized response for unauthenticated calls.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testUnauthenticated()
@@ -58,7 +57,6 @@ class AdminControllerTest extends IntegrationTestCase
      * Test unauthorized response for non-admin users.
      *
      * @return void
-     *
      * @covers ::initialize()
      */
     public function testUnauthorized()

@@ -30,7 +30,7 @@ use Cake\Utility\Hash;
 class GeometryBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'distanceFunction' => 'ST_Distance_Sphere',

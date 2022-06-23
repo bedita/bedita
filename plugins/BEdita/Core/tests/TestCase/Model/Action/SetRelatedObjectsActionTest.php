@@ -50,9 +50,9 @@ class SetRelatedObjectsActionTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,9 +60,9 @@ class SetRelatedObjectsActionTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -174,7 +174,6 @@ class SetRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     *
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
@@ -195,6 +194,7 @@ class SetRelatedObjectsActionTest extends TestCase
                 ->where(function (QueryExpression $exp) use ($association, $related) {
                     return $exp->in($association->getTarget()->getPrimaryKey(), array_keys($related));
                 })
+                ->all()
                 ->map(function (EntityInterface $entity) use ($association, $related) {
                     $data = $related[$entity->id];
                     if (!empty($data) && $association instanceof RelatedTo) {
@@ -234,6 +234,8 @@ class SetRelatedObjectsActionTest extends TestCase
         static::assertSame(1, $beforeSaveTriggered);
         static::assertSame(1, $afterSaveTriggered);
 
+        sort($expected);
+        sort($result);
         static::assertEquals($expected, $result, '', 0, 10, true);
     }
 
@@ -252,5 +254,31 @@ class SetRelatedObjectsActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         static::assertSame(1, $result);
+    }
+
+    /**
+     * Test that setting related entities loaded from another entity works.
+     *
+     * @return void
+     */
+    public function testSetEntitiesRelatedToOtherObject(): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $relatedEntities = $Documents->get(3, ['contain' => ['Test']])->get('test');
+
+        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        static::assertCount(2, $entity->get('test'));
+
+        $association = $Documents->getAssociation('Test');
+        $action = new SetRelatedObjectsAction(compact('association'));
+        $action(compact('entity', 'relatedEntities'));
+
+        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        static::assertCount(1, $entity->get('test'));
+
+        $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();
+        $actual = collection($entity->get('test'))->sortBy('id')->extract('id')->toList();
+
+        static::assertEquals($expected, $actual);
     }
 }
