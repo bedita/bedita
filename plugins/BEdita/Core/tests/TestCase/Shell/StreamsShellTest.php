@@ -65,6 +65,50 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
+     * Test `refreshMetadata` method
+     *
+     * @return void
+     * @covers ::refreshMetadata()
+     */
+    public function testRefreshMetadata()
+    {
+        // check width population if initial width is not available
+        $this->Streams->updateAll(['width' => null], []);
+
+        $this->exec('streams refreshMetadata');
+
+        $query = $this->Streams->find('all');
+        $results = $query->all();
+        $totalCount = $results->count();
+        $data = $results->toList();
+
+        foreach ($data as $entry) {
+            $entry['original_width'] = $entry['width'];
+            if (preg_match('/image\//', $entry['mime_type'])) {
+                $this->assertNotNull($entry['width']);
+            }
+        }
+
+        // check width population with force option
+        $this->Streams->updateAll(['width' => 800], []);
+        $this->exec('streams refreshMetadata --force');
+
+        $query = $this->Streams->find('all');
+        $results = $query->all();
+        $lastData = $results->toList();
+
+        foreach ($lastData as $entry) {
+            if (preg_match('/image\//', $entry['mime_type'])) {
+                $originalEntry = current(array_filter($data, function ($e) use ($entry) {
+                    return $e['uuid'] === $entry['uuid'];
+                }));
+
+                $this->assertEquals($originalEntry['original_width'], $entry['width']);
+            }
+        }
+    }
+
+    /**
      * Test `removeOrphans` method
      *
      * @param int $expected Expected number of removed streams
