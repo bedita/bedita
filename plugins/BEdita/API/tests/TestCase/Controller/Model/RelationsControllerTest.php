@@ -543,7 +543,7 @@ class RelationsControllerTest extends IntegrationTestCase
     /**
      * Test adding object types to the left and to the right side of a relation
      *
-     * @codeCoverageIgnore
+     * @coversNothing
      * @return void
      */
     public function testPostLeftRightObjectTypes(): void
@@ -592,7 +592,7 @@ class RelationsControllerTest extends IntegrationTestCase
     /**
      * Test replacing object types to the left and to the right side of a relation
      *
-     * @codeCoverageIgnore
+     * @coversNothing
      * @return void
      */
     public function testPatchLeftRightObjectTypes(): void

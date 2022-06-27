@@ -316,7 +316,7 @@ class CustomPropertiesBehavior extends Behavior
 
             return $exp->and(array_map(
                 function ($key, $value) use ($field, $query) {
-                    return $query->newExpr()->eq(
+                    return $query->expr()->eq(
                         new FunctionExpression(
                             'JSON_UNQUOTE',
                             [

@@ -60,7 +60,7 @@ class MediaController extends ObjectsController
             )
         );
 
-        $maxLimit = $this->Paginator->getConfig('maxLimit');
+        $maxLimit = Hash::get($this->paginate, 'maxLimit');
         if (count($ids) > $maxLimit) {
             throw new BadRequestException(__d('bedita', 'Cannot generate thumbnails for more than {0} media at once', $maxLimit));
         }

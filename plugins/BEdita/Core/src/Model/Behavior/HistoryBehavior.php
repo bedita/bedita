@@ -243,7 +243,7 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->newExpr()->eq($field, new IdentifierExpression($this->table()->aliasField('id')))
+            $query->expr()->eq($field, new IdentifierExpression($this->table()->aliasField('id')))
         );
     }
 }

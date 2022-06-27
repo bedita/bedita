@@ -14,9 +14,9 @@
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\TreeCheckCommand;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Driver\Mysql;
-use Cake\Datasource\ModelAwareTrait;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -28,7 +28,7 @@ use Cake\TestSuite\TestCase;
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Fixtures
@@ -55,7 +55,7 @@ class TreeCheckCommandTest extends TestCase
         parent::setUp();
 
         $this->useCommandRunner();
-        $this->loadModel('Trees');
+        $this->Trees = $this->fetchTable('Trees');
     }
 
     /**

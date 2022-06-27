@@ -114,7 +114,7 @@ abstract class BaseApplication extends CakeBaseApplication
             ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
 
             // Add routing middleware.
-            ->add(new RoutingMiddleware($this, '_cake_routes_'))
+            ->add(new RoutingMiddleware($this))
 
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()

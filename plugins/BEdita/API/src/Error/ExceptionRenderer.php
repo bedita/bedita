@@ -20,7 +20,7 @@ use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Exception\UserExistsException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
-use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
+use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
@@ -32,7 +32,7 @@ use Throwable;
  *
  * @since 4.0.0
  */
-class ExceptionRenderer extends CakeExceptionRenderer
+class ExceptionRenderer extends WebExceptionRenderer
 {
     /**
      * Additional exception codes

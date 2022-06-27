@@ -14,7 +14,7 @@
 namespace BEdita\API\Datasource;
 
 use BEdita\Core\Model\Table\ObjectsTable;
-use Cake\Datasource\Paginator;
+use Cake\Datasource\Paging\NumericPaginator;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -26,7 +26,7 @@ use Cake\ORM\Query;
  *
  * @since 4.0.0
  */
-class JsonApiPaginator extends Paginator
+class JsonApiPaginator extends NumericPaginator
 {
     /**
      * @inheritDoc

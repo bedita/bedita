@@ -15,10 +15,10 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\TreeRecoverCommand;
 use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\ModelAwareTrait;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -30,7 +30,7 @@ use Cake\TestSuite\TestCase;
 class TreeRecoverCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Fixtures
@@ -53,7 +53,7 @@ class TreeRecoverCommandTest extends TestCase
         parent::setUp();
 
         $this->useCommandRunner();
-        $this->loadModel('Trees');
+        $this->Trees = $this->fetchTable('Trees');
     }
 
     /**
