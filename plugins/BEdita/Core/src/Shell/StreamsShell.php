@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Shell;
 
-use Bedita\Core\Model\Entity\Stream;
+use BEdita\Core\Model\Entity\Stream;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
