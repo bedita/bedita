@@ -25,7 +25,6 @@
         "cakephp/cakephp": "~4.4.1",
         "cakephp/plugin-installer": "^1.3.1",
         "guzzlehttp/psr7": "^2.2.1",
-        "mobiledetect/mobiledetectlib": "^2.8",
         "wikimedia/composer-merge-plugin": "^2.0.1"
     },
     "require-dev": {

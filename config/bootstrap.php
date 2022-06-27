@@ -37,7 +37,6 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorTrap;
 use Cake\Error\ExceptionTrap;
-use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
@@ -199,20 +198,6 @@ Mailer::setConfig(Configure::consume('Email') ?: []);
 Log::setConfig(Configure::consume('Log') ?: []);
 Security::setSalt((string)Configure::consume('Security.salt'));
 FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);
-
-/*
- * Setup detectors for mobile and tablet.
- */
-ServerRequest::addDetector('mobile', function ($request) {
-    $detector = new \Detection\MobileDetect();
-
-    return $detector->isMobile();
-});
-ServerRequest::addDetector('tablet', function ($request) {
-    $detector = new \Detection\MobileDetect();
-
-    return $detector->isTablet();
-});
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
