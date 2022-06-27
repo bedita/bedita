@@ -53,7 +53,7 @@ class TreeRecoverCommandTest extends TestCase
         parent::setUp();
 
         $this->useCommandRunner();
-        $this->fetchTable('Trees');
+        $this->Trees = $this->fetchTable('Trees');
     }
 
     /**
