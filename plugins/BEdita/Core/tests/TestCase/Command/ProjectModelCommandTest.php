@@ -14,8 +14,8 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\ProjectModelCommand;
 use BEdita\Core\Test\TestCase\Utility\ProjectModelTest;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**

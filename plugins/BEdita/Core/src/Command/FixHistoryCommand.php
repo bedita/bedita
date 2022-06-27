@@ -251,8 +251,8 @@ class FixHistoryCommand extends Command
             $this->joinConditions($query, $created)
         )->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
             return $exp->and([
-                $q->newExpr()->between($this->Objects->aliasField('id'), $from, $to),
-                $q->newExpr()->isNull($this->History->aliasField('resource_id')),
+                $q->expr()->between($this->Objects->aliasField('id'), $from, $to),
+                $q->expr()->isNull($this->History->aliasField('resource_id')),
             ]);
         });
     }
@@ -278,15 +278,15 @@ class FixHistoryCommand extends Command
             $userField = 'modified_by';
         }
         $joinConditions = [
-            $query->newExpr()->eq($this->History->aliasField('resource_type'), 'objects'),
-            $query->newExpr()->eq($idField, new IdentifierExpression($this->Objects->aliasField('id'))),
-            $query->newExpr()->equalFields(
+            $query->expr()->eq($this->History->aliasField('resource_type'), 'objects'),
+            $query->expr()->eq($idField, new IdentifierExpression($this->Objects->aliasField('id'))),
+            $query->expr()->equalFields(
                 $this->History->aliasField('user_id'),
                 $this->Objects->aliasField($userField)
             ),
         ];
         if ($created) {
-            $joinConditions[] = $query->newExpr()->eq($this->History->aliasField('user_action'), 'create');
+            $joinConditions[] = $query->expr()->eq($this->History->aliasField('user_action'), 'create');
         }
 
         return $joinConditions;

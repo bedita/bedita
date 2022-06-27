@@ -39,6 +39,7 @@ class CommonEventHandler implements EventListenerInterface
         return [
             'Server.buildMiddleware' => 'buildMiddlewareStack',
             'Auth.afterIdentify' => 'afterIdentify',
+            'Error.beforeRender' => 'errorBeforeRender',
         ];
     }
 
@@ -87,5 +88,19 @@ class CommonEventHandler implements EventListenerInterface
     public function afterIdentify(EventInterface $event, array $user)
     {
         LoggedUser::setUser($user);
+    }
+
+    /**
+     * Avoid to render error to not break the API.
+     * `Cake\Error\ErrorTrap` takes care of logging the error.
+     * A better implementation (maybe with an ErrorService) could try to collect errors and render them as json.
+     *
+     * @param \Cake\Event\EventInterface $event The event.
+     * @return void
+     * @codeCoverageIgnore
+     */
+    public function errorBeforeRender(EventInterface $event): void
+    {
+        $event->stopPropagation();
     }
 }

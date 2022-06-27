@@ -38,15 +38,6 @@ class AppController extends Controller
         'order' => [
             'id' => 'asc',
         ],
-    ];
-
-    /**
-     * Default pagination options.
-     * May be overridden in configuration.
-     *
-     * @var array
-     */
-    public $defaultPagination = [
         'limit' => 20,
         'maxLimit' => 100,
     ];
@@ -60,14 +51,15 @@ class AppController extends Controller
 
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
-        $this->loadComponent('Paginator', (array)Configure::read('Pagination', $this->defaultPagination));
+        $this->paginate = (array)Configure::read('Pagination') + $this->paginate;
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
             $this->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->request->is('json') ? 'json' : null,
                 'checkMediaType' => $this->request->is('jsonapi'),
             ]);
-            $this->Paginator->setPaginator((new JsonApiPaginator())->setConfig($this->Paginator->getConfig()));
+
+            $this->paginate['className'] = JsonApiPaginator::class;
         }
 
         $this->loadComponent('Auth', [
