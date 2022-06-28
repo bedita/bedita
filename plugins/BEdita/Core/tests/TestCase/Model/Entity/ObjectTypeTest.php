@@ -389,7 +389,7 @@ class ObjectTypeTest extends TestCase
                 'not_found',
                 null,
             ],
-            'objects' => [
+            'objects null' => [
                 'objects',
                 null,
                 null,
