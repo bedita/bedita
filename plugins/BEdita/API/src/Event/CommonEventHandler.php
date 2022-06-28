@@ -37,43 +37,9 @@ class CommonEventHandler implements EventListenerInterface
     public function implementedEvents(): array
     {
         return [
-            'Server.buildMiddleware' => 'buildMiddlewareStack',
             'Auth.afterIdentify' => 'afterIdentify',
             'Error.beforeRender' => 'errorBeforeRender',
         ];
-    }
-
-    /**
-     * Customize middlewares for API needs
-     *
-     * Setup CORS from configuration
-     * An optional 'CORS' key in should be like this example:
-     *
-     * ```
-     * 'CORS' => [
-     *   'allowOrigin' => '*.example.com',
-     *   'allowMethods' => ['GET', 'POST'],
-     *   'allowHeaders' => ['X-CSRF-Token']
-     * ]
-     * ```
-     *
-     * @param \Cake\Event\EventInterface $event The event object
-     * @param \Cake\Http\MiddlewareQueue $middleware The middleware queue
-     * @return void
-     * @see \BEdita\API\Middleware\CorsMiddleware to more info on CORS configuration
-     */
-    public function buildMiddlewareStack(EventInterface $event, MiddlewareQueue $middleware)
-    {
-        $middleware
-            ->prepend(new AnalyticsMiddleware())
-            ->insertBefore(
-                ErrorHandlerMiddleware::class,
-                new CorsMiddleware(Configure::read('CORS'))
-            )
-            ->insertAfter(
-                ErrorHandlerMiddleware::class,
-                new TokenMiddleware()
-            );
     }
 
     /**
