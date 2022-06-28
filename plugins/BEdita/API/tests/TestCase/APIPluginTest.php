@@ -29,7 +29,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\API\APIPlugin} Test Case.
  *
- * @coversDefaultClass \BEdita\API\API\APIPlugin
+ * @coversDefaultClass \BEdita\API\APIPlugin
  */
 class APIPluginTest extends TestCase
 {
