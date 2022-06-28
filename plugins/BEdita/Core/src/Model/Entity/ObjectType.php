@@ -317,11 +317,17 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * Setter for virtual property `parent_name`.
      *
-     * @param string $parentName Parent object type name.
+     * @param string|null $parentName Parent object type name.
      * @return string
      */
-    protected function _setParentName(string $parentName): ?string
+    protected function _setParentName(?string $parentName): ?string
     {
+        if ($parentName === null) {
+            $this->parent = null;
+            $this->parent_id = null;
+
+            return null;
+        }
         try {
             /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
             $table = $this->getTableLocator()->get($this->getSource());
