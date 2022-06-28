@@ -51,9 +51,9 @@ class StreamTest extends TestCase
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filesystemSetup();
@@ -61,9 +61,9 @@ class StreamTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystemRestore();
         unset($this->Streams);
@@ -129,7 +129,6 @@ class StreamTest extends TestCase
      * @param string $filesystem Filesystem name.
      * @param int $subLevels Number of sub-levels.
      * @return void
-     *
      * @dataProvider filesystemPathProvider()
      * @covers ::filesystemPath()
      */
@@ -147,7 +146,6 @@ class StreamTest extends TestCase
      * Test getter of contents.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContents()
@@ -166,7 +164,6 @@ class StreamTest extends TestCase
      * Test getter of contents for a missing file.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContentsFileNotReadable()
@@ -182,12 +179,11 @@ class StreamTest extends TestCase
      * Test getter of contents for a file not uploaded.
      *
      * @return void
-     *
      * @covers ::_getContents()
      */
     public function testGetContentsNotUploaded()
     {
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEmptyEntity();
         $contents = $stream->contents;
 
         static::assertNull($contents);
@@ -265,7 +261,6 @@ class StreamTest extends TestCase
      * @param \Exception|string $expected Expected stream contents.
      * @param mixed $contents Contents.
      * @return void
-     *
      * @dataProvider setContentsProvider()
      * @covers ::_setContents()
      * @covers ::createStream()
@@ -278,7 +273,7 @@ class StreamTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEmptyEntity();
         $stream->contents = $contents;
 
         static::assertInstanceOf(StreamInterface::class, $stream->contents);
@@ -314,7 +309,6 @@ class StreamTest extends TestCase
      * @param string|null $expected Expected result.
      * @param string $uuid UUID of stream to test.
      * @return void
-     *
      * @dataProvider getUrlProvider()
      * @covers ::_getUrl()
      */
@@ -334,7 +328,6 @@ class StreamTest extends TestCase
      * Test URL getter with private url.
      *
      * @return void
-     *
      * @covers ::_getUrl()
      */
     public function testGetUrlPrivate()
@@ -346,7 +339,8 @@ class StreamTest extends TestCase
 
     /**
      * Read data from image if is possible
-     * @param EntityStream $stream stream entity
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity.
      */
 
     public function readDataFromImage($stream): void
@@ -383,13 +377,13 @@ class StreamTest extends TestCase
         $imageTest = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
 
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $imageTest;
 
         $this->readDataFromImage($stream);
         // mime type not allowed
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/gif';
         $stream->contents = $gifTest;
         $this->readDataFromImage($stream);
@@ -405,7 +399,7 @@ class StreamTest extends TestCase
     {
         $path = Configure::read('Filesystem.default.path');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
-        $stream = $this->Streams->newEntity();
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $gifTest;
 

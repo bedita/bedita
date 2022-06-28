@@ -72,7 +72,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      * @covers ::updateStreamMetadata()
      * @covers ::streamsGenerator()
      */
-    public function testRefreshMetadata()
+    public function testRefreshMetadata(): void
     {
         // check width population if initial width is not available
         $this->Streams->updateAll(['width' => null], []);
