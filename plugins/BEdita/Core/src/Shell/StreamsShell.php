@@ -147,7 +147,7 @@ class StreamsShell extends Shell
 
             // ...and write it back, triggering Stream model's methods to read metadata from file
             $stream->contents = $content;
-            $this->Streams->saveOrFail($stream));
+            $this->Streams->saveOrFail($stream);
         } catch (\Throwable $t) {
             $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
 
