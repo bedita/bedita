@@ -69,6 +69,8 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
      *
      * @return void
      * @covers ::refreshMetadata()
+     * @covers ::updateStreamMetadata()
+     * @covers ::streamsGenerator()
      */
     public function testRefreshMetadata()
     {
