@@ -125,13 +125,13 @@ class StreamsShell extends Shell
             }
         }
 
-        $this->info(sprintf('Refresh completed: %d streams updated successfully, %d failed', $success, ($count - $success)));
+        $this->info(sprintf('Refresh completed: %d streams updated successfully, %d failed', $success, $count - $success));
     }
 
     /**
      * Update stream metadata.
      *
-     * @param Stream $stream The stream to update
+     * @param \BEdita\Core\Model\Entity\Stream $stream The stream to update
      * @return bool Success status of the operation
      */
     protected function updateStreamMetadata(Stream $stream): bool
@@ -162,7 +162,7 @@ class StreamsShell extends Shell
      *
      * @param \Cake\ORM\Query $query Query to retrieve concerned streams
      * @param int $limit Limit amount of objects retrieved with each internal iteration
-     * @return \Generator|Stream[]
+     * @return \Generator|\BEdita\Core\Model\Entity\Stream[]
      */
     protected function streamsGenerator(Query $query, int $limit = 100): \Generator
     {
@@ -179,7 +179,7 @@ class StreamsShell extends Shell
 
             yield from $results;
 
-            /** @var Stream $last */
+            /** @var \BEdita\Core\Model\Entity\Stream $last */
             $last = $results->last();
             $q = clone $query;
             $q = $q->where(function (QueryExpression $exp) use ($last): QueryExpression {
