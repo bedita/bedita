@@ -13,14 +13,9 @@
 namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
-use BEdita\API\Middleware\AnalyticsMiddleware;
-use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\MiddlewareQueue;
 use Cake\TestSuite\TestCase;
 
 /**

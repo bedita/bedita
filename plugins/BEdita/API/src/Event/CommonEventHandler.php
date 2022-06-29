@@ -12,15 +12,9 @@
  */
 namespace BEdita\API\Event;
 
-use BEdita\API\Middleware\AnalyticsMiddleware;
-use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Core\Configure;
-use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\MiddlewareQueue;
 
 /**
  * CommonEventsHandler class.
