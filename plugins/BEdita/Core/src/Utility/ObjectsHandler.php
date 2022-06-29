@@ -37,7 +37,7 @@ class ObjectsHandler
     protected static function checkEnvironment(): void
     {
         if (!static::isCli()) {
-            throw new StopException('Operation avilable only in CLI environment');
+            throw new StopException('Operation available only in CLI environment');
         }
     }
 
@@ -48,7 +48,7 @@ class ObjectsHandler
      */
     protected static function isCli(): bool
     {
-        return PHP_SAPI === 'cli';
+        return in_array(PHP_SAPI, ['cli', 'phpdbg']);
     }
 
     /**

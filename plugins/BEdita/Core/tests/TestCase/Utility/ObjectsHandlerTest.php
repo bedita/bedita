@@ -14,6 +14,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\ObjectsHandler;
+use Cake\Console\Exception\StopException;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -161,8 +162,8 @@ class ObjectsHandlerTest extends TestCase
      */
     public function testEnvironment()
     {
-        $this->expectException(\Cake\Console\Exception\StopException::class);
-        $this->expectExceptionMessage('Operation avilable only in CLI environment');
+        $this->expectException(StopException::class);
+        $this->expectExceptionMessage('Operation available only in CLI environment');
         $testClass = new class extends ObjectsHandler {
             protected static function isCli(): bool
             {

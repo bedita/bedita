@@ -51,7 +51,7 @@ jobs:
 
   stan:
     name: 'Static code analyzer'
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-20.04'
     continue-on-error: true
 
     steps:
@@ -88,7 +88,7 @@ jobs:
   unit:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-20.04'
 
     strategy:
       fail-fast: false
@@ -142,8 +142,7 @@ jobs:
           php-version: '${{ matrix.php }}'
           tools: 'composer'
           extensions: 'mbstring, intl, pdo_${{ fromJson(matrix.db).pdo }}'
-          coverage: 'pcov'
-          ini-values: 'pcov.directory=., pcov.exclude="~vendor~"'
+          coverage: 'none' # Using `phpdbg`
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
@@ -161,11 +160,11 @@ jobs:
       - name: 'Install dependencies with Composer'
         run: 'composer install --prefer-dist --no-interaction'
 
-      - name: 'Setup PCOV clobber'
-        run: 'composer require pcov/clobber && vendor/bin/pcov clobber'
+      - name: 'Dump Composer autoloader'
+        run: 'composer dump-autoload --classmap-authoritative --no-cache'
 
       - name: 'Run PHPUnit with coverage'
-        run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
+        run: 'phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml'
 
       - name: 'Export coverage results'
         uses: 'codecov/codecov-action@v1'
@@ -182,7 +181,7 @@ jobs:
   unit-lowest:
     name: 'Run unit tests with lowest-matching dependencies versions'
     if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-20.04'
 
     env:
       db_dsn: 'sqlite://tmp/test.sql'
@@ -217,6 +216,9 @@ jobs:
 
       - name: 'Update dependencies with Composer' # update again work
         run: 'composer update --prefer-lowest --prefer-dist --no-interaction'
+
+      - name: 'Dump Composer autoloader'
+        run: 'composer dump-autoload --classmap-authoritative --no-cache'
 
       - name: 'Run PHPUnit'
         run: 'vendor/bin/phpunit'
