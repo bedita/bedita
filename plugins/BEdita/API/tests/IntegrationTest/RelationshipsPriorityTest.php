@@ -13,8 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Filesystem\FilesystemRegistry;
-use Cake\Core\Configure;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Utility\Hash;
 
 /**
@@ -22,6 +21,8 @@ use Cake\Utility\Hash;
  */
 class RelationshipsPriorityTest extends IntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * @inheritDoc
      */
@@ -36,7 +37,8 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+
+        $this->filesystemSetup();
     }
 
     /**
@@ -44,8 +46,9 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      */
     public function tearDown(): void
     {
-        FilesystemRegistry::dropAll();
         parent::tearDown();
+
+        $this->filesystemRestore();
     }
 
     /**

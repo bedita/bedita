@@ -14,11 +14,9 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Filesystem\FilesystemRegistry;
-use Cake\Core\Configure;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Validation\Validation;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
-use League\Flysystem\StorageAttributes;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\StreamsController
@@ -26,6 +24,7 @@ use League\Flysystem\StorageAttributes;
 class StreamsControllerTest extends IntegrationTestCase
 {
     use ArraySubsetAsserts;
+    use TestFilesystemTrait;
 
     /**
      * @inheritDoc
@@ -35,32 +34,13 @@ class StreamsControllerTest extends IntegrationTestCase
     ];
 
     /**
-     * List of files to keep in test filesystem, and their contents.
-     *
-     * @var \Cake\Collection\Collection
-     */
-    private $keep = [];
-
-    /**
      * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-
-        $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('default://')->toArray())
-            ->map(function (StorageAttributes $object) use ($mountManager) {
-                $path = $object->path();
-                $contents = fopen('php://memory', 'wb+');
-                fwrite($contents, $mountManager->read($path));
-                fseek($contents, 0);
-
-                return compact('contents', 'path');
-            })
-            ->compile();
+        $this->filesystemSetup();
     }
 
     /**
@@ -68,29 +48,10 @@ class StreamsControllerTest extends IntegrationTestCase
      */
     public function tearDown(): void
     {
-        // Cleanup test filesystem.
-        $mountManager = FilesystemRegistry::getMountManager();
-        $keep = $this->keep
-            ->each(function (array $object) use ($mountManager) {
-                $mountManager->writeStream($object['path'], $object['contents']);
-            })
-            ->map(function (array $object) {
-                return $object['path'];
-            })
-            ->toList();
-        collection($mountManager->listContents('default://')->toArray())
-            ->map(function (StorageAttributes $object) {
-                return $object->path();
-            })
-            ->reject(function ($uri) use ($keep) {
-                return in_array($uri, $keep);
-            })
-            ->each([$mountManager, 'delete']);
-
-        unset($this->Streams);
-        FilesystemRegistry::dropAll();
-
         parent::tearDown();
+
+        $this->filesystemRestore();
+        unset($this->Streams);
     }
 
     /**

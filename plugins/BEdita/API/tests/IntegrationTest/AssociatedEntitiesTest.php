@@ -13,10 +13,9 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\Relations;
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -27,6 +26,8 @@ use Cake\Utility\Hash;
  */
 class AssociatedEntitiesTest extends IntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * @inheritDoc
      */
@@ -258,7 +259,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      */
     public function testIncludedMedia(): void
     {
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->filesystemSetup();
+
         $data = [
             [
                 'id' => '14',
@@ -279,6 +281,6 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $expect = 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif';
         static::assertEquals($expect, $result['included'][0]['meta']['media_url']);
 
-        FilesystemRegistry::dropAll();
+        $this->filesystemRestore();
     }
 }

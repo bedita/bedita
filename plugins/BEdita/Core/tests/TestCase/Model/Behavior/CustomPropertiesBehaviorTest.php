@@ -14,9 +14,8 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Collection\CollectionInterface;
-use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
@@ -30,6 +29,8 @@ use Cake\TestSuite\TestCase;
  */
 class CustomPropertiesBehaviorTest extends TestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * Fixtures
      *
@@ -56,7 +57,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->filesystemSetup();
     }
 
     /**
@@ -64,8 +65,9 @@ class CustomPropertiesBehaviorTest extends TestCase
      */
     public function tearDown(): void
     {
-        FilesystemRegistry::dropAll();
         parent::tearDown();
+
+        $this->filesystemRestore();
     }
 
     /**
