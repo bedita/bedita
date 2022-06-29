@@ -30,6 +30,9 @@ use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
 use Psr\Log\LogLevel;
 
+/**
+ * Plugin class for BEdita/API.
+ */
 class APIPlugin extends BasePlugin
 {
     use LogTrait;
