@@ -18,6 +18,7 @@ use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\UnableToReadFile;
@@ -79,12 +80,19 @@ class Stream extends Entity implements JsonApiSerializable
     ];
 
     /**
-     * Mime types tipically containing EXIF headers.
+     * Mime types typically containing EXIF headers.
      * Used to reduce possible errors in `exif_read_data()`
      *
      * @var array
      */
-    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/tiff'];
+    public const EXIF_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/tiff'];
+
+    /**
+     * Exif sections to extract.
+     *
+     * @var array
+     */
+    public const EXIF_SECTIONS = ['FILE', 'COMPUTED', 'IFD0', 'THUMBNAIL', 'COMMENT', 'EXIF'];
 
     /**
      * Get filesystem path (including mount point) under which file should be stored.
@@ -274,24 +282,75 @@ class Stream extends Entity implements JsonApiSerializable
      */
     protected function readFileMetadata($resource): void
     {
-        if (preg_match('/image\//', (string)$this->mime_type) && function_exists('getimagesizefromstring')) {
-            rewind($resource);
-            $size = getimagesizefromstring(stream_get_contents($resource));
-
-            if (!empty($size)) {
-                $this->width = $size[0];
-                $this->height = $size[1];
-            }
+        if (!preg_match('/image\//', (string)$this->mime_type)) {
+            return;
         }
 
-        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES) || !function_exists('exif_read_data')) {
+        // Use getimagesizefromstring for image formats not supported by exif_read_data
+        if (!in_array($this->mime_type, static::EXIF_MIME_TYPES)) {
+            if (!function_exists('getimagesizefromstring')) {
+                return;
+            }
+
+            rewind($resource);
+            $content = stream_get_contents($resource);
+            if (!empty($content)) {
+                $size = getimagesizefromstring($content);
+                if (!empty($size)) {
+                    $this->width = $size[0];
+                    $this->height = $size[1];
+                }
+            }
+
+            return;
+        }
+
+        if (!function_exists('exif_read_data')) {
             return;
         }
 
         rewind($resource);
-        $exif = exif_read_data($resource);
-        if (!empty($exif)) {
-            $this->file_metadata = $exif;
+        // Set custom error handler to catch errors that still use "traditional" PHP error reporting.
+        // exif_read_data() is one such function, evading usual try-catch blocks.
+        set_error_handler(
+            function (int $code, string $message, string $filename, int $lineNumber): void {
+                throw new \ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
+            }
+        );
+
+        try {
+            $exif = exif_read_data($resource, null, true);
+        } catch (\ErrorException $e) {
+            // Log a warning if reading EXIF throws an error, but keep going
+            // so that other metadata is eventually updated
+            $this->log(sprintf('Error reading EXIF headers for stream %s (object ID: %d)', $this->uuid, $this->object_id), LogLevel::WARNING);
+            $exif = false;
+        } finally {
+            // Restore previous error handler so that errors/exceptions are handled as before
+            restore_error_handler();
         }
+
+        if ($exif === false) {
+            return;
+        }
+
+        // Extract image width/height
+        $this->width = Hash::get($exif, 'COMPUTED.Width', null);
+        $this->height = Hash::get($exif, 'COMPUTED.Height', null);
+
+        // Filter non-standard sections
+        $exif = array_intersect_key($exif, array_flip(static::EXIF_SECTIONS));
+        // Filter undefined tags, which may break JSON encoding
+        $exif = array_map(function (array $section): array {
+            return array_filter($section, function (string $key): bool {
+                return strpos($key, 'UndefinedTag:') === false;
+            }, ARRAY_FILTER_USE_KEY);
+        }, $exif);
+        // Check if data is JSON-encodable
+        if (json_encode($exif) === false) {
+            return;
+        }
+
+        $this->file_metadata = $exif;
     }
 }
