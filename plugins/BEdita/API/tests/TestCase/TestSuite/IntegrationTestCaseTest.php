@@ -141,7 +141,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         $this->setUp();
         static::assertEquals([], LoggedUser::getUser());
         static::assertCount(1, EventManager::instance()->listeners('Auth.afterIdentify'));
-        static::assertCount(1, EventManager::instance()->listeners('Server.buildMiddleware'));
+        static::assertCount(1, EventManager::instance()->listeners('Error.beforeRender'));
         static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
 
         $expected = [
