@@ -114,6 +114,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      * Test that multi filter works.
      *
      * @return void
+     * @coversNothing
      */
     public function testMultiFilter(): void
     {
