@@ -323,7 +323,7 @@ class Stream extends Entity implements JsonApiSerializable
         } catch (\ErrorException $e) {
             // Log a warning if reading EXIF throws an error, but keep going
             // so that other metadata is eventually updated
-            $this->log(sprintf('Error reading EXIF headers for stream %s (object ID: %d)', $this->uuid, $this->object_id), LogLevel::WARNING);
+            $this->log(sprintf('Error reading EXIF headers for stream %s (object ID: %d)', $this->uuid, $this->object_id), 'warning');
             $exif = false;
         } finally {
             // Restore previous error handler so that errors/exceptions are handled as before
