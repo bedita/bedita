@@ -5,6 +5,7 @@ use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\Database\Type\DateType;
 use BEdita\Core\Database\Type\JsonObjectType;
+use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
@@ -99,6 +100,13 @@ I18n::translators()->registerLoader('bedita', function ($name, $locale) {
 });
 
 Configure::load('BEdita/Core.bedita', 'ini');
+
+/**
+ * Setup filesystems configuration in the registry.
+ */
+if (!FilesystemRegistry::configured()) {
+    FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);
+}
 
 /**
  * Load thumbnail generators.

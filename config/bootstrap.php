@@ -29,7 +29,6 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
-use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\JsonConfig;
@@ -197,7 +196,6 @@ TransportFactory::setConfig(Configure::consume('EmailTransport') ?: []);
 Mailer::setConfig(Configure::consume('Email') ?: []);
 Log::setConfig(Configure::consume('Log') ?: []);
 Security::setSalt((string)Configure::consume('Security.salt'));
-FilesystemRegistry::setConfig(Configure::consume('Filesystem') ?: []);
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize

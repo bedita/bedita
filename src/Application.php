@@ -32,8 +32,8 @@ class Application extends BaseApplication
         parent::bootstrap();
 
         // Load more plugins here
-        $this->addPlugin('BEdita/Core', ['bootstrap' => true]);
-        $this->addPlugin('BEdita/API', ['bootstrap' => true, 'routes' => true]);
+        $this->addPlugin('BEdita/Core');
+        $this->addPlugin('BEdita/API');
         $this->addConfigPlugins();
     }
 
