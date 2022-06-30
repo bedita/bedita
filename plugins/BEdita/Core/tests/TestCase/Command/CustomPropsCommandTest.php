@@ -80,6 +80,7 @@ class CustomPropsCommandTest extends TestCase
      */
     public function testExecute(): void
     {
+        FilesystemRegistry::drop('default');
         FilesystemRegistry::setConfig('default', [
             'className' => LocalAdapter::class,
         ]);

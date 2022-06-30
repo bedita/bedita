@@ -59,6 +59,7 @@ class FilesystemRegistryTest extends TestCase
             ],
         ];
 
+        FilesystemRegistry::drop('default');
         FilesystemRegistry::setConfig($config);
 
         foreach ($expected as $key => $config) {
@@ -155,6 +156,7 @@ class FilesystemRegistryTest extends TestCase
             ->method('initialize')
             ->willReturn(true);
 
+        FilesystemRegistry::drop('default');
         FilesystemRegistry::setConfig('default', [
             'className' => $instance,
         ]);
@@ -189,6 +191,7 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testGetMountManager()
     {
+        FilesystemRegistry::dropAll();
         FilesystemRegistry::setConfig([
             'default' => [
                 'className' => LocalAdapter::class,
@@ -218,6 +221,7 @@ class FilesystemRegistryTest extends TestCase
     {
         $this->expectException(UnableToResolveFilesystemMount::class);
         $this->expectExceptionMessage('Unable to resolve the filesystem mount because the mount (default) was not registered.');
+        FilesystemRegistry::drop('default');
         FilesystemRegistry::setConfig('default', [
             'className' => LocalAdapter::class,
         ]);
@@ -280,6 +284,7 @@ class FilesystemRegistryTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
+        FilesystemRegistry::drop('default');
         FilesystemRegistry::setConfig('default', $config + ['className' => 'BEdita/Core.Local']);
 
         $result = FilesystemRegistry::getPublicUrl($path);

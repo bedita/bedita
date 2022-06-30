@@ -13,8 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Filesystem\FilesystemRegistry;
-use Cake\Core\Configure;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
@@ -24,6 +23,8 @@ use Cake\Utility\Hash;
  */
 class CustomPropertiesFilterTest extends IntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * @inheritDoc
      */
@@ -39,7 +40,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
         parent::setUp();
 
         $this->skipUnless(ConnectionManager::get('default')->getDriver() instanceof Mysql);
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
+        $this->filesystemSetup();
     }
 
     /**
@@ -49,7 +50,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     {
         parent::tearDown();
 
-        FilesystemRegistry::dropAll();
+        $this->filesystemRestore();
     }
 
     /**
@@ -114,6 +115,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      * Test that multi filter works.
      *
      * @return void
+     * @coversNothing
      */
     public function testMultiFilter(): void
     {

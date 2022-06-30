@@ -54,6 +54,7 @@ trait TestFilesystemTrait
      */
     protected function filesystemSetup(bool $default = true, bool $thumbnails = false): void
     {
+        FilesystemRegistry::dropAll();
         FilesystemRegistry::setConfig(Configure::read('Filesystem'));
 
         if ($default) {

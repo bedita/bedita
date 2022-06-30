@@ -13,14 +13,9 @@
 namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
-use BEdita\API\Middleware\AnalyticsMiddleware;
-use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\TokenMiddleware;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\MiddlewareQueue;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -44,43 +39,12 @@ class CommonEventHandlerTest extends TestCase
      */
     public function testImplementedEvents()
     {
-        static::assertCount(0, EventManager::instance()->listeners('Server.buildMiddleware'));
+        static::assertCount(0, EventManager::instance()->listeners('Auth.afterIdentify'));
+        static::assertCount(0, EventManager::instance()->listeners('Error.beforeRender'));
 
         EventManager::instance()->on(new CommonEventHandler());
-        static::assertCount(1, EventManager::instance()->listeners('Server.buildMiddleware'));
-    }
-
-    /**
-     * Test build middleware stack.
-     *
-     * @return void
-     * @covers ::buildMiddlewareStack()
-     */
-    public function testBuildMiddlewareStack()
-    {
-        EventManager::instance()->on(new CommonEventHandler());
-
-        $middleware = new MiddlewareQueue();
-        static::assertCount(0, $middleware);
-
-        $middleware->add(new ErrorHandlerMiddleware());
-        static::assertCount(1, $middleware);
-
-        $event = new Event('Server.buildMiddleware', null, ['middleware' => $middleware]);
-        EventManager::instance()->dispatch($event);
-        static::assertCount(4, $middleware);
-        $middleware->rewind();
-
-        // AnalyticsMiddleware
-        static::assertInstanceOf(AnalyticsMiddleware::class, $middleware->current());
-        $middleware->next();
-        // CorsMiddleware
-        static::assertInstanceOf(CorsMiddleware::class, $middleware->current());
-        $middleware->next();
-        static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->current());
-        $middleware->next();
-        // TokenMiddleware
-        static::assertInstanceOf(TokenMiddleware::class, $middleware->current());
+        static::assertCount(1, EventManager::instance()->listeners('Auth.afterIdentify'));
+        static::assertCount(1, EventManager::instance()->listeners('Error.beforeRender'));
     }
 
     /**

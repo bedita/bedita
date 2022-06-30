@@ -16,17 +16,18 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\Datasource\JsonApiPaginator;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\Thumbnail;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
-use League\Flysystem\StorageAttributes;
 
 /**
  * @coversDefaultClass \BEdita\Api\Controller\MediaController
  */
 class MediaControllerTest extends IntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * @inheritDoc
      */
@@ -40,13 +41,6 @@ class MediaControllerTest extends IntegrationTestCase
      * @var \BEdita\Core\Filesystem\Thumbnail\GlideGenerator
      */
     protected $generator;
-
-    /**
-     * List of files to keep in test filesystem, and their contents.
-     *
-     * @var \Cake\Collection\Collection
-     */
-    protected $keep;
 
     /**
      * Original thumbnails registry.
@@ -69,22 +63,7 @@ class MediaControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-
-        $mountManager = FilesystemRegistry::getMountManager();
-        $this->keep = collection($mountManager->listContents('thumbnails://', true)->toArray())
-            ->reject(function (StorageAttributes $object) {
-                return $object->isDir();
-            })
-            ->map(function (StorageAttributes $object) use ($mountManager) {
-                $path = $object->path();
-                $contents = fopen('php://memory', 'wb+');
-                fwrite($contents, $mountManager->read($path));
-                fseek($contents, 0);
-
-                return compact('contents', 'path');
-            })
-            ->compile();
+        $this->filesystemSetup(true, true);
 
         $keys = Thumbnail::configured();
         $this->originalRegistry = Thumbnail::getRegistry();
@@ -108,29 +87,7 @@ class MediaControllerTest extends IntegrationTestCase
     {
         parent::tearDown();
 
-        // Cleanup test filesystem.
-        $mountManager = FilesystemRegistry::getMountManager();
-        $keep = $this->keep
-            ->each(function (array $object) use ($mountManager) {
-                $mountManager->writeStream($object['path'], $object['contents']);
-            })
-            ->map(function (array $object) {
-                return $object['path'];
-            })
-            ->toList();
-        collection($mountManager->listContents('thumbnails://', true)->toArray())
-            ->reject(function (StorageAttributes $object) {
-                return $object->isDir();
-            })
-            ->map(function (StorageAttributes $object) {
-                return $object->path();
-            })
-            ->reject(function ($uri) use ($keep) {
-                return in_array($uri, $keep);
-            })
-            ->each([$mountManager, 'delete']);
-
-        FilesystemRegistry::dropAll();
+        $this->filesystemRestore();
 
         foreach (Thumbnail::configured() as $config) {
             Thumbnail::getGenerator($config); // Must be loaded in order to drop it… WHY???!!!

@@ -13,9 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Filesystem\FilesystemRegistry;
-use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -25,6 +23,8 @@ use Cake\TestSuite\TestCase;
  */
 class MediaTest extends TestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * Fixtures
      *
@@ -57,8 +57,9 @@ class MediaTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        FilesystemRegistry::setConfig(Configure::read('Filesystem'));
-        $this->Files = TableRegistry::getTableLocator()->get('Files');
+
+        $this->filesystemSetup();
+        $this->Files = $this->fetchTable('Files');
     }
 
     /**
@@ -66,8 +67,9 @@ class MediaTest extends TestCase
      */
     public function tearDown(): void
     {
-        FilesystemRegistry::dropAll();
         parent::tearDown();
+
+        $this->filesystemRestore();
     }
 
     /**
