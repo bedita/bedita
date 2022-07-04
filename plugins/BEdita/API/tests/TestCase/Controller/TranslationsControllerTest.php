@@ -242,7 +242,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
-        $this->assertHeader('Location', 'http://api.example.com/translations/3');
+        $this->assertHeader('Location', 'http://api.example.com/translations/4');
     }
 
     /**

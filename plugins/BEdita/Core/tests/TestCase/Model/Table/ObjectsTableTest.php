@@ -817,6 +817,7 @@ class ObjectsTableTest extends TestCase
         static::assertNotEmpty($result);
         static::assertSame(1, count($result));
         static::assertSame(2, $result[0]['id']);
+        static::assertSame(1, count($result[0]['translations']));
     }
 
     /**
@@ -832,19 +833,14 @@ class ObjectsTableTest extends TestCase
             ->where(['Objects.id' => 2])
             ->toArray();
 
-        static::assertNotEmpty($result);
-        static::assertSame(1, count($result));
-        static::assertSame(2, $result[0]['id']);
+        static::assertSame(2, count($result[0]['translations']));
 
         Configure::write('Status.level', 'draft');
         $result = $this->Objects->find('translations')
             ->where(['Objects.id' => 2])
             ->toArray();
 
-        static::assertNotEmpty($result);
-        static::assertSame(2, count($result));
-        static::assertSame(2, $result[0]['id']);
-        static::assertSame(3, $result[1]['id']);
+        static::assertSame(3, count($result[0]['translations']));
     }
 
     /**
