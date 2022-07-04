@@ -820,6 +820,34 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
+     * Test `findTranslations() with status`.
+     *
+     * @return void
+     * @covers ::findTranslations()
+     */
+    public function testFindTranslationsWithStatus()
+    {
+        Configure::write('Status.level', 'on');
+        $result = $this->Objects->find('translations')
+            ->where(['Objects.id' => 2])
+            ->toArray();
+
+        static::assertNotEmpty($result);
+        static::assertSame(1, count($result));
+        static::assertSame(2, $result[0]['id']);
+
+        Configure::write('Status.level', 'draft');
+        $result = $this->Objects->find('translations')
+            ->where(['Objects.id' => 2])
+            ->toArray();
+
+        static::assertNotEmpty($result);
+        static::assertSame(2, count($result));
+        static::assertSame(2, $result[0]['id']);
+        static::assertSame(3, $result[1]['id']);
+    }
+
+    /**
      * Data provider for `testFindAvailable`.
      *
      * @return array
