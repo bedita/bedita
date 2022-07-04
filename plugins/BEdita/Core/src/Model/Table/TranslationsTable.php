@@ -61,9 +61,7 @@ class TranslationsTable extends Table
                 'text',
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Status', [
-            'level' => Configure::read('Status.level', 'all'),
-        ]);
+        $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('Objects', [
             'className' => 'Objects',
