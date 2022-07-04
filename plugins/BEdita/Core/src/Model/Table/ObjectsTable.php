@@ -474,7 +474,7 @@ class ObjectsTable extends Table
         switch ($level) {
             case 'on':
                 return $query->where([
-                    $field => 'on',
+                    $this->aliasField($field) => 'on',
                 ]);
 
             case 'draft':
