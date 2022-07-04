@@ -40,10 +40,10 @@ class TranslationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 3,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 3,
                     'page_size' => 20,
                 ],
             ],
@@ -111,6 +111,38 @@ class TranslationsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/translations/2/object',
                                 'self' => 'http://api.example.com/translations/2/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'translations',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'lang' => 'es',
+                        'object_id' => 2,
+                        'translated_fields' => [
+                            'description' => 'descripción aquí',
+                            'extra' => [
+                                'list' => ['uno', 'dos', 'tres'],
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'created' => '2018-01-01T00:00:00+00:00',
+                        'modified' => '2018-01-01T00:00:00+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/translations/3',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/translations/3/object',
+                                'self' => 'http://api.example.com/translations/3/relationships/object',
                             ],
                         ],
                     ],
