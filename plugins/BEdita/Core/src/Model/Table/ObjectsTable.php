@@ -470,15 +470,16 @@ class ObjectsTable extends Table
         }
 
         $level = $options[0];
+        $field = $options[1] ?? 'status';
         switch ($level) {
             case 'on':
                 return $query->where([
-                    $this->aliasField('status') => 'on',
+                    $field => 'on',
                 ]);
 
             case 'draft':
-                return $query->where(function (QueryExpression $exp) {
-                    return $exp->in($this->aliasField('status'), ['on', 'draft']);
+                return $query->where(function (QueryExpression $exp) use ($field) {
+                    return $exp->in($this->aliasField($field), ['on', 'draft']);
                 });
 
             case 'off':
@@ -500,7 +501,12 @@ class ObjectsTable extends Table
     protected function findTranslations(Query $query, array $options)
     {
         return $query->contain('Translations', function (Query $query) use ($options) {
-            return $query->where(['Translations.lang' => $options['lang']]);
+            $query = $query->where(['Translations.lang' => $options['lang']]);
+            if (Configure::check('Status.level')) {
+                return $query->find('statusLevel', [Configure::read('Status.level'), 'Translations.status']);
+            }
+
+            return $query;
         });
     }
 
