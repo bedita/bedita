@@ -440,7 +440,7 @@ class ObjectsTable extends Table
     protected function findTranslations(Query $query, array $options)
     {
         return $query->contain('Translations', function (Query $query) use ($options) {
-            $query = $query->find('statusLevel', [$this->getStatusLevel()]);
+            $query = $query->find('statusLevel');
             if (isset($options['lang'])) {
                 $query = $query->where(['Translations.lang' => $options['lang']]);
             }
