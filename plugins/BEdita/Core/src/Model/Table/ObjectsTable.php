@@ -503,7 +503,7 @@ class ObjectsTable extends Table
         return $query->contain('Translations', function (Query $query) use ($options) {
             $query = $query->where(['Translations.lang' => $options['lang']]);
             if (Configure::check('Status.level')) {
-                return $query->find('statusLevel', [Configure::read('Status.level'), 'Translations.status']);
+                return $this->findStatusLevel($query, [Configure::read('Status.level'), 'Translations.status']);
             }
 
             return $query;
