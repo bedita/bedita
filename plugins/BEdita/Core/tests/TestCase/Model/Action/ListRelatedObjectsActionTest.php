@@ -265,10 +265,9 @@ class ListRelatedObjectsActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        Configure::write('Status.level', $statusLevel);
-
         $alias = Inflector::camelize(Inflector::underscore($relation));
         $association = TableRegistry::getTableLocator()->get($objectType)->getAssociation($alias);
+        $association->setStatusLevel($statusLevel);
         $action = new ListRelatedObjectsAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + compact('list', 'only'));

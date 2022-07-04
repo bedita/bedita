@@ -109,9 +109,9 @@ class GetObjectActionTest extends TestCase
     public function testExecuteObjectStatusNotAvailable()
     {
         $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
-        Configure::write('Status.level', 'on');
 
         $table = TableRegistry::getTableLocator()->get('Objects');
+        $table->setStatusLevel('on');
         $action = new GetObjectAction(compact('table'));
 
         $action(['primaryKey' => 3]);

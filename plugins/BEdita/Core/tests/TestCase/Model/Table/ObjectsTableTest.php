@@ -1,14 +1,12 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
@@ -560,75 +558,6 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
-     * Data provider for `testFindStatus`.
-     *
-     * @return array
-     */
-    public function findStatusLevelProvider()
-    {
-        return [
-            'too many options' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                [1, 2, 3],
-            ],
-            'invalid array' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                ['gustavo' => 'on'],
-            ],
-            'on' => [
-                ['on'],
-                ['on'],
-            ],
-            'draft' => [
-                ['on', 'draft'],
-                ['draft'],
-            ],
-            'off' => [
-                ['on', 'draft', 'off'],
-                ['off'],
-            ],
-            'all' => [
-                ['on', 'draft', 'off'],
-                ['all'],
-            ],
-            'invalid level' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                ['invalid level'],
-            ],
-        ];
-    }
-
-    /**
-     * Test `findStatusLevel()`.
-     *
-     * @param array|\Exception $expected Expected result.
-     * @param array $options Finder options.
-     * @return void
-     * @dataProvider findStatusLevelProvider()
-     * @covers ::findStatusLevel()
-     */
-    public function testFindStatus($expected, array $options)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        } else {
-            $expected = $this->Objects->find('list')
-                ->where(['status IN' => $expected])
-                ->toArray();
-            ksort($expected);
-        }
-
-        $actual = $this->Objects->find('list')
-            ->find('statusLevel', $options)
-            ->toArray();
-        ksort($actual);
-
-        static::assertSame($expected, $actual);
-    }
-
-    /**
      * Data provider for `checkLangTag`.
      *
      * @return array
@@ -676,66 +605,6 @@ class ObjectsTableTest extends TestCase
         $object = $this->Objects->save($object);
 
         static::assertSame($expected, $object->get('lang'));
-    }
-
-    /**
-     * Data provider for `checkStatus`.
-     *
-     * @return array
-     */
-    public function checkStatusProvider(): array
-    {
-        return [
-            'no conf' => [
-                'draft',
-                [
-                    'status' => 'draft',
-                ],
-                '',
-            ],
-            'error' => [
-                new BadRequestException('Status "draft" is not consistent with configured Status.level "on"'),
-                [
-                    'status' => 'draft',
-                ],
-                'on',
-            ],
-            'ok' => [
-                'draft',
-                [
-                    'status' => 'draft',
-                ],
-                'draft',
-            ],
-        ];
-    }
-
-    /**
-     * Test `checkStatus()`.
-     *
-     * @param string|\Exception $expected Status value or Exception.
-     * @param string $config Status level config.
-     * @param array $data Save input data.
-     * @return void
-     * @dataProvider checkStatusProvider()
-     * @covers ::checkStatus()
-     */
-    public function testCheckStatus($expected, array $data, string $config = ''): void
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        if (!empty($config)) {
-            Configure::write('Status.level', $config);
-        }
-
-        $object = $this->Objects->get(4);
-        $object = $this->Objects->patchEntity($object, $data);
-        $object = $this->Objects->save($object);
-
-        static::assertSame($expected, $object->get('status'));
     }
 
     /**
@@ -828,14 +697,14 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindTranslationsWithStatus()
     {
-        Configure::write('Status.level', 'on');
+        $this->Objects->setStatusLevel('on');
         $result = $this->Objects->find('translations')
             ->where(['Objects.id' => 2])
             ->toArray();
 
         static::assertSame(2, count($result[0]['translations']));
 
-        Configure::write('Status.level', 'draft');
+        $this->Objects->setStatusLevel('draft');
         $result = $this->Objects->find('translations')
             ->where(['Objects.id' => 2])
             ->toArray();
@@ -876,7 +745,7 @@ class ObjectsTableTest extends TestCase
     public function testFindAvailable(int $expected, array $condition, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {
-            Configure::write('Status.level', $statusLevel);
+            $this->Objects->setStatusLevel($statusLevel);
         }
 
         $count = $this->Objects->find('available')->where($condition)->count();
@@ -893,16 +762,14 @@ class ObjectsTableTest extends TestCase
         return [
             'on + publish' => [
                 10,
+                'on',
                 [
-                    'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
                 15,
-                [
-                    'Status.level' => 'draft',
-                ],
+                'draft',
             ],
         ];
     }
@@ -911,13 +778,15 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishable()`.
      *
      * @param int $expected Expected results.
-     * @param string $config Configuration to write.
+     * @param string $$statusLevel Status level.
+     * @param array $config Configuration to write.
      * @return void
      * @dataProvider findPublishableProvider()
      * @covers ::findPublishable()
      */
-    public function testFindPublishable(int $expected, ?array $config = null): void
+    public function testFindPublishable(int $expected, string $statusLevel, ?array $config = null): void
     {
+        $this->Objects->setStatusLevel($statusLevel);
         if (!empty($config)) {
             Configure::write($config);
         }
@@ -1025,12 +894,12 @@ class ObjectsTableTest extends TestCase
         $firstParent->status = 'off';
         $this->Objects->Parents->saveOrFail($firstParent);
 
-        Configure::write('Status.level', 'off');
+        $this->Objects->setStatusLevel('off');
         $object = $this->Objects->get(2, ['contain' => ['Parents']]);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertContains($firstParent->id, $childrenIds);
 
-        Configure::write('Status.level', 'draft');
+        $this->Objects->setStatusLevel('draft');
         $object = $this->Objects->get(2, ['contain' => ['Parents']]);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertNotContains($firstParent->id, $childrenIds);

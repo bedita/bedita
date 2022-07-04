@@ -118,9 +118,8 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecuteStatus()
     {
-        Configure::write('Status.level', 'on');
-
         $table = TableRegistry::getTableLocator()->get('Objects');
+        $table->setStatusLevel('on');
         $action = new ListObjectsAction(compact('table'));
 
         $result = $action();

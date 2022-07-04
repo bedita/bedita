@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -59,6 +60,9 @@ class TranslationsTable extends Table
                 'json',
                 'text',
             ],
+        ]);
+        $this->addBehavior('BEdita/Core.Status', [
+            'level' => Configure::read('Status.level', 'all'),
         ]);
 
         $this->belongsTo('Objects', [
