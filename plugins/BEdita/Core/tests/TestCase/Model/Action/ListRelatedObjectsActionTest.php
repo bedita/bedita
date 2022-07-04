@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
-use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -266,8 +265,9 @@ class ListRelatedObjectsActionTest extends TestCase
         }
 
         $alias = Inflector::camelize(Inflector::underscore($relation));
-        $association = TableRegistry::getTableLocator()->get($objectType)->getAssociation($alias);
-        $association->setStatusLevel($statusLevel);
+        $table = TableRegistry::getTableLocator()->get($objectType);
+        $table->setStatusLevel($statusLevel);
+        $association = $table->getAssociation($alias);
         $action = new ListRelatedObjectsAction(compact('association'));
 
         $result = $action(['primaryKey' => $id] + compact('list', 'only'));

@@ -58,10 +58,10 @@ class StatusBehavior extends Behavior
     /**
      * Set the status level configuration.
      *
-     * @param string $level A valid status level.
+     * @param string|null $level A valid status level.
      * @return bool
      */
-    public function setStatusLevel(string $level)
+    public function setStatusLevel(?string $level)
     {
         return Configure::write('Status.level', $level);
     }
