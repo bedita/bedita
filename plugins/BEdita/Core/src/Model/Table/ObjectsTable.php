@@ -440,7 +440,7 @@ class ObjectsTable extends Table
     protected function findTranslations(Query $query, array $options)
     {
         return $query->contain('Translations', function (Query $query) use ($options) {
-            $query = $query->find('statusLevel');
+            $query = $query->find('statusLevel', [null]);
             if (isset($options['lang'])) {
                 $query = $query->where(['Translations.lang' => $options['lang']]);
             }
@@ -473,7 +473,7 @@ class ObjectsTable extends Table
      */
     protected function findPublishable(Query $query): Query
     {
-        $query = $query->find('statusLevel');
+        $query = $query->find('statusLevel', [null]);
         if ((bool)Configure::read('Publish.checkDate', false)) {
             $query = $query->find('publishDateAllowed');
         }

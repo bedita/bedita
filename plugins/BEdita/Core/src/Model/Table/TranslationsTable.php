@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -34,6 +33,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Translation findOrCreate($search, callable $callback = null, $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
  */
 class TranslationsTable extends Table
 {
