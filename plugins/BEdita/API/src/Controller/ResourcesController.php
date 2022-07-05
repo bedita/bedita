@@ -130,7 +130,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('post')) {
             // Add a new entity.
-            $entity = $this->Table->newEntity([]);
+            $entity = $this->Table->newEmptyEntity();
             $action = new SaveEntityAction(['table' => $this->Table]);
 
             $data = $this->request->getData();
@@ -204,6 +204,7 @@ abstract class ResourcesController extends AppController
 
         $action = new GetEntityAction(['table' => $this->Table]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
+        $this->checkEntity($entity);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -234,6 +235,16 @@ abstract class ResourcesController extends AppController
         $this->setSerialize(['entity']);
 
         return null;
+    }
+
+    /**
+     * Check entity validity in `PATCH`/`DELETE` calls in controller subclasses
+     *
+     * @param EntityInterface $entity
+     * @return void
+     */
+    protected function checkEntity(EntityInterface $entity): void
+    {
     }
 
     /**

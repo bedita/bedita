@@ -13,13 +13,17 @@
 
 namespace BEdita\API\Controller;
 
+use BEdita\Core\State\CurrentApplication;
+use Cake\Datasource\EntityInterface;
+use Cake\Http\Exception\ForbiddenException;
+
 /**
  * Controller for `/config` endpoint.
  *
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
-class ConfigController extends AppController
+class ConfigController extends ResourcesController
 {
     /**
      * @inheritDoc
@@ -33,12 +37,31 @@ class ConfigController extends AppController
      */
     public function index(): void
     {
-        $query = $this->Config->find()
-            ->find('mine')
-            ->where(['context IN' => ['core', 'app']]);
-        $data = $this->paginate($query);
+        if ($this->request->is('post')) {
+            $this->request = $this->request->withData('context', 'app')
+                ->withData('application_id', CurrentApplication::getApplicationId());
+        } else {
+            $query = $this->request->getQueryParams();
+            $query['filter']['application_id'] = CurrentApplication::getApplicationId();
+            $query['filter']['context'] = 'app';
+            $this->request = $this->request->withQueryParams($query);
+        }
+        parent::index();
+    }
 
-        $this->set(compact('data'));
-        $this->setSerialize(['data']);
+    /**
+     * Check entity validity in `PATCH`/`DELETE` calls in controller subclasses
+     *
+     * @param EntityInterface $entity
+     * @return void
+     */
+    protected function checkEntity(EntityInterface $entity): void
+    {
+        if (
+            $entity->get('application_id') != CurrentApplication::getApplicationId() ||
+            $entity->get('context') != 'app'
+        ) {
+            throw new ForbiddenException();
+        }
     }
 }

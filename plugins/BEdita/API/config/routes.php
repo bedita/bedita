@@ -223,8 +223,13 @@ return function (RouteBuilder $routes) {
         // Config.
         $routes->connect(
             '/config',
-            ['controller' => 'Config', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Config', 'action' => 'index'],
             ['_name' => 'config:index']
+        );
+        $routes->connect(
+            '/config/{id}',
+            ['controller' => 'Config', 'action' => 'resource'],
+            ['_name' => 'config:resource', 'pass' => ['id']]
         );
 
         // History.
