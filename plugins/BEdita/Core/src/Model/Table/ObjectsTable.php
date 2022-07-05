@@ -87,7 +87,6 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');
-        $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
