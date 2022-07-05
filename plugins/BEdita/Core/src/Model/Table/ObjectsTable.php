@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
@@ -23,7 +22,6 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -50,6 +48,7 @@ use Cake\Utility\Hash;
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
+ * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
  * @since 4.0.0
  */
 class ObjectsTable extends Table
@@ -208,30 +207,6 @@ class ObjectsTable extends Table
         }
         if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
             throw new LockedResourceException(__('Operation not allowed on "locked" objects'));
-        }
-    }
-
-    /**
-     * Check that `status` is consistent with `Status.level` configuration.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
-     * @return void
-     * @throws \Cake\Http\Exception\BadRequestException
-     */
-    protected function checkStatus(EntityInterface $entity): void
-    {
-        if ($entity->isNew() || !Configure::check('Status.level') || !$entity->isDirty('status')) {
-            return;
-        }
-        $level = Configure::read('Status.level');
-        $status = $entity->get('status');
-        if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
-            throw new BadRequestException(__d(
-                'bedita',
-                'Status "{0}" is not consistent with configured Status.level "{1}"',
-                $status,
-                $level
-            ));
         }
     }
 
@@ -455,42 +430,6 @@ class ObjectsTable extends Table
     }
 
     /**
-     * Finder for objects based on status level.
-     *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Object status level.
-     * @return \Cake\ORM\Query
-     * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
-     *      the finder.
-     */
-    protected function findStatusLevel(Query $query, array $options)
-    {
-        if (empty($options[0])) {
-            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
-        }
-
-        $level = $options[0];
-        switch ($level) {
-            case 'on':
-                return $query->where([
-                    $this->aliasField('status') => 'on',
-                ]);
-
-            case 'draft':
-                return $query->where(function (QueryExpression $exp) {
-                    return $exp->in($this->aliasField('status'), ['on', 'draft']);
-                });
-
-            case 'off':
-            case 'all':
-                return $query;
-
-            default:
-                throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
-        }
-    }
-
-    /**
      * Retrieve object translation for a language.
      *
      * @param \Cake\ORM\Query $query Query object instance.
@@ -500,7 +439,12 @@ class ObjectsTable extends Table
     protected function findTranslations(Query $query, array $options)
     {
         return $query->contain('Translations', function (Query $query) use ($options) {
-            return $query->where(['Translations.lang' => $options['lang']]);
+            $query = $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
+            if (isset($options['lang'])) {
+                $query = $query->where(['Translations.lang' => $options['lang']]);
+            }
+
+            return $query;
         });
     }
 
@@ -520,7 +464,7 @@ class ObjectsTable extends Table
 
     /**
      * Finder for publishable objects based on these rules:
-     *  - `status` should be acceptable checking 'Status.level' configuration
+     *  - `status` should be acceptable checking status 'level' configuration
      *  - `publish_start` and `publish_end` should be acceptable, checking 'Publish.checkDate' configuration
      *
      * @param \Cake\ORM\Query $query Query object instance.
@@ -528,9 +472,7 @@ class ObjectsTable extends Table
      */
     protected function findPublishable(Query $query): Query
     {
-        if (Configure::check('Status.level')) {
-            $query = $query->find('statusLevel', [Configure::read('Status.level')]);
-        }
+        $query = $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
         if ((bool)Configure::read('Publish.checkDate', false)) {
             $query = $query->find('publishDateAllowed');
         }
