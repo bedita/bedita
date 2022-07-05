@@ -780,7 +780,6 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishable()`.
      *
      * @param int $expected Expected results.
-     * @param string $$statusLevel Status level.
      * @param array $config Configuration to write.
      * @return void
      * @dataProvider findPublishableProvider()
