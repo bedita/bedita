@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -157,6 +158,14 @@ class StatusBehaviorTest extends TestCase
     public function findStatusLevelProvider()
     {
         return [
+            'too many options' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                [1, 2, 3],
+            ],
+            'invalid array' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['gustavo' => 'on'],
+            ],
             'on' => [
                 ['on'],
                 ['on'],
@@ -173,6 +182,10 @@ class StatusBehaviorTest extends TestCase
                 ['on', 'draft', 'off'],
                 ['all'],
             ],
+            'invalid level' => [
+                new BadFilterException('Invalid options for finder "status"'),
+                ['invalid level'],
+            ],
         ];
     }
 
@@ -187,10 +200,16 @@ class StatusBehaviorTest extends TestCase
      */
     public function testFindStatus($expected, array $options)
     {
-        $expected = $this->Objects->find('list')
-            ->where(['status IN' => $expected])
-            ->toArray();
-        ksort($expected);
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        } else {
+            $expected = $this->Objects->find('list')
+                ->where(['status IN' => $expected])
+                ->toArray();
+            ksort($expected);
+        }
 
         $actual = $this->Objects->find('list')
             ->find('statusLevel', $options)

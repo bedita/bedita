@@ -101,7 +101,11 @@ class StatusBehavior extends Behavior
      */
     public function findStatusLevel(Query $query, array $options)
     {
-        $level = $options[0] ?? $this->getStatusLevel();
+        if (empty($options[0])) {
+            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
+        }
+
+        $level = $options[0];
         $field = $this->getConfigOrFail('field');
         switch ($level) {
             case 'on':
