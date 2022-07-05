@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2018 ChannelWeb Srl, Chialab Srl
+ * Copyright 2022 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -35,8 +35,6 @@ class StatusBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'implementedMethods' => [
-            'getStatusLevel' => 'getStatusLevel',
-            'setStatusLevel' => 'setStatusLevel',
             'checkStatus' => 'checkStatus',
         ],
         'implementedFinders' => [
@@ -44,27 +42,6 @@ class StatusBehavior extends Behavior
         ],
         'field' => 'status',
     ];
-
-    /**
-     * Get the configured status level.
-     *
-     * @return string
-     */
-    public function getStatusLevel()
-    {
-        return Configure::read('Status.level', 'all');
-    }
-
-    /**
-     * Set the status level configuration.
-     *
-     * @param string|null $level A valid status level.
-     * @return bool
-     */
-    public function setStatusLevel(?string $level)
-    {
-        return Configure::write('Status.level', $level);
-    }
 
     /**
      * Check that `status` is consistent with `level` configuration.
@@ -75,10 +52,10 @@ class StatusBehavior extends Behavior
      */
     public function checkStatus(EntityInterface $entity): void
     {
-        if ($entity->isNew() || !$entity->isDirty('status')) {
+        if ($entity->isNew() || !Configure::check('Status.level') || !$entity->isDirty('status')) {
             return;
         }
-        $level = $this->getStatusLevel();
+        $level = Configure::read('Status.level');
         $status = $entity->get('status');
         if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
             throw new BadRequestException(__d(

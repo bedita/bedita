@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
@@ -499,12 +500,12 @@ class FoldersTableTest extends TestCase
         $firstChild->status = 'off';
         $this->Folders->Children->saveOrFail($firstChild);
 
-        $this->Folders->setStatusLevel('off');
+        Configure::write('Status.level', 'off');
         $folder = $this->Folders->get(11, ['contain' => ['Children']]);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertContains($firstChild->id, $childrenIds);
 
-        $this->Folders->setStatusLevel('draft');
+        Configure::write('Status.level', 'draft');
         $folder = $this->Folders->get(11, ['contain' => ['Children']]);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertNotContains($firstChild->id, $childrenIds);

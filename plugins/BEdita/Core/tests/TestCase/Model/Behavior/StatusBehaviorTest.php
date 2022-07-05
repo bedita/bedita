@@ -2,6 +2,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -50,7 +51,7 @@ class StatusBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->Objects = TableRegistry::getTableLocator()->get('Objects');
@@ -64,30 +65,6 @@ class StatusBehaviorTest extends TestCase
         unset($this->Objects);
 
         parent::tearDown();
-    }
-
-    /**
-     * Test `getStatusLevel()`.
-     *
-     * @return void
-     * @covers ::getStatusLevel()
-     */
-    public function testGetStatusLevel(): void
-    {
-        static::assertSame('all', $this->Objects->getStatusLevel());
-    }
-
-    /**
-     * Test `setStatusLevel($level)`.
-     *
-     * @return void
-     * @covers ::setStatusLevel()
-     */
-    public function testSetStatusLevel(): void
-    {
-        $this->Objects->setStatusLevel('on');
-
-        static::assertSame('on', $this->Objects->getStatusLevel());
     }
 
     /**
@@ -140,7 +117,7 @@ class StatusBehaviorTest extends TestCase
         }
 
         if (!empty($config)) {
-            $this->Objects->setStatusLevel($config);
+            Configure::write('Status.level', $config);
         }
 
         $object = $this->Objects->get(4);

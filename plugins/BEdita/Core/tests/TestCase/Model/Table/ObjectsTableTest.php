@@ -697,14 +697,14 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindTranslationsWithStatus()
     {
-        $this->Objects->setStatusLevel('on');
+        Configure::write('Status.level', 'on');
         $result = $this->Objects->find('translations')
             ->where(['Objects.id' => 2])
             ->toArray();
 
         static::assertSame(2, count($result[0]['translations']));
 
-        $this->Objects->setStatusLevel('draft');
+        Configure::write('Status.level', 'draft');
         $result = $this->Objects->find('translations')
             ->where(['Objects.id' => 2])
             ->toArray();
@@ -745,7 +745,7 @@ class ObjectsTableTest extends TestCase
     public function testFindAvailable(int $expected, array $condition, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {
-            $this->Objects->setStatusLevel($statusLevel);
+            Configure::write('Status.level', $statusLevel);
         }
 
         $count = $this->Objects->find('available')->where($condition)->count();
@@ -762,14 +762,16 @@ class ObjectsTableTest extends TestCase
         return [
             'on + publish' => [
                 10,
-                'on',
                 [
+                    'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
                 15,
-                'draft',
+                [
+                    'Status.level' => 'draft',
+                ],
             ],
         ];
     }
@@ -784,9 +786,8 @@ class ObjectsTableTest extends TestCase
      * @dataProvider findPublishableProvider()
      * @covers ::findPublishable()
      */
-    public function testFindPublishable(int $expected, string $statusLevel, ?array $config = null): void
+    public function testFindPublishable(int $expected, ?array $config = null): void
     {
-        $this->Objects->setStatusLevel($statusLevel);
         if (!empty($config)) {
             Configure::write($config);
         }
@@ -894,12 +895,12 @@ class ObjectsTableTest extends TestCase
         $firstParent->status = 'off';
         $this->Objects->Parents->saveOrFail($firstParent);
 
-        $this->Objects->setStatusLevel('off');
+        Configure::write('Status.level', 'off');
         $object = $this->Objects->get(2, ['contain' => ['Parents']]);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertContains($firstParent->id, $childrenIds);
 
-        $this->Objects->setStatusLevel('draft');
+        Configure::write('Status.level', 'draft');
         $object = $this->Objects->get(2, ['contain' => ['Parents']]);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertNotContains($firstParent->id, $childrenIds);

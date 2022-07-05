@@ -202,10 +202,10 @@ class DataCleanupBehaviorTest extends TestCase
      */
     public function testStatusLevel(array $inputData, array $expected, string $level = ''): void
     {
-        $Users = TableRegistry::getTableLocator()->get('Users');
         if (!empty($level)) {
-            $Users->setStatusLevel($level);
+            Configure::write('Status.level', $level);
         }
+        $Users = TableRegistry::getTableLocator()->get('Users');
 
         $user = $Users->newEntity($inputData);
         foreach ($expected as $k => $v) {
