@@ -102,11 +102,11 @@ class APIPlugin extends BasePlugin
             ->insertBefore(
                 ErrorHandlerMiddleware::class,
                 new CorsMiddleware(Configure::read('CORS'))
-            )
-
-            ->insertAfter(
-                ErrorHandlerMiddleware::class,
-                new TokenMiddleware()
             );
+
+            // ->insertAfter(
+            //     ErrorHandlerMiddleware::class,
+            //     new TokenMiddleware()
+            // );
     }
 }

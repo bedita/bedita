@@ -46,5 +46,7 @@ class Application extends BaseApplication
         if (Configure::read('debug')) {
             $this->addOptionalPlugin('Cake/Repl');
         }
+
+        $this->addOptionalPlugin('IdeHelper');
     }
 }

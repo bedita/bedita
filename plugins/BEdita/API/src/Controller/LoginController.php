@@ -71,33 +71,33 @@ class LoginController extends AppController
         }
 
         if (in_array($this->request->getParam('action'), ['login', 'optout'])) {
-            $authenticationComponents = [
-                AuthComponent::ALL => [
-                  'finder' => 'loginRoles',
-                ],
-                'Form' => [
-                    'fields' => [
-                        'username' => 'username',
-                        'password' => 'password_hash',
-                    ],
-                    'passwordHasher' => self::PASSWORD_HASHER,
-                ],
-                'BEdita/API.Jwt',
-            ];
+            // $authenticationComponents = [
+            //     AuthComponent::ALL => [
+            //       'finder' => 'loginRoles',
+            //     ],
+            //     'Form' => [
+            //         'fields' => [
+            //             'username' => 'username',
+            //             'password' => 'password_hash',
+            //         ],
+            //         'passwordHasher' => self::PASSWORD_HASHER,
+            //     ],
+            //     'BEdita/API.Jwt',
+            // ];
 
-            $authenticationComponents += $this->AuthProviders
-                ->find('authenticate')
-                ->toArray();
+            // $authenticationComponents += $this->AuthProviders
+            //     ->find('authenticate')
+            //     ->toArray();
 
-            $this->Auth->setConfig('authenticate', $authenticationComponents, false);
+            // $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
 
         if ($this->request->getParam('action') === 'optout') {
-            $this->Auth->setConfig('loginAction', ['_name' => 'api:login:optout']);
+            // $this->Auth->setConfig('loginAction', ['_name' => 'api:login:optout']);
         }
 
         if ($this->request->getParam('action') === 'change') {
-            $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+            // $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
         }
     }
 
@@ -200,22 +200,31 @@ class LoginController extends AppController
             return [];
         }
 
-        if ($this->request->getData('password')) {
-            $this->request = $this->request
-                ->withData('password_hash', $this->request->getData('password'))
-                ->withData('password', null);
-        }
+        // if ($this->request->getData('password')) {
+        //     $this->request = $this->request
+        //         ->withData('password_hash', $this->request->getData('password'))
+        //         ->withData('password', null);
+        // }
 
-        $result = $this->Auth->identify();
-        if (!$result || !is_array($result)) {
+        // $result = $this->Auth->identify();
+        // if (!$result || !is_array($result)) {
+        //     throw new UnauthorizedException(__('Login request not successful'));
+        // }
+        // // Result is a user; check endpoint permission on `/auth`
+        // if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
+        //     throw new UnauthorizedException(__('Login not authorized'));
+        // }
+
+        // return $result;
+
+        if (!$this->Authentication->getResult()->isValid()) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
-        // Result is a user; check endpoint permission on `/auth`
-        if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
-            throw new UnauthorizedException(__('Login not authorized'));
-        }
 
-        return $result;
+        /** @var \BEdita\Core\Model\Entity\User $user */
+        $user = $this->Authentication->getIdentity()->getOriginalData();
+
+        return $user->toArray();
     }
 
     /**
@@ -228,15 +237,17 @@ class LoginController extends AppController
      */
     protected function clientCredentialsOnly(): bool
     {
-        $grant = $this->request->getData('grant_type');
-        if (
-            $grant === 'client_credentials' ||
-            ($grant === 'refresh_token' && $this->Auth->getConfig('renewClientCredentials') === true)
-        ) {
-            return true;
-        }
-
         return false;
+
+        // $grant = $this->request->getData('grant_type');
+        // if (
+        //     $grant === 'client_credentials' ||
+        //     ($grant === 'refresh_token' && $this->Auth->getConfig('renewClientCredentials') === true)
+        // ) {
+        //     return true;
+        // }
+
+        // return false;
     }
 
     /**
@@ -249,21 +260,21 @@ class LoginController extends AppController
      */
     protected function checkClientCredentials(): void
     {
-        $grantType = $this->request->getData('grant_type');
-        if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
-            return;
-        }
-        /** @var \BEdita\Core\Model\Entity\Application|null $application */
-        $application = TableRegistry::getTableLocator()->get('Applications')
-            ->find('credentials', [
-                'client_id' => $this->request->getData('client_id'),
-                'client_secret' => $this->request->getData('client_secret'),
-            ])
-            ->first();
-        if (empty($application)) {
-            throw new UnauthorizedException(__('App authentication failed'));
-        }
-        CurrentApplication::setApplication($application);
+        // $grantType = $this->request->getData('grant_type');
+        // if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
+        //     return;
+        // }
+        // /** @var \BEdita\Core\Model\Entity\Application|null $application */
+        // $application = TableRegistry::getTableLocator()->get('Applications')
+        //     ->find('credentials', [
+        //         'client_id' => $this->request->getData('client_id'),
+        //         'client_secret' => $this->request->getData('client_secret'),
+        //     ])
+        //     ->first();
+        // if (empty($application)) {
+        //     throw new UnauthorizedException(__('App authentication failed'));
+        // }
+        // CurrentApplication::setApplication($application);
     }
 
     /**
@@ -377,10 +388,11 @@ class LoginController extends AppController
      */
     protected function userEntity()
     {
-        $userId = $this->Auth->user('id');
-        if (!$userId) {
-            $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
-        }
+        // $userId = $this->Auth->user('id');
+        // if (!$userId) {
+        //     $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
+        // }
+        $userId = $this->Authentication->getIdentityData('id');
         $contain = $this->prepareInclude($this->request->getQuery('include'));
         $contain = array_unique(array_merge($contain, ['Roles']));
         $conditions = ['id' => $userId];

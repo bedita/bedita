@@ -12,12 +12,18 @@
  */
 namespace BEdita\API\App;
 
+use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Middleware\AuthenticationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication as CakeBaseApplication;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Cake\Utility\Hash;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Application base class.
@@ -25,7 +31,7 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your BEdita application.
  */
-abstract class BaseApplication extends CakeBaseApplication
+abstract class BaseApplication extends CakeBaseApplication implements AuthenticationServiceProviderInterface
 {
     /**
      * Default plugin options
@@ -51,6 +57,8 @@ abstract class BaseApplication extends CakeBaseApplication
         if (PHP_SAPI === 'cli') {
             $this->bootstrapCli();
         }
+
+        $this->addPlugin('Authentication');
     }
 
     /**
@@ -119,8 +127,95 @@ abstract class BaseApplication extends CakeBaseApplication
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
-            ->add(new BodyParserMiddleware());
+            ->add(new BodyParserMiddleware())
+
+            // Add the AuthenticationMiddleware.
+            // It should be after routing and body parser.
+            ->add(new AuthenticationMiddleware($this));
 
         return $middlewareQueue;
+    }
+
+    /**
+     * Returns an authentication service instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+
+        if ($request->getUri()->getPath() === '/auth' && $request->getMethod() === 'POST') {
+            // Load identifiers (grant_type === 'password')
+            $body = (array)$request->getParsedBody();
+            $grantType = Hash::get($body, 'grant_type', 'password');
+            switch ($grantType) {
+                case 'password':
+                    $service->loadIdentifier('Authentication.Password', [
+                        'fields' => [
+                            'username' => 'username',
+                            'password' => 'password_hash',
+                        ],
+                        'resolver' => [
+                            'className' => 'Authentication.Orm',
+                            'finder' => 'loginRoles',
+                        ],
+                    ]);
+
+                    // Load authenticators
+                    $service->loadAuthenticator('Authentication.Form', [
+                        'loginUrl' => ['_name' => 'api:login'],
+                        'urlChecker' => 'Authentication.CakeRouter',
+                    ]);
+
+                    break;
+
+                case 'refresh_token':
+                    // refresh token (grant_type === 'refresh_token')
+                    $service->loadIdentifier('Authentication.JwtSubject', [
+                        'tokenField' => 'id',
+                        'resolver' => [
+                            'className' => 'Authentication.Orm',
+                            'finder' => 'loginRoles',
+                        ],
+                    ]);
+
+                    $service->loadAuthenticator('Authentication.Jwt', [
+                        'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+                        'returnPayload' => false,
+                    ]);
+
+                    break;
+
+                case 'client_credentials':
+                    $service->loadIdentifier('BEdita/API.Application');
+
+                    // Load authenticators
+                    $service->loadAuthenticator('Authentication.Form', [
+                        'loginUrl' => ['_name' => 'api:login'],
+                        'urlChecker' => 'Authentication.CakeRouter',
+                        'fields' => [
+                            'username' => 'client_id',
+                            'password' => 'client_secret',
+                        ],
+                    ]);
+
+                    break;
+
+                default:
+                    // load external_auth providers (authenticator, identifier??)
+                    break;
+            }
+
+            return $service;
+        }
+
+        $service->loadAuthenticator('BEdita/API.Jwt', [
+            'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+            'subjectKey' => 'id',
+        ]);
+
+        return $service;
     }
 }

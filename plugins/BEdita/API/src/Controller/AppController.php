@@ -28,6 +28,7 @@ use Cake\Routing\Router;
  *
  * @since 4.0.0
  * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  */
 class AppController extends Controller
 {
@@ -62,18 +63,19 @@ class AppController extends Controller
             $this->paginate['className'] = JsonApiPaginator::class;
         }
 
-        $this->loadComponent('Auth', [
-            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => [
-                'BEdita/API.Endpoint' => [
-                    'blockAnonymousUsers' => Configure::read('Security.blockAnonymousUsers'),
-                ],
-            ],
-            'loginAction' => ['_name' => 'api:login'],
-            'loginRedirect' => ['_name' => 'api:login'],
-            'unauthorizedRedirect' => false,
-            'storage' => 'Memory',
-        ]);
+        // $this->loadComponent('Auth', [
+        //     'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+        //     'authorize' => [
+        //         'BEdita/API.Endpoint' => [
+        //             'blockAnonymousUsers' => Configure::read('Security.blockAnonymousUsers'),
+        //         ],
+        //     ],
+        //     'loginAction' => ['_name' => 'api:login'],
+        //     'loginRedirect' => ['_name' => 'api:login'],
+        //     'unauthorizedRedirect' => false,
+        //     'storage' => 'Memory',
+        // ]);
+        $this->loadComponent('Authentication.Authentication');
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
