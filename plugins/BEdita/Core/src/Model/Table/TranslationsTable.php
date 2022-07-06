@@ -33,6 +33,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Translation findOrCreate($search, callable $callback = null, $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
  */
 class TranslationsTable extends Table
 {
@@ -60,6 +61,7 @@ class TranslationsTable extends Table
                 'text',
             ],
         ]);
+        $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('Objects', [
             'className' => 'Objects',
