@@ -75,7 +75,9 @@ class AppController extends Controller
         //     'unauthorizedRedirect' => false,
         //     'storage' => 'Memory',
         // ]);
-        $this->loadComponent('Authentication.Authentication');
+        $this->loadComponent('Authentication.Authentication', [
+            // 'requireIdentity' => Configure::read('Security.blockAnonymousUsers', true),
+        ]);
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(

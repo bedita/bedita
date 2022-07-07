@@ -33,6 +33,9 @@ class ApplicationIdentifier extends AbstractIdentifier
         ],
     ];
 
+    /**
+     * @inheritDoc
+     */
     public function identify(array $credentials)
     {
         $credentials = [
@@ -40,7 +43,7 @@ class ApplicationIdentifier extends AbstractIdentifier
             $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD) => $credentials[self::CREDENTIAL_PASSWORD],
         ];
 
-        /** var \Authentication\Identifier\Resolver\OrmResolver $resolver*/
+        /** var \Authentication\Identifier\Resolver\OrmResolver $resolver */
         $resolver = $this->getResolver();
         $resolver->setConfig('finder', compact('credentials'));
 

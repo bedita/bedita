@@ -17,6 +17,7 @@ use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\PasswordHasherFactory;
@@ -91,6 +92,8 @@ class LoginController extends AppController
 
             // $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
+
+        $this->Authentication->allowUnauthenticated(['login']);
 
         if ($this->request->getParam('action') === 'optout') {
             // $this->Auth->setConfig('loginAction', ['_name' => 'api:login:optout']);
@@ -237,7 +240,7 @@ class LoginController extends AppController
      */
     protected function clientCredentialsOnly(): bool
     {
-        return false;
+        return $this->Authentication->getIdentity()->getOriginalData() instanceof Application;
 
         // $grant = $this->request->getData('grant_type');
         // if (

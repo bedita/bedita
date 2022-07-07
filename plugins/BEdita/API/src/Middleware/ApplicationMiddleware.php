@@ -12,59 +12,97 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Authenticator;
+namespace BEdita\API\Middleware;
 
-use Authentication\Authenticator\JwtAuthenticator as CakeJwtAuthenticator;
-use Authentication\Identifier\IdentifierInterface;
+use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\JwtAuthenticator;
+use Authentication\Identifier\JwtSubjectIdentifier;
+use BEdita\API\Authenticator\ApplicationAuthenticator;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
+use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Utility\Hash;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class JwtAuthenticator extends CakeJwtAuthenticator
+/**
+ * ApplicationMiddleware extracts application info and set current app.
+ */
+class ApplicationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
-    {
-        $config += [
-            'apiKey' => [
-                'header' => 'X-Api-Key',
-                'query' => 'api_key',
-            ],
-        ];
+    use InstanceConfigTrait;
 
-        parent::__construct($identifier, $config);
+    /**
+     * Default configuration.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'apiKey' => [
+            'header' => 'X-Api-Key',
+            'query' => 'api_key',
+        ],
+        'blockAnonymousApps' => true,
+    ];
+
+    /**
+     * Constructor.
+     *
+     * @param array $config The middleware configuration.
+     */
+    public function __construct(array $config)
+    {
+        $this->setConfig($config);
     }
 
     /**
      * @inheritDoc
      */
-    public function getPayload(?ServerRequestInterface $request = null): ?object
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $payload = parent::getPayload($request);
-        if ($payload !== null) {
-            $this->readApplication($payload, $request);
+        $service = $request->getAttribute('authentication');
+        if (!$service instanceof AuthenticationServiceInterface) {
+            return $handler->handle($request);
         }
 
-        return $payload;
+        $provider = $service->getAuthenticationProvider();
+        if ($provider instanceof ApplicationAuthenticator) {
+            $payload = $service->getIdentity()->getOriginalData();
+        } elseif (!$provider instanceof JwtAuthenticator) {
+            $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
+            $payload = $provider->getPayload($request);
+        } else {
+            $payload = $provider->getPayload();
+        }
+
+        $this->readApplication($payload, $request);
+
+        return $handler->handle($request);
     }
 
     /**
      *  Read application from JWT payload first or from API KEY as fallback
      *
-     * @param object $payload JWT Payload
+     * @param object|null $payload JWT Payload
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object
      * @return void
      */
-    protected function readApplication(object $payload, ServerRequestInterface $request): void
+    protected function readApplication(?object $payload, ServerRequestInterface $request): void
     {
-        $app = $payload->app;
-        if (!empty($app) && !empty($app['id'])) {
+        if ($payload instanceof Application) {
+            CurrentApplication::setApplication($payload);
+
+            return;
+        }
+
+        $app = $payload->app ?? null;
+        if (!empty($app) && !empty($app->id)) {
+            $app = json_decode(json_encode($app), true);
             $application = new Application($app);
             CurrentApplication::setApplication($application);
 

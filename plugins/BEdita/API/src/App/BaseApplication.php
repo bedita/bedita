@@ -15,7 +15,10 @@ namespace BEdita\API\App;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Middleware\AuthenticationMiddleware;
+use BEdita\API\Identifier\JwtSubjectIdentifier;
+use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -131,7 +134,13 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
 
             // Add the AuthenticationMiddleware.
             // It should be after routing and body parser.
-            ->add(new AuthenticationMiddleware($this));
+            ->add(new AuthenticationMiddleware($this))
+
+            // Setup current BEdita application.
+            // It should be after AuthenticationMiddleware.
+            ->add(new ApplicationMiddleware([
+                'blockAnonymousApps' => Configure::read('Security.blockAnonymousApps', true),
+            ]));
 
         return $middlewareQueue;
     }
@@ -172,7 +181,6 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     break;
 
                 case 'refresh_token':
-                    // refresh token (grant_type === 'refresh_token')
                     $service->loadIdentifier('Authentication.JwtSubject', [
                         'tokenField' => 'id',
                         'resolver' => [
@@ -181,8 +189,24 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                         ],
                     ]);
 
+                    $service->loadIdentifier('RenewClientCredentialsJwtSubject', [
+                        'className' => JwtSubjectIdentifier::class,
+                        'dataField' => 'app.id',
+                        'resolver' => [
+                            'className' => 'Authentication.Orm',
+                            'userModel' => 'Applications',
+                        ],
+                    ]);
+
                     $service->loadAuthenticator('Authentication.Jwt', [
                         'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+                        'returnPayload' => false,
+                    ]);
+
+                    $service->loadAuthenticator('RenewClientCredentials', [
+                        'className' => JwtAuthenticator::class,
+                        'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+                        'subjectKey' => 'app',
                         'returnPayload' => false,
                     ]);
 
@@ -192,7 +216,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     $service->loadIdentifier('BEdita/API.Application');
 
                     // Load authenticators
-                    $service->loadAuthenticator('Authentication.Form', [
+                    $service->loadAuthenticator('BEdita/API.Application', [
                         'loginUrl' => ['_name' => 'api:login'],
                         'urlChecker' => 'Authentication.CakeRouter',
                         'fields' => [
@@ -211,8 +235,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             return $service;
         }
 
-        $service->loadAuthenticator('BEdita/API.Jwt', [
-            'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'algorithm' => Configure::read('Security.jwt.algorithm', 'HS256'),
             'subjectKey' => 'id',
         ]);
 
