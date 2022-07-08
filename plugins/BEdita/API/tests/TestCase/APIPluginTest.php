@@ -19,7 +19,6 @@ use BEdita\API\App\BaseApplication;
 use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\TokenMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Error\Renderer\WebExceptionRenderer;
@@ -82,7 +81,7 @@ class APIPluginTest extends TestCase
         $middlewareQueue = $plugin->middleware($middlewareQueue);
         $middlewareQueue->rewind();
 
-        $expected = [AnalyticsMiddleware::class, CorsMiddleware::class, ErrorHandlerMiddleware::class, TokenMiddleware::class];
+        $expected = [AnalyticsMiddleware::class, CorsMiddleware::class, ErrorHandlerMiddleware::class];
 
         foreach ($middlewareQueue as $actual) {
             static::assertInstanceOf(current($expected), $actual);
