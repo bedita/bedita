@@ -14,12 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
-use Authentication\Identifier\TokenIdentifier;
+use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use BEdita\Core\Utility\OAuth2;
 use Cake\Utility\Hash;
 
-class OAuth2Identifier extends TokenIdentifier
+class OAuth2Identifier extends AbstractIdentifier
 {
+    use ResolverAwareTrait;
+
     /**
      * @inheritDoc
      */
