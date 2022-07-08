@@ -14,12 +14,10 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use Laminas\Diactoros\Uri;
 
 /**
  * Controller for `/home` endpoint.
@@ -183,12 +181,16 @@ class HomeController extends AppController
             return false;
         }
 
-        $environment = ['REQUEST_METHOD' => $method];
-        $uri = new Uri($endpoint);
-        $request = new ServerRequest(compact('environment', 'uri'));
-        $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
+        // set to true temporary
+        return true;
 
-        return $authorize->authorize(LoggedUser::getUser(), $request);
+        // TODO: move to new authorization
+        // $environment = ['REQUEST_METHOD' => $method];
+        // $uri = new Uri($endpoint);
+        // $request = new ServerRequest(compact('environment', 'uri'));
+        // $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        // return $authorize->authorize(LoggedUser::getUser(), $request);
     }
 
     /**

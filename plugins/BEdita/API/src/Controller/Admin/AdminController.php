@@ -34,6 +34,7 @@ abstract class AdminController extends ResourcesController
     {
         parent::initialize();
 
-        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('administratorOnly', true);
+        // TODO: handle 'administratorOnly' use case in new authorization
+        // $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('administratorOnly', true);
     }
 }

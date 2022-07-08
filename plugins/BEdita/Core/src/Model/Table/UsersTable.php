@@ -107,7 +107,7 @@ class UsersTable extends Table
             'through' => 'RolesUsers',
         ]);
 
-        EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
+        EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);
     }
 
     /**
@@ -190,7 +190,7 @@ class UsersTable extends Table
         $implementedEvents = parent::implementedEvents();
         $implementedEvents += [
             'Auth.externalAuth' => 'externalAuthLogin',
-            'Auth.afterIdentify' => 'login',
+            'Authentication.afterIdentify' => 'login',
         ];
 
         return $implementedEvents;
