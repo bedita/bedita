@@ -168,7 +168,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             if (method_exists($this, $method)) {
                 call_user_func_array([$this, $method], [$service]);
             } else {
-                $this->loadAuthProviders($service);
+                $provider = (string)Hash::get($body, 'auth_provider');
+                $this->loadAuthProviders($service, $provider);
             }
 
             return $service;
@@ -272,20 +273,22 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      * @param \Authentication\AuthenticationService $service The authentication service
      * @return void
      */
-    protected function loadAuthProviders(AuthenticationService $service): void
+    protected function loadAuthProviders(AuthenticationService $service, string $name): void
     {
         $this->fetchTable('AuthProviders')
             ->find('enabled')
             ->all()
-            ->each(function (AuthProvider $provider) use ($service): void {
-                $service->loadAuthenticator(
-                    $provider->name,
-                    ['auth_provider' => $provider],
-                );
-                $service->loadIdentifier(
-                    $provider->name,
-                    ['auth_provider' => $provider],
-                );
+            ->each(function (AuthProvider $authProvider) use ($service, $name): void {
+                if ($authProvider->name === $name) {
+                    $service->loadAuthenticator(
+                        $authProvider->auth_class,
+                        ['auth_provider' => $authProvider],
+                    );
+                    $service->loadIdentifier(
+                        $authProvider->auth_class,
+                        ['auth_provider' => $authProvider],
+                    );
+                }
             });
     }
 }

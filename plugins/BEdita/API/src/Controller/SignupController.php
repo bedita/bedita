@@ -31,7 +31,8 @@ class SignupController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        // $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        $this->Authentication-> allowUnauthenticated(['signup', 'activation']);
 
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('parseJson', false);
