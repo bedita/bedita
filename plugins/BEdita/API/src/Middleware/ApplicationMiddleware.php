@@ -16,6 +16,7 @@ namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\JwtAuthenticator;
+use Authentication\Authenticator\TokenAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Authenticator\ApplicationAuthenticator;
 use BEdita\Core\Model\Entity\Application;
@@ -73,7 +74,9 @@ class ApplicationMiddleware implements MiddlewareInterface
         $provider = $service->getAuthenticationProvider();
         if ($provider instanceof ApplicationAuthenticator) {
             $payload = $service->getIdentity()->getOriginalData();
-        } elseif (!$provider instanceof JwtAuthenticator) {
+        } elseif (!method_exists($provider, 'getPayload')) {
+            $payload = null;
+        } elseif (!$provider instanceof TokenAuthenticator) {
             $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
             $payload = $provider->getPayload($request);
         } else {

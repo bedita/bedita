@@ -240,6 +240,10 @@ class LoginController extends AppController
      */
     protected function clientCredentialsOnly(): bool
     {
+        if (empty($this->Authentication->getIdentity())) {
+            return false;
+        }
+
         return $this->Authentication->getIdentity()->getOriginalData() instanceof Application;
 
         // $grant = $this->request->getData('grant_type');

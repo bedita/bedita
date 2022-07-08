@@ -20,10 +20,12 @@ use Authentication\Middleware\AuthenticationMiddleware;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
+use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication as CakeBaseApplication;
 use Cake\Http\MiddlewareQueue;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,6 +38,8 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 abstract class BaseApplication extends CakeBaseApplication implements AuthenticationServiceProviderInterface
 {
+    use LocatorAwareTrait;
+
     /**
      * Default plugin options
      *
@@ -158,7 +162,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         if ($request->getUri()->getPath() === '/auth' && $request->getMethod() === 'POST') {
             // Load identifiers (grant_type === 'password')
             $body = (array)$request->getParsedBody();
-            $grantType = Hash::get($body, 'grant_type', 'password');
+            $grantType = Hash::get($body, 'grant_type');
             switch ($grantType) {
                 case 'password':
                     $service->loadIdentifier('Authentication.Password', [
@@ -229,6 +233,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
 
                 default:
                     // load external_auth providers (authenticator, identifier??)
+                    $this->loadAuthProviders($service);
+
                     break;
             }
 
@@ -241,5 +247,28 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         ]);
 
         return $service;
+    }
+
+    /**
+     * Load enabled `auth_providers` from the database
+     *
+     * @param \Authentication\AuthenticationService $service The authentication service
+     * @return void
+     */
+    protected function loadAuthProviders(AuthenticationService $service): void
+    {
+        $this->fetchTable('AuthProviders')
+            ->find('enabled')
+            ->all()
+            ->each(function (AuthProvider $provider) use ($service): void {
+                $service->loadAuthenticator(
+                    $provider->name,
+                    ['auth_provider' => $provider],
+                );
+                $service->loadIdentifier(
+                    $provider->name,
+                    ['auth_provider' => $provider],
+                );
+            });
     }
 }
