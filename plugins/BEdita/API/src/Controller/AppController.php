@@ -92,7 +92,7 @@ class AppController extends Controller
     /**
      * Is identity required?
      *
-     * @return boolean
+     * @return bool
      */
     protected function isIdentityRequired(): bool
     {
@@ -111,6 +111,16 @@ class AppController extends Controller
         if (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException(
                 __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
+            );
+        }
+
+        $identity = $this->Authentication->getIdentity();
+        $authentication = $this->Authentication->getAuthenticationService();
+        $provider = $authentication->getAuthenticationProvider();
+        if (!empty($identity)) {
+            $this->dispatchEvent(
+                'Authentication.afterIdentify',
+                compact('provider', 'identity')
             );
         }
 

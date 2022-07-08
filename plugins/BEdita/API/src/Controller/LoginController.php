@@ -102,6 +102,20 @@ class LoginController extends AppController
     }
 
     /**
+     * Is identity required?
+     *
+     * @return bool
+     */
+    protected function isIdentityRequired(): bool
+    {
+        if ($this->request->getParam('action') === 'change') {
+            return false;
+        }
+
+        return parent::isIdentityRequired();
+    }
+
+    /**
      * Login action via user identification with classic username/password, OTP, Oauth2 or 2FA.
      * See `identify` method for more details.
      *
