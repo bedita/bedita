@@ -39,8 +39,6 @@ class ConfigControllerTest extends IntegrationTestCase
                     'meta' => [
                         'created' => '2018-05-16T12:34:56+00:00',
                         'modified' => '2018-05-16T12:38:02+00:00',
-                        'context' => 'app',
-                        'application_id' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/config/11',

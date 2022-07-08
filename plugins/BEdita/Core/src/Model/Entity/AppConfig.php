@@ -25,11 +25,8 @@ class AppConfig extends Config
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
-        '*' => true,
-        'application_id' => false,
-        'context' => false,
-        'created' => false,
-        'modified' => false,
+    protected $_hidden = [
+        'application_id',
+        'context',
     ];
 }
