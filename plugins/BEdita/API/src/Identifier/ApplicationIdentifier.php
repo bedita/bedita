@@ -16,11 +16,18 @@ namespace BEdita\API\Identifier;
 
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
+use Cake\Utility\Hash;
 
+/**
+ * Application identifier.
+ */
 class ApplicationIdentifier extends AbstractIdentifier
 {
     use ResolverAwareTrait;
 
+    /**
+     * @inheritDoc
+     */
     protected $_defaultConfig = [
         'fields' => [
             self::CREDENTIAL_USERNAME => 'client_id',
@@ -29,7 +36,6 @@ class ApplicationIdentifier extends AbstractIdentifier
         'resolver' => [
             'className' => 'Authentication.Orm',
             'userModel' => 'Applications',
-            'finder' => 'credentials',
         ],
     ];
 
@@ -39,11 +45,11 @@ class ApplicationIdentifier extends AbstractIdentifier
     public function identify(array $credentials)
     {
         $credentials = [
-            $this->getConfig('fields.' . self::CREDENTIAL_USERNAME) => $credentials[self::CREDENTIAL_USERNAME],
-            $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD) => $credentials[self::CREDENTIAL_PASSWORD],
+            $this->getConfig('fields.' . self::CREDENTIAL_USERNAME) => Hash::get($credentials, self::CREDENTIAL_USERNAME),
+            $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD) => Hash::get($credentials, self::CREDENTIAL_PASSWORD),
         ];
 
-        /** var \Authentication\Identifier\Resolver\OrmResolver $resolver */
+        /** @var \Authentication\Identifier\Resolver\OrmResolver $resolver */
         $resolver = $this->getResolver();
         $resolver->setConfig('finder', compact('credentials'));
 
