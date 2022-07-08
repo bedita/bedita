@@ -221,10 +221,12 @@ class LoginController extends AppController
             throw new UnauthorizedException(__('Login request not successful'));
         }
 
-        /** @var \BEdita\Core\Model\Entity\User $user */
-        $user = $this->Authentication->getIdentity()->getOriginalData();
+        $result = $this->Authentication->getIdentity()->getOriginalData();
+        if (is_array($result)) {
+            return $result;
+        }
 
-        return $user->toArray();
+        return $result->toArray();
     }
 
     /**
