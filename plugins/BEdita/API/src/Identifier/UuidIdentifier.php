@@ -39,7 +39,7 @@ class UuidIdentifier extends TokenIdentifier
      */
     public function identify(array $credentials)
     {
-        $authProvider = $this->getConfig('auth_provider');
+        $authProvider = $this->getConfig('authProvider');
         $externalAuth = [
             'auth_provider' => $authProvider,
             'username' => $credentials[self::CREDENTIAL_TOKEN],

@@ -40,7 +40,7 @@ class OAuth2Identifier extends AbstractIdentifier
     public function identify(array $credentials)
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
-        $authProvider = $this->getConfig('auth_provider');
+        $authProvider = $this->getConfig('authProvider');
         $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
         $providerResponse = $this->getOAuth2Response(
             $authProvider->get('url'),

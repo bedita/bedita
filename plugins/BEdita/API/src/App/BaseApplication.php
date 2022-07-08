@@ -282,11 +282,11 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                 if ($authProvider->name === $name) {
                     $service->loadAuthenticator(
                         $authProvider->auth_class,
-                        ['auth_provider' => $authProvider],
+                        compact('authProvider'),
                     );
                     $service->loadIdentifier(
                         $authProvider->auth_class,
-                        ['auth_provider' => $authProvider],
+                        compact('authProvider'),
                     );
                 }
             });

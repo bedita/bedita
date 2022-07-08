@@ -14,26 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Authenticator;
 
-use Authentication\Authenticator\FormAuthenticator;
-use Cake\Utility\Hash;
-use Psr\Http\Message\ServerRequestInterface;
-
-class ApplicationAuthenticator extends FormAuthenticator
+class ApplicationAuthenticator extends DynamicFormAuthenticator
 {
-    /**
-     * @inheritDoc
-     */
-    protected function _getData(ServerRequestInterface $request): ?array
-    {
-        $fields = $this->_config['fields'];
-        /** @var array $body */
-        $body = $request->getParsedBody();
-
-        $data = [];
-        foreach ($fields as $key => $field) {
-            $data[$key] = Hash::get($body, $field);
-        }
-
-        return $data;
-    }
 }
