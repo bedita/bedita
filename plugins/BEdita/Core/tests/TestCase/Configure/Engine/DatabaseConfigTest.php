@@ -104,7 +104,7 @@ class DatabaseConfigTest extends TestCase
     public function testReadAppId()
     {
         $dbConfig = new DatabaseConfig(1);
-        $configData = $dbConfig->read('core');
+        $configData = $dbConfig->read('app');
         static::assertEquals(['val' => 42], $configData['appVal']);
     }
 
