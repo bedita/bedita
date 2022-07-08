@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Entity;
  * App Config Entity.
  *
  * {@inheritDoc}
+ *
  * @since 5.0.0
  */
 class AppConfig extends Config

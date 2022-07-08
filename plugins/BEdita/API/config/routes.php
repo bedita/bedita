@@ -221,7 +221,6 @@ return function (RouteBuilder $routes) {
             ['_name' => 'applications:index']
         );
 
-
         // History.
         $routes->connect(
             '/history',
