@@ -76,7 +76,7 @@ class AppController extends Controller
         //     'storage' => 'Memory',
         // ]);
         $this->loadComponent('Authentication.Authentication', [
-            // 'requireIdentity' => Configure::read('Security.blockAnonymousUsers', true),
+            'requireIdentity' => $this->isIdentityRequired(),
         ]);
 
         if (empty(Router::fullBaseUrl())) {
@@ -87,6 +87,20 @@ class AppController extends Controller
                 )
             );
         }
+    }
+
+    /**
+     * Is identity required?
+     *
+     * @return boolean
+     */
+    protected function isIdentityRequired(): bool
+    {
+        if (in_array($this->request->getMethod(), ['GET', 'HEAD'])) {
+            return (bool)Configure::read('Security.blockAnonymousUsers', false);
+        }
+
+        return true;
     }
 
     /**

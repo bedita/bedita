@@ -32,11 +32,20 @@ class SignupController extends AppController
     {
         parent::initialize();
         // $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-        $this->Authentication-> allowUnauthenticated(['signup', 'activation']);
 
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('parseJson', false);
         }
+    }
+
+    /**
+     * Indentity not required in `/signup`
+     *
+     * @return bool
+     */
+    protected function isIdentityRequired(): bool
+    {
+        return false;
     }
 
     /**
