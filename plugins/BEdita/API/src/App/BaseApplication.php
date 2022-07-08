@@ -28,6 +28,7 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -160,82 +161,14 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         $service = new AuthenticationService();
 
         if ($request->getUri()->getPath() === '/auth' && $request->getMethod() === 'POST') {
-            // Load identifiers (grant_type === 'password')
+            // Load authenticators and identifiers based on `grant_type`
             $body = (array)$request->getParsedBody();
-            $grantType = Hash::get($body, 'grant_type');
-            switch ($grantType) {
-                case 'password':
-                    $service->loadIdentifier('Authentication.Password', [
-                        'fields' => [
-                            'username' => 'username',
-                            'password' => 'password_hash',
-                        ],
-                        'resolver' => [
-                            'className' => 'Authentication.Orm',
-                            'finder' => 'loginRoles',
-                        ],
-                    ]);
-
-                    // Load authenticators
-                    $service->loadAuthenticator('Authentication.Form', [
-                        'loginUrl' => ['_name' => 'api:login'],
-                        'urlChecker' => 'Authentication.CakeRouter',
-                    ]);
-
-                    break;
-
-                case 'refresh_token':
-                    $service->loadIdentifier('Authentication.JwtSubject', [
-                        'tokenField' => 'id',
-                        'resolver' => [
-                            'className' => 'Authentication.Orm',
-                            'finder' => 'loginRoles',
-                        ],
-                    ]);
-
-                    $service->loadIdentifier('RenewClientCredentialsJwtSubject', [
-                        'className' => JwtSubjectIdentifier::class,
-                        'dataField' => 'app.id',
-                        'resolver' => [
-                            'className' => 'Authentication.Orm',
-                            'userModel' => 'Applications',
-                        ],
-                    ]);
-
-                    $service->loadAuthenticator('Authentication.Jwt', [
-                        'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
-                        'returnPayload' => false,
-                    ]);
-
-                    $service->loadAuthenticator('RenewClientCredentials', [
-                        'className' => JwtAuthenticator::class,
-                        'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
-                        'subjectKey' => 'app',
-                        'returnPayload' => false,
-                    ]);
-
-                    break;
-
-                case 'client_credentials':
-                    $service->loadIdentifier('BEdita/API.Application');
-
-                    // Load authenticators
-                    $service->loadAuthenticator('BEdita/API.Application', [
-                        'loginUrl' => ['_name' => 'api:login'],
-                        'urlChecker' => 'Authentication.CakeRouter',
-                        'fields' => [
-                            'username' => 'client_id',
-                            'password' => 'client_secret',
-                        ],
-                    ]);
-
-                    break;
-
-                default:
-                    // load external_auth providers (authenticator, identifier??)
-                    $this->loadAuthProviders($service);
-
-                    break;
+            $grantType = (string)Hash::get($body, 'grant_type');
+            $method = sprintf('%sGrantType', Inflector::variable($grantType));
+            if (method_exists($this, $method)) {
+                call_user_func_array([$this, $method], [$service]);
+            } else {
+                $this->loadAuthProviders($service);
             }
 
             return $service;
@@ -247,6 +180,90 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         ]);
 
         return $service;
+    }
+
+    /**
+     * Handle `password` grant type
+     *
+     * @param \Authentication\AuthenticationService $service The authentication service
+     * @return void
+     */
+    protected function passwordGrantType(AuthenticationService $service): void
+    {
+        $service->loadIdentifier('Authentication.Password', [
+            'fields' => [
+                'username' => 'username',
+                'password' => 'password_hash',
+            ],
+            'resolver' => [
+                'className' => 'Authentication.Orm',
+                'finder' => 'loginRoles',
+            ],
+        ]);
+
+        // Load authenticators
+        $service->loadAuthenticator('Authentication.Form', [
+            'loginUrl' => ['_name' => 'api:login'],
+            'urlChecker' => 'Authentication.CakeRouter',
+        ]);
+    }
+
+    /**
+     * Handle `refresh_token` grant type
+     *
+     * @param \Authentication\AuthenticationService $service The authentication service
+     * @return void
+     */
+    protected function refreshTokenGrantType(AuthenticationService $service): void
+    {
+        $service->loadIdentifier('Authentication.JwtSubject', [
+            'tokenField' => 'id',
+            'resolver' => [
+                'className' => 'Authentication.Orm',
+                'finder' => 'loginRoles',
+            ],
+        ]);
+
+        $service->loadIdentifier('RenewClientCredentialsJwtSubject', [
+            'className' => JwtSubjectIdentifier::class,
+            'dataField' => 'app.id',
+            'resolver' => [
+                'className' => 'Authentication.Orm',
+                'userModel' => 'Applications',
+            ],
+        ]);
+
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+            'returnPayload' => false,
+        ]);
+
+        $service->loadAuthenticator('RenewClientCredentials', [
+            'className' => JwtAuthenticator::class,
+            'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
+            'subjectKey' => 'app',
+            'returnPayload' => false,
+        ]);
+    }
+
+    /**
+     * Handle `client_credentials` grant type
+     *
+     * @param \Authentication\AuthenticationService $service The authentication service
+     * @return void
+     */
+    protected function clientCredentialsGrantType(AuthenticationService $service): void
+    {
+        $service->loadIdentifier('BEdita/API.Application');
+
+        $service->loadAuthenticator('BEdita/API.Application', [
+            'loginUrl' => ['_name' => 'api:login'],
+            'urlChecker' => 'Authentication.CakeRouter',
+            'fields' => [
+                'username' => 'client_id',
+                'password' => 'client_secret',
+            ],
+        ]);
     }
 
     /**
