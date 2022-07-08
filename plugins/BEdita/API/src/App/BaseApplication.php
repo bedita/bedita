@@ -166,13 +166,11 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             $grantType = (string)Hash::get($body, 'grant_type');
             $method = sprintf('%sGrantType', Inflector::variable($grantType));
             if (method_exists($this, $method)) {
-                call_user_func_array([$this, $method], [$service]);
-            } else {
-                $provider = (string)Hash::get($body, 'auth_provider');
-                $this->loadAuthProviders($service, $provider);
+                return call_user_func_array([$this, $method], [$service]);
             }
+            $provider = (string)Hash::get($body, 'auth_provider');
 
-            return $service;
+            return $this->loadAuthProviders($service, $provider);
         }
 
         $service->loadAuthenticator('Authentication.Jwt', [
@@ -187,9 +185,9 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      * Handle `password` grant type
      *
      * @param \Authentication\AuthenticationService $service The authentication service
-     * @return void
+     * @return \Authentication\AuthenticationService
      */
-    protected function passwordGrantType(AuthenticationService $service): void
+    protected function passwordGrantType(AuthenticationService $service): AuthenticationService
     {
         $service->loadIdentifier('Authentication.Password', [
             'fields' => [
@@ -207,15 +205,17 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             'loginUrl' => ['_name' => 'api:login'],
             'urlChecker' => 'Authentication.CakeRouter',
         ]);
+
+        return $service;
     }
 
     /**
      * Handle `refresh_token` grant type
      *
      * @param \Authentication\AuthenticationService $service The authentication service
-     * @return void
+     * @return \Authentication\AuthenticationService
      */
-    protected function refreshTokenGrantType(AuthenticationService $service): void
+    protected function refreshTokenGrantType(AuthenticationService $service): AuthenticationService
     {
         $service->loadIdentifier('Authentication.JwtSubject', [
             'tokenField' => 'id',
@@ -245,15 +245,17 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             'subjectKey' => 'app',
             'returnPayload' => false,
         ]);
+
+        return $service;
     }
 
     /**
      * Handle `client_credentials` grant type
      *
      * @param \Authentication\AuthenticationService $service The authentication service
-     * @return void
+     * @return \Authentication\AuthenticationService
      */
-    protected function clientCredentialsGrantType(AuthenticationService $service): void
+    protected function clientCredentialsGrantType(AuthenticationService $service): AuthenticationService
     {
         $service->loadIdentifier('BEdita/API.Application');
 
@@ -265,15 +267,18 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                 'password' => 'client_secret',
             ],
         ]);
+
+        return $service;
     }
 
     /**
      * Load enabled `auth_providers` from the database
      *
      * @param \Authentication\AuthenticationService $service The authentication service
-     * @return void
+     * @param string $name Auth Provider name
+     * @return \Authentication\AuthenticationService
      */
-    protected function loadAuthProviders(AuthenticationService $service, string $name): void
+    protected function loadAuthProviders(AuthenticationService $service, string $name): AuthenticationService
     {
         $this->fetchTable('AuthProviders')
             ->find('enabled')
@@ -290,5 +295,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     );
                 }
             });
+
+        return $service;
     }
 }
