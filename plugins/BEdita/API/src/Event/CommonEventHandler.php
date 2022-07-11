@@ -35,32 +35,8 @@ class CommonEventHandler implements EventListenerInterface
     public function implementedEvents(): array
     {
         return [
-            'Authentication.afterIdentify' => 'afterIdentify',
             'Error.beforeRender' => 'errorBeforeRender',
         ];
-    }
-
-    /**
-     * Set the user identified.
-     * Called after user authentication.
-     *
-     * @param \Cake\Event\EventInterface $event The event object
-     * @param array $provider The user data
-     * @return void
-     * @throws \Cake\Http\Exception\UnauthorizedException
-     */
-    public function afterIdentify(EventInterface $event, AuthenticatorInterface $provider, ?IdentityInterface $identity)
-    {
-        $result = $identity->getOriginalData();
-        if ((is_array($result) || $result instanceof ArrayObject) && !empty($result['username']) && !empty($result['id'])) {
-            LoggedUser::setUser($result);
-
-            return;
-        }
-
-        if ($result instanceof User) {
-            LoggedUser::setUser($result->toArray());
-        }
     }
 
     /**

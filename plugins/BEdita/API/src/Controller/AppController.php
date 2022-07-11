@@ -114,16 +114,6 @@ class AppController extends Controller
             );
         }
 
-        $identity = $this->Authentication->getIdentity();
-        $authentication = $this->Authentication->getAuthenticationService();
-        $provider = $authentication->getAuthenticationProvider();
-        if (!empty($identity)) {
-            $this->dispatchEvent(
-                'Authentication.afterIdentify',
-                compact('provider', 'identity')
-            );
-        }
-
         return null;
     }
 

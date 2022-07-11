@@ -20,6 +20,7 @@ use Authentication\Middleware\AuthenticationMiddleware;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
+use BEdita\API\Middleware\LoggedUserMiddleware;
 use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -145,7 +146,11 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             // It should be after AuthenticationMiddleware.
             ->add(new ApplicationMiddleware([
                 'blockAnonymousApps' => Configure::read('Security.blockAnonymousApps', true),
-            ]));
+            ]))
+
+            // Setup current logged user.
+            // It should be after AuthenticationMiddleware.
+            ->add(new LoggedUserMiddleware());
 
         return $middlewareQueue;
     }
