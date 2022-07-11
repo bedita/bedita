@@ -198,6 +198,16 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                 'className' => 'Authentication.Orm',
                 'finder' => 'loginRoles',
             ],
+            'passwordHasher' => [
+                'className' => 'Authentication.Fallback',
+                'hashers' => [
+                    'Authentication.Default',
+                    [
+                        'className' => 'Authentication.Legacy',
+                        'hashType' => 'md5',
+                    ],
+                ]
+            ]
         ]);
 
         // Load authenticators
