@@ -141,23 +141,29 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setGrantTypeProvider(): array
-    {
-        return [
-            'password' => [
-                'password',
-                ['username' => 'first user', 'password' => 'password1'],
-            ],
-            'refresh_token' => [
-                'refresh_token',
-                [],
-            ],
-            'client_credentials' => [
-                'client_credentials',
-                ['client_id' => API_KEY],
-            ],
-        ];
-    }
+    // public function setGrantTypeProvider(): array
+    // {
+    //     return [
+    //         'password' => [
+    //             'password',
+    //             [
+    //                 'username' => 'first user',
+    //                 'password' => 'password1',
+    //                 'grant_type' => 'password',
+    //             ],
+    //         ],
+    //         'refresh_token' => [
+    //             'refresh_token',
+    //             [
+    //                 'grant_type' => 'password',
+    //             ],
+    //         ],
+    //         'client_credentials' => [
+    //             'client_credentials',
+    //             ['client_id' => API_KEY],
+    //         ],
+    //     ];
+    // }
 
     /**
      * Test `setGrantType()` method
@@ -168,48 +174,52 @@ class LoginControllerTest extends IntegrationTestCase
      * @dataProvider setGrantTypeProvider
      * @covers ::setGrantType()
      */
-    public function testSetGrantType(string $expected, array $post): void
-    {
-        $request = new ServerRequest(compact('post') + [
-            'environment' => [
-                'REQUEST_METHOD' => 'POST',
-            ],
-        ]);
-        $controller = new LoginController($request);
-        $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-        try {
-            $controller->login();
-        } catch (\Cake\Routing\Exception\MissingRouteException $e) {
-        }
+    // public function testSetGrantType(string $expected, array $post): void
+    // {
+    //     $request = new ServerRequest(compact('post') + [
+    //         'environment' => [
+    //             'REQUEST_METHOD' => 'POST',
+    //         ],
+    //     ]);
+    //     $controller = new LoginController($request);
+    //     $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+    //     try {
+    //         $controller->login();
+    //     } catch (\Cake\Routing\Exception\MissingRouteException $e) {
+    //     }
 
-        static::assertEquals($expected, $controller->getRequest()->getData('grant_type'));
-    }
+    //     static::assertEquals($expected, $controller->getRequest()->getData('grant_type'));
+    // }
 
     /**
      * Data provider for `testCheckClientCredentials`
      *
      * @return array
      */
-    public function checkClientCredentialsProvider(): array
-    {
-        return [
-            'null' => [
-                null,
-                ['username' => 'first user', 'password' => 'password1'],
-            ],
-            'client_credentials' => [
-                1,
-                [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => API_KEY,
-                ],
-            ],
-            'fail' => [
-                new UnauthorizedException('App authentication failed'),
-                ['client_id' => 'gustavo'],
-            ],
-        ];
-    }
+    // public function checkClientCredentialsProvider(): array
+    // {
+    //     return [
+    //         'null' => [
+    //             null,
+    //             [
+    //                 'username' => 'first user',
+    //                 'password' => 'password1',
+    //                 'grant_type' => 'password',
+    //             ],
+    //         ],
+    //         'client_credentials' => [
+    //             1,
+    //             [
+    //                 'grant_type' => 'client_credentials',
+    //                 'client_id' => API_KEY,
+    //             ],
+    //         ],
+    //         'fail' => [
+    //             new UnauthorizedException('App authentication failed'),
+    //             ['client_id' => 'gustavo'],
+    //         ],
+    //     ];
+    // }
 
     /**
      * Test `checkClientCredentials()` method
@@ -221,27 +231,27 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::checkClientCredentials()
      * @covers ::clientCredentialsOnly()
      */
-    public function testCheckClientCredentials($expected, array $post): void
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-        CurrentApplication::setApplication(null);
-        $request = new ServerRequest(compact('post') + [
-            'environment' => [
-                'REQUEST_METHOD' => 'POST',
-            ],
-        ]);
-        $controller = new LoginController($request);
-        $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-        try {
-            $controller->login();
-        } catch (\Cake\Routing\Exception\MissingRouteException $e) {
-        }
+    // public function testCheckClientCredentials($expected, array $post): void
+    // {
+    //     if ($expected instanceof \Exception) {
+    //         $this->expectException(get_class($expected));
+    //         $this->expectExceptionMessage($expected->getMessage());
+    //     }
+    //     CurrentApplication::setApplication(null);
+    //     $request = new ServerRequest(compact('post') + [
+    //         'environment' => [
+    //             'REQUEST_METHOD' => 'POST',
+    //         ],
+    //     ]);
+    //     $controller = new LoginController($request);
+    //     $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+    //     try {
+    //         $controller->login();
+    //     } catch (\Cake\Routing\Exception\MissingRouteException $e) {
+    //     }
 
-        static::assertEquals($expected, CurrentApplication::getApplicationId());
-    }
+    //     static::assertEquals($expected, CurrentApplication::getApplicationId());
+    // }
 
     /**
      * Test login with client credentials
