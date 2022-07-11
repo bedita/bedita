@@ -149,18 +149,18 @@ class LoginController extends AppController
      */
     protected function setGrantType(): void
     {
-        if (!empty($this->request->getData('grant_type'))) {
-            return;
-        }
+        // if (!empty($this->request->getData('grant_type'))) {
+        //     return;
+        // }
 
-        $data = $this->request->getData();
-        if (empty($data)) {
-            $this->request = $this->request->withData('grant_type', 'refresh_token');
-        } elseif (!empty($data['username']) && !empty($data['password'])) {
-            $this->request = $this->request->withData('grant_type', 'password');
-        } elseif (!empty($data['client_id'])) {
-            $this->request = $this->request->withData('grant_type', 'client_credentials');
-        }
+        // $data = $this->request->getData();
+        // if (empty($data)) {
+        //     $this->request = $this->request->withData('grant_type', 'refresh_token');
+        // } elseif (!empty($data['username']) && !empty($data['password'])) {
+        //     $this->request = $this->request->withData('grant_type', 'password');
+        // } elseif (!empty($data['client_id'])) {
+        //     $this->request = $this->request->withData('grant_type', 'client_credentials');
+        // }
     }
 
     /**
