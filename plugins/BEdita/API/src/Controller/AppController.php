@@ -79,6 +79,8 @@ class AppController extends Controller
             'requireIdentity' => $this->isIdentityRequired(),
         ]);
 
+        $this->loadComponent('Authorization.Authorization');
+
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
                 rtrim(
@@ -113,6 +115,8 @@ class AppController extends Controller
                 __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
             );
         }
+
+	// if can't access and user anonymous => 401
 
         return null;
     }

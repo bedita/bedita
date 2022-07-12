@@ -265,7 +265,7 @@ class EndpointPermissionsTable extends Table
      * Fetch endpoint permissions using cache.
      *
      * @param int|null $endpointId Endpoint id.
-     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged and `roles` array if logged.
+     * @param null|array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged and `roles` array if logged.
      * @param bool $strict Strict check.
      * @return array
      */
@@ -275,7 +275,8 @@ class EndpointPermissionsTable extends Table
         $endpointIds = array_filter([$endpointId]);
         $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: 'any', $endpointId ?: 'any');
 
-        if (!empty($user['_anonymous'])) {
+        // anonymous user
+        if ($user === null) {
             $query = $this->find('byApplication', compact('applicationId', 'strict'))
                 ->find('byEndpoint', compact('endpointIds', 'strict'));
 

@@ -17,15 +17,22 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Middleware\AuthenticationMiddleware;
+use Authorization\AuthorizationService;
+use Authorization\AuthorizationServiceInterface;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\Policy\MapResolver;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
 use BEdita\API\Middleware\LoggedUserMiddleware;
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication as CakeBaseApplication;
 use Cake\Http\MiddlewareQueue;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Utility\Hash;
@@ -38,7 +45,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your BEdita application.
  */
-abstract class BaseApplication extends CakeBaseApplication implements AuthenticationServiceProviderInterface
+abstract class BaseApplication extends CakeBaseApplication implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderInterface
 {
     use LocatorAwareTrait;
 
@@ -68,6 +75,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         }
 
         $this->addPlugin('Authentication');
+        $this->addPlugin('Authorization');
     }
 
     /**
@@ -150,7 +158,11 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
 
             // Setup current logged user.
             // It should be after AuthenticationMiddleware.
-            ->add(new LoggedUserMiddleware());
+            ->add(new LoggedUserMiddleware())
+
+            // Add the AuthorizationMiddleware *after* routing, body parser
+            // and authentication middleware.
+            ->add(new AuthorizationMiddleware($this));
 
         return $middlewareQueue;
     }
@@ -187,6 +199,24 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
     }
 
     /**
+     * Returns authorization service instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authorization\AuthorizationServiceInterface
+     */
+    public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+    {
+        $endpointPolicy = new EndpointPolicy([
+            'blockAnonymousUsers' => (bool)Configure::read('Security.blockAnonymousUsers', false),
+        ]);
+        $mapResolver = new MapResolver([
+            ServerRequest::class => $endpointPolicy,
+        ]);
+
+        return new AuthorizationService($mapResolver);
+    }
+
+    /**
      * Handle `password` grant type
      *
      * @param \Authentication\AuthenticationService $service The authentication service
@@ -211,8 +241,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                         'className' => 'Authentication.Legacy',
                         'hashType' => 'md5',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         // Load authenticators
