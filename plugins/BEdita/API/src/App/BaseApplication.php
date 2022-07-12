@@ -206,11 +206,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      */
     public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
     {
-        $endpointPolicy = new EndpointPolicy([
-            'blockAnonymousUsers' => (bool)Configure::read('Security.blockAnonymousUsers', false),
-        ]);
         $mapResolver = new MapResolver([
-            ServerRequest::class => $endpointPolicy,
+            ServerRequest::class => EndpointPolicy::class,
         ]);
 
         return new AuthorizationService($mapResolver);

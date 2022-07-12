@@ -29,6 +29,7 @@ use Cake\Routing\Router;
  * @since 4.0.0
  * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class AppController extends Controller
 {
@@ -110,15 +111,27 @@ class AppController extends Controller
      */
     public function beforeFilter(EventInterface $event)
     {
+        $this->checkAcceptable();
+
+        // Internally it may throw an `UnauthorizedException` for anonymous users
+        $this->Authorization->authorize($this->request, 'access');
+
+        return null;
+    }
+
+    /**
+     * Check if the request is acceptable testing `Accept` header.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\NotAcceptableException If request isn't accetable
+     */
+    protected function checkAcceptable(): void
+    {
         if (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException(
                 __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
             );
         }
-
-	// if can't access and user anonymous => 401
-
-        return null;
     }
 
     /**

@@ -34,7 +34,7 @@ class StatusController extends AppController
 
         parent::initialize();
 
-        //$this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true); // it needs?
         if ($this->JsonApi) {
             $this->JsonApi->setConfig('checkMediaType', false);
         }

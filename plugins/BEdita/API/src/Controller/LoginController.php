@@ -97,7 +97,7 @@ class LoginController extends AppController
         }
 
         if ($this->request->getParam('action') === 'change') {
-            // $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+            $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true);
         }
     }
 

@@ -16,7 +16,7 @@ namespace BEdita\API\Policy;
 
 use Authorization\IdentityInterface;
 use Authorization\Policy\RequestPolicyInterface;
-use Authorization\Policy\Result;
+use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
@@ -35,50 +35,14 @@ class EndpointPolicy implements RequestPolicyInterface
     use LocatorAwareTrait;
 
     /**
-     * {@inheritDoc}
-     *
-     * If 'blockAnonymousUsers' is true no access will be granted
-     * to unauthenticated users otherwise authorization check is performed
-     * If 'defaultAuthorized' is set current request is authorized
-     * unless a specific permission is set.
-     */
-    protected $_defaultConfig = [
-        'blockAnonymousUsers' => true,
-        // 'defaultAuthorized' => false,
-    ];
-
-    public function __construct(array $config)
-    {
-        $this->setConfig($config);
-    }
-
-    /**
      * @inheritDoc
      */
     public function canAccess(?IdentityInterface $identity, ServerRequest $request)
     {
-        // check if identity is User. It can be an Application
-        if ($identity !== null && !$identity->getOriginalData() instanceof User) {
-            return false;
-        }
-
-        if ($identity === null && $this->getConfig('blockAnonymousUsers')) {
-            return new Result(false, 'missing identity');
-        }
-
-        // if 'blockAnonymousUsers' configuration is true and user unlogged authorization is denied
-        // if (
-        //     !$this->getConfig('defaultAuthorized') &&
-        //     $this->isAnonymous($user) &&
-        //     $this->getConfig('blockAnonymousUsers')
-        // ) {
-        //     $this->unauthenticated();
-        // }
-        // $this->loadModel('Endpoints');
-        // $this->loadModel('EndpointPermissions');
+        $user = $this->getUser($identity);
 
         /** @var \BEdita\Core\Model\Table\EndpointsTable $Endpoints  */
-        $Endpoints = $this->fetchTable('Endopints');
+        $Endpoints = $this->fetchTable('Endpoints');
         /** @var \BEdita\Core\Model\Table\EndpointPermissionsTable $EndpointPermissions */
         $EndpointPermissions = $this->fetchTable('EndpointPermissions');
 
@@ -90,13 +54,9 @@ class EndpointPolicy implements RequestPolicyInterface
         $permsCount = $EndpointPermissions->fetchCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
-        if ($this->getConfig('defaultAuthorized') && ($endpointId === null || $permsCount === 0)) {
+        if ($request->getAttribute('EndpointDefaultAuthorized') && ($endpointId === null || $permsCount === 0)) {
             return $this->authorized = true;
         }
-
-        // if ($endpointId === null || $permsCount === 0) {
-        //     return new Result(true, 'empty-permission');
-        // }
 
         $permissions = $EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
         $this->authorized = $this->checkPermissions($permissions, $readRequest);
@@ -108,24 +68,42 @@ class EndpointPolicy implements RequestPolicyInterface
         }
 
         // if 'administratorOnly' configuration is true logged user must have administrator role
-        if ($this->authorized && $this->getConfig('administratorOnly')) {
-            $this->authorized = in_array(RolesTable::ADMIN_ROLE, Hash::extract($user, 'roles.{n}.id'));
+        if ($this->authorized && $request->getAttribute('EndpointAdministratorOnly')) {
+            $this->authorized = in_array(RolesTable::ADMIN_ROLE, Hash::extract((array)$user, 'roles.{n}.id'));
         }
 
         if ($identity === null && $this->authorized !== true) {
-            // Anonymous user should not get a 403. Thus, we invoke authentication provider's
-            // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
+            // Anonymous user should not get a 403 but 401.
+            // Furthermore, for anonymous users, `mine` doesn't make any sense,
             // so we treat that as a non-authorized request.
-            // $this->unauthenticated();
             throw new UnauthorizedException();
         }
 
         return $this->isAuthorized();
     }
 
-    protected function getUser(?Identity $identity): ?User
+    /**
+     * Extract user from identity.
+     *
+     * @param \Authorization\IdentityInterface|null $identity The identity
+     * @return array|null
+     */
+    protected function getUser(?IdentityInterface $identity): ?array
     {
-        $usta =
+        if ($identity === null || $identity->getOriginalData() instanceof Application) {
+            return null;
+        }
+
+        $user = $identity->getOriginalData();
+        if ($user instanceof User) {
+            return $user->toArray();
+        }
+
+        if (!is_array($user) && !$user instanceof \ArrayObject) {
+            return null; // throw error?
+        }
+
+        return (array)$user;
     }
 
     /**
@@ -138,31 +116,6 @@ class EndpointPolicy implements RequestPolicyInterface
         // Authorization is granted for both `true` and `'mine'` values.
         return !empty($this->authorized);
     }
-
-    /**
-     * Perform user unauthentication to return 401 Unauthorized
-     * instead of 403 Forbidden
-     *
-     * @return void
-     */
-    // protected function unauthenticated()
-    // {
-    //     $controller = $this->_registry->getController();
-    //     $controller
-    //         ->Auth->getAuthenticate('BEdita/API.Jwt')
-    //         ->unauthenticated($controller->getRequest(), $controller->getResponse());
-    // }
-
-    /**
-     * Check if user is anonymous.
-     *
-     * @param array|\ArrayAccess $user User data.
-     * @return bool
-     */
-    // public function isAnonymous($user)
-    // {
-    //     return !empty($user['_anonymous']);
-    // }
 
     /**
      * Checks if request can be authorized basing on a set of applicable permissions.

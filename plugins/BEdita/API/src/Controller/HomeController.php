@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -10,14 +11,18 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Http\Exception\UnauthorizedException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Laminas\Diactoros\Uri;
 
 /**
  * Controller for `/home` endpoint.
@@ -35,37 +40,37 @@ class HomeController extends AppController
      */
     protected $defaultEndpoints = [
         '/auth' => [
-           'methods' => ['GET', 'POST'],
-           'multiple_types' => false,
+            'methods' => ['GET', 'POST'],
+            'multiple_types' => false,
         ],
         '/admin' => [
             'methods' => 'ALL',
             'multiple_types' => true,
-         ],
-         '/model' => [
+        ],
+        '/model' => [
             'methods' => 'ALL',
             'multiple_types' => true,
-         ],
-         '/roles' => [
+        ],
+        '/roles' => [
             'methods' => 'ALL',
             'multiple_types' => false,
-         ],
-         '/signup' => [
+        ],
+        '/signup' => [
             'methods' => ['POST'],
             'multiple_types' => false,
-         ],
-         '/status' => [
+        ],
+        '/status' => [
             'methods' => ['GET'],
             'multiple_types' => false,
-         ],
-         '/translations' => [
+        ],
+        '/translations' => [
             'methods' => 'ALL',
             'multiple_types' => true,
-         ],
-         '/trash' => [
+        ],
+        '/trash' => [
             'methods' => 'ALL',
             'multiple_types' => true,
-         ],
+        ],
     ];
 
     /**
@@ -153,9 +158,9 @@ class HomeController extends AppController
     protected function objectTypesEndpoints(): array
     {
         $allTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
-                        ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
-                        ->where(['enabled' => true])
-                        ->toArray();
+            ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
+            ->where(['enabled' => true])
+            ->toArray();
         $endPoints = [];
         foreach ($allTypes as $t => $abstract) {
             $endPoints['/' . $t] = [
@@ -181,16 +186,22 @@ class HomeController extends AppController
             return false;
         }
 
-        // set to true temporary
-        return true;
+        // special cases auth and signup
+        if (in_array($endpoint, ['/auth', '/signup']) && $method === 'POST') {
+            return true;
+        }
 
-        // TODO: move to new authorization
-        // $environment = ['REQUEST_METHOD' => $method];
-        // $uri = new Uri($endpoint);
-        // $request = new ServerRequest(compact('environment', 'uri'));
-        // $authorize = $this->Auth->getAuthorize('BEdita/API.Endpoint');
+        $environment = ['REQUEST_METHOD' => $method];
+        $uri = new Uri($endpoint);
+        $request = new ServerRequest(compact('environment', 'uri'));
 
-        // return $authorize->authorize(LoggedUser::getUser(), $request);
+        try {
+            $result = $this->Authorization->canResult($request, 'access')->getStatus();
+        } catch (UnauthorizedException $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
