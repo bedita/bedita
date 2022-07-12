@@ -35,12 +35,9 @@ class SchemaController extends JsonBaseController
     /**
      * {@inheritDoc}
      *
-     * Intentionally left blank to override parent method.
-     * Avoid content-type negotiation checks based on `Accept` header.
-     *
      * @codeCoverageIgnore
      */
-    public function beforeFilter(EventInterface $event)
+    protected function checkAcceptable(): void
     {
     }
 
