@@ -13,7 +13,11 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use Authentication\AuthenticationService;
+use Authorization\AuthorizationService;
+use Authorization\Policy\MapResolver;
 use BEdita\API\Controller\AppController;
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
@@ -90,6 +94,10 @@ class AppControllerTest extends IntegrationTestCase
                 'REQUEST_METHOD' => 'GET',
             ],
         ]);
+        $request = $request->withAttribute('authentication', new AuthenticationService())
+            ->withAttribute('authorization', new AuthorizationService(new MapResolver([
+                ServerRequest::class => EndpointPolicy::class,
+            ])));
 
         $controller = new AppController($request);
 

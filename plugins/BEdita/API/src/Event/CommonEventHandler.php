@@ -12,11 +12,6 @@
  */
 namespace BEdita\API\Event;
 
-use ArrayObject;
-use Authentication\Authenticator\AuthenticatorInterface;
-use Authentication\IdentityInterface;
-use BEdita\Core\Model\Entity\User;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 

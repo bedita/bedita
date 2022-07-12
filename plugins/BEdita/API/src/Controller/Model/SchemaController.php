@@ -15,7 +15,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\JsonSchema;
-use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**

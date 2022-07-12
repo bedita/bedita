@@ -13,13 +13,9 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\API\Controller\LoginController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\Http\Exception\UnauthorizedException;
-use Cake\Http\ServerRequest;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -69,8 +65,12 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', [
             'Content-Type' => 'application/json',
         ]);
-
-        $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'password1']));
+        $body = [
+            'username' => 'first user',
+            'password' => 'password1',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -98,8 +98,12 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
-
-        $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
+        $body = [
+            'username' => 'first user',
+            'password' => 'password1',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', $body);
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -128,8 +132,10 @@ class LoginControllerTest extends IntegrationTestCase
                 'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
-
-        $this->post('/auth', []);
+        $body = [
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
@@ -300,8 +306,10 @@ class LoginControllerTest extends IntegrationTestCase
                 'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
-
-        $this->post('/auth', []);
+        $body = [
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);
@@ -321,7 +329,12 @@ class LoginControllerTest extends IntegrationTestCase
     {
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
 
-        $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
+        $body = [
+            'username' => 'first user',
+            'password' => 'wrongPassword',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
 
         $this->assertResponseCode(401);
     }
@@ -337,7 +350,12 @@ class LoginControllerTest extends IntegrationTestCase
         // using default 'application/vnd.api+json' - wrong content type here
         $this->configRequestHeaders('POST');
 
-        $this->post('/auth', json_encode(['username' => 'first user', 'password' => 'wrongPassword']));
+        $body = [
+            'username' => 'first user',
+            'password' => 'wrongPassword',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);
@@ -737,7 +755,12 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', [
             'Content-Type' => 'application/json',
         ]);
-        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+        $body = [
+            'username' => 'second user',
+            'password' => 'password2',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(401);
@@ -758,7 +781,13 @@ class LoginControllerTest extends IntegrationTestCase
         $usersTable->saveOrFail($user);
 
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+
+        $body = [
+            'username' => 'second user',
+            'password' => 'password2',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
         $this->assertResponseCode(401);
 
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -805,7 +834,13 @@ class LoginControllerTest extends IntegrationTestCase
         $usersTable->saveOrFail($user);
 
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-        $this->post('/auth', json_encode(['username' => 'second user', 'password' => 'password2']));
+
+        $body = [
+            'username' => 'second user',
+            'password' => 'password2',
+            'grant_type' => 'password',
+        ];
+        $this->post('/auth', json_encode($body));
 
         if ($expected) {
             $this->assertResponseCode(200);
@@ -887,7 +922,12 @@ class LoginControllerTest extends IntegrationTestCase
         } elseif (!empty($data['password'])) {
             // login with new password
             $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-            $this->post('/auth', json_encode(['username' => 'first user', 'password' => $data['password']]));
+            $body = [
+                'username' => 'first user',
+                'password' => $data['password'],
+                'grant_type' => 'password',
+            ];
+            $this->post('/auth', json_encode($body));
             $this->assertResponseCode(200);
         }
     }
@@ -907,6 +947,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->post('/auth', json_encode([
             'username' => 'first user',
             'grant_type' => 'otp_request',
+            'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -946,6 +987,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->post('/auth', json_encode([
             'username' => 'second user',
             'grant_type' => 'otp_request',
+            'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -970,6 +1012,7 @@ class LoginControllerTest extends IntegrationTestCase
             'authorization_code' => 'toktoktoktoktok',
             'token' => 'secretsecretsecret',
             'grant_type' => 'otp',
+            'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -997,6 +1040,7 @@ class LoginControllerTest extends IntegrationTestCase
             'authorization_code' => 'toktoktoktoktok',
             'token' => 'secretsecretsecret',
             'grant_type' => 'otp',
+            'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
 

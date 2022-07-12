@@ -219,7 +219,7 @@ class UsersTableTest extends TestCase
     {
         $data = $this->Users->get(1)->toArray();
         $expected = new FrozenTime();
-        $this->Users->dispatchEvent('Auth.afterIdentify', [$data]);
+        $this->Users->dispatchEvent('Authentication.afterIdentify', [$data]);
 
         $lastLogin = $this->Users->get(1)->last_login;
         static::assertNotNull($lastLogin);
@@ -234,7 +234,7 @@ class UsersTableTest extends TestCase
      */
     public function testLoginNoData()
     {
-        $result = $this->Users->dispatchEvent('Auth.afterIdentify', []);
+        $result = $this->Users->dispatchEvent('Authentication.afterIdentify', []);
         static::assertEmpty($result->getData());
         static::assertNull($result->getResult());
     }

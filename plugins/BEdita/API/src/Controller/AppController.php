@@ -120,7 +120,7 @@ class AppController extends Controller
     }
 
     /**
-     * Check if the request is acceptable testing `Accept` header.
+     * Perform HTTP Content Negotiation using `Accept` header.
      *
      * @return void
      * @throws \Cake\Http\Exception\NotAcceptableException If request isn't accetable

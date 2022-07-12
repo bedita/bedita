@@ -36,7 +36,7 @@ class UuidLoginTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', [
             'Authorization' => 'UUID ' . $uuid,
         ]);
-        $this->post('/auth');
+        $this->post('/auth', json_encode(['auth_provider' => 'uuid']));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -68,7 +68,7 @@ class UuidLoginTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', [
             'Authorization' => 'UUID ' . $uuid,
         ]);
-        $this->post('/auth');
+        $this->post('/auth', json_encode(['auth_provider' => 'uuid']));
 
         $this->assertResponseCode(401);
         $this->assertContentType('application/vnd.api+json');

@@ -35,6 +35,18 @@ class EndpointPolicy implements RequestPolicyInterface
     use LocatorAwareTrait;
 
     /**
+     * Cache result of `authorized()` method call.
+     *
+     * This is required for controller to know whether authorization was granted on all contents,
+     * or only on those that belong to the current user. Whatever that means, it is controller's
+     * responsibility to interpret, as it may vary. Some controller may also decide to ignore this
+     * fine-grained authorization level.
+     *
+     * @var bool|string
+     */
+    protected $authorized;
+
+    /**
      * @inheritDoc
      */
     public function canAccess(?IdentityInterface $identity, ServerRequest $request)

@@ -31,6 +31,7 @@ use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication as CakeBaseApplication;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -337,6 +338,9 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     );
                 }
             });
+        if ($service->authenticators()->isEmpty()) {
+            throw new UnauthorizedException();
+        }
 
         return $service;
     }

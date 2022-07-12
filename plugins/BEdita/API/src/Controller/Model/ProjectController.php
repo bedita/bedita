@@ -15,7 +15,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
-use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotAcceptableException;
 
 /**
