@@ -45,7 +45,7 @@ class UuidIdentifier extends TokenIdentifier
             'username' => $credentials[self::CREDENTIAL_TOKEN],
         ];
 
-        /** var \Authentication\Identifier\Resolver\OrmResolver $resolver */
+        /** @var \Authentication\Identifier\Resolver\OrmResolver $resolver */
         $resolver = $this->getResolver();
         $resolver->setConfig('finder', compact('externalAuth'));
 

@@ -57,7 +57,7 @@ class OAuth2Identifier extends AbstractIdentifier
             'username' => $credentials['provider_username'],
         ];
 
-        /** var \Authentication\Identifier\Resolver\OrmResolver $resolver */
+        /** @var \Authentication\Identifier\Resolver\OrmResolver $resolver */
         $resolver = $this->getResolver();
         $resolver->setConfig('finder', compact('externalAuth'));
 
