@@ -178,7 +178,8 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
     {
         $service = new AuthenticationService();
 
-        if ($request->getUri()->getPath() === '/auth' && $request->getMethod() === 'POST') {
+        $path = $request->getUri()->getPath();
+        if (in_array($path, ['/auth', '/auth/optout']) && $request->getMethod() === 'POST') {
             // Load authenticators and identifiers based on `grant_type`
             $body = (array)$request->getParsedBody();
             $grantType = (string)Hash::get($body, 'grant_type');
@@ -245,7 +246,10 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
 
         // Load authenticators
         $service->loadAuthenticator('Authentication.Form', [
-            'loginUrl' => ['_name' => 'api:login'],
+            'loginUrl' => [
+                ['_name' => 'api:login'],
+                ['_name' => 'api:login:optout'],
+            ],
             'urlChecker' => 'Authentication.CakeRouter',
         ]);
 

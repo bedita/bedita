@@ -110,6 +110,8 @@ class LoginController extends AppController
     {
         if ($this->request->getParam('action') === 'change') {
             return false;
+        } elseif ($this->request->getParam('action') === 'whoami') {
+            return true;
         }
 
         return parent::isIdentityRequired();

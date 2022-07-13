@@ -17,6 +17,7 @@ namespace BEdita\API\Middleware;
 use Authentication\AuthenticationServiceInterface;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,6 +38,11 @@ class LoggedUserMiddleware implements MiddlewareInterface
             !$service instanceof AuthenticationServiceInterface ||
             empty($service->getIdentity())
         ) {
+            $path = $request->getUri()->getPath();
+            if (in_array($path, ['/auth', '/auth/optout']) && $request->getMethod() === 'POST') {
+                throw new UnauthorizedException(__('Login request not successful'));
+            }
+
             return $handler->handle($request);
         }
 
