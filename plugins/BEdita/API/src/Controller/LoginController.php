@@ -35,7 +35,6 @@ use Cake\Utility\Inflector;
  *
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\UsersTable $Users
- * @property \BEdita\Core\Model\Table\AuthProvidersTable $AuthProviders
  */
 class LoginController extends AppController
 {
@@ -61,40 +60,13 @@ class LoginController extends AppController
     {
         parent::initialize();
 
-        $this->loadModel('Users');
-        $this->loadModel('AuthProviders');
+        $this->Users = $this->fetchTable('Users');
 
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('parseJson', false);
         }
 
-        if (in_array($this->request->getParam('action'), ['login', 'optout'])) {
-            // $authenticationComponents = [
-            //     AuthComponent::ALL => [
-            //       'finder' => 'loginRoles',
-            //     ],
-            //     'Form' => [
-            //         'fields' => [
-            //             'username' => 'username',
-            //             'password' => 'password_hash',
-            //         ],
-            //         'passwordHasher' => self::PASSWORD_HASHER,
-            //     ],
-            //     'BEdita/API.Jwt',
-            // ];
-
-            // $authenticationComponents += $this->AuthProviders
-            //     ->find('authenticate')
-            //     ->toArray();
-
-            // $this->Auth->setConfig('authenticate', $authenticationComponents, false);
-        }
-
         $this->Authentication->allowUnauthenticated(['login']);
-
-        if ($this->request->getParam('action') === 'optout') {
-            // $this->Auth->setConfig('loginAction', ['_name' => 'api:login:optout']);
-        }
 
         if ($this->request->getParam('action') === 'change') {
             $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true);
@@ -128,9 +100,6 @@ class LoginController extends AppController
     {
         $this->setSerialize([]);
 
-        $this->setGrantType();
-        $this->checkClientCredentials();
-
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
@@ -141,28 +110,6 @@ class LoginController extends AppController
         $user = $this->reducedUserData($result);
         $meta = $this->jwtTokens($user);
         $this->set('_meta', $meta);
-    }
-
-    /**
-     * Try to setup appropriate grant type if missing looking at request data.
-     * `grant_type` should be always set explicitly in request data.
-     *
-     * @return void
-     */
-    protected function setGrantType(): void
-    {
-        // if (!empty($this->request->getData('grant_type'))) {
-        //     return;
-        // }
-
-        // $data = $this->request->getData();
-        // if (empty($data)) {
-        //     $this->request = $this->request->withData('grant_type', 'refresh_token');
-        // } elseif (!empty($data['username']) && !empty($data['password'])) {
-        //     $this->request = $this->request->withData('grant_type', 'password');
-        // } elseif (!empty($data['client_id'])) {
-        //     $this->request = $this->request->withData('grant_type', 'client_credentials');
-        // }
     }
 
     /**
@@ -216,23 +163,6 @@ class LoginController extends AppController
             return [];
         }
 
-        // if ($this->request->getData('password')) {
-        //     $this->request = $this->request
-        //         ->withData('password_hash', $this->request->getData('password'))
-        //         ->withData('password', null);
-        // }
-
-        // $result = $this->Auth->identify();
-        // if (!$result || !is_array($result)) {
-        //     throw new UnauthorizedException(__('Login request not successful'));
-        // }
-        // // Result is a user; check endpoint permission on `/auth`
-        // if (empty($result['authorization_code']) && !$this->Auth->isAuthorized($result)) {
-        //     throw new UnauthorizedException(__('Login not authorized'));
-        // }
-
-        // return $result;
-
         if (!$this->Authentication->getResult()->isValid()) {
             throw new UnauthorizedException(__('Login request not successful'));
         }
@@ -260,43 +190,6 @@ class LoginController extends AppController
         }
 
         return $this->Authentication->getIdentity()->getOriginalData() instanceof Application;
-
-        // $grant = $this->request->getData('grant_type');
-        // if (
-        //     $grant === 'client_credentials' ||
-        //     ($grant === 'refresh_token' && $this->Auth->getConfig('renewClientCredentials') === true)
-        // ) {
-        //     return true;
-        // }
-
-        // return false;
-    }
-
-    /**
-     * Verify client application credentials `client_id/client_secret`.
-     * Upon success the matching application is set via `CurrentApplication` otherwise
-     * an `UnauthorizedException` will be thrown.
-     *
-     * @return void
-     * @throws \Cake\Http\Exception\UnauthorizedException
-     */
-    protected function checkClientCredentials(): void
-    {
-        // $grantType = $this->request->getData('grant_type');
-        // if (empty($this->request->getData('client_id')) && $grantType !== 'client_credentials') {
-        //     return;
-        // }
-        // /** @var \BEdita\Core\Model\Entity\Application|null $application */
-        // $application = TableRegistry::getTableLocator()->get('Applications')
-        //     ->find('credentials', [
-        //         'client_id' => $this->request->getData('client_id'),
-        //         'client_secret' => $this->request->getData('client_secret'),
-        //     ])
-        //     ->first();
-        // if (empty($application)) {
-        //     throw new UnauthorizedException(__('App authentication failed'));
-        // }
-        // CurrentApplication::setApplication($application);
     }
 
     /**
@@ -410,10 +303,6 @@ class LoginController extends AppController
      */
     protected function userEntity()
     {
-        // $userId = $this->Auth->user('id');
-        // if (!$userId) {
-        //     $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
-        // }
         $userId = $this->Authentication->getIdentityData('id');
         $contain = $this->prepareInclude($this->request->getQuery('include'));
         $contain = array_unique(array_merge($contain, ['Roles']));

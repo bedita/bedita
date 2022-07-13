@@ -64,18 +64,6 @@ class AppController extends Controller
             $this->paginate['className'] = JsonApiPaginator::class;
         }
 
-        // $this->loadComponent('Auth', [
-        //     'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-        //     'authorize' => [
-        //         'BEdita/API.Endpoint' => [
-        //             'blockAnonymousUsers' => Configure::read('Security.blockAnonymousUsers'),
-        //         ],
-        //     ],
-        //     'loginAction' => ['_name' => 'api:login'],
-        //     'loginRedirect' => ['_name' => 'api:login'],
-        //     'unauthorizedRedirect' => false,
-        //     'storage' => 'Memory',
-        // ]);
         $this->loadComponent('Authentication.Authentication', [
             'requireIdentity' => $this->isIdentityRequired(),
         ]);
