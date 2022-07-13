@@ -1062,6 +1062,7 @@ class LoginControllerTest extends IntegrationTestCase
                 [
                     'username' => 'second user',
                     'password' => 'password2',
+                    'grant_type' => 'password',
                 ],
             ],
             'auth code' => [
@@ -1073,6 +1074,7 @@ class LoginControllerTest extends IntegrationTestCase
                 [
                     'username' => 'second user',
                     'grant_type' => 'otp_request',
+                    'auth_provider' => 'otp',
                 ],
             ],
             'unauth' => [
@@ -1080,6 +1082,7 @@ class LoginControllerTest extends IntegrationTestCase
                 [
                     'username' => 'second user',
                     'password' => 'wrongPassword',
+                    'grant_type' => 'password',
                 ],
             ],
         ];
