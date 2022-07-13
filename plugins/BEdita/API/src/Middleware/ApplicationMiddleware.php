@@ -16,7 +16,6 @@ namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\JwtAuthenticator;
-use Authentication\Authenticator\TokenAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Authenticator\ApplicationAuthenticator;
 use BEdita\Core\Model\Entity\Application;
@@ -25,6 +24,8 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,6 +38,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ApplicationMiddleware implements MiddlewareInterface
 {
     use InstanceConfigTrait;
+    use LocatorAwareTrait;
 
     /**
      * Default configuration.
@@ -74,7 +76,7 @@ class ApplicationMiddleware implements MiddlewareInterface
         $provider = $service->getAuthenticationProvider();
         if ($provider instanceof ApplicationAuthenticator) {
             $payload = $service->getIdentity()->getOriginalData();
-        } elseif (!$provider instanceof TokenAuthenticator || !method_exists($provider, 'getPayload')) {
+        } elseif (!$provider instanceof JwtAuthenticator) {
             $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
             try {
                 $payload = $provider->getPayload($request);
@@ -107,14 +109,37 @@ class ApplicationMiddleware implements MiddlewareInterface
 
         $app = $payload->app ?? null;
         if (!empty($app) && !empty($app->id)) {
-            $app = json_decode(json_encode($app), true);
-            $application = new Application($app);
-            CurrentApplication::setApplication($application);
+            $this->setupFromPayload($app, $request);
 
             return;
         }
 
         $this->applicationFromApiKey($request);
+    }
+
+    /**
+     * Setup application from payload, perform additional checks on `refresh_token` grant type
+     *
+     * @param object $appPayload Application payload
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object
+     * @return void
+     */
+    protected function setupFromPayload(object $appPayload, ServerRequestInterface $request): void
+    {
+        $body = (array)$request->getParsedBody();
+        if (Hash::get($body, 'grant_type') === 'refresh_token') {
+            $application = $this->fetchTable('Applications')->find('enabled')
+                ->where(['id' => $appPayload->id])
+                ->first();
+            if (empty($application)) {
+                // renew app payload failed
+                throw new UnauthorizedException(__('Application unauthorized'));
+            }
+        } else {
+            $application = new Application(json_decode(json_encode($appPayload), true));
+        }
+
+        CurrentApplication::setApplication($application);
     }
 
     /**

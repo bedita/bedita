@@ -163,10 +163,6 @@ class LoginController extends AppController
             return [];
         }
 
-        if (!$this->Authentication->getResult()->isValid()) {
-            throw new UnauthorizedException(__('Login request not successful'));
-        }
-
         $result = $this->Authentication->getIdentity()->getOriginalData();
         if (is_array($result)) {
             return $result;

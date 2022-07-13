@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
@@ -119,164 +120,27 @@ class LoginControllerTest extends IntegrationTestCase
      * @depends testLoginOkJson
      * @covers ::login()
      * @covers ::identify()
-     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testSuccessfulRenew(array $meta)
+    public function testSuccessfulRenew(array $meta): void
     {
         sleep(1);
 
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
+                'Content-Type' => 'application/json',
                 'Accept' => 'application/vnd.api+json',
                 'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
         $body = [
-            'grant_type' => 'password',
+            'grant_type' => 'refresh_token',
         ];
         $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
-    }
-
-    /**
-     * Data provider for `testSetGrantType`
-     *
-     * @return array
-     */
-    // public function setGrantTypeProvider(): array
-    // {
-    //     return [
-    //         'password' => [
-    //             'password',
-    //             [
-    //                 'username' => 'first user',
-    //                 'password' => 'password1',
-    //                 'grant_type' => 'password',
-    //             ],
-    //         ],
-    //         'refresh_token' => [
-    //             'refresh_token',
-    //             [
-    //                 'grant_type' => 'password',
-    //             ],
-    //         ],
-    //         'client_credentials' => [
-    //             'client_credentials',
-    //             ['client_id' => API_KEY],
-    //         ],
-    //     ];
-    // }
-
-    /**
-     * Test `setGrantType()` method
-     *
-     * @param string $expected Expected result.
-     * @param array $post POST data.
-     * @return void
-     * @dataProvider setGrantTypeProvider
-     * @covers ::setGrantType()
-     */
-    // public function testSetGrantType(string $expected, array $post): void
-    // {
-    //     $request = new ServerRequest(compact('post') + [
-    //         'environment' => [
-    //             'REQUEST_METHOD' => 'POST',
-    //         ],
-    //     ]);
-    //     $controller = new LoginController($request);
-    //     $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-    //     try {
-    //         $controller->login();
-    //     } catch (\Cake\Routing\Exception\MissingRouteException $e) {
-    //     }
-
-    //     static::assertEquals($expected, $controller->getRequest()->getData('grant_type'));
-    // }
-
-    /**
-     * Data provider for `testCheckClientCredentials`
-     *
-     * @return array
-     */
-    // public function checkClientCredentialsProvider(): array
-    // {
-    //     return [
-    //         'null' => [
-    //             null,
-    //             [
-    //                 'username' => 'first user',
-    //                 'password' => 'password1',
-    //                 'grant_type' => 'password',
-    //             ],
-    //         ],
-    //         'client_credentials' => [
-    //             1,
-    //             [
-    //                 'grant_type' => 'client_credentials',
-    //                 'client_id' => API_KEY,
-    //             ],
-    //         ],
-    //         'fail' => [
-    //             new UnauthorizedException('App authentication failed'),
-    //             ['client_id' => 'gustavo'],
-    //         ],
-    //     ];
-    // }
-
-    /**
-     * Test `checkClientCredentials()` method
-     *
-     * @param mixed $expected Expected result.
-     * @param array $post POST data.
-     * @return void
-     * @dataProvider checkClientCredentialsProvider
-     * @covers ::checkClientCredentials()
-     * @covers ::clientCredentialsOnly()
-     */
-    // public function testCheckClientCredentials($expected, array $post): void
-    // {
-    //     if ($expected instanceof \Exception) {
-    //         $this->expectException(get_class($expected));
-    //         $this->expectExceptionMessage($expected->getMessage());
-    //     }
-    //     CurrentApplication::setApplication(null);
-    //     $request = new ServerRequest(compact('post') + [
-    //         'environment' => [
-    //             'REQUEST_METHOD' => 'POST',
-    //         ],
-    //     ]);
-    //     $controller = new LoginController($request);
-    //     $controller->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
-    //     try {
-    //         $controller->login();
-    //     } catch (\Cake\Routing\Exception\MissingRouteException $e) {
-    //     }
-
-    //     static::assertEquals($expected, CurrentApplication::getApplicationId());
-    // }
-
-    /**
-     * Test login with client credentials
-     *
-     * @return void
-     * @covers ::checkClientCredentials()
-     * @covers ::identify()
-     */
-    public function testClientCredentials(): void
-    {
-        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
-        $this->post('/auth', json_encode(['client_id' => API_KEY, 'grant_type' => 'client_credentials']));
-
-        $this->assertResponseCode(200);
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        static::assertArrayHasKey('meta', $result);
-        static::assertArrayHasKey('jwt', $result['meta']);
-        static::assertArrayHasKey('renew', $result['meta']);
     }
 
     /**
@@ -287,9 +151,8 @@ class LoginControllerTest extends IntegrationTestCase
      * @depends testLoginOkJson
      * @covers ::login()
      * @covers ::identify()
-     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testFailedRenew(array $meta)
+    public function testFailedRenew(array $meta): void
     {
         sleep(1);
 
@@ -302,12 +165,13 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
+                'Content-Type' => 'application/json',
                 'Accept' => 'application/vnd.api+json',
                 'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
         $body = [
-            'grant_type' => 'password',
+            'grant_type' => 'refresh_token',
         ];
         $this->post('/auth', json_encode($body));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -340,12 +204,119 @@ class LoginControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test client credentials grant
+     *
+     * @return array
+     * @covers ::identify()
+     */
+    public function testClientCredentials(): array
+    {
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $this->post('/auth', json_encode(['client_id' => API_KEY, 'grant_type' => 'client_credentials']));
+
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('meta', $result);
+        static::assertArrayHasKey('jwt', $result['meta']);
+        static::assertArrayHasKey('renew', $result['meta']);
+
+        return $result['meta'];
+    }
+
+    /**
+     * Test renew client credentials
+     *
+     * @param array $meta Client credentials metadata.
+     * @return void
+     * @depends testClientCredentials
+     * @covers ::checkClientCredentials()
+     * @covers ::identify()
+     */
+    public function testRenewClientCredentials(array $meta): void
+    {
+        sleep(1);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $meta['renew']),
+            ],
+        ]);
+        $body = [
+            'grant_type' => 'refresh_token',
+        ];
+        $this->post('/auth', json_encode($body));
+
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        static::assertArrayHasKey('meta', $result);
+        static::assertArrayHasKey('jwt', $result['meta']);
+        static::assertArrayHasKey('renew', $result['meta']);
+    }
+
+    /**
+     * Test client credentials renew failure
+     *
+     * @return void
+     * @covers ::identify()
+     */
+    public function testFailedRenewClientCredentials(): void
+    {
+        $Applications = $this->fetchTable('Applications');
+        $app = $Applications->get(2);
+        $app->set('enabled', true);
+        $Applications->saveOrFail($app);
+        $this->fetchTable('EndpointPermissions')->deleteAll([]);
+
+        $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
+        $body = [
+            'client_id' => 'abcdef12345',
+            'client_secret' => 'topsecretstring',
+            'grant_type' => 'client_credentials',
+        ];
+        $this->post('/auth', json_encode($body));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('meta', $result);
+        static::assertArrayHasKey('renew', $result['meta']);
+
+        // disable application
+        CurrentApplication::setApplication(null);
+        $app->set('enabled', false);
+        $Applications->saveOrFail($app);
+
+        // try to refresh client credentials token
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $result['meta']['renew']),
+            ],
+        ]);
+        $body = [
+            'grant_type' => 'refresh_token',
+        ];
+        $this->post('/auth', json_encode($body));
+
+        $this->assertResponseCode(401);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('error', $result);
+        static::assertEquals('Application unauthorized', $result['error']['title']);
+        static::assertEquals('401', $result['error']['status']);
+    }
+
+    /**
      * Test login method with wrong content type
      *
      * @return void
      * @covers ::login()
      */
-    public function testWrongContentTypeLogin()
+    public function testWrongContentTypeLogin(): void
     {
         // using default 'application/vnd.api+json' - wrong content type here
         $this->configRequestHeaders('POST');
@@ -370,11 +341,11 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::login()
      * @covers ::identify()
      */
-    public function testLoginAuthorizationDenied()
+    public function testLoginAuthorizationDenied(): void
     {
         // Permissions on endpoint `/auth` for application id 2 and role 2 is 0b0001 --> write NO, read MINE
         // POST /auth with role id 2 on application id 2 MUST fail
-        $table = TableRegistry::getTableLocator()->get('Applications');
+        $table = $this->fetchTable('Applications');
         $app = $table->get(2);
         $app->set('enabled', true);
         $app->set('client_secret', null);
@@ -395,9 +366,9 @@ class LoginControllerTest extends IntegrationTestCase
         $this->post('/auth', json_encode($data));
         $result = json_decode((string)$this->_response->getBody(), true);
 
-        $this->assertResponseCode(401);
+        $this->assertResponseCode(403);
         static::assertArrayHasKey('error', $result);
-        static::assertEquals('Login not authorized', $result['error']['title']);
+        static::assertStringContainsString('Identity is not authorized', $result['error']['title']);
     }
 
     /**
@@ -408,9 +379,8 @@ class LoginControllerTest extends IntegrationTestCase
      * @depends testLoginOkJson
      * @covers ::whoami()
      * @covers ::userEntity()
-     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testLoggedUser(array $meta)
+    public function testLoggedUser(array $meta): void
     {
         $headers = [
             'Host' => 'api.example.com',
@@ -448,7 +418,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::whoami()
      * @covers ::userEntity()
      */
-    public function testLoggedUserBlocked(array $meta)
+    public function testLoggedUserBlocked(array $meta): void
     {
         sleep(1);
 
@@ -481,7 +451,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::whoami()
      * @covers ::userEntity()
      */
-    public function testLoggedUserFail()
+    public function testLoggedUserFail(): void
     {
         $this->configRequestHeaders();
 
@@ -497,7 +467,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @depends testLoginOkJson
      * @covers ::findAssociation()
      */
-    public function testFindAssociation(array $meta)
+    public function testFindAssociation(array $meta): void
     {
         $this->configRequest([
             'headers' => [
@@ -525,7 +495,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @depends testLoginOkJson
      * @covers ::findAssociation()
      */
-    public function testFindAssociationError(array $meta)
+    public function testFindAssociationError(array $meta): void
     {
         $this->configRequest([
             'headers' => [
@@ -553,7 +523,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    protected function removePermissions()
+    protected function removePermissions(): void
     {
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['endpoint_id' => 1]);
         TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll(['endpoint_id IS NULL']);
@@ -566,7 +536,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @covers ::change()
      * @covers ::initialize()
      */
-    public function testChangeRequest()
+    public function testChangeRequest(): void
     {
         $this->removePermissions();
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);

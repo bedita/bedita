@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\JwtAuthenticator;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\UnauthorizedException;
@@ -54,6 +55,15 @@ class LoggedUserMiddleware implements MiddlewareInterface
             LoggedUser::setUser($result);
         } elseif ($result instanceof User) {
             LoggedUser::setUser($result->toArray());
+        } else {
+            // check payload if a token refresh with user data failed
+            $provider = $service->getAuthenticationProvider();
+            if ($provider instanceof JwtAuthenticator) {
+                $payload = $provider->getPayload();
+                if (!empty($payload) && !empty($payload->sub)) {
+                    throw new UnauthorizedException(__('Login request not successful'));
+                }
+            }
         }
 
         return $handler->handle($request);

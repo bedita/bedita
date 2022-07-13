@@ -196,6 +196,19 @@ class ApplicationsTable extends Table
     }
 
     /**
+     * Finder to find all enabled applications
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @return \Cake\ORM\Query
+     */
+    protected function findEnabled(Query $query): Query
+    {
+        return $query->where([
+            $this->aliasField('enabled') => true,
+        ]);
+    }
+
+    /**
      * Before delete checks: if applications is DEFAULT_APPLICATION or current raise a ImmutableResourceException
      *
      * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
