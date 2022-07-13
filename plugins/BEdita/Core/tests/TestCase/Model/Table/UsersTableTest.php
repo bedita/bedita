@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Authentication\Identity;
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\WeakPasswordHasher;
@@ -217,9 +218,9 @@ class UsersTableTest extends TestCase
      */
     public function testLogin()
     {
-        $data = $this->Users->get(1)->toArray();
+        $identity = new Identity($this->Users->get(1));
         $expected = new FrozenTime();
-        $this->Users->dispatchEvent('Authentication.afterIdentify', [$data]);
+        $this->Users->dispatchEvent('Authentication.afterIdentify', compact('identity'));
 
         $lastLogin = $this->Users->get(1)->last_login;
         static::assertNotNull($lastLogin);
