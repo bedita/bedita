@@ -106,7 +106,7 @@ class StreamsShell extends Shell
         $query = $this->Streams->find('all');
         if ((bool)$this->param('force') === false) {
             $query = $query->where(function (QueryExpression $exp): QueryExpression {
-                return $exp->or_(function (QueryExpression $exp): QueryExpression {
+                return $exp->or(function (QueryExpression $exp): QueryExpression {
                     return $exp
                         ->eq($this->Streams->aliasField('file_size'), 0)
                         ->isNull($this->Streams->aliasField('width'))
