@@ -171,33 +171,44 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
     /**
      * Returns an authentication service instance.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request data.
      * @return \Authentication\AuthenticationServiceInterface
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        $service = new AuthenticationService();
-
-        $path = $request->getUri()->getPath();
-        if (in_array($path, ['/auth', '/auth/optout']) && $request->getMethod() === 'POST') {
-            // Load authenticators and identifiers based on `grant_type`
-            $body = (array)$request->getParsedBody();
-            $grantType = (string)Hash::get($body, 'grant_type');
-            $method = sprintf('%sGrantType', Inflector::variable($grantType));
-            if (method_exists($this, $method)) {
-                return call_user_func_array([$this, $method], [$service]);
-            }
-            $provider = (string)Hash::get($body, 'auth_provider');
-
-            return $this->loadAuthProviders($service, $provider);
+        if (in_array($request->getUri()->getPath(), ['/auth', '/auth/optout'])) {
+            return $this->loginAuthentication($request);
         }
 
+        $service = new AuthenticationService();
         $service->loadAuthenticator('Authentication.Jwt', [
             'algorithm' => Configure::read('Security.jwt.algorithm', 'HS256'),
             'subjectKey' => 'id',
         ]);
 
         return $service;
+    }
+
+    /**
+     * Setup authentication service for login and opt-out use cases.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request data.
+     * @return \Authentication\AuthenticationService
+     */
+    protected function loginAuthentication(ServerRequestInterface $request): AuthenticationService
+    {
+        $service = new AuthenticationService();
+        // Load authenticators and identifiers based on `grant_type`
+        $body = (array)$request->getParsedBody();
+        $grantType = (string)Hash::get($body, 'grant_type');
+        $method = sprintf('%sGrantType', Inflector::variable($grantType));
+        if (method_exists($this, $method)) {
+            return call_user_func_array([$this, $method], [$service]);
+        }
+        // Use `auth_provider` if no matching grant type was found
+        $provider = (string)Hash::get($body, 'auth_provider');
+
+        return $this->loadAuthProviders($service, $provider);
     }
 
     /**

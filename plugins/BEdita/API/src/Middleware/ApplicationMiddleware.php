@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Authenticator\ApplicationAuthenticator;
@@ -75,21 +76,38 @@ class ApplicationMiddleware implements MiddlewareInterface
 
         $provider = $service->getAuthenticationProvider();
         if ($provider instanceof ApplicationAuthenticator) {
-            $payload = $service->getIdentity()->getOriginalData();
-        } elseif (!$provider instanceof JwtAuthenticator) {
-            $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
-            try {
-                $payload = $provider->getPayload($request);
-            } catch (\Exception $e) {
-                $payload = null;
-            }
-        } else {
-            $payload = $provider->getPayload();
+            /** @var \BEdita\Core\Model\Entity\Application $application */
+            $application = $service->getIdentity()->getOriginalData();
+            CurrentApplication::setApplication($application);
+
+            return $handler->handle($request);
         }
 
+        $payload = $this->readPayload($provider, $request);
         $this->readApplication($payload, $request);
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Try to read paylod from authenticator class.
+     *
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $provider Authenticator provider
+     * @param \Psr\Http\Message\ServerRequestInterface $request Server request
+     * @return object|null
+     */
+    protected function readPayload(?AuthenticatorInterface $provider, ServerRequestInterface $request): ?object
+    {
+        if (!$provider instanceof JwtAuthenticator) {
+            $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
+            try {
+                return $provider->getPayload($request);
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        return $provider->getPayload();
     }
 
     /**
@@ -101,12 +119,6 @@ class ApplicationMiddleware implements MiddlewareInterface
      */
     protected function readApplication(?object $payload, ServerRequestInterface $request): void
     {
-        if ($payload instanceof Application) {
-            CurrentApplication::setApplication($payload);
-
-            return;
-        }
-
         $app = $payload->app ?? null;
         if (!empty($app) && !empty($app->id)) {
             $this->setupFromPayload($app, $request);

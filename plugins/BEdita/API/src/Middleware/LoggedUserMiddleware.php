@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\LoggedUser;
@@ -39,14 +40,26 @@ class LoggedUserMiddleware implements MiddlewareInterface
             !$service instanceof AuthenticationServiceInterface ||
             empty($service->getIdentity())
         ) {
-            $path = $request->getUri()->getPath();
-            if (in_array($path, ['/auth', '/auth/optout']) && $request->getMethod() === 'POST') {
+            if (in_array($request->getUri()->getPath(), ['/auth', '/auth/optout'])) {
                 throw new UnauthorizedException(__('Login request not successful'));
             }
 
             return $handler->handle($request);
         }
 
+        $this->setupLoggedUser($service);
+
+        return $handler->handle($request);
+    }
+
+    /**
+     * Set logged user and check payload if no user was found.
+     *
+     * @param \Authentication\AuthenticationServiceInterface $service Authentication service
+     * @return void
+     */
+    protected function setupLoggedUser(AuthenticationServiceInterface $service): void
+    {
         $result = $service->getIdentity()->getOriginalData();
         if (
             (is_array($result) || $result instanceof \ArrayObject) &&
@@ -56,16 +69,26 @@ class LoggedUserMiddleware implements MiddlewareInterface
         } elseif ($result instanceof User) {
             LoggedUser::setUser($result->toArray());
         } else {
-            // check payload if a token refresh with user data failed
-            $provider = $service->getAuthenticationProvider();
-            if ($provider instanceof JwtAuthenticator) {
-                $payload = $provider->getPayload();
-                if (!empty($payload) && !empty($payload->sub)) {
-                    throw new UnauthorizedException(__('Login request not successful'));
-                }
-            }
+            $this->checkPayload($service->getAuthenticationProvider());
+        }
+    }
+
+    /**
+     * Check payload if no user has been found by authenticators.
+     * In this case a `refresh_token` failure has happened.
+     *
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $provider Authenticator class.
+     * @return void
+     */
+    protected function checkPayload(?AuthenticatorInterface $provider): void
+    {
+        if (!$provider instanceof JwtAuthenticator) {
+            return;
         }
 
-        return $handler->handle($request);
+        $payload = $provider->getPayload();
+        if (!empty($payload) && !empty($payload->sub)) {
+            throw new UnauthorizedException(__('Login request not successful'));
+        }
     }
 }
