@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Controller;
 
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -67,7 +68,7 @@ class LoginController extends AppController
         }
 
         if ($this->request->getParam('action') === 'change') {
-            $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true);
+            $this->request = $this->request->withAttribute(EndpointPolicy::DEFAULT_AUTHORIZED, true);
         }
     }
 

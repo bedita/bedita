@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Model\Action\ActionTrait;
 
 /**
@@ -31,7 +32,7 @@ class SignupController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true);
+        $this->request = $this->request->withAttribute(EndpointPolicy::DEFAULT_AUTHORIZED, true);
 
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('parseJson', false);

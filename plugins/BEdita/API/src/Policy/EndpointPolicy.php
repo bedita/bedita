@@ -35,6 +35,20 @@ class EndpointPolicy implements RequestPolicyInterface
     use LocatorAwareTrait;
 
     /**
+     * Endpoint accessible only to administrator role.
+     *
+     * @var string
+     */
+    public const ADMINISTRATOR_ONLY = 'EndpointAdministratorOnly';
+
+    /**
+     * Endpoint authorized by default.
+     *
+     * @var string
+     */
+    public const DEFAULT_AUTHORIZED = 'EndpointDefaultAuthorized';
+
+    /**
      * Cache result of `authorized()` method call.
      *
      * This is required for controller to know whether authorization was granted on all contents,
@@ -66,7 +80,7 @@ class EndpointPolicy implements RequestPolicyInterface
         $permsCount = $EndpointPermissions->fetchCount($endpointId);
 
         // If request si authorized and no permission is set on it then it is authorized for anyone
-        if ($request->getAttribute('EndpointDefaultAuthorized') && ($endpointId === null || $permsCount === 0)) {
+        if ($request->getAttribute(static::DEFAULT_AUTHORIZED) && ($endpointId === null || $permsCount === 0)) {
             return $this->authorized = true;
         }
 
@@ -80,7 +94,7 @@ class EndpointPolicy implements RequestPolicyInterface
         }
 
         // if 'administratorOnly' configuration is true logged user must have administrator role
-        if ($this->authorized && $request->getAttribute('EndpointAdministratorOnly')) {
+        if ($this->authorized && $request->getAttribute(static::ADMINISTRATOR_ONLY)) {
             $this->authorized = in_array(RolesTable::ADMIN_ROLE, Hash::extract((array)$user, 'roles.{n}.id'));
         }
 
