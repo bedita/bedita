@@ -66,8 +66,6 @@ class LoginController extends AppController
             $this->JsonApi->setConfig('parseJson', false);
         }
 
-        $this->Authentication->allowUnauthenticated(['login']);
-
         if ($this->request->getParam('action') === 'change') {
             $this->request = $this->request->withAttribute('EndpointDefaultAuthorized', true);
         }
@@ -103,7 +101,7 @@ class LoginController extends AppController
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
-            $this->set('_meta', ['authorization_code' => $result['authorization_code']]);
+            $this->set('_meta', $result);
 
             return;
         }
@@ -124,12 +122,12 @@ class LoginController extends AppController
      */
     public function optout(): ?Response
     {
+        $this->setSerialize([]);
+
         $result = $this->identify();
         // Check if result contains only an authorization code (OTP & 2FA use cases)
         if (!empty($result['authorization_code']) && count($result) === 1) {
-            $meta = ['authorization_code' => $result['authorization_code']];
-            $this->setSerialize([]);
-            $this->set('_meta', $meta);
+            $this->set('_meta', $result);
 
             return null;
         }
@@ -157,35 +155,18 @@ class LoginController extends AppController
      */
     protected function identify(): array
     {
-        $this->request->allowMethod('post');
-
-        if ($this->clientCredentialsOnly()) {
+        /** @var \BEdita\Core\Model\Entity\Application|\BEdita\Core\Model\Entity\User|array $result */
+        $result = $this->Authentication->getIdentity()->getOriginalData();
+        // if identity is an Application we have `client_credentials` grant type or
+        // `refresh_token` grant type with only client credentials
+        if ($result instanceof Application) {
             return [];
         }
-
-        $result = $this->Authentication->getIdentity()->getOriginalData();
         if (is_array($result)) {
             return $result;
         }
 
         return $result->toArray();
-    }
-
-    /**
-     * Check if we are dealing with client credentials only.
-     * In case of `client_credentials` grant type or `refresh_token` grant type
-     * with only client credentials renew we avoid user identification and return
-     * only application related tokens.
-     *
-     * @return bool
-     */
-    protected function clientCredentialsOnly(): bool
-    {
-        if (empty($this->Authentication->getIdentity())) {
-            return false;
-        }
-
-        return $this->Authentication->getIdentity()->getOriginalData() instanceof Application;
     }
 
     /**

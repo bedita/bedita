@@ -230,7 +230,6 @@ class LoginControllerTest extends IntegrationTestCase
      * @param array $meta Client credentials metadata.
      * @return void
      * @depends testClientCredentials
-     * @covers ::checkClientCredentials()
      * @covers ::identify()
      */
     public function testRenewClientCredentials(array $meta): void
@@ -340,6 +339,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::login()
      * @covers ::identify()
+     * @covers ::isIdentityRequired()
      */
     public function testLoginAuthorizationDenied(): void
     {
@@ -378,6 +378,7 @@ class LoginControllerTest extends IntegrationTestCase
      * @return void
      * @depends testLoginOkJson
      * @covers ::whoami()
+     * @covers ::isIdentityRequired()
      * @covers ::userEntity()
      */
     public function testLoggedUser(array $meta): void
@@ -401,13 +402,6 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertEquals(1, count($result['included']));
         $this->assertEquals(1, $result['included'][0]['id']);
         $this->assertEquals('roles', $result['included'][0]['type']);
-
-        // GET /auth *deprecated*
-        $this->configRequest(compact('headers'));
-        $this->get('/auth');
-        $this->assertResponseCode(200);
-        $result2 = json_decode((string)$this->_response->getBody(), true);
-        $this->assertEquals($result['data']['attributes'], $result2['data']['attributes']);
     }
 
     /**
@@ -441,6 +435,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertResponseCode(401);
         $expected = self::NOT_SUCCESSFUL_EXPECTED_RESULT;
         $expected['error']['title'] = 'Request not authorized';
+        $expected['links']['self'] .= '/user';
         static::assertEquals($expected, Hash::remove($result, 'error.meta'));
     }
 
@@ -449,6 +444,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::whoami()
+     * @covers ::isIdentityRequired()
      * @covers ::userEntity()
      */
     public function testLoggedUserFail(): void
@@ -534,6 +530,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::change()
+     * @covers ::isIdentityRequired()
      * @covers ::initialize()
      */
     public function testChangeRequest(): void
@@ -579,6 +576,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::change()
+     * @covers ::isIdentityRequired()
      */
     public function testPerformChange()
     {
@@ -907,7 +905,6 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::login()
-     * @covers ::setGrantType()
      * @covers ::identify()
      */
     public function testOTPRequestLogin()
