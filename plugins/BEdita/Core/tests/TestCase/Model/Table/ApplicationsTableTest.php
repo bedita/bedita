@@ -465,4 +465,16 @@ class ApplicationsTableTest extends TestCase
         $application->enabled = 0;
         $this->Applications->save($application);
     }
+
+    /**
+     * Test `findEnabled` method
+     *
+     * @return void
+     * @covers ::findEnabled()
+     */
+    public function testFindEnabled()
+    {
+        $apps = $this->Applications->find('enabled')->toArray();
+        static::assertEquals([1], Hash::extract($apps, '{n}.id'));
+    }
 }

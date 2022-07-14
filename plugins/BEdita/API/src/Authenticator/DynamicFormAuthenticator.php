@@ -25,6 +25,7 @@ class DynamicFormAuthenticator extends FormAuthenticator
      */
     protected function _getData(ServerRequestInterface $request): ?array
     {
+        /** @var array $fields */
         $fields = $this->_config['fields'];
         /** @var array $body */
         $body = $request->getParsedBody();
