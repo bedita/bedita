@@ -36,6 +36,7 @@ class ApplicationIdentifier extends AbstractIdentifier
         'resolver' => [
             'className' => 'Authentication.Orm',
             'userModel' => 'Applications',
+            'finder' => 'enabled',
         ],
     ];
 

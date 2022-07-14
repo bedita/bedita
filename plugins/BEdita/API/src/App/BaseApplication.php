@@ -289,6 +289,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             'resolver' => [
                 'className' => 'Authentication.Orm',
                 'userModel' => 'Applications',
+                'finder' => 'enabled',
             ],
         ]);
 
