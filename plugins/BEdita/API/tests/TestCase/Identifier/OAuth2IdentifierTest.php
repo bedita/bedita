@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Identifier;
 
 use BEdita\API\Identifier\OAuth2Identifier;
-use BEdita\Core\State\CurrentApplication;
 use Cake\Http\Client\Adapter\Stream;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\TestCase;
