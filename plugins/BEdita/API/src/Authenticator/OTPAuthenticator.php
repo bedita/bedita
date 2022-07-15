@@ -24,6 +24,7 @@ class OTPAuthenticator extends DynamicFormAuthenticator
             'authorization_code' => 'authorization_code',
             'username' => 'username',
             'token' => 'token',
+            'otp' => 'otp',
         ],
     ];
 }
