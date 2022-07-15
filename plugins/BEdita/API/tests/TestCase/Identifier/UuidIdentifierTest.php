@@ -69,11 +69,14 @@ class UuidIdentifierTest extends TestCase
     /**
      * Test `identify` method
      *
+     * @param string $expected Expected result
+     * @param string $find1 First string
+     * @param string $find2 Second string
      * @return void
      * @dataProvider identifyProvider
      * @covers ::identify()
      */
-    public function testIdentify($expected, $find1, $find2 = null): void
+    public function testIdentify(string $expected, string $find1, string $find2 = ''): void
     {
         $resolver = $this->getMockBuilder(ResolverInterface::class)
             ->onlyMethods(['find'])

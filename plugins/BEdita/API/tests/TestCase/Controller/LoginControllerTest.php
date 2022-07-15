@@ -913,7 +913,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->post('/auth', json_encode([
             'username' => 'first user',
-            'grant_type' => 'otp_request',
+            'otp' => 'request',
             'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -953,7 +953,7 @@ class LoginControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);
         $this->post('/auth', json_encode([
             'username' => 'second user',
-            'grant_type' => 'otp_request',
+            'otp' => 'request',
             'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -978,7 +978,7 @@ class LoginControllerTest extends IntegrationTestCase
             'username' => 'second user',
             'authorization_code' => 'toktoktoktoktok',
             'token' => 'secretsecretsecret',
-            'grant_type' => 'otp',
+            'otp' => 'access',
             'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -1006,7 +1006,7 @@ class LoginControllerTest extends IntegrationTestCase
             'username' => 'second user',
             'authorization_code' => 'toktoktoktoktok',
             'token' => 'secretsecretsecret',
-            'grant_type' => 'otp',
+            'otp' => 'access',
             'auth_provider' => 'otp',
         ]));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -1040,7 +1040,7 @@ class LoginControllerTest extends IntegrationTestCase
                 ],
                 [
                     'username' => 'second user',
-                    'grant_type' => 'otp_request',
+                    'otp' => 'request',
                     'auth_provider' => 'otp',
                 ],
             ],
