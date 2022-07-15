@@ -54,19 +54,22 @@ class OTPIdentifier extends AbstractIdentifier
     {
         $username = (string)Hash::get($credentials, 'username');
         if (empty($username)) {
-            return false;
+            return null;
         }
-
-        $authCode = (string)Hash::get($credentials, 'authorization_code');
-        $token = (string)Hash::get($credentials, 'token');
 
         $this->UserTokens = $this->fetchTable('UserTokens');
 
-        if (empty($authCode) || empty($token)) {
+        $otp = (string)Hash::get($credentials, 'otp');
+        if ($otp === 'request') {
             return $this->otpRequest($username);
+        } elseif ($otp === 'access') {
+            $authCode = (string)Hash::get($credentials, 'authorization_code');
+            $token = (string)Hash::get($credentials, 'token');
+
+            return $this->otpAccess($username, $authCode, $token);
         }
 
-        return $this->otpAccess($username, $authCode, $token);
+        return null;
     }
 
     /**
@@ -141,7 +144,7 @@ class OTPIdentifier extends AbstractIdentifier
      * @return string The generated token
      * @codeCoverageIgnore
      */
-    public function generateClientToken()
+    public function generateClientToken(): string
     {
         return Text::uuid();
     }
@@ -151,11 +154,11 @@ class OTPIdentifier extends AbstractIdentifier
      *
      * @return string The generated secure token
      */
-    public function generateSecretToken()
+    public function generateSecretToken(): string
     {
         $generator = $this->getConfig('generator');
         if (!empty($generator) && is_callable($generator)) {
-            return call_user_func($generator);
+            return (string)call_user_func($generator);
         }
 
         return $this->defaultSecretGenerator();
@@ -166,7 +169,7 @@ class OTPIdentifier extends AbstractIdentifier
      *
      * @return string The generated secure token
      */
-    public static function defaultSecretGenerator()
+    public static function defaultSecretGenerator(): string
     {
         return sprintf('%06d', hexdec(bin2hex(Security::randomBytes(2))));
     }

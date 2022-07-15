@@ -49,7 +49,7 @@ class OAuth2Identifier extends AbstractIdentifier
         );
 
         if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {
-            return false;
+            return null;
         }
 
         $externalAuth = [
@@ -71,7 +71,6 @@ class OAuth2Identifier extends AbstractIdentifier
      * @param string $accessToken Access token to use in request
      * @param array $options OAuth2 request options
      * @return array Response from an OAuth2 provider
-     * @codeCoverageIgnore
      */
     protected function getOAuth2Response(string $url, string $accessToken, array $options = []): array
     {
