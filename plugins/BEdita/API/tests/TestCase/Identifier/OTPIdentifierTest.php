@@ -153,15 +153,6 @@ class OTPIdentifierTest extends TestCase
      */
     public function testIdentify(?array $expected, array $credentials): void
     {
-        $dispatchedEvent = 0;
-        $this->fetchTable('Users')->getEventManager()->on(
-            'Auth.userToken',
-            function () use (&$dispatchedEvent) {
-                $dispatchedEvent++;
-                static::assertInstanceOf(UserToken::class, func_get_arg(1));
-            }
-        );
-
         CurrentApplication::setApplication($this->fetchTable('Applications')->get(1));
 
         $auth = new OTPIdentifier();
