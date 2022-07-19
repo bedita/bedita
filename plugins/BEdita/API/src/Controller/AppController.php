@@ -28,7 +28,7 @@ use Cake\Routing\Router;
  *
  * @since 4.0.0
  * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
- * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \BEdita\API\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class AppController extends Controller
@@ -64,7 +64,7 @@ class AppController extends Controller
             $this->paginate['className'] = JsonApiPaginator::class;
         }
 
-        $this->loadComponent('Authentication.Authentication', [
+        $this->loadComponent('BEdita/API.Authentication', [
             'requireIdentity' => $this->isIdentityRequired(),
         ]);
 
