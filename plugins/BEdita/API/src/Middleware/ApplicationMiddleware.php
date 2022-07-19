@@ -15,10 +15,8 @@ declare(strict_types=1);
 namespace BEdita\API\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
-use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
-use BEdita\API\Authenticator\ApplicationAuthenticator;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
@@ -74,16 +72,14 @@ class ApplicationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $provider = $service->getAuthenticationProvider();
-        if ($provider instanceof ApplicationAuthenticator) {
-            /** @var \BEdita\Core\Model\Entity\Application $application */
-            $application = $service->getIdentity()->getOriginalData();
-            CurrentApplication::setApplication($application);
+        $identity = $service->getIdentity();
+        if (!empty($identity) && $identity->getOriginalData() instanceof Application) {
+            CurrentApplication::setApplication($identity->getOriginalData());
 
             return $handler->handle($request);
         }
 
-        $payload = $this->readPayload($provider, $request);
+        $payload = $this->readPayload($service, $request);
         $this->readApplication($payload, $request);
 
         return $handler->handle($request);
@@ -92,12 +88,13 @@ class ApplicationMiddleware implements MiddlewareInterface
     /**
      * Try to read paylod from authenticator class.
      *
-     * @param \Authentication\Authenticator\AuthenticatorInterface|null $provider Authenticator provider
+     * @param \Authentication\AuthenticationServiceInterface $service Authentication service
      * @param \Psr\Http\Message\ServerRequestInterface $request Server request
      * @return object|null
      */
-    protected function readPayload(?AuthenticatorInterface $provider, ServerRequestInterface $request): ?object
+    protected function readPayload(AuthenticationServiceInterface $service, ServerRequestInterface $request): ?object
     {
+        $provider = $service->getAuthenticationProvider();
         if (!$provider instanceof JwtAuthenticator) {
             $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
             try {
@@ -139,19 +136,34 @@ class ApplicationMiddleware implements MiddlewareInterface
     protected function setupFromPayload(object $appPayload, ServerRequestInterface $request): void
     {
         $body = (array)$request->getParsedBody();
-        if (Hash::get($body, 'grant_type') === 'refresh_token') {
-            $application = $this->fetchTable('Applications')->find('enabled')
-                ->where(['id' => $appPayload->id])
-                ->first();
-            if (empty($application)) {
-                // renew app payload failed
-                throw new UnauthorizedException(__('Application unauthorized'));
-            }
-        } else {
-            $application = new Application(json_decode(json_encode($appPayload), true));
-        }
+        $refresh = Hash::get($body, 'grant_type') === 'refresh_token';
+        $application = $this->applicationFromPayload($appPayload, $refresh);
 
         CurrentApplication::setApplication($application);
+    }
+
+    /**
+     * Read application from payload.
+     *
+     * @param object $appPayload Application payload.
+     * @param bool $refreshToken Refresh token flag.
+     * @return \BEdita\Core\Model\Entity\Application
+     */
+    protected function applicationFromPayload(object $appPayload, bool $refreshToken): Application
+    {
+        if (!$refreshToken) {
+            return new Application(json_decode(json_encode($appPayload), true));
+        }
+
+        $application = $this->fetchTable('Applications')->find('enabled')
+            ->where(['id' => $appPayload->id])
+            ->first();
+        if (empty($application)) {
+            // renew app payload failed
+            throw new UnauthorizedException(__('Application unauthorized'));
+        }
+
+        return $application;
     }
 
     /**
