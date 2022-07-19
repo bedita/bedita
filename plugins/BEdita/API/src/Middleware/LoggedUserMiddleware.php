@@ -47,7 +47,7 @@ class LoggedUserMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $this->setupLoggedUser($service);
+        $this->checkLoggedUser($service);
 
         return $handler->handle($request);
     }
@@ -58,7 +58,22 @@ class LoggedUserMiddleware implements MiddlewareInterface
      * @param \Authentication\AuthenticationServiceInterface $service Authentication service
      * @return void
      */
-    protected function setupLoggedUser(AuthenticationServiceInterface $service): void
+    protected function checkLoggedUser(AuthenticationServiceInterface $service): void
+    {
+        if ($this->setupLoggedUser($service)) {
+            return;
+        }
+
+        $this->checkPayload($service->getAuthenticationProvider());
+    }
+
+    /**
+     * Set logged user if present in authentication result.
+     *
+     * @param \Authentication\AuthenticationServiceInterface $service Authentication service
+     * @return bool
+     */
+    protected function setupLoggedUser(AuthenticationServiceInterface $service): bool
     {
         $result = $service->getIdentity()->getOriginalData();
         if (
@@ -66,11 +81,16 @@ class LoggedUserMiddleware implements MiddlewareInterface
             !empty($result['username']) && !empty($result['id'])
         ) {
             LoggedUser::setUser($result);
-        } elseif ($result instanceof User) {
-            LoggedUser::setUser($result->toArray());
-        } else {
-            $this->checkPayload($service->getAuthenticationProvider());
+
+            return true;
         }
+        if (!$result instanceof User) {
+            return false;
+        }
+
+        LoggedUser::setUser($result->toArray());
+
+        return true;
     }
 
     /**
