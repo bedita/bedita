@@ -19,7 +19,6 @@ use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
-use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
@@ -55,9 +54,10 @@ class ApplicationMiddleware implements MiddlewareInterface
     /**
      * Constructor.
      *
-     * @param array $config The middleware configuration.
+     * @param array|null $config The middleware configuration.
+     * @codeCoverageIgnore
      */
-    public function __construct(array $config)
+    public function __construct(?array $config = null)
     {
         $this->setConfig($config);
     }
@@ -95,16 +95,16 @@ class ApplicationMiddleware implements MiddlewareInterface
     protected function readPayload(AuthenticationServiceInterface $service, ServerRequestInterface $request): ?object
     {
         $provider = $service->getAuthenticationProvider();
-        if (!$provider instanceof JwtAuthenticator) {
-            $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
-            try {
-                return $provider->getPayload($request);
-            } catch (\Exception $e) {
-                return null;
-            }
+        if ($provider instanceof JwtAuthenticator) {
+            return $provider->getPayload();
         }
 
-        return $provider->getPayload();
+        $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
+        try {
+            return $provider->getPayload($request);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -160,7 +160,7 @@ class ApplicationMiddleware implements MiddlewareInterface
             ->first();
         if (empty($application)) {
             // renew app payload failed
-            throw new UnauthorizedException(__('Application unauthorized'));
+            throw new UnauthorizedException(__d('bedita', 'Application unauthorized'));
         }
 
         return $application;
@@ -213,9 +213,8 @@ class ApplicationMiddleware implements MiddlewareInterface
             return $apiKey;
         }
 
-        // An empty API KEY is allowed if 'Security.blockAnonymousApps' is set to false
-        // or in case of an authentication request with `client_credentials` as grant type.
-        if (empty(Configure::read('Security.blockAnonymousApps', true))) {
+        // An empty API KEY is allowed if 'blockAnonymousApps' config is set to false
+        if (empty($this->getConfig('blockAnonymousApps'))) {
             return null;
         }
 
