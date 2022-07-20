@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use Authentication\AuthenticationService;
 use BEdita\API\Controller\JsonBaseController;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
@@ -41,7 +42,7 @@ class JsonBaseControllerTest extends TestCase
                 'input' => true,
             ],
         ]);
-
+        $request = $request->withAttribute('authentication', new AuthenticationService());
         $controller = new class ($request) extends JsonBaseController {
         };
 
