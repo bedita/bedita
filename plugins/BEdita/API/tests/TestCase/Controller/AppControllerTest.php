@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\UnauthenticatedException;
 use Authorization\AuthorizationService;
 use Authorization\Policy\MapResolver;
 use BEdita\API\Controller\AppController;
@@ -53,6 +54,63 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testIsIdentityRequired` test case.
+     *
+     * @return array
+     */
+    public function isIdentityRequiredProvider()
+    {
+        return [
+            'ok' => [
+                true,
+                'GET',
+            ],
+            'error' => [
+                new UnauthenticatedException('Authentication is required to continue'),
+                'POST',
+            ],
+        ];
+    }
+
+    /**
+     * Test `isIdentityRequired()` method.
+     *
+     * @param true|\Exception $expected Expected success.
+     * @param string $method Request method.
+     * @return void
+     * @dataProvider isIdentityRequiredProvider
+     * @covers ::isIdentityRequired()
+     */
+    public function testIsIdentityRequired($expected, $method): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $request = new ServerRequest([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+                'REQUEST_METHOD' => $method,
+            ],
+            'params' => [
+                'action' => 'index',
+            ],
+        ]);
+        $request = $request->withAttribute('authentication', new AuthenticationService())
+            ->withAttribute('authorization', new AuthorizationService(new MapResolver([
+                ServerRequest::class => EndpointPolicy::class,
+            ])));
+
+        $controller = new AppController($request);
+
+        $controller->dispatchEvent('Controller.startup');
+
+        static::assertTrue($expected);
+    }
+
+    /**
      * Data provider for `testCheckAccept` test case.
      *
      * @return array
@@ -78,6 +136,7 @@ class AppControllerTest extends IntegrationTestCase
      * @param string $accept Value of "Accept" header.
      * @return void
      * @dataProvider checkAcceptProvider
+     * @covers ::checkAcceptable()
      * @covers ::beforeFilter()
      */
     public function testCheckAccept($expected, $accept)

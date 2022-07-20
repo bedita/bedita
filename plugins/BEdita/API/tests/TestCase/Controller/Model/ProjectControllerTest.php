@@ -313,12 +313,12 @@ class ProjectControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test `beforeFilter()` method.
+     * Test `checkAcceptable()` method.
      *
      * @return void
-     * @covers ::beforeFilter()
+     * @covers ::checkAcceptable()
      */
-    public function testBeforeFilter(): void
+    public function testCheckAcceptable(): void
     {
         $this->configRequestHeaders();
         $this->get('/model/project');

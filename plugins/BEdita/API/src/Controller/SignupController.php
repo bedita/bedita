@@ -25,9 +25,7 @@ class SignupController extends AppController
     use ActionTrait;
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
     public function initialize(): void
     {
