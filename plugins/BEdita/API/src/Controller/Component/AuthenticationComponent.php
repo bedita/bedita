@@ -45,7 +45,7 @@ class AuthenticationComponent extends CakeAuthenticationComponent
     protected function checkExpiredToken(): void
     {
         $result = $this->getResult();
-        if ($result->getStatus() !== ResultInterface::FAILURE_CREDENTIALS_INVALID) {
+        if (empty($result) || ($result->getStatus() !== ResultInterface::FAILURE_CREDENTIALS_INVALID)) {
             return;
         }
         $exception = Hash::get($result->getErrors(), 'exception');
