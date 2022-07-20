@@ -85,7 +85,8 @@ class AuthenticationComponentTest extends TestCase
             }
         };
         $request = $request->withAttribute('authentication', $service);
-        $this->Authentication = new AuthenticationComponent(new ComponentRegistry(new Controller($request)));
+        $component = new AuthenticationComponent(new ComponentRegistry(new Controller($request)));
+        static::assertNotEmpty($component);
         static::assertTrue($expected);
     }
 }
