@@ -125,10 +125,6 @@ class EndpointPolicy implements RequestPolicyInterface
             return $user->toArray();
         }
 
-        if (!is_array($user) && !$user instanceof \ArrayObject) {
-            return null; // throw error?
-        }
-
         return (array)$user;
     }
 
