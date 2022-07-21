@@ -132,7 +132,7 @@ class LoggedUserMiddlewareTest extends TestCase
      * @param string $path The path to check.
      * @return void
      * @covers ::process()
-     * @dataProvider unauthorizedProvider()
+     * @dataProvider unauthorizedProvider
      */
     public function testUnauthorized(string $path): void
     {
@@ -194,7 +194,7 @@ class LoggedUserMiddlewareTest extends TestCase
      * @covers ::checkLoggedUser()
      * @covers ::setupLoggedUser
      * @covers ::checkPayload()
-     * @dataProvider setupLoggedUserProvider()
+     * @dataProvider setupLoggedUserProvider
      */
     public function testSetupLoggedUser($expected, $identityData): void
     {

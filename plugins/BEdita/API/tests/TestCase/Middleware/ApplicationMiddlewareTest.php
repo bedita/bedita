@@ -155,7 +155,7 @@ class ApplicationMiddlewareTest extends TestCase
      * @covers ::readApplication()
      * @covers ::setupFromPayload()
      * @covers ::applicationFromPayload()
-     * @dataProvider appFromJWTProvider()
+     * @dataProvider appFromJWTProvider
      */
     public function testAppFromJWT(int $expected, array $user, ?AbstractAuthenticator $authProvider, bool $refreshToken): void
     {
@@ -302,7 +302,7 @@ class ApplicationMiddlewareTest extends TestCase
      * @covers ::setupFromPayload()
      * @covers ::applicationFromApiKey()
      * @covers ::fetchApiKey()
-     * @dataProvider setFromApiKeyProvider()
+     * @dataProvider setFromApiKeyProvider
      */
     public function testSetAppFromApiKey($expected, ?string $apiKey, array $config = []): void
     {
