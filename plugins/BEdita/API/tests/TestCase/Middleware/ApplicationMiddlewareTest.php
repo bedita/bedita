@@ -14,23 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Middleware;
 
-use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AbstractAuthenticator;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use Authentication\Identity;
 use BEdita\API\Middleware\ApplicationMiddleware;
+use BEdita\API\Test\Utility\TestAuthHelperTrait;
 use BEdita\API\Test\Utility\TestRequestHandler;
-use BEdita\API\Utility\JWTHandler;
-use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * {@see \BEdita\API\Middleware\ApplicationMiddleware} Test Case
@@ -39,6 +36,8 @@ use PHPUnit\Framework\MockObject\MockObject;
  */
 class ApplicationMiddlewareTest extends TestCase
 {
+    use TestAuthHelperTrait;
+
     /**
      * @inheritDoc
      */
@@ -76,48 +75,6 @@ class ApplicationMiddlewareTest extends TestCase
     }
 
     /**
-     * Helper method to generate JWT tokens.
-     *
-     * @param array $user The user data
-     * @param \BEdita\Core\Model\Entity\Application $app The application entity
-     * @return array
-     */
-    protected function generateJwtTokens(array $user, Application $app): array
-    {
-        $prevApp = CurrentApplication::getApplication();
-        CurrentApplication::setApplication($app); // done to build JWT with `app` claim
-        $tokens = JWTHandler::tokens($user, 'https://example.com');
-        CurrentApplication::setApplication($prevApp);
-
-        return $tokens;
-    }
-
-    /**
-     * Helper class for get mock of AuthenticationService.
-     *
-     * @param \Authentication\Identity|null $identity The identity
-     * @param \Authentication\Authenticator\AbstractAuthenticator|null $authenticator The success authenticator
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected function getMockForAuthService(?Identity $identity = null, ?AbstractAuthenticator $authenticator = null): MockObject
-    {
-        $serviceMock = $this->getMockBuilder(AuthenticationService::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getIdentity', 'getAuthenticationProvider'])
-            ->getMock();
-
-         $serviceMock
-            ->method('getIdentity')
-            ->willReturn($identity);
-
-        $serviceMock
-            ->method('getAuthenticationProvider')
-            ->willReturn($authenticator);
-
-        return $serviceMock;
-    }
-
-    /**
      * Test what happens with no authentication service.
      *
      * @return void
@@ -146,7 +103,7 @@ class ApplicationMiddlewareTest extends TestCase
         static::assertNull(CurrentApplication::getApplication());
 
         $expected = $this->fetchTable('Applications')->find('apiKey', ['apiKey' => API_KEY])->firstOrFail();
-        $serviceMock = $this->getMockForAuthService(new Identity($expected));
+        $serviceMock = $this->getMockForAuthenticationService(new Identity($expected));
         $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
         $handler = new TestRequestHandler();
 
@@ -222,7 +179,7 @@ class ApplicationMiddlewareTest extends TestCase
             $authProvider->authenticate($request); // decode jwt setting payload
         }
 
-        $serviceMock = $this->getMockForAuthService(null, $authProvider);
+        $serviceMock = $this->getMockForAuthenticationService(null, $authProvider);
         $request = $request->withAttribute('authentication', $serviceMock);
 
         $handler = new TestRequestHandler();
@@ -245,7 +202,7 @@ class ApplicationMiddlewareTest extends TestCase
      */
     public function testAppDisabledDuringUserRefreshToken(): void
     {
-        $this->expectExceptionObject(new UnauthorizedException(__('Application unauthorized')));
+        $this->expectExceptionObject(new UnauthorizedException('Application unauthorized'));
 
         $AppTable = $this->fetchTable('Applications');
         /** @var \BEdita\Core\Model\Entity\Application $app */
@@ -259,7 +216,7 @@ class ApplicationMiddlewareTest extends TestCase
             ],
         ]);
 
-        $serviceMock = $this->getMockForAuthService();
+        $serviceMock = $this->getMockForAuthenticationService();
         $request = $request->withData('grant_type', 'refresh_token')
             ->withAttribute('authentication', $serviceMock);
 
@@ -294,7 +251,7 @@ class ApplicationMiddlewareTest extends TestCase
             ],
         ]);
 
-        $serviceMock = $this->getMockForAuthService();
+        $serviceMock = $this->getMockForAuthenticationService();
         $request = $request->withAttribute('authentication', $serviceMock);
 
         $handler = new TestRequestHandler();
@@ -357,7 +314,7 @@ class ApplicationMiddlewareTest extends TestCase
 
         $middleware = new ApplicationMiddleware($config);
         $request = new ServerRequest();
-        $serviceMock = $this->getMockForAuthService();
+        $serviceMock = $this->getMockForAuthenticationService();
         $request = $request->withAttribute('authentication', $serviceMock)
             ->withAddedHeader($middleware->getConfig('apiKey.header'), $apiKey);
 
