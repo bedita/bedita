@@ -41,7 +41,7 @@ class LoggedUserMiddleware implements MiddlewareInterface
             empty($service->getIdentity())
         ) {
             if (in_array($request->getUri()->getPath(), ['/auth', '/auth/optout'])) {
-                throw new UnauthorizedException(__('Login request not successful'));
+                throw new UnauthorizedException(__d('bedita', 'Login request not successful'));
             }
 
             return $handler->handle($request);
@@ -107,8 +107,8 @@ class LoggedUserMiddleware implements MiddlewareInterface
         }
 
         $payload = $provider->getPayload();
-        if (!empty($payload) && !empty($payload->sub)) {
-            throw new UnauthorizedException(__('Login request not successful'));
+        if (!empty($payload) && !empty($payload->sub)) { // refresh token of user was tried
+            throw new UnauthorizedException(__d('bedita', 'Login request not successful'));
         }
     }
 }
