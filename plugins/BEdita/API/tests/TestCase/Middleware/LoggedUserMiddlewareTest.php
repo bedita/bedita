@@ -22,6 +22,7 @@ use BEdita\API\Middleware\LoggedUserMiddleware;
 use BEdita\API\Test\Utility\TestAuthHelperTrait;
 use BEdita\API\Test\Utility\TestRequestHandler;
 use BEdita\Core\Model\Entity\Application;
+use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
@@ -154,12 +155,10 @@ class LoggedUserMiddlewareTest extends TestCase
      */
     public function setupLoggedUserProvider(): array
     {
-        $user = $this->fetchTable('Users')->find()->where(['id' => 1])->firstOrFail();
-
         return [
             'user with entity' => [
                 1,
-                $user,
+                new User(['id' => 1, 'username' => 'gustavo']),
             ],
             'user with array' => [
                 1,
