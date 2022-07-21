@@ -68,6 +68,7 @@ class AuthenticationComponentTest extends TestCase
      * @dataProvider checkExpiredTokenProvider
      * @covers ::checkExpiredToken()
      * @covers ::initialize()
+     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
     public function testCheckExpiredToken($expected, ?ResultInterface $result): void
     {
