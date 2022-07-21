@@ -450,7 +450,7 @@ class EndpointPermissionsTableTest extends TestCase
             'one' => [
                 1,
                 1,
-                ['_anonymous' => true],
+                null,
                 false,
             ],
             'null' => [
@@ -471,13 +471,13 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @param int $expected Expected result
      * @param int|null $endpointId Endpoint id.
-     * @param array|\ArrayAccess $user User data. Contains `_anonymous` keys if user is unlogged.
+     * @param array|null $user User data. Null if user is unlogged.
      * @param bool $strict Strict check.
      * @return void
      * @dataProvider fetchPermissionsProvider()
      * @covers ::fetchPermissions()
      */
-    public function testFetchPermissions(int $expected, ?int $endpointId, $user, bool $strict): void
+    public function testFetchPermissions(int $expected, ?int $endpointId, ?array $user, bool $strict): void
     {
         CurrentApplication::setApplication(null);
         $result = $this->EndpointPermissions->fetchPermissions($endpointId, $user, $strict);
