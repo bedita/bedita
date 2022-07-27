@@ -109,19 +109,19 @@ class AuthenticationTest extends IntegrationTestCase
         $headers = [
             'Host' => 'api.example.com',
             'Accept' => 'application/vnd.api+json',
+            'Content-Type' => 'application/json',
             'Authorization' => 'Bearer gustavo',
         ];
         $this->configRequest(compact('headers'));
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
-        $this->assertResponseCode(401);
+        $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
 
         static::assertArrayHasKey('error', $body);
-        static::assertEquals('401', $body['error']['status']);
-        // static::assertEquals('Wrong number of segments', $body['error']['title']);
+        static::assertEquals('403', $body['error']['status']);
     }
 
     /**
