@@ -79,10 +79,22 @@ class HomeController extends AppController
      *
      * @var array
      */
-    protected $defaultAllowUnlogged = [
+    protected const DEFAULT_ALLOW_UNLOGGED = [
         '/auth' => ['POST'],
         '/signup' => ['POST'],
         '/*' => ['GET'],
+    ];
+
+    /**
+     * Default authorized methods and endpoints.
+     *
+     * @var array
+     */
+    protected const DEFAULT_AUTHORIZED = [
+        'POST' => [
+            '/auth',
+            '/signup',
+        ],
     ];
 
     /**
@@ -186,8 +198,8 @@ class HomeController extends AppController
             return false;
         }
 
-        // special cases auth and signup
-        if (in_array($endpoint, ['/auth', '/signup']) && $method === 'POST') {
+        // Default authorized special cases
+        if (!empty(static::DEFAULT_AUTHORIZED[$method]) && in_array($endpoint, static::DEFAULT_AUTHORIZED[$method])) {
             return true;
         }
 
@@ -213,7 +225,7 @@ class HomeController extends AppController
      */
     protected function unloggedAuthorized($endpoint, $method): bool
     {
-        $defaultAllow = Hash::get($this->defaultAllowUnlogged, $endpoint, $this->defaultAllowUnlogged['/*']);
+        $defaultAllow = Hash::get(static::DEFAULT_ALLOW_UNLOGGED, $endpoint, static::DEFAULT_ALLOW_UNLOGGED['/*']);
 
         return in_array($method, $defaultAllow);
     }
