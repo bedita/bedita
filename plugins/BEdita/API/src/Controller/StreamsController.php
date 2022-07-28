@@ -13,7 +13,6 @@
 
 namespace BEdita\API\Controller;
 
-use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
@@ -67,17 +66,15 @@ class StreamsController extends ResourcesController
     }
 
     /**
-     * Allow custom `Accept` header if we are downloading a stream
-     *
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event)
+    protected function checkAcceptable(): void
     {
         if ($this->request->getParam('action') === 'download') {
             return;
         }
 
-        return parent::beforeFilter($event);
+        parent::checkAcceptable();
     }
 
     /**

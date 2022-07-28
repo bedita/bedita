@@ -15,7 +15,6 @@ namespace BEdita\API\Test\TestCase\TestSuite;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Event\Event;
 use Cake\Event\EventManager;
 
 /**
@@ -140,17 +139,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
 
         $this->setUp();
         static::assertEquals([], LoggedUser::getUser());
-        static::assertCount(1, EventManager::instance()->listeners('Auth.afterIdentify'));
         static::assertCount(1, EventManager::instance()->listeners('Error.beforeRender'));
         static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
-
-        $expected = [
-            'id' => 9999,
-            'username' => 'gustavo',
-        ];
-        $event = new Event('Auth.afterIdentify', null, [$expected]);
-        EventManager::instance()->dispatch($event);
-        static::assertEquals($expected, LoggedUser::getUser());
     }
 
     /**
@@ -161,13 +151,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testTearDown()
     {
-        $user = [
-            'id' => 9999,
-            'username' => 'gustavo',
-        ];
-        $event = new Event('Auth.afterIdentify', null, [$user]);
-        EventManager::instance()->dispatch($event);
-        static::assertEquals($user, LoggedUser::getUser());
         static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
 
         parent::tearDown();

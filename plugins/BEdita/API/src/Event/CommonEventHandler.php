@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Event;
 
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 
@@ -31,23 +30,8 @@ class CommonEventHandler implements EventListenerInterface
     public function implementedEvents(): array
     {
         return [
-            'Auth.afterIdentify' => 'afterIdentify',
             'Error.beforeRender' => 'errorBeforeRender',
         ];
-    }
-
-    /**
-     * Set the user identified.
-     * Called after user authentication.
-     *
-     * @param \Cake\Event\EventInterface $event The event object
-     * @param array $user The user data
-     * @return void
-     * @throws \Cake\Http\Exception\UnauthorizedException
-     */
-    public function afterIdentify(EventInterface $event, array $user)
-    {
-        LoggedUser::setUser($user);
     }
 
     /**

@@ -185,7 +185,8 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         ]);
         $username = $username ?: $this->defaultUser['username'];
         $password = $password ?: $this->defaultUser['password'];
-        $this->post('/auth', json_encode(compact('username', 'password')));
+        $grant = ['grant_type' => 'password'];
+        $this->post('/auth', json_encode(compact('username', 'password') + $grant));
 
         Router::fullBaseUrl($fullBaseUrl);
 

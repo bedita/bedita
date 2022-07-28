@@ -13,8 +13,6 @@
 namespace BEdita\API\Test\TestCase\Event;
 
 use BEdita\API\Event\CommonEventHandler;
-use BEdita\Core\Utility\LoggedUser;
-use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 
@@ -39,28 +37,9 @@ class CommonEventHandlerTest extends TestCase
      */
     public function testImplementedEvents()
     {
-        static::assertCount(0, EventManager::instance()->listeners('Auth.afterIdentify'));
         static::assertCount(0, EventManager::instance()->listeners('Error.beforeRender'));
 
         EventManager::instance()->on(new CommonEventHandler());
-        static::assertCount(1, EventManager::instance()->listeners('Auth.afterIdentify'));
         static::assertCount(1, EventManager::instance()->listeners('Error.beforeRender'));
-    }
-
-    /**
-     * Test after identify
-     *
-     * @return void
-     * @covers ::afterIdentify()
-     */
-    public function testAfterIdentify()
-    {
-        LoggedUser::resetUser();
-        EventManager::instance()->on(new CommonEventHandler());
-
-        static::assertEquals([], LoggedUser::getUser());
-        $event = new Event('Auth.afterIdentify', null, ['user' => ['id' => 1]]);
-        EventManager::instance()->dispatch($event);
-        static::assertEquals(['id' => 1], LoggedUser::getUser());
     }
 }

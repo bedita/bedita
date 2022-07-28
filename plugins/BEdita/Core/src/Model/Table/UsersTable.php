@@ -29,6 +29,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -107,7 +108,7 @@ class UsersTable extends Table
             'through' => 'RolesUsers',
         ]);
 
-        EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
+        EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);
     }
 
     /**
@@ -190,7 +191,7 @@ class UsersTable extends Table
         $implementedEvents = parent::implementedEvents();
         $implementedEvents += [
             'Auth.externalAuth' => 'externalAuthLogin',
-            'Auth.afterIdentify' => 'login',
+            'Authentication.afterIdentify' => 'login',
         ];
 
         return $implementedEvents;
@@ -204,17 +205,19 @@ class UsersTable extends Table
      */
     public function login(EventInterface $event)
     {
-        $data = $event->getData();
-        if (empty($data[0]['id'])) {
+        /** @var \Authentication\IdentityInterface|null $identity */
+        $identity = Hash::get((array)$event->getData(), 'identity');
+        if (empty($identity) || empty($identity->getIdentifier())) {
             return;
         }
 
-        $id = $data[0]['id'];
         $this->updateAll(
             [
                 'last_login' => $this->timestamp(),
             ],
-            compact('id')
+            [
+                'id' => $identity->getIdentifier(),
+            ]
         );
     }
 

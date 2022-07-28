@@ -290,7 +290,7 @@ class ObjectsController extends ResourcesController
      */
     protected function saveEntityOptions(array &$data): array
     {
-        $roles = (array)$this->Auth->user('roles');
+        $roles = (array)$this->Authentication->getIdentityData('roles');
         $meta = (array)Hash::get($data, '_meta');
         $meta = array_intersect_key($meta, array_flip(static::ADMIN_META_ACCESSIBLE));
         if (!in_array(RolesTable::ADMIN_ROLE, (array)Hash::extract($roles, '{n}.id')) || empty($meta)) {

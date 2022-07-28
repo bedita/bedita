@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Model\Action\ActionTrait;
 
 /**
@@ -24,18 +25,26 @@ class SignupController extends AppController
     use ActionTrait;
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
     public function initialize(): void
     {
         parent::initialize();
-        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('defaultAuthorized', true);
+        $this->request = $this->request->withAttribute(EndpointPolicy::DEFAULT_AUTHORIZED, true);
 
         if (isset($this->JsonApi)) {
             $this->JsonApi->setConfig('parseJson', false);
         }
+    }
+
+    /**
+     * Indentity not required in `/signup`
+     *
+     * @return bool
+     */
+    protected function isIdentityRequired(): bool
+    {
+        return false;
     }
 
     /**
