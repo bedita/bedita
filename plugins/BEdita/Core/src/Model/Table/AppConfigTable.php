@@ -24,18 +24,14 @@ use Cake\Validation\Validator;
  * Handle `config` resources that have `context` matching 'app'
  * and `application_id` matching current application id.
  *
- * {@inheritDoc}
- *
  * @since 5.0.0
  */
 class AppConfigTable extends ConfigTable
 {
-    protected const DEFAULT_CONTEXT = 'app';
+    public const DEFAULT_CONTEXT = 'app';
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
     public function validationDefault(Validator $validator): Validator
     {
