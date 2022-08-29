@@ -16,8 +16,8 @@ use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\ModelAwareTrait;
 use Cake\Event\EventInterface;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Laminas\Diactoros\Stream;
 
 /**
@@ -28,7 +28,7 @@ use Laminas\Diactoros\Stream;
  */
 class UploadComponent extends Component
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * @inheritDoc
@@ -64,7 +64,7 @@ class UploadComponent extends Component
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post']);
 
-        $this->loadModel('Streams');
+        $this->Streams = $this->fetchTable('Streams');
         // Add a new entity.
         $entity = $this->Streams->newEntity([]);
         $action = new SaveEntityAction(['table' => $this->Streams]);

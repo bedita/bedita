@@ -69,7 +69,7 @@ class ObjectModelBehaviorTest extends TestCase
      */
     public function testAddRelated(): void
     {
-        $this->loadModel('Documents');
+        $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(2);
         $this->Documents->addRelated($entity, 'test', [$related]);
@@ -87,7 +87,7 @@ class ObjectModelBehaviorTest extends TestCase
      */
     public function testReplaceRelated(): void
     {
-        $this->loadModel('Documents');
+        $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(2);
         $this->Documents->replaceRelated($entity, 'test', [$related]);
@@ -104,7 +104,7 @@ class ObjectModelBehaviorTest extends TestCase
      */
     public function testRemoveRelated(): void
     {
-        $this->loadModel('Documents');
+        $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(4);
         $this->Documents->removeRelated($entity, 'test', [$related]);

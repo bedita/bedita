@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Properties;
-use Cake\Datasource\ModelAwareTrait;
 use Cake\Http\Exception\BadRequestException;
 use Cake\TestSuite\TestCase;
 
@@ -26,8 +25,6 @@ use Cake\TestSuite\TestCase;
  */
 class PropertiesTest extends TestCase
 {
-    use ModelAwareTrait;
-
     /**
      * Fixtures
      *
@@ -71,7 +68,7 @@ class PropertiesTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->loadModel('Properties');
+        $this->Properties = $this->fetchTable('Properties');
     }
 
     /**
