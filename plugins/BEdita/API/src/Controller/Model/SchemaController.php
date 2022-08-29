@@ -51,8 +51,8 @@ class SchemaController extends JsonBaseController
         $this->request->allowMethod(['get']);
 
         $response = $this->response->withEtag((string)JsonSchema::schemaRevision($typeName));
-        if (!$response->isNotModified($this->request)) {
-            return $response;
+        if ($response->isNotModified($this->request)) {
+            return $response->withNotModified();
         }
         $this->response = $response;
 
