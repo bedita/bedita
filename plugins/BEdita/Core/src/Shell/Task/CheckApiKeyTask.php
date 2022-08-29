@@ -47,7 +47,7 @@ class CheckApiKeyTask extends Shell
      */
     public function main()
     {
-        $this->loadModel('Applications');
+        $this->Applications = $this->fetchTable('Applications');
 
         try {
             $this->verbose('=====> Loading default application... ', 0);

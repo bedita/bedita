@@ -73,7 +73,7 @@ class SetupAdminUserTask extends Shell
      */
     public function main()
     {
-        $this->loadModel('Users');
+        $this->Users = $this->fetchTable('Users');
 
         try {
             $this->verbose('=====> Retrieving information for default administrator user... ', 0);

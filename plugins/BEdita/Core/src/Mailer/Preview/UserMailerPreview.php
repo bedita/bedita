@@ -90,7 +90,7 @@ class UserMailerPreview extends MailPreview
      */
     protected function getUser()
     {
-        $this->loadModel('Users');
+        $this->Users = $this->fetchTable('Users');
 
         $user = $this->Users->newEntity([
             'name' => 'Gustavo',
