@@ -59,7 +59,6 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::resource()
-     * @covers ::beforeFilter()
      */
     public function testGet()
     {
@@ -194,7 +193,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::download()
-     * @covers ::beforeFilter()
+     * @covers ::checkAcceptable()
      */
     public function testDownload(): void
     {
@@ -206,5 +205,18 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $response = (string)$this->_response->getBody();
         static::assertEquals(trim($response), 'Sample uploaded file.');
+    }
+
+    /**
+     * Test that `checkAcceptable()` method.
+     *
+     * @return void
+     * @covers ::checkAcceptable()
+     */
+    public function testCheckAcceptable()
+    {
+        $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);
+        $this->get('/streams');
+        $this->assertResponseCode(406);
     }
 }

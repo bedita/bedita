@@ -14,8 +14,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Datasource\ModelAwareTrait;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
 /**
@@ -25,7 +24,7 @@ use Cake\Utility\Hash;
  */
 class AuthenticationTest extends IntegrationTestCase
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Data provider for `testAuth` method.
@@ -110,19 +109,19 @@ class AuthenticationTest extends IntegrationTestCase
         $headers = [
             'Host' => 'api.example.com',
             'Accept' => 'application/vnd.api+json',
+            'Content-Type' => 'application/json',
             'Authorization' => 'Bearer gustavo',
         ];
         $this->configRequest(compact('headers'));
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
-        $this->assertResponseCode(401);
+        $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
 
         static::assertArrayHasKey('error', $body);
-        static::assertEquals('401', $body['error']['status']);
-        static::assertEquals('Wrong number of segments', $body['error']['title']);
+        static::assertEquals('403', $body['error']['status']);
     }
 
     /**
@@ -132,11 +131,11 @@ class AuthenticationTest extends IntegrationTestCase
      */
     public function testOauth2Flow(): void
     {
-        $Applications = TableRegistry::getTableLocator()->get('Applications');
+        $Applications = $this->fetchTable('Applications');
         $app = $Applications->get(2);
         $app->set('enabled', true);
         $Applications->saveOrFail($app);
-        TableRegistry::getTableLocator()->get('EndpointPermissions')->deleteAll([]);
+        $this->fetchTable('EndpointPermissions')->deleteAll([]);
 
         $headers = [
             'Host' => 'api.example.com',

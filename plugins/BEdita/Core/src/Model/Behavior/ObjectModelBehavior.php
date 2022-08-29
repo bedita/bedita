@@ -50,6 +50,7 @@ class ObjectModelBehavior extends Behavior
                 'body' => 5,
             ],
         ]);
+        $table->addBehavior('BEdita/Core.Status');
     }
 
     /**

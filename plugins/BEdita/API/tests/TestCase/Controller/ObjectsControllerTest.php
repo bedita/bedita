@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use Authentication\AuthenticationService;
 use BEdita\API\Controller\ObjectsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -1584,6 +1585,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             'related_id' => '2',
         ];
         $request = new ServerRequest(compact('environment', 'params'));
+        $request = $request->withAttribute('authentication', new AuthenticationService());
 
         $controller = $this->getMockBuilder(ObjectsController::class)
             ->setConstructorArgs([$request])
@@ -2570,6 +2572,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'HTTP_ACCEPT' => 'application/vnd.api+json',
             ],
         ]);
+        $request = $request->withAttribute('authentication', new AuthenticationService());
         $controller = new ObjectsController($request);
         $resourceTypes = $controller->JsonApi->getConfig('resourceTypes');
 

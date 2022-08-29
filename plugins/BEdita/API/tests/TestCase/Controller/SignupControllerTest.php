@@ -210,6 +210,8 @@ class SignupControllerTest extends IntegrationTestCase
      * @return void
      * @dataProvider signupProvider
      * @covers ::signup()
+     * @covers ::initialize()
+     * @covers ::isIdentityRequired()
      */
     public function testSignup($statusCode, $expected, $method, $data)
     {

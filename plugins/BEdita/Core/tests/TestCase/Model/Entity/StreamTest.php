@@ -134,7 +134,7 @@ class StreamTest extends TestCase
      */
     public function testFilesystemPath($expected, array $data, $filesystem = 'default', $subLevels = 0)
     {
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->set($data, ['guard' => false]);
 
         $path = $stream->filesystemPath($filesystem, $subLevels);
@@ -183,7 +183,7 @@ class StreamTest extends TestCase
      */
     public function testGetContentsNotUploaded()
     {
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $contents = $stream->contents;
 
         static::assertNull($contents);
@@ -273,7 +273,7 @@ class StreamTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->contents = $contents;
 
         static::assertInstanceOf(StreamInterface::class, $stream->contents);
@@ -340,7 +340,7 @@ class StreamTest extends TestCase
     /**
      * Read data from image if is possible
      *
-     * @param Stream $stream stream entity
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity.
      */
 
     public function readDataFromImage($stream): void
@@ -349,7 +349,7 @@ class StreamTest extends TestCase
             static::assertNull($stream->width);
             static::assertNull($stream->height);
         } else {
-            if (function_exists('getimagesizefromstring')) {
+            if (in_array($stream->mime_type, EntityStream::EXIF_MIME_TYPES) || function_exists('getimagesizefromstring')) {
                 static::assertNotNull($stream->width);
                 static::assertNotNull($stream->height);
             } else {
@@ -377,13 +377,13 @@ class StreamTest extends TestCase
         $imageTest = new Stream($path . '/a4fbe302-3d5b-4774-a9df-18598def690e-image-metadata.jpeg', 'r');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $imageTest;
 
         $this->readDataFromImage($stream);
         // mime type not allowed
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/gif';
         $stream->contents = $gifTest;
         $this->readDataFromImage($stream);
@@ -399,7 +399,7 @@ class StreamTest extends TestCase
     {
         $path = Configure::read('Filesystem.default.path');
         $gifTest = new Stream($path . '/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif', 'r');
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->mime_type = 'image/jpeg';
         $stream->contents = $gifTest;
 

@@ -15,7 +15,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
-use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotAcceptableException;
 
 /**
@@ -28,7 +27,7 @@ class ProjectController extends JsonBaseController
     /**
      * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event): void
+    protected function checkAcceptable(): void
     {
         if (!$this->request->is(['json'])) {
             throw new NotAcceptableException(

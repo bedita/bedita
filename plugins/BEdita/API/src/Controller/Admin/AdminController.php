@@ -14,6 +14,7 @@
 namespace BEdita\API\Controller\Admin;
 
 use BEdita\API\Controller\ResourcesController;
+use BEdita\API\Policy\EndpointPolicy;
 
 /**
  * Base class for all controllers that manage administrator-only resources.
@@ -34,6 +35,6 @@ abstract class AdminController extends ResourcesController
     {
         parent::initialize();
 
-        $this->Auth->getAuthorize('BEdita/API.Endpoint')->setConfig('administratorOnly', true);
+        $this->request = $this->request->withAttribute(EndpointPolicy::ADMINISTRATOR_ONLY, true);
     }
 }

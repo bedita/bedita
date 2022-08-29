@@ -19,7 +19,6 @@ use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\Event\CommonEventHandler;
 use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
-use BEdita\API\Middleware\TokenMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
@@ -102,11 +101,6 @@ class APIPlugin extends BasePlugin
             ->insertBefore(
                 ErrorHandlerMiddleware::class,
                 new CorsMiddleware(Configure::read('CORS'))
-            )
-
-            ->insertAfter(
-                ErrorHandlerMiddleware::class,
-                new TokenMiddleware()
             );
     }
 }

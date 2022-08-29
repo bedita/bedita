@@ -28,6 +28,8 @@ use Cake\Routing\Router;
  *
  * @since 4.0.0
  * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
+ * @property \BEdita\API\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class AppController extends Controller
 {
@@ -62,18 +64,11 @@ class AppController extends Controller
             $this->paginate['className'] = JsonApiPaginator::class;
         }
 
-        $this->loadComponent('Auth', [
-            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => [
-                'BEdita/API.Endpoint' => [
-                    'blockAnonymousUsers' => Configure::read('Security.blockAnonymousUsers'),
-                ],
-            ],
-            'loginAction' => ['_name' => 'api:login'],
-            'loginRedirect' => ['_name' => 'api:login'],
-            'unauthorizedRedirect' => false,
-            'storage' => 'Memory',
+        $this->loadComponent('BEdita/API.Authentication', [
+            'requireIdentity' => $this->isIdentityRequired(),
         ]);
+
+        $this->loadComponent('Authorization.Authorization');
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
@@ -86,17 +81,45 @@ class AppController extends Controller
     }
 
     /**
+     * Is identity required?
+     *
+     * @return bool
+     */
+    protected function isIdentityRequired(): bool
+    {
+        if (in_array($this->request->getMethod(), ['GET', 'HEAD'])) {
+            return (bool)Configure::read('Security.blockAnonymousUsers', false);
+        }
+
+        return true;
+    }
+
+    /**
      * @inheritDoc
      */
     public function beforeFilter(EventInterface $event)
+    {
+        $this->checkAcceptable();
+
+        // Internally it may throw an `UnauthorizedException` for anonymous users
+        $this->Authorization->authorize($this->request, 'access');
+
+        return null;
+    }
+
+    /**
+     * Perform HTTP Content Negotiation using `Accept` header.
+     *
+     * @return void
+     * @throws \Cake\Http\Exception\NotAcceptableException If request isn't accetable
+     */
+    protected function checkAcceptable(): void
     {
         if (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException(
                 __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
             );
         }
-
-        return null;
     }
 
     /**

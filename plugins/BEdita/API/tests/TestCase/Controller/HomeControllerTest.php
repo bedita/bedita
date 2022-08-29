@@ -15,8 +15,8 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -339,7 +339,6 @@ class HomeControllerTest extends IntegrationTestCase
                 'version' => $version,
             ],
         ];
-
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -349,6 +348,7 @@ class HomeControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $result);
 
         LoggedUser::resetUser();
+        Cache::clear('_bedita_core_');
 
         $this->configRequestHeaders();
         $this->get('/home');
@@ -370,25 +370,25 @@ class HomeControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::endpointFeatures()
+     * @covers ::checkAuthorization()
      */
     public function testBlockedEndpoint(): void
     {
-        $Endpoints = TableRegistry::getTableLocator()->get('Endpoints');
+        $Endpoints = $this->fetchTable('Endpoints');
         $endpoint = $Endpoints->newEntity(['name' => 'documents']);
         $endpoint = $Endpoints->saveOrFail($endpoint);
 
         // setup new permission to block `/documents` endpoint
-        $EndpointPermissions = TableRegistry::getTableLocator()->get('EndpointPermissions');
+        $EndpointPermissions = $this->fetchTable('EndpointPermissions');
         $EndpointPermissions->deleteAll([]);
         $permission = $EndpointPermissions->newEntity([]);
         $permission->permission = 0b0000;
         $permission->application_id = 1;
-        $permission->role_id = 2;
         $permission->endpoint_id = $endpoint->id;
         $EndpointPermissions->saveOrFail($permission);
 
         CurrentApplication::setFromApiKey(API_KEY);
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader('second user', 'password2'));
+        $this->configRequestHeaders();
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);
         $meta = Hash::get($result, 'meta.resources./documents');

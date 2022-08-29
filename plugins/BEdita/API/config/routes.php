@@ -63,35 +63,30 @@ return function (RouteBuilder $routes) {
         );
 
         // Login.
-        $routes->connect(
+        $routes->post(
             '/auth',
-            ['controller' => 'Login', 'action' => 'login', '_method' => 'POST'],
-            ['_name' => 'login']
+            ['controller' => 'Login', 'action' => 'login'],
+            'login'
         );
-        $routes->connect(
+        $routes->post(
             '/auth/optout',
-            ['controller' => 'Login', 'action' => 'optout', '_method' => 'POST'],
-            ['_name' => 'login:optout']
+            ['controller' => 'Login', 'action' => 'optout'],
+            'login:optout'
         );
         $routes->connect(
             '/auth/change',
             ['controller' => 'Login', 'action' => 'change'],
             ['_name' => 'login:change']
         );
-        // GET /auth *deprecated* - to remove before `stable` relase
-        $routes->connect(
-            '/auth',
-            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET']
-        );
-        $routes->connect(
+        $routes->get(
             '/auth/user',
-            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
-            ['_name' => 'login:whoami']
+            ['controller' => 'Login', 'action' => 'whoami'],
+            'login:whoami',
         );
-        $routes->connect(
+        $routes->patch(
             '/auth/user',
-            ['controller' => 'Login', 'action' => 'update', '_method' => 'PATCH'],
-            ['_name' => 'login:update']
+            ['controller' => 'Login', 'action' => 'update'],
+            'login:update'
         );
 
         // Signup.

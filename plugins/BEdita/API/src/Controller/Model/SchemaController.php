@@ -15,7 +15,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\JsonSchema;
-use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -35,12 +34,9 @@ class SchemaController extends JsonBaseController
     /**
      * {@inheritDoc}
      *
-     * Intentionally left blank to override parent method.
-     * Avoid content-type negotiation checks based on `Accept` header.
-     *
      * @codeCoverageIgnore
      */
-    public function beforeFilter(EventInterface $event)
+    protected function checkAcceptable(): void
     {
     }
 

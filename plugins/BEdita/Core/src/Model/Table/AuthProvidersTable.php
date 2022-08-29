@@ -13,11 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Core\App;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\Datasource\EntityInterface;
-use Cake\Datasource\ResultSetInterface;
-use Cake\Log\Log;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -120,35 +116,5 @@ class AuthProvidersTable extends Table
         return $query->where([
             $this->aliasField('enabled') => true,
         ]);
-    }
-
-    /**
-     * Finder to format results for `AuthComponent` configuration.
-     *
-     * @param \Cake\ORM\Query $query Query object.
-     * @return \Cake\ORM\Query
-     */
-    protected function findAuthenticate(Query $query)
-    {
-        $query = $query->where([$this->aliasField('enabled') => true]);
-
-        return $query->formatResults(function (ResultSetInterface $results) {
-            return $results
-                ->filter(function (EntityInterface $entity) {
-                    $class = $entity->get('auth_class');
-                    $exists = (App::className($class, 'Auth', 'Authenticate') !== null);
-                    if (!$exists) {
-                        Log::warning(sprintf('Authentication class "%s" not found', $class));
-                    }
-
-                    return $exists;
-                })
-                ->groupBy('auth_class')
-                ->map(function (array $entities) {
-                    return [
-                        'authProviders' => collection($entities)->indexBy('name')->toArray(),
-                    ];
-                });
-        });
     }
 }
