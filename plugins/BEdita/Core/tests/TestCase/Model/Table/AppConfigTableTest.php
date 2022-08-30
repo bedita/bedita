@@ -108,7 +108,7 @@ class AppConfigTableTest extends TestCase
      * @dataProvider validationProvider
      * @covers ::validationDefault()
      */
-    public function testValidation($expected, array $data)
+    public function testValidation($expected, array $data): void
     {
         $config = $this->AppConfig->newEntity($data);
 
