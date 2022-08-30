@@ -127,7 +127,7 @@ class AppConfigTableTest extends TestCase
      * @return void
      * @covers ::findAll()
      */
-    public function testFindAll()
+    public function testFindAll(): void
     {
         $app = CurrentApplication::getApplication();
 
