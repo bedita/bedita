@@ -106,7 +106,7 @@ class AppConfigTableTest extends TestCase
      * @param array $data Data to be validated.
      * @return void
      * @dataProvider validationProvider
-     * @coversNothing
+     * @covers ::validationDefault()
      */
     public function testValidation($expected, array $data)
     {
