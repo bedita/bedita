@@ -146,7 +146,7 @@ class AppConfigTableTest extends TestCase
      * @return void
      * @covers ::newEmptyEntity()
      */
-    public function testNewEmptyEntity()
+    public function testNewEmptyEntity(): void
     {
         $config = $this->AppConfig->newEmptyEntity();
         static::assertEquals(AppConfigTable::DEFAULT_CONTEXT, $config->get('context'));
