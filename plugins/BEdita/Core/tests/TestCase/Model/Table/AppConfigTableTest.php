@@ -66,7 +66,7 @@ class AppConfigTableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testInitialization()
+    public function testInitialization(): void
     {
         $this->AppConfig->initialize([]);
         $this->assertEquals('config', $this->AppConfig->getTable());
