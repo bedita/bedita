@@ -66,8 +66,8 @@ class AppConfigTable extends ConfigTable
     public function newEmptyEntity(): EntityInterface
     {
         $entity = parent::newEmptyEntity();
-        $entity->set('context', static::DEFAULT_CONTEXT, ['guard' => false]);
-        $entity->set('application_id', CurrentApplication::getApplicationId(), ['guard' => false]);
+        $entity->set('context', static::DEFAULT_CONTEXT);
+        $entity->set('application_id', CurrentApplication::getApplicationId());
 
         return $entity;
     }
