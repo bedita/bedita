@@ -101,7 +101,7 @@ class ConfigFixture extends TestFixture
         ],
         [
             'name' => 'appVal',
-            'context' => 'core',
+            'context' => 'app',
             'content' => '{"val": 42}',
             'created' => '2018-05-16 12:34:56',
             'modified' => '2018-05-16 12:38:02',
@@ -109,6 +109,14 @@ class ConfigFixture extends TestFixture
         ],
         [
             'name' => 'someVal',
+            'context' => 'core',
+            'content' => 42,
+            'created' => '2018-05-16 12:34:56',
+            'modified' => '2018-05-16 12:38:02',
+            'application_id' => 1,
+        ],
+        [
+            'name' => 'myVal',
             'context' => 'somecontext',
             'content' => 42,
             'created' => '2018-05-16 12:34:56',

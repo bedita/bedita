@@ -11,18 +11,22 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\API\Controller;
+namespace BEdita\Core\Model\Entity;
 
 /**
- * Controller for `/config` endpoint to handle application configurations
- * via `AppConfig` table.
+ * App Config Entity.
+ *
+ * {@inheritDoc}
  *
  * @since 5.0.0
  */
-class ConfigController extends ResourcesController
+class AppConfig extends Config
 {
     /**
      * @inheritDoc
      */
-    public $modelClass = 'AppConfig';
+    protected $_hidden = [
+        'application_id',
+        'context',
+    ];
 }

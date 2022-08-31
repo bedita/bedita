@@ -140,13 +140,13 @@ class CurrentApplicationTest extends TestCase
      */
     public function testLoadConfiguration()
     {
-        static::assertNull(Configure::read('appVal'));
+        static::assertNull(Configure::read('someVal'));
 
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
 
-        $result = Configure::read('appVal');
-        $expected = ['val' => 42];
+        $result = Configure::read('someVal');
+        $expected = 42;
         static::assertEquals($expected, $result);
     }
 
@@ -161,11 +161,11 @@ class CurrentApplicationTest extends TestCase
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
 
-        static::assertNull(Configure::read('someVal'));
+        static::assertNull(Configure::read('myVal'));
 
         CurrentApplication::loadApplicationConfiguration('somecontext');
 
-        static::assertEquals(42, Configure::read('someVal'));
+        static::assertEquals(42, Configure::read('myVal'));
     }
 
     /**

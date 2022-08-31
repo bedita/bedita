@@ -130,7 +130,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('post')) {
             // Add a new entity.
-            $entity = $this->Table->newEntity([]);
+            $entity = $this->Table->newEmptyEntity();
             $action = new SaveEntityAction(['table' => $this->Table]);
 
             $data = $this->request->getData();

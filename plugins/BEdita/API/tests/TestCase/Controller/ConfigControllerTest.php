@@ -23,7 +23,7 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
+     * @coversNothing
      */
     public function testIndex()
     {
@@ -33,9 +33,7 @@ class ConfigControllerTest extends IntegrationTestCase
                     'id' => 11,
                     'type' => 'config',
                     'attributes' => [
-                        'context' => 'core',
                         'content' => '{"val": 42}',
-                        'application_id' => 1,
                         'name' => 'appVal',
                     ],
                     'meta' => [

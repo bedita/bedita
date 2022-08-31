@@ -242,7 +242,7 @@ class ConfigTableTest extends TestCase
             'somecontext' => [
                 [
                     [
-                        'name' => 'someVal',
+                        'name' => 'myVal',
                         'content' => '42',
                     ],
                 ],

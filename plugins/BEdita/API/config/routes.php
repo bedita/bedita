@@ -17,6 +17,7 @@ use Cake\Routing\RouteBuilder;
 return function (RouteBuilder $routes) {
     $routes->plugin('BEdita/API', ['path' => '/','_namePrefix' => 'api:'], function (RouteBuilder $routes) {
         $resourcesControllers = [
+            'config',
             'roles',
             'streams',
             'users',
@@ -213,13 +214,6 @@ return function (RouteBuilder $routes) {
             '/applications',
             ['controller' => 'Applications', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'applications:index']
-        );
-
-        // Config.
-        $routes->connect(
-            '/config',
-            ['controller' => 'Config', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'config:index']
         );
 
         // History.

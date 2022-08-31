@@ -95,7 +95,7 @@ class ConfigControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->assertHeader('Location', 'http://api.example.com/admin/config/13');
+        $this->assertHeader('Location', 'http://api.example.com/admin/config/14');
     }
 
     /**
