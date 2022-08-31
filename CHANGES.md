@@ -1,5 +1,28 @@
 # ChangeLog
 
+## Version 5.0.0 - Salix
+
+### API changes (5.0.0)
+
+* [#1929](https://github.com/bedita/bedita/pull/1929) Avoid to execute the entire middleware queue for OPTIONS requests
+* [#1925](https://github.com/bedita/bedita/pull/1925) `/config` endpoint refactor
+* [#1924](https://github.com/bedita/bedita/pull/1924) Introduce Authentication and Authorization plugins
+* [#1917](https://github.com/bedita/bedita/pull/1917) Fix POST call on relation types
+
+### Core changes (5.0.0)
+
+* [#1927](https://github.com/bedita/bedita/pull/1927) Increase `links.url` maximum length (v5)
+* [#1921](https://github.com/bedita/bedita/pull/1921) command to refresh streams metadata in
+* [#1919](https://github.com/bedita/bedita/pull/1919) Allow `null` parent name in object types
+* [#1923](https://github.com/bedita/bedita/pull/1923) Introducing StatusBehavior
+
+### Integration changes (5.0.0)
+
+* [#1928](https://github.com/bedita/bedita/pull/1928) Removed minor integration deprecations
+* [#1920](https://github.com/bedita/bedita/pull/1920) Introduce API and Core Plugin classes
+* [#1918](https://github.com/bedita/bedita/pull/1918) Upgrade to CakePHP 4.4
+* [#1915](https://github.com/bedita/bedita/pull/1915) Update exported project model format
+
 ## Version 5.0.0-beta - Salix
 
 ### API changes (5.0.0-beta)
