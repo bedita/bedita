@@ -5,7 +5,7 @@
 [![Code Coverage](https://codecov.io/gh/bedita/bedita/branch/5-salix/graph/badge.svg)](https://codecov.io/gh/bedita/bedita/branch/5-salix)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=5-salix)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=5-salix)
 
-BEdita 4 is a ready to use back-end API to handle the data of your mobile, IoT, web and desktop applications.
+BEdita 5 is a ready to use back-end API to handle the data of your mobile, IoT, web and desktop applications.
 It's also an extensible framework to build your custom back-end API via plugins.
 
 It provides a complete content management solution with:
@@ -13,7 +13,7 @@ It provides a complete content management solution with:
 * a _headless_ HTTP server application with a complete REST API to model, create, modify and retrieve data
 * a default admin web application **[BEdita Manager](https://github.com/bedita/manager)**
 
-BEdita 4 is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
+BEdita 5 is built with [CakePHP 4](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
 [Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com) in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) or time series databases to boost performance and scale up to Big Data scenarios.
 
 [JSON-API](http://jsonapi.org) is the primary exchange data format.
@@ -44,7 +44,7 @@ Quick setup in three steps.
 
 02. Create an empty database either MySQL or PostgresSQL. Do nothing for SQLite.
 
-02. Change to the newly created folder and run this script to initialize the database and create first admin user:
+03. Change to the newly created folder and run this script to initialize the database and create first admin user:
 
 ```bash
  bin/cake bedita setup
