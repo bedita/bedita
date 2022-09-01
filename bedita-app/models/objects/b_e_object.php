@@ -392,9 +392,13 @@ class BEObject extends BEAppModel {
             foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 
                 foreach ($values as $key => $val) {
-                    $obj_id	= isset($val['id'])? Sanitize::escape($val['id']) : false;
-                    $priority = isset($val['priority'])? Sanitize::escape($val['priority']) : 'NULL';
+                    $obj_id	= isset($val['id'])? Sanitize::escape(trim($val['id'])) : false;
+                    $priority = isset($val['priority'])? Sanitize::escape(trim($val['priority'])) : 'NULL';
                     $params = isset($val['params'])? "'" . Sanitize::escape(json_encode($val['params'])) . "'" : 'NULL';
+
+                    if (empty($priority)) {
+                        $priority = 'NULL';
+                    }
 
                     $inverseSwitch = $switch;
                     if (!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])) {
