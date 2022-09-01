@@ -2351,13 +2351,13 @@ abstract class FrontendController extends AppController {
 
         $this->SessionFilter->arrange($searchFilter);
 
-        $result = [];
+        $result = ['items' => [], 'toolbar' => []];
         if (!empty($searchFilter['query'])) {
             $filter = array_merge($this->searchOptions['filter'], $searchFilter);
             $result = $this->BeTree->getDescendants($this->publication['id'], $this->status, $filter, $this->searchOptions['order'], $this->searchOptions['dir'], $this->searchOptions['page'], $this->searchOptions['dim']);
+            $this->set('stringSearched', $searchFilter['query']);
         }
 
-        $this->set('stringSearched', $searchFilter['query']);
         $this->set('searchResult', $result);
     }
 
