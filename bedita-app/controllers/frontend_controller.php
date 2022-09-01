@@ -2339,23 +2339,25 @@ abstract class FrontendController extends AppController {
                $this->helpers[] = 'BeToolbar';
         }
         $this->searchOptions = array_merge($this->searchOptions, $this->params['named']);
-        $s = $this->BEObject->getStartQuote();
-        $e = $this->BEObject->getEndQuote();
         // add rules for start and end pubblication date
         $this->setPublicationDateFilter($this->searchOptions['filter']);
         $searchFilter = array();
         if (!empty($this->params['form']['searchstring'])) {
             $searchFilter['query'] = $this->params['form']['searchstring'];
-            $this->SessionFilter->arrange($searchFilter);
-            $this->set('stringSearched', $searchFilter['query']);
             $this->params['named']['query'] = urlencode($searchFilter['query']);
         } else {
             $searchFilter = $this->SessionFilter->getFromUrl();
-            $this->SessionFilter->arrange($searchFilter);
-            $this->set('stringSearched', $searchFilter['query']);
         }
-        $filter = array_merge($this->searchOptions['filter'], $searchFilter);
-        $result = $this->BeTree->getDescendants($this->publication['id'], $this->status, $filter, $this->searchOptions['order'], $this->searchOptions['dir'], $this->searchOptions['page'], $this->searchOptions['dim']);
+
+        $this->SessionFilter->arrange($searchFilter);
+
+        $result = [];
+        if (!empty($searchFilter['query'])) {
+            $filter = array_merge($this->searchOptions['filter'], $searchFilter);
+            $result = $this->BeTree->getDescendants($this->publication['id'], $this->status, $filter, $this->searchOptions['order'], $this->searchOptions['dir'], $this->searchOptions['page'], $this->searchOptions['dim']);
+        }
+
+        $this->set('stringSearched', $searchFilter['query']);
         $this->set('searchResult', $result);
     }
 
