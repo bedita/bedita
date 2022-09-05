@@ -1,5 +1,11 @@
 # ChangeLog
 
+## Version 5.0.1 - Salix
+
+### Integration changes (5.0.1)
+
+* [#1932](https://github.com/bedita/bedita/pull/1932) Fix some docker issues on 5-salix
+
 ## Version 5.0.0 - Salix
 
 ### API changes (5.0.0)
