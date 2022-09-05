@@ -34,7 +34,7 @@ USER root:root
 
 # Configure healthcheck
 HEALTHCHECK --interval=30s --timeout=3s --start-period=1m \
-    CMD curl -f http://localhost/status || exit 1
+    CMD curl -f http://localhost/status -H "X-Api-Key: ${BEDITA_API_KEY}" || exit 1
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
