@@ -26,7 +26,7 @@ if [ ! -z "${DATABASE_URL}" ]; then
         chmod a+rwx ${DATABASE_PATH}
     fi
 
-    bin/cake cache clearAll
+    bin/cake cache clear_all
 fi
 
 exec "$@"
