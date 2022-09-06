@@ -27,6 +27,8 @@ if [ ! -z "${DATABASE_URL}" ]; then
     fi
 
     bin/cake cache clear_all
+
+    php --version
 fi
 
 exec "$@"
