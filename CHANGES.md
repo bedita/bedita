@@ -1,5 +1,11 @@
 # ChangeLog
 
+## Version 5.0.2 - Salix
+
+### Integration changes (5.0.2)
+
+* [#1933](https://github.com/bedita/bedita/pull/1933) Use PHP 8.1 in docker image
+
 ## Version 5.0.1 - Salix
 
 ### Integration changes (5.0.1)
