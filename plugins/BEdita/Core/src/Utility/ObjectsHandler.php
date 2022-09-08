@@ -62,12 +62,12 @@ class ObjectsHandler
      * If $data['id'] is set, corresponding object is updated.
      * On missing $data['id'] a new object is created.
      *
-     * @param string $type Object type name
+     * @param string|int $type Object type name or id
      * @param array $data Input data array
      * @param array $user User performing action data
      * @return \Cake\Datasource\EntityInterface Entity saved
      */
-    public static function save(string $type, array $data, array $user = []): EntityInterface
+    public static function save($type, $data, $user = []): EntityInterface
     {
         static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
@@ -77,7 +77,7 @@ class ObjectsHandler
         LoggedUser::setUser($user);
 
         $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
-        $table = TableRegistry::getTableLocator()->get($type);
+        $table = TableRegistry::getTableLocator()->get($objectType->name);
         if (!empty($data['id'])) {
             $entity = $table->get($data['id']);
         } else {
