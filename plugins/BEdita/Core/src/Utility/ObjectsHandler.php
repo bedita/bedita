@@ -77,11 +77,11 @@ class ObjectsHandler
         LoggedUser::setUser($user);
 
         $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
-        $table = TableRegistry::getTableLocator()->get($objectType->model);
+        $table = TableRegistry::getTableLocator()->get($objectType->name);
         if (!empty($data['id'])) {
             $entity = $table->get($data['id']);
         } else {
-            $entity = $table->newEntity([]);
+            $entity = $table->newEmptyEntity();
         }
         $options = ['accessibleFields' => ['locked' => true]];
         $entity = $table->patchEntity($entity, $data, $options);

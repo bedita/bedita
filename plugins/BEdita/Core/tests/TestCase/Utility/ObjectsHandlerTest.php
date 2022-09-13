@@ -171,4 +171,21 @@ class ObjectsHandlerTest extends TestCase
         };
         $testClass::save('documents', []);
     }
+
+    /**
+     * Test save custom properties
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testCustomPropsSave()
+    {
+        $data = [
+            'title' => 'a pragmatic title',
+            'another_title' => 'an agile title',
+        ];
+        $result = ObjectsHandler::save('documents', $data);
+        $document = $this->fetchTable('documents')->get($result->id);
+        static::assertEquals($data['another_title'], $document->get('another_title'));
+    }
 }
