@@ -1,5 +1,9 @@
 # ChangeLog
 
+See https://github.com/bedita/bedita/releases for details on changes.
+
+*After `5.0.2` version this file is not maintained anymore!*
+
 ## Version 5.0.2 - Salix
 
 ### Integration changes (5.0.2)
