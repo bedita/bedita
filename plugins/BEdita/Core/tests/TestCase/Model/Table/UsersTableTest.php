@@ -764,8 +764,28 @@ class UsersTableTest extends TestCase
         static::assertEquals('__deleted-5', $result->get('uname'));
         static::assertEquals(true, $result->get('locked'));
         static::assertNull($result->get('last_login'));
+        static::assertNull($result->get('email'));
         // verify external_auth records have been removed
         static::assertFalse($this->Users->ExternalAuth->exists(['user_id' => 5]));
+    }
+
+    /**
+     * Test anonymization when other anonymous
+     * users with `null` email exist
+     *
+     * @return void
+     * @covers ::delete()
+     * @covers ::anonymizeUser()
+     */
+    public function testMultiAnonymousDelete()
+    {
+        $user = $this->Users->get(1);
+        $user->set('email', null);
+        $this->Users->save($user);
+
+        $user = $this->Users->get(5);
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
     }
 
     /**
