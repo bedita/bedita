@@ -413,7 +413,7 @@ class UsersTable extends Table
             }
         );
 
-        return $this->save($entity);
+        return $this->save($entity, ['checkRules' => false]);
     }
 
     /**
