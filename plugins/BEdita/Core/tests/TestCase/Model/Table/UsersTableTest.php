@@ -61,6 +61,7 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Annotations',
     ];
 
     /**
@@ -829,8 +830,9 @@ class UsersTableTest extends TestCase
         $user->created_by = 1;
         $user->modified_by = 1;
         $user = $this->Users->saveOrFail($user);
+        $this->fetchTable('Annotations')->deleteAll([]);
 
-        $table = TableRegistry::getTableLocator()->get('Objects');
+        $table = $this->fetchTable('Objects');
         $doc = $table->get(3);
         $doc->modified_by = 1;
         $doc = $table->saveOrFail($doc);
