@@ -853,8 +853,10 @@ class UsersTableTest extends TestCase
     {
         // remove object modified by user 5
         $doc = $this->fetchTable('Objects')->get(3);
-        $this->fetchTable('Objects')->delete($doc);
-        // change created_by and modifed_by on user 5
+        $doc->created_by = 1;
+        $doc->modified_by = 1;
+        $this->fetchTable('Objects')->saveOrFail($doc);
+        // change created_by and modifed_by attributes linked to user 5
         $user = $this->Users->get(5);
         $user->created_by = 1;
         $user->modified_by = 1;
