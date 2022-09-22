@@ -59,6 +59,7 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
     ];
 
@@ -786,6 +787,7 @@ class UsersTableTest extends TestCase
         $user = $this->Users->get(5);
         $result = $this->Users->delete($user);
         static::assertTrue($result);
+        static::assertTrue($this->Users->exists(['id' => 5]));
     }
 
     /**
@@ -836,6 +838,30 @@ class UsersTableTest extends TestCase
         $result = $this->Users->delete($user);
         static::assertTrue($result);
         static::assertFalse($this->Users->exists(['id' => 5]));
+    }
+
+    /**
+     * Test `delete` method when an annotation
+     * from the user being removed exist
+     *
+     * @return void
+     * @covers ::delete()
+     */
+    public function testAnnotationsDelete()
+    {
+        // remove object modified by user 5
+        $doc = $this->fetchTable('Objects')->get(3);
+        $this->fetchTable('Objects')->delete($doc);
+        // change created_by and modifed_by on user 5
+        $user = $this->Users->get(5);
+        $user->created_by = 1;
+        $user->modified_by = 1;
+        $user = $this->Users->saveOrFail($user);
+
+        $user = $this->Users->get(5);
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
+        static::assertTrue($this->Users->exists(['id' => 5]));
     }
 
     /**
