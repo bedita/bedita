@@ -59,7 +59,9 @@ class UsersTableTest extends TestCase
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
+        'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Annotations',
     ];
 
     /**
@@ -786,6 +788,7 @@ class UsersTableTest extends TestCase
         $user = $this->Users->get(5);
         $result = $this->Users->delete($user);
         static::assertTrue($result);
+        static::assertTrue($this->Users->exists(['id' => 5]));
     }
 
     /**
@@ -827,8 +830,9 @@ class UsersTableTest extends TestCase
         $user->created_by = 1;
         $user->modified_by = 1;
         $user = $this->Users->saveOrFail($user);
+        $this->fetchTable('Annotations')->deleteAll([]);
 
-        $table = TableRegistry::getTableLocator()->get('Objects');
+        $table = $this->fetchTable('Objects');
         $doc = $table->get(3);
         $doc->modified_by = 1;
         $doc = $table->saveOrFail($doc);
@@ -836,6 +840,32 @@ class UsersTableTest extends TestCase
         $result = $this->Users->delete($user);
         static::assertTrue($result);
         static::assertFalse($this->Users->exists(['id' => 5]));
+    }
+
+    /**
+     * Test `delete` method when an annotation
+     * from the user being removed exist
+     *
+     * @return void
+     * @covers ::delete()
+     */
+    public function testAnnotationsDelete()
+    {
+        // remove object modified by user 5
+        $doc = $this->fetchTable('Objects')->get(3);
+        $doc->created_by = 1;
+        $doc->modified_by = 1;
+        $this->fetchTable('Objects')->saveOrFail($doc);
+        // change created_by and modifed_by attributes linked to user 5
+        $user = $this->Users->get(5);
+        $user->created_by = 1;
+        $user->modified_by = 1;
+        $user = $this->Users->saveOrFail($user);
+
+        $user = $this->Users->get(5);
+        $result = $this->Users->delete($user);
+        static::assertTrue($result);
+        static::assertTrue($this->Users->exists(['id' => 5]));
     }
 
     /**

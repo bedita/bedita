@@ -26,9 +26,9 @@ use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -49,6 +49,8 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+    use LocatorAwareTrait;
+
     /**
      * Administrator user id
      *
@@ -443,10 +445,11 @@ class UsersTable extends Table
      */
     public function delete(EntityInterface $entity, $options = []): bool
     {
-        $exists = TableRegistry::getTableLocator()->get('Objects')->exists([
+        $existsObject = $this->fetchTable('Objects')->exists([
             'OR' => ['created_by' => $entity->get('id'), 'modified_by' => $entity->get('id')],
         ]);
-        if (!$exists) {
+        $existsAnnotation = $this->fetchTable('Annotations')->exists(['user_id' => $entity->get('id')]);
+        if (!$existsObject && !$existsAnnotation) {
             return parent::delete($entity, $options);
         }
 
