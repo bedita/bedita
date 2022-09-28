@@ -183,17 +183,48 @@ class ProjectModel
     {
         $create = $update = $remove = [];
         $currentModel = json_decode(json_encode(static::generate()), true);
-        foreach ($currentModel as $key => $value) {
-            $current = Hash::combine((array)$value, '{n}.name', '{n}');
-            $new = Hash::combine((array)Hash::get($project, $key), '{n}.name', '{n}');
-            $create[$key] = array_values(array_diff_key($new, $current));
-            $remove[$key] = array_values(array_diff_key($current, $new));
-            $update[$key] = static::itemsToUpdate($current, $new);
+        foreach ($currentModel as $key => $items) {
+            if ($key === 'properties') {
+                $diff = static::propertiesDiff((array)$items, (array)Hash::get($project, $key));
+                $create[$key] = $diff['create'];
+                $remove[$key] = $diff['remove'];
+                $update[$key] = $diff['update'];
+            } else {
+                $current = Hash::combine((array)$items, '{n}.name', '{n}');
+                $new = Hash::combine((array)Hash::get($project, $key), '{n}.name', '{n}');
+                $create[$key] = array_values(array_diff_key($new, $current));
+                $remove[$key] = array_values(array_diff_key($current, $new));
+                $update[$key] = static::itemsToUpdate($current, $new);
+            }
         }
 
         return array_filter(
             array_map('array_filter', compact('create', 'update', 'remove'))
         );
+    }
+
+    /**
+     * Calculate diff between current and project model properties.
+     *
+     * @param array $items Current properties items.
+     * @param array $projectItems Project properties items.
+     * @return array
+     */
+    protected static function propertiesDiff(array $items, array $projectItems): array
+    {
+        $create = $update = $remove = [];
+        $current = Hash::combine($items, '{n}.name', '{n}', '{n}.object');
+        $new = Hash::combine($projectItems, '{n}.name', '{n}', '{n}.object');
+        $allObjects = array_unique(array_merge(array_keys($current), array_keys($new)));
+        foreach ($allObjects as $object) {
+            $newItems = (array)Hash::get($new, $object);
+            $currItems = (array)Hash::get($current, $object);
+            $create = array_merge($create, array_values(array_diff_key($newItems, $currItems)));
+            $remove = array_merge($remove, array_values(array_diff_key($currItems, $newItems)));
+            $update = array_merge($update, static::itemsToUpdate($currItems, $newItems));
+        }
+
+        return compact('create', 'update', 'remove');
     }
 
     /**
