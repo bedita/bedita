@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
 /**
@@ -47,8 +47,8 @@ abstract class ResourcesBase
             );
         }
         $type = Inflector::camelize($type);
-        TableRegistry::getTableLocator()->remove($type);
+        $tl = new TableLocator();
 
-        return TableRegistry::getTableLocator()->get($type, $options);
+        return $tl->get($type, $options);
     }
 }
