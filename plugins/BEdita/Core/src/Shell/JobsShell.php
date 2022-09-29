@@ -27,7 +27,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'AsyncJobs';
+    public $modelClass = 'AsyncJobs';
 
     /**
      * {@inheritDoc}

@@ -29,7 +29,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Streams';
+    public $modelClass = 'Streams';
 
     /**
      * {@inheritDoc}
