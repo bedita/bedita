@@ -24,5 +24,5 @@ class ConfigController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'AppConfig';
+    public $defaultTable = 'AppConfig';
 }

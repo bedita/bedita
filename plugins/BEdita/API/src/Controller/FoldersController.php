@@ -31,7 +31,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Folders';
+    public $defaultTable = 'Folders';
 
     /**
      * @inheritDoc

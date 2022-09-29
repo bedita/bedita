@@ -27,7 +27,7 @@ class JobsShell extends Shell
     /**
      * @inheritDoc
      */
-    public $modelClass = 'AsyncJobs';
+    public $defaultTable = 'AsyncJobs';
 
     /**
      * {@inheritDoc}

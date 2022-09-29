@@ -33,7 +33,6 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -86,7 +85,7 @@ abstract class ResourcesController extends AppController
             }
         }
 
-        $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
+        $this->Table = $this->fetchTable();
     }
 
     /**

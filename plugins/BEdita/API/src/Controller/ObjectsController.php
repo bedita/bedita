@@ -50,7 +50,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Objects';
+    public $defaultTable = 'Objects';
 
     /**
      * The referred object type entity filled when `object_type` request param is set and valid
@@ -114,7 +114,7 @@ class ObjectsController extends ResourcesController
     /**
      * Init model related attributes:
      *  - $this->objectType
-     *  - $this->modelClass
+     *  - $this->defaultTable
      *  - $this->Table
      *
      * @return void
@@ -139,8 +139,8 @@ class ObjectsController extends ResourcesController
                     $this->objectType->name
                 ));
             }
-            $this->modelClass = $this->objectType->alias;
-            $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
+            $this->defaultTable = $this->objectType->alias;
+            $this->Table = $this->fetchTable();
         } catch (RecordNotFoundException $e) {
             $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
 

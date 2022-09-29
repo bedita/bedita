@@ -29,7 +29,7 @@ class StreamsShell extends Shell
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Streams';
+    public $defaultTable = 'Streams';
 
     /**
      * {@inheritDoc}

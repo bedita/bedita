@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\CheckSchemaTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -98,7 +98,7 @@ class CheckSchemaTaskTest extends TestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
         // restore plugin
         $pluginCollection->add($migrationPlugin);
@@ -152,14 +152,14 @@ class CheckSchemaTaskTest extends TestCase
         $this->exec(CheckSchemaTask::class);
 
         if ($this->checkAvailable($connection)) {
-            static::assertExitCode(Shell::CODE_ERROR);
+            static::assertExitCode(Command::CODE_ERROR);
             $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
             $this->assertOutputContains('Column name "password" is not valid (reserved word)');
             $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
             $this->assertOutputContains('Index name "mytestindex" is not valid');
             $this->assertOutputRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/');
         } else {
-            static::assertExitCode(Shell::CODE_SUCCESS);
+            static::assertExitCode(Command::CODE_SUCCESS);
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
         $this->assertErrorEmpty();
@@ -178,7 +178,7 @@ class CheckSchemaTaskTest extends TestCase
 
         $this->exec(CheckSchemaTask::class);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         if (!$this->checkAvailable($connection)) {
             $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
         }
@@ -206,10 +206,10 @@ class CheckSchemaTaskTest extends TestCase
     //     $this->exec(CheckSchemaTask::class);
 
     //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         $this->assertExitCode(Command::CODE_ERROR);
     //         $this->assertOutputContains('Table "foo_bar" has been added');
     //     } else {
-    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertExitCode(Command::CODE_SUCCESS);
     //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
     //     }
     //     $this->assertErrorEmpty();
@@ -236,10 +236,10 @@ class CheckSchemaTaskTest extends TestCase
     //     $this->exec(CheckSchemaTask::class);
 
     //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         $this->assertExitCode(Command::CODE_ERROR);
     //         $this->assertOutputContains('Table "config" has been removed');
     //     } else {
-    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertExitCode(Command::CODE_SUCCESS);
     //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
     //     }
     //     $this->assertErrorEmpty();
@@ -267,7 +267,7 @@ class CheckSchemaTaskTest extends TestCase
     //     $this->exec(CheckSchemaTask::class);
 
     //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Shell::CODE_ERROR);
+    //         $this->assertExitCode(Command::CODE_ERROR);
     //         foreach ($constraints as $constraint) {
     //             $info = $table->getConstraint($constraint);
     //             if ($info && isset($info['type']) && $info['type'] !== TableSchema::CONSTRAINT_FOREIGN) {
@@ -277,7 +277,7 @@ class CheckSchemaTaskTest extends TestCase
     //             $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
     //         }
     //     } else {
-    //         $this->assertExitCode(Shell::CODE_SUCCESS);
+    //         $this->assertExitCode(Command::CODE_SUCCESS);
     //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
     //     }
     //     $this->assertErrorEmpty();

@@ -22,16 +22,21 @@ use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
-use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
+use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\MiddlewareDispatcher;
+use Cake\TestSuite\TestCase;
 
 /**
  * Base class for API integration tests.
  *
  * @since 4.0.0
  */
-abstract class IntegrationTestCase extends CakeIntegrationTestCase
+abstract class IntegrationTestCase extends TestCase
 {
+    use IntegrationTestTrait {
+        _makeDispatcher as protected testMakeDispatcher;
+    }
+
     /**
      * Fixtures
      *
@@ -157,7 +162,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
     {
         Router::setRouteCollection(new RouteCollection());
 
-        return parent::_makeDispatcher();
+        return $this->testMakeDispatcher();
     }
 
     /**

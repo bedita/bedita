@@ -27,7 +27,7 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Translations';
+    public $defaultTable = 'Translations';
 
     /**
      * @inheritDoc

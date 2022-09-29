@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -85,7 +85,7 @@ class InitSchemaTaskTest extends TestCase
 
         $this->exec(sprintf('%s --no-force --no-seed', InitSchemaTask::class));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Database is not empty, no action has been performed');
     }
 
@@ -105,7 +105,7 @@ class InitSchemaTaskTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
@@ -133,7 +133,7 @@ class InitSchemaTaskTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
@@ -155,7 +155,7 @@ class InitSchemaTaskTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
@@ -183,7 +183,7 @@ class InitSchemaTaskTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         static::assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 

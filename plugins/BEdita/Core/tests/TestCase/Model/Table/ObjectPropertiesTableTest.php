@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -37,8 +36,7 @@ class ObjectPropertiesTableTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $config = TableRegistry::exists('ObjectProperties') ? [] : ['className' => 'BEdita\Core\Model\Table\ObjectPropertiesTable'];
-        $this->ObjectProperties = TableRegistry::getTableLocator()->get('ObjectProperties', $config);
+        $this->ObjectProperties = $this->fetchTable('ObjectProperties');
     }
 
     /**

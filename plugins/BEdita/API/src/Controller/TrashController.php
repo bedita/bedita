@@ -30,7 +30,7 @@ class TrashController extends AppController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Objects';
+    public $defaultTable = 'Objects';
 
     /**
      * Table.
@@ -51,8 +51,8 @@ class TrashController extends AppController
             /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
             $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->find('objectId', compact('id'))
                 ->firstOrFail();
-            $this->modelClass = $objectType->alias;
-            $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
+            $this->defaultTable = $objectType->alias;
+            $this->Table = $this->fetchTable();
         }
     }
 

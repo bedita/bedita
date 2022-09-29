@@ -24,5 +24,5 @@ class ApplicationsController extends AdminController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Applications';
+    public $defaultTable = 'Applications';
 }

@@ -15,15 +15,18 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Shell\Task\SetupAdminUserTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\TestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\SetupAdminUserTask
  */
-class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
+class SetupAdminUserTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * Users table.
      *
@@ -79,7 +82,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(SetupAdminUserTask::class);
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains(sprintf('Missing user %d!', UsersTable::ADMIN_USER));
     }
 
@@ -98,7 +101,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(SetupAdminUserTask::class, ['n']);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         $this->assertOutputContains('Do you want to overwrite current admin user?');
         $this->assertOutputContains('Existing administrator user has been preserved. Don\'t panic!');
@@ -123,7 +126,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(sprintf('%s --no-admin-overwrite', SetupAdminUserTask::class));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
@@ -151,7 +154,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(SetupAdminUserTask::class, ['y', $newUsername, $newPassword]);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         $this->assertOutputContains('Do you want to overwrite current admin user?');
         $this->assertOutputContains('Enter new username for default admin user:');
@@ -180,7 +183,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(sprintf('%s --admin-overwrite --admin-username %s --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertOutputContains(sprintf('Administrator user <comment>%s</comment> has already been configured', $username));
         static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
@@ -210,7 +213,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(sprintf('%s --admin-username %s --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $output = implode(PHP_EOL, $this->_out->messages());
         static::assertStringNotContainsString('has already been configured', $output);
         static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);
@@ -240,7 +243,7 @@ class SetupAdminUserTaskTest extends ConsoleIntegrationTestCase
         // Invoke task.
         $this->exec(sprintf('%s --admin-username "%s" --admin-password %s', SetupAdminUserTask::class, $newUsername, $newPassword));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $output = implode(PHP_EOL, $this->_out->messages());
         static::assertStringNotContainsString('has already been configured', $output);
         static::assertStringNotContainsString('Do you want to overwrite current admin user?', $output);

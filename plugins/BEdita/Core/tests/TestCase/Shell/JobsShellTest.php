@@ -15,8 +15,9 @@ namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
-use Cake\Console\Shell;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 
 /**
@@ -24,8 +25,10 @@ use Cake\Utility\Text;
  *
  * @coversDefaultClass \BEdita\Core\Shell\JobsShell
  */
-class JobsShellTest extends ConsoleIntegrationTestCase
+class JobsShellTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * Fixtures
      *
@@ -78,7 +81,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
         $this->assertErrorEmpty();
     }
@@ -96,7 +99,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Could not obtain lock');
         $this->assertErrorEmpty();
     }
@@ -115,7 +118,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorContains('BadMethodCallException with message "example"');
         $this->assertErrorContains('failed');
     }
@@ -133,7 +136,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('jobs run %s', $uuid));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorContains('failed');
     }
 
@@ -150,7 +153,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('jobs run -F %s', $uuid));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('failed');
     }
 
@@ -168,7 +171,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec('jobs pending');
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
         $this->assertOutputContains('Operation complete');
         $this->assertErrorEmpty();
@@ -186,7 +189,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec('jobs pending --limit 0');
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Nothing to do');
         $this->assertErrorEmpty();
     }
@@ -203,7 +206,7 @@ class JobsShellTest extends ConsoleIntegrationTestCase
 
         $this->exec('jobs pending -F');
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('failed');
     }
 }
