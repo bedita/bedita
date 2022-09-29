@@ -26,7 +26,7 @@ use Cake\Utility\Inflector;
  *
  * @since 4.0.0
  */
-class ResourcesShell extends Shell
+class ResourcesShell extends Shell /* @phpstan-ignore-line */
 {
     /**
      * Accepted resource types
@@ -49,7 +49,7 @@ class ResourcesShell extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
 
         $options = [
             'type' => [

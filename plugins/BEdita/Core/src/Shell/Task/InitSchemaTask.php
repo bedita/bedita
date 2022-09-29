@@ -24,7 +24,7 @@ use Migrations\Migrations;
  *
  * @since 4.0.0
  */
-class InitSchemaTask extends Shell
+class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * {@inheritDoc}
@@ -33,7 +33,7 @@ class InitSchemaTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'A new database schema is created using current DB connection.',

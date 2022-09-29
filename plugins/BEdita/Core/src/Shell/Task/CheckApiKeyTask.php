@@ -24,7 +24,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\ApplicationsTable $Applications
  */
-class CheckApiKeyTask extends Shell
+class CheckApiKeyTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * {@inheritDoc}
@@ -33,7 +33,7 @@ class CheckApiKeyTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'Setup API key.',

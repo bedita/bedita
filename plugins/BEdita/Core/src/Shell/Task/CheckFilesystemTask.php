@@ -21,7 +21,7 @@ use Cake\Console\Shell;
  *
  * @since 4.0.0
  */
-class CheckFilesystemTask extends Shell
+class CheckFilesystemTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * {@inheritDoc}
@@ -30,7 +30,7 @@ class CheckFilesystemTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'Check filesystem permissions.',

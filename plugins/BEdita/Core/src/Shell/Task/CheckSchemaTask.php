@@ -30,7 +30,7 @@ use Migrations\Migrations;
  *
  * @since 4.0.0
  */
-class CheckSchemaTask extends Shell
+class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * Registry of all issues found.
@@ -53,7 +53,7 @@ class CheckSchemaTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'Current schema is compared with versioned schema dump to check if it is up to date.',

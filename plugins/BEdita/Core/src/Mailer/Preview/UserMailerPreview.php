@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Mailer\Preview;
 
+use Cake\Mailer\Mailer;
 use Cake\Utility\Text;
 use DebugKit\Mailer\MailPreview;
 
@@ -28,9 +29,9 @@ class UserMailerPreview extends MailPreview
     /**
      * Preview of Welcome message.
      *
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      */
-    public function welcome()
+    public function welcome(): Mailer
     {
         $user = $this->getUser();
         $options = [
@@ -46,9 +47,9 @@ class UserMailerPreview extends MailPreview
     /**
      * Preview of Signup message.
      *
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      */
-    public function signup()
+    public function signup(): Mailer
     {
         $options = [
             'params' => [
@@ -66,9 +67,9 @@ class UserMailerPreview extends MailPreview
     /**
      * Preview of Password recovery message.
      *
-     * @return \Cake\Mailer\Email
+     * @return \Cake\Mailer\Mailer
      */
-    public function changeRequest()
+    public function changeRequest(): Mailer
     {
         $options = [
             'params' => [

@@ -53,7 +53,7 @@ class DatabaseTest extends TestCase
         static::$fixtureManager->shutDown();
 
         $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
-        $this->loadFixtures(...$fixtures);
+        $this->loadFixtures(...$fixtures); /* @phpstan-ignore-line */
         $schema = Database::currentSchema();
 
         $this->assertCount(count($fixtures), $schema);
@@ -95,11 +95,11 @@ class DatabaseTest extends TestCase
         static::$fixtureManager->shutDown();
 
         $fixtures1 = ['Applications', 'Config', 'ObjectTypes'];
-        $this->loadFixtures(...$fixtures1);
+        $this->loadFixtures(...$fixtures1); /* @phpstan-ignore-line */
         $schema1 = Database::currentSchema();
 
         $fixtures2 = ['AsyncJobs', 'Roles'];
-        $this->loadFixtures(...$fixtures2);
+        $this->loadFixtures(...$fixtures2); /* @phpstan-ignore-line */
         $schema2 = Database::currentSchema();
 
         $fixtures2 = array_merge($fixtures1, $fixtures2);
@@ -153,10 +153,13 @@ class DatabaseTest extends TestCase
     public function testSupportedVersion()
     {
         $info = Database::basicInfo();
+        /* @phpstan-ignore-next-line */
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
         static::assertTrue($result);
+        /* @phpstan-ignore-next-line */
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'zzzzzzzzz']);
         static::assertFalse($result);
+        /* @phpstan-ignore-next-line */
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);
     }
@@ -214,7 +217,7 @@ class DatabaseTest extends TestCase
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
-        $this->loadFixtures('Applications', 'Config', 'ObjectTypes', 'Roles');
+        $this->loadFixtures('Applications', 'Config', 'ObjectTypes', 'Roles'); /* @phpstan-ignore-line */
 
         $res = Database::executeTransaction($sql, $dbConfig);
         $this->assertNotEmpty($res);
