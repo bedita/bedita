@@ -148,8 +148,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
             throw $e;
         }
-        // set Status.level to `draft` to allow `draft` user object load
-        Configure::write('Status.level', 'draft');
+        // Remove `Status.level` filter here to allow user object with `draft` or any other status
+        Configure::delete('Status.level');
 
         return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
     }
