@@ -154,7 +154,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         $user = (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
         Configure::write('Status.level', $statusLevel);
-        
+
         return $user;
     }
 
