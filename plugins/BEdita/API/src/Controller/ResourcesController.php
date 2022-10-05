@@ -84,8 +84,13 @@ abstract class ResourcesController extends AppController
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
         }
-
-        $this->Table = $this->fetchTable();
+        // backward compatibility: set $defaultTable if deprecated $modelClass attribute is used
+        if (empty($this->defaultTable) && !empty($this->modelClass)) { /* @phpstan-ignore-line */
+            $this->defaultTable = $this->modelClass; /* @phpstan-ignore-line */
+        }
+        if (empty($this->Table)) {
+            $this->Table = $this->fetchTable();
+        }
     }
 
     /**
