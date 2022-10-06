@@ -286,6 +286,32 @@ class SignupUserActionTest extends TestCase
     }
 
     /**
+     * Test command execution with `Status.level` set to `on`.
+     *
+     * @return void
+     */
+    public function testStatusLevelExecute(): void
+    {
+        Configure::write('Status.level', 'on');
+        $data = [
+            'username' => 'testsignup',
+            'password' => 'testsignup',
+            'email' => 'test.signup@example.com',
+            'activation_url' => 'http://sample.com?confirm=true',
+            'redirect_url' => 'http://sample.com/ok',
+        ];
+
+        $action = new SignupUserAction();
+        $result = $action(compact('data'));
+
+        static::assertTrue((bool)$result);
+        static::assertInstanceOf(User::class, $result);
+        static::assertSame('draft', $result->status);
+        static::assertSame($data['username'], $result->username);
+        Configure::delete('Status.level');
+    }
+
+    /**
      * Test command execution with external auth
      *
      * @param array|\Exception $expected Expected result.
