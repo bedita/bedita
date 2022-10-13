@@ -91,7 +91,6 @@ class ApplicationsTable extends Table
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
-            ->regex('name', Validation::RESOURCE_NAME_REGEX)
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmptyString('description')
