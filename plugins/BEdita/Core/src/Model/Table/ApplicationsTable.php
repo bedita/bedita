@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -90,6 +91,7 @@ class ApplicationsTable extends Table
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmptyString('description')

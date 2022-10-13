@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -69,6 +70,7 @@ class AuthProvidersTable extends Table
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
 
             // Use `add` instead of `urlWithProtocol` to preserve rule name.
             ->add('url', 'url', [

@@ -29,6 +29,16 @@ use Swaggest\JsonSchema\Schema;
 class Validation
 {
     /**
+     * Regular expression to validate resource names:
+     *  - starts with a lowercase latter
+     *  - lowercase letters, numbers and underscores
+     *  - length between 2 and 200 characters
+     *
+     * @var string
+     */
+    public const RESOURCE_NAME_REGEX = '/^[a-z][a-z0-9_]{1,200}$/';
+
+    /**
      * The list of reserved names
      *
      * @var string[]|null

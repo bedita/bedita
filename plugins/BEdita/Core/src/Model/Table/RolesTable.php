@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -86,6 +87,7 @@ class RolesTable extends Table
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->requirePresence('name')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
 
             ->allowEmptyString('description')
 

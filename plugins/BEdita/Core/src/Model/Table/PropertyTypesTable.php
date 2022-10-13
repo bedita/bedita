@@ -85,7 +85,7 @@ class PropertyTypesTable extends Table
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
-            ->alphaNumeric('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
 
             ->allowEmptyArray('params')
             ->add('params', 'valid', [

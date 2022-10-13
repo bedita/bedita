@@ -43,7 +43,7 @@ class ObjectTypesValidator extends Validator
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
             // `name` must contain at least a letter (avoid conflicts with ids)
-            ->regex('name', '/^([a-zA-Z]+)/')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
             ->add('name', 'notReserved', ['rule' => 'notReserved', 'provider' => 'bedita']);
 
@@ -51,7 +51,7 @@ class ObjectTypesValidator extends Validator
             ->requirePresence('singular', 'create')
             ->notEmptyString('singular')
             // `singular` must contain at least a letter (avoid conflicts with ids)
-            ->regex('singular', '/^([a-zA-Z]+)/')
+            ->regex('singular', Validation::RESOURCE_NAME_REGEX)
             ->add('singular', 'notSameAs', [
                 'rule' => function ($value, $context) {
                     if (empty($context['data']['name'])) {
