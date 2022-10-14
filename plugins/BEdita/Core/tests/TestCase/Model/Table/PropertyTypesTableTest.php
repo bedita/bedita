@@ -108,7 +108,7 @@ class PropertyTypesTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'name' => 'propName',
+                    'name' => 'prop_name',
                     'params' => [
                         'type' => 'string',
                     ],

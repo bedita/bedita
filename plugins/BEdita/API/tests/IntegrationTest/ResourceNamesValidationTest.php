@@ -66,7 +66,7 @@ class ResourceNamesValidationTest extends IntegrationTestCase
                 400,
                 '/admin/applications',
                 [
-                    'name' => '1_app',
+                    'name' => '',
                 ],
                 'applications',
             ],
