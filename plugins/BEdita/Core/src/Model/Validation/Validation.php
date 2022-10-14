@@ -30,7 +30,7 @@ class Validation
 {
     /**
      * Regular expression to validate resource names:
-     *  - starts with a lowercase latter
+     *  - starts with a lowercase letter
      *  - lowercase letters, numbers and underscores
      *  - length between 2 and 200 characters
      *
