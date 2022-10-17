@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -70,6 +71,7 @@ class EndpointsTable extends Table
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmptyString('description')

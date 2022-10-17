@@ -534,7 +534,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'property_types',
             'attributes' => [
-                'name' => 'gustavo',
+                'name' => 'gustavo_type',
             ],
         ];
 
@@ -544,7 +544,7 @@ class PropertyTypesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/model/property_types/13');
-        static::assertTrue(TableRegistry::getTableLocator()->get('PropertyTypes')->exists(['name' => 'gustavo']));
+        static::assertTrue(TableRegistry::getTableLocator()->get('PropertyTypes')->exists(['name' => 'gustavo_type']));
         static::assertFalse(TableRegistry::getTableLocator()->get('PropertyTypes')->get(13)->get('core_type'));
     }
 
