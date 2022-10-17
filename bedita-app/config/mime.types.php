@@ -138,6 +138,7 @@ $config['mimeTypes'] = array(
   "gif" => "image/gif",
   "glabels" => "application/x-glabels",
   "glade" => "application/x-glade",
+  "glb" => "model/gltf-binary",
   "gmo" => "application/x-gettext-translation",
   "gnc" => "application/x-gnucash",
   "gnucash" => "application/x-gnucash",

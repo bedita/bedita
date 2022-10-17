@@ -41,5 +41,6 @@ $config["mediaTypeMapping"] = array(
 	"text/plain"									=>	"text",
 	"application/zip"								=>	"archive",
 	"image/svg+xml" 								=>  "drawing",		
+	"model/gltf-binary" 								=>  "glb",		
 );
 ?>

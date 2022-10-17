@@ -500,17 +500,22 @@ $config['validate_resource'] = array(
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.*/','/application\/flash-video/'),
 			    'Application'	=> array(
-							    		"flash" => array(
-											"mime_type" => array('/application\/x-shockwave-flash/'),
-											"application_type" => "application/x-shockwave-flash",
-											"label" => "Adobe Flash"
-										),
-										"shockwave" => array(
-											"mime_type" => array('/application\/x-director/'),
-											"application_type" => "application/x-director",
-											"label" => "Adobe Director"
-										)
-									),
+					"glb" => array(
+						"mime_type" => array('/model\/gltf-binary/'),
+						"application_type" => "model/gltf-binary",
+						"label" => "Glb File (glTF Binary)",
+					),
+					"flash" => array(
+						"mime_type" => array('/application\/x-shockwave-flash/'),
+						"application_type" => "application/x-shockwave-flash",
+						"label" => "Adobe Flash"
+					),
+					"shockwave" => array(
+						"mime_type" => array('/application\/x-director/'),
+						"application_type" => "application/x-director",
+						"label" => "Adobe Director"
+					)
+				),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
 				)
 ) ;
