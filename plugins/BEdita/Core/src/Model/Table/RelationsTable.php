@@ -104,6 +104,7 @@ class RelationsTable extends Table
 
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmptyString('label', null, 'create')
@@ -111,6 +112,7 @@ class RelationsTable extends Table
 
             ->requirePresence('inverse_name', 'create')
             ->notEmptyString('inverse_name')
+            ->regex('inverse_name', Validation::RESOURCE_NAME_REGEX)
             ->add('inverse_name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmptyString('inverse_label', null, 'create')

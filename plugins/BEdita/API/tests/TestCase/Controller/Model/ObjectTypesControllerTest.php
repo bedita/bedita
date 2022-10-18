@@ -827,7 +827,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'id' => '2',
             'type' => 'object_types',
             'attributes' => [
-                'singular' => 'document new',
+                'singular' => 'document_new',
             ],
         ];
 
@@ -839,7 +839,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $entity = $ObjectTypes->get(2);
-        $this->assertEquals('document new', $entity->get('singular'));
+        $this->assertEquals('document_new', $entity->get('singular'));
 
         // restore previous values
         $entity = $ObjectTypes->patchEntity($entity, ['singular' => 'document']);

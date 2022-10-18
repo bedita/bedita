@@ -104,6 +104,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     /**
      * {@inheritDoc}
      *
+     * @param array $data Action data.
      * @return \BEdita\Core\Model\Entity\User
      * @throws \Cake\Http\Exception\BadRequestException When validation of URL options fails
      * @throws \Cake\Http\Exception\UnauthorizedException Upon external authorization check failure.
@@ -147,8 +148,14 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
             throw $e;
         }
+        // Remove `Status.level` filter here to allow user object with `draft` or any other status
+        $statusLevel = Configure::read('Status.level');
+        Configure::delete('Status.level');
 
-        return (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
+        $user = (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
+        Configure::write('Status.level', $statusLevel);
+
+        return $user;
     }
 
     /**

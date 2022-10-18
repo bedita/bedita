@@ -125,10 +125,8 @@ class ObjectTypeTest extends TestCase
      */
     public function testSetName()
     {
-        $data = [
-            'name' => 'FooBar',
-        ];
-        $objectType = $this->ObjectTypes->newEntity($data);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
+        $objectType->set('name', 'FooBar');
 
         static::assertEquals('foo_bar', $objectType->name);
     }

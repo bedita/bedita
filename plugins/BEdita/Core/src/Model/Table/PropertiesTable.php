@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
 use Cake\Database\Schema\TableSchemaInterface;
@@ -25,7 +26,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Validation\Validation;
+use Cake\Validation\Validation as CakeValidation;
 use Cake\Validation\Validator;
 
 /**
@@ -90,6 +91,7 @@ class PropertiesTable extends Table
 
             ->requirePresence('name')
             ->notEmptyString('name')
+            ->regex('name', Validation::RESOURCE_NAME_REGEX)
 
             ->allowEmptyString('description')
 
@@ -219,7 +221,7 @@ class PropertiesTable extends Table
             ->from([$this->getAlias() => $from], true)
             ->formatResults(function (ResultSetInterface $results) {
                 return $results->map(function ($row) {
-                    if (!($row instanceof Property) || empty($row->id) || !Validation::uuid($row->id)) {
+                    if (!($row instanceof Property) || empty($row->id) || !CakeValidation::uuid($row->id)) {
                         return $row;
                     }
 

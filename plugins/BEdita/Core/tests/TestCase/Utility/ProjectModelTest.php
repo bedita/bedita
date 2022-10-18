@@ -341,6 +341,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
+     * @covers ::propertiesDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffAdd(): void
@@ -353,10 +354,19 @@ class ProjectModelTest extends TestCase
             ],
         ];
         $data['property_types'][] = $propType;
+        $prop = [
+            'name' => 'another_description',
+            'description' => null,
+            'is_nullable' => true,
+            'property' => 'string',
+            'object' => 'profiles',
+        ];
+        $data['properties'][] = $prop;
 
         $result = ProjectModel::diff($data);
         $create = [
             'property_types' => [$propType],
+            'properties' => [$prop],
         ];
         static::assertEquals(compact('create'), $result);
     }
@@ -366,6 +376,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
+     * @covers ::propertiesDiff()
      */
     public function testDiffRemove(): void
     {
@@ -402,6 +413,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
+     * @covers ::propertiesDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffUpdate(): void
