@@ -24,7 +24,7 @@ class ApplicationsController extends AppController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Applications';
+    public $defaultTable = 'Applications';
 
     /**
      * Display available applications.

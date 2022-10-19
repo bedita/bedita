@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\SetupConnectionTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
@@ -76,7 +76,7 @@ class SetupConnectionTaskTest extends TestCase
 
         $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Invalid connection object');
     }
 
@@ -105,7 +105,7 @@ class SetupConnectionTaskTest extends TestCase
 
         $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
         $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
     }
@@ -122,7 +122,7 @@ class SetupConnectionTaskTest extends TestCase
     {
         $this->exec(SetupConnectionTask::class);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Connection is still ok. Relax...');
         $this->assertErrorEmpty();
     }
@@ -173,7 +173,7 @@ class SetupConnectionTaskTest extends TestCase
         // Invoke task.
         $this->exec(sprintf('%s --connection %s', SetupConnectionTask::class, static::TEMP_CONNECTION), $returnValues);
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains('Connection failed');
         $this->assertErrorContains(sprintf('Connection to %s could not be established', $driver));
     }
@@ -227,7 +227,7 @@ class SetupConnectionTaskTest extends TestCase
             $returnValues
         );
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Unable to read from or write to configuration file');
     }
 
@@ -290,7 +290,7 @@ class SetupConnectionTaskTest extends TestCase
             $returnValues
         );
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         $this->assertOutputContains('Configuration saved');
         $this->assertOutputContains('Connection is ok. It\'s time to start using BEdita!');
@@ -401,7 +401,7 @@ class SetupConnectionTaskTest extends TestCase
             )
         );
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         $this->assertOutputContains('Configuration saved');
         $this->assertOutputContains('Connection is ok. It\'s time to start using BEdita!');
@@ -510,7 +510,7 @@ class SetupConnectionTaskTest extends TestCase
             )
         );
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Updated configuration file has invalid syntax');
 
         // Perform additional assertions on connection.

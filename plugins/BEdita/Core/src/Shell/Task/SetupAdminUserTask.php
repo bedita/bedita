@@ -25,7 +25,7 @@ use Cake\ORM\Exception\PersistenceFailedException;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
-class SetupAdminUserTask extends Shell
+class SetupAdminUserTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * Default username of first user.
@@ -41,7 +41,7 @@ class SetupAdminUserTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'Setup admin user.',

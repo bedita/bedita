@@ -13,8 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use Cake\Datasource\ModelAwareTrait;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
@@ -26,7 +25,7 @@ use Cake\Utility\Hash;
  */
 class ObjectModelBehaviorTest extends TestCase
 {
-    use ModelAwareTrait;
+    use LocatorAwareTrait;
 
     /**
      * Fixtures
@@ -54,7 +53,7 @@ class ObjectModelBehaviorTest extends TestCase
      */
     public function testInitialize(): void
     {
-        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
+        $table = $this->fetchTable('FakeAnimals');
         $count = $table->behaviors()->count();
         static::assertEquals(0, $count);
         $table->addBehavior('BEdita/Core.ObjectModel');

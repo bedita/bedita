@@ -36,5 +36,5 @@ class ConfigController extends AdminController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Config';
+    public $defaultTable = 'Config';
 }

@@ -14,7 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
@@ -143,7 +143,7 @@ class BeditaShellTest extends TestCase
             $returnValues
         );
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
@@ -257,7 +257,7 @@ class BeditaShellTest extends TestCase
             )
         );
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
@@ -278,7 +278,7 @@ class BeditaShellTest extends TestCase
         // Invoke task.
         $this->exec('bedita setup --admin-overwrite --admin-username gustavo --admin-password supporto');
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
@@ -299,7 +299,7 @@ class BeditaShellTest extends TestCase
         // Invoke task.
         $this->exec('bedita check');
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertErrorEmpty();

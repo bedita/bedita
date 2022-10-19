@@ -15,15 +15,18 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\Shell\Task\CheckApiKeyTask;
-use Cake\Console\Shell;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\TestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckApiKeyTask
  */
-class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
+class CheckApiKeyTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * Applications table.
      *
@@ -72,7 +75,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckApiKeyTask::class);
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Default application is missing, please check your installation');
     }
 
@@ -88,7 +91,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckApiKeyTask::class);
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains('Default application has no API key');
     }
 
@@ -104,7 +107,7 @@ class CheckApiKeyTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(CheckApiKeyTask::class);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Default API key is: <info>%s</info>', $apiKey));
     }
 }

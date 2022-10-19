@@ -27,7 +27,7 @@ use Cake\Utility\Hash;
  *
  * @since 4.0.0
  */
-class SetupConnectionTask extends Shell
+class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
 {
     /**
      * {@inheritDoc}
@@ -36,7 +36,7 @@ class SetupConnectionTask extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->setDescription([
                 'Setup database connection.',
@@ -243,7 +243,7 @@ class SetupConnectionTask extends Shell
      */
     protected function saveConnectionConfig(Connection $connection)
     {
-        $file = new File($this->param('config-file'));
+        $file = new File($this->param('config-file')); /* @phpstan-ignore-line */
         if (!$file->exists() || !$file->readable() || !$file->writable()) {
             $this->abort('Unable to read from or write to configuration file');
         }

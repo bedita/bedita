@@ -23,7 +23,7 @@ use Cake\Mailer\Email as CakeEmail;
  *
  * @since 4.0.0
  */
-class Email extends CakeEmail
+class Email extends CakeEmail /* @phpstan-ignore-line */
 {
     /**
      * Send a raw email.

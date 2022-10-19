@@ -33,7 +33,6 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -85,8 +84,13 @@ abstract class ResourcesController extends AppController
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
         }
-
-        $this->Table = TableRegistry::getTableLocator()->get($this->modelClass);
+        // backward compatibility: set $defaultTable if deprecated $modelClass attribute is used
+        if (empty($this->defaultTable) && !empty($this->modelClass)) { /* @phpstan-ignore-line */
+            $this->defaultTable = $this->modelClass; /* @phpstan-ignore-line */
+        }
+        if (empty($this->Table)) {
+            $this->Table = $this->fetchTable();
+        }
     }
 
     /**

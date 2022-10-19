@@ -87,12 +87,12 @@ class StatusBehavior extends Behavior
         switch ($level) {
             case 'on':
                 return $query->where([
-                    $this->getTable()->aliasField($field) => 'on',
+                    $this->table()->aliasField($field) => 'on',
                 ]);
 
             case 'draft':
                 return $query->where(function (QueryExpression $exp) use ($field) {
-                    return $exp->in($this->getTable()->aliasField($field), ['on', 'draft']);
+                    return $exp->in($this->table()->aliasField($field), ['on', 'draft']);
                 });
 
             case 'off':

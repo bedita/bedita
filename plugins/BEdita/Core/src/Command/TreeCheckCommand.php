@@ -35,7 +35,7 @@ class TreeCheckCommand extends Command
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Objects';
+    public $defaultTable = 'Objects';
 
     /**
      * {@inheritDoc}

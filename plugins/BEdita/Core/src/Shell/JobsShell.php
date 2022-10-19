@@ -22,7 +22,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
-class JobsShell extends Shell
+class JobsShell extends Shell /* @phpstan-ignore-line */
 {
     /**
      * @inheritDoc
@@ -44,7 +44,7 @@ class JobsShell extends Shell
             ],
         ];
 
-        return parent::getOptionParser()
+        return parent::getOptionParser() /* @phpstan-ignore-line */
             ->addSubcommand('run', [
                 'help' => 'Process a job',
                 'parser' => [

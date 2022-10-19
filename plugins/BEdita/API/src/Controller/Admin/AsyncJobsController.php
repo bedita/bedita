@@ -24,5 +24,5 @@ class AsyncJobsController extends AdminController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'AsyncJobs';
+    public $defaultTable = 'AsyncJobs';
 }

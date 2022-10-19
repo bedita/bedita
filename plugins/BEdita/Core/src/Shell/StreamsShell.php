@@ -24,7 +24,7 @@ use Cake\ORM\Query;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
-class StreamsShell extends Shell
+class StreamsShell extends Shell /* @phpstan-ignore-line */
 {
     /**
      * @inheritDoc
@@ -38,7 +38,7 @@ class StreamsShell extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser->addSubcommand('removeOrphans', [
             'help' => 'remove obsolete/orphans streams and related files',
             'parser' => [

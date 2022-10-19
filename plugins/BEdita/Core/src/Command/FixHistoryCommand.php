@@ -37,7 +37,7 @@ class FixHistoryCommand extends Command
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Objects';
+    public $defaultTable = 'Objects';
 
     /**
      * History table

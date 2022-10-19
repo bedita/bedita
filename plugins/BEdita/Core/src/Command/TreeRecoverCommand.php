@@ -29,7 +29,7 @@ class TreeRecoverCommand extends Command
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Trees';
+    public $defaultTable = 'Trees';
 
     /**
      * {@inheritDoc}

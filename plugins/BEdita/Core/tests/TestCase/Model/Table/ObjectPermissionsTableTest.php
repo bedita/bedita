@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -37,8 +36,7 @@ class ObjectPermissionsTableTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $config = TableRegistry::exists('ObjectPermissions') ? [] : ['className' => 'BEdita\Core\Model\Table\ObjectPermissionsTable'];
-        $this->ObjectPermissions = TableRegistry::getTableLocator()->get('ObjectPermissions', $config);
+        $this->ObjectPermissions = $this->fetchTable('ObjectPermissions');
     }
 
     /**

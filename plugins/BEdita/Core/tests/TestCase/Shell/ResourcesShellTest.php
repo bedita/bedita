@@ -2,9 +2,10 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Model\Entity\EndpointPermission;
-use Cake\Console\Shell;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
@@ -12,8 +13,10 @@ use Cake\Utility\Inflector;
  *
  * @coversDefaultClass \BEdita\Core\Shell\ResourcesShell
  */
-class ResourcesShellTest extends ConsoleIntegrationTestCase
+class ResourcesShellTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * Fixtures
      *
@@ -89,11 +92,11 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
         $exists = TableRegistry::getTableLocator()->get(Inflector::camelize($type))->exists(compact('name'));
         if ($expected === true) {
             static::assertTrue($exists);
-            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertExitCode(Command::CODE_SUCCESS);
             $this->assertErrorEmpty();
         } else {
             static::assertFalse($exists);
-            $this->assertExitCode(Shell::CODE_ERROR);
+            $this->assertExitCode(Command::CODE_ERROR);
             $this->assertErrorContains($expected);
         }
     }
@@ -141,7 +144,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
     {
         $this->exec('resources add -t endpoint_permissions', [$application, $endpoint, $role, $read, $write]);
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
         $endpointPermission = TableRegistry::getTableLocator()->get('EndpointPermissions')->find()->all()->last();
@@ -208,7 +211,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
 
         $newValue = $table->get($entity->id)->get($field);
         if ($value !== null) {
-            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertExitCode(Command::CODE_SUCCESS);
             $this->assertErrorEmpty();
             static::assertEquals($value, $newValue);
         } else {
@@ -226,7 +229,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
     {
         $this->exec('resources edit -t applications -f description 1111');
         $this->assertErrorContains('Resource with id 1111 not found');
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
@@ -265,7 +268,7 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
     {
         $this->exec(sprintf('resources ls -t %s', $type));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         $this->assertOutputContains(sprintf('%d result(s) found', $expected));
     }
@@ -316,11 +319,11 @@ class ResourcesShellTest extends ConsoleIntegrationTestCase
         $countAfter = TableRegistry::getTableLocator()->get('Applications')->find()->count();
 
         if ($expected) {
-            $this->assertExitCode(Shell::CODE_SUCCESS);
+            $this->assertExitCode(Command::CODE_SUCCESS);
             $this->assertErrorEmpty();
             static::assertSame($countBefore - 1, $countAfter);
         } else {
-            $this->assertExitCode(Shell::CODE_ERROR);
+            $this->assertExitCode(Command::CODE_ERROR);
             static::assertSame($countBefore, $countAfter);
         }
     }

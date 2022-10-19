@@ -2,9 +2,10 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
-use Cake\Console\Shell;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\TestCase;
 
 /**
  * \BEdita\Core\Shell\StreamsShell Test Case
@@ -12,8 +13,9 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  * @coversDefaultClass \BEdita\Core\Shell\StreamsShell
  */
-class StreamsShellTest extends ConsoleIntegrationTestCase
+class StreamsShellTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
     use TestFilesystemTrait;
 
     /**
@@ -121,7 +123,7 @@ class StreamsShellTest extends ConsoleIntegrationTestCase
         $count = TableRegistry::getTableLocator()->get('Streams')->find()->count();
         $this->exec(sprintf('streams removeOrphans --days %d', $days));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
 
         $count -= TableRegistry::getTableLocator()->get('Streams')->find()->count();

@@ -24,5 +24,5 @@ class EndpointPermissionsController extends AdminController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'EndpointPermissions';
+    public $defaultTable = 'EndpointPermissions';
 }

@@ -24,7 +24,7 @@ class PropertiesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Properties';
+    public $defaultTable = 'Properties';
 
     /**
      * @inheritDoc

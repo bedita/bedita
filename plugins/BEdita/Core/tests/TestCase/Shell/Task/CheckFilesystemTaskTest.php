@@ -14,14 +14,17 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\CheckFilesystemTask;
-use Cake\Console\Shell;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckFilesystemTask
  */
-class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
+class CheckFilesystemTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * Temporary directory for permissions tests.
      *
@@ -58,7 +61,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s --httpd-user %s %s', CheckFilesystemTask::class, exec('whoami'), static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         $this->assertOutputContains('Filesystem permissions look alright. Time to write something in those shiny folders');
     }
@@ -82,7 +85,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s --verbose %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Detected webserver user: <info>%s</info>', $user));
         $this->assertErrorEmpty();
     }
@@ -106,7 +109,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains('Unable to detect webserver user');
         $this->assertErrorEmpty();
     }
@@ -122,7 +125,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
     {
         $this->exec(sprintf('%s --httpd-user %s %s', CheckFilesystemTask::class, exec('whoami'), static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains(sprintf('Path "%s" does not exist or is not a directory', static::TEMP_DIR));
     }
 
@@ -140,7 +143,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains(sprintf('Path "%s" might not be writable by CLI user', static::TEMP_DIR));
         $this->assertOutputContains('Potential issues were found, please check your installation');
         $this->assertErrorEmpty();
@@ -177,7 +180,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains(sprintf('Path "%s" might not be writable by webserver user', static::TEMP_DIR));
         $this->assertOutputContains('Potential issues were found, please check your installation');
         $this->assertErrorEmpty();
@@ -197,7 +200,7 @@ class CheckFilesystemTaskTest extends ConsoleIntegrationTestCase
 
         $this->exec(sprintf('%s --httpd-user nobody %s', CheckFilesystemTask::class, static::TEMP_DIR));
 
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains(sprintf('Path "%s" is world writable!', static::TEMP_DIR));
         $this->assertOutputContains('Filesystem permissions look alright. Time to write something in those shiny folders');
         $this->assertErrorEmpty();

@@ -32,7 +32,7 @@ use Cake\Datasource\ConnectionManager;
  * @property \BEdita\Core\Shell\Task\SetupAdminUserTask $SetupAdminUser
  * @property \BEdita\Core\Shell\Task\SetupConnectionTask $SetupConnection
  */
-class BeditaShell extends Shell
+class BeditaShell extends Shell /* @phpstan-ignore-line */
 {
     /**
      * @inheritDoc
@@ -53,7 +53,7 @@ class BeditaShell extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
 
         $parser->addSubcommand('setup', [
             'help' => 'Setup new instance.',

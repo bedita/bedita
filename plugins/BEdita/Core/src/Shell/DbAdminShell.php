@@ -27,7 +27,7 @@ use Cake\Datasource\ConnectionManager;
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  */
-class DbAdminShell extends Shell
+class DbAdminShell extends Shell /* @phpstan-ignore-line */
 {
     /**
      * @inheritDoc
@@ -46,7 +46,7 @@ class DbAdminShell extends Shell
     {
         Cache::disable();
 
-        parent::startup();
+        parent::startup(); /* @phpstan-ignore-line */
     }
 
     /**
@@ -56,7 +56,7 @@ class DbAdminShell extends Shell
      */
     protected function _welcome(): void
     {
-        parent::_welcome();
+        parent::_welcome(); /* @phpstan-ignore-line */
 
         if ($this->param('connection')) {
             $info = ConnectionManager::get($this->param('connection'))->config();
@@ -79,7 +79,7 @@ class DbAdminShell extends Shell
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser();
+        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
         $parser
             ->addSubcommand('init', [
                 'help' => 'Initialize a new BEdita 4 database instance.',

@@ -37,6 +37,8 @@
         "dms/phpunit-arraysubset-asserts": "^0.4",
         "bedita/dev-tools": "^2.1",
         "phpstan/phpstan": "^1.7.1",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
         "dereuromark/cakephp-ide-helper": "^1.17"
     },
     "autoload": {
@@ -86,7 +88,8 @@
         "allow-plugins": {
             "cakephp/plugin-installer": true,
             "wikimedia/composer-merge-plugin": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
         }
     }
 }

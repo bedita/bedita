@@ -92,6 +92,7 @@ class AsyncJobsTransportTest extends TestCase
     {
         $before = $this->AsyncJobs->find()->count();
 
+         /* @phpstan-ignore-next-line */
         Email::deliver(
             ['evermannella@example.org' => 'Evermannella'],
             'Re Have you installed the latest version of Synapse?',
@@ -125,6 +126,7 @@ class AsyncJobsTransportTest extends TestCase
             'priority' => 1000,
         ]);
 
+        /* @phpstan-ignore-next-line */
         Email::deliver(
             ['evermannella@example.org' => 'Evermannella'],
             'Re: Have you installed the latest version of Synapse?',
@@ -161,6 +163,7 @@ class AsyncJobsTransportTest extends TestCase
             ],
         ];
 
+        /* @phpstan-ignore-next-line */
         Email::deliver(
             ['evermannella@example.org' => 'Evermannella'],
             'Re: Have you installed the latest version of Synapse?',

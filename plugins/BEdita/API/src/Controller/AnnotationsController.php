@@ -27,7 +27,7 @@ class AnnotationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Annotations';
+    public $defaultTable = 'Annotations';
 
     /**
      * @inheritDoc

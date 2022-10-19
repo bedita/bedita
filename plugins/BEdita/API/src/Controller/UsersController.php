@@ -22,7 +22,7 @@ class UsersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Users';
+    public $defaultTable = 'Users';
 
     /**
      * Meta properties accessible for admins

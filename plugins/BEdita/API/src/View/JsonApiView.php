@@ -30,7 +30,7 @@ class JsonApiView extends JsonView
     /**
      * @inheritDoc
      */
-    protected $_responseType = 'jsonapi';
+    protected static $contentType = 'application/vnd.api+json';
 
     /**
      * @inheritDoc
@@ -48,9 +48,17 @@ class JsonApiView extends JsonView
     ) {
         if ($request && $request->is('json')) {
             // change default response type if request is `json`
-            $this->_responseType = 'json';
+            static::$contentType = 'application/json';
         }
         parent::__construct($request, $response, $eventManager, $viewOptions);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function contentType(): string
+    {
+        return static::$contentType;
     }
 
     /**
