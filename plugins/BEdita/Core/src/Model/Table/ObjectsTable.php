@@ -87,6 +87,9 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');
+        $this->addBehavior('BEdita/Core.ResourceName', [
+            'field' => 'uname',
+        ]);
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
@@ -353,30 +356,6 @@ class ObjectsTable extends Table
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id());
         });
-    }
-
-    /**
-     * Try to get the object `id` from `uname`.
-     *
-     * If `$uname` is numeric it returns immediately.
-     * else try to find it from `uname` field.
-     *
-     * @param int|string $uname Unique identifier for the object.
-     * @return int
-     */
-    public function getId($uname)
-    {
-        if (is_numeric($uname)) {
-            return (int)$uname;
-        }
-
-        $result = $this->find()
-            ->select($this->aliasField('id'))
-            ->where([$this->aliasField('uname') => $uname])
-            ->enableHydration(false)
-            ->firstOrFail();
-
-        return $result['id'];
     }
 
     /**
