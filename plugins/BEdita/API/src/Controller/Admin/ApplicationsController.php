@@ -25,4 +25,13 @@ class ApplicationsController extends AdminController
      * @inheritDoc
      */
     public $defaultTable = 'Applications';
+
+    /**
+     * @inheritDoc
+     */
+    public function resource($id)
+    {
+        $id = $this->Applications->getId($id);
+        parent::resource($id);
+    }
 }
