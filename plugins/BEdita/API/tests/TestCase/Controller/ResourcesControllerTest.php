@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\AnnotationsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -551,5 +552,21 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertArrayHasKey('error', $result);
         $this->assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test modelClass and defaultTabel properties in `initialize()` method
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testInitialize(): void
+    {
+        $controller = new AnnotationsController();
+        $controller->modelClass = 'Roles';
+        $controller->defaultTable = null;
+        $controller->initialize();
+
+        $this->assertEquals('Applications', $controller->defaultTable);
     }
 }

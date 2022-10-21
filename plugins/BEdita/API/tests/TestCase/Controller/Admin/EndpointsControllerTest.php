@@ -197,6 +197,19 @@ class EndpointsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test view method with name as argument.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/admin/endpoints/auth');
+        $this->assertResponseCode(200);
+    }
+
+    /**
      * Test view method.
      *
      * @return void

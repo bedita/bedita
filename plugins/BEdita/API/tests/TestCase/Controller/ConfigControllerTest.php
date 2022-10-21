@@ -72,4 +72,17 @@ class ConfigControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Test view method with name as argument.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/config/appVal');
+        $this->assertResponseCode(200);
+    }
 }

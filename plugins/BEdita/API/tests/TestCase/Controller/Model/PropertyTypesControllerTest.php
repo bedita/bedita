@@ -488,6 +488,19 @@ class PropertyTypesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test view method with name as argument.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/model/property_types/string');
+        $this->assertResponseCode(200);
+    }
+
+    /**
      * Test view method.
      *
      * @return void

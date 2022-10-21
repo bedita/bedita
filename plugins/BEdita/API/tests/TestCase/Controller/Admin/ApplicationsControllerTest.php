@@ -200,6 +200,19 @@ class ApplicationsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test view method with name as argument.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get(sprintf('/admin/applications/%s', urlencode('First app')));
+        $this->assertResponseCode(200);
+    }
+
+    /**
      * Test view method.
      *
      * @return void
