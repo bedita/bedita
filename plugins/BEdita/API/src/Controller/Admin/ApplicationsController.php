@@ -31,7 +31,8 @@ class ApplicationsController extends AdminController
      */
     public function resource($id)
     {
-        $id = $this->Applications->getId($id);
-        parent::resource($id);
+        $id = (string)$this->Applications->getId($id);
+
+        return parent::resource($id);
     }
 }

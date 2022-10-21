@@ -39,7 +39,8 @@ class RolesController extends ResourcesController
      */
     public function resource($id)
     {
-        $id = $this->Roles->getId($id);
-        parent::resource($id);
+        $id = (string)$this->Roles->getId($id);
+
+        return parent::resource($id);
     }
 }

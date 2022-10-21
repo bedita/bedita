@@ -31,7 +31,8 @@ class EndpointsController extends AdminController
      */
     public function resource($id)
     {
-        $id = $this->Endpoints->getId($id);
-        parent::resource($id);
+        $id = (string)$this->Endpoints->getId($id);
+
+        return parent::resource($id);
     }
 }

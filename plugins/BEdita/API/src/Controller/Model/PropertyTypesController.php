@@ -40,7 +40,8 @@ class PropertyTypesController extends ModelController
      */
     public function resource($id)
     {
-        $id = $this->PropertyTypes->getId($id);
-        parent::resource($id);
+        $id = (string)$this->PropertyTypes->getId($id);
+
+        return parent::resource($id);
     }
 }
