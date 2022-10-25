@@ -230,7 +230,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::initialize()
      * @covers ::related()
-     * @covers ::findAssociation()
      * @covers ::getAvailableUrl()
      */
     public function testRelated()
@@ -357,6 +356,7 @@ class HistoryControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', $authHeader);
         $this->post('/history/1/relationships/user', [
             'id' => 5,
+            'type' => 'users',
         ]);
         $this->assertResponseCode(405);
     }
@@ -365,7 +365,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `include` method.
      *
      * @return void
-     * @covers ::findAssociation()
      */
     public function testInclude()
     {

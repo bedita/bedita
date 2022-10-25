@@ -12,10 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
-use Cake\ORM\Table;
-use Cake\Utility\Inflector;
 
 /**
  * Controller for `/history` endpoint.
@@ -35,23 +32,9 @@ class HistoryController extends ResourcesController
      */
     protected $_defaultConfig = [
         'allowedAssociations' => [
-            'users' => ['users'],
+            'user' => ['users'],
         ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function findAssociation(string $relationship, ?Table $table = null): Association
-    {
-        $relationship = Inflector::underscore($relationship);
-        $association = $this->Table->associations()->getByProperty($relationship);
-        if (empty($association)) {
-            throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
-        }
-
-        return $association;
-    }
 
     /**
      * @inheritDoc
