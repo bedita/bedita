@@ -284,7 +284,8 @@ class Stream extends BEAppModel
 
         $mime_type = $this->getMimeTypeByExtension($filename);
 
-        if (function_exists("finfo_open") && file_exists($path)) {
+        // Don't use finfo_file for GLB files because it returns a wrong MIME type
+        if (function_exists("finfo_open") && file_exists($path) && $mime_type != 'model/gltf-binary') {
 			if(PHP_VERSION < 5.3) {
 				$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
 			} else {
