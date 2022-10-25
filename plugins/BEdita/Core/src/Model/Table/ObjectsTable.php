@@ -48,7 +48,7 @@ use Cake\Utility\Hash;
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
- * @mixin \BEdita\Core\Model\Behavior\ResourceName
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
  * @since 4.0.0
  */
@@ -368,7 +368,7 @@ class ObjectsTable extends Table
      */
     protected function findAncestor(Query $query, array $options)
     {
-        $parentId = $this->behaviors()->call('getId', [(string)Hash::get($options, '0')]);
+        $parentId = $this->getId((string)Hash::get($options, '0'));
         $parentNode = $this->TreeNodes->find()
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
@@ -398,7 +398,7 @@ class ObjectsTable extends Table
      */
     protected function findParent(Query $query, array $options)
     {
-        $parentId = $this->behaviors()->call('getId', [(string)Hash::get($options, '0')]);
+        $parentId = $this->getId((string)Hash::get($options, '0'));
 
         return $query
             ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
