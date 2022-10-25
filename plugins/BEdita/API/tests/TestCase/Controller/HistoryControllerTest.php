@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
@@ -170,5 +171,142 @@ class HistoryControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `related` method.
+     *
+     * @return void
+     * @covers ::initialize()
+     * @covers ::related()
+     * @covers ::findAssociation()
+     * @covers ::getAvailableUrl()
+     */
+    public function testRelated()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/history/1/user',
+                'home' => 'http://api.example.com/home',
+                'available' => null,
+            ],
+            'meta' => [
+                'schema' => [
+                    'users' => [
+                        '$id' => 'http://api.example.com/model/schema/users',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
+                    ],
+                ],
+            ],
+            'data' => [
+                'id' => '1',
+                'type' => 'users',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'first-user',
+                    'title' => 'Mr. First User',
+                    'description' => null,
+                    'body' => null,
+                    'extra' => null,
+                    'lang' => 'en',
+                    'name' => 'First',
+                    'surname' => 'User',
+                    'email' => 'first.user@example.com',
+                    'person_title' => 'Mr.',
+                    'gender' => null,
+                    'birthdate' => '1945-04-25',
+                    'deathdate' => null,
+                    'company' => false,
+                    'company_name' => null,
+                    'company_kind' => null,
+                    'street_address' => null,
+                    'city' => null,
+                    'zipcode' => null,
+                    'country' => null,
+                    'state_name' => null,
+                    'phone' => null,
+                    'website' => null,
+                    'national_id_number' => null,
+                    'vat_number' => null,
+                    'publish_start' => null,
+                    'publish_end' => null,
+                    'username' => 'first user',
+                    'another_username' => null, // custom property
+                    'another_email' => null, // custom property
+                    'pseudonym' => null,
+                    'user_preferences' => null,
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => null,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'blocked' => false,
+                    'last_login' => null,
+                    'last_login_err' => null,
+                    'num_login_err' => 1,
+                    'verified' => '2017-05-29T11:36:00+00:00',
+                    'password_modified' => '2017-05-29T11:36:00+00:00',
+                    'external_auth' => [
+                        [
+                            'provider' => 'example',
+                            'username' => 'first_user',
+                        ],
+                    ],
+                ],
+                'relationships' => [
+                    'roles' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/roles',
+                            'self' => 'http://api.example.com/users/1/relationships/roles',
+                        ],
+                    ],
+                    'another_test' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/another_test',
+                            'self' => 'http://api.example.com/users/1/relationships/another_test',
+                        ],
+                    ],
+                    'parents' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/parents',
+                            'self' => 'http://api.example.com/users/1/relationships/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/translations',
+                            'self' => 'http://api.example.com/users/1/relationships/translations',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/history/1/user');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `setRelationshipsAllowedMethods` method.
+     *
+     * @return void
+     * @covers ::setRelationshipsAllowedMethods()
+     */
+    public function testSetRelationshipsAllowedMethods()
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post('/history/1/relationships/user', [
+            'id' => 5,
+        ]);
+        $this->assertResponseCode(405);
     }
 }

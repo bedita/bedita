@@ -12,53 +12,52 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\ListEntitiesAction;
-use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
+use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\Association;
+use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/history` endpoint.
  *
  * @since 4.1.0
+ * @property \BEdita\Core\Model\Table\HistoryTable $Table
  */
-class HistoryController extends AppController
+class HistoryController extends ResourcesController
 {
     /**
-     * History table
-     *
-     * @var \Cake\ORM\Table
+     * @inheritDoc
      */
-    protected $HistoryTable;
+    public $modelClass = 'History';
 
     /**
      * @inheritDoc
      */
-    public function initialize(): void
-    {
-        parent::initialize();
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'users' => ['users'],
+        ],
+    ];
 
-        $historyTable = (string)Configure::read('History.table', 'History');
-        $this->HistoryTable = TableRegistry::getTableLocator()->get($historyTable);
+    /**
+     * @inheritDoc
+     */
+    protected function findAssociation(string $relationship, ?Table $table = null): Association
+    {
+        $relationship = Inflector::underscore($relationship);
+        $association = $this->Table->associations()->getByProperty($relationship);
+        if (empty($association)) {
+            throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+        }
+
+        return $association;
     }
 
     /**
-     * History index.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function index(): void
+    protected function setRelationshipsAllowedMethods(Association $association)
     {
-        $this->request->allowMethod('get');
-
-        $filter = (array)$this->request->getQuery('filter');
-        $action = new ListEntitiesAction(['table' => $this->HistoryTable]);
-        $query = $action(compact('filter'));
-        $this->set('_fields', $this->request->getQuery('fields', []));
-        $data = $this->paginate($query);
-
-        $this->set(compact('data'));
-        $this->setSerialize(['data']);
-        $this->set('_jsonApiOptions', JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS);
+        $this->request->allowMethod(['get']);
     }
 }
