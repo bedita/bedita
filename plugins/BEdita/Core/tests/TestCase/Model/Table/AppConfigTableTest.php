@@ -61,16 +61,17 @@ class AppConfigTableTest extends TestCase
     }
 
     /**
-     * Test initialization.
+     * Test `initialize` method.
      *
      * @return void
-     * @coversNothing
+     * @covers ::initialize()
      */
-    public function testInitialization(): void
+    public function testInitialize(): void
     {
         $this->AppConfig->initialize([]);
         $this->assertEquals('config', $this->AppConfig->getTable());
         $this->assertEquals('id', $this->AppConfig->getPrimaryKey());
+        $this->assertTrue($this->AppConfig->behaviors()->has('ResourceName'));
     }
 
     /**
