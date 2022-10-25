@@ -25,14 +25,4 @@ class EndpointsController extends AdminController
      * @inheritDoc
      */
     public $defaultTable = 'Endpoints';
-
-    /**
-     * @inheritDoc
-     */
-    public function resource($id)
-    {
-        $id = (string)$this->Endpoints->getId($id);
-
-        return parent::resource($id);
-    }
 }

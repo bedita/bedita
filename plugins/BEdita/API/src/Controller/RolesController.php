@@ -33,14 +33,4 @@ class RolesController extends ResourcesController
             'users' => ['users'],
         ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    public function resource($id)
-    {
-        $id = (string)$this->Roles->getId($id);
-
-        return parent::resource($id);
-    }
 }

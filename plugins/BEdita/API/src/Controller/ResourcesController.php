@@ -205,7 +205,7 @@ abstract class ResourcesController extends AppController
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
         $contain = $this->prepareInclude($this->request->getQuery('include'));
-
+        $id = $this->getResourceId($id);
         $action = new GetEntityAction(['table' => $this->Table]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
 
@@ -223,7 +223,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('patch')) {
             // Patch an existing entity.
-            if ($this->request->getData('id') !== $id) {
+            if ($this->request->getData('id') !== (string)$id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
             }
 
@@ -238,6 +238,21 @@ abstract class ResourcesController extends AppController
         $this->setSerialize(['entity']);
 
         return null;
+    }
+
+    /**
+     * Get resource ID from entity ID or non numeric identifier.
+     *
+     * @param string|int $id Resource identifier, can be ID or name.
+     * @return int
+     */
+    protected function getResourceId($id): int
+    {
+        if ($this->fetchTable()->behaviors()->has('ResourceName')) {
+            return $this->fetchTable()->getId($id);
+        }
+
+        return (int)$id;
     }
 
     /**

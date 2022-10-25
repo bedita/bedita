@@ -26,14 +26,4 @@ class ConfigController extends ResourcesController
      * @inheritDoc
      */
     public $defaultTable = 'AppConfig';
-
-    /**
-     * @inheritDoc
-     */
-    public function resource($id)
-    {
-        $id = (string)$this->AppConfig->getId($id);
-
-        return parent::resource($id);
-    }
 }

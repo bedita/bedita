@@ -34,14 +34,4 @@ class PropertyTypesController extends ModelController
             'properties' => ['properties'],
         ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    public function resource($id)
-    {
-        $id = (string)$this->PropertyTypes->getId($id);
-
-        return parent::resource($id);
-    }
 }

@@ -68,4 +68,24 @@ class RelationsController extends ModelController
 
         return parent::resource($id);
     }
+
+    /**
+     * Get resource ID
+     *
+     * @param string|int $id Resource identifier, can be ID or name.
+     * @return int
+     */
+    protected function getResourceId($id): int
+    {
+        try {
+            $id = $this->Relations->getId($id);
+        } catch (RecordNotFoundException $ex) {
+            /** \BEdita\Core\Model\Behavior\ResourceNameBehavior $behavior */
+            $behavior = $this->Relations->behaviors()->get('ResourceName');
+            $behavior->setConfig('field', 'inverse_name');
+            $id = $this->Relations->getId($id);
+        }
+
+        return (int)$id;
+    }
 }
