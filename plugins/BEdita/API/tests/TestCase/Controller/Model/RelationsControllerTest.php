@@ -261,7 +261,7 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method with `name` or `inverse_name` as argument.
      *
      * @return void
-     * @covers ::resource()
+     * @covers ::getResourceId()
      */
     public function testSingleName()
     {

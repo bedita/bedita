@@ -77,7 +77,7 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test view method with name as argument.
      *
      * @return void
-     * @covers ::resource()
+     * @covers ::getResourceId()
      */
     public function testSingleName()
     {
