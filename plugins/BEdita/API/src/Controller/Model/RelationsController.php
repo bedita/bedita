@@ -55,23 +55,6 @@ class RelationsController extends ModelController
     /**
      * @inheritDoc
      */
-    public function resource($id)
-    {
-        try {
-            $id = (string)$this->Relations->getId($id);
-        } catch (RecordNotFoundException $ex) {
-            /** \BEdita\Core\Model\Behavior\ResourceNameBehavior $behavior */
-            $behavior = $this->Relations->behaviors()->get('ResourceName');
-            $behavior->setConfig('field', 'inverse_name');
-            $id = (string)$this->Relations->getId($id);
-        }
-
-        return parent::resource($id);
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function getResourceId($id): string
     {
         try {
