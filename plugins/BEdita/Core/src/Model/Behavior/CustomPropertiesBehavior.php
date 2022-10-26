@@ -175,18 +175,37 @@ class CustomPropertiesBehavior extends Behavior
         }
         $entity[$field] = $entity[$field] + $this->getDefaultValues();
 
-        $customProps = $entity[$field] ?? [];
+        $customProps = (array)$entity[$field] ?? [];
         if ($entity instanceof EntityInterface) {
             $entity->setHidden([$field], true);
         } else {
             unset($entity[$field]);
         }
 
+        return $this->setupCustomProps($entity, $customProps);
+    }
+
+    /**
+     * Setup custom properties from array input.
+     *
+     * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to work on
+     * @param array $customProps Custom properties array
+     * @return \Cake\Datasource\EntityInterface|array
+     */
+    protected function setupCustomProps($entity, array $customProps)
+    {
+        if (empty($customProps)) {
+            return $entity;
+        }
+
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
         }
 
+        /** @var \Cake\Datasource\EntityInterface $entity */
         $entity->set($customProps, ['guard' => false])->clean();
+        $readOnlyProps = array_filter(Hash::combine($this->available, '{s}.name', '{s}.read_only'));
+        $entity->setAccess(array_keys($readOnlyProps), false);
 
         return $entity;
     }

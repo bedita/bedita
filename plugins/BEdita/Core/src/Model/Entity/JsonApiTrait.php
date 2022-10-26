@@ -194,10 +194,13 @@ trait JsonApiTrait
                 return !$this->isAccessible($property);
             }
         );
+
+        $accessible = $this->getAccessible();
         $extraProperties = array_filter(
             $properties,
-            function ($property) use ($table, $virtual) {
-                return !in_array($property, $virtual) && !$table->hasField($property);
+            function ($property) use ($table, $virtual, $accessible) {
+                return !in_array($property, $virtual) && !$table->hasField($property)
+                    && (!isset($accessible[$property]) || $accessible[$property] === true);
             }
         );
 
