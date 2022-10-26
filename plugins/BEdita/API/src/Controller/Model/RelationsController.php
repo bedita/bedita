@@ -70,12 +70,9 @@ class RelationsController extends ModelController
     }
 
     /**
-     * Get resource ID
-     *
-     * @param string|int $id Resource identifier, can be ID or name.
-     * @return int
+     * @inheritDoc
      */
-    protected function getResourceId($id): int
+    protected function getResourceId($id): string
     {
         try {
             $id = $this->Relations->getId($id);
@@ -86,6 +83,6 @@ class RelationsController extends ModelController
             $id = $this->Relations->getId($id);
         }
 
-        return (int)$id;
+        return (string)$id;
     }
 }

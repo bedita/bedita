@@ -223,7 +223,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('patch')) {
             // Patch an existing entity.
-            if ($this->request->getData('id') !== (string)$id) {
+            if ($this->request->getData('id') !== $id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
             }
 
@@ -241,18 +241,18 @@ abstract class ResourcesController extends AppController
     }
 
     /**
-     * Get resource ID from entity ID or non numeric identifier.
+     * Get resource ID in string format from entity ID or non numeric identifier.
      *
      * @param string|int $id Resource identifier, can be ID or name.
-     * @return int
+     * @return string
      */
-    protected function getResourceId($id): int
+    protected function getResourceId($id): string
     {
         if ($this->fetchTable()->behaviors()->has('ResourceName')) {
-            return $this->fetchTable()->getId($id);
+            return (string)$this->fetchTable()->getId($id);
         }
 
-        return (int)$id;
+        return (string)$id;
     }
 
     /**
