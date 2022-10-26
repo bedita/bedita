@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Core\Configure;
 use Cake\ORM\Association;
 
 /**
@@ -25,16 +26,21 @@ class HistoryController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $modelClass = 'History';
-
-    /**
-     * @inheritDoc
-     */
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'user' => ['users'],
         ],
     ];
+
+    /**
+     * @inheritDoc
+     */
+    public function initialize(): void
+    {
+        $this->modelClass = (string)Configure::read('History.table', 'History');
+
+        parent::initialize();
+    }
 
     /**
      * @inheritDoc
