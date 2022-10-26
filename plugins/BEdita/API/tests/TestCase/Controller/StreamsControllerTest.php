@@ -59,6 +59,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::resource()
+     * @covers ::getResourceId()
      */
     public function testGet()
     {
