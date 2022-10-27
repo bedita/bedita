@@ -68,6 +68,7 @@ class ApplicationsTable extends Table
             ],
         ]);
         $this->addBehavior('BEdita/Core.QueryCache');
+        $this->addBehavior('BEdita/Core.ResourceName');
 
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,

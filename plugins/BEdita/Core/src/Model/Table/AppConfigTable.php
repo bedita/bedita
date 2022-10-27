@@ -33,6 +33,15 @@ class AppConfigTable extends ConfigTable
     /**
      * @inheritDoc
      */
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+        $this->addBehavior('BEdita/Core.ResourceName');
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator

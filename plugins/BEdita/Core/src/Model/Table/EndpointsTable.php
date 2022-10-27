@@ -56,6 +56,7 @@ class EndpointsTable extends Table
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
         ]);
+        $this->addBehavior('BEdita/Core.ResourceName');
     }
 
     /**

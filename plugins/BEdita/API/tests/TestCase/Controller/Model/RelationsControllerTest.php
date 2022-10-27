@@ -258,6 +258,23 @@ class RelationsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test view method with `name` or `inverse_name` as argument.
+     *
+     * @return void
+     * @covers ::getResourceId()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/model/relations/test');
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/model/relations/inverse_test');
+        $this->assertResponseCode(200);
+    }
+
+    /**
      * Test view method.
      *
      * @return void

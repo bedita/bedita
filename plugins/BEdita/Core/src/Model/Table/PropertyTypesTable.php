@@ -69,6 +69,7 @@ class PropertyTypesTable extends Table
                 'params' => 8,
             ],
         ]);
+        $this->addBehavior('BEdita/Core.ResourceName');
 
         $this->hasMany('Properties');
     }
