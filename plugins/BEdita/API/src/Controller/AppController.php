@@ -58,7 +58,7 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
+        $this->response = $this->response->withHeader('X-BEdita-Version', (string)Configure::read('BEdita.version'));
 
         $this->loadComponent('Paginator', (array)Configure::read('Pagination', $this->defaultPagination));
         $this->loadComponent('RequestHandler');
