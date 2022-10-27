@@ -52,6 +52,7 @@ class HistoryTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Users',
+            'strategy' => 'select',
         ]);
         $this->belongsTo('Applications', [
             'foreignKey' => 'application_id',
