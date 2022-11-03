@@ -185,6 +185,9 @@ class Property extends Entity implements JsonApiSerializable
             // Booleans are valid schemas, though they're quite uncommon.
             return $schema;
         }
+        if (empty($schema)) {
+            $schema = new \stdClass();
+        }
 
         if ($this->is_nullable) {
             // Property is nullable.
