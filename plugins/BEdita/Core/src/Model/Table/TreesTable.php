@@ -163,6 +163,15 @@ class TreesTable extends Table
             ]
         );
 
+        $rules->add(
+            [$this, 'isValidChildrenOrder'],
+            'isValidChildrenOrder',
+            [
+                'errorField' => 'children_order',
+                'message' => __d('bedita', 'The children_order is not valid. Valid values: null, title, -title, modified, -modified'),
+            ]
+        );
+
         return $rules;
     }
 
@@ -196,6 +205,22 @@ class TreesTable extends Table
         }
 
         return $rule($entity, ['repository' => $this]);
+    }
+
+    /**
+     * Check that children_order is valid.
+     * Allowed values: null, 'title', '-title', 'modified', '-modified'.
+     *
+     * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate.
+     * @return bool
+     */
+    public function isValidChildrenOrder(Tree $entity)
+    {
+        if ($entity->children_order === null) {
+            return true;
+        }
+
+        return in_array($entity->children_order, ['title', '-title', 'modified', '-modified']);
     }
 
     /**

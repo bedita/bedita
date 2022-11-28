@@ -30,6 +30,7 @@ use Cake\ORM\TableRegistry;
  * @property bool $menu
  * @property bool $canonical
  * @property int|string $position
+ * @property string $children_order
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $parent_object
@@ -50,6 +51,7 @@ class Tree extends Entity
         'menu' => true,
         'position' => true,
         'canonical' => true,
+        'children_order' => true,
     ];
 
     /**

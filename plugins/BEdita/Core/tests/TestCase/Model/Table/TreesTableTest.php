@@ -205,6 +205,57 @@ class TreesTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testIsValidChildrenOrder()`
+     *
+     * @return array
+     */
+    public function isValidChildrenOrderProvider()
+    {
+        return [
+            'null value' => [
+                true,
+                null,
+            ],
+            'title' => [
+                true,
+                'title',
+            ],
+            '-title' => [
+                true,
+                '-title',
+            ],
+            'modified' => [
+                true,
+                'modified',
+            ],
+            '-modified' => [
+                true,
+                '-modified',
+            ],
+            'id' => [
+                false,
+                'id',
+            ],
+        ];
+    }
+
+    /**
+     * Test for `isValidChildrenOrder()`
+     *
+     * @param bool $expected Expected result.
+     * @param string|null $childrenOrder The children order.
+     * @return void
+     * @dataProvider isValidChildrenOrderProvider
+     * @covers ::isValidChildrenOrder()
+     */
+    public function testIsValidChildrenOrder($expected, $childrenOrder)
+    {
+        $entity = $this->Trees->newEntity([]);
+        $entity->children_order = $childrenOrder;
+        static::assertEquals($expected, $this->Trees->isValidChildrenOrder($entity));
+    }
+
+    /**
      * Data provider for `testChangeRoot()`
      *
      * @return array
