@@ -180,6 +180,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
             'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
+            'children_order' => null,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
     }
