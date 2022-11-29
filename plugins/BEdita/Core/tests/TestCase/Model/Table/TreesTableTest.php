@@ -543,4 +543,33 @@ class TreesTableTest extends TestCase
 
         static::assertSame($expected, array_values($path));
     }
+
+    /**
+     * Test `getSort` method.
+     *
+     * @covers ::getSort()
+     * @return void
+     */
+    public function testGetSort(): void
+    {
+        // default
+        $expected = ['Trees.tree_left' => 'asc'];
+        $actual = $this->Trees->getSort(11);
+        static::assertSame($expected, $actual);
+
+        // -modified
+        $tree = $this->Trees->get(11);
+        $tree = $this->Trees->patchEntity($tree, ['children_order' => '-modified']);
+        $this->Trees->save($tree);
+        $expected = ['Children.modified' => 'desc'];
+        $actual = $this->Trees->getSort(11);
+        static::assertSame($expected, $actual);
+
+        // null
+        $tree = $this->Trees->patchEntity($tree, ['children_order' => null]);
+        $this->Trees->save($tree);
+        $expected = ['Trees.tree_left' => 'asc'];
+        $actual = $this->Trees->getSort(11);
+        static::assertSame($expected, $actual);
+    }
 }
