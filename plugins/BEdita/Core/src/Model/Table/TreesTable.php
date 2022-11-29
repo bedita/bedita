@@ -122,6 +122,10 @@ class TreesTable extends Table
         $validator
             ->boolean('canonical');
 
+        $validator
+            ->allowEmptyString('children_order')
+            ->inList('children_order', [null, 'title', '-title', 'modified', '-modified']);
+
         return $validator;
     }
 
@@ -333,5 +337,29 @@ class TreesTable extends Table
         });
 
         return $query->order([$this->aliasField('tree_left') => 'ASC']);
+    }
+
+    /**
+     * Get sort by object ID.
+     * Default 'Trees.tree_left' => 'asc'
+     *
+     * @param int $objectId The tree object ID
+     * @return array
+     */
+    public function getSort(int $objectId)
+    {
+        $entity = $this->find()
+            ->select([$this->aliasField('children_order')])
+            ->where([$this->aliasField('object_id') => $objectId])
+            ->first();
+        if (empty($entity) || empty($entity->children_order)) {
+            return ['Trees.tree_left' => 'asc'];
+        }
+        $sign = substr($entity->children_order, 0, 1);
+        $direction = $sign === '-' ? 'desc' : 'asc';
+        $field = $sign === '-' ? substr($entity->children_order, 1) : $entity->children_order;
+        $key = sprintf('Children.%s', $field);
+
+        return [$key => $direction];
     }
 }
