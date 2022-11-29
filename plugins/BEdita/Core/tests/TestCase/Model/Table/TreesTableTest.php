@@ -553,23 +553,24 @@ class TreesTableTest extends TestCase
     public function testGetSort(): void
     {
         // default
+        $tree = $this->Trees->get(11);
+        $objectId = $tree->object_id;
         $expected = ['Trees.tree_left' => 'asc'];
-        $actual = $this->Trees->getSort(11);
+        $actual = $this->Trees->getSort($objectId);
         static::assertSame($expected, $actual);
 
         // -modified
-        $tree = $this->Trees->get(11);
         $tree = $this->Trees->patchEntity($tree, ['children_order' => '-modified']);
         $this->Trees->save($tree);
         $expected = ['Children.modified' => 'desc'];
-        $actual = $this->Trees->getSort(11);
+        $actual = $this->Trees->getSort($objectId);
         static::assertSame($expected, $actual);
 
         // null
         $tree = $this->Trees->patchEntity($tree, ['children_order' => null]);
         $this->Trees->save($tree);
         $expected = ['Trees.tree_left' => 'asc'];
-        $actual = $this->Trees->getSort(11);
+        $actual = $this->Trees->getSort($objectId);
         static::assertSame($expected, $actual);
     }
 }
