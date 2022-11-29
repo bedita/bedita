@@ -205,7 +205,11 @@ class ListAssociatedAction extends BaseAction
             $query = $query->select($this->Association->junction());
         }
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $query = $query->order($this->Association->getSort());
+            $query = $query->order(
+                $this->Association->getName() === 'Children'
+                ? TableRegistry::getTableLocator()->get('Trees')->getSort($primaryKey)
+                : $this->Association->getSort()
+            );
         }
 
         $primaryKeyConditions = $this->primaryKeyConditions($inverseAssociation->getTarget(), $primaryKey);
