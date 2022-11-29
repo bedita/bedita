@@ -552,8 +552,10 @@ class TreesTableTest extends TestCase
      */
     public function testGetSort(): void
     {
+        $treeId = 1;
+
         // default
-        $tree = $this->Trees->get(11);
+        $tree = $this->Trees->get($treeId);
         $objectId = $tree->object_id;
         $expected = ['Trees.tree_left' => 'asc'];
         $actual = $this->Trees->getSort($objectId);
