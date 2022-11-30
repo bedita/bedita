@@ -37,8 +37,13 @@ class ListAssociatedActionTest extends TestCase
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeTags',
         'plugin.BEdita/Core.FakeArticlesTags',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.ObjectRelations',
+        'plugin.BEdita/Core.Trees',
     ];
-
     /**
      * @inheritDoc
      */
@@ -229,5 +234,21 @@ class ListAssociatedActionTest extends TestCase
 
         $action = new ListAssociatedAction(compact('association'));
         $action(['primaryKey' => 1]);
+    }
+
+    /**
+     * Test `sort` method
+     *
+     * @return void
+     * @covers ::sort()
+     */
+    public function testSort(): void
+    {
+        // association Children
+        $association = TableRegistry::getTableLocator()->get('Folders')->getAssociation('Children');
+        $action = new ListAssociatedAction(compact('association'));
+        $result = $action(['primaryKey' => 11]);
+        $result = json_decode(json_encode($result->toArray()), true);
+        static::assertEquals(2, count($result));
     }
 }

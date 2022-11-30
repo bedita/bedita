@@ -346,7 +346,7 @@ class TreesTable extends Table
      * @param int $objectId The tree object ID
      * @return array
      */
-    public function getSort(int $objectId)
+    public function getSort(int $objectId): array
     {
         $entity = $this->find()
             ->select([$this->aliasField('children_order')])
