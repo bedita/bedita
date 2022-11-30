@@ -44,6 +44,7 @@ class ListAssociatedActionTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Trees',
     ];
+
     /**
      * @inheritDoc
      */
