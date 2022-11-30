@@ -353,7 +353,7 @@ class TreesTable extends Table
             ->select([$this->aliasField('children_order')])
             ->where([$this->aliasField('object_id') => $objectId])
             ->first();
-        if (empty($entity) || empty($entity->children_order)) {
+        if (empty($entity->children_order)) {
             return ['Trees.tree_left' => 'asc'];
         }
         $sign = substr($entity->children_order, 0, 1);
