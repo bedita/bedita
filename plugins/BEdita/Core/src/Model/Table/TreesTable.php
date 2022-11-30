@@ -348,6 +348,7 @@ class TreesTable extends Table
      */
     public function getSort(int $objectId): array
     {
+        /** @var \BEdita\Core\Model\Entity\Tree $entity */
         $entity = $this->find()
             ->select([$this->aliasField('children_order')])
             ->where([$this->aliasField('object_id') => $objectId])

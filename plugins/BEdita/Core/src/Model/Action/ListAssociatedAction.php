@@ -258,7 +258,7 @@ class ListAssociatedAction extends BaseAction
     protected function sort(Association $association, $primaryKey): array
     {
         if ($association->getName() === 'Children') {
-            return TableRegistry::getTableLocator()->get('Trees')->getSort($primaryKey);
+            return (array)TableRegistry::getTableLocator()->get('Trees')->getSort($primaryKey);
         }
 
         return (array)$association->getSort();
