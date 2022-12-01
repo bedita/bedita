@@ -302,6 +302,13 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property_type_name' => 'integer',
                     'object_type_name' => 'profiles',
                 ],
+                [
+                    'name' => 'children_order',
+                    'description' => null,
+                    'is_nullable' => true,
+                    'property_type_name' => 'children_order',
+                    'object_type_name' => 'folders',
+                ],
             ],
         ];
 
