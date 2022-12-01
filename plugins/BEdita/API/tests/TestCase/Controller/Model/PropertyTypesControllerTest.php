@@ -51,10 +51,10 @@ class PropertyTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 20,
                 ],
             ],
@@ -379,6 +379,40 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/model/property_types/12/properties',
                                 'self' => 'http://api.example.com/model/property_types/12/relationships/properties',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '13',
+                    'type' => 'property_types',
+                    'attributes' => [
+                        'name' => 'children_order',
+                        'params' => [
+                            'type' => 'string',
+                            'enum' => [
+                                'position',
+                                '-position',
+                                'modified',
+                                '-modified',
+                                'title',
+                                '-title',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'created' => '2022-12-01T15:35:21+00:00',
+                        'modified' => '2022-12-01T15:35:21+00:00',
+                        'core_type' => true,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/property_types/13',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/model/property_types/13/properties',
+                                'self' => 'http://api.example.com/model/property_types/13/relationships/properties',
                             ],
                         ],
                     ],
