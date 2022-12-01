@@ -19,7 +19,7 @@ class AddChildrenOrder extends AbstractMigration
     protected $create = [
         'property_types' => [
             [
-                'name' => 'objects_order',
+                'name' => 'children_order',
                 'params' => [
                     'type' => 'string',
                     'enum' => [
@@ -38,7 +38,7 @@ class AddChildrenOrder extends AbstractMigration
             [
                 'name' => 'children_order',
                 'object' => 'folders',
-                'property' => 'objects_order',
+                'property' => 'children_order',
                 'description' => 'Folders children order',
                 'enabled' => 1,
                 'is_nullable' => 1,
