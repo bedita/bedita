@@ -309,4 +309,29 @@ class FoldersTable extends ObjectsTable
             ]
         );
     }
+
+    /**
+     * Get sort by object ID.
+     * Default 'Trees.tree_left' => 'asc'
+     *
+     * @param int $id The tree object ID
+     * @return array
+     */
+    public function getSort(int $id): array
+    {
+        /** @var \BEdita\Core\Model\Entity\Folder $entity */
+        $entity = $this->find()->where(['id' => $id])->first();
+        if (empty($entity->children_order) || $entity->children_order === 'position') {
+            return ['Trees.tree_left' => 'asc'];
+        }
+        if ($entity->children_order === '-position') {
+            return ['Trees.tree_left' => 'desc'];
+        }
+        $sign = substr($entity->children_order, 0, 1);
+        $direction = $sign === '-' ? 'desc' : 'asc';
+        $field = $sign === '-' ? substr($entity->children_order, 1) : $entity->children_order;
+        $key = sprintf('Children.%s', $field);
+
+        return [$key => $direction];
+    }
 }
