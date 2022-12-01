@@ -455,7 +455,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/properties/12');
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/13');
         static::assertTrue(TableRegistry::getTableLocator()->get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
