@@ -12,7 +12,6 @@
  */
 
 use BEdita\Core\Utility\Resources;
-use Cake\ORM\TableRegistry;
 use Migrations\AbstractMigration;
 
 class AddChildrenOrder extends AbstractMigration
@@ -84,10 +83,6 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function down()
     {
-        // Resources::save(
-        //     ['remove' => ['properties' => $this->create['properties']]],
-        //     ['connection' => $this->getAdapter()->getCakeConnection()]
-        // );
         $connection = $this->getAdapter()->getCakeConnection();
         $sql = 'DELETE FROM properties WHERE name = "children_order"';
         $connection->execute($sql);
