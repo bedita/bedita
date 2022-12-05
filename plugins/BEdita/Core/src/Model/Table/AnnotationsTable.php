@@ -23,7 +23,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Annotations Model
+ * Annotations Model. A dummy change
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $Users
