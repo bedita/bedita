@@ -54,17 +54,15 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function up()
     {
+        $connection = $this->getAdapter()->getCakeConnection();
         Resources::save(
             ['create' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $connection]
         );
-        $objectTypeId = TableRegistry::getTableLocator()->get('ObjectTypes')->get('folders')->id;
-        $propertyTypeId = TableRegistry::getTableLocator()->get('PropertyTypes')
-            ->find()
-            ->select(['id'])
-            ->where(['name' => 'children_order'])
-            ->firstOrFail()
-            ->id;
+        $sql = 'SELECT id FROM object_types WHERE name = "folders"';
+        $objectTypeId = $connection->execute($sql)->fetch(0)['id'];
+        $sql = 'SELECT id FROM property_types WHERE name = "children_order"';
+        $propertyTypeId = $connection->execute($sql)->fetch(0)['id'];
         $d = new \DateTime();
         $d = $d->format('Y-m-d\TH:i:s+00:00');
         $sql = 'INSERT INTO properties (';
@@ -78,7 +76,7 @@ class AddChildrenOrder extends AbstractMigration
             $d,
             $d
         );
-        $this->query($sql);
+        $connection->execute($sql);
     }
 
     /**
@@ -90,11 +88,12 @@ class AddChildrenOrder extends AbstractMigration
         //     ['remove' => ['properties' => $this->create['properties']]],
         //     ['connection' => $this->getAdapter()->getCakeConnection()]
         // );
+        $connection = $this->getAdapter()->getCakeConnection();
         $sql = 'DELETE FROM properties WHERE name = "children_order"';
-        $this->query($sql);
+        $connection->execute($sql);
         Resources::save(
             ['remove' => ['property_types' => $this->create['property_types']]],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $connection]
         );
     }
 }
