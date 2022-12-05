@@ -58,24 +58,38 @@ class AddChildrenOrder extends AbstractMigration
             ['create' => $this->create],
             ['connection' => $connection]
         );
-        $sql = 'SELECT id FROM object_types WHERE name = "folders"';
-        $objectTypeId = $connection->execute($sql)->fetch(0)['id'];
-        $sql = 'SELECT id FROM property_types WHERE name = "children_order"';
-        $propertyTypeId = $connection->execute($sql)->fetch(0)['id'];
+        $objectTypeId = $connection
+            ->execute('SELECT id FROM object_types WHERE name = "folders"')
+            ->fetch(0)['id'];
+        $propertyTypeId = $connection
+            ->execute('SELECT id FROM property_types WHERE name = "children_order"')
+            ->fetch(0)['id'];
         $d = new \DateTime();
         $d = $d->format('Y-m-d\TH:i:s+00:00');
-        $sql = 'INSERT INTO properties (';
-        $sql .= 'name, object_type_id, property_type_id, created, modified,';
-        $sql .= 'description, enabled, is_nullable, is_static';
-        $sql .= ') VALUES (';
-        $sql .= sprintf(
-            '"children_order", %d, %d, "%s", "%s", "Folders children order", 1, 1, 0)',
+        $fields = [
+            'name',
+            'object_type_id',
+            'property_type_id',
+            'created',
+            'modified',
+            'description',
+            'enabled',
+            'is_nullable',
+            'is_static',
+        ];
+        $values = [
+            "'children_order'",
             $objectTypeId,
             $propertyTypeId,
-            $d,
-            $d
-        );
-        $connection->execute($sql);
+            "'$d'",
+            "'$d'",
+            "'Folders children order'",
+            1,
+            1,
+            0,
+        ];
+        $connection
+            ->execute('INSERT INTO properties (' . implode(',', $fields) . ') VALUES (' . implode(',', $values) . ')');
     }
 
     /**
@@ -84,8 +98,8 @@ class AddChildrenOrder extends AbstractMigration
     public function down()
     {
         $connection = $this->getAdapter()->getCakeConnection();
-        $sql = 'DELETE FROM properties WHERE name = "children_order"';
-        $connection->execute($sql);
+        $connection
+            ->execute('DELETE FROM properties WHERE name = "children_order"');
         Resources::save(
             ['remove' => ['property_types' => $this->create['property_types']]],
             ['connection' => $connection]
