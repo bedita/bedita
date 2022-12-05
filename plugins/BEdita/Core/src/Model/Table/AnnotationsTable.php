@@ -23,7 +23,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Annotations Model. A dummy change
+ * Annotations Model.
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $Users
@@ -42,9 +42,9 @@ class AnnotationsTable extends Table
     /**
      * @inheritDoc
      */
-    public function initialize(array $config): void
+    public function initialize(array $cfg): void
     {
-        parent::initialize($config);
+        parent::initialize($cfg);
 
         $this->setTable('annotations');
         $this->setDisplayField('id');
