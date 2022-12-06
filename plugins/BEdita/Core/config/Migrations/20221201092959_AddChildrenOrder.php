@@ -20,15 +20,8 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function up()
     {
-        $fields = [
-            'name' => 'string',
-            'params' => 'string',
-            'core_type' => 'boolean',
-        ];
-        $this->getQueryBuilder()
-            ->insert(array_keys($fields), array_values($fields))
-            ->into('property_types')
-            ->values([
+        $this->table('property_types')
+            ->insert([
                 'name' => 'children_order',
                 'params' => json_encode([
                     'type' => 'string',
@@ -43,7 +36,7 @@ class AddChildrenOrder extends AbstractMigration
                 ]),
                 'core_type' => 1,
             ])
-            ->execute();
+            ->save();
         $objectTypeId = (int)$this->getQueryBuilder()
             ->select(['id'])
             ->from(['object_types'])
@@ -56,20 +49,8 @@ class AddChildrenOrder extends AbstractMigration
             ->where(['name' => 'children_order'])
             ->execute()
             ->fetch()[0];
-        $fields = [
-            'name' => 'string',
-            'object_type_id' => 'integer',
-            'property_type_id' => 'integer',
-            'created' => 'datetime',
-            'modified' => 'datetime',
-            'enabled' => 'boolean',
-            'is_nullable' => 'boolean',
-            'is_static' => 'boolean',
-        ];
-        $this->getQueryBuilder()
-            ->insert(array_keys($fields), array_values($fields))
-            ->into('properties')
-            ->values([
+        $this->table('properties')
+            ->insert([
                 'name' => 'children_order',
                 'object_type_id' => $objectTypeId,
                 'property_type_id' => $propertyTypeId,
@@ -79,7 +60,7 @@ class AddChildrenOrder extends AbstractMigration
                 'is_nullable' => 1,
                 'is_static' => 0,
             ])
-            ->execute();
+            ->save();
     }
 
     /**
