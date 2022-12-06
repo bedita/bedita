@@ -12,6 +12,7 @@
  */
 
 use BEdita\Core\Utility\Resources;
+use Cake\Database\Expression\FunctionExpression;
 use Migrations\AbstractMigration;
 
 class AddChildrenOrder extends AbstractMigration
@@ -57,25 +58,12 @@ class AddChildrenOrder extends AbstractMigration
             ['create' => $this->create],
             ['connection' => $this->getAdapter()->getCakeConnection()]
         );
-        $objectTypeId = (int)$this->getQueryBuilder()
-            ->select(['id'])
-            ->from(['object_types'])
-            ->where(['name' => 'folders'])
-            ->execute()
-            ->fetch(0)['id'];
-        $propertyTypeId = (int)$this->getQueryBuilder()
-            ->select(['id'])
-            ->from(['property_types'])
-            ->where(['name' => 'children_order'])
-            ->execute()
-            ->fetch(0)['id'];
         $fields = [
             'name' => 'string',
             'object_type_id' => 'int',
             'property_type_id' => 'int',
             'created' => 'datetime',
             'modified' => 'datetime',
-            'description' => 'string',
             'enabled' => 'boolean',
             'is_nullable' => 'boolean',
             'is_static' => 'boolean',
@@ -83,17 +71,27 @@ class AddChildrenOrder extends AbstractMigration
         $this->getQueryBuilder()
             ->insert(array_keys($fields), array_values($fields))
             ->into('properties')
-            ->values([
-                'name' => 'children_order',
-                'object_type_id' => $objectTypeId,
-                'property_type_id' => $propertyTypeId,
-                'created' => date('Y-m-d H:i:s'),
-                'modified' => date('Y-m-d H:i:s'),
-                'description' => 'Folders children order',
-                'enabled' => 1,
-                'is_nullable' => 1,
-                'is_static' => 0,
-            ])
+            ->values(
+                $this->getQueryBuilder()
+                    ->select([
+                        // Use a no-op expression to circumvent Cake query escaping issues
+                        // as the value would be interpreted as an identifier here.
+                        'name' => new FunctionExpression('COALESCE', ['children_order']),
+                        'object_types.id',
+                        'property_types.id',
+                        'created' => new FunctionExpression('CURRENT_TIMESTAMP'),
+                        'modified' => new FunctionExpression('CURRENT_TIMESTAMP'),
+                        'enabled' => 1,
+                        'is_nullable' => 1,
+                        'is_static' => 0,
+                    ])
+                    ->from(['object_types', 'property_types'])
+                    ->where([
+                        'object_types.name' => 'folders',
+                        'property_types.name' => 'children_order',
+                    ])
+                    ->limit(1)
+            )
             ->execute();
     }
 
