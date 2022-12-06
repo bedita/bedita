@@ -13,16 +13,19 @@ declare(strict_types=1);
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use BEdita\Core\Utility\Resources;
 use Migrations\AbstractMigration;
 
 class AddChildrenOrder extends AbstractMigration
 {
-    protected $create = [
-        'property_types' => [
-            [
+    /**
+     * {@inheritDoc}
+     */
+    public function up()
+    {
+        $this->table('property_types')
+            ->insert([
                 'name' => 'children_order',
-                'params' => [
+                'params' => json_encode([
                     'type' => 'string',
                     'enum' => [
                         'position',
@@ -32,69 +35,34 @@ class AddChildrenOrder extends AbstractMigration
                         'modified',
                         '-modified',
                     ],
-                ],
+                ]),
                 'core_type' => 1,
-            ],
-        ],
-        // this does not work in tests, for an issue with static_properties temporary table
-        // we instead use a sql insert/delete query
-        // 'properties' => [
-        //     [
-        //         'name' => 'children_order',
-        //         'object' => 'folders',
-        //         'property' => 'children_order',
-        //         'description' => 'Folders children order',
-        //         'enabled' => 1,
-        //         'is_nullable' => 1,
-        //     ],
-        // ],
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function up()
-    {
-        Resources::save(
-            ['create' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+            ])
+            ->save();
         $objectTypeId = (int)$this->getQueryBuilder()
             ->select(['id'])
             ->from(['object_types'])
             ->where(['name' => 'folders'])
             ->execute()
             ->fetch()[0];
-        $propertyTypesId = (int)$this->getQueryBuilder()
+        $propertyTypeId = (int)$this->getQueryBuilder()
             ->select(['id'])
             ->from(['property_types'])
             ->where(['name' => 'children_order'])
             ->execute()
             ->fetch()[0];
-        $fields = [
-            'name' => 'string',
-            'object_type_id' => 'int',
-            'property_type_id' => 'int',
-            'created' => 'datetime',
-            'modified' => 'datetime',
-            'enabled' => 'boolean',
-            'is_nullable' => 'boolean',
-            'is_static' => 'boolean',
-        ];
-        $this->getQueryBuilder()
-            ->insert(array_keys($fields), array_values($fields))
-            ->into('properties')
-            ->values([
+        $this->table('properties')
+            ->insert([
                 'name' => 'children_order',
-                'object_types_id' => $objectTypeId,
-                'property_types_id' => $propertyTypesId,
+                'object_type_id' => $objectTypeId,
+                'property_type_id' => $propertyTypeId,
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
                 'enabled' => 1,
                 'is_nullable' => 1,
                 'is_static' => 0,
             ])
-            ->execute();
+            ->save();
     }
 
     /**
@@ -104,16 +72,14 @@ class AddChildrenOrder extends AbstractMigration
     {
         $this->getQueryBuilder()
             ->delete('properties')
-            ->innerJoin('object_types', [
-                'object_types.id = objects.object_type_id',
-                'object_types.name' => 'folders',
-            ])
             ->where(['name' => 'children_order'])
             ->limit(1)
             ->execute();
-        Resources::save(
-            ['remove' => ['property_types' => $this->create['property_types']]],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+
+        $this->getQueryBuilder()
+            ->delete('property_types')
+            ->where(['name' => 'children_order'])
+            ->limit(1)
+            ->execute();
     }
 }
