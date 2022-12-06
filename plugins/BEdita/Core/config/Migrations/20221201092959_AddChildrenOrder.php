@@ -53,19 +53,22 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function up()
     {
-        $connection = $this->getAdapter()->getCakeConnection();
         Resources::save(
             ['create' => $this->create],
-            ['connection' => $connection]
+            ['connection' => $this->getAdapter()->getCakeConnection()]
         );
-        $objectTypeId = $connection
-            ->execute('SELECT id FROM object_types WHERE name = "folders"')
+        $objectTypeId = (int)$this->getQueryBuilder()
+            ->select(['id'])
+            ->from(['object_types'])
+            ->where(['name' => 'folders'])
+            ->execute()
             ->fetch(0)['id'];
-        $propertyTypeId = $connection
-            ->execute('SELECT id FROM property_types WHERE name = "children_order"')
+        $propertyTypeId = (int)$this->getQueryBuilder()
+            ->select(['id'])
+            ->from(['property_types'])
+            ->where(['name' => 'children_order'])
+            ->execute()
             ->fetch(0)['id'];
-        $d = new \DateTime();
-        $d = $d->format('Y-m-d H:i:s');
         $fields = [
             'name' => 'string',
             'object_type_id' => 'int',
@@ -77,21 +80,20 @@ class AddChildrenOrder extends AbstractMigration
             'is_nullable' => 'boolean',
             'is_static' => 'boolean',
         ];
-        $values = [
-            'name' => 'children_order',
-            'object_type_id' => $objectTypeId,
-            'property_type_id' => $propertyTypeId,
-            'created' => $d,
-            'modified' => $d,
-            'description' => 'Folders children order',
-            'enabled' => 1,
-            'is_nullable' => 1,
-            'is_static' => 0,
-        ];
         $this->getQueryBuilder()
             ->insert(array_keys($fields), array_values($fields))
             ->into('properties')
-            ->values($values)
+            ->values([
+                'name' => 'children_order',
+                'object_type_id' => $objectTypeId,
+                'property_type_id' => $propertyTypeId,
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+                'description' => 'Folders children order',
+                'enabled' => 1,
+                'is_nullable' => 1,
+                'is_static' => 0,
+            ])
             ->execute();
     }
 
