@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 
 use BEdita\Core\Utility\Resources;
+use Cake\Database\Expression\FunctionExpression;
 use Migrations\AbstractMigration;
 
 class AddChildrenOrder extends AbstractMigration
@@ -55,45 +56,44 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function up()
     {
-        $connection = $this->getAdapter()->getCakeConnection();
         Resources::save(
             ['create' => $this->create],
-            ['connection' => $connection]
+            ['connection' => $this->getAdapter()->getCakeConnection()]
         );
-        $objectTypeId = $connection
-            ->execute('SELECT id FROM object_types WHERE name = "folders"')
-            ->fetch(0)['id'];
-        $propertyTypeId = $connection
-            ->execute('SELECT id FROM property_types WHERE name = "children_order"')
-            ->fetch(0)['id'];
-        $d = new \DateTime();
-        $d = $d->format('Y-m-d H:i:s');
         $fields = [
             'name' => 'string',
             'object_type_id' => 'int',
             'property_type_id' => 'int',
             'created' => 'datetime',
             'modified' => 'datetime',
-            'description' => 'string',
             'enabled' => 'boolean',
             'is_nullable' => 'boolean',
             'is_static' => 'boolean',
         ];
-        $values = [
-            'name' => 'children_order',
-            'object_type_id' => $objectTypeId,
-            'property_type_id' => $propertyTypeId,
-            'created' => $d,
-            'modified' => $d,
-            'description' => 'Folders children order',
-            'enabled' => 1,
-            'is_nullable' => 1,
-            'is_static' => 0,
-        ];
         $this->getQueryBuilder()
             ->insert(array_keys($fields), array_values($fields))
             ->into('properties')
-            ->values($values)
+            ->values(
+                $this->getQueryBuilder()
+                    ->select([
+                        // Use a no-op expression to circumvent Cake query escaping issues
+                        // as the value would be interpreted as an identifier here.
+                        'name' => new FunctionExpression('COALESCE', ['children_order']),
+                        'object_types.id',
+                        'property_types.id',
+                        'created' => new FunctionExpression('CURRENT_TIMESTAMP'),
+                        'modified' => new FunctionExpression('CURRENT_TIMESTAMP'),
+                        'enabled' => 1,
+                        'is_nullable' => 1,
+                        'is_static' => 0,
+                    ])
+                    ->from(['object_types', 'property_types'])
+                    ->where([
+                        'object_types.name' => 'folders',
+                        'property_types.name' => 'children_order',
+                    ])
+                    ->limit(1)
+            )
             ->execute();
     }
 
@@ -117,4 +117,3 @@ class AddChildrenOrder extends AbstractMigration
         );
     }
 }
-
