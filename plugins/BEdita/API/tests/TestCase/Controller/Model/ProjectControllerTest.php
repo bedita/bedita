@@ -304,8 +304,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'name' => 'children_order',
                     'description' => null,
                     'is_nullable' => true,
-                    'property_type_name' => 'children_order',
-                    'object_type_name' => 'folders',
                     'object' => 'folders',
                     'property' => 'children_order',
                 ],
