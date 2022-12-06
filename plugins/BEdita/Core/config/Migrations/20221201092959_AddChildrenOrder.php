@@ -16,11 +16,22 @@ use Migrations\AbstractMigration;
 
 class AddChildrenOrder extends AbstractMigration
 {
-    protected $create = [
-        'property_types' => [
-            [
+    /**
+     * {@inheritDoc}
+     */
+    public function up()
+    {
+        $fields = [
+            'name' => 'string',
+            'params' => 'string',
+            'core_type' => 'boolean',
+        ];
+        $this->getQueryBuilder()
+            ->insert(array_keys($fields), array_values($fields))
+            ->into('property_types')
+            ->values([
                 'name' => 'children_order',
-                'params' => [
+                'params' => json_encode([
                     'type' => 'string',
                     'enum' => [
                         'position',
@@ -30,33 +41,11 @@ class AddChildrenOrder extends AbstractMigration
                         'modified',
                         '-modified',
                     ],
-                ],
+                ]),
                 'core_type' => 1,
-            ],
-        ],
-        // this does not work in tests, for an issue with static_properties temporary table
-        // we instead use a sql insert/delete query
-        // 'properties' => [
-        //     [
-        //         'name' => 'children_order',
-        //         'object' => 'folders',
-        //         'property' => 'children_order',
-        //         'description' => 'Folders children order',
-        //         'enabled' => 1,
-        //         'is_nullable' => 1,
-        //     ],
-        // ],
-    ];
+            ])
+            ->execute();
 
-    /**
-     * {@inheritDoc}
-     */
-    public function up()
-    {
-        Resources::save(
-            ['create' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
         $objectTypeId = (int)$this->getQueryBuilder()
             ->select(['id'])
             ->from(['object_types'])
@@ -85,7 +74,7 @@ class AddChildrenOrder extends AbstractMigration
             ->values([
                 'name' => 'children_order',
                 'object_types_id' => $objectTypeId,
-                'property_types_id' => $propertyTypesId,
+                'property_type_id' => $propertyTypesId,
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
                 'enabled' => 1,
@@ -102,16 +91,14 @@ class AddChildrenOrder extends AbstractMigration
     {
         $this->getQueryBuilder()
             ->delete('properties')
-            ->innerJoin('object_types', [
-                'object_types.id = objects.object_type_id',
-                'object_types.name' => 'folders',
-            ])
             ->where(['name' => 'children_order'])
             ->limit(1)
             ->execute();
-        Resources::save(
-            ['remove' => ['property_types' => $this->create['property_types']]],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
-        );
+
+        $this->getQueryBuilder()
+            ->delete('property_types')
+            ->where(['name' => 'children_order'])
+            ->limit(1)
+            ->execute();
     }
 }
