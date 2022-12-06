@@ -67,31 +67,34 @@ class AddChildrenOrder extends AbstractMigration
             ->execute('SELECT id FROM property_types WHERE name = "children_order"')
             ->fetch(0)['id'];
         $d = new \DateTime();
-        $d = $d->format('Y-m-d\TH:i:s+00:00');
+        $d = $d->format('Y-m-d H:i:s');
         $fields = [
-            'name',
-            'object_type_id',
-            'property_type_id',
-            'created',
-            'modified',
-            'description',
-            'enabled',
-            'is_nullable',
-            'is_static',
+            'name' => 'string',
+            'object_type_id' => 'int',
+            'property_type_id' => 'int',
+            'created' => 'datetime',
+            'modified' => 'datetime',
+            'description' => 'string',
+            'enabled' => 'boolean',
+            'is_nullable' => 'boolean',
+            'is_static' => 'boolean',
         ];
         $values = [
-            "'children_order'",
-            $objectTypeId,
-            $propertyTypeId,
-            "'$d'",
-            "'$d'",
-            "'Folders children order'",
-            1,
-            1,
-            0,
+            'name' => 'children_order',
+            'object_type_id' => $objectTypeId,
+            'property_type_id' => $propertyTypeId,
+            'created' => $d,
+            'modified' => $d,
+            'description' => 'Folders children order',
+            'enabled' => 1,
+            'is_nullable' => 1,
+            'is_static' => 0,
         ];
-        $connection
-            ->execute('INSERT INTO properties (' . implode(',', $fields) . ') VALUES (' . implode(',', $values) . ')');
+        $this->getQueryBuilder()
+            ->insert(array_keys($fields), array_values($fields))
+            ->into('properties')
+            ->values($values)
+            ->execute();
     }
 
     /**
@@ -99,12 +102,19 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function down()
     {
-        $connection = $this->getAdapter()->getCakeConnection();
-        $connection
-            ->execute('DELETE FROM properties WHERE name = "children_order"');
+        $this->getQueryBuilder()
+            ->delete('properties')
+            ->innerJoin('object_types', [
+                'object_types.id = objects.object_type_id',
+                'object_types.name' => 'folders',
+            ])
+            ->where(['name' => 'children_order'])
+            ->limit(1)
+            ->execute();
         Resources::save(
             ['remove' => ['property_types' => $this->create['property_types']]],
-            ['connection' => $connection]
+            ['connection' => $this->getAdapter()->getCakeConnection()]
         );
     }
 }
+
