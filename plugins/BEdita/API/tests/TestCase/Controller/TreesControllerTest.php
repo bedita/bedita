@@ -57,6 +57,7 @@ class TreesControllerTest extends IntegrationTestCase
                     'publish_start' => null,
                     'publish_end' => null,
                     'menu' => true,
+                    'children_order' => null,
                 ],
                 'meta' => [
                     'locked' => false,
