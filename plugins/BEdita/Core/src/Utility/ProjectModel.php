@@ -55,6 +55,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Applications')
             ->find()
             ->select(['name', 'description', 'enabled'])
+            ->order(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -68,6 +69,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Roles')
             ->find()
             ->select(['name', 'description'])
+            ->order(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -82,6 +84,7 @@ class ProjectModel
             ->find()
             ->select(['name', 'params'])
             ->where(['core_type' => 0])
+            ->order(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -94,6 +97,7 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
+            ->order(['name' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row) {
                 unset($row['id']);
@@ -117,6 +121,7 @@ class ProjectModel
         $relations = TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
+            ->order(['name' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row) {
                 $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
@@ -151,6 +156,7 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Properties')
             ->find('type', ['dynamic'])
+            ->order(['name' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row) {
                 $hidden = [
@@ -194,7 +200,7 @@ class ProjectModel
                 $new = Hash::combine((array)Hash::get($project, $key), '{n}.name', '{n}');
                 $create[$key] = array_values(array_diff_key($new, $current));
                 $remove[$key] = array_values(array_diff_key($current, $new));
-                $update[$key] = static::itemsToUpdate($current, $new);
+                $update[$key] = array_values(static::itemsToUpdate($current, $new));
             }
         }
 
@@ -221,7 +227,7 @@ class ProjectModel
             $currItems = (array)Hash::get($current, $object);
             $create = array_merge($create, array_values(array_diff_key($newItems, $currItems)));
             $remove = array_merge($remove, array_values(array_diff_key($currItems, $newItems)));
-            $update = array_merge($update, static::itemsToUpdate($currItems, $newItems));
+            $update = array_merge($update, array_values(static::itemsToUpdate($currItems, $newItems)));
         }
 
         return compact('create', 'update', 'remove');
