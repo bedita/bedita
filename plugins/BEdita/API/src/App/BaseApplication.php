@@ -77,6 +77,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
 
         $this->addPlugin('Authentication');
         $this->addPlugin('Authorization');
+        $this->addPlugin('Cake/Queue');
     }
 
     /**

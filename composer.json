@@ -25,7 +25,10 @@
         "cakephp/cakephp": "~4.4.1",
         "cakephp/plugin-installer": "^1.3.1",
         "guzzlehttp/psr7": "^2.2.1",
-        "wikimedia/composer-merge-plugin": "^2.0.1"
+        "wikimedia/composer-merge-plugin": "^2.0.1",
+        "cakephp/queue": "^0.1.11",
+        "enqueue/redis": "^0.10.9",
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "cakephp/bake": "^2.7",
