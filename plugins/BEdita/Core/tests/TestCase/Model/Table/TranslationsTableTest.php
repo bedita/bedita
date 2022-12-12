@@ -150,7 +150,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public function findTypeProvider(): array
     {
         return [
             'documents' => [
@@ -186,7 +186,7 @@ class TranslationsTableTest extends TestCase
      * @covers ::findType()
      * @covers ::typeId()
      */
-    public function testFindType($expected, array $types)
+    public function testFindType($expected, array $types): void
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
