@@ -38,7 +38,7 @@ class CheckSchemaTaskTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             return;
         }
         $this->fixtureManager->shutDown();
@@ -51,7 +51,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             return;
         }
         ConnectionManager::get('default')
@@ -100,7 +100,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testMissingMigrationsPlugin()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -127,7 +127,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testOffendedConventions()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -191,7 +191,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testCheckSchema()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -217,7 +217,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testAddTable()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -251,7 +251,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testRemoveTable()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -285,7 +285,7 @@ class CheckSchemaTaskTest extends TestCase
      */
     public function testUpdateConstraints()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;

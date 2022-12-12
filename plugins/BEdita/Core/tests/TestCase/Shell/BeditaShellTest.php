@@ -48,7 +48,7 @@ class BeditaShellTest extends TestCase
      */
     public function setUp(): void
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             return;
         }
 
@@ -67,7 +67,7 @@ class BeditaShellTest extends TestCase
      */
     public function tearDown(): void
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             return;
         }
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
@@ -104,7 +104,7 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupNewInteractive()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -173,7 +173,7 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupNewNonInteractive()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -293,7 +293,7 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupExistingNonInteractive()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;
@@ -319,7 +319,7 @@ class BeditaShellTest extends TestCase
      */
     public function testCheck()
     {
-        if (CheckDriver::is('Sqlite')) {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
             $this->markTestSkipped('Skip this test on sqlite.');
 
             return;

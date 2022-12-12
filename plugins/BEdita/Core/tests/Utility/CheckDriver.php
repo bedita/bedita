@@ -23,13 +23,13 @@ class CheckDriver
     /**
      * Check if a specific driver is used (like 'Sqlite' or 'Mysql')
      *
+     * @param string $className The full name of class, i.e. \Cake\Database\Driver\Mysql::class
      * @return bool
      */
-    public static function is(string $name): bool
+    public static function is(string $className): bool
     {
-        $cfg = ConnectionManager::get('default')->config();
-        $driver = substr($cfg['driver'], strrpos($cfg['driver'], '\\') + 1);
+        $driver = ConnectionManager::get('default')->getDriver();
 
-        return $driver === $name;
+        return $driver instanceof $className;
     }
 }
