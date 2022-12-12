@@ -241,7 +241,6 @@ class ListAssociatedActionTest extends TestCase
      * Test `sort` method
      *
      * @return void
-     * @covers ::sort()
      */
     public function testSort(): void
     {
