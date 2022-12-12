@@ -22,7 +22,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListAssociatedAction
+ * @coversDefaultClass \BEdita\Core\Model\Action\ListAssociatedAction
  */
 class ListAssociatedActionTest extends TestCase
 {
@@ -192,6 +192,13 @@ class ListAssociatedActionTest extends TestCase
      * @param array $options Additional options for action.
      * @return void
      * @dataProvider invocationProvider()
+     * @covers ::initialize()
+     * @covers ::checkEntityExists()
+     * @covers ::primaryKeyConditions()
+     * @covers ::buildInverseAssociation()
+     * @covers ::clearInverseAssociation()
+     * @covers ::buildQuery()
+     * @covers ::execute()
      */
     public function testInvocation($expected, $table, $association, $id, ?array $options = null)
     {
@@ -241,6 +248,7 @@ class ListAssociatedActionTest extends TestCase
      * Test `sort` method
      *
      * @return void
+     * @covers ::sort()
      */
     public function testSort(): void
     {
