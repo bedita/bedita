@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -36,7 +37,9 @@ class TranslationsTableTest extends TestCase
      * @var string[]
      */
     public $fixtures = [
+        'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
@@ -140,5 +143,61 @@ class TranslationsTableTest extends TestCase
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
         static::assertEquals($expected, $errors);
+    }
+
+    /**
+     * Data provider for `testFindType` test case.
+     *
+     * @return array
+     */
+    public function findTypeProvider()
+    {
+        return [
+            'documents' => [
+                [1, 2, 3],
+                ['documents'],
+            ],
+            'multiple' => [
+                [1, 2, 3],
+                ['document', 'profiles'],
+            ],
+            'bad type' => [
+                new BadFilterException('Invalid type parameter "foos"'),
+                ['foos'],
+            ],
+            'missing' => [
+                new BadFilterException('Missing required parameter "type"'),
+                [],
+            ],
+            'by id' => [
+                [1, 2, 3],
+                [2],
+            ],
+        ];
+    }
+
+    /**
+     * Test object types finder.
+     *
+     * @param array|\Exception $expected Expected results.
+     * @param string $type Type to filter for.
+     * @return void
+     * @dataProvider findTypeProvider
+     * @covers ::findType()
+     * @covers ::typeId()
+     */
+    public function testFindType($expected, array $types)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Translations->find('list')->find('type', $types)->toArray();
+        $result = array_keys($result);
+        sort($result);
+
+        $this->assertEquals($expected, $result);
     }
 }
